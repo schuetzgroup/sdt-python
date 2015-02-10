@@ -5,11 +5,14 @@
 import collections
 import configparser
 import io
+import logging
 
 try:
     import OpenImageIO as oiio
 except:
     oiio = None
+
+_logger = logging.getLogger(__name__)
 
 def parse_comments(comments, dict_to_append_to):
     """Parse metadata written into SPE comments by SDT-control
@@ -120,8 +123,10 @@ def read_spe_metadata(spec, dict_to_append_to):
     comments = [""]*5
     for i in range(5):
         comments[i] = spec.get_attribute("Comment{}".format(i+1))
-    #TODO: This will raise a RuntimeError on failure. Catch this and log it
-    parse_comments(comments, data)
+    try:
+        parse_comments(comments, data)
+    except:
+        _logger.info("Could not parse SPE file comments.")
 
     data["laser modulation script"] = spec.get_attribute("Spare_4")
 
@@ -134,9 +139,12 @@ def read_spe_metadata(spec, dict_to_append_to):
     roiDict["group y"] = spec.get_attribute("ROI_groupy")
     data["ROI"] = roiDict
 
-    datetime = parse_datetime(spec.get_attribute("date"),
-                              spec.get_attribute("ExperimentTimeLocal"))
-    spec.attribute("DateTime", datetime)
+    try:
+        datetime = parse_datetime(spec.get_attribute("date"),
+                                  spec.get_attribute("ExperimentTimeLocal"))
+        spec.attribute("DateTime", datetime)
+    except:
+        _logger.warn("Failed to read date and time from SPE file.")
 
 
 def read_imagedesc_metadata(ini, dict_to_append_to):
