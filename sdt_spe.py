@@ -69,7 +69,9 @@ def parse_comments(comments, dict_to_append_to):
     tocDict["bleach time"] = float(c2[46:55])/10**6
     tocDict["recovery time"] = float(c2[55:64])/10**6
     info["TOCCSL settings"] = tocDict
-    info["comment"] = comments[0] + comments [2]
+    miscDict = collections.OrderedDict()
+    miscDict["comment"] = comments[0] + comments [2]
+    info["misc"] = miscDict
 
 
 def parse_datetime(date_string, time_string):
@@ -128,7 +130,7 @@ def read_spe_metadata(spec, dict_to_append_to):
     except:
         _logger.info("Could not parse SPE file comments.")
 
-    data["laser modulation script"] = spec.get_attribute("Spare_4")
+    data["misc"]["laser modulation"] = spec.get_attribute("Spare_4")
 
     roiDict = collections.OrderedDict()
     roiDict["start x"] = spec.get_attribute("ROI_startx")
@@ -195,5 +197,5 @@ def metadata_to_ini_string(metadata):
     cp = configparser.ConfigParser(dict_type = collections.OrderedDict)
     cp.read_dict(metadata)
     strio = io.StringIO()
-    config.write(strio)
+    cp.write(strio)
     return strio.getvalue()
