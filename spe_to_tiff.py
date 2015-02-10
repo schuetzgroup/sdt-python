@@ -6,33 +6,19 @@ Created on Tue Nov 18 11:42:46 2014
 """
 
 import os
+import sys
 import configparser
 import io
+import collections
+
 import OpenImageIO as oiio
 
-def spe_attributes_to_string(inSpec):
-    config = configparser.ConfigParser()
-    config.add_section("Comments")
-    config["Comments"]["Comment1"] = inSpec.get_attribute("Comment1")
-    config["Comments"]["Comment2"] = inSpec.get_attribute("Comment2")
-    config["Comments"]["Comment3"] = inSpec.get_attribute("Comment3")
-    config["Comments"]["Comment4"] = inSpec.get_attribute("Comment4")
-    config["Comments"]["Comment5"] = inSpec.get_attribute("Comment5")
-    config.add_section("ROI")
-    config["ROI"]["startx"] = str(inSpec.get_attribute("ROI_startx"))
-    config["ROI"]["endx"] = str(inSpec.get_attribute("ROI_endx"))
-    config["ROI"]["groupx"] = str(inSpec.get_attribute("ROI_groupx"))
-    config["ROI"]["starty"] = str(inSpec.get_attribute("ROI_starty"))
-    config["ROI"]["endy"] = str(inSpec.get_attribute("ROI_endy"))
-    config["ROI"]["groupy"] = str(inSpec.get_attribute("ROI_groupy"))
-    config.add_section("Laser modulation")
-    config["Laser modulation"]["script"] = inSpec.get_attribute("Spare_4")
-    strio = io.StringIO()
-    config.write(strio)
-    return strio.getvalue()
+import sdt_spe
+
+plugin_searchpath = os.path.join(sys.prefix, "lib", "oiio-plugins")
+oiio.attribute("plugin_searchpath", plugin_searchpath)
 
 def convert_file(ifname, ofname):
-    oiio.ImageInput.create(ifname, "../spe/spe.imageio/build/")
     input = oiio.ImageInput.open(ifname)
 
     output = oiio.ImageOutput.create(ofname)
@@ -42,7 +28,10 @@ def convert_file(ifname, ofname):
         subspec = oiio.ImageSpec(input.spec())
         if i == 0:
             openmode = oiio.Create
-            subspec.attribute("ImageDescription", spe_attributes_to_string(input.spec()))
+            d = collections.OrderedDict()
+            sdt_spe.read_spe_metadata(subspec, d)
+            ini_str = sdt_spe.metadata_to_ini_string(d)
+            subspec.attribute("ImageDescription", ini_str)
         else:
             openmode = oiio.AppendSubimage
 
