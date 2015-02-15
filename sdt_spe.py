@@ -14,10 +14,12 @@ except:
 
 _logger = logging.getLogger(__name__)
 
+
 extra_metadata_begin = "### Begin extra metadata ###"
 extra_metadata_end = "### End extra metadata ###"
 extra_metadata_version = (1, 0) #(major, minor)
 excluded_metadata = ["DateTime"] #metadata that is saved otherwise anyways
+
 
 def read_spe_metadata(spec):
     """Read metadata from an SPE file
@@ -35,6 +37,7 @@ def read_spe_metadata(spec):
             data[attr.name] = attr.value
 
     return data
+
 
 def read_imagedesc_metadata(ini):
     """Read metadata from ini-file-like string
@@ -54,6 +57,10 @@ def read_imagedesc_metadata(ini):
             inistr = ini.get_attribute("ImageDescription")
     else:
         raise TypeError("Expected str or OpenImageIO.ImageSpec")
+
+    if inistr is None:
+        #There is no "ImageDescription" attribute, return empty dict
+        return collections.OrderedDict()
 
     start_pos = inistr.find(extra_metadata_begin)
     if start_pos != -1:
