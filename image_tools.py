@@ -6,6 +6,7 @@ import collections
 import configparser
 import io
 import logging
+import os
 
 try:
     import OpenImageIO as oiio
@@ -20,6 +21,10 @@ extra_metadata_end = "### End extra metadata ###"
 extra_metadata_version = (1, 0) #(major, minor)
 excluded_metadata = ["DateTime"] #metadata that is saved otherwise anyways
 
+
+class OIIOError(Exception):
+    def __init__(self, message=None):
+        super().__init__(oiio.geterror() if message is None else message)
 
 def read_attr_metadata(spec):
     """Read metadata from :var:`OpenImageIO.ImageSpec.extra_attribs`
@@ -111,3 +116,85 @@ def metadata_to_ini_string(metadata):
     return "{}\n{}\n{}".format(extra_metadata_begin,
                                strio.getvalue(),
                                extra_metadata_end)
+
+
+def convert_file(infile, outfile):
+    """Convert infile to outfile
+
+    OpenImageIO will automatically determine the right formats.
+
+    :param infile: Input file name string
+
+    :param outfile: Output file name string
+    """
+    input = oiio.ImageInput.open(infile)
+    output = oiio.ImageOutput.create(outfile)
+    if input is None or output is None:
+        raise OIIOError()
+
+    #determine number of subimages
+    num_sub = 0
+    while input.seek_subimage(num_sub, 0):
+        num_sub += 1
+
+    if (num_sub > 1 and not output.supports("multiimage") and
+        not output.supports("appendsubimage")):
+        raise OIIOError("{}: Output format '{}' does not support appending "
+            "subimages".format(outfile, output.format_name()))
+
+    subspec = oiio.ImageSpec(input.spec())
+    d = read_attr_metadata(subspec)
+    ini_str = metadata_to_ini_string(d)
+    subspec.attribute("ImageDescription", ini_str)
+
+    if not output.open(outfile, subspec, oiio.Create):
+        raise OIIOError()
+    if not output.copy_image(input):
+        raise OIIOError()
+
+    for i in range(1, num_sub):
+        input.seek_subimage(i, 0)
+        if not output.open(outfile, input.spec(), oiio.AppendSubimage):
+            raise OIIOError()
+        if not output.copy_image(input):
+            raise OIIOError()
+
+    input.close()
+    output.close()
+
+
+def convert_folder(indir, ext_list, out_format, cont=False):
+    """Recursively converts all files in a directory
+
+    The converted files will have the same file names as the original ones
+    with their extension replaced by out_format.
+
+    :param indir: Input directory path
+
+    :param ext_list: A tuple of extensions that will be (case-insensitively)
+    matched. If a file has an extension in this tuple, it will be converted.
+    Include the dot in the extension name, e. g. [".tiff"]
+
+    :param out_format: Extension of the output format. Include the dot, e. g.
+    ".jpg"
+
+    :param cont: If True, conversion will continue even if an error was
+    encountered. False by default.
+    """
+    for root, dirs, files in os.walk(indir):
+        uc_ext_list = []
+        for ext in ext_list:
+            uc_ext_list.append(ext.upper())
+
+        for file in files:
+            path, ext = os.path.splitext(file)
+            if ext.upper() in uc_ext_list:
+                infile = os.path.join(root, file)
+                outfile = os.path.join(root, path + out_format)
+                try:
+                    convert_file(infile, outfile)
+                except Exception as e:
+                    if cont:
+                        _logger.info(str(e))
+                    else:
+                        raise e
