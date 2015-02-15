@@ -25,9 +25,9 @@ def read_spe_metadata(spec):
     Converts the SDT specific metadata to a :collections.OrderedDict:. This
     requires that the SPE file was opened using the SPE plugin version >= 1.4.
 
-    :param spec: The :OpenImageIO.ImageSpec: of the SPE file.
+    :param spec: The :class:`OpenImageIO.ImageSpec` of the SPE file.
 
-    :returns: A :collections.OrderedDict: containing the metadata
+    :returns: A :class:`collections.OrderedDict` containing the metadata
     """
     data = collections.OrderedDict()
     for attr in spec.extra_attribs:
@@ -39,13 +39,13 @@ def read_spe_metadata(spec):
 def read_imagedesc_metadata(ini):
     """Read metadata from ini-file-like string
 
-    Converts the ini-file-like string to a :collections.OrderedDict:.
+    Converts the ini-file-like string to a :class:`collections.OrderedDict`.
 
-    :param ini: Either the string itself or a :OpenImageIO.ImageDesc:
+    :param ini: Either the string itself or a :class:`OpenImageIO.ImageDesc`
     whose "ImageDescription" attribute is the string.
 
-    :returns: A :collections.OrderedDict: containing the metadata. All values
-    are strings and may need conversion.
+    :returns: A :class:`collections.OrderedDict` containing the metadata. All
+    values are strings and may need conversion.
     """
     if isinstance(ini, str):
         inistr = ini
@@ -76,9 +76,10 @@ def read_imagedesc_metadata(ini):
 def metadata_to_ini_string(metadata):
     """Convert the metadata dicts to ini-file type string
 
-    Use this function to convert the :OrderedDict: created by
-    :read_spe_metadata: or :read_imagedesc_metadata: into ini-file like
-    strings that can be saved to the ImageDescription of a converted file.
+    Use this function to convert the :class:`collections.OrderedDict` created
+    by :func:`read_spe_metadata` or :func:`read_imagedesc_metadata` into
+    ini-file-like strings that can be saved to the ImageDescription of a
+    converted file.
 
     :param metadata: (ordered) dictionary of metadata
 
