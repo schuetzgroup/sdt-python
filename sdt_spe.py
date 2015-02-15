@@ -21,11 +21,13 @@ extra_metadata_version = (1, 0) #(major, minor)
 excluded_metadata = ["DateTime"] #metadata that is saved otherwise anyways
 
 
-def read_spe_metadata(spec):
-    """Read metadata from an SPE file
+def read_attr_metadata(spec):
+    """Read metadata from :var:`OpenImageIO.ImageSpec.extra_attribs`
 
-    Converts the SDT specific metadata to a :collections.OrderedDict:. This
-    requires that the SPE file was opened using the SPE plugin version >= 1.4.
+    Non-standard metadata (such as "DateTime") is saved to a
+    :class:`collections.OrderedDict`. This is e. g. useful for getting all
+    the SDT-specific metadata from an SPE file (provided the SPE plugin version
+    >= 1.4 is used).
 
     :param spec: The :class:`OpenImageIO.ImageSpec` of the SPE file.
 
