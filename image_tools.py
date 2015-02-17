@@ -19,12 +19,14 @@ _logger = logging.getLogger(__name__)
 extra_metadata_begin = "### Begin extra metadata ###"
 extra_metadata_end = "### End extra metadata ###"
 extra_metadata_version = (1, 0) #(major, minor)
-excluded_metadata = ["DateTime"] #metadata that is saved otherwise anyways
+#exclude metadata that is saved otherwise anyways
+excluded_metadata = ["DateTime", "ImageDescription"]
 
 
 class OIIOError(Exception):
     def __init__(self, message=None):
         super().__init__(oiio.geterror() if message is None else message)
+
 
 def read_attr_metadata(spec):
     """Read metadata from :var:`OpenImageIO.ImageSpec.extra_attribs`
