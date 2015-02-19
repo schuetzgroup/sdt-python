@@ -165,7 +165,7 @@ def convert_file(infile, outfile):
     output.close()
 
 
-def convert_folder(indir, ext_list, out_format, cont=False):
+def convert_folder(indir, out_format, *exts, **kwargs):
     """Recursively converts all files in a directory
 
     The converted files will have the same file names as the original ones
@@ -173,19 +173,24 @@ def convert_folder(indir, ext_list, out_format, cont=False):
 
     :param indir: Input directory path
 
-    :param ext_list: A tuple of extensions that will be (case-insensitively)
-    matched. If a file has an extension in this tuple, it will be converted.
-    Include the dot in the extension name, e. g. [".tiff"]
-
     :param out_format: Extension of the output format. Include the dot, e. g.
     ".jpg"
 
     :param cont: If True, conversion will continue even if an error was
     encountered. False by default.
+
+    :param exts: File extension strings that will be (case-insensitively)
+    matched. If a file has an extension in this tuple, it will be converted.
+    Include the dot in the extension name, e. g. ".tiff"
     """
+    cont = kwargs.pop("cont", False)
+    if kwargs:
+        bad_kw = ", ".join([ k for k, v in kwargs.items() ])
+        raise TypeError("Unknown keywords encountered: {}".format(bad_kw))
+
     for root, dirs, files in os.walk(indir):
         uc_ext_list = []
-        for ext in ext_list:
+        for ext in exts:
             uc_ext_list.append(ext.upper())
 
         for file in files:
