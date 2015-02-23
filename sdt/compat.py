@@ -14,6 +14,9 @@ pt2d_name_trans = collections.OrderedDict((
     ("Frame Number", "frame"),
     ("Time in Frames", "time")))
 
+pk_column_names = ["frame", "x", "y", "size", "mass", "background",
+                   "column6", "column7", "bg_deviation", "column9",
+                   "column10"]
 
 def load_pt2d_positions(filename, load_protocol=True,
                                     adjust_index=["x", "y", "frame"],
@@ -45,6 +48,22 @@ def load_pt2d_positions(filename, load_protocol=True,
     cols = cols[:pos.shape[1]]
 
     df = pd.DataFrame(pos, columns=cols)
+    for c in adjust_index:
+        if c in df.columns:
+            df[c] -= 1
+
+    return df
+
+
+def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
+                      column_names=None):
+    mat = sp_io.loadmat(filename)
+    pkmatrix = mat["par"][0][0][3]
+
+    if column_names is None:
+        column_names = pk_column_names
+    df = pd.DataFrame(data = pkmatrix, columns=column_names)
+
     for c in adjust_index:
         if c in df.columns:
             df[c] -= 1
