@@ -26,7 +26,9 @@ def load_pt2d_positions(filename, load_protocol=True,
     cols = []
     if load_protocol:
         proto_path = filename[:filename.rfind("positions.mat")] + "protocol.mat"
-        name_str = sp_io.loadmat(proto_path)["X"][0][0][9][0]
+        proto = sp_io.loadmat(proto_path, struct_as_record=False,
+                              squeeze_me=True)
+        name_str = proto["X"].positions_output
         names = name_str.split(", ")
 
         for n in names:
@@ -57,12 +59,11 @@ def load_pt2d_positions(filename, load_protocol=True,
 
 def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
                       column_names=None):
-    mat = sp_io.loadmat(filename)
-    pkmatrix = mat["par"][0][0][3]
+    mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
 
     if column_names is None:
         column_names = pk_column_names
-    df = pd.DataFrame(data = pkmatrix, columns=column_names)
+    df = pd.DataFrame(data = mat["par"].pkmatrix, columns=column_names)
 
     for c in adjust_index:
         if c in df.columns:
