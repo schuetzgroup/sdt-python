@@ -2,7 +2,7 @@ import scipy.io as sp_io
 import pandas as pd
 import collections
 
-name_trans = collections.OrderedDict((
+pt2d_name_trans = collections.OrderedDict((
     ("x-Position", "x"),
     ("y-Position", "y"),
     ("Integrated Intensity", "mass"),
@@ -15,7 +15,7 @@ name_trans = collections.OrderedDict((
     ("Time in Frames", "time")))
 
 
-def load_particle_tracker_positions(filename, load_protocol=True,
+def load_pt2d_positions(filename, load_protocol=True,
                                     adjust_index=["x", "y", "frame"],
                                     column_names=None):
     pos = sp_io.loadmat(filename)["MT"]
@@ -27,14 +27,14 @@ def load_particle_tracker_positions(filename, load_protocol=True,
         names = name_str.split(", ")
 
         for n in names:
-            tn = name_trans.get(n)
+            tn = pt2d_name_trans.get(n)
             if tn is None:
               tn = n
             cols.append(tn)
     elif column_names is not None:
         cols = column_names
     else:
-        for k, v in name_trans.items():
+        for k, v in pt2d_name_trans.items():
             cols.append(v)
 
     #append cols with names for unnamed columns
