@@ -16,7 +16,12 @@ def vectors_cartesian(features, pos_columns = ["x", "y"]):
     return dx, dy
 
 
-def all_scores_cartesian_slow(dx1, dx2 ,dy1, dy2, tol_a, tol_r):
+def all_scores_cartesian_slow(vec1, vec2, tol_a, tol_r):
+    dx1 = vec1[0]
+    dy1 = vec1[1]
+    dx2 = vec2[0]
+    dy2 = vec2[1]
+
     score = np.zeros((len(dx1), len(dx2)), np.uint)
 
     for i, j in np.ndindex(dx1.shape):
@@ -50,7 +55,12 @@ def _extend_array(a, new_shape, value=0):
                   constant_values=[(0, value)]*len(new_shape))
 
 
-def all_scores_cartesian(dx1, dx2 ,dy1, dy2, tol_rel, tol_abs):
+def all_scores_cartesian(vec1, vec2, tol_rel, tol_abs):
+    dx1 = vec1[0]
+    dy1 = vec1[1]
+    dx2 = vec2[0]
+    dy2 = vec2[1]
+
     score = np.zeros((len(dx1), len(dx2)), np.uint)
     #TODO: sanity checking
 
@@ -84,12 +94,13 @@ def all_scores_cartesian(dx1, dx2 ,dy1, dy2, tol_rel, tol_abs):
     return score
 
 
-def remove_noise(score, cut_off=0.5):
-    score[score < cut_off] = 0
+def pairs_from_score(feat1, feat2, score, score_cutoff=None,
+                     pos_columns=["x", "y"],
+                     feat_names=["features1", "features2"]):
 
+    if score_cutoff is None:
+        score_cutoff = 0.5*score.max()
 
-def get_pairs(feat1, feat2, score, pos_columns=["x", "y"],
-              feat_names=["features1", "features2"]):
     #TODO: detect doubles
     #TODO: do not solely rely on the maximum. If there are similarly high
     #scores, discard both because of ambiguity
@@ -105,8 +116,8 @@ def get_pairs(feat1, feat2, score, pos_columns=["x", "y"],
                                           np.argmax(score, axis=1))]
 
     for i, ind in enumerate(indices):
-        #TODO: get rid of remove_noise() and implement the threshold here
-        if score[ind] == 0:
+        if score[ind] < score_cutoff:
+            #score is too low
             continue
         df.loc[i] = (feat1.iloc[ind[0]][pos_columns[0]],
                      feat1.iloc[ind[0]][pos_columns[1]],
