@@ -1,21 +1,6 @@
 import numpy as np
 import pandas as pd
 
-def vectors_polar(features, pos_columns = ["x", "y"]):
-    radii = np.zeros((len(features), len(features)))
-    angles = np.zeros((len(features), len(features)))
-
-    #first column: x coordinate, second column: y coordinate
-    data = features[pos_columns].as_matrix()
-    for i in range(len(features)):
-        diff = data - data[i]
-
-        radii[i, :] = diff[:, 0]**2 + diff[:, 1]**2
-        angles[i, :] = np.arctan2(diff[:, 1], diff[:, 0])
-
-    return radii, angles
-
-
 def vectors_cartesian(features, pos_columns = ["x", "y"]):
     dx = np.zeros((len(features), len(features)))
     dy = np.zeros((len(features), len(features)))
