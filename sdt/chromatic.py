@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import scipy as sp
+
 
 def vectors_cartesian(features, pos_columns = ["x", "y"]):
     dx = np.zeros((len(features), len(features)))
@@ -96,7 +98,7 @@ def all_scores_cartesian(vec1, vec2, tol_rel, tol_abs):
 
 def pairs_from_score(feat1, feat2, score, score_cutoff=None,
                      pos_columns=["x", "y"],
-                     feat_names=["features1", "features2"]):
+                     feat_names=["channel1", "channel2"]):
 
     if score_cutoff is None:
         score_cutoff = 0.5*score.max()
@@ -124,3 +126,36 @@ def pairs_from_score(feat1, feat2, score, score_cutoff=None,
                      feat2.iloc[ind[1]][pos_columns[0]],
                      feat2.iloc[ind[1]][pos_columns[1]])
     return df
+
+
+def find_pairs(feat1, feat2, tol_rel=0.1, tol_abs=0., score_cutoff=None,
+               pos_columns=["x", "y"], feat_names=["channel1", "channel2"]):
+    v1 = vectors_cartesian(feat1, pos_columns)
+    v2 = vectors_cartesian(feat2, pos_columns)
+    s = all_scores_cartesian(v1, v2, tol_rel, tol_abs)
+    return pairs_from_score(feat1, feat2, s, score_cutoff, pos_columns,
+                         feat_names)
+
+
+def correction_parameters(pairs, pos_columns=["x", "y"],
+                          feat_names=["channel1", "channel2"]):
+    pars = []
+    for p in pos_columns:
+        r = sp.stats.linregress(pairs[feat_names[0]][p],
+                                pairs[feat_names[1]][p])
+        pars.append([r[i] for i in [0, 1, 4]])
+    return pd.DataFrame(pars, columns=["slope", "intercept", "stderr"],
+                        index=pos_columns)
+
+
+def test(pairs, parms, pos_columns=["x", "y"],
+         feat_names=["channel1", "channel2"]):
+    import matplotlib.pyplot as plt
+
+    for i, p in enumerate(pos_columns):
+        plt.subplot(1, len(pos_columns), i+1, aspect=1)
+        plt.scatter(pairs[feat_names[0], p], pairs[feat_names[1], p])
+        plt.plot(pairs[feat_names[0]].sort(p)[p],
+                 parms.loc[p, "slope"] * pairs[feat_names[0]].sort(p)[p] +
+                 parms.loc[p, "intercept"])
+        plt.title(p)
