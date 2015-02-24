@@ -3,7 +3,11 @@ import pandas as pd
 import scipy as sp
 
 
-def vectors_cartesian(features, pos_columns = ["x", "y"]):
+pos_columns = ["x", "y"]
+feat_names = ["channel1", "channel2"]
+
+
+def vectors_cartesian(features, pos_columns = pos_columns):
     dx = np.zeros((len(features), len(features)))
     dy = np.zeros((len(features), len(features)))
 
@@ -97,8 +101,7 @@ def all_scores_cartesian(vec1, vec2, tol_rel, tol_abs):
 
 
 def pairs_from_score(feat1, feat2, score, score_cutoff=None,
-                     pos_columns=["x", "y"],
-                     feat_names=["channel1", "channel2"]):
+                     pos_columns=pos_columns, feat_names=feat_names):
 
     if score_cutoff is None:
         score_cutoff = 0.5*score.max()
@@ -129,7 +132,7 @@ def pairs_from_score(feat1, feat2, score, score_cutoff=None,
 
 
 def find_pairs(feat1, feat2, tol_rel=0.1, tol_abs=0., score_cutoff=None,
-               pos_columns=["x", "y"], feat_names=["channel1", "channel2"]):
+               pos_columns=pos_columns, feat_names=feat_names):
     v1 = vectors_cartesian(feat1, pos_columns)
     v2 = vectors_cartesian(feat2, pos_columns)
     s = all_scores_cartesian(v1, v2, tol_rel, tol_abs)
@@ -137,8 +140,8 @@ def find_pairs(feat1, feat2, tol_rel=0.1, tol_abs=0., score_cutoff=None,
                          feat_names)
 
 
-def correction_parameters(pairs, pos_columns=["x", "y"],
-                          feat_names=["channel1", "channel2"]):
+def correction_parameters(pairs, pos_columns=pos_columns,
+                          feat_names=feat_names):
     pars = []
     for p in pos_columns:
         r = sp.stats.linregress(pairs[feat_names[0]][p],
@@ -148,8 +151,7 @@ def correction_parameters(pairs, pos_columns=["x", "y"],
                         index=pos_columns)
 
 
-def test(pairs, parms, pos_columns=["x", "y"],
-         feat_names=["channel1", "channel2"]):
+def test(pairs, parms, pos_columns=pos_columns, feat_names=feat_names):
     import matplotlib.pyplot as plt
 
     for i, p in enumerate(pos_columns):
