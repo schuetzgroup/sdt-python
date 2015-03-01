@@ -61,6 +61,46 @@ def load_pt2d_positions(filename, load_protocol=True,
     return df
 
 
+def load_pt2d_tracks(filename, load_protocol=True,
+                                    adjust_index=["x", "y", "frame",
+                                                  "particle"],
+                                    column_names=None):
+    tracks = sp_io.loadmat(filename)["tracks"]
+
+    cols = []
+    if load_protocol:
+        proto_path = filename[:filename.rfind("tracks.mat")] + "protocol.mat"
+        proto = sp_io.loadmat(proto_path, struct_as_record=False,
+                              squeeze_me=True)
+        name_str = proto["X"].tracking_output
+        names = name_str.split(", ")
+
+        for n in names:
+            tn = pt2d_name_trans.get(n)
+            if tn is None:
+              tn = n
+            cols.append(tn)
+    elif column_names is not None:
+        cols = column_names
+    else:
+        for k, v in pt2d_name_trans.items():
+            cols.append(v)
+
+    #append cols with names for unnamed columns
+    for i in range(len(cols), tracks.shape[1]+3):
+        cols.append("column{}".format(i))
+
+    #columns name list cannot have more columns than there are in the file
+    cols = cols[:tracks.shape[1]]
+
+    df = pd.DataFrame(tracks, columns=cols)
+    for c in adjust_index:
+        if c in df.columns:
+            df[c] -= 1
+
+    return df
+
+
 def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
                       column_names=None):
     mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
