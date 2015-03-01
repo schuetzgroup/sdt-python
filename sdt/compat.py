@@ -9,14 +9,18 @@ pt2d_name_trans = collections.OrderedDict((
     ("Radius of Gyration", "size"),
     ("Excentricity", "ecc"),
     ("Maximal Pixel Intensity", "signal"),
-    ("Background per Pixel", "background"),
+    ("Background per Pixel", "bg"),
     ("Standard Deviation of Background", "bg_deviation"),
+    ("Full Integrated Intensity - Background", "mass_wo_bg"),
+    ("Background per Feature", "feat_background"),
     ("Frame Number", "frame"),
-    ("Time in Frames", "time")))
+    ("Time in Frames", "time"),
+    ("Trace ID", "particle")))
 
 pk_column_names = ["frame", "x", "y", "size", "mass", "background",
                    "column6", "column7", "bg_deviation", "column9",
                    "column10"]
+
 
 def load_pt2d_positions(filename, load_protocol=True,
                                     adjust_index=["x", "y", "frame"],
