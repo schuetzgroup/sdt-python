@@ -85,8 +85,13 @@ def read_imagedesc_metadata(ini):
     cp = configparser.ConfigParser(dict_type = collections.OrderedDict)
     #do not transform the keys to lowercase
     cp.optionxform = str
-    cp.read_string(inistr)
-    return collections.OrderedDict(cp["metadata"])
+    ret = collections.OrderedDict()
+    try:
+        cp.read_string(inistr)
+        ret = collections.OrderedDict(cp["metadata"])
+    except:
+        pass
+    return ret
 
 
 def metadata_to_ini_string(metadata):
