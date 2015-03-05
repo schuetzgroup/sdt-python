@@ -210,3 +210,41 @@ def convert_folder(indir, out_format, *exts, **kwargs):
                         _logger.info(str(e))
                     else:
                         raise e
+
+
+class ROI(object):
+    """Region of interest in a picture
+
+    This class represents a region of interest. It as callable. If called with
+    an array-like object as parameter, it will return only the region of
+    interest as defined by the top_left and bottom_right attributes.
+
+    top_left is a tuple holding the x and y coordinates of the top-left corner
+    of the ROI, while bottom_right holds the x and y coordinates of the
+    bottom-right corner.
+
+    (0, 0) is the the top-left corner of the image. (width-1, height-1) is the
+    bottom-right corner.
+
+    At the moment, this works only for single channel (i. e. grayscale) images.
+    """
+    def __init__(self, top_left, bottom_right):
+        """Initialze the top_left and bottom_right attributes.
+
+        Both top_left and bottom_right are expected to be tuples holding a x
+        and a y coordinate.
+
+        (0, 0) is the the top-left corner of the image. (width-1, height-1) is
+        the bottom-right corner.
+        """
+        self.top_left = top_left
+        self.bottom_right = bottom_right
+
+    def __call__(self, raw_image):
+        """Return the region of interest of raw_image
+
+        raw_image has to be an array-like object. Return every pixel within the
+        rectangle spanned by the top_left and bottom_right attributes.
+        """
+        return raw_image[self.top_left[1]:self.bottom_right[1],
+                         self.top_left[0]:self.bottom_right[0]]
