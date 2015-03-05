@@ -114,8 +114,8 @@ def pairs_from_score(feat1, feat2, score, score_cutoff=None,
 
     indices = np.zeros(score.shape, bool)
     if score.shape[0] > score.shape[1]:
-        indices = np.array([(i, j) for i, j in zip(np.argmax(score, axis=0),
-                                          range(score.shape[1]))])
+        indices = [(i, j) for i, j in zip(np.argmax(score, axis=0),
+                                          range(score.shape[1]))]
     else:
         indices = [(i, j) for i, j in zip(range(score.shape[0]),
                                           np.argmax(score, axis=1))]
