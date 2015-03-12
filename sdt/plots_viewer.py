@@ -6,7 +6,7 @@ Created on Wed Mar  4 12:04:36 2015
 """
 import os
 
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, pyqtSlot
 from PyQt4 import uic
 
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
@@ -36,29 +36,35 @@ class PlotsViewer(pvBase):
         self._y = y
         self._index = index
         self._current = 0
-        self._ui.slider.setRange(0, len(index) - 1)
+        self._ui.selectorBox.setRange(0, len(index) - 1)
         self.plot()
         
-        self._ui.prevButton.clicked.connect(self._onPrevButton)
-        self._ui.nextButton.clicked.connect(self._onNextButton)
+        self._ui.selectorBox.valueChanged.connect(self._changePlotSlot)
+        self._ui.checkInteresting.stateChanged.connect(self._interestingSlot)
         
-        self._ui.slider.valueChanged.connect(self._onSliderChanged)
+        self.interesting = set()
         
     def plot(self):
-        curr_ind = self._index[self._ui.slider.value()]
+        curr_ind = self._index[self._ui.selectorBox.value()]
         
         self.axes.plot(self._x(curr_ind), self._y(curr_ind))
         self.axes.set_title(str(curr_ind))
         self._canvas.draw()
         
-    def _onPrevButton(self):
-        self._ui.slider.setValue(self._ui.slider.value() - 1)
-                
-    def _onNextButton(self):
-        self._ui.slider.setValue(self._ui.slider.value() + 1)
+    @pyqtSlot()
+    def _changePlotSlot(self):
+        if self._index[self._ui.selectorBox.value()] in self.interesting:
+            self._ui.checkInteresting.setChecked(True)
+        else:
+            self._ui.checkInteresting.setChecked(False)
         
-    def _onSliderChanged(self, val):
         self.plot()
+        
+    def _interestingSlot(self, state):
+        if state == Qt.Unchecked:
+            self.interesting.remove(self._index[self._ui.selectorBox.value()])
+        else:
+            self.interesting.add(self._index[self._ui.selectorBox.value()])
         
 
 def ipython_run(x, y, index):
