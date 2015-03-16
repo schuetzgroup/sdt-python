@@ -7,6 +7,9 @@ import configparser
 import io
 import logging
 import os
+import pandas as pd
+
+pd.options.mode.chained_assignment = None #Get rid of the warning
 
 try:
     import OpenImageIO as oiio
@@ -240,11 +243,36 @@ class ROI(object):
         self.top_left = top_left
         self.bottom_right = bottom_right
 
-    def __call__(self, raw_image):
-        """Return the region of interest of raw_image
+    def __call__(self, data, pos_columns=["x", "y"], reset_origin=True):
+        """Restrict data to the region of interest.
 
-        raw_image has to be an array-like object. Return every pixel within the
-        rectangle spanned by the top_left and bottom_right attributes.
+        Args:
+            data: Either a `pandas.DataFrame` containing feature coordinates,
+                or an array-like object containing the raw image data.
+            pos_columns (list of str): The names of the columns of the x and y
+                coordinates of features. This only applies to DataFrame data
+                arguments.
+            reset_origin (bool): If True, the top-left corner coordinates will
+                be subtracted off all feature coordinates, i. e. the top-left
+                corner will be the origin.
+
+        Returns:
+            If data was a `pandas.DataFrame` only the lines with coordinates
+            within the region of interest are returned, otherwise the cropped
+            raw image.
         """
-        return raw_image[self.top_left[1]:self.bottom_right[1],
-                         self.top_left[0]:self.bottom_right[0]]
+        if isinstance(data, pd.DataFrame):
+            x = pos_columns[0]
+            y = pos_columns[1]
+            roi_data = data[(data[x] > self.top_left[0])
+                            & (data[x] < self.bottom_right[0])
+                            & (data[y] > self.top_left[1])
+                            & (data[y] < self.bottom_right[1])]
+            if reset_origin:
+                roi_data.loc[:, x] -= self.top_left[0]
+                roi_data.loc[:, y] -= self.top_left[1]
+
+            return roi_data
+
+        return data[self.top_left[1]:self.bottom_right[1],
+                    self.top_left[0]:self.bottom_right[0]]
