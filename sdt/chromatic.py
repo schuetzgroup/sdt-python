@@ -69,7 +69,7 @@ class Corrector(object):
         This takes the localizations of `feat1` and tries to match them with
         those of `feat2`. Then a linear fit is used to determine the affine
         transformation to correct for chromatic aberrations.
-        
+
         This is a convenience function that calls `find_pairs` and
         `fit_parameters`.
 
@@ -82,17 +82,17 @@ class Corrector(object):
         #TODO: score_cutoff
         self.find_pairs(tol_rel, tol_abs)
         self.fit_parameters()
-                                                
+
     def find_pairs(self, tol_rel=0.1, tol_abs=0.):
         """Match features of `feat1` with features of `feat2`
-        
+
         This is done by calculating the vectors from every
         feature all the other features in `feat1` and compare them to those of
         `feat2` using the `numpy.isclose` function on both the x and the y
         coordinate, where `tol_rel` and `tol_abs` are the relative and
         absolute tolerance parameters.
-        
-        
+
+
         Args:
             tol_rel (float): Relative tolerance parameter for
                 `numpy.isclose()`. Defaults to 0.1.
@@ -104,10 +104,10 @@ class Corrector(object):
         v2 = self._vectors_cartesian(self.feat2)
         s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
         self._pairs_from_score(s, None)
-                                    
+
     def fit_parameters(self):
         """Determine parameters for the affine transformation
-        
+
         A linear fit is used to map x and y coordinates of `feat1` to to those
         of `feat2`. This requires `find_pairs` to be run first.
         """
@@ -177,42 +177,42 @@ class Corrector(object):
                     self.pairs[self.feat_names[0]].sort(p)[p] +
                     self.parameters.loc[p, "intercept"])
             ax.set_title(p)
-            
+
     def _vectors_cartesian(self, features):
         """Calculate vectors of each point in features to every other point
-        
+
         Args:
             features (pandas.DataFrame): Features with coordinates in columns
                 `pos_columns`
-                
+
         Returns:
             tuple of numpy.arrays: The first element of the tuple describes
             the x coordinate of the vectors, the second one the y coordinates.
-            
+
             If we call the tuple (dx, dy), then dx[i, j] yields the x component
             of the vector pointing from the i-th feature in `features` to the
             j-th feature; same for dy and y coordinates.
         """
         dx = np.zeros((len(features), len(features)))
         dy = np.zeros((len(features), len(features)))
-    
+
         #first column: x coordinate, second column: y coordinate
         data = features[self.pos_columns].as_matrix()
         for i in range(len(features)):
             diff = data - data[i]
-    
+
             dx[i, :] = diff[:, 0]
             dy[i, :] = diff[:, 1]
-    
+
         return dx, dy
-        
+
     def _all_scores_cartesian(self, vec1, vec2, tol_rel, tol_abs):
         """Determine scores for all possible pairs of features
-        
+
         Compare all elements of `vec1` and all of `vec2` using
         `numpy.isclose()` to determine which pairs of features have the most
         simalar vectors pointing to the other features.
-        
+
         Args:
             vec1 (numpy.array): Vectors for the first set of features as
                 determined by `_vectors_cartesian`.
@@ -220,7 +220,7 @@ class Corrector(object):
                 determined by `_vectors_cartesian`.
             tol_rel (float): Relative tolerance parameter for `numpy.isclose`
             tol_abs (float): absolute tolerance parameter for `numpy.isclose`
-        
+
         Returns:
             numpy.array: A matrix of scores. scores[i, j] holds the number of
                 matching vectors for the i-th entry of feat1 and the j-th
@@ -230,9 +230,9 @@ class Corrector(object):
         dy1 = vec1[1]
         dx2 = vec2[0]
         dy2 = vec2[1]
-        
+
         score = np.zeros((len(dx1), len(dx2)), np.uint)
-        
+
         #pad the smaller matrix with infinity to the size of the larger matrix
         if len(dx1) > len(dx2):
             dx2 = _extend_array(dx2, (len(dx1), len(dx1)), np.inf)
@@ -240,7 +240,7 @@ class Corrector(object):
         else:
             dx1 = _extend_array(dx1, (len(dx2), len(dx2)), np.inf)
             dy1 = _extend_array(dy1, (len(dy2), len(dy2)), np.inf)
-        
+
         for i in range(len(dx1)**2):
             #check whether the coordinates are close enough
             #by roll()ing one matrix we shift the elements. If we do that
@@ -250,7 +250,7 @@ class Corrector(object):
             y = np.isclose(np.roll(dy2, -i), dy1, tol_rel, tol_abs)
             #x and y coordinates both have to match
             total = x & y
-        
+
             #if total[i, j] is not zero, that means that the vector pointing
             #from the i-th to the j-th feature in feat1 matches vector
             #pointing from the k-th to the l-th feature in feat2, were k and l
@@ -265,15 +265,15 @@ class Corrector(object):
             #increase the score of features j and l
             for m1, m2 in zip(matches1[1], matches2[1]):
                 score[m1, m2] += 1
-        
+
         return score
 
     def _pairs_from_score(self, score, score_cutoff=None):
         """Analyze the score matrix and determine what the pairs are
-        
+
         Search for the maximum value of each feature pair in the score matrix.
         This finally sets the `pairs` attribute.
-        
+
         Args:
             score (numpy.array): The score matrix as calculated by
                 `_all_scores_cartesian`
@@ -284,13 +284,13 @@ class Corrector(object):
         """
         if score_cutoff is None:
             score_cutoff = 0.5*score.max()
-    
+
         #TODO: detect doubles
         #TODO: do not solely rely on the maximum. If there are similarly high
         #scores, discard both because of ambiguity
         mi = pd.MultiIndex.from_product([self.feat_names, self.pos_columns])
         self.pairs = pd.DataFrame(columns=mi)
-    
+
         indices = np.zeros(score.shape, bool)
         #always search through the axis with fewer localizations since
         #since otherwise there is bound to be double matches
@@ -300,7 +300,7 @@ class Corrector(object):
         else:
             indices = [(i, j) for i, j in zip(range(score.shape[0]),
                                               np.argmax(score, axis=1))]
-    
+
         for i, ind in enumerate(indices):
             if score[ind] < score_cutoff:
                 #score is too low
@@ -313,16 +313,16 @@ class Corrector(object):
 
 def _extend_array(a, new_shape, value=0):
     """Extend an array with constant values
-    
+
     The indices of the old values remain the same. E. g. if the array is 2D,
     then rows are added at the bottom and columns at the right
-    
+
     Args:
         a (numpy.array): Array to be extended
         new_shape (tuple of int): The new shape, must be larger than the old
             one
         value: value to be padded with
-        
+
     Returns:
         The extended numpy.array
     """
