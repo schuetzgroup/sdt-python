@@ -83,7 +83,9 @@ class Corrector(object):
 
         if gaussian_fit:
             g_parm = gfit.FitGauss2D(self.avg_img)
+            #normalization factor so that the maximum of the Gaussian is 1.
             self._gauss_norm = 1./(g_parm[0][0]+g_parm[0][6])
+            #Gaussian function
             self._gauss_func = gfit.Gaussian2D(*g_parm[0])
             self.get_factors = self._get_factors_gauss
         else:
