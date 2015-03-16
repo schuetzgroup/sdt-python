@@ -85,9 +85,9 @@ class Corrector(object):
             g_parm = gfit.FitGauss2D(self.avg_img)
             self._gauss_norm = 1./(g_parm[0][0]+g_parm[0][6])
             self._gauss_func = gfit.Gaussian2D(*g_parm[0])
-            self.get_factor = self._get_factors_gauss
+            self.get_factors = self._get_factors_gauss
         else:
-            self.get_factor = self._get_factors_img
+            self.get_factors = self._get_factors_img
 
     def __call__(self, features):
         """Do brightness correction on `features` intensities
@@ -99,12 +99,45 @@ class Corrector(object):
         """
         x = self.pos_columns[0]
         y = self.pos_columns[1]
-        features[self.mass_name] *= self.get_factor(features[x], features[y])
+        features[self.mass_name] *= self.get_factors(features[x], features[y])
+
+    def get_factors(self, x, y):
+        """Get correction factors at positions x, y
+
+        Depending on whether gaussian_fit was set to True or False in the
+        constructor, the correction factors for each feature that described by
+        an x and a y coordinate is calculated either from the Gaussian fit
+        or the average image itself.
+
+        Args:
+            x (list of float): x coordinates of features
+            y (list of float): y coordinates of features
+
+        Returns:
+            A list of correction factors corresponding to the features
+        """
+        pass
 
     def _get_factors_gauss(self, x, y):
-        """Get correction factor at position x, y from Gaussian fit"""
+        """Get correction factors at positions x, y from Gaussian fit
+
+        Args:
+            x (list of float): x coordinates of features
+            y (list of float): y coordinates of features
+
+        Returns:
+            A list of correction factors corresponding to the features
+        """
         return 1./(self._gauss_norm*self._gauss_func(y, x))
 
     def _get_factors_img(self, x, y):
-        """Get correction factor at position x, y from image"""
+        """Get correction factors at positions x, y from averaged image
+
+        Args:
+            x (list of float): x coordinates of features
+            y (list of float): y coordinates of features
+
+        Returns:
+            A list of correction factors corresponding to the features
+        """
         return 1./self.avg_img[np.round(y), np.round(x)]
