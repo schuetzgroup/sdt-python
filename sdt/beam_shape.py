@@ -59,12 +59,12 @@ class Corrector(object):
         avg_img (numpy.array): Averaged image pixel data
     """
 
-    def __init__(self, images, gaussian_fit=False, pos_columns=pos_columns,
+    def __init__(self, *images, gaussian_fit=False, pos_columns=pos_columns,
                  mass_name=mass_name):
         """Constructor
 
         Args:
-            images (list of numpy.arrays): List of images of a homogeneous
+            images (lists of numpy.arrays): List of images of a homogeneous
                 surface gaussian_fit (bool): Whether to fit a Gaussian to the
                 averaged image. Default: False
             pos_columns (list of str): Sets the `pos_columns` attribute.
@@ -75,19 +75,19 @@ class Corrector(object):
         self.pos_columns = pos_columns
         self.mass_name = mass_name
 
-        self.avg_img = np.zeros(images[0].shape, dtype=np.float)
-        for img in images:
-            self.avg_img += img
-
+        self.avg_img = np.zeros(images[0][0].shape, dtype=np.float)
+        for stack in images:
+            for img in stack:
+                self.avg_img += img
         self.avg_img /= self.avg_img.max()
 
         if gaussian_fit:
             g_parm = gfit.FitGauss2D(self.avg_img)
             self._gauss_norm = 1./(g_parm[0][0]+g_parm[0][6])
             self._gauss_func = gfit.Gaussian2D(*g_parm[0])
-            self.get_factor = self._get_factor_gauss
+            self.get_factor = self._get_factors_gauss
         else:
-            self.get_factor = self._get_factor_img
+            self.get_factor = self._get_factors_img
 
     def __call__(self, features):
         """Do brightness correction on `features` intensities
@@ -99,14 +99,12 @@ class Corrector(object):
         """
         x = self.pos_columns[0]
         y = self.pos_columns[1]
-        for idx in features.index:
-            features.loc[idx, self.mass_name] *= self.get_factor(
-                features.loc[idx, x], features.loc[idx, y])
+        features[self.mass_name] *= self.get_factor(features[x], features[y])
 
-    def _get_factor_gauss(self, x, y):
+    def _get_factors_gauss(self, x, y):
         """Get correction factor at position x, y from Gaussian fit"""
         return 1./(self._gauss_norm*self._gauss_func(y, x))
 
-    def _get_factor_img(self, x, y):
+    def _get_factors_img(self, x, y):
         """Get correction factor at position x, y from image"""
         return 1./self.avg_img[np.round(y), np.round(x)]
