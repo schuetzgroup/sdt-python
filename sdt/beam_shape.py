@@ -18,7 +18,7 @@ Attributes:
     pos_colums (list of str): Names of the columns describing the x and the y
         coordinate of the features in pandas.DataFrames. Defaults to
         ["x", "y"].
-    mass_name (str): Name of the column describing the integrated intensities
+    mass_column (str): Name of the column describing the integrated intensities
         ("masses") of the features. Defaults to "mass".
 
 """
@@ -54,13 +54,13 @@ class Corrector(object):
     Attributes:
         pos_columns (list of str): Names of the columns describing the x and
             the y coordinate of the features.
-        mass_name (str): Name of the column describing the integrated intensities
-            ("masses") of the features.
+        mass_column (str): Name of the column describing the integrated
+            intensities ("masses") of the features.
         avg_img (numpy.array): Averaged image pixel data
     """
 
     def __init__(self, *images, gaussian_fit=False, pos_columns=pos_columns,
-                 mass_name=mass_name):
+                 mass_column=mass_column):
         """Constructor
 
         Args:
@@ -69,8 +69,8 @@ class Corrector(object):
                 averaged image. Default: False
             pos_columns (list of str): Sets the `pos_columns` attribute.
                 Defaults to the `pos_columns` attribute of the module.
-            mass_name (str): Sets the `mass_name` attribute.Defaults to the
-                `mass_name` attribute of the module.
+            mass_column (str): Sets the `mass_column` attribute.Defaults to the
+                `mass_column` attribute of the module.
         """
         self.pos_columns = pos_columns
         self.mass_name = mass_name
