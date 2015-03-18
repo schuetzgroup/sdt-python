@@ -10,7 +10,7 @@ Attributes:
     pos_colums (list of str): Names of the columns describing the x and the y
         coordinate of the features in pandas.DataFrames. Defaults to
         ["x", "y"].
-    feat_names (list of str): Names of the two channels. Defaults to
+    channel_names (list of str): Names of the two channels. Defaults to
         ["channel1", "channel2"].
 """
 
@@ -20,7 +20,7 @@ import scipy as sp
 
 
 pos_columns = ["x", "y"]
-feat_names = ["channel1", "channel2"]
+channel_names = ["channel1", "channel2"]
 
 
 class Corrector(object):
@@ -32,7 +32,7 @@ class Corrector(object):
     Attributes:
         pos_columns (list of str): Names of the columns describing the x and
             the y coordinate of the features.
-        feat_names (list of str): Names of the channels.
+        channel_names (list of str): Names of the channels.
         feat1 (pandas.DataFrame): Features of the first channel found by the
             localization algorithm. The x coordinate is in the column with name
             `pos_columns`[0], the y coordinate in `pos_columns`[1].
@@ -45,7 +45,7 @@ class Corrector(object):
             determined by `determine_parameters`.
     """
     def __init__(self, feat1, feat2, pos_columns=pos_columns,
-                 feat_names=feat_names):
+                 channel_names=channel_names):
         """Constructor
 
         Args:
@@ -53,13 +53,13 @@ class Corrector(object):
             feat2 (pandas.DataFrame): Sets the `feat2` attribute
             pos_columns (list of str): Sets the `pos_columns` attribute.
                 Defaults to the `pos_columns` attribute of the module.
-            feat_names (list of str): Sets the `feat_names` attribute.
-                Defaults to the `feat_names` attribute of the module.
+            channel_names (list of str): Sets the `channel_names` attribute.
+                Defaults to the `channel_names` attribute of the module.
         """
         self.feat1 = feat1
         self.feat2 = feat2
         self.pos_columns = pos_columns
-        self.feat_names = feat_names
+        self.channel_names = channel_names
         self.pairs = None
         self.parms = None
 
@@ -113,8 +113,8 @@ class Corrector(object):
         """
         pars = []
         for p in self.pos_columns:
-            r = sp.stats.linregress(self.pairs[self.feat_names[0]][p],
-                                    self.pairs[self.feat_names[1]][p])
+            r = sp.stats.linregress(self.pairs[self.channel_names[0]][p],
+                                    self.pairs[self.channel_names[1]][p])
             pars.append([r[i] for i in [0, 1, 4]])
         self.parameters = pd.DataFrame(pars,
                                        columns=["slope",
@@ -168,13 +168,13 @@ class Corrector(object):
         for i, p in enumerate(self.pos_columns):
             plt.subplot(1, len(self.pos_columns), i+1, aspect=1)
             ax = plt.gca()
-            ax.set_xlabel("{} ({})".format(p, self.feat_names[0]))
-            ax.set_ylabel("{} ({})".format(p, self.feat_names[1]))
-            ax.scatter(self.pairs[self.feat_names[0], p],
-                       self.pairs[self.feat_names[1], p])
-            ax.plot(self.pairs[self.feat_names[0]].sort(p)[p],
+            ax.set_xlabel("{} ({})".format(p, self.channel_names[0]))
+            ax.set_ylabel("{} ({})".format(p, self.channel_names[1]))
+            ax.scatter(self.pairs[self.channel_names[0], p],
+                       self.pairs[self.channel_names[1], p])
+            ax.plot(self.pairs[self.channel_names[0]].sort(p)[p],
                     self.parameters.loc[p, "slope"] *
-                    self.pairs[self.feat_names[0]].sort(p)[p] +
+                    self.pairs[self.channel_names[0]].sort(p)[p] +
                     self.parameters.loc[p, "intercept"])
             ax.set_title(p)
 
@@ -288,7 +288,7 @@ class Corrector(object):
         #TODO: detect doubles
         #TODO: do not solely rely on the maximum. If there are similarly high
         #scores, discard both because of ambiguity
-        mi = pd.MultiIndex.from_product([self.feat_names, self.pos_columns])
+        mi = pd.MultiIndex.from_product([self.channel_names, self.pos_columns])
         self.pairs = pd.DataFrame(columns=mi)
 
         indices = np.zeros(score.shape, bool)
