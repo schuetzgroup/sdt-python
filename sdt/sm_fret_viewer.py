@@ -56,6 +56,8 @@ class SmFretViewer(pvBase):
 
         self._ui.trackSelector.valueChanged.connect(self._changeTrackSlot)
         self._ui.checkInteresting.stateChanged.connect(self._interestingSlot)
+        self._ui.dataSelector.currentIndexChanged.connect(
+            self._changeDataSlot)
 
         self.interesting = set()
 
@@ -72,6 +74,12 @@ class SmFretViewer(pvBase):
         sm_fret.plot_track(curr_pair, ax=self.trackAxes, legend=False,
                            channel_names=self.channel_names)
         self._trackCanvas.draw()
+
+    def _changeDataSlot(self):
+        curr_data = self.data[self._ui.dataSelector.currentText()]
+        self._ui.trackSelector.setRange(0, len(curr_data.index.levels[0]) - 1)
+        self._ui.trackSelector.setValue(0)
+        self.plot()
 
     @pyqtSlot()
     def _changeTrackSlot(self):
