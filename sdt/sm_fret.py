@@ -19,6 +19,8 @@ import collections
 
 import pandas as pd
 import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
 
 pos_columns = ["x", "y"]
@@ -133,3 +135,64 @@ def match_pair_tracks(pairs, acceptor_tracks, donor_tracks, threshold=0.75,
     ret.columns = pd.MultiIndex.from_tuples(acc_mi + don_mi)
 
     return ret
+
+
+def plot_track(data, ax=None, cmap=plt.get_cmap("Paired"),
+               legend=True, legend_loc=0,
+               pos_columns=pos_columns,
+               channel_names=channel_names):
+    """Plot a FRET pair track
+
+    Each step is colored differently so that by comparing colors one can
+    figure out which steps in one channel correspond to which steps in the
+    other channel.
+
+    Args:
+        data (pandas.DataFrame): Coordinates of the FRET pairs, one frame per
+            line. If one line of a channel contains NaNs it will be ignored.
+        ax: matplotlib axes object to be used for plotting. If None, gca()
+            will be used. Defaults to None.
+        cmap: colormap to be used for coloring steps. Defaults to the
+            "Paired" map of matplotlib.
+        legend (bool): Whether to print a legend or not. Defaults to True.
+        legend_loc (int): Is passed as the `loc` parameter to matplotlib.
+            Defaults to 0.
+        pos_colums (list of str): Names of the columns describing the x and
+            the y coordinate of the features in pandas.DataFrames. Defaults to
+            the `pos_columns` attribute of the module.
+        channel_names (list of str): Names of the two channels. Defaults to
+            the`channel_names` attribute of the module.
+    """
+    if ax is None:
+        ax = plt.gca()
+
+    ax.set_aspect(1.)
+
+    #Draw acceptor track
+    xy = np.array([data[channel_names[0], pos_columns[0]],
+                   data[channel_names[0], pos_columns[1]]]).T.reshape(-1, 1, 2)
+    segments = np.concatenate([xy[:-1], xy[1:]], axis=1)
+    lc = mpl.collections.LineCollection(segments,
+                                        cmap=cmap,
+                                        array=np.linspace(0., 1., len(data)),
+                                        linestyles="solid")
+    ax.add_collection(lc, autolim=True)
+
+    #Draw donor track
+    xy = np.array([data[channel_names[1], pos_columns[0]],
+                   data[channel_names[1], pos_columns[1]]]).T.reshape(-1, 1, 2)
+    segments = np.concatenate([xy[:-1], xy[1:]], axis=1)
+    lc = mpl.collections.LineCollection(segments,
+                                        cmap=cmap,
+                                        array=np.linspace(0., 1., len(data)),
+                                        linestyles="dashed")
+    ax.add_collection(lc)
+
+    ax.autoscale_view()
+
+    if not legend:
+        return
+
+    ax.legend([mpl.lines.Line2D([0, 1], [0, 1], ls="solid", c="black"),
+               mpl.lines.Line2D([0, 1], [0, 1], ls="dashed", c="black")],
+              [channel_names[0], channel_names[1]], loc=legend_loc)
