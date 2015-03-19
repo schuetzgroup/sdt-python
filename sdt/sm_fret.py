@@ -14,6 +14,8 @@ Attributes:
         to "frame".
     trackno_column (str): Name of the column containing track numbers. Defaults
         to "particle".
+    mass_column (str): Name of the column describing the integrated intensities
+        ("masses") of the features. Defaults to "mass".
 """
 import collections
 
@@ -27,6 +29,7 @@ pos_columns = ["x", "y"]
 channel_names = ["acceptor", "donor"]
 frameno_column = "frame"
 trackno_column = "particle"
+mass_column = "mass"
 
 
 def match_pairs(acceptors, donors, max_dist=2., pos_columns=pos_columns,
@@ -196,3 +199,39 @@ def plot_track(data, ax=None, cmap=plt.get_cmap("Paired"),
     ax.legend([mpl.lines.Line2D([0, 1], [0, 1], ls="solid", c="black"),
                mpl.lines.Line2D([0, 1], [0, 1], ls="dashed", c="black")],
               [channel_names[0], channel_names[1]], loc=legend_loc)
+
+
+def plot_intensities(data, ax=None, legend=True, legend_loc=0,
+                     channel_names=channel_names,
+                     frameno_column=frameno_column,
+                     mass_column=mass_column):
+    """Plot integrated intensities over time
+
+    Args:
+        data (pandas.DataFrame): Coordinates of the FRET pairs, one frame per
+            line. If one line of a channel contains NaNs it will be ignored.
+        ax: matplotlib axes object to be used for plotting. If None, gca()
+            will be used. Defaults to None.
+        legend (bool): Whether to print a legend or not. Defaults to True.
+        legend_loc (int): Is passed as the `loc` parameter to matplotlib.
+            Defaults to 0.
+        channel_names (list of str): Names of the two channels. Defaults to
+            the`channel_names` attribute of the module.
+        frameno_column (str): Name of the column containing frame numbers.
+            Defaults to the `frameno_column` of the module.
+        mass_column (str): Name of the column describing the integrated
+            intensities ("masses") of the features. Defaults to the
+            `mass_column` of the module.
+    """
+    if ax is None:
+        ax = plt.gca()
+
+    ax.plot(data[channel_names[0], frameno_column],
+            data[channel_names[0], mass_column], label=channel_names[0])
+    ax.plot(data[channel_names[1], frameno_column],
+            data[channel_names[1], mass_column], label=channel_names[1])
+
+    if not legend:
+        return
+
+    ax.legend(loc=legend_loc)
