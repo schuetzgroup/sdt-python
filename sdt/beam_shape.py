@@ -32,7 +32,7 @@ pd.options.mode.chained_assignment = None #Get rid of the warning
 
 
 pos_columns = ["x", "y"]
-mass_name = "mass"
+mass_column = "mass"
 
 
 class Corrector(object):
@@ -69,11 +69,11 @@ class Corrector(object):
                 averaged image. Default: False
             pos_columns (list of str): Sets the `pos_columns` attribute.
                 Defaults to the `pos_columns` attribute of the module.
-            mass_column (str): Sets the `mass_column` attribute.Defaults to the
-                `mass_column` attribute of the module.
+            mass_column (str): Sets the `mass_column` attribute. Defaults to
+                the `mass_column` attribute of the module.
         """
         self.pos_columns = pos_columns
-        self.mass_name = mass_name
+        self.mass_column = mass_column
 
         self.avg_img = np.zeros(images[0][0].shape, dtype=np.float)
         for stack in images:
@@ -101,7 +101,8 @@ class Corrector(object):
         """
         x = self.pos_columns[0]
         y = self.pos_columns[1]
-        features[self.mass_name] *= self.get_factors(features[x], features[y])
+        features[self.mass_column] *= self.get_factors(features[x],
+                                                       features[y])
 
     def get_factors(self, x, y):
         """Get correction factors at positions x, y
