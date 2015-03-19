@@ -32,6 +32,33 @@ trackno_column = "particle"
 mass_column = "mass"
 
 
+def filter_acceptor_tracks(acceptors, nth_frame,
+                           frameno_column=frameno_column,
+                           trackno_column=trackno_column):
+    """Remove all tracks that contain no directly excited acceptor
+
+    If every n-th frame is an image of the acceptor excited directly, this
+    function can be used to filter the acceptor tracks to reject any tracks
+    that do not show up when excited directly.
+
+    Args:
+        acceptors (pandas.DataFrame): Contains the acceptor localizations
+        nth_frame (int): Which frames contain the directly excited acceptors
+        frameno_column (str): Name of the column containing frame numbers.
+            Defaults to the `frameno_column` of the module.
+        trackno_column (str): Name of the column containing track numbers.
+            Defaults to the `trackno_column` attribute of the module.
+
+    Returns:
+        A copy of `acceptors` with the false tracks removed
+    """
+    with_acceptor = set(acceptors.loc[
+        acceptors[frameno_column] % nth_frame == nth_frame - 1,
+        trackno_column])
+
+    return acceptors.loc[acceptors[trackno_column].isin(with_acceptor)]
+
+
 def match_pairs(acceptors, donors, max_dist=2., pos_columns=pos_columns,
                 channel_names=channel_names, frameno_column=frameno_column):
     """Match donor localizations to acceptor localizations
