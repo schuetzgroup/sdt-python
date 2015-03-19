@@ -1,0 +1,135 @@
+# -*- coding: utf-8 -*-
+"""Tools for evaluation of single molecule FRET data
+
+Easy matching of donor and acceptor signals, assuming the data has already been
+corrected for chromatic aberration.
+
+Attributes:
+    pos_colums (list of str): Names of the columns describing the x and the y
+        coordinate of the features in pandas.DataFrames. Defaults to
+        ["x", "y"].
+    channel_names (list of str): Names of the two channels. Defaults to
+        ["acceptor", "donor"].
+    frameno_column (str): Name of the column containing frame numbers. Defaults
+        to "frame".
+    trackno_column (str): Name of the column containing track numbers. Defaults
+        to "particle".
+"""
+import collections
+
+import pandas as pd
+import numpy as np
+
+
+pos_columns = ["x", "y"]
+channel_names = ["acceptor", "donor"]
+frameno_column = "frame"
+trackno_column = "particle"
+
+
+def match_pairs(acceptors, donors, max_dist=2., pos_columns=pos_columns,
+                channel_names=channel_names, frameno_column=frameno_column):
+    """Match donor localizations to acceptor localizations
+
+    For every localization in `acceptors` find localizations in `donors` (in
+    the same frame) that are in a square of length `max_dist` around it, then
+    pick the closest one.
+
+    Args:
+        acceptors (pandas.DataFrame): Contains the acceptor localizations
+        donors (pandas.DataFrame): Contains the donor localizations
+        max_dist (float): Maximum distance between donor and acceptor
+        pos_colums (list of str): Names of the columns describing the x and
+            the y coordinate of the features in pandas.DataFrames. Defaults to
+            the `pos_columns` attribute of the module.
+        channel_names (list of str): Names of the two channels. Defaults to
+            the`channel_names` attribute of the module.
+        frameno_column (str): Name of the column containing frame numbers.
+            Defaults to the `frameno_column` of the module
+
+    Returns:
+        pandas.Dataframe where each line contains the data of an acceptor
+        localization and its matching donor.
+    """
+    pairs = []
+    x = pos_columns[0]
+    y = pos_columns[1]
+    for idx, acc in acceptors.iterrows():
+        don = donors.loc[donors[frameno_column] == acc[frameno_column]]
+        cl = (np.isclose(acc[x], don[x], atol=max_dist, rtol=0.)
+              & np.isclose(acc[y], don[y], atol=max_dist, rtol=0.))
+        if not cl.any():
+            continue
+        closest = np.argmin((don.loc[cl, x] - acc[x])**2
+                            + (don.loc[cl, y] - acc[y])**2)
+        pairs.append(pd.concat({channel_names[0]: acc,
+                                channel_names[1]: don.loc[closest]},
+                               axis=0))
+    return pd.concat(pairs, axis=1).transpose()
+
+
+def match_pair_tracks(pairs, acceptor_tracks, donor_tracks, threshold=0.75,
+                      channel_names=channel_names,
+                      frameno_column=frameno_column,
+                      trackno_column=trackno_column):
+    """Match acceptor and donor tracks
+
+    After running `match_pairs`, this can be used to identify the tracks
+    the pairs belong to.
+
+    Args:
+        pairs (pandas.DataFrame): Output of `match_pairs`
+        acceptor_tracks (pandas.DataFrame): Tracking results for the acceptor
+            channel (used to look up acceptor tracks).
+        donor_tracks (pandas.DataFrame): Tracking results for the donor
+            channel (used to look up donor tracks).
+        threshold (float): Minimum fraction of pairs that have to belong to
+            one track. If in `pairs` the localizations a certain acceptor
+            track are matched to two (or more) different donor tracks, reject
+            it unless one donor track's matches fraction is above `threshold`.
+            Defaults to .75
+        channel_names (list of str): Names of the two channels. Defaults to
+            the`channel_names` attribute of the module.
+        frameno_column (str): Name of the column containing frame numbers.
+            Defaults to the `frameno_column` of the module
+        trackno_column (str): Name of the column containing track numbers.
+            Defaults to the `trackno_column` attribute of the module.
+
+    Returns:
+        pandas.DataFrame containing tracks matched frame by frame. The index
+        is a multiindex, where the first level is per track pair. Each row
+        contains one frame. If in this frame one channel has no localization,
+        its entries are NaNs.
+    """
+    matches = []
+    for acc_track_no in set(pairs[channel_names[0], trackno_column]):
+        don_tracks = pairs.loc[pairs[channel_names[0], trackno_column]
+                               == acc_track_no,
+                               (channel_names[1], trackno_column)]
+        c = collections.Counter(don_tracks).most_common()
+        if not c:
+            continue
+        #first entry is the one with most counts.
+        best_match = c[0][0]
+        best_match_count = c[0][1]
+        if best_match_count/len(don_tracks) <= threshold:
+            continue
+        matches.append((acc_track_no, best_match))
+
+    matches_df = []
+    for m_acc, m_don in matches:
+        acc_track = acceptor_tracks[acceptor_tracks[trackno_column] == m_acc]
+        acc_track.columns = (["{}_acc".format(co) for co in acc_track.columns])
+        don_track = donor_tracks[donor_tracks[trackno_column] == m_don]
+        don_track.columns = (["{}_don".format(co) for co in don_track.columns])
+
+        matches_df.append(pd.merge(acc_track, don_track,
+                                   left_on="{}_acc".format(frameno_column),
+                                   right_on="{}_don".format(frameno_column),
+                                   how="outer", sort=True))
+    ret = pd.concat(matches_df, keys=list(range(len(matches_df))))
+    acc_mi = [(channel_names[0], co) for co in acceptor_tracks.columns]
+    don_mi = [(channel_names[1], co) for co in donor_tracks.columns]
+    ret.columns = pd.MultiIndex.from_tuples(acc_mi + don_mi)
+
+    return ret
