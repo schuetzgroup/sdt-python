@@ -20,7 +20,7 @@ pvClass, pvBase = uic.loadUiType(os.path.join(path, "sm_fret_viewer.ui"))
 
 class SmFretViewer(pvBase):
     def __init__(self, data, parent=None, pos_columns=["x", "y"],
-                 channel_names=["acceptor, donor"],
+                 channel_names=["acceptor", "donor"],
                  frameno_column="frame", trackno_column="particle",
                  mass_column="mass"):
         super().__init__(parent)
