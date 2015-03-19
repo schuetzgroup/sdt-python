@@ -151,15 +151,33 @@ def match_pair_tracks(pairs, acceptor_tracks, donor_tracks, threshold=0.75,
     matches_df = []
     for m_acc, m_don in matches:
         acc_track = acceptor_tracks[acceptor_tracks[trackno_column] == m_acc]
-        acc_track.columns = (["{}_acc".format(co) for co in acc_track.columns])
         don_track = donor_tracks[donor_tracks[trackno_column] == m_don]
-        don_track.columns = (["{}_don".format(co) for co in don_track.columns])
 
+        #find starting frame of the one starting earlier
+        start_frame = min(acc_track[frameno_column].min(),
+                          don_track[frameno_column].min())
+        #find last frame of the one ending last
+        end_frame = max(acc_track[frameno_column].max(),
+                        don_track[frameno_column].max())
+        #create a DataFrame that consists only of the frame column but contains
+        #all frame numbers between start_frame and end_frame
+        frames = pd.DataFrame(list(range(start_frame, end_frame + 1)),
+                              columns=[frameno_column])
+        #now, merge this with the track DataFrames to get DataFrames
+        #with entries for all frames; some may be NaNs
+        acc_track = pd.merge(acc_track, frames, on=frameno_column, how="outer")
+        don_track = pd.merge(don_track, frames, on=frameno_column, how="outer")
+        #rename column names so that they don't clash when merging
+        acc_track.columns = (["{}_acc".format(co) for co in acc_track.columns])
+        don_track.columns = (["{}_don".format(co) for co in don_track.columns])
+        #merge into one DataFrame
         matches_df.append(pd.merge(acc_track, don_track,
                                    left_on="{}_acc".format(frameno_column),
                                    right_on="{}_don".format(frameno_column),
                                    how="outer", sort=True))
+
     ret = pd.concat(matches_df, keys=list(range(len(matches_df))))
+    #set the right column headers
     acc_mi = [(channel_names[0], co) for co in acceptor_tracks.columns]
     don_mi = [(channel_names[1], co) for co in donor_tracks.columns]
     ret.columns = pd.MultiIndex.from_tuples(acc_mi + don_mi)
