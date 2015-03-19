@@ -246,7 +246,8 @@ def plot_track(data, ax=None, cmap=plt.get_cmap("Paired"),
               [channel_names[0], channel_names[1]], loc=legend_loc)
 
 
-def plot_intensities(data, ax=None, legend=True, legend_loc=0,
+def plot_intensities(data, ax=None, cmap=plt.get_cmap("Paired"),
+                     legend=True, legend_loc=0,
                      channel_names=channel_names,
                      frameno_column=frameno_column,
                      mass_column=mass_column):
@@ -257,6 +258,8 @@ def plot_intensities(data, ax=None, legend=True, legend_loc=0,
             line. If one line of a channel contains NaNs it will be ignored.
         ax: matplotlib axes object to be used for plotting. If None, gca()
             will be used. Defaults to None.
+        cmap: colormap to be used for coloring steps. Defaults to the
+            "Paired" map of matplotlib.
         legend (bool): Whether to print a legend or not. Defaults to True.
         legend_loc (int): Is passed as the `loc` parameter to matplotlib.
             Defaults to 0.
@@ -270,13 +273,31 @@ def plot_intensities(data, ax=None, legend=True, legend_loc=0,
     """
     if ax is None:
         ax = plt.gca()
+    #Draw acceptor track
+    xy = np.array([data[channel_names[0], frameno_column],
+                   data[channel_names[0], mass_column]]).T.reshape(-1, 1, 2)
+    segments = np.concatenate([xy[:-1], xy[1:]], axis=1)
+    lc = mpl.collections.LineCollection(segments,
+                                        cmap=cmap,
+                                        array=np.linspace(0., 1., len(data)),
+                                        linestyles="solid")
+    ax.add_collection(lc, autolim=True)
 
-    ax.plot(data[channel_names[0], frameno_column],
-            data[channel_names[0], mass_column], label=channel_names[0])
-    ax.plot(data[channel_names[1], frameno_column],
-            data[channel_names[1], mass_column], label=channel_names[1])
+    #Draw donor track
+    xy = np.array([data[channel_names[1], frameno_column],
+                   data[channel_names[1], mass_column]]).T.reshape(-1, 1, 2)
+    segments = np.concatenate([xy[:-1], xy[1:]], axis=1)
+    lc = mpl.collections.LineCollection(segments,
+                                        cmap=cmap,
+                                        array=np.linspace(0., 1., len(data)),
+                                        linestyles="dashed")
+    ax.add_collection(lc)
+
+    ax.autoscale_view()
 
     if not legend:
         return
 
-    ax.legend(loc=legend_loc)
+    ax.legend([mpl.lines.Line2D([0, 1], [0, 1], ls="solid", c="black"),
+               mpl.lines.Line2D([0, 1], [0, 1], ls="dashed", c="black")],
+              [channel_names[0], channel_names[1]], loc=legend_loc)
