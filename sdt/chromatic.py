@@ -61,7 +61,7 @@ class Corrector(object):
         self.pos_columns = pos_columns
         self.channel_names = channel_names
         self.pairs = None
-        self.parms = None
+        self.parameters = None
 
     def determine_parameters(self, tol_rel=0.1, tol_abs=0.):
         """Determine the parameters for the affine transformation
@@ -122,7 +122,6 @@ class Corrector(object):
                                                 "stderr"],
                                        index=pos_columns)
 
-
     def __call__(self, features, channel=2):
         """Do chromatic correction on `features` coordinates
 
@@ -154,7 +153,6 @@ class Corrector(object):
             features[x_col] = (features[x_col] - xparm.intercept)/xparm.slope
             features[y_col] = (features[y_col] - yparm.intercept)/yparm.slope
 
-
     def test(self):
         """Test validity of the correction parameters
 
@@ -177,6 +175,29 @@ class Corrector(object):
                     self.pairs[self.channel_names[0]].sort(p)[p] +
                     self.parameters.loc[p, "intercept"])
             ax.set_title(p)
+
+    def to_hdf(self, path_or_buf, key="chromatic_correction_parameters"):
+        """Save parameters to a HDF5 file
+
+        This simply calls `parameters.to_hdf`(path_or_buf, key)
+        """
+        self.parameters.to_hdf(path_or_buf, key)
+
+    def read_hdf(path_or_buf, key="chromatic_correction_parameters"):
+        """Read paramaters from a HDF5 file and construct a corrector
+
+        Args:
+            path_or_buf: Passed to `pandas.read_hdf` as the first argument.
+            key: Passed to `pandas.read_hdf` as the second argument.
+
+        Returns:
+            A `Corrector` instance with the parameters read from the HDF5
+            file.
+        """
+        corr = Corrector(None, None)
+        corr.parameters = pd.read_hdf(path_or_buf, key)
+        corr.pos_columns = corr.parameters.index.tolist()
+        return corr
 
     def _vectors_cartesian(self, features):
         """Calculate vectors of each point in features to every other point
