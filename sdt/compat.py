@@ -1,3 +1,24 @@
+"""Import data from various MATLAB tools
+
+This module provides a compatibility layer for various tools written in
+MATLAB. So far it can read data produced by
+- particle_tracking_2D
+- prepare_peakposition (and anything als that produces pk files)
+- msdplot.
+
+Attributes:
+    pt2d_name_trans: `collections.OrderedDict` that contains as keys the
+        names of the columns of particle_tracking_2D output .mat files as
+        found in the _protocol.mat files, and as values something shorter
+        that can be handled better and, by default, is compatible with
+        `trackpy`.
+    pk_column_names: List of the names of the columns of a pk matrix as
+        produce e. g. by prepare_peakposition. By default also compatible
+        with trackpy.
+    msd_column_names: List of the names of the columns of a msdplot output
+        matrix.
+"""
+
 import scipy.io as sp_io
 import pandas as pd
 import collections
@@ -25,8 +46,30 @@ msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
 
 
 def load_pt2d_positions(filename, load_protocol=True,
-                                    adjust_index=["x", "y", "frame"],
-                                    column_names=None):
+                        adjust_index=["x", "y", "frame"], column_names=None):
+    """Load a _positions.mat file created by particle_tracking_2D
+
+    Use `scipy.io.loadmat` to load the file and convert data to a
+    `pandas.DataFrame`.
+
+    Args:
+        filename (str): Name of the file to load
+        load_protocol (bool): Look for a _protocol.mat file (i. e. replace the
+            "_positions.mat" part of `filename` with "_protocol.mat") in order
+            to load the column names. This may be buggy for some older versions
+            of particle_tracking_2D!
+        adjust_index (list of str): Since MATLAB's indices start at 1 and
+            python's start at 0, some data (such as feature coordinates and
+            frame numbers) may be off by one. This list contains the names of
+            columns to be corrected for this. Defaults to ["x", "y", "frame"].
+        column_names (list of str): List of the column names. If None and
+            `load_protocol` is True, the names will be read from the protocol
+            file. if `load_protocol` is false, use the appropriate values of
+            the `pt2d_name_trans` dict.
+
+    Returns:
+        pandas.DataFrame containing the data.
+    """
     pos = sp_io.loadmat(filename)["MT"]
 
     cols = []
@@ -64,9 +107,32 @@ def load_pt2d_positions(filename, load_protocol=True,
 
 
 def load_pt2d_tracks(filename, load_protocol=True,
-                                    adjust_index=["x", "y", "frame",
-                                                  "particle"],
-                                    column_names=None):
+                     adjust_index=["x", "y", "frame", "particle"],
+                     column_names=None):
+    """Load a _tracks.mat file created by particle_tracking_2D
+
+    Use `scipy.io.loadmat` to load the file and convert data to a
+    `pandas.DataFrame`.
+
+    Args:
+        filename (str): Name of the file to load
+        load_protocol (bool): Look for a _protocol.mat file (i. e. replace the
+            "_tracks.mat" part of `filename` with "_protocol.mat") in order
+            to load the column names. This may be buggy for some older versions
+            of particle_tracking_2D!
+        adjust_index (list of str): Since MATLAB's indices start at 1 and
+            python's start at 0, some data (such as feature coordinates and
+            frame numbers) may be off by one. This list contains the names of
+            columns to be corrected for this. Defaults to ["x", "y", "frame",
+            "particle"].
+        column_names (list of str): List of the column names. If None and
+            `load_protocol` is True, the names will be read from the protocol
+            file. if `load_protocol` is false, use the appropriate values of
+            the `pt2d_name_trans` dict.
+
+    Returns:
+        pandas.DataFrame containing the data.
+    """
     tracks = sp_io.loadmat(filename)["tracks"]
 
     cols = []
@@ -104,7 +170,24 @@ def load_pt2d_tracks(filename, load_protocol=True,
 
 
 def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
-                      column_names=None):
+                  column_names=None):
+    """Load a pkmatrix for a .mat file
+
+    Use `scipy.io.loadmat` to load the file and convert data to a
+    `pandas.DataFrame`.
+
+    Args:
+        filename (str): Name of the file to load
+        adjust_index (list of str): Since MATLAB's indices start at 1 and
+            python's start at 0, some data (such as feature coordinates and
+            frame numbers) may be off by one. This list contains the names of
+            columns to be corrected for this. Defaults to ["x", "y", "frame"].
+        column_names (list of str): List of the column names. Defaults to
+            `pk_column_names`.
+
+    Returns:
+        pandas.DataFrame containing the data.
+    """
     mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
 
     if column_names is None:
@@ -119,6 +202,20 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
 
 
 def load_msdplot(filename, column_names=msd_column_names):
+    """Load msdplot data
+
+    If `filename` ends with ".mat", `scipy.io.loadmat` will be used to load
+    the file, otherwise a space-seperated (regex: "\s+") text file will be
+    assumed.
+
+    Args:
+        filename (str): Name of the file to load
+        column_names (list of str): List of the column names. Defaults to
+            `msd_column_names`.
+
+    Returns:
+        pandas.DataFrame containing the data.
+    """
     if filename.endswith(".mat"):
         data = sp_io.loadmat(filename)["msd1"]
         return pd.DataFrame(data, columns=column_names)
