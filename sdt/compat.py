@@ -21,6 +21,8 @@ pk_column_names = ["frame", "x", "y", "size", "mass", "background",
                    "column6", "column7", "bg_deviation", "column9",
                    "column10"]
 
+msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
+
 
 def load_pt2d_positions(filename, load_protocol=True,
                                     adjust_index=["x", "y", "frame"],
@@ -114,3 +116,12 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
             df[c] -= 1
 
     return df
+
+
+def load_msdplot(filename, column_names=msd_column_names):
+    if filename.endswith(".mat"):
+        data = sp_io.loadmat(filename)["msd1"]
+        return pd.DataFrame(data, columns=column_names)
+
+    return pd.read_table(filename, sep='\s+', header=None, names=column_names,
+                         engine="python")
