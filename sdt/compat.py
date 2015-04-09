@@ -202,11 +202,7 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
 
 
 def load_msdplot(filename, column_names=msd_column_names):
-    """Load msdplot data
-
-    If `filename` ends with ".mat", `scipy.io.loadmat` will be used to load
-    the file, otherwise a space-seperated (regex: "\s+") text file will be
-    assumed.
+    """Load msdplot data from .mat file
 
     Args:
         filename (str): Name of the file to load
@@ -214,11 +210,14 @@ def load_msdplot(filename, column_names=msd_column_names):
             `msd_column_names`.
 
     Returns:
-        pandas.DataFrame containing the data.
+        A dict with keys: d, stderr, qianerr, pa, data.
+        d is the diffusion coefficient in μm^2/s, stderr its standard
+        error, qianerr its Qian error, pa the positional accuracy in nm and
+        data a pandas.DataFrame containing the msd-vs.-tlag data.
     """
-    if filename.endswith(".mat"):
-        data = sp_io.loadmat(filename)["msd1"]
-        return pd.DataFrame(data, columns=column_names)
-
-    return pd.read_table(filename, sep='\s+', header=None, names=column_names,
-                         engine="python")
+    mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
+    return dict(d=mat["d1"],
+                stderr=mat["dstd1"],
+                qianerr=mat["dstd_qian1"],
+                pa=mat["pos1"],
+                data=pd.DataFrame(mat["msd1"], columns=column_names))
