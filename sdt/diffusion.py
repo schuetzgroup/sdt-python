@@ -20,11 +20,9 @@ def calculate_sd(data, tlag, pixel_size, tlag_thresh = (0, np.inf),
         frame_nos = pdata[t_column].astype(int)
         start_frame = min(frame_nos)
         end_frame = max(frame_nos)
-        frame_list = pd.DataFrame(list(range(start_frame, end_frame + 1)),
-                                  columns=[t_column])
-
-        pdata = pd.merge(pdata, frame_list, on=t_column, how="outer",
-                         sort=True)
+        frame_list = list(range(start_frame, end_frame + 1))
+        pdata.set_index(frame_nos, inplace=True)
+        pdata = pdata.reindex(frame_list)
 
         #the original msdplot matlab tool throws away all long trajectories
         if (matlab_compat
@@ -67,3 +65,13 @@ def calculate_msd(data, tlag, pixel_size, tlag_thresh = (0, np.inf),
     ret.sort("tlag", inplace=True)
     ret.reset_index(inplace=True, drop=True)
     return ret
+
+
+def msd_fit(data):
+    pass
+    #fitting procedure
+
+
+def pdf_fit():
+    pass
+    #explot functionality
