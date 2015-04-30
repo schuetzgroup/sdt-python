@@ -20,6 +20,7 @@ Attributes:
 """
 
 import scipy.io as sp_io
+import scipy.stats
 import pandas as pd
 import collections
 
@@ -169,7 +170,7 @@ def load_pt2d_tracks(filename, load_protocol=True,
     return df
 
 
-def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
+def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
                   column_names=None):
     """Load a pkmatrix for a .mat file
 
@@ -182,6 +183,9 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
             python's start at 0, some data (such as feature coordinates and
             frame numbers) may be off by one. This list contains the names of
             columns to be corrected for this. Defaults to ["x", "y", "frame"].
+        green (bool): If True, load pkmatrix_green, which is the right half
+            of the image when using `prepare_peakposition` in 2 color LR mode.
+            Otherwise, load pkmatrix. Defaults to False.
         column_names (list of str): List of the column names. Defaults to
             `pk_column_names`.
 
@@ -192,7 +196,12 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"],
 
     if column_names is None:
         column_names = pk_column_names
-    df = pd.DataFrame(data = mat["par"].pkmatrix, columns=column_names)
+
+    if not green:
+        df = pd.DataFrame(data = mat["par"].pkmatrix, columns=column_names)
+    else:
+        df = pd.DataFrame(data = mat["par"].pkmatrix_green,
+                          columns=column_names)
 
     for c in adjust_index:
         if c in df.columns:
