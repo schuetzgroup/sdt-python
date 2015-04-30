@@ -17,6 +17,7 @@ Attributes:
 import numpy as np
 import pandas as pd
 import scipy as sp
+import scipy.io
 
 
 pos_columns = ["x", "y"]
@@ -198,6 +199,32 @@ class Corrector(object):
         corr.parameters = pd.read_hdf(path_or_buf, key)
         corr.pos_columns = corr.parameters.index.tolist()
         return corr
+
+    def read_wrp(path):
+        """Read parameters from a .wrp file
+
+        Construct a Corrector with those parameters
+
+        Args:
+            path (str): Path of the .wrp file
+
+        Returns:
+            A `Corrector` instance with the parameters read from the .wrp
+            file.
+        """
+        corr = Corrector(None, None)
+        mat = scipy.io.loadmat(path, squeeze_me=True, struct_as_record=False)
+        d = mat["S"]
+
+        #data of the wrp file is for the inverse transformation
+        parms = np.empty((2, 3))
+        parms[0, :] = np.array([1./d.k1, -d.d1/d.k1, np.NaN])
+        parms[1, :] = np.array([1./d.k2, -d.d2/d.k2, np.NaN])
+        corr.parameters = pd.DataFrame(parms,
+                                       columns=["slope", "intercept", "stderr"],
+                                       index=pos_columns)
+        return corr
+
 
     def _vectors_cartesian(self, features):
         """Calculate vectors of each point in features to every other point
