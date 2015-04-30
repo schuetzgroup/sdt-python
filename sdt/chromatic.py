@@ -200,6 +200,20 @@ class Corrector(object):
         corr.pos_columns = corr.parameters.index.tolist()
         return corr
 
+    def to_wrp(self, path):
+        """Save parameters to .wrp file
+
+        Args:
+            path (str): Path of the .wrp file to be created
+        """
+        k1 = 1./self.parameters.loc[self.pos_columns[0], "slope"]
+        d1 = -self.parameters.loc[self.pos_columns[0], "intercept"]*k1
+        k2 = 1./self.parameters.loc[self.pos_columns[1], "slope"]
+        d2 = -self.parameters.loc[self.pos_columns[1], "intercept"]*k2
+
+        S = dict(k1=k1, d1=d1, k2=k2, d2=d2)
+        scipy.io.savemat(path, dict(S=S), appendmat=False)
+
     def read_wrp(path):
         """Read parameters from a .wrp file
 
