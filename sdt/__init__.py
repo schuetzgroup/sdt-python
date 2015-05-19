@@ -1,4 +1,7 @@
 from . import chromatic
 from . import image_tools
-from . import pims_oiio
+try:
+    from . import pims_oiio
+except:
+    pass
 from . import compat
