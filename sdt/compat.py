@@ -198,10 +198,14 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
         column_names = pk_column_names
 
     if not green:
-        df = pd.DataFrame(data = mat["par"].pkmatrix, columns=column_names)
+        d = mat["par"].pkmatrix
     else:
-        df = pd.DataFrame(data = mat["par"].pkmatrix_green,
-                          columns=column_names)
+        d = mat["par"].pkmatrix_green
+
+    #if no localizations were found, an empty array is returned. However,
+    #the DataFrame constructor expects None in this case.
+    d = None if len(d)==0 else d
+    df = pd.DataFrame(data=d, columns=column_names)
 
     for c in adjust_index:
         if c in df.columns:
