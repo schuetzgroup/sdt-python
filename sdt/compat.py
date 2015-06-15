@@ -17,11 +17,13 @@ Attributes:
         with trackpy.
     msd_column_names: List of the names of the columns of a msdplot output
         matrix.
+    mass_column (str): Name of the column describing the integrated intensities
+        ("masses") of the features. Defaults to "mass".
 """
 
 import scipy.io as sp_io
-import scipy.stats
 import pandas as pd
+import matplotlib.pyplot as plt
 import collections
 
 pt2d_name_trans = collections.OrderedDict((
@@ -44,6 +46,8 @@ pk_column_names = ["frame", "x", "y", "size", "mass", "background",
                    "column10"]
 
 msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
+
+mass_column = "mass"
 
 
 def load_pt2d_positions(filename, load_protocol=True,
@@ -172,7 +176,7 @@ def load_pt2d_tracks(filename, load_protocol=True,
 
 def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
                   column_names=None):
-    """Load a pkmatrix for a .mat file
+    """Load a pkmatrix from a .mat file
 
     Use `scipy.io.loadmat` to load the file and convert data to a
     `pandas.DataFrame`.
@@ -212,6 +216,38 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
             df[c] -= 1
 
     return df
+
+
+def plotpdf(data, lim, f, matlab_engine, ax=None, mass_column=mass_column):
+    """Call MATLAB `plotpdf`
+
+    This is a wrapper around `plotpdf` using MATLAB engine for python
+
+    Args:
+        data (list or pandas.DataFrame): List of molecule brightnesses. If it
+            is a DataFrame, use the column named by the `mass_column` argument.
+        lim (float): Maximum brightness
+        f (float): Correction factor for sigma
+        matlab_engine: MATLAB engine object (as returned by
+            `matlab.engine.start()`)
+        ax (optional): `matplotlib` axes to use for plotting. If None, use
+            `gca()`. Defaults to None.
+        mass_column (str, optional): Name of the column describing the
+            integrated intensities ("masses") of the features. Defaults to the
+            `mass_column` attribute of the module.
+    """
+    import matlab.engine
+
+    if ax is None:
+        ax = plt.gca()
+
+    if isinstance(data, pd.DataFrame):
+        data = data[mass_column]
+
+    data = [[d] for d in data]
+    x, y =  matlab_engine.plotpdf(matlab.double(data), float(lim), float(f),
+                                  "r", 0, nargout=2)
+    ax.plot(x._data, y._data)
 
 
 def load_msdplot(filename, column_names=msd_column_names):
