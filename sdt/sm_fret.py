@@ -24,6 +24,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from . import image_tools
+
 
 pos_columns = ["x", "y"]
 channel_names = ["acceptor", "donor"]
@@ -244,6 +246,91 @@ def plot_track(data, ax=None, cmap=plt.get_cmap("Paired"),
     ax.legend([mpl.lines.Line2D([0, 1], [0, 1], ls="solid", c="black"),
                mpl.lines.Line2D([0, 1], [0, 1], ls="dashed", c="black")],
               [channel_names[0], channel_names[1]], loc=legend_loc)
+
+
+## Needs testing and polishing
+#def plot_track_img(track, corrector, imgs, channel=1, columns=5, fig=None,
+#                   pos_columns=pos_columns,
+#                   frameno_column=frameno_column):
+#    """Show raw image data of a track
+#
+#    Args:
+#        track (pandas.DataFrame): Tracking data of a single track, not
+#            corrected for chromatic aberration.
+#        corrector (sdt.chromatic.Corrector): Chromatic aberration corrector
+#            that has already its parameters determined.
+#    """
+#    x = pos_columns[0]
+#    y = pos_columns[1]
+#
+#    if fig is None:
+#        fig = plt.gcf()
+#
+#    #same track in the other channel
+#    other_track = track.copy()
+#    corrector(other_track)
+#
+#    #find out image regions of interest
+#    margin = 10
+#    roi_orig = image_tools.ROI((track[x].min() - margin,
+#                                track[y].min() - margin),
+#                               (track[x].max() + margin,
+#                                track[y].max() + margin))
+#    roi_other = image_tools.ROI((other_track[x].min() - margin,
+#                                 other_track[y].min() - margin),
+#                                (other_track[x].max() + margin,
+#                                 other_track[y].max() + margin))
+#
+#    if channel == 1:
+#        tracks = [roi_orig(track), roi_other(other_track)]
+#        rois = [roi_orig, roi_other]
+#    elif channel == 2:
+#        tracks = [roi_other(other_track), roi_orig(track)]
+#        rois = [roi_other, roi_orig]
+#    else:
+#        raise ValueError("channel has to be either 1 or 2.")
+#
+#    #number of rows in plot
+#    rows = (len(track) - 1)/columns + 1
+#    #there are two channels
+#    rows *= 2
+#
+#    for i, idx in enumerate(track.index):
+#        frameno = int(tracks[0].loc[idx, frameno_column])
+#        cur_row = int(i/columns)
+#        cur_col = i%columns
+#        print(cur_row, cur_col)
+#
+#        #first channel
+#        ax = fig.add_subplot(rows, columns, 2*cur_row*columns + cur_col + 1)
+#        ax.set_title(str(frameno))
+#        ax.axis("off")
+#        ax.imshow(rois[0](imgs[0][frameno]), cmap="gray", interpolation="None")
+#        ax.plot([tracks[0].loc[idx, x]], [tracks[0].loc[idx, y]],
+#                markersize=10, markeredgewidth=1, markerfacecolor="none",
+#                markeredgecolor="r", marker="o", linestyle="none")
+#
+#        #second channel
+#        ax = fig.add_subplot(rows, columns, (2*cur_row + 1)*columns
+#                             + cur_col + 1)
+#        ax.axis("off")
+#        ax.imshow(rois[1](imgs[1][frameno]), cmap="gray", interpolation="None")
+#        ax.plot([tracks[1].loc[idx, x]], [tracks[1].loc[idx, y]],
+#                markersize=10, markeredgewidth=1, markerfacecolor="none",
+#                markeredgecolor="r", marker="o", linestyle="none")
+#
+#
+#    inc = 1
+#    cur_row = int((i+inc)/columns)
+#    cur_col = (i+inc)%columns
+#    frameno += inc
+#    print(cur_row, cur_col)
+#    ax = fig.add_subplot(rows, columns, 2*cur_row*columns + cur_col + 1)
+#    ax.axis("off")
+#    ax.imshow(rois[0](imgs[0][frameno]), cmap="gray", interpolation="None")
+#    ax = fig.add_subplot(rows, columns, (2*cur_row + 1)*columns + cur_col + 1)
+#    ax.axis("off")
+#    ax.imshow(rois[1](imgs[1][frameno]), cmap="gray", interpolation="None")
 
 
 def plot_intensities(data, ax=None, cmap=plt.get_cmap("Paired"),
