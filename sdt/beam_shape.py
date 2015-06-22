@@ -65,7 +65,8 @@ class Corrector(object):
 
         Args:
             images (lists of numpy.arrays): List of images of a homogeneous
-                surface gaussian_fit (bool): Whether to fit a Gaussian to the
+                surface
+            gaussian_fit (bool): Whether to fit a Gaussian to the
                 averaged image. Default: False
             pos_columns (list of str): Sets the `pos_columns` attribute.
                 Defaults to the `pos_columns` attribute of the module.
