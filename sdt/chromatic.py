@@ -177,6 +177,8 @@ class Corrector(object):
                     self.parameters.loc[p, "intercept"])
             ax.set_title(p)
 
+        plt.gcf().tight_layout()
+
     def to_hdf(self, path_or_buf, key="chromatic_correction_parameters"):
         """Save parameters to a HDF5 file
 
