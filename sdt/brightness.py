@@ -14,7 +14,6 @@ Attributes:
         Defaults to "background".
 """
 import numpy as np
-import pandas as pd
 
 
 pos_columns = ["x", "y"]
@@ -23,20 +22,17 @@ mass_column = "mass"
 bg_column = "background"
 
 
-def _get_raw_brightness_single(data, frames, diameter=5, bg_frame=1,
-                               pos_columns=pos_columns,
-                               t_column=t_column, mass_column=mass_column,
-                               bg_column=bg_column):
-    frameno = int(data[t_column])
-    pos = np.round(data[pos_columns])
-    ndim = len(pos_columns)
+def _get_raw_brightness_single(data, frames, diameter=5, bg_frame=1):
+    frameno = int(data[0])
+    pos = np.round(data[1:])
+    ndim = len(pos)
     fr = frames[frameno]
     sz = np.floor(diameter/2.)
     start = pos - sz - bg_frame
     end = pos + sz + bg_frame + 1
 
     signal_region = fr[ [slice(s, e) for s, e in zip(reversed(start),
-                                                         reversed(end))] ]
+                                                     reversed(end))] ]
 
     if (signal_region.shape != end - start).any():
         mass = np.NaN
@@ -53,18 +49,15 @@ def _get_raw_brightness_single(data, frames, diameter=5, bg_frame=1,
         background_intensity = np.mean(background_pixels)
         mass = uncorr_intensity - background_intensity * diameter**ndim
 
-    return pd.Series({mass_column: mass,
-                      bg_column: background_intensity})
-
+    return [mass, background_intensity]
 
 def get_raw_brightness(positions, frames, diameter=5, bg_frame=1,
                        pos_columns=pos_columns,
                        t_column=t_column, mass_column=mass_column,
                        bg_column=bg_column):
-    brightness = positions[[t_column] + pos_columns].apply(
-        _get_raw_brightness_single,
-        args=(frames, diameter, bg_frame, pos_columns,
-              t_column, mass_column, bg_column),
-        axis=1)
+    t_pos_matrix = positions[[t_column] + pos_columns].as_matrix()
+    brightness = np.apply_along_axis(_get_raw_brightness_single, 1,
+                                     t_pos_matrix,
+                                     frames, diameter, bg_frame)
 
-    positions[brightness.columns] = brightness
+    positions[[mass_column, bg_column]] = brightness
