@@ -12,6 +12,8 @@ Attributes:
         ("masses") of the features. Defaults to "mass".
     bg_column (str): Name of the column describing background per pixel.
         Defaults to "background".
+    bg_dev_column (str): Name of the column describing background deviation per
+        pixel. Defaults to "bg_deviation".
 """
 import numpy as np
 
@@ -20,6 +22,7 @@ pos_columns = ["x", "y"]
 t_column = "frame"
 mass_column = "mass"
 bg_column = "background"
+bg_dev_column = "bg_deviation"
 
 
 def _get_raw_brightness_single(data, frames, diameter=5, bg_frame=1):
@@ -40,6 +43,7 @@ def _get_raw_brightness_single(data, frames, diameter=5, bg_frame=1):
     elif bg_frame == 0 or bg_frame is None:
         mass = signal_region.sum()
         background_intensity = 0
+        background_std = 0
     else:
         signal_slice = [slice(bg_frame, -bg_frame)]*ndim
         uncorr_intensity = signal_region[signal_slice].sum()
@@ -47,9 +51,10 @@ def _get_raw_brightness_single(data, frames, diameter=5, bg_frame=1):
         signal_region[signal_slice] = 0
         background_pixels = signal_region[signal_region.nonzero()]
         background_intensity = np.mean(background_pixels)
+        background_std = np.std(background_pixels)
         mass = uncorr_intensity - background_intensity * diameter**ndim
 
-    return [mass, background_intensity]
+    return [mass, background_intensity, background_std]
 
 def get_raw_brightness(positions, frames, diameter=5, bg_frame=1,
                        pos_columns=pos_columns,
@@ -60,4 +65,4 @@ def get_raw_brightness(positions, frames, diameter=5, bg_frame=1,
                                      t_pos_matrix,
                                      frames, diameter, bg_frame)
 
-    positions[[mass_column, bg_column]] = brightness
+    positions[[mass_column, bg_column, bg_dev_column]] = brightness
