@@ -65,4 +65,6 @@ def get_raw_brightness(positions, frames, diameter=5, bg_frame=1,
                                      t_pos_matrix,
                                      frames, diameter, bg_frame)
 
-    positions[[mass_column, bg_column, bg_dev_column]] = brightness
+    positions[mass_column] = brightness[:,0]
+    positions[bg_column] = brightness[:,1]
+    positions[bg_dev_column] = brightness[:,2]
