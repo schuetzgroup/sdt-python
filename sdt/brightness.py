@@ -56,10 +56,10 @@ def _get_raw_brightness_single(data, frames, diameter=5, bg_frame=1):
 
     return [mass, background_intensity, background_std]
 
-def get_raw_brightness(positions, frames, diameter=5, bg_frame=1,
+def get_raw_brightness(positions, frames, diameter, bg_frame=2,
                        pos_columns=pos_columns,
                        t_column=t_column, mass_column=mass_column,
-                       bg_column=bg_column):
+                       bg_column=bg_column, bg_dev_column=bg_dev_column):
     t_pos_matrix = positions[[t_column] + pos_columns].as_matrix()
     brightness = np.apply_along_axis(_get_raw_brightness_single, 1,
                                      t_pos_matrix,
