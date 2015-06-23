@@ -60,6 +60,7 @@ def _get_raw_brightness_single(data, frames, diameter=5, bg_frame=1):
         #all the pixels we wanted
         mass = np.NaN
         background_intensity = np.NaN
+        background_std = np.NaN
     elif bg_frame == 0 or bg_frame is None:
         #no background correction
         mass = signal_region.sum()
