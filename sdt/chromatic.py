@@ -16,9 +16,8 @@ Attributes:
 
 import numpy as np
 import pandas as pd
-import scipy as sp
 import scipy.io
-
+import scipy.stats
 
 pos_columns = ["x", "y"]
 channel_names = ["channel1", "channel2"]
@@ -114,8 +113,8 @@ class Corrector(object):
         """
         pars = []
         for p in self.pos_columns:
-            r = sp.stats.linregress(self.pairs[self.channel_names[0]][p],
-                                    self.pairs[self.channel_names[1]][p])
+            r = scipy.stats.linregress(self.pairs[self.channel_names[0]][p],
+                                       self.pairs[self.channel_names[1]][p])
             pars.append([r[i] for i in [0, 1, 4]])
         self.parameters = pd.DataFrame(pars,
                                        columns=["slope",
