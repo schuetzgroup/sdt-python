@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 import scipy.io
 import scipy.stats
+import scipy.ndimage
 
 pos_columns = ["x", "y"]
 channel_names = ["channel1", "channel2"]
@@ -134,13 +135,15 @@ class Corrector(object):
                                                  "stderr"],
                                         index=pos_columns)
 
-    def __call__(self, features, channel=2):
+    def __call__(self, data, channel=2, mode="constant", cval=0.0):
         """Do chromatic correction on `features` coordinates
 
         This modifies the coordinates in place.
 
         Args:
-            features (pandas.DataFrame): The features to be corrected
+            data (pandas.DataFrame or ndarray): Either a DataFrame
+                containing localization data or an ndarray with image data.
+                Correction happens in place.
             channel (int, optional): If `features` are in the first channel
                 (corresponding to the `feat1` arg of the constructor), set to
                 1. If features are in the second channel, set to 2. Depending
@@ -148,20 +151,36 @@ class Corrector(object):
                 `features` to match the other channel (mathematically speaking
                 depending on this parameter either the "original"
                 transformation or its inverse are applied.)
+            mode (str, optional): How to fill points outside of the uncorrected
+                image boundaries. Possibilities are "constant", "nearest",
+                "reflect" or "wrap". Defaults to "constant".
+            cval (scalar, optional): What value to use for `mode="constant"`.
+                Defaults to 0.0
         """
         x_col = self.pos_columns[0]
         y_col = self.pos_columns[1]
-        if channel == 1:
-            xparm = self.parameters1.loc[x_col]
-            yparm = self.parameters1.loc[y_col]
-        if channel == 2:
-            xparm = self.parameters2.loc[x_col]
-            yparm = self.parameters2.loc[y_col]
-        else:
+        if channel not in (1, 2):
             raise ValueError("channel has to be either 1 or 2")
 
-        features[x_col] = features[x_col]*xparm.slope + xparm.intercept
-        features[y_col] = features[y_col]*yparm.slope + yparm.intercept
+        if isinstance(data, pd.DataFrame):
+            if channel == 1:
+                xparm = self.parameters1.loc[x_col]
+                yparm = self.parameters1.loc[y_col]
+            if channel == 2:
+                xparm = self.parameters2.loc[x_col]
+                yparm = self.parameters2.loc[y_col]
+            data[x_col] = data[x_col]*xparm.slope + xparm.intercept
+            data[y_col] = data[y_col]*yparm.slope + yparm.intercept
+        elif isinstance(data, np.ndarray):
+            if channel == 1:
+                parms = self.parameters2
+            if channel == 2:
+                parms = self.parameters1
+            #iloc[::-1] reverses the order since image coordinates and
+            #matrix rows/columns have different order
+            scipy.ndimage.affine_transform(data, parms.iloc[::-1]["slope"],
+                                           parms.iloc[::-1]["intercept"],
+                                           output=data, mode=mode, cval=cval)
 
     def test(self):
         """Test validity of the correction parameters
