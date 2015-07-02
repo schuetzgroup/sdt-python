@@ -41,8 +41,10 @@ class Corrector(object):
             `pos_columns`[0], the y coordinate in `pos_columns`[1].
         pairs (pandas.DataFrame): Contains the pairs found by
             `determine_parameters`.
-        parameters (pandas.DataFrame): The parameters for the transformation as
-            determined by `determine_parameters`.
+        parameters1 (pandas.DataFrame): The parameters for the linear
+            transformation to correct coordinates of channel 1.
+        parameters2 (pandas.DataFrame): The parameters for the linear
+            transformation to correct coordinates of channel 2.
     """
     def __init__(self, feat1, feat2, pos_columns=pos_columns,
                  channel_names=channel_names):
@@ -116,11 +118,21 @@ class Corrector(object):
             r = scipy.stats.linregress(self.pairs[self.channel_names[0]][p],
                                        self.pairs[self.channel_names[1]][p])
             pars.append([r[i] for i in [0, 1, 4]])
-        self.parameters = pd.DataFrame(pars,
-                                       columns=["slope",
-                                                "intercept",
-                                                "stderr"],
-                                       index=pos_columns)
+        self.parameters1 = pd.DataFrame(pars,
+                                        columns=["slope",
+                                                 "intercept",
+                                                 "stderr"],
+                                        index=pos_columns)
+        pars = []
+        for p in self.pos_columns:
+            r = scipy.stats.linregress(self.pairs[self.channel_names[1]][p],
+                                       self.pairs[self.channel_names[0]][p])
+            pars.append([r[i] for i in [0, 1, 4]])
+        self.parameters2 = pd.DataFrame(pars,
+                                        columns=["slope",
+                                                 "intercept",
+                                                 "stderr"],
+                                        index=pos_columns)
 
     def __call__(self, features, channel=2):
         """Do chromatic correction on `features` coordinates
@@ -137,21 +149,19 @@ class Corrector(object):
                 depending on this parameter either the "original"
                 transformation or its inverse are applied.)
         """
-        if channel != 1 and channel != 2:
-            raise ValueError("channel has to be either 1 or 2")
-
         x_col = self.pos_columns[0]
         y_col = self.pos_columns[1]
-        xparm = self.parameters.loc[x_col]
-        yparm = self.parameters.loc[y_col]
-
         if channel == 1:
-            features[x_col] = features[x_col]*xparm.slope + xparm.intercept
-            features[y_col] = features[y_col]*yparm.slope + yparm.intercept
-
+            xparm = self.parameters1.loc[x_col]
+            yparm = self.parameters1.loc[y_col]
         if channel == 2:
-            features[x_col] = (features[x_col] - xparm.intercept)/xparm.slope
-            features[y_col] = (features[y_col] - yparm.intercept)/yparm.slope
+            xparm = self.parameters2.loc[x_col]
+            yparm = self.parameters2.loc[y_col]
+        else:
+            raise ValueError("channel has to be either 1 or 2")
+
+        features[x_col] = features[x_col]*xparm.slope + xparm.intercept
+        features[y_col] = features[y_col]*yparm.slope + yparm.intercept
 
     def test(self):
         """Test validity of the correction parameters
@@ -171,46 +181,64 @@ class Corrector(object):
             ax.scatter(self.pairs[self.channel_names[0], p],
                        self.pairs[self.channel_names[1], p])
             ax.plot(self.pairs[self.channel_names[0]].sort(p)[p],
-                    self.parameters.loc[p, "slope"] *
+                    self.parameters1.loc[p, "slope"] *
                     self.pairs[self.channel_names[0]].sort(p)[p] +
-                    self.parameters.loc[p, "intercept"])
+                    self.parameters1.loc[p, "intercept"])
             ax.set_title(p)
 
         plt.gcf().tight_layout()
 
-    def to_hdf(self, path_or_buf, key="chromatic_correction_parameters"):
+    def to_hdf(self, path_or_buf, key=("chromatic_corr_ch1",
+                                       "chromatic_corr_ch2")):
         """Save parameters to a HDF5 file
 
-        This simply calls `parameters.to_hdf`(path_or_buf, key)
-        """
-        self.parameters.to_hdf(path_or_buf, key)
-
-    def read_hdf(path_or_buf, key="chromatic_correction_parameters"):
-        """Read paramaters from a HDF5 file and construct a corrector
+        Save `parameters1` as `key`[0] and `parameters2` as `key`[1].
 
         Args:
-            path_or_buf: Passed to `pandas.read_hdf` as the first argument.
-            key: Passed to `pandas.read_hdf` as the second argument.
+            path_or_buf: HDF5 file to write to
+            key (tuple of str, optional): Names of the parameter variables in
+                the HDF5 file. Defaults to ("chromatic_corr_ch1",
+                "chromatic_corr_ch2").
+        """
+        self.parameters1.to_hdf(path_or_buf, key[0], mode="w", format="t")
+        self.parameters2.to_hdf(path_or_buf, key[1], mode="a", format="t")
+
+
+    def read_hdf(path_or_buf, key=("chromatic_corr_ch1",
+                                   "chromatic_corr_ch2")):
+        """Read paramaters from a HDF5 file and construct a corrector
+
+        Read `parameters1` from `key`[0] and `parameters2` from `key`[1].
+
+        Args:
+            path_or_buf: HDF5 file to load
+            key (tuple of str, optional): Names of the parameter variables in
+                the HDF5 file. Defaults to ("chromatic_corr_ch1",
+                "chromatic_corr_ch2").
 
         Returns:
             A `Corrector` instance with the parameters read from the HDF5
             file.
         """
         corr = Corrector(None, None)
-        corr.parameters = pd.read_hdf(path_or_buf, key)
-        corr.pos_columns = corr.parameters.index.tolist()
+        corr.parameters1 = pd.read_hdf(path_or_buf, key[0])
+        corr.pos_columns = corr.parameters1.index.tolist()
+        corr.parameters2 = pd.read_hdf(path_or_buf, key[1])
         return corr
 
     def to_wrp(self, path):
         """Save parameters to .wrp file
 
+        Warning: This only saves parameters2. In order not to lose parameters1,
+        save to HDF5 using `to_hdf`().
+
         Args:
             path (str): Path of the .wrp file to be created
         """
-        k1 = 1./self.parameters.loc[self.pos_columns[0], "slope"]
-        d1 = -self.parameters.loc[self.pos_columns[0], "intercept"]*k1
-        k2 = 1./self.parameters.loc[self.pos_columns[1], "slope"]
-        d2 = -self.parameters.loc[self.pos_columns[1], "intercept"]*k2
+        k1 = self.parameters2.loc[self.pos_columns[0], "slope"]
+        d1 = self.parameters2.loc[self.pos_columns[0], "intercept"]
+        k2 = self.parameters2.loc[self.pos_columns[1], "slope"]
+        d2 = self.parameters2.loc[self.pos_columns[1], "intercept"]
 
         S = dict(k1=k1, d1=d1, k2=k2, d2=d2)
         scipy.io.savemat(path, dict(S=S), appendmat=False)
@@ -218,7 +246,10 @@ class Corrector(object):
     def read_wrp(path):
         """Read parameters from a .wrp file
 
-        Construct a Corrector with those parameters
+        Construct a Corrector with those parameters. Warning: The .wrp file
+        only contains paramaters for the correction of channel 2. Parameters
+        for channel 1 are calculated by inverting the transformation and may
+        by not so accurate.
 
         Args:
             path (str): Path of the .wrp file
@@ -231,13 +262,21 @@ class Corrector(object):
         mat = scipy.io.loadmat(path, squeeze_me=True, struct_as_record=False)
         d = mat["S"]
 
-        #data of the wrp file is for the inverse transformation
-        parms = np.empty((2, 3))
-        parms[0, :] = np.array([1./d.k1, -d.d1/d.k1, np.NaN])
-        parms[1, :] = np.array([1./d.k2, -d.d2/d.k2, np.NaN])
-        corr.parameters = pd.DataFrame(parms,
-                                       columns=["slope", "intercept", "stderr"],
-                                       index=pos_columns)
+        #data of the wrp file is for the channel1 transformation
+        parms1 = np.empty((2, 3))
+        parms1[0, :] = np.array([d.k1, d.d1, np.NaN])
+        parms1[1, :] = np.array([d.k2, d.d2, np.NaN])
+        corr.parameters1 = pd.DataFrame(parms1,
+                                        columns=["slope", "intercept",
+                                                 "stderr"],
+                                        index=pos_columns)
+        parms2 = np.empty((2, 3))
+        parms2[0, :] = np.array([1./d.k1, -d.d1/d.k1, np.NaN])
+        parms2[1, :] = np.array([1./d.k2, -d.d2/d.k2, np.NaN])
+        corr.parameters2 = pd.DataFrame(parms2,
+                                        columns=["slope", "intercept",
+                                                 "stderr"],
+                                        index=pos_columns)
         return corr
 
 
