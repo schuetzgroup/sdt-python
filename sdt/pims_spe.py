@@ -29,6 +29,10 @@ class spec(object):
 
 
 class SPEStack(FramesSequence):
+    @classmethod
+    def class_exts(cls):
+        return {"spe"} | super(SPEStack, cls).class_exts()
+
     def __init__(self, filename, process_func=None, dtype=None,
                  as_grey=False):
         self._filename = filename
