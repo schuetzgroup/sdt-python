@@ -5,3 +5,4 @@ try:
 except:
     pass
 from . import compat
+from . import pims_spe
