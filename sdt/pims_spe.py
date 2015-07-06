@@ -6,7 +6,7 @@ from pims import FramesSequence, Frame
 
 
 class spec(object):
-    """SPE spec
+    """SPE file specification data
 
     Tuples of (offset, datatype), where offset is the offset in the SPE
     file and datatype is a string describing the datatype as used in
@@ -78,3 +78,14 @@ class SPEStack(FramesSequence):
     @property
     def pixel_type(self):
         return self._dtype
+
+    def __repr__(self):
+        return """<Frames>
+Source: {filename}
+Length: {count} frames
+Frame Shape: {w} x {h}
+Pixel Datatype: {dtype}""".format(w=self._width,
+                                  h=self._height,
+                                  count=self._len,
+                                  filename=self._filename,
+                                  dtype=self._dtype)
