@@ -457,3 +457,116 @@ def _extend_array(a, new_shape, value=0):
                   pad_width=[(0, n-o) for o, n in zip(b.shape, new_shape)],
                   mode="constant",
                   constant_values=[(0, value)]*len(new_shape))
+
+
+def showDialog(qt5, parent=None):
+    if qt5:
+        from PyQt5 import uic
+        from PyQt5.QtCore import Qt
+        from PyQt5.QtWidgets import QFileDialog, QMessageBox, QHeaderView
+        from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+    else:
+        from PyQt4 import uic
+        from PyQt4.QtCore import Qt
+        from PyQt4.QtGui import QFileDialog, QMessageBox, QHeaderView
+        from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+
+    from matplotlib.figure import Figure
+
+    import os
+
+    path = os.path.dirname(os.path.abspath(__file__))
+    guiClass, guiBase = uic.loadUiType(os.path.join(path, "chromatic.ui"))
+
+    class chromaticDialog(guiBase):
+        def __init__(self, parent=None):
+            super().__init__(parent)
+
+            self._ui = guiClass()
+            self._ui.setupUi(self)
+
+            self._filePath = os.getcwd()
+
+            self._ui.locFileButton.clicked.connect(
+                lambda: self._getLocFile(self._ui.locFileEdit))
+            self._ui.locFile2Button.clicked.connect(
+                lambda: self._getLocFile(self._ui.locFile2Edit))
+            self._ui.saveButton.clicked.connect(self._save)
+            self._ui.determineButton.clicked.connect(self._determine)
+
+            self._ui.locFileEdit.textChanged.connect(self._locFileChanged)
+            self._locFileChanged()
+
+            self._figure = Figure()
+            self._canvas = FigureCanvas(self._figure)
+            self._ui.trafoLayout.addWidget(self._canvas)
+
+        def _getLocFile(self, editWidget):
+            #TODO: in PyQt5, this returns (name, filter)
+            fname = QFileDialog.getOpenFileName(
+                self, "Open localization file", self._filePath,
+                "Localization data (*.h5 *.mat *.pkc *.pks)")
+            if not fname:
+                return
+            self._filePath = os.path.abspath(fname)
+            editWidget.setText(fname)
+
+        def _locFileChanged(self):
+            self._ui.inputTabWidget.setTabEnabled(2,
+                os.path.splitext(self._ui.locFileEdit.text())[1] == ".pkc")
+
+        def _save(self):
+            #TODO: in PyQt5, this returns (name, filter)
+            fname = QFileDialog.getSaveFileName(
+                self, "Save file", self._filePath,
+                "HDF5(*.h5);;wrp(*.wrp)")
+            if not fname:
+                return
+            self._filePath = os.path.abspath(fname)
+            fext = os.path.splitext(fname)[1]
+
+            if fext == ".h5":
+                #TODO: save as h5
+                pass
+            elif fext == ".wrp":
+                #TODO: save as wrp
+                pass
+            else:
+                QMessageBox.critical(self, "File format error",
+                                     'Could not determine file format from '
+                                     'extension "{}".'.format(fext))
+
+
+        def _determine(self):
+            tabi = self._ui.inputTabWidget.currentIndex()
+            if tabi == 0:
+                #split one-color
+                #TODO
+                pass
+            elif tabi == 1:
+                #two one-color
+                #TODO
+                pass
+            elif tabi == 2:
+                #two-color
+                #TODO
+                pass
+
+    win = chromaticDialog(parent)
+    win.show()
+
+    return win
+
+if __name__ == "__main__":
+    import sys
+
+    #try:
+    #    from PyQt5.QtWidgets import QApplication
+    #    qt5 = True
+    #except ImportError:
+    from PyQt4.QtGui import QApplication
+    qt5 = False
+
+    app = QApplication(sys.argv)
+    win = showDialog(qt5)
+    sys.exit(app.exec_())
