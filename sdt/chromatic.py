@@ -471,13 +471,11 @@ def showDialog(qt5=False, parent=None):
     """
     if qt5:
         from PyQt5 import uic
-        from PyQt5.QtCore import Qt
-        from PyQt5.QtWidgets import QFileDialog, QMessageBox, QHeaderView
+        from PyQt5.QtWidgets import QFileDialog, QMessageBox
         from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
     else:
         from PyQt4 import uic
-        from PyQt4.QtCore import Qt
-        from PyQt4.QtGui import QFileDialog, QMessageBox, QHeaderView
+        from PyQt4.QtGui import QFileDialog, QMessageBox
         from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 
     from matplotlib.figure import Figure
