@@ -49,7 +49,7 @@
       <item>
        <widget class="QTabWidget" name="inputTabWidget">
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="splitOneColorTab">
          <attribute name="title">
@@ -300,7 +300,7 @@
            <double>100.000000000000000</double>
           </property>
           <property name="singleStep">
-           <double>0.100000000000000</double>
+           <double>0.010000000000000</double>
           </property>
           <property name="value">
            <double>0.050000000000000</double>
