@@ -463,6 +463,12 @@ def _extend_array(a, new_shape, value=0):
 
 
 def showDialog(qt5=False, parent=None):
+    """Show the GUI
+
+    Args:
+        qt5 (bool): If True, use PyQt5. Otherwise, use PyQt4. Default: False
+        parent: Parent widget. Defaults to None.
+    """
     if qt5:
         from PyQt5 import uic
         from PyQt5.QtCore import Qt
@@ -512,6 +518,7 @@ def showDialog(qt5=False, parent=None):
             self._corrector = None
 
         def _getLocFile(self, editWidget):
+            """Choose localization file button slot"""
             #TODO: in PyQt5, this returns (name, filter)
             fname = QFileDialog.getOpenFileName(
                 self, "Open localization file", self._filePath,
@@ -522,10 +529,12 @@ def showDialog(qt5=False, parent=None):
             editWidget.setText(fname)
 
         def _locFileChanged(self):
+            """Localization file text edit changed"""
             self._ui.inputTabWidget.setTabEnabled(2,
                 os.path.splitext(self._ui.locFileEdit.text())[1] == ".pkc")
 
         def _save(self):
+            """Save file button slot"""
             #TODO: in PyQt5, this returns (name, filter)
             fname = QFileDialog.getSaveFileName(
                 self, "Save file", self._filePath,
@@ -545,6 +554,7 @@ def showDialog(qt5=False, parent=None):
                                      'extension "{}".'.format(fext))
 
         def _load_features(self, fname):
+            """Helper function to load features from data files"""
             fext = os.path.splitext(fname)[1]
             if fext == ".pkc":
                 feat1 = compat.load_pkmatrix(fname)
@@ -562,6 +572,7 @@ def showDialog(qt5=False, parent=None):
             return feat1
 
         def _determine(self):
+            """Determine transformation button slot"""
             feat1 = self._load_features(self._ui.locFileEdit.text())
 
             tabi = self._ui.inputTabWidget.currentIndex()
