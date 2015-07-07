@@ -67,7 +67,7 @@ class Corrector(object):
         self.parameters1 = None
         self.parameters2 = None
 
-    def determine_parameters(self, tol_rel=0.1, tol_abs=0.):
+    def determine_parameters(self, tol_rel=0.05, tol_abs=0.):
         """Determine the parameters for the affine transformation
 
         This takes the localizations of `feat1` and tries to match them with
@@ -79,7 +79,7 @@ class Corrector(object):
 
         Args:
             tol_rel (float): Relative tolerance parameter for
-                `numpy.isclose()`. Defaults to 0.1.
+                `numpy.isclose()`. Defaults to 0.05.
             tol_abs (float): Absolute tolerance parameter for
                 `numpy.isclose()`. Defaults to 0.
         """
@@ -87,7 +87,7 @@ class Corrector(object):
         self.find_pairs(tol_rel, tol_abs)
         self.fit_parameters()
 
-    def find_pairs(self, tol_rel=0.1, tol_abs=0.):
+    def find_pairs(self, tol_rel=0.05, tol_abs=0.):
         """Match features of `feat1` with features of `feat2`
 
         This is done by calculating the vectors from every
@@ -99,7 +99,7 @@ class Corrector(object):
 
         Args:
             tol_rel (float): Relative tolerance parameter for
-                `numpy.isclose()`. Defaults to 0.1.
+                `numpy.isclose()`. Defaults to 0.05.
             tol_abs (float): Absolute tolerance parameter for
                 `numpy.isclose()`. Defaults to 0.
         """
