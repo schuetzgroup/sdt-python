@@ -461,7 +461,7 @@ def _extend_array(a, new_shape, value=0):
                   constant_values=[(0, value)]*len(new_shape))
 
 
-def showDialog(qt5, parent=None):
+def showDialog(qt5=False, parent=None):
     if qt5:
         from PyQt5 import uic
         from PyQt5.QtCore import Qt
@@ -476,6 +476,9 @@ def showDialog(qt5, parent=None):
     from matplotlib.figure import Figure
 
     import os
+
+    from . import compat
+    from . import image_tools
 
     path = os.path.dirname(os.path.abspath(__file__))
     guiClass, guiBase = uic.loadUiType(os.path.join(path, "chromatic.ui"))
@@ -502,6 +505,10 @@ def showDialog(qt5, parent=None):
             self._figure = Figure()
             self._canvas = FigureCanvas(self._figure)
             self._ui.trafoLayout.addWidget(self._canvas)
+            self._axes = (self._figure.add_subplot(121),
+                          self._figure.add_subplot(122))
+
+            self._corrector = None
 
         def _getLocFile(self, editWidget):
             #TODO: in PyQt5, this returns (name, filter)
@@ -528,31 +535,69 @@ def showDialog(qt5, parent=None):
             fext = os.path.splitext(fname)[1]
 
             if fext == ".h5":
-                #TODO: save as h5
-                pass
+                self._corrector.to_hdf(fname)
             elif fext == ".wrp":
-                #TODO: save as wrp
-                pass
+                self._corrector.to_wrp(fname)
             else:
                 QMessageBox.critical(self, "File format error",
                                      'Could not determine file format from '
                                      'extension "{}".'.format(fext))
 
+        def _load_features(self, fname):
+            fext = os.path.splitext(fname)[1]
+            if fext == ".pkc":
+                feat1 = compat.load_pkmatrix(fname)
+            elif fext == ".mat":
+                feat1 = compat.load_pt2d_positions(fname)
+            elif fext == ".pks":
+                feat1 = compat.load_pks(fname)
+            elif fext == ".h5":
+                feat1 == pd.read_hdf(fname, "features")
+            else:
+                QMessageBox.critical(self, "File format error",
+                                     'Could not determine file format from '
+                                     'extension "{}".'.format(fext))
+                return
+            return feat1
 
         def _determine(self):
+            feat1 = self._load_features(self._ui.locFileEdit.text())
+
             tabi = self._ui.inputTabWidget.currentIndex()
             if tabi == 0:
                 #split one-color
-                #TODO
-                pass
+                roi_left = image_tools.ROI(
+                    (self._ui.leftRoiTlX.value(), self._ui.leftRoiTlY.value()),
+                    (self._ui.leftRoiBrX.value(), self._ui.leftRoiBrY.value()))
+                roi_right = image_tools.ROI(
+                    (self._ui.rightRoiTlX.value(), self._ui.rightRoiTlY.value()),
+                    (self._ui.rightRoiBrX.value(), self._ui.rightRoiBrY.value()))
+                feat2 = roi_right(feat1)
+                feat1 = roi_left(feat1)
             elif tabi == 1:
                 #two one-color
-                #TODO
-                pass
+                feat2 = self._load_features(self._ui.locFile2Edit.text())
             elif tabi == 2:
                 #two-color
-                #TODO
-                pass
+                feat2 = compat.load_pkmatrix(
+                    self._ui.locFileEdit.text(), green=True)
+
+            if feat1.empty:
+                QMessageBox.critical(self, "Read error",
+                                     "Could not read channel 1 data.")
+                return
+            if feat2.empty:
+                QMessageBox.critical(self, "Read error",
+                                     "Could not read channel 2 data.")
+                return
+
+            self._corrector = Corrector(feat1, feat2)
+            self._corrector.determine_parameters(
+                self._ui.rTolBox.value(), self._ui.aTolBox.value())
+            for a in self._axes:
+                a.cla()
+            self._corrector.test(self._axes)
+            self._canvas.draw()
 
     win = chromaticDialog(parent)
     win.show()

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Chromatic aberration corrector</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -49,7 +49,7 @@
       <item>
        <widget class="QTabWidget" name="inputTabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="splitOneColorTab">
          <attribute name="title">
@@ -367,7 +367,9 @@
         <string>Save results</string>
        </property>
        <property name="icon">
-        <iconset theme="document-save-as"/>
+        <iconset theme="document-save-as">
+         <normaloff/>
+        </iconset>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -378,9 +380,25 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>locFileEdit</tabstop>
+  <tabstop>locFileButton</tabstop>
+  <tabstop>inputTabWidget</tabstop>
+  <tabstop>leftRoiTlX</tabstop>
+  <tabstop>leftRoiTlY</tabstop>
+  <tabstop>leftRoiBrX</tabstop>
+  <tabstop>leftRoiBrY</tabstop>
+  <tabstop>rightRoiTlX</tabstop>
+  <tabstop>rightRoiTlY</tabstop>
+  <tabstop>rightRoiBrX</tabstop>
+  <tabstop>rightRoiBrY</tabstop>
+  <tabstop>rTolBox</tabstop>
+  <tabstop>aTolBox</tabstop>
+  <tabstop>determineButton</tabstop>
+  <tabstop>saveButton</tabstop>
+  <tabstop>locFile2Edit</tabstop>
+  <tabstop>locFile2Button</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="fileTypeButtonGroup"/>
- </buttongroups>
 </ui>
