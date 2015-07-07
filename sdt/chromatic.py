@@ -64,7 +64,8 @@ class Corrector(object):
         self.pos_columns = pos_columns
         self.channel_names = channel_names
         self.pairs = None
-        self.parameters = None
+        self.parameters1 = None
+        self.parameters2 = None
 
     def determine_parameters(self, tol_rel=0.1, tol_abs=0.):
         """Determine the parameters for the affine transformation
@@ -287,14 +288,14 @@ class Corrector(object):
         parms1 = np.empty((2, 3))
         parms1[0, :] = np.array([d.k1, d.d1, np.NaN])
         parms1[1, :] = np.array([d.k2, d.d2, np.NaN])
-        corr.parameters1 = pd.DataFrame(parms1,
+        corr.parameters2 = pd.DataFrame(parms1,
                                         columns=["slope", "intercept",
                                                  "stderr"],
                                         index=pos_columns)
         parms2 = np.empty((2, 3))
         parms2[0, :] = np.array([1./d.k1, -d.d1/d.k1, np.NaN])
         parms2[1, :] = np.array([1./d.k2, -d.d2/d.k2, np.NaN])
-        corr.parameters2 = pd.DataFrame(parms2,
+        corr.parameters1 = pd.DataFrame(parms2,
                                         columns=["slope", "intercept",
                                                  "stderr"],
                                         index=pos_columns)
