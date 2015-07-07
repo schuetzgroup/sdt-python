@@ -182,7 +182,7 @@ class Corrector(object):
                                            parms.iloc[::-1]["intercept"],
                                            output=data, mode=mode, cval=cval)
 
-    def test(self):
+    def test(self, ax=None):
         """Test validity of the correction parameters
 
         This plots the affine transformation functions and the coordinates of
@@ -192,20 +192,22 @@ class Corrector(object):
         """
         import matplotlib.pyplot as plt
 
-        for i, p in enumerate(self.pos_columns):
-            plt.subplot(1, len(self.pos_columns), i+1, aspect=1)
-            ax = plt.gca()
-            ax.set_xlabel("{} ({})".format(p, self.channel_names[0]))
-            ax.set_ylabel("{} ({})".format(p, self.channel_names[1]))
-            ax.scatter(self.pairs[self.channel_names[0], p],
+        if ax is None:
+            fig, ax = plt.subplots(1, len(pos_columns))
+
+        for a, p in zip(ax, self.pos_columns):
+            a.set_xlabel("{} ({})".format(p, self.channel_names[0]))
+            a.set_ylabel("{} ({})".format(p, self.channel_names[1]))
+            a.scatter(self.pairs[self.channel_names[0], p],
                        self.pairs[self.channel_names[1], p])
-            ax.plot(self.pairs[self.channel_names[0]].sort(p)[p],
+            a.plot(self.pairs[self.channel_names[0]].sort(p)[p],
                     self.parameters1.loc[p, "slope"] *
                     self.pairs[self.channel_names[0]].sort(p)[p] +
                     self.parameters1.loc[p, "intercept"])
-            ax.set_title(p)
+            a.set_title(p)
+            a.set_aspect(1)
 
-        plt.gcf().tight_layout()
+        a.figure.tight_layout()
 
     def to_hdf(self, path_or_buf, key=("chromatic_corr_ch1",
                                        "chromatic_corr_ch2")):
