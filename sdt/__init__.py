@@ -4,5 +4,8 @@ try:
     from . import pims_oiio
 except:
     pass
+try:
+    from . import pims_spe
+except:
+    pass
 from . import compat
-from . import pims_spe
