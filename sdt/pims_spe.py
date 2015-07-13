@@ -28,10 +28,10 @@ class spec(object):
               np.dtype("<H"), np.dtype("<I")]
 
 
-class SPEStack(FramesSequence):
+class SpeStack(FramesSequence):
     @classmethod
     def class_exts(cls):
-        return {"spe"} | super(SPEStack, cls).class_exts()
+        return {"spe"} | super(SpeStack, cls).class_exts()
 
     def __init__(self, filename, process_func=None, dtype=None,
                  as_grey=False):
