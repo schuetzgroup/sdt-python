@@ -77,7 +77,9 @@ class SpeStack(FramesSequence):
                            count=self._width*self._height)
         if self._dtype != self._file_dtype:
             data = data.astype(self._dtype)
-        return self.process_func(data.reshape(self._height, self._width))
+        return Frame(
+            self.process_func(data.reshape(self._height, self._width)),
+            frame_no=j)
 
     @property
     def pixel_type(self):
