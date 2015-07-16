@@ -28,8 +28,8 @@ class spec(object):
         "header_version": (1992, "<f"),
 
         "date": (20, "<10S"),
-        "local_time": (172, "<7S"),
-        "utc_time": (179, "<7S"),
+        "ExperimentTimeLocal": (172, "<7S"),
+        "ExperimentTimeUTC": (179, "<7S"),
 
         "ROIs": (1512, np.dtype([("startx", "<H"),
                                  ("endx", "<H"),
