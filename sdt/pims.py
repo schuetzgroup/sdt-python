@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 """PIMS plugins for image sequences created by SDT software"""
+import logging
 
 import pims
 
 from . import pims_spe
+
+_logger = logging.getLogger(__name__)
 
 SdtComments = {
     #format of dict entries:
@@ -82,19 +85,20 @@ class SdtSpeStack(pims_spe.SpeStack):
 
         #Parse SDTcontrol comments
         comments = self.metadata["comments"]
-
-        for name, spec in SdtComments.items():
-            try:
-                v = spec[2](comments[spec[0]][spec[1]])
-                if len(spec) >= 4:
-                    v *= spec[3]
-                self.metadata[name] = v
-            except:
-                pass
-
-        comment = comments[0] + comments[2]
-        self.metadata["comment"] = comment.strip()
-        self.metadata.pop("comments", None)
+        if comments[4][70:] == "COMVER0500":
+            for name, spec in SdtComments.items():
+                try:
+                    v = spec[2](comments[spec[0]][spec[1]])
+                    if len(spec) >= 4:
+                        v *= spec[3]
+                    self.metadata[name] = v
+                except:
+                    pass
+            comment = comments[0] + comments[2]
+            self.metadata["comment"] = comment.strip()
+            self.metadata.pop("comments", None)
+        else:
+            _logger.info("SDTcontrol comments not found.")
 
         #Get date and time in a usable format
         date = self.metadata["date"]
