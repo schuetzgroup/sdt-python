@@ -28,7 +28,7 @@ SdtComments = {
     "delay mini": (1, slice(19, 28), float, 10**-6),
     "N micro": (1, slice(7, 10), int),
     "delay micro": (1, slice(28, 37), float, 10**-6),
-    "subpics": (1, slice(4, 7), int),
+    "subpics": (1, slice(7, 10), int),
     "shutter delay": (1, slice(73, 79), float, 10**-6),
     "prebleach delay": (1, slice(37, 46), float, 10**-6),
     "bleach time": (1, slice(46, 55), float, 10**-6),
