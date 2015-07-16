@@ -104,6 +104,8 @@ class SdtSpeStack(pims_spe.SpeStack):
         #Rename this
         self.metadata["laser mod script"] = self.metadata["spare4"]
         self.metadata.pop("spare4", None)
+        self.metadata["subpic height"] = self.metadata["WindowSize"]
+        self.metadata.pop("WindowSize", None)
 
         #Get rid of unused data
         self.metadata.pop("header_version", None)

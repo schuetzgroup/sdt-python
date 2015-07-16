@@ -36,7 +36,8 @@ class spec(object):
                                  ("groupx", "<H"),
                                  ("starty", "<H"),
                                  ("endy", "<H"),
-                                 ("groupy", "<H")]), 5)
+                                 ("groupy", "<H")]), 5),
+        "WindowSize": (1482, "<H")
     }
     num_rois = (1510, "<h")
 
