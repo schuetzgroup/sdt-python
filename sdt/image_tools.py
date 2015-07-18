@@ -2,8 +2,12 @@
 
 """Tools to deal with SPE files as created by the SDT-control software"""
 
+import sys
+if sys.version_info.major == 2:
+    import ConfigParser as configparser
+else:
+    import configparser
 import collections
-import configparser
 import io
 import logging
 import os

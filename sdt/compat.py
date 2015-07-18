@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Import data from various MATLAB tools
 
 This module provides a compatibility layer for various tools written in
@@ -303,7 +305,7 @@ def load_msdplot(filename, column_names=msd_column_names):
 
     Returns:
         A dict with keys: d, stderr, qianerr, pa, data.
-        d is the diffusion coefficient in μm^2/s, stderr its standard
+        d is the diffusion coefficient in μm²/s, stderr its standard
         error, qianerr its Qian error, pa the positional accuracy in nm and
         data a pandas.DataFrame containing the msd-vs.-tlag data.
     """

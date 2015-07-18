@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+
+#If we don't do this, python2 will try to import the local pims.py instead
+#of the "real" pims module
+from __future__ import absolute_import
+
 import numpy as np
 
 from pims import FramesSequence, Frame

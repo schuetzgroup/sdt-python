@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """PIMS plugins for image sequences created by SDT software"""
 
 from . import pims_spe
