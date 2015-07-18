@@ -21,7 +21,7 @@ SdtComments = {
     "laser modulation": (4, 33, lambda x: x == "A"),
     "pixel size": (4, slice(25, 28), float, 0.1),
     "method": (4, slice(6,10), str),
-    "grid": (1, slice(16,25), float, 10**-6),
+    "grid": (4, slice(16,25), float, 10**-6),
     "N macro": (1, slice(0, 4), int),
     "delay macro": (1, slice(10, 19), float, 10**-3),
     "N mini": (1, slice(4, 7), int),
