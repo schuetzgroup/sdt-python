@@ -110,3 +110,4 @@ class SdtSpeStack(pims_spe.SpeStack):
         #Get rid of unused data
         self.metadata.pop("header_version", None)
         self.metadata.pop("ExperimentTimeUTC", None)
+        self.metadata.pop("exp_sec", None)

@@ -23,20 +23,29 @@ class spec(object):
     metadata = {
         "comments": (200, "<80S", 5),
         "spare4": (742, "<436S"),
-
+        "ControllerVersion": (0, "<h"),
         "swversion": (688, "<16S"),
         "header_version": (1992, "<f"),
-
         "date": (20, "<10S"),
         "ExperimentTimeLocal": (172, "<7S"),
         "ExperimentTimeUTC": (179, "<7S"),
-
+        "exp_sec": (10, "<f"),
+        "DetTemperature": (36, "<f"),
+        "DetType": (40, "<h"),
+        "XPrePixels": (98, "<h"),
+        "XPostPixels": (100, "<h"),
+        "YPrePixels": (102, "<h"),
+        "YPostPixels": (104, "<h"),
+        "ReadoutTime": (672, "<f"),
+        "type": (704, "<h"),
+        "clkspd_us": (1428, "<f"),
         "ROIs": (1512, np.dtype([("startx", "<H"),
                                  ("endx", "<H"),
                                  ("groupx", "<H"),
                                  ("starty", "<H"),
                                  ("endy", "<H"),
                                  ("groupy", "<H")]), 5),
+        "readoutMode": (1480, "<H"),
         "WindowSize": (1482, "<H")
     }
     num_rois = (1510, "<h")
@@ -45,6 +54,12 @@ class spec(object):
 
     dtypes = [np.dtype("<f"), np.dtype("<i"), np.dtype("<h"),
               np.dtype("<H"), np.dtype("<I")]
+    
+    controllers = [
+        "new120 (Type II)", "old120 (Type I)", "ST130", "ST121", "ST138",
+        "DC131 (PentaMax)", "ST133 (MicroMax/Roper)", "ST135 (GPIB)", "VTCCD",
+        "ST116 (GPIB)", "OMA3 (GPIB)", "OMA4"
+    ]
 
 
 class SpeStack(FramesSequence):
@@ -134,6 +149,13 @@ class SpeStack(FramesSequence):
         num_rois = np.fromfile(self._file, spec.num_rois[1], count=1)
         num_rois = (1 if num_rois < 1 else num_rois)
         self.metadata["ROIs"] = self.metadata["ROIs"][:num_rois]
+        
+        #Translate controller names
+        t = self.metadata["type"]
+        if 1 <= t <= len(spec.controllers):
+            self.metadata["type"] = spec.controllers[t - 1]
+        else:
+            self.metadata.pop("type", None)
 
     @property
     def frame_shape(self):
