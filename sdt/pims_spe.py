@@ -109,11 +109,14 @@ class SpeStack(FramesSequence):
 
         #movie dimensions
         self._file.seek(spec.xdim[0])
-        self._width = np.fromfile(self._file, spec.xdim[1], count=1)[0]
+        self._width = np.asscalar(
+            np.fromfile(self._file, spec.xdim[1], count=1))
         self._file.seek(spec.ydim[0])
-        self._height = np.fromfile(self._file, spec.ydim[1], count=1)[0]
+        self._height = np.asscalar(
+            np.fromfile(self._file, spec.ydim[1], count=1))
         self._file.seek(spec.numframes[0])
-        self._len = np.fromfile(self._file, spec.numframes[1], count=1)[0]
+        self._len = np.asscalar(
+            np.fromfile(self._file, spec.numframes[1], count=1))
 
         #read additional metadata
         self.metadata = {}
