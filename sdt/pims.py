@@ -82,11 +82,11 @@ class SdtSpeStack(pims_spe.SpeStack):
         for name, spec in SdtComments.items():
             try:
                 v = spec[2](comments[spec[0]][spec[1]])
+                if len(spec) >= 4:
+                    v *= spec[3]
+                self.metadata[name] = v
             except:
                 pass
-            if len(spec) >= 4:
-                v *= spec[3]
-            self.metadata[name] = v
 
         comment = comments[0] + comments[2]
         self.metadata["comment"] = comment.strip()
