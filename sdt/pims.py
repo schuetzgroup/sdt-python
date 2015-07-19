@@ -62,7 +62,7 @@ class SdtSpeStack(pims_spe.SpeStack):
     class_priority = 20 #>10, so use instead of SpeStack
 
     def __init__(self, filename, process_func=None, dtype=None, as_grey=False,
-                 char_encoding="latin1"):
+                 char_encoding="latin1", split_kinetics=True):
         """Create an iterable object that returns image data as numpy arrays
 
         Args:
@@ -75,6 +75,8 @@ class SdtSpeStack(pims_spe.SpeStack):
                 in conjunction with process_func. Defaults to False.
             char_encoding (str, optional): Specifies what character encoding
                 is used for metatdata strings. Defaults to "latin1".
+            split_kinetics (bool, optional): Whether to split the large
+                kinetics mode images into smaller subimages. Defaults to True.
         """
         super().__init__(filename, process_func, dtype, as_grey, char_encoding)
 
@@ -118,8 +120,8 @@ class SdtSpeStack(pims_spe.SpeStack):
         self.metadata.pop("exp_sec", None)
 
         #Necessary to split kinetics mode images
-        self._is_kinetics = (
-            self.metadata.get("readoutMode", "") == "kinetics")
+        self._is_kinetics = (split_kinetics &
+            (self.metadata.get("readoutMode", "") == "kinetics"))
         if self._is_kinetics:
             self._subpic_height = self.metadata["subpic height"]
             self._no_subpics = round(
