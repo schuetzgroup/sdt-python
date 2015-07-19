@@ -2,6 +2,8 @@
 
 """PIMS plugins for image sequences created by SDT software"""
 
+import pims
+
 from . import pims_spe
 
 SdtComments = {
@@ -114,3 +116,30 @@ class SdtSpeStack(pims_spe.SpeStack):
         #Get rid of unused data
         self.metadata.pop("ExperimentTimeUTC", None)
         self.metadata.pop("exp_sec", None)
+
+        #Necessary to split kinetics mode images
+        self._is_kinetics = (
+            self.metadata.get("readoutMode", "") == "kinetics")
+        if self._is_kinetics:
+            self._subpic_height = self.metadata["subpic height"]
+            self._no_subpics = round(
+                super().frame_shape[1]/self._subpic_height)
+        else:
+            self._subpic_height = super().frame_shape[1]
+            self._no_subpics = 1
+
+    @property
+    def frame_shape(self):
+        return super().frame_shape[0], self._subpic_height
+
+    def __len__(self):
+        return super().__len__()*self._no_subpics
+
+    def get_frame(self, j):
+        if self._is_kinetics:
+            full = super().get_frame(int(j/self._no_subpics))
+            start_row = (j % self._no_subpics)*self._subpic_height
+            return pims.Frame(full[start_row:start_row+self._subpic_height, :],
+                         frame_no=j, metadata=self.metadata)
+        else:
+            return super().get_frame(j)
