@@ -112,6 +112,5 @@ class SdtSpeStack(pims_spe.SpeStack):
         self.metadata.pop("WindowSize", None)
 
         #Get rid of unused data
-        self.metadata.pop("header_version", None)
         self.metadata.pop("ExperimentTimeUTC", None)
         self.metadata.pop("exp_sec", None)
