@@ -57,6 +57,8 @@ class SdtSpeStack(pims_spe.SpeStack):
     Attributes:
         metadata (dict): Contains SDTcontrol metadata
     """
+    class_priority = 20 #>10, so use instead of SpeStack
+
     def __init__(self, filename, process_func=None, dtype=None, as_grey=False,
                  char_encoding="latin1"):
         """Create an iterable object that returns image data as numpy arrays
