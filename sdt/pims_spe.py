@@ -50,7 +50,7 @@ class spec(object):
                                  ("groupx", "<H"),
                                  ("starty", "<H"),
                                  ("endy", "<H"),
-                                 ("groupy", "<H")]), 5),
+                                 ("groupy", "<H")]), 10),
         "readoutMode": (1480, "<H"),
         "WindowSize": (1482, "<H")
     }
