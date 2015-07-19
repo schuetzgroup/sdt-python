@@ -13,13 +13,18 @@ class spec(object):
     """SPE file specification data
 
     Tuples of (offset, datatype, count), where offset is the offset in the SPE
-    file and datatype is a string describing the datatype as used in
-    `numpy.fromfile`()
+    file and datatype is the datatype as used in `numpy.fromfile`()
 
     `data_start` is the offset of actual image data.
 
     `dtypes` translates SPE datatypes (0...4) to numpy ones, e. g. dtypes[0]
     is dtype("<f") (which is np.float32).
+
+    `controllers` maps the `type` metadata to a human readable name
+
+    `readout_modes` maps the `readoutMode` metadata to something human readable
+    although this may not be accurate since there is next to no documentation
+    to be found.
     """
     datatype = (108, "<h")
     xdim = (42, "<H")
@@ -66,6 +71,10 @@ class spec(object):
         "DC131 (PentaMax)", "ST133 (MicroMax/Roper)", "ST135 (GPIB)", "VTCCD",
         "ST116 (GPIB)", "OMA3 (GPIB)", "OMA4"
     ]
+
+    #This was gathered from random places on the internet and own experiments
+    #with the camera. May not be accurate.
+    readout_modes = [ "full frame", "frame transfer", "kinetics" ]
 
 
 class SpeStack(FramesSequence):
@@ -175,6 +184,13 @@ class SpeStack(FramesSequence):
             self.metadata["type"] = spec.controllers[t - 1]
         else:
             self.metadata.pop("type", None)
+
+        #Translate readout mode
+        m = self.metadata["readoutMode"]
+        if 1 <= m <= len(spec.readout_modes):
+            self.metadata["readoutMode"] = spec.readout_modes[m - 1]
+        else:
+            self.metadata.pop("readoutMode", None)
 
     @property
     def frame_shape(self):
