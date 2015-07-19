@@ -72,14 +72,22 @@ class SpeStack(FramesSequence):
     """Read image data from SPE files
 
     Attributes:
+        default_char_encoding (str): Default character encoding used to decode
+            metadata strings. This is a class attribute. By setting
+            `SpeStack.default_char_encoding = "my_coding"`, my_coding will be
+            used as a default in all SpeStack instances thereafter, unless
+            a different one is explicitly passed to the constructor. Defaults
+            to "ascii".
         metadata (dict): Contains additional metadata.
     """
+    default_char_encoding = "ascii"
+
     @classmethod
     def class_exts(cls):
         return {"spe"} | super(SpeStack, cls).class_exts()
 
     def __init__(self, filename, process_func=None, dtype=None,
-                 as_grey=False, char_encoding="ascii"):
+                 as_grey=False, char_encoding=None):
         """Create an iterable object that returns image data as numpy arrays
 
         Args:
@@ -90,12 +98,14 @@ class SpeStack(FramesSequence):
                 images too. No conversion if None. Defaults to None.
             as_grey (bool, optional): Convert image to greyscale. Do not use
                 in conjunction with process_func. Defaults to False.
-            char_encoding (str, optional): Specifies what character encoding
-                is used for metatdata strings. Defaults to "ascii".
+            char_encoding (str or None, optional): Specifies what character
+                encoding is used to decode metatdata strings. If None, use
+                the `default_char_encoding` class attribute. Defaults to None.
         """
         self._filename = filename
         self._file = open(filename, "rb")
-        self._char_encoding = char_encoding
+        self._char_encoding = (char_encoding if char_encoding is not None
+                               else self.default_char_encoding)
 
         #determine data type
         self._file.seek(spec.datatype[0])
