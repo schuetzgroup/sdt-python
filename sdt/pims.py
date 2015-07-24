@@ -2,6 +2,7 @@
 
 """PIMS plugins for image sequences created by SDT software"""
 import logging
+from datetime import datetime
 
 import pims
 
@@ -41,11 +42,10 @@ SdtComments = {
 }
 
 months = {
-    #Convert SDTcontrol month strings to number strings
-    "Jan": "01", "Feb": "02", "Mär": "03", "Mar": "03", "Apr": "04",
-    "Mai": "05", "May": "05", "Jun": "06", "Jul": "07", "Aug": "08",
-    "Sep": "09", "Okt": "10", "Oct": "10", "Nov": "11", "Dez": "12",
-    "Dec": "12"
+    #Convert SDTcontrol month strings to month numbers
+    "Jan": 1, "Feb": 2, "Mär": 3, "Mar": 3, "Apr": 4, "Mai": 5, "May": 5,
+    "Jun": 6, "Jul": 7, "Aug": 8, "Sep": 9, "Okt": 10, "Oct": 10, "Nov": 11,
+    "Dez": 12, "Dec": 12
 }
 
 methods = {
@@ -103,11 +103,12 @@ class SdtSpeStack(pims.SpeStack):
         time = self.metadata["ExperimentTimeLocal"]
         try:
             month = months[date[2:5]]
+            self.metadata["DateTime"] = datetime(
+                int(date[5:9]), month, int(date[0:2]), int(time[0:2]),
+                int(time[2:4]), int(time[4:6]))
         except:
-            month = "00"
-        self.metadata["DateTime"] = "{y}:{mo}:{d} {h}:{mi}:{s}".format(
-            y=date[5:9], mo=month, d=date[0:2],
-            h=time[0:2], mi=time[2:4], s=time[4:6])
+            _logger.info("Decoding of date failed.")
+            self.metadata["DateTime"] = None
         self.metadata.pop("date", None)
         self.metadata.pop("ExperimentTimeLocal", None)
 
