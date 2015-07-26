@@ -29,11 +29,13 @@ def save_as_tiff(frames, filename):
     serialize it to JSON and save it as the TIFF file's ImageDescription
     tags.
 
-    Args:
-        frames (iterable of numpy.arrays): Frames to be written to TIFF file.
-            This can e.g. be any subclass of pims.FramesSequence like
-            TiffStack.
-        filename (str): Name of the output file
+    Parameters
+    ----------
+    frames : iterable of numpy.arrays)
+        Frames to be written to TIFF file. This can e.g. be any subclass of
+        `pims.FramesSequence` like `pims.ImageSequence`.
+    filename : str
+        Name of the output file
     """
     def serialize_numpy(number):
         if isinstance(number, np.integer):
@@ -72,27 +74,43 @@ def save_as_tiff(frames, filename):
 class ROI(object):
     """Region of interest in a picture
 
-    This class represents a region of interest. It as callable. If called with
-    an array-like object as parameter, it will return only the region of
-    interest as defined by the top_left and bottom_right attributes.
-
-    top_left is a tuple holding the x and y coordinates of the top-left corner
-    of the ROI, while bottom_right holds the x and y coordinates of the
-    bottom-right corner.
-
-    (0, 0) is the the top-left corner of the image. (width-1, height-1) is the
-    bottom-right corner.
+    This class represents a region of interest. It can crop images or restrict
+    data (such as feature localization data) to a specified region.
 
     At the moment, this works only for single channel (i. e. grayscale) images.
+
+    Attributes
+    ----------
+    top_left : tuple of int
+        x and y coordinates of the top-left corner. Pixels with coordinates
+        greater or equal than these are excluded from the ROI.
+    bottom_right : tuple of int
+        x and y coordinates of the bottom-right corner. Pixels with coordinates
+        greater or equal than these are excluded from the ROI.
+
+    Examples
+    --------
+
+    Let `f` be a numpy array representing an image.
+
+    >>> f.shape
+    (128, 128)
+    >>> r = ROI((0, 0), (64, 64))
+    >>> f2 = r(f)
+    >>> f2.shape
+    (64, 64)
     """
     def __init__(self, top_left, bottom_right):
         """Initialze the top_left and bottom_right attributes.
 
-        Both top_left and bottom_right are expected to be tuples holding a x
-        and a y coordinate.
-
-        (0, 0) is the the top-left corner of the image. (width-1, height-1) is
-        the bottom-right corner.
+        Parameters
+        ----------
+        top_left : tuple of int
+            x and y coordinates of the top-left corner. Pixels with coordinates
+            greater or equal than these are excluded from the ROI.
+        bottom_right : tuple of int
+            x and y coordinates of the bottom-right corner. Pixels with
+            coordinates greater or equal than these are excluded from the ROI.
         """
         self.top_left = top_left
         self.bottom_right = bottom_right
@@ -100,20 +118,26 @@ class ROI(object):
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True):
         """Restrict data to the region of interest.
 
-        Args:
-            data: Either a `pandas.DataFrame` containing feature coordinates,
-                or an array-like object containing the raw image data.
-            pos_columns (list of str): The names of the columns of the x and y
-                coordinates of features. This only applies to DataFrame data
-                arguments.
-            reset_origin (bool): If True, the top-left corner coordinates will
-                be subtracted off all feature coordinates, i. e. the top-left
-                corner will be the origin.
+        Parameters
+        ----------
+        data : pandas.DataFrame or pims.FramesSequence or array-like
+            data to be processed. If a pandas.Dataframe, select only those
+            lines with coordinate values within the ROI. Otherwise,
+            `pims.pipeline` is used to crop image data. This requires pims
+            version > 0.2.2.
+        pos_columns : list of str, optional
+            The names of the columns of the x and y coordinates of features.
+            This only applies to DataFrame `data` arguments. Defaults to
+            ["x", "y"].
+        reset_origin : bool, optional
+            If True, the top-left corner coordinates will be subtracted off
+            all feature coordinates, i. e. the top-left corner will be the
+            new origin. Defaults to True.
 
-        Returns:
-            If data was a `pandas.DataFrame` only the lines with coordinates
-            within the region of interest are returned, otherwise the cropped
-            raw image.
+        Returns
+        -------
+        pandas.DataFrame or pims.SliceableIterable or numpy.array
+            Data restricted to the ROI represented by this class.
         """
         if isinstance(data, pd.DataFrame):
             x = pos_columns[0]
