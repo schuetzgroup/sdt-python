@@ -123,7 +123,6 @@ class SdtSpeStack(pims.SpeStack):
                 int(time[2:4]), int(time[4:6]))
         except:
             _logger.info("Decoding of date failed.")
-            self.metadata["DateTime"] = None
         self.metadata.pop("date", None)
         self.metadata.pop("ExperimentTimeLocal", None)
 
