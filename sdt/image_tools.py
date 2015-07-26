@@ -11,6 +11,12 @@ import numpy as np
 import pandas as pd
 import tifffile
 
+try:
+    from pims import pipeline
+except ImportError:
+    def pipeline(func):
+        return func
+
 pd.options.mode.chained_assignment = None #Get rid of the warning
 
 _logger = logging.getLogger(__name__)
@@ -122,5 +128,9 @@ class ROI(object):
 
             return roi_data
 
-        return data[self.top_left[1]:self.bottom_right[1],
-                    self.top_left[0]:self.bottom_right[0]]
+        else:
+            @pipeline
+            def crop(img):
+                return img[self.top_left[1]:self.bottom_right[1],
+                           self.top_left[0]:self.bottom_right[0]]
+            return crop(data)
