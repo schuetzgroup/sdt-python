@@ -168,12 +168,14 @@ class MicroViewWidget(mvBase):
             self._intensityMin = np.min(img_buf)
             self._intensityMax = np.max(img_buf)
         img_buf -= float(self._intensityMin)
-        img_buf /= float(self._intensityMax - self._intensityMin)
-        img_buf[img_buf < 0] = 0.
-        img_buf[img_buf > 1] = 1.
-        img_buf *= 255
+        img_buf *= 255./float(self._intensityMax - self._intensityMin)
+        np.clip(img_buf, 0., 255., img_buf)
 
-        self._qImage = QImage(img_buf.astype(np.uint8).repeat(4),
+        #far faster than calling img_buf.astype(np.uint8).repeat(4)
+        qi = np.empty((img_buf.shape[0], img_buf.shape[1], 4), dtype=np.uint8)
+        qi[:, :, 0] = qi[:, :, 1] = qi[:, :, 2] = qi[:, :, 3] = img_buf
+
+        self._qImage = QImage(qi,
                               self._ims.frame_shape[1],
                               self._ims.frame_shape[0],
                               QImage.Format_RGB32)
