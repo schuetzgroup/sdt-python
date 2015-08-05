@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>299</height>
+    <width>552</width>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,6 +81,38 @@
     </layout>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="posDescLabel">
+       <property name="text">
+        <string>Position:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="posLabel">
+       <property name="text">
+        <string>pos</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="intDescLabel">
+       <property name="text">
+        <string>Intensity:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="intLabel">
+       <property name="text">
+        <string>int</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="framenoLabel">
@@ -140,6 +172,100 @@
      </item>
     </layout>
    </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Contrast</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="3" rowspan="2">
+       <widget class="QPushButton" name="autoButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Auto</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSlider" name="minSlider">
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+        <property name="pageStep">
+         <number>100</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSlider" name="maxSlider">
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+        <property name="pageStep">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>1000</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="maxLabel">
+        <property name="text">
+         <string>Maximum</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="minLabel">
+        <property name="text">
+         <string>Minimum</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QSpinBox" name="minSpinBox">
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QSpinBox" name="maxSpinBox">
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>
@@ -151,12 +277,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>200</x>
-     <y>275</y>
+     <x>257</x>
+     <y>267</y>
     </hint>
     <hint type="destinationlabel">
-     <x>359</x>
-     <y>282</y>
+     <x>424</x>
+     <y>272</y>
     </hint>
    </hints>
   </connection>
@@ -167,12 +293,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>353</x>
-     <y>270</y>
+     <x>424</x>
+     <y>272</y>
     </hint>
     <hint type="destinationlabel">
-     <x>271</x>
-     <y>275</y>
+     <x>328</x>
+     <y>267</y>
     </hint>
    </hints>
   </connection>

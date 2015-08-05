@@ -8,7 +8,7 @@ from PyQt5.QtCore import (QRectF, QPointF, Qt, pyqtSignal, pyqtProperty,
                           pyqtSlot, QTimer)
 from PyQt5.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform)
 from PyQt5.QtWidgets import (QGraphicsView, QGraphicsPixmapItem,
-                             QGraphicsScene)
+                             QGraphicsScene, QSpinBox, QDoubleSpinBox)
 from PyQt5 import uic
 
 class MicroView(QGraphicsView):
@@ -98,6 +98,14 @@ class MicroViewWidget(mvBase):
 
         self._intensityMin = None
         self._intensityMax = None
+        self._contrastFactor = 1
+        self._ui.minSpinBox.valueChanged.connect(self._ui.minSlider.setValue)
+        self._ui.maxSpinBox.valueChanged.connect(self._ui.maxSlider.setValue)
+        self._ui.minSlider.valueChanged.connect(self._ui.minSpinBox.setValue)
+        self._ui.maxSlider.valueChanged.connect(self._ui.maxSpinBox.setValue)
+        self._ui.minSlider.valueChanged.connect(self.setMinIntensity)
+        self._ui.maxSlider.valueChanged.connect(self.setMaxIntensity)
+        self._ui.autoButton.pressed.connect(self.autoIntensity)
 
         self._playing = False
         self._playTimer = QTimer()
@@ -105,7 +113,8 @@ class MicroViewWidget(mvBase):
         self._playTimer.setSingleShot(False)
 
         self._ui.framenoBox.valueChanged.connect(self.selectFrame)
-        self._ui.playButton.pressed.connect(lambda: self.setPlaying(not self._playing))
+        self._ui.playButton.pressed.connect(
+            lambda: self.setPlaying(not self._playing))
         self._playTimer.timeout.connect(self.nextFrame)
         self._ui.zoomInButton.pressed.connect(self.zoomIn)
         self._ui.zoomOriginalButton.pressed.connect(self.zoomOriginal)
@@ -117,34 +126,30 @@ class MicroViewWidget(mvBase):
         self._ui.framenoBox.setMaximum(len(ims))
         self._ui.framenoSlider.setMaximum(len(ims))
         self._ims = ims
-        self.selectFrame(1)
-        self.drawImage()
+        self._imageData = self._ims[0]
 
-    def setIntensityMinimum(self, min):
-        if min == self._intensityMin:
-            return
-        self._intensityMin = min
-        self.intensityMinimumChanged.emit(self._intensityMin)
-        self.drawImage()
+        if np.issubdtype(self._imageData.dtype, np.float):
+            min = 0
+            max = 1000
+            self._contrastFactor = 1e-3
+        else:
+            min = np.iinfo(ims.pixel_type).min
+            max = np.iinfo(ims.pixel_type).max
+            self._contrastFactor = 1
 
-    intensityMinimumChanged = pyqtSignal(int)
+        if (self._intensityMin is None) or (self._intensityMax is None):
+            self.autoIntensity()
+        else:
+            self.drawImage()
 
-    @pyqtProperty(int, fset = setIntensityMinimum, notify = intensityMinimumChanged)
-    def intensityMinimum(self):
-        return self._intensityMin
-
-    def setIntensityMaximum(self, max):
-        if max == self._intensityMax:
-            return
-        self._intensityMax = max
-        self.intensityMaximumChanged.emit(self._intensityMax)
-        self.drawImage()
-
-    intensityMaximumChanged = pyqtSignal(int)
-
-    @pyqtProperty(int, fset = setIntensityMaximum, notify = intensityMaximumChanged)
-    def intensityMaximum(self):
-        return self._intensityMax
+        self._ui.minSpinBox.setMinimum(min)
+        self._ui.minSpinBox.setMaximum(max)
+        self._ui.maxSpinBox.setMinimum(min)
+        self._ui.maxSpinBox.setMaximum(max)
+        self._ui.minSlider.setMinimum(min)
+        self._ui.minSlider.setMaximum(max)
+        self._ui.maxSlider.setMinimum(min)
+        self._ui.maxSlider.setMaximum(max)
 
     def setPlaying(self, play):
         if play == self._playing:
@@ -167,8 +172,9 @@ class MicroViewWidget(mvBase):
         if (self._intensityMin is None) or (self._intensityMax is None):
             self._intensityMin = np.min(img_buf)
             self._intensityMax = np.max(img_buf)
-        img_buf -= float(self._intensityMin)
-        img_buf *= 255./float(self._intensityMax - self._intensityMin)
+        img_buf -= float(self._intensityMin*self._contrastFactor)
+        img_buf *= (255.*self._contrastFactor
+                    /float(self._intensityMax - self._intensityMin))
         np.clip(img_buf, 0., 255., img_buf)
 
         #far faster than calling img_buf.astype(np.uint8).repeat(4)
@@ -176,22 +182,34 @@ class MicroViewWidget(mvBase):
         qi[:, :, 0] = qi[:, :, 1] = qi[:, :, 2] = qi[:, :, 3] = img_buf
 
         self._qImage = QImage(qi,
-                              self._ims.frame_shape[1],
-                              self._ims.frame_shape[0],
+                              self._imageData.shape[1],
+                              self._imageData.shape[0],
                               QImage.Format_RGB32)
         self._view.setImage(QPixmap.fromImage(self._qImage))
 
     @pyqtSlot()
     def autoIntensity(self):
-        self._intensityMin = min(self._imageData)
-        self._intensityMax = max(self._imageData)
+        self._intensityMin = np.min(self._imageData)/self._contrastFactor
+        self._intensityMax = np.max(self._imageData)/self._contrastFactor
         if self._intensityMin == self._intensityMax:
             if self._intensityMax == 0:
                 self._intensityMax = 1
             else:
                 self._intensityMin = self._intensityMax - 1
-        self.intensityMinimumChanged.emit(self._intensityMin)
-        self.intensityMaximumChanged.emit(self._intensityMax)
+        self._ui.minSlider.setValue(self._intensityMin)
+        self._ui.maxSlider.setValue(self._intensityMax)
+        self.drawImage()
+
+    @pyqtSlot(int)
+    def setMinIntensity(self, v):
+        self._intensityMin = min(v, self._intensityMax - 1)
+        self._ui.minSlider.setValue(self._intensityMin)
+        self.drawImage()
+
+    @pyqtSlot(int)
+    def setMaxIntensity(self, v):
+        self._intensityMax = max(v, self._intensityMin + 1)
+        self._ui.maxSlider.setValue(self._intensityMax)
         self.drawImage()
 
     @pyqtSlot(int)
