@@ -7,10 +7,21 @@ import pims
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
-                             QToolBar, QMessageBox)
+                             QToolBar, QMessageBox, QSplitter, QToolBox)
 from PyQt5.QtCore import (pyqtSlot, Qt, QDir)
 
 from . import micro_view
+from . import toolbox_widgets
+
+try:
+    from storm_analysis import daostorm_3d
+except:
+    daostorm_3d = None
+    
+try:
+    from storm_analysis import scmos
+except:
+    scmos = None
 
 
 class LocatorMainWindow(QMainWindow):
@@ -22,8 +33,26 @@ class LocatorMainWindow(QMainWindow):
         super().__init__(parent)
 
         self._viewer = micro_view.MicroViewWidget()
-        self.setCentralWidget(self._viewer)
         self._viewer.setEnabled(False)
+        
+        self._methodMap = {}
+        if daostorm_3d is not None:
+            self._methodMap["3D-DAOSTORM"] = \
+                toolbox_widgets.Daostorm3dOptions()
+        if scmos is not None:
+            self._methodMap["sCMOS"] = toolbox_widgets.SCmosOptions()
+        
+        self._toolBox = QToolBox()
+        self._optionsWidget = toolbox_widgets.LocatorOptionsContainer(
+            self._methodMap)
+        self._toolBox.addItem(self._optionsWidget,
+                              self.tr("Localization options"))
+        
+        self._splitter = QSplitter()
+        self._splitter.addWidget(self._toolBox)
+        self._splitter.addWidget(self._viewer)
+        self.setCentralWidget(self._splitter)
+        
 
         self._toolBar = QToolBar(self.tr("Main toolbar"))
         self.addToolBar(self._toolBar)
