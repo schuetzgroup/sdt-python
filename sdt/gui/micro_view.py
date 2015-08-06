@@ -95,6 +95,7 @@ class MicroViewWidget(mvBase):
         self._imageItem = QGraphicsPixmapItem()
         self._view.setScene(self._scene)
         self._scene.addItem(self._imageItem)
+        self._imageData = np.array([])
 
         self._intensityMin = None
         self._intensityMax = None
@@ -211,10 +212,13 @@ class MicroViewWidget(mvBase):
         self._intensityMax = max(v, self._intensityMin + 1)
         self._ui.maxSlider.setValue(self._intensityMax)
         self.drawImage()
+        
+    currentFrameChanged = pyqtSignal()
 
     @pyqtSlot(int)
     def selectFrame(self, frameno):
         self._imageData = self._ims[frameno - 1]
+        self.currentFrameChanged.emit()
         self.drawImage()
 
     @pyqtSlot()
@@ -235,3 +239,6 @@ class MicroViewWidget(mvBase):
     @pyqtSlot()
     def zoomOriginal(self):
         self._view.setTransform(QTransform())
+
+    def getCurrentFrame(self):
+        return self._imageData

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import collections
+import types
 
 import numpy as np
 import pims
@@ -8,23 +10,13 @@ import pims
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                              QToolBar, QMessageBox, QSplitter, QToolBox)
-from PyQt5.QtCore import (pyqtSlot, Qt, QDir)
+from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread)
 
 from . import micro_view
 from . import toolbox_widgets
 
-try:
-    from storm_analysis import daostorm_3d
-except:
-    daostorm_3d = None
-    
-try:
-    from storm_analysis import scmos
-except:
-    scmos = None
 
-
-class LocatorMainWindow(QMainWindow):
+class MainWindow(QMainWindow):
     __clsName = "LocatorMainWindow"
     def tr(self, string):
         return QApplication.translate(self.__clsName, string)
@@ -33,18 +25,9 @@ class LocatorMainWindow(QMainWindow):
         super().__init__(parent)
 
         self._viewer = micro_view.MicroViewWidget()
-        self._viewer.setEnabled(False)
-        
-        self._methodMap = {}
-        if daostorm_3d is not None:
-            self._methodMap["3D-DAOSTORM"] = \
-                toolbox_widgets.Daostorm3dOptions()
-        if scmos is not None:
-            self._methodMap["sCMOS"] = toolbox_widgets.SCmosOptions()
         
         self._toolBox = QToolBox()
-        self._optionsWidget = toolbox_widgets.LocatorOptionsContainer(
-            self._methodMap)
+        self._optionsWidget = toolbox_widgets.LocatorOptionsContainer()
         self._toolBox.addItem(self._optionsWidget,
                               self.tr("Localization options"))
         
@@ -52,6 +35,7 @@ class LocatorMainWindow(QMainWindow):
         self._splitter.addWidget(self._toolBox)
         self._splitter.addWidget(self._viewer)
         self.setCentralWidget(self._splitter)
+        self._splitter.setEnabled(False)
         
 
         self._toolBar = QToolBar(self.tr("Main toolbar"))
@@ -63,7 +47,15 @@ class LocatorMainWindow(QMainWindow):
         self._toolBar.addAction(self._actionOpen)
 
         self._lastOpenDir = QDir.currentPath()
-
+        
+        self._worker = Worker(self)
+        self._optionsWidget.optionsChanged.connect(self._makeWorkerWork)
+        self._viewer.currentFrameChanged.connect(self._makeWorkerWork)
+        self._workerSignal.connect(self._worker.locate)
+        self._workerThread = QThread(self)
+        self._worker.moveToThread(self._workerThread)
+        self._workerThread.start()
+            
     @pyqtSlot()
     def open(self):
         fname = QFileDialog.getOpenFileName(
@@ -88,11 +80,28 @@ class LocatorMainWindow(QMainWindow):
             return
 
         self._viewer.setImageSequence(ims)
-        self._viewer.setEnabled(True)
+        self._splitter.setEnabled(True)
+        
+    _workerSignal = pyqtSignal(np.ndarray, dict, types.ModuleType)
+        
+    @pyqtSlot()
+    def _makeWorkerWork(self):
+        self._workerSignal.emit(self._viewer.getCurrentFrame(),
+                                self._optionsWidget.getOptions(),
+                                self._optionsWidget.getModule())
+        
+        
+class Worker(QObject):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+    @pyqtSlot(np.ndarray, dict, types.ModuleType)
+    def locate(self, img, options, module):
+        print("module.locate(img, options)")
 
 def main():
     app = QApplication(sys.argv)
-    w = LocatorMainWindow()
+    w = MainWindow()
     w.show()
     sys.exit(app.exec_())
 
