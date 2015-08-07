@@ -11,7 +11,8 @@ import pims
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                              QToolBar, QMessageBox, QSplitter, QToolBox)
-from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread)
+from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
+                          QSettings)
 
 from . import micro_view
 from . import toolbox_widgets
@@ -40,6 +41,7 @@ class MainWindow(QMainWindow):
         
 
         self._toolBar = QToolBar(self.tr("Main toolbar"))
+        self._toolBar.setObjectName("mainToolBar")
         self.addToolBar(self._toolBar)
         self._actionOpen = QAction(QIcon.fromTheme("document-open"),
                                    self.tr("Open image sequence"),
@@ -48,7 +50,7 @@ class MainWindow(QMainWindow):
         self._toolBar.addAction(self._actionOpen)
 
         self._lastOpenDir = QDir.currentPath()
-        
+
         self._worker = Worker()
         self._optionsWidget.optionsChanged.connect(self._makeWorkerWork)
         self._viewer.currentFrameChanged.connect(self._makeWorkerWork)
@@ -57,7 +59,15 @@ class MainWindow(QMainWindow):
         self._worker.moveToThread(self._workerThread)
         self._workerThread.start()
         self._worker.locateFinished.connect(self._viewer.setLocalizationData)
-            
+
+        settings = QSettings("sdt", "locator")
+        v = settings.value("MainWindow/geometry")
+        if v is not None:
+            self.restoreGeometry(v)
+        v = settings.value("MainWindow/state")
+        if v is not None:
+            self.restoreState(v)
+
     @pyqtSlot()
     def open(self):
         fname = QFileDialog.getOpenFileName(
@@ -83,15 +93,21 @@ class MainWindow(QMainWindow):
 
         self._viewer.setImageSequence(ims)
         self._splitter.setEnabled(True)
-        
+
     _workerSignal = pyqtSignal(np.ndarray, dict, types.ModuleType)
-        
+
     @pyqtSlot()
     def _makeWorkerWork(self):
         self._workerSignal.emit(self._viewer.getCurrentFrame(),
                                 self._optionsWidget.getOptions(),
                                 self._optionsWidget.getModule())
-        
+
+    def closeEvent(self, event):
+        settings = QSettings("sdt", "locator")
+        settings.setValue("MainWindow/geometry", self.saveGeometry())
+        settings.setValue("MainWindow/state", self.saveState())
+        super().closeEvent(event)
+
         
 class Worker(QObject):
     def __init__(self, parent=None):
@@ -101,7 +117,7 @@ class Worker(QObject):
     def locate(self, img, options, module):
         ret = module.locate(img, **options)
         self.locateFinished.emit(ret)
-        
+
     locateFinished = pyqtSignal(pd.DataFrame)
 
 def main():
