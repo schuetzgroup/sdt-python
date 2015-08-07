@@ -31,6 +31,9 @@ class MicroView(QGraphicsView):
         self._imageItem.setPixmap(pixmap)
         self._imageBoundingRect = self._imageItem.boundingRect()
 
+    def getImageItem(self):
+        return self._imageItem
+
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
 
@@ -133,6 +136,7 @@ class MicroViewWidget(mvBase):
         self._ui.zoomInButton.pressed.connect(self.zoomIn)
         self._ui.zoomOriginalButton.pressed.connect(self.zoomOriginal)
         self._ui.zoomOutButton.pressed.connect(self.zoomOut)
+        self._ui.zoomFitButton.pressed.connect(self.zoomFit)
 
         self._ims = None
         self._locData = None
@@ -166,9 +170,9 @@ class MicroViewWidget(mvBase):
             self.autoIntensity()
         else:
             self.drawImage()
-        
+
         self.currentFrameChanged.emit()
-        
+
     @pyqtSlot(pd.DataFrame)
     def setLocalizationData(self, ld):
         self._locData = ld
@@ -209,7 +213,7 @@ class MicroViewWidget(mvBase):
                               self._imageData.shape[0],
                               QImage.Format_RGB32)
         self._view.setImage(QPixmap.fromImage(self._qImage))
-        
+
     def drawLocalizations(self):
         if isinstance(self._locMarkers, QGraphicsItem):
             self._scene.removeItem(self._locMarkers)
@@ -218,11 +222,11 @@ class MicroViewWidget(mvBase):
             d = self._locData.loc[sel, ["x", "y", "size"]].as_matrix()
         except Exception:
             return
-        
+
         markerList = []
         for x, y, size in d:
             markerList.append(LocalizationMarker(x, y, size))
-            
+
         self._locMarkers = self._scene.createItemGroup(markerList)
 
     @pyqtSlot()
@@ -249,7 +253,7 @@ class MicroViewWidget(mvBase):
         self._intensityMax = max(v, self._intensityMin + 1)
         self._ui.maxSlider.setValue(self._intensityMax)
         self.drawImage()
-        
+
     currentFrameChanged = pyqtSignal()
 
     @pyqtSlot(int)
@@ -277,6 +281,10 @@ class MicroViewWidget(mvBase):
     @pyqtSlot()
     def zoomOriginal(self):
         self._view.setTransform(QTransform())
+
+    @pyqtSlot()
+    def zoomFit(self):
+        self._view.fitInView(self._view.getImageItem(), Qt.KeepAspectRatio)
 
     def getCurrentFrame(self):
         return self._imageData

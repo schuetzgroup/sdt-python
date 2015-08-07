@@ -54,6 +54,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="zoomFitButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="zoom-fit-best"/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="zoomInButton">
        <property name="text">
         <string>...</string>
@@ -278,11 +288,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>257</x>
-     <y>267</y>
+     <y>261</y>
     </hint>
     <hint type="destinationlabel">
      <x>424</x>
-     <y>272</y>
+     <y>267</y>
     </hint>
    </hints>
   </connection>
@@ -294,11 +304,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>424</x>
-     <y>272</y>
+     <y>267</y>
     </hint>
     <hint type="destinationlabel">
      <x>328</x>
-     <y>267</y>
+     <y>261</y>
     </hint>
    </hints>
   </connection>
