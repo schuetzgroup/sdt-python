@@ -5,6 +5,7 @@ import collections
 import types
 
 import numpy as np
+import pandas as pd
 import pims
 
 from PyQt5.QtGui import QIcon
@@ -48,13 +49,14 @@ class MainWindow(QMainWindow):
 
         self._lastOpenDir = QDir.currentPath()
         
-        self._worker = Worker(self)
+        self._worker = Worker()
         self._optionsWidget.optionsChanged.connect(self._makeWorkerWork)
         self._viewer.currentFrameChanged.connect(self._makeWorkerWork)
         self._workerSignal.connect(self._worker.locate)
         self._workerThread = QThread(self)
         self._worker.moveToThread(self._workerThread)
         self._workerThread.start()
+        self._worker.locateFinished.connect(self._viewer.setLocalizationData)
             
     @pyqtSlot()
     def open(self):
@@ -97,7 +99,10 @@ class Worker(QObject):
         
     @pyqtSlot(np.ndarray, dict, types.ModuleType)
     def locate(self, img, options, module):
-        print("module.locate(img, options)")
+        ret = module.locate(img, **options)
+        self.locateFinished.emit(ret)
+        
+    locateFinished = pyqtSignal(pd.DataFrame)
 
 def main():
     app = QApplication(sys.argv)

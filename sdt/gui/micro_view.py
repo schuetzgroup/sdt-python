@@ -3,12 +3,15 @@
 import os
 
 import numpy as np
+import pandas as pd
 
 from PyQt5.QtCore import (QRectF, QPointF, Qt, pyqtSignal, pyqtProperty,
                           pyqtSlot, QTimer)
-from PyQt5.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform)
+from PyQt5.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform, QPen)
 from PyQt5.QtWidgets import (QGraphicsView, QGraphicsPixmapItem,
-                             QGraphicsScene, QSpinBox, QDoubleSpinBox)
+                             QGraphicsScene, QSpinBox, QDoubleSpinBox,
+                             QGraphicsEllipseItem, QGraphicsItemGroup,
+                             QGraphicsItem)
 from PyQt5 import uic
 
 class MicroView(QGraphicsView):
@@ -73,6 +76,16 @@ path = os.path.dirname(os.path.abspath(__file__))
 mvClass, mvBase = uic.loadUiType(os.path.join(path, "micro_view_widget.ui"))
 
 
+class LocalizationMarker(QGraphicsEllipseItem):
+    def __init__(self, x, y, size, parent=None):
+        super().__init__(x-size/2.+0.5, y-size/2.+0.5, size, size,
+                       parent)
+        pen = QPen()
+        pen.setWidthF(1.25)
+        pen.setCosmetic(True)
+        pen.setColor(Qt.green)
+        self.setPen(pen)
+
 class MicroViewWidget(mvBase):
     __clsName = "MicroViewWidget"
     def tr(self, string):
@@ -122,6 +135,8 @@ class MicroViewWidget(mvBase):
         self._ui.zoomOutButton.pressed.connect(self.zoomOut)
 
         self._ims = None
+        self._locData = None
+        self._locMarkers = None
 
     def setImageSequence(self, ims):
         self._ui.framenoBox.setMaximum(len(ims))
@@ -138,11 +153,6 @@ class MicroViewWidget(mvBase):
             max = np.iinfo(ims.pixel_type).max
             self._contrastFactor = 1
 
-        if (self._intensityMin is None) or (self._intensityMax is None):
-            self.autoIntensity()
-        else:
-            self.drawImage()
-
         self._ui.minSpinBox.setMinimum(min)
         self._ui.minSpinBox.setMaximum(max)
         self._ui.maxSpinBox.setMinimum(min)
@@ -151,6 +161,18 @@ class MicroViewWidget(mvBase):
         self._ui.minSlider.setMaximum(max)
         self._ui.maxSlider.setMinimum(min)
         self._ui.maxSlider.setMaximum(max)
+
+        if (self._intensityMin is None) or (self._intensityMax is None):
+            self.autoIntensity()
+        else:
+            self.drawImage()
+        
+        self.currentFrameChanged.emit()
+        
+    @pyqtSlot(pd.DataFrame)
+    def setLocalizationData(self, ld):
+        self._locData = ld
+        self.drawLocalizations()
 
     def setPlaying(self, play):
         if play == self._playing:
@@ -187,6 +209,21 @@ class MicroViewWidget(mvBase):
                               self._imageData.shape[0],
                               QImage.Format_RGB32)
         self._view.setImage(QPixmap.fromImage(self._qImage))
+        
+    def drawLocalizations(self):
+        if isinstance(self._locMarkers, QGraphicsItem):
+            self._scene.removeItem(self._locMarkers)
+        try:
+            sel = self._locData["frame"] == self._ui.framenoBox.value() - 1
+            d = self._locData.loc[sel, ["x", "y", "size"]].as_matrix()
+        except Exception:
+            return
+        
+        markerList = []
+        for x, y, size in d:
+            markerList.append(LocalizationMarker(x, y, size))
+            
+        self._locMarkers = self._scene.createItemGroup(markerList)
 
     @pyqtSlot()
     def autoIntensity(self):
@@ -220,6 +257,7 @@ class MicroViewWidget(mvBase):
         self._imageData = self._ims[frameno - 1]
         self.currentFrameChanged.emit()
         self.drawImage()
+        self.drawLocalizations()
 
     @pyqtSlot()
     def nextFrame(self):

@@ -33,7 +33,7 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 class LocatorOptionsContainer(QWidget):
     __clsName = "LocatorOptionsContainer"
-    optionChangeDelay = 500
+    optionChangeDelay = 200
     
     def tr(self, string):
         return QApplication.translate(self.__clsName, string)
