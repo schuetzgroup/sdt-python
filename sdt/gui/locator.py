@@ -31,6 +31,7 @@ class MainWindow(QMainWindow):
         self._toolBox = QToolBox()
         self._fileChooser = toolbox_widgets.FileChooser()
         self._fileChooser.selected.connect(self.open)
+        self._fileChooser.fileListChanged.connect(self._checkFileList)
         self._toolBox.addItem(self._fileChooser, self.tr("File selection"))
         self._optionsWidget = toolbox_widgets.LocatorOptionsContainer()
         self._toolBox.addItem(self._optionsWidget,
@@ -74,14 +75,17 @@ class MainWindow(QMainWindow):
                                  self.tr("Empty image"))
             ims = None
 
-        self._currentFile = None if ims is None else fname
+        self._currentFile = None if (ims is None) else fname
         self._viewer.setImageSequence(ims)
 
     _workerSignal = pyqtSignal(np.ndarray, dict, types.ModuleType)
 
     @pyqtSlot()
     def _makeWorkerWork(self):
-        self._workerSignal.emit(self._viewer.getCurrentFrame(),
+        curFrame = self._viewer.getCurrentFrame()
+        if curFrame is None:
+            return
+        self._workerSignal.emit(curFrame,
                                 self._optionsWidget.getOptions(),
                                 self._optionsWidget.getModule())
 
@@ -91,7 +95,14 @@ class MainWindow(QMainWindow):
         settings.setValue("MainWindow/state", self.saveState())
         super().closeEvent(event)
 
-    #TODO: If currently previewed file was removed from list, remove preview
+    @pyqtSlot()
+    def _checkFileList(self):
+        #If currently previewed file was removed from list, remove preview
+        if self._currentFile is None:
+            return
+        if self._currentFile not in self._fileChooser.files():
+            self._currentFile = None
+            self._viewer.setImageSequence(None)
 
         
 class Worker(QObject):
