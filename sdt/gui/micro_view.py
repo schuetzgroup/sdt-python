@@ -139,11 +139,22 @@ class MicroViewWidget(mvBase):
         self._ui.zoomOutButton.pressed.connect(self.zoomOut)
         self._ui.zoomFitButton.pressed.connect(self.zoomFit)
 
-        self._ims = None
         self._locData = None
         self._locMarkers = None
+        self.setImageSequence(None)
 
     def setImageSequence(self, ims):
+        self._locData = None
+
+        if ims is None:
+            self._ims = None
+            self._imageData = None
+            self.setEnabled(False)
+            self.drawImage()
+            self.drawLocalizations()
+            return
+
+        self.setEnabled(True)
         self._ui.framenoBox.setMaximum(len(ims))
         self._ui.framenoSlider.setMaximum(len(ims))
         self._ims = ims
@@ -180,6 +191,9 @@ class MicroViewWidget(mvBase):
         self.drawLocalizations()
 
     def setPlaying(self, play):
+        if self._ims is None:
+            return
+
         if play == self._playing:
             return
         if play:
@@ -196,6 +210,10 @@ class MicroViewWidget(mvBase):
         self._playing = play
 
     def drawImage(self):
+        if self._imageData is None:
+            self._view.setImage(QPixmap())
+            return
+
         img_buf = self._imageData.astype(np.float)
         if (self._intensityMin is None) or (self._intensityMax is None):
             self._intensityMin = np.min(img_buf)
@@ -218,6 +236,7 @@ class MicroViewWidget(mvBase):
     def drawLocalizations(self):
         if isinstance(self._locMarkers, QGraphicsItem):
             self._scene.removeItem(self._locMarkers)
+            self._locMarkers = None
         try:
             sel = self._locData["frame"] == self._ui.framenoBox.value() - 1
             d = self._locData.loc[sel, ["x", "y", "size"]].as_matrix()
@@ -232,6 +251,9 @@ class MicroViewWidget(mvBase):
 
     @pyqtSlot()
     def autoIntensity(self):
+        if self._imageData is None:
+            return
+
         self._intensityMin = np.min(self._imageData)/self._contrastFactor
         self._intensityMax = np.max(self._imageData)/self._contrastFactor
         if self._intensityMin == self._intensityMax:
@@ -259,6 +281,9 @@ class MicroViewWidget(mvBase):
 
     @pyqtSlot(int)
     def selectFrame(self, frameno):
+        if self._ims is None:
+            return
+
         self._imageData = self._ims[frameno - 1]
         self.currentFrameChanged.emit()
         self.drawImage()
@@ -266,6 +291,9 @@ class MicroViewWidget(mvBase):
 
     @pyqtSlot()
     def nextFrame(self):
+        if self._ims is None:
+            return
+
         next = self._ui.framenoBox.value() + 1
         if next > self._ui.framenoBox.maximum():
             next = 1
