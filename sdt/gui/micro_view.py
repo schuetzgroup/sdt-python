@@ -89,6 +89,7 @@ class LocalizationMarker(QGraphicsEllipseItem):
         pen.setColor(Qt.green)
         self.setPen(pen)
 
+
 class MicroViewWidget(mvBase):
     __clsName = "MicroViewWidget"
     def tr(self, string):

@@ -5,8 +5,10 @@ import types
 import numpy as np
 
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QComboBox, QLabel,
-                             QApplication, QLineEdit, QFileDialog)
-from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QObject, QTimer)
+                             QLineEdit, QFileDialog, QListWidgetItem,
+                             QAbstractItemView)
+from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QObject, QTimer,
+                          QCoreApplication)
 from PyQt5.QtGui import QPalette
 from PyQt5 import uic
 
@@ -36,7 +38,7 @@ class LocatorOptionsContainer(QWidget):
     optionChangeDelay = 200
     
     def tr(self, string):
-        return QApplication.translate(self.__clsName, string)
+        return QCoreApplication.translate(self.__clsName, string)
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -70,10 +72,10 @@ class LocatorOptionsContainer(QWidget):
         self._layout.addStretch()
         
     optionsChanged = pyqtSignal()
-    
+
     def getOptions(self):
         return self._currentWidget.getOptions()
-    
+
     def getModule(self):
         return self._currentModule
         
@@ -93,7 +95,7 @@ class SAOptions(saBase):
     __clsName = "SAOptions"
     
     def tr(self, string):
-        return QApplication.translate(self.__clsName, string)
+        return QCoreApplication.translate(self.__clsName, string)
 
     def __init__(self, method="3D-DAOSTORM", parent=None):
         super().__init__(parent)
@@ -176,3 +178,65 @@ class SAOptions(saBase):
             opt["chip_window"] = (self._ui.chipWinXBox.value(),
                                   self._ui.chipWinYBox.value())
         return opt
+
+
+fcClass, fcBase = uic.loadUiType(os.path.join(path, "file_chooser.ui"))
+class FileChooser(fcBase):
+    __clsName = "FileChooser"
+
+    def tr(self, string):
+        return QCoreApplication.translate(self.__clsName, string)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._ui = fcClass()
+        self._ui.setupUi(self)
+
+        self._ui.addButton.pressed.connect(self._addFilesSlot)
+        self._ui.removeButton.pressed.connect(self.removeSelected)
+        self._ui.fileListWidget.itemDoubleClicked.connect(self.select)
+
+        self._lastOpenDir = ""
+
+    fileListChanged = pyqtSignal()
+
+    def files(self):
+        for i in range(self._ui.fileListWidget.count()):
+            yield self._ui.fileListWidget.item(i)
+
+    @pyqtSlot()
+    def _addFilesSlot(self):
+        fnames = QFileDialog.getOpenFileNames(
+            self, self.tr("Open file"), self._lastOpenDir,
+            self.tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
+                self.tr("All files (*)"))
+        self.addFiles(fnames[0])
+
+    def addFiles(self, names):
+        if not len(names):
+            return
+
+        for fname in names:
+            w = QListWidgetItem(os.path.basename(fname))
+            w.setToolTip(fname)
+            w.setData(Qt.UserRole, fname)
+            self._ui.fileListWidget.addItem(w)
+        self.fileListChanged.emit()
+
+    @pyqtSlot()
+    def removeSelected(self):
+        selected = self._ui.fileListWidget.selectedItems()
+        if not len(selected):
+            return
+        for s in selected:
+            self._ui.fileListWidget.takeItem(self._ui.fileListWidget.row(s))
+        self.fileListChanged.emit()
+
+    selected = pyqtSignal(str)
+
+    @pyqtSlot(QListWidgetItem)
+    def select(self, item):
+        if isinstance(item, int):
+            item = self._ui.fileListWidget.item(item)
+        self.selected.emit(item.data(Qt.UserRole))

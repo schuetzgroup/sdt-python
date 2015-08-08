@@ -29,6 +29,9 @@ class MainWindow(QMainWindow):
         self._viewer = micro_view.MicroViewWidget()
         
         self._toolBox = QToolBox()
+        self._fileChooser = toolbox_widgets.FileChooser()
+        self._fileChooser.selected.connect(self.open)
+        self._toolBox.addItem(self._fileChooser, self.tr("File selection"))
         self._optionsWidget = toolbox_widgets.LocatorOptionsContainer()
         self._toolBox.addItem(self._optionsWidget,
                               self.tr("Localization options"))
@@ -37,19 +40,6 @@ class MainWindow(QMainWindow):
         self._splitter.addWidget(self._toolBox)
         self._splitter.addWidget(self._viewer)
         self.setCentralWidget(self._splitter)
-        self._splitter.setEnabled(False)
-        
-
-        self._toolBar = QToolBar(self.tr("Main toolbar"))
-        self._toolBar.setObjectName("mainToolBar")
-        self.addToolBar(self._toolBar)
-        self._actionOpen = QAction(QIcon.fromTheme("document-open"),
-                                   self.tr("Open image sequence"),
-                                   self)
-        self._actionOpen.triggered.connect(self.open)
-        self._toolBar.addAction(self._actionOpen)
-
-        self._lastOpenDir = QDir.currentPath()
 
         self._worker = Worker()
         self._optionsWidget.optionsChanged.connect(self._makeWorkerWork)
@@ -60,6 +50,8 @@ class MainWindow(QMainWindow):
         self._workerThread.start()
         self._worker.locateFinished.connect(self._viewer.setLocalizationData)
 
+        self._currentFile = None
+
         settings = QSettings("sdt", "locator")
         v = settings.value("MainWindow/geometry")
         if v is not None:
@@ -68,31 +60,22 @@ class MainWindow(QMainWindow):
         if v is not None:
             self.restoreState(v)
 
-    @pyqtSlot()
-    def open(self):
-        fname = QFileDialog.getOpenFileName(
-            self, self.tr("Open file"), self._lastOpenDir,
-            self.tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
-                self.tr("All files (*)"))
-        if not fname[0]:
-            #cancelled
-            return
-
-        self._lastOpenDir = fname[0]
+    @pyqtSlot(str)
+    def open(self, fname):
         try:
-            ims = pims.open(fname[0])
+            ims = pims.open(fname)
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error opening image"),
                                  self.tr(str(e)))
-            return
+            ims = None
 
-        if not len(ims):
+        if isinstance(ims, collections.Iterable) and not len(ims):
             QMessageBox.critical(self, self.tr(""),
                                  self.tr("Empty image"))
-            return
+            ims = None
 
+        self._currentFile = None if ims is None else fname
         self._viewer.setImageSequence(ims)
-        self._splitter.setEnabled(True)
 
     _workerSignal = pyqtSignal(np.ndarray, dict, types.ModuleType)
 
@@ -107,6 +90,8 @@ class MainWindow(QMainWindow):
         settings.setValue("MainWindow/geometry", self.saveGeometry())
         settings.setValue("MainWindow/state", self.saveState())
         super().closeEvent(event)
+
+    #TODO: If currently previewed file was removed from list, remove preview
 
         
 class Worker(QObject):
