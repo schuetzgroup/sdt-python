@@ -80,13 +80,13 @@ mvClass, mvBase = uic.loadUiType(os.path.join(path, "micro_view_widget.ui"))
 
 
 class LocalizationMarker(QGraphicsEllipseItem):
-    def __init__(self, x, y, size, parent=None):
+    def __init__(self, x, y, size, color=Qt.green, parent=None):
         super().__init__(x-size/2.+0.5, y-size/2.+0.5, size, size,
                        parent)
         pen = QPen()
         pen.setWidthF(1.25)
         pen.setCosmetic(True)
-        pen.setColor(Qt.green)
+        pen.setColor(color)
         self.setPen(pen)
 
 
@@ -139,12 +139,14 @@ class MicroViewWidget(mvBase):
         self._ui.zoomOutButton.pressed.connect(self.zoomOut)
         self._ui.zoomFitButton.pressed.connect(self.zoomFit)
 
-        self._locData = None
+        self._locDataGood = None
+        self._locDataBad = None
         self._locMarkers = None
         self.setImageSequence(None)
 
     def setImageSequence(self, ims):
-        self._locData = None
+        self._locDataGood = None
+        self._locDataBad = None
 
         if ims is None:
             self._ims = None
@@ -186,8 +188,9 @@ class MicroViewWidget(mvBase):
         self.currentFrameChanged.emit()
 
     @pyqtSlot(pd.DataFrame)
-    def setLocalizationData(self, ld):
-        self._locData = ld
+    def setLocalizationData(self, good, bad):
+        self._locDataGood = good
+        self._locDataBad = bad
         self.drawLocalizations()
 
     def setPlaying(self, play):
@@ -238,14 +241,22 @@ class MicroViewWidget(mvBase):
             self._scene.removeItem(self._locMarkers)
             self._locMarkers = None
         try:
-            sel = self._locData["frame"] == self._ui.framenoBox.value() - 1
-            d = self._locData.loc[sel, ["x", "y", "size"]].as_matrix()
+            sel = self._locDataGood["frame"] == self._ui.framenoBox.value() - 1
+            dGood = self._locDataGood.loc[sel, ["x", "y", "size"]].as_matrix()
         except Exception:
             return
 
+        try:
+            sel = self._locDataBad["frame"] == self._ui.framenoBox.value() - 1
+            dBad = self._locDataBad.loc[sel, ["x", "y", "size"]].as_matrix()
+        except Exception:
+            pass
+
         markerList = []
-        for x, y, size in d:
-            markerList.append(LocalizationMarker(x, y, size))
+        for x, y, size in dGood:
+            markerList.append(LocalizationMarker(x, y, size, Qt.green))
+        for x, y, size in dBad:
+            markerList.append(LocalizationMarker(x, y, size, Qt.red))
 
         self._locMarkers = self._scene.createItemGroup(markerList)
 

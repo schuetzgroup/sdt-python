@@ -36,6 +36,10 @@ class MainWindow(QMainWindow):
         self._optionsWidget = toolbox_widgets.LocatorOptionsContainer()
         self._toolBox.addItem(self._optionsWidget,
                               self.tr("Localization options"))
+        self._filterWidget = toolbox_widgets.LocFilter()
+        self._filterWidget.filterChanged.connect(self._filterLocalizations)
+        self._toolBox.addItem(self._filterWidget,
+                              self.tr("Localization filter"))
         
         self._splitter = QSplitter()
         self._splitter.addWidget(self._toolBox)
@@ -49,9 +53,10 @@ class MainWindow(QMainWindow):
         self._workerThread = QThread(self)
         self._worker.moveToThread(self._workerThread)
         self._workerThread.start()
-        self._worker.locateFinished.connect(self._viewer.setLocalizationData)
+        self._worker.locateFinished.connect(self._locateFinished)
 
         self._currentFile = None
+        self._currentLocData = None
 
         settings = QSettings("sdt", "locator")
         v = settings.value("MainWindow/geometry")
@@ -103,6 +108,22 @@ class MainWindow(QMainWindow):
         if self._currentFile not in self._fileChooser.files():
             self._currentFile = None
             self._viewer.setImageSequence(None)
+
+    @pyqtSlot(pd.DataFrame)
+    def _locateFinished(self, data):
+        self._currentLocData = data
+        self._filterWidget.setVariables(data.columns.values.tolist())
+        self._filterLocalizations()
+
+    @pyqtSlot()
+    def _filterLocalizations(self):
+        filterFunc = self._filterWidget.getFilter()
+        try:
+            good = filterFunc(self._currentLocData)
+        except:
+            good = np.ones((len(self._currentLocData),), dtype=bool)
+        self._viewer.setLocalizationData(self._currentLocData[good],
+                                         self._currentLocData[~good])
 
         
 class Worker(QObject):
