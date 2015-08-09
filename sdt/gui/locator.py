@@ -54,6 +54,8 @@ class MainWindow(QMainWindow):
         self._worker.moveToThread(self._workerThread)
         self._workerThread.start()
         self._worker.locateFinished.connect(self._locateFinished)
+        self._workerWorking = False
+        self._newWorkerJob = False
 
         self._currentFile = None
         self._currentLocData = None
@@ -90,9 +92,15 @@ class MainWindow(QMainWindow):
         curFrame = self._viewer.getCurrentFrame()
         if curFrame is None:
             return
+        if self._workerWorking:
+            #The worker is already working; just store the fact that the
+            #worker needs to run again immediately after it finishes
+            self._newWorkerJob = True
+            return
         self._workerSignal.emit(curFrame,
                                 self._optionsWidget.getOptions(),
                                 self._optionsWidget.getModule())
+        self._workerWorking = True
 
     def closeEvent(self, event):
         settings = QSettings("sdt", "locator")
@@ -111,6 +119,11 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(pd.DataFrame)
     def _locateFinished(self, data):
+        self._workerWorking = False
+        if self._newWorkerJob:
+            #while we were busy, something new has come up; work on that
+            self._makeWorkerWork()
+            self._newWorkerJob = False
         self._currentLocData = data
         self._filterWidget.setVariables(data.columns.values.tolist())
         self._filterLocalizations()
