@@ -305,3 +305,50 @@ class LocFilter(filterBase):
     def _addVariableFromList(self, var):
         self._ui.filterEdit.textCursor().insertText(
             "{{{0}}}".format(var.text()))
+
+
+locSaveClass, locSaveBase = uic.loadUiType(
+    os.path.join(path, "loc_save_options.ui"))
+class LocSaveOptions(locSaveBase):
+    __clsName = "LocSaveOptions"
+    formatIndexToName = ["hdf5", "particle_tracker", "settings"]
+
+    def tr(self, string):
+        return QCoreApplication.translate(self.__clsName, string)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = locSaveClass()
+        self._ui.setupUi(self)
+
+        self._ui.fileNameWidget.hide()
+        self._ui.formatBox.currentIndexChanged.connect(
+            self._handleFormatChange)
+
+        self._ui.localizeButton.pressed.connect(self.saveAll)
+        self._ui.fileNameButton.pressed.connect(self._openFileNameDialog)
+        self._lastOpenDir = ""
+
+    saveAll = pyqtSignal()
+
+    @pyqtSlot(int)
+    def _handleFormatChange(self, index):
+        self._ui.fileNameWidget.setVisible(
+            self.formatIndexToName[index] == "settings")
+
+    def getFormat(self):
+        return self.formatIndexToName[self._ui.formatBox.currentIndex()]
+
+    def getFileName(self):
+        return self._ui.fileNameEdit.text()
+
+    @pyqtSlot()
+    def _openFileNameDialog(self):
+        fname = QFileDialog.getSaveFileName(
+            self, self.tr("Save file"), self._lastOpenDir,
+            self.tr("JSON data (*.json)") + ";;" + self.tr("All files (*)"))
+        if not fname[0]:
+            #cancelled
+            return
+        self._ui.fileNameEdit.setText(fname[0])
+        self._lastOpenDir = fname[0]

@@ -48,9 +48,14 @@ class MainWindow(QMainWindow):
         self._locFilterDock.setObjectName("locFilterDock")
         self._locFilterDock.setWidget(filterWidget)
 
-        for d in (self._fileDock, self._locOptionsDock, self._locFilterDock):
-            feat = d.features()
-            d.setFeatures(feat & ~QDockWidget.DockWidgetClosable)
+        saveOptsWidget = toolbox_widgets.LocSaveOptions()
+        self._locSaveDock = QDockWidget(self.tr("Save localizations"), self)
+        self._locSaveDock.setObjectName("locSaveDock")
+        self._locSaveDock.setWidget(saveOptsWidget)
+
+        for d in (self._fileDock, self._locOptionsDock, self._locFilterDock,
+                  self._locSaveDock):
+            d.setFeatures(d.features() & ~QDockWidget.DockWidgetClosable)
             self.addDockWidget(Qt.LeftDockWidgetArea, d)
         self.setDockOptions(self.dockOptions() | QMainWindow.VerticalTabs)
 
