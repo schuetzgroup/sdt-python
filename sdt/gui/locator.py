@@ -10,7 +10,8 @@ import pims
 
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
-                             QToolBar, QMessageBox, QSplitter, QToolBox)
+                             QToolBar, QMessageBox, QSplitter, QToolBox,
+                             QDockWidget, QWidget, QLabel)
 from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
                           QSettings)
 
@@ -28,26 +29,35 @@ class MainWindow(QMainWindow):
 
         self._viewer = micro_view.MicroViewWidget()
         
-        self._toolBox = QToolBox()
-        self._fileChooser = toolbox_widgets.FileChooser()
-        self._fileChooser.selected.connect(self.open)
-        self._fileChooser.fileListChanged.connect(self._checkFileList)
-        self._toolBox.addItem(self._fileChooser, self.tr("File selection"))
-        self._optionsWidget = toolbox_widgets.LocatorOptionsContainer()
-        self._toolBox.addItem(self._optionsWidget,
-                              self.tr("Localization options"))
-        self._filterWidget = toolbox_widgets.LocFilter()
-        self._filterWidget.filterChanged.connect(self._filterLocalizations)
-        self._toolBox.addItem(self._filterWidget,
-                              self.tr("Localization filter"))
-        
-        self._splitter = QSplitter()
-        self._splitter.addWidget(self._toolBox)
-        self._splitter.addWidget(self._viewer)
-        self.setCentralWidget(self._splitter)
+        fileChooser = toolbox_widgets.FileChooser()
+        fileChooser.selected.connect(self.open)
+        fileChooser.fileListChanged.connect(self._checkFileList)
+        self._fileDock = QDockWidget(self.tr("File selection"), self)
+        self._fileDock.setObjectName("fileDock")
+        self._fileDock.setWidget(fileChooser)
+
+        optionsWidget = toolbox_widgets.LocatorOptionsContainer()
+        self._locOptionsDock = QDockWidget(self.tr("Localization options"),
+                                           self)
+        self._locOptionsDock.setObjectName("locOptionsDock")
+        self._locOptionsDock.setWidget(optionsWidget)
+
+        filterWidget = toolbox_widgets.LocFilter()
+        filterWidget.filterChanged.connect(self._filterLocalizations)
+        self._locFilterDock = QDockWidget(self.tr("Localization filter"), self)
+        self._locFilterDock.setObjectName("locFilterDock")
+        self._locFilterDock.setWidget(filterWidget)
+
+        for d in (self._fileDock, self._locOptionsDock, self._locFilterDock):
+            feat = d.features()
+            d.setFeatures(feat & ~QDockWidget.DockWidgetClosable)
+            self.addDockWidget(Qt.LeftDockWidgetArea, d)
+        self.setDockOptions(self.dockOptions() | QMainWindow.VerticalTabs)
+
+        self.setCentralWidget(self._viewer)
 
         self._worker = Worker()
-        self._optionsWidget.optionsChanged.connect(self._makeWorkerWork)
+        optionsWidget.optionsChanged.connect(self._makeWorkerWork)
         self._viewer.currentFrameChanged.connect(self._makeWorkerWork)
         self._workerSignal.connect(self._worker.locate)
         self._workerThread = QThread(self)
@@ -98,8 +108,8 @@ class MainWindow(QMainWindow):
             self._newWorkerJob = True
             return
         self._workerSignal.emit(curFrame,
-                                self._optionsWidget.getOptions(),
-                                self._optionsWidget.getModule())
+                                self._locOptionsDock.widget().getOptions(),
+                                self._locOptionsDock.widget().getModule())
         self._workerWorking = True
 
     def closeEvent(self, event):
@@ -125,12 +135,12 @@ class MainWindow(QMainWindow):
             self._makeWorkerWork()
             self._newWorkerJob = False
         self._currentLocData = data
-        self._filterWidget.setVariables(data.columns.values.tolist())
+        self._locFilterDock.widget().setVariables(data.columns.values.tolist())
         self._filterLocalizations()
 
     @pyqtSlot()
     def _filterLocalizations(self):
-        filterFunc = self._filterWidget.getFilter()
+        filterFunc = self._locFilterDock.widget().getFilter()
         try:
             good = filterFunc(self._currentLocData)
         except:
