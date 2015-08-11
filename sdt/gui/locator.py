@@ -11,9 +11,9 @@ import pims
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                              QToolBar, QMessageBox, QSplitter, QToolBox,
-                             QDockWidget, QWidget, QLabel)
+                             QDockWidget, QWidget, QLabel, QProgressDialog)
 from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
-                          QSettings)
+                          QSettings, QRunnable, QThreadPool, QModelIndex)
 
 from . import micro_view
 from . import toolbox_widgets
@@ -50,6 +50,7 @@ class MainWindow(QMainWindow):
         self._locFilterDock.setWidget(filterWidget)
 
         saveOptsWidget = toolbox_widgets.LocSaveOptions()
+        saveOptsWidget.saveAll.connect(self._locateAll)
         self._locSaveDock = QDockWidget(self.tr("Save localizations"), self)
         self._locSaveDock.setObjectName("locSaveDock")
         self._locSaveDock.setWidget(saveOptsWidget)
@@ -62,19 +63,24 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self._viewer)
 
-        self._worker = Worker()
+        self._previewWorker = PreviewWorker()
         optionsWidget.optionsChanged.connect(self._makeWorkerWork)
         self._viewer.currentFrameChanged.connect(self._makeWorkerWork)
-        self._workerSignal.connect(self._worker.locate)
+        self._workerSignal.connect(self._previewWorker.locate)
         self._workerThread = QThread(self)
-        self._worker.moveToThread(self._workerThread)
+        self._previewWorker.moveToThread(self._workerThread)
         self._workerThread.start()
-        self._worker.locateFinished.connect(self._locateFinished)
+        self._previewWorker.locateFinished.connect(self._locateFinished)
         self._workerWorking = False
         self._newWorkerJob = False
 
         self._currentFile = None
         self._currentLocData = None
+
+        self._workerThreadPool = QThreadPool(self)
+        #some algorithms are not thread safe;
+        #TODO: use more threads for thread safe algorithms
+        self._workerThreadPool.setMaxThreadCount(1)
 
         settings = QSettings("sdt", "locator")
         v = settings.value("MainWindow/geometry")
@@ -154,8 +160,34 @@ class MainWindow(QMainWindow):
         self._viewer.setLocalizationData(self._currentLocData[good],
                                          self._currentLocData[~good])
 
+    @pyqtSlot()
+    def _locateAll(self):
+        progDialog = QProgressDialog(
+            "Locating features…", "Cancel", 0, self._fileModel.rowCount(),
+            self)
+        progDialog.setWindowModality(Qt.WindowModal)
+        progDialog.setValue(0)
+        progDialog.setMinimumDuration(0)
+
+        for i in range(self._fileModel.rowCount()):
+            runner = LocateRunner(self._fileModel.index(i),
+                                  self._locOptionsDock.widget().getOptions(),
+                                  self._locOptionsDock.widget().getModule())
+            runner.signals.finished.connect(
+                lambda: progDialog.setValue(progDialog.value() + 1))
+            runner.signals.finished.connect(self._locateRunnerFinished)
+            self._workerThreadPool.start(runner)
+        progDialog.canceled.connect(self._workerThreadPool.clear)
+
+    @pyqtSlot(QModelIndex, pd.DataFrame, dict)
+    def _locateRunnerFinished(self, index, data, options):
+        self._fileModel.setData(index, data,
+                                toolbox_widgets.FileListModel.LocDataRole)
+        self._fileModel.setData(index, options,
+                                toolbox_widgets.FileListModel.LocOptionsRole)
+
         
-class Worker(QObject):
+class PreviewWorker(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
         
@@ -165,6 +197,30 @@ class Worker(QObject):
         self.locateFinished.emit(ret)
 
     locateFinished = pyqtSignal(pd.DataFrame)
+
+
+class LocateRunner(QRunnable):
+    class Signals(QObject):
+        def __init__(self, parent=None):
+            super().__init__(parent)
+
+        finished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
+
+    def __init__(self, index, options, module):
+        super().__init__()
+        self._index = index
+        self._options = options
+        self._module = module
+        self.signals = self.Signals()
+
+    def run(self):
+        fname = self._index.data(toolbox_widgets.FileListModel.FileNameRole)
+        frames = pims.open(fname)
+        data = self._module.batch(frames, **self._options)
+        self.signals.finished.emit(self._index, data, self._options)
+
+    finished = pyqtSignal(QModelIndex, pd.DataFrame)
+
 
 def main():
     app = QApplication(sys.argv)

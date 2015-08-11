@@ -183,7 +183,7 @@ class SAOptions(saBase):
 class FileListModel(QAbstractListModel):
     FileNameRole = Qt.UserRole
     LocDataRole = Qt.UserRole + 1
-    LocTimeStampRole = Qt.UserRole + 2
+    LocOptionsRole = Qt.UserRole + 2
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -198,6 +198,10 @@ class FileListModel(QAbstractListModel):
             return os.path.basename(cur.fileName)
         elif role in (Qt.ToolTipRole, Qt.EditRole, self.FileNameRole):
             return cur.fileName
+        elif role == self.LocDataRole:
+            return cur.locData
+        elif role == self.LocOptionsRole:
+            return cur.locOptions
 
     def setData(self, index, value, role=Qt.EditRole):
         if not index.isValid() or index.row() >= len(self._data):
@@ -208,8 +212,8 @@ class FileListModel(QAbstractListModel):
             cur.fileName = value
         elif role == self.LocDataRole:
             cur.locData = value
-        elif role == self.LocTimeStampRole:
-            cur.locTimeStamp = value
+        elif role == self.LocOptionsRole:
+            cur.locOptions = value
         else:
             return False
 
@@ -224,7 +228,7 @@ class FileListModel(QAbstractListModel):
         self.beginInsertRows(parent, row, row + count - 1)
         for i in range(count):
             self._data.insert(row, types.SimpleNamespace(
-                fileName=None, locData=None, locTimeStamp=None))
+                fileName=None, locData=None, locOptions=None))
         self.endInsertRows()
         return True
 
@@ -237,13 +241,13 @@ class FileListModel(QAbstractListModel):
         self.endRemoveRows()
         return True
 
-    def addItem(self, fname, locData=None, locTime=None):
+    def addItem(self, fname, locData=None, locOptions=None):
         row = self.rowCount()
         self.insertRows(row, 1)
         idx = self.index(row)
         self.setData(idx, fname, self.FileNameRole)
         self.setData(idx, locData, self.LocDataRole)
-        self.setData(idx, locTime, self.LocTimeStampRole)
+        self.setData(idx, locOptions, self.LocOptionsRole)
 
     def files(self):
         return (d.fileName for d in self._data)
