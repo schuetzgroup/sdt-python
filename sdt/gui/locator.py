@@ -24,14 +24,15 @@ class MainWindow(QMainWindow):
     def tr(self, string):
         return QApplication.translate(self.__clsName, string)
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self._viewer = micro_view.MicroViewWidget()
         
         fileChooser = toolbox_widgets.FileChooser()
         fileChooser.selected.connect(self.open)
-        fileChooser.fileListChanged.connect(self._checkFileList)
+        self._fileModel = fileChooser.model()
+        self._fileModel.rowsRemoved.connect(self._checkFileList)
         self._fileDock = QDockWidget(self.tr("File selection"), self)
         self._fileDock.setObjectName("fileDock")
         self._fileDock.setWidget(fileChooser)
@@ -128,7 +129,7 @@ class MainWindow(QMainWindow):
         #If currently previewed file was removed from list, remove preview
         if self._currentFile is None:
             return
-        if self._currentFile not in self._fileChooser.files():
+        if self._currentFile not in self._fileModel.files():
             self._currentFile = None
             self._viewer.setImageSequence(None)
 

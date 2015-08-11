@@ -6,10 +6,9 @@ import re
 import numpy as np
 
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QComboBox, QLabel,
-                             QLineEdit, QFileDialog, QListWidgetItem,
-                             QAbstractItemView)
+                             QLineEdit, QFileDialog, QListWidgetItem)
 from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QObject, QTimer,
-                          QCoreApplication)
+                          QCoreApplication, QAbstractListModel, QModelIndex)
 from PyQt5.QtGui import QPalette
 from PyQt5 import uic
 
@@ -181,6 +180,75 @@ class SAOptions(saBase):
         return opt
 
 
+class FileListModel(QAbstractListModel):
+    FileNameRole = Qt.UserRole
+    LocDataRole = Qt.UserRole + 1
+    LocTimeStampRole = Qt.UserRole + 2
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._data = []
+
+    def data(self, index, role=Qt.DisplayRole):
+        if not index.isValid() or index.row() >= len(self._data):
+            return None
+
+        cur = self._data[index.row()]
+        if role == Qt.DisplayRole:
+            return os.path.basename(cur.fileName)
+        elif role in (Qt.ToolTipRole, Qt.EditRole, self.FileNameRole):
+            return cur.fileName
+
+    def setData(self, index, value, role=Qt.EditRole):
+        if not index.isValid() or index.row() >= len(self._data):
+            return False
+
+        cur = self._data[index.row()]
+        if role in (Qt.EditRole, self.FileNameRole):
+            cur.fileName = value
+        elif role == self.LocDataRole:
+            cur.locData = value
+        elif role == self.LocTimeStampRole:
+            cur.locTimeStamp = value
+        else:
+            return False
+
+        self.dataChanged.emit(index, index, [role])
+
+    def rowCount(self, parent=QModelIndex()):
+        return len(self._data)
+
+    def insertRows(self, row, count, parent=QModelIndex()):
+        if row > len(self._data):
+            return False
+        self.beginInsertRows(parent, row, row + count - 1)
+        for i in range(count):
+            self._data.insert(row, types.SimpleNamespace(
+                fileName=None, locData=None, locTimeStamp=None))
+        self.endInsertRows()
+        return True
+
+    def removeRows(self, row, count, parent=QModelIndex()):
+        if row + count - 1 >= len(self._data):
+            return False
+        self.beginRemoveRows(parent, row, row + count - 1)
+        for i in range(count):
+            self._data.pop(row)
+        self.endRemoveRows()
+        return True
+
+    def addItem(self, fname, locData=None, locTime=None):
+        row = self.rowCount()
+        self.insertRows(row, 1)
+        idx = self.index(row)
+        self.setData(idx, fname, self.FileNameRole)
+        self.setData(idx, locData, self.LocDataRole)
+        self.setData(idx, locTime, self.LocTimeStampRole)
+
+    def files(self):
+        return (d.fileName for d in self._data)
+
+
 fcClass, fcBase = uic.loadUiType(os.path.join(path, "file_chooser.ui"))
 class FileChooser(fcBase):
     __clsName = "FileChooser"
@@ -194,17 +262,21 @@ class FileChooser(fcBase):
         self._ui = fcClass()
         self._ui.setupUi(self)
 
+        #if no parent is specified for the model, one gets strange errors about
+        #QTimer and QThreads when closing the application since it gets
+        #collected by python's garbage collector; see
+        #https://stackoverflow.com/questions/13562501
+        self._model = FileListModel(self)
+        self._ui.fileListView.setModel(self._model)
+
         self._ui.addButton.pressed.connect(self._addFilesSlot)
         self._ui.removeButton.pressed.connect(self.removeSelected)
-        self._ui.fileListWidget.itemDoubleClicked.connect(self.select)
+        self._ui.fileListView.doubleClicked.connect(self.select)
 
         self._lastOpenDir = ""
 
-    fileListChanged = pyqtSignal()
-
-    def files(self):
-        for i in range(self._ui.fileListWidget.count()):
-            yield self._ui.fileListWidget.item(i)
+    def model(self):
+        return self._model
 
     @pyqtSlot()
     def _addFilesSlot(self):
@@ -215,32 +287,19 @@ class FileChooser(fcBase):
         self.addFiles(fnames[0])
 
     def addFiles(self, names):
-        if not len(names):
-            return
-
         for fname in names:
-            w = QListWidgetItem(os.path.basename(fname))
-            w.setToolTip(fname)
-            w.setData(Qt.UserRole, fname)
-            self._ui.fileListWidget.addItem(w)
-        self.fileListChanged.emit()
+            self._model.addItem(fname)
 
     @pyqtSlot()
     def removeSelected(self):
-        selected = self._ui.fileListWidget.selectedItems()
-        if not len(selected):
-            return
-        for s in selected:
-            self._ui.fileListWidget.takeItem(self._ui.fileListWidget.row(s))
-        self.fileListChanged.emit()
+        for s in self._ui.fileListView.selectionModel().selectedIndexes():
+            self._model.removeRows(s.row(), 1)
 
     selected = pyqtSignal(str)
 
-    @pyqtSlot(QListWidgetItem)
-    def select(self, item):
-        if isinstance(item, int):
-            item = self._ui.fileListWidget.item(item)
-        self.selected.emit(item.data(Qt.UserRole))
+    @pyqtSlot(QModelIndex)
+    def select(self, index):
+        self.selected.emit(self._model.data(index, FileListModel.FileNameRole))
 
 
 filterClass, filterBase = uic.loadUiType(os.path.join(path, "loc_filter.ui"))
