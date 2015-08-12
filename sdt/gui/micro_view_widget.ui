@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>552</width>
-    <height>421</height>
+    <height>409</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -89,7 +89,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QToolButton" name="rectRoiButton">
+      <widget class="QToolButton" name="roiButton">
        <property name="text">
         <string>...</string>
        </property>

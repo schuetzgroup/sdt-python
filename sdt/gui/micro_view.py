@@ -8,11 +8,12 @@ import pandas as pd
 
 from PyQt5.QtCore import (QRectF, QPointF, Qt, pyqtSignal, pyqtProperty,
                           pyqtSlot, QTimer, QObject)
-from PyQt5.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform, QPen)
+from PyQt5.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform, QPen,
+                         QPolygonF, QPainter)
 from PyQt5.QtWidgets import (QGraphicsView, QGraphicsPixmapItem,
                              QGraphicsScene, QSpinBox, QDoubleSpinBox,
                              QGraphicsEllipseItem, QGraphicsItemGroup,
-                             QGraphicsItem)
+                             QGraphicsItem, QGraphicsPolygonItem)
 from PyQt5 import uic
 
 
@@ -46,7 +47,7 @@ class MicroViewScene(QGraphicsScene):
 
         self._imageItem = ImageGraphicsItem()
         self.addItem(self._imageItem)
-        self.roiMode = "disabled"
+        self._roiMode = False
 
         self._drawingRoi = False
 
@@ -55,7 +56,10 @@ class MicroViewScene(QGraphicsScene):
         self.roiPen.setCosmetic(True)
         self.roiPen.setColor(Qt.yellow)
 
-        self._roiItem = None
+        self._roiPolygon = QPolygonF()
+        self._roiItem = QGraphicsPolygonItem(self._roiPolygon)
+        self._roiItem.setPen(self.roiPen)
+        self.addItem(self._roiItem)
 
     def setImage(self, img):
         if isinstance(img, QImage):
@@ -66,37 +70,61 @@ class MicroViewScene(QGraphicsScene):
     def imageItem(self):
         return self._imageItem
 
+    def enableRoiMode(self, enable):
+        if enable == self._roiMode:
+            return
+        if enable:
+            self._roiPolygon = QPolygonF()
+            self._roiItem.setPolygon(self._roiPolygon)
+            self._tempRoiPolygon = QPolygonF(self._roiPolygon)
+            self._tempRoiPolygon.append(QPointF())
+        if not enable:
+            self._roiItem.setPolygon(self._roiPolygon)
+        self._roiMode = enable
+        self.roiModeChanged.emit(enable)
+
+    roiModeChanged = pyqtSignal(bool)
+
+    @pyqtProperty(bool, fset=enableRoiMode)
+    def roiMode(self):
+        return self._roiMode
+
+    def _appendPointToRoi(self, pos, polygon, replace_last=False):
+        br = self._imageItem.boundingRect()
+        topLeft = br.topLeft()
+        bottomRight = br.bottomRight()
+        # Make sure we stay inside the image boundaries
+        xInBr = max(topLeft.x(), pos.x())
+        xInBr = min(bottomRight.x(), xInBr)
+        yInBr = max(topLeft.y(), pos.y())
+        yInBr = min(bottomRight.y(), yInBr)
+        pointInBr = QPointF(xInBr, yInBr)
+
+        if replace_last:
+            polygon[-1] = pointInBr
+        else:
+            polygon.append(pointInBr)
+
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        self._drawingRoi = True
-        if self.roiMode == "rect":
-            self._roiItem = self.addRect(QRectF(1., 1., 0., 0.), self.roiPen)
-            self._roiStart = event.scenePos()
+        if not self._roiMode:
+            return
+        self._appendPointToRoi(event.scenePos(), self._roiPolygon, False)
+        self._roiItem.setPolygon(self._roiPolygon)
+        self._tempRoiPolygon = QPolygonF(self._roiPolygon)
+        self._tempRoiPolygon.append(QPointF())
 
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
-        if not self._drawingRoi:
+        if not self._roiMode:
             return
-        if self.roiMode == "rect":
-            pos = event.scenePos()
-            #Calculate top-left (tl) and bottom-right (br) coordinates of the
-            #selection rectangle
-            #The starting point does not have to be the top-left corner. The
-            #top-left is the one with the smallest x and y coordinates,
-            #bottom-right has the greatest
-            tl = QPointF(min(self._roiStart.x(), pos.x()),
-                         min(self._roiStart.y(), pos.y()))
-            br = QPointF(max(self._roiStart.x(), pos.x()),
-                         max(self._roiStart.y(), pos.y()))
-            #Make sure that the rectangle is within the image boundaries
-            #only draw the intersection of the selection rectangle and the image
-            self._roiItem.setRect(
-                self._imageItem.boundingRect().intersected(QRectF(tl, br)))
+        self._appendPointToRoi(event.scenePos(), self._tempRoiPolygon, True)
+        self._roiItem.setPolygon(self._tempRoiPolygon)
 
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
-        self._drawingRoi = False
-        #TODO: signal ROI change
+    def mouseDoubleClickEvent(self, event):
+        super().mouseDoubleClickEvent(event)
+        self._appendPointToRoi(event.scenePos(), self._roiPolygon, False)
+        self.roiMode = False
 
 
 class LocalizationMarker(QGraphicsEllipseItem):
@@ -115,19 +143,26 @@ class LocalizationMarker(QGraphicsEllipseItem):
 
 
 mvClass, mvBase = uic.loadUiType(os.path.join(path, "micro_view_widget.ui"))
+
+
 class MicroViewWidget(mvBase):
     __clsName = "MicroViewWidget"
+
     def tr(self, string):
         return QApplication.translate(self.__clsName, string)
 
     def __init__(self, parent=None):
         super().__init__(parent)
+       
+        # Go before setupUi for QMetaObject.connectSlotsByName to work
+        self._scene = MicroViewScene(self)
+        self._scene.setObjectName("scene")
 
         self._ui = mvClass()
         self._ui.setupUi(self)
 
-        self._scene = MicroViewScene(self)
         self._ui.view.setScene(self._scene)
+        self._ui.view.setRenderHints(QPainter.Antialiasing)
         self._scene.imageItem.signals.mouseMoved.connect(
             self._updateCurrentPixelInfo)
 
@@ -175,8 +210,8 @@ class MicroViewWidget(mvBase):
         self._imageData = self._ims[0]
 
         if np.issubdtype(self._imageData.dtype, np.float):
-            #ugly hack; get min and max corresponding to integer types based
-            #on the range of values in the first image
+            # ugly hack; get min and max corresponding to integer types based
+            # on the range of values in the first image
             min = self._imageData.min()
             if min < 0:
                 types = (np.int8, np.int16, np.int32, np.int64)
@@ -277,12 +312,12 @@ class MicroViewWidget(mvBase):
         img_buf *= 255./float(self._intensityMax - self._intensityMin)
         np.clip(img_buf, 0., 255., img_buf)
 
-        #convert grayscale to RGB 32bit
-        #far faster than calling img_buf.astype(np.uint8).repeat(4)
+        # convert grayscale to RGB 32bit
+        # far faster than calling img_buf.astype(np.uint8).repeat(4)
         qi = np.empty((img_buf.shape[0], img_buf.shape[1], 4), dtype=np.uint8)
         qi[:, :, 0] = qi[:, :, 1] = qi[:, :, 2] = qi[:, :, 3] = img_buf
 
-        #prevent QImage from being garbage collected
+        # prevent QImage from being garbage collected
         self._qImg = QImage(qi, self._imageData.shape[1],
                             self._imageData.shape[0], QImage.Format_RGB32)
         self._scene.setImage(self._qImg)
@@ -385,5 +420,9 @@ class MicroViewWidget(mvBase):
         self._ui.intLabel.setText(locale.str(self._imageData[y, x]))
 
     @pyqtSlot(bool)
-    def on_rectRoiButton_toggled(self, checked):
-        self._scene.roiMode = ("rect" if checked else "disabled")
+    def on_roiButton_toggled(self, checked):
+        self._scene.roiMode = checked
+
+    @pyqtSlot(bool)
+    def on_scene_roiModeChanged(self, enabled):
+        self._ui.roiButton.setChecked(enabled)
