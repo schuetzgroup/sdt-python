@@ -3,6 +3,7 @@ import os
 import sys
 import collections
 import types
+import json
 
 import numpy as np
 import pandas as pd
@@ -13,7 +14,8 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                              QToolBar, QMessageBox, QSplitter, QToolBox,
                              QDockWidget, QWidget, QLabel, QProgressDialog)
 from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
-                          QSettings, QRunnable, QThreadPool, QModelIndex)
+                          QSettings, QRunnable, QThreadPool, QModelIndex,
+                          QMetaObject)
 
 from . import micro_view
 from . import toolbox_widgets
@@ -49,11 +51,10 @@ class MainWindow(QMainWindow):
         self._locFilterDock.setObjectName("locFilterDock")
         self._locFilterDock.setWidget(filterWidget)
 
-        saveOptsWidget = toolbox_widgets.LocSaveOptions()
-        saveOptsWidget.saveAll.connect(self._locateAll)
+        locSaveWidget = toolbox_widgets.LocateSaveWidget()
         self._locSaveDock = QDockWidget(self.tr("Save localizations"), self)
         self._locSaveDock.setObjectName("locSaveDock")
-        self._locSaveDock.setWidget(saveOptsWidget)
+        self._locSaveDock.setWidget(locSaveWidget)
 
         for d in (self._fileDock, self._locOptionsDock, self._locFilterDock,
                   self._locSaveDock):
@@ -89,6 +90,8 @@ class MainWindow(QMainWindow):
         v = settings.value("MainWindow/state")
         if v is not None:
             self.restoreState(v)
+
+        QMetaObject.connectSlotsByName(self)
 
     @pyqtSlot(str)
     def open(self, fname):
@@ -160,8 +163,23 @@ class MainWindow(QMainWindow):
         self._viewer.setLocalizationData(self._currentLocData[good],
                                          self._currentLocData[~good])
 
-    @pyqtSlot()
-    def _locateAll(self):
+    @pyqtSlot(str)
+    def on_locateSaveWidget_saveOptions(self, fname):
+        opt = collections.OrderedDict()
+        opt["locate options"] = self._locOptionsDock.widget().getOptions()
+        opt["filter"] = {
+            "string": self._locFilterDock.widget().getFilterString()}
+        try:
+            with open(fname, "w") as f:
+                json.dump(opt, f, indent=4)
+        except Exception as e:
+            QMessageBox.critical(self, self.tr("Error writing to file"),
+                                 self.tr(str(e)))
+
+    @pyqtSlot(str)
+    def on_locateSaveWidget_locateAndSave(self, format):
+        #TODO: check if current localizations are up-to-date
+        #only run locate if not
         progDialog = QProgressDialog(
             "Locating features…", "Cancel", 0, self._fileModel.rowCount(),
             self)
@@ -185,8 +203,23 @@ class MainWindow(QMainWindow):
                                 toolbox_widgets.FileListModel.LocDataRole)
         self._fileModel.setData(index, options,
                                 toolbox_widgets.FileListModel.LocOptionsRole)
+        saveFormat = self._locSaveDock.widget().getFormat()
+        if saveFormat == "hdf5":
+            saveFileName = os.path.splitext(
+                self._fileModel.data(
+                    index, toolbox_widgets.FileListModel.FileNameRole))[0]
+            saveFileName = "{fn}.loc{extsep}h5".format(fn=saveFileName,
+                                                       extsep=os.extsep)
 
-        
+            filterFunc = self._locFilterDock.widget().getFilter()
+            data = data[filterFunc(data)]
+            data.to_hdf(saveFileName, "data")
+            #TODO: save options
+        elif saveFormat == "particle_tracker":
+            #TODO: implement
+            pass
+
+
 class PreviewWorker(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)

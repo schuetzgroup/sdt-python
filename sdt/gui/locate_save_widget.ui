@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>locateSaveWidget</class>
+ <widget class="QWidget" name="locateSaveWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>233</width>
-    <height>156</height>
+    <height>82</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,44 +46,19 @@
          <string>settings only</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>do not save</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QWidget" name="fileNameWidget" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>File name</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLineEdit" name="fileNameEdit"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="fileNameButton">
-          <property name="text">
-           <string>...</string>
-          </property>
-          <property name="icon">
-           <iconset theme="document-save-as"/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="localizeButton">
+    <widget class="QPushButton" name="saveButton">
      <property name="text">
-      <string>Save all</string>
+      <string>Locate and save</string>
      </property>
     </widget>
    </item>
