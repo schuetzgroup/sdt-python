@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """Widgets for viewing microscopy images"""
 import os
+import locale
 
 import numpy as np
 import pandas as pd
 
 from PyQt5.QtCore import (QRectF, QPointF, Qt, pyqtSignal, pyqtProperty,
-                          pyqtSlot, QTimer)
+                          pyqtSlot, QTimer, QObject)
 from PyQt5.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform, QPen)
 from PyQt5.QtWidgets import (QGraphicsView, QGraphicsPixmapItem,
                              QGraphicsScene, QSpinBox, QDoubleSpinBox,
@@ -14,69 +15,88 @@ from PyQt5.QtWidgets import (QGraphicsView, QGraphicsPixmapItem,
                              QGraphicsItem)
 from PyQt5 import uic
 
-class MicroView(QGraphicsView):
+
+path = os.path.dirname(os.path.abspath(__file__))
+
+
+class ImageGraphicsItem(QGraphicsPixmapItem):
+    class Signals(QObject):
+        def __init__(self, parent=None):
+            super().__init__(parent)
+
+        mouseMoved = pyqtSignal(int, int)
+
+    def __init__(self, pixmap=None, parent=None):
+        if pixmap is None:
+            super().__init__(parent)
+        else:
+            super().__init__(pixmap, parent)
+        self.signals = self.Signals()
+        self.setAcceptHoverEvents(True)
+
+    def hoverMoveEvent(self, event):
+        super().hoverMoveEvent(event)
+        self.signals.mouseMoved.emit(int(event.pos().x()),
+                                     int(event.pos().y()))
+
+
+class MicroViewScene(QGraphicsScene):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self._selectionStarted = False
-        self._selectionRectItem = None
-        self._selectionStart = QPointF()
+        self._imageItem = ImageGraphicsItem()
+        self.addItem(self._imageItem)
+        self.roiMode = "disabled"
 
-        self._imageItem = None
+        self._drawingRoi = False
 
-    def setImage(self, pixmap):
-        if self._imageItem is None:
-            self._imageItem = QGraphicsPixmapItem()
-            self.scene().addItem(self._imageItem)
-        self._imageItem.setPixmap(pixmap)
-        self._imageBoundingRect = self._imageItem.boundingRect()
+        self.roiPen = QPen()
+        self.roiPen.setWidthF(1.25)
+        self.roiPen.setCosmetic(True)
+        self.roiPen.setColor(Qt.yellow)
 
-    def getImageItem(self):
+        self._roiItem = None
+
+    def setImage(self, img):
+        if isinstance(img, QImage):
+            img = QPixmap.fromImage(img)
+        self._imageItem.setPixmap(img)
+
+    @pyqtProperty(ImageGraphicsItem)
+    def imageItem(self):
         return self._imageItem
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-
-        if self.scene() is None:
-            return
-
-        self._selectionStarted = True
-        self._selectionStart = self.mapToScene(event.pos())
-        if self._selectionRectItem is None:
-            pen = QPen()
-            pen.setWidthF(1.25)
-            pen.setCosmetic(True)
-            pen.setColor(Qt.yellow)
-            self._selectionRectItem = self.scene().addRect(
-                QRectF(1., 1., 0., 0.), pen)
-
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
-        self._selectionStarted = False
+        self._drawingRoi = True
+        if self.roiMode == "rect":
+            self._roiItem = self.addRect(QRectF(1., 1., 0., 0.), self.roiPen)
+            self._roiStart = event.scenePos()
 
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
-
-        if not self._selectionStarted:
+        if not self._drawingRoi:
             return
-        scenePos = self.mapToScene(event.pos())
-        #Calculate top-left (tl) and bottom-right (br) coordinates of the selection rectangle
-        #The starting point does not have to be the top-left corner. The
-        #top-left is the one with the smallest x and y coordinates,
-        #bottom-right has the greatest
-        tl = QPointF(min(self._selectionStart.x(), scenePos.x()),
-                     min(self._selectionStart.y(), scenePos.y()))
-        br = QPointF(max(self._selectionStart.x(), scenePos.x()),
-                     max(self._selectionStart.y(), scenePos.y()))
-        #Make sure that the rectangle is within the image boundaries
-        #only draw the intersection of the selection rectangle and the image
-        self._selectionRectItem.setRect(
-            self._imageBoundingRect.intersected(QRectF(tl, br)))
+        if self.roiMode == "rect":
+            pos = event.scenePos()
+            #Calculate top-left (tl) and bottom-right (br) coordinates of the
+            #selection rectangle
+            #The starting point does not have to be the top-left corner. The
+            #top-left is the one with the smallest x and y coordinates,
+            #bottom-right has the greatest
+            tl = QPointF(min(self._roiStart.x(), pos.x()),
+                         min(self._roiStart.y(), pos.y()))
+            br = QPointF(max(self._roiStart.x(), pos.x()),
+                         max(self._roiStart.y(), pos.y()))
+            #Make sure that the rectangle is within the image boundaries
+            #only draw the intersection of the selection rectangle and the image
+            self._roiItem.setRect(
+                self._imageItem.boundingRect().intersected(QRectF(tl, br)))
 
-
-#load ui file from same directory
-path = os.path.dirname(os.path.abspath(__file__))
-mvClass, mvBase = uic.loadUiType(os.path.join(path, "micro_view_widget.ui"))
+    def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
+        self._drawingRoi = False
+        #TODO: signal ROI change
 
 
 class LocalizationMarker(QGraphicsEllipseItem):
@@ -90,30 +110,24 @@ class LocalizationMarker(QGraphicsEllipseItem):
         self.setPen(pen)
 
 
+mvClass, mvBase = uic.loadUiType(os.path.join(path, "micro_view_widget.ui"))
 class MicroViewWidget(mvBase):
     __clsName = "MicroViewWidget"
     def tr(self, string):
         return QApplication.translate(self.__clsName, string)
 
-    def __init__(self, view=None, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self._ui = mvClass()
         self._ui.setupUi(self)
 
-        if view is None:
-            self._view = MicroView(self)
-        else:
-            self._view = view
-        self._ui.mainLayout.insertWidget(1, self._view)
+        self._scene = MicroViewScene(self)
+        self._ui.view.setScene(self._scene)
+        self._scene.imageItem.signals.mouseMoved.connect(
+            self._updateCurrentPixelInfo)
 
-        self._qImage = QImage()
-        self._scene = QGraphicsScene()
-        self._imageItem = QGraphicsPixmapItem()
-        self._view.setScene(self._scene)
-        self._scene.addItem(self._imageItem)
         self._imageData = np.array([])
-
         self._intensityMin = None
         self._intensityMax = None
         self._sliderFactor = 1
@@ -248,7 +262,7 @@ class MicroViewWidget(mvBase):
 
     def drawImage(self):
         if self._imageData is None:
-            self._view.setImage(QPixmap())
+            self._scene.setImage(QPixmap())
             return
 
         img_buf = self._imageData.astype(np.float)
@@ -263,11 +277,10 @@ class MicroViewWidget(mvBase):
         qi = np.empty((img_buf.shape[0], img_buf.shape[1], 4), dtype=np.uint8)
         qi[:, :, 0] = qi[:, :, 1] = qi[:, :, 2] = qi[:, :, 3] = img_buf
 
-        self._qImage = QImage(qi,
-                              self._imageData.shape[1],
-                              self._imageData.shape[0],
-                              QImage.Format_RGB32)
-        self._view.setImage(QPixmap.fromImage(self._qImage))
+        #prevent QImage from being garbage collected
+        self._qImg = QImage(qi, self._imageData.shape[1],
+                            self._imageData.shape[0], QImage.Format_RGB32)
+        self._scene.setImage(self._qImg)
 
     def drawLocalizations(self):
         if isinstance(self._locMarkers, QGraphicsItem):
@@ -345,19 +358,27 @@ class MicroViewWidget(mvBase):
 
     @pyqtSlot()
     def zoomIn(self):
-        self._view.scale(1.5, 1.5)
+        self._ui.view.scale(1.5, 1.5)
 
     @pyqtSlot()
     def zoomOut(self):
-        self._view.scale(2./3., 2./3.)
+        self._ui.view.scale(2./3., 2./3.)
 
     @pyqtSlot()
     def zoomOriginal(self):
-        self._view.setTransform(QTransform())
+        self._ui.view.setTransform(QTransform())
 
     @pyqtSlot()
     def zoomFit(self):
-        self._view.fitInView(self._view.getImageItem(), Qt.KeepAspectRatio)
+        self._ui.view.fitInView(self._scene.imageItem, Qt.KeepAspectRatio)
 
     def getCurrentFrame(self):
         return self._imageData
+
+    def _updateCurrentPixelInfo(self, x, y):
+        self._ui.posLabel.setText("({x}, {y})".format(x=x, y=y))
+        self._ui.intLabel.setText(locale.str(self._imageData[y, x]))
+
+    @pyqtSlot(bool)
+    def on_rectRoiButton_toggled(self, checked):
+        self._scene.roiMode = ("rect" if checked else "disabled")
