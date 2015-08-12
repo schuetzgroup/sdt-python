@@ -100,14 +100,18 @@ class MicroViewScene(QGraphicsScene):
 
 
 class LocalizationMarker(QGraphicsEllipseItem):
-    def __init__(self, x, y, size, color=Qt.green, parent=None):
-        super().__init__(x-size/2.+0.5, y-size/2.+0.5, size, size,
-                       parent)
+    def __init__(self, data, color=Qt.green, parent=None):
+        size = data["size"]
+        super().__init__(data["x"]-size/2.+0.5, data["y"]-size/2.+0.5,
+                         size, size, parent)
         pen = QPen()
         pen.setWidthF(1.25)
         pen.setCosmetic(True)
         pen.setColor(color)
         self.setPen(pen)
+
+        ttStr = "\n".join(["{}: {}".format(k, v) for k, v in data.items()])
+        self.setToolTip(ttStr)
 
 
 mvClass, mvBase = uic.loadUiType(os.path.join(path, "micro_view_widget.ui"))
@@ -273,6 +277,7 @@ class MicroViewWidget(mvBase):
         img_buf *= 255./float(self._intensityMax - self._intensityMin)
         np.clip(img_buf, 0., 255., img_buf)
 
+        #convert grayscale to RGB 32bit
         #far faster than calling img_buf.astype(np.uint8).repeat(4)
         qi = np.empty((img_buf.shape[0], img_buf.shape[1], 4), dtype=np.uint8)
         qi[:, :, 0] = qi[:, :, 1] = qi[:, :, 2] = qi[:, :, 3] = img_buf
@@ -288,21 +293,21 @@ class MicroViewWidget(mvBase):
             self._locMarkers = None
         try:
             sel = self._locDataGood["frame"] == self._ui.framenoBox.value() - 1
-            dGood = self._locDataGood.loc[sel, ["x", "y", "size"]].as_matrix()
+            dGood = self._locDataGood[sel]
         except Exception:
             return
 
         try:
             sel = self._locDataBad["frame"] == self._ui.framenoBox.value() - 1
-            dBad = self._locDataBad.loc[sel, ["x", "y", "size"]].as_matrix()
+            dBad = self._locDataBad[sel]
         except Exception:
             pass
 
         markerList = []
-        for x, y, size in dGood:
-            markerList.append(LocalizationMarker(x, y, size, Qt.green))
-        for x, y, size in dBad:
-            markerList.append(LocalizationMarker(x, y, size, Qt.red))
+        for n, d in dBad.iterrows():
+            markerList.append(LocalizationMarker(d, Qt.red))
+        for n, d in dGood.iterrows():
+            markerList.append(LocalizationMarker(d, Qt.green))
 
         self._locMarkers = self._scene.createItemGroup(markerList)
 
