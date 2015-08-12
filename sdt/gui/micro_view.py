@@ -116,13 +116,7 @@ class MicroViewWidget(mvBase):
 
         self._intensityMin = None
         self._intensityMax = None
-        self._contrastFactor = 1
-        self._ui.minSpinBox.valueChanged.connect(self._ui.minSlider.setValue)
-        self._ui.maxSpinBox.valueChanged.connect(self._ui.maxSlider.setValue)
-        self._ui.minSlider.valueChanged.connect(self._ui.minSpinBox.setValue)
-        self._ui.maxSlider.valueChanged.connect(self._ui.maxSpinBox.setValue)
-        self._ui.minSlider.valueChanged.connect(self.setMinIntensity)
-        self._ui.maxSlider.valueChanged.connect(self.setMaxIntensity)
+        self._sliderFactor = 1
         self._ui.autoButton.pressed.connect(self.autoIntensity)
 
         self._playing = False
@@ -163,22 +157,44 @@ class MicroViewWidget(mvBase):
         self._imageData = self._ims[0]
 
         if np.issubdtype(self._imageData.dtype, np.float):
-            min = 0
-            max = 1000
-            self._contrastFactor = 1e-3
+            #ugly hack; get min and max corresponding to integer types based
+            #on the range of values in the first image
+            min = self._imageData.min()
+            if min < 0:
+                types = (np.int8, np.int16, np.int32, np.int64)
+            else:
+                types = (np.uint8, np.uint16, np.uint32, np.uint64)
+            max = self._imageData.max()
+            if min >= 0. and max <= 1.:
+                min = 0
+                max = 1
+            else:
+                for t in types:
+                    ii = np.iinfo(t)
+                    if min >= ii.min() and max <= ii.max():
+                        min = ii.min()
+                        max = ii.max()
+                        break
         else:
             min = np.iinfo(ims.pixel_type).min
             max = np.iinfo(ims.pixel_type).max
-            self._contrastFactor = 1
 
-        self._ui.minSpinBox.setMinimum(min)
-        self._ui.minSpinBox.setMaximum(max)
-        self._ui.maxSpinBox.setMinimum(min)
-        self._ui.maxSpinBox.setMaximum(max)
-        self._ui.minSlider.setMinimum(min)
-        self._ui.minSlider.setMaximum(max)
-        self._ui.maxSlider.setMinimum(min)
-        self._ui.maxSlider.setMaximum(max)
+        if min == 0. and max == 1.:
+            self._ui.minSlider.setRange(0, 1000)
+            self._ui.maxSlider.setRange(0, 1000)
+            self._ui.minSpinBox.setDecimals(3)
+            self._ui.minSpinBox.setRange(0, 1)
+            self._ui.maxSpinBox.setDecimals(3)
+            self._ui.maxSpinBox.setRange(0, 1)
+            self._sliderFactor = 1000
+        else:
+            self._ui.minSlider.setRange(min, max)
+            self._ui.maxSlider.setRange(min, max)
+            self._ui.minSpinBox.setDecimals(0)
+            self._ui.minSpinBox.setRange(min, max)
+            self._ui.maxSpinBox.setDecimals(0)
+            self._ui.maxSpinBox.setRange(min, max)
+            self._sliderFactor = 1
 
         if (self._intensityMin is None) or (self._intensityMax is None):
             self.autoIntensity()
@@ -186,6 +202,24 @@ class MicroViewWidget(mvBase):
             self.drawImage()
 
         self.currentFrameChanged.emit()
+
+    @pyqtSlot(int)
+    def on_minSlider_valueChanged(self, val):
+        self._ui.minSpinBox.setValue(float(val)/self._sliderFactor)
+
+    @pyqtSlot(int)
+    def on_maxSlider_valueChanged(self, val):
+        self._ui.maxSpinBox.setValue(float(val)/self._sliderFactor)
+
+    @pyqtSlot(float)
+    def on_minSpinBox_valueChanged(self, val):
+        self._ui.minSlider.setValue(round(val*self._sliderFactor))
+        self.setMinIntensity(val)
+
+    @pyqtSlot(float)
+    def on_maxSpinBox_valueChanged(self, val):
+        self._ui.maxSlider.setValue(round(val*self._sliderFactor))
+        self.setMaxIntensity(val)
 
     @pyqtSlot(pd.DataFrame)
     def setLocalizationData(self, good, bad):
@@ -221,9 +255,8 @@ class MicroViewWidget(mvBase):
         if (self._intensityMin is None) or (self._intensityMax is None):
             self._intensityMin = np.min(img_buf)
             self._intensityMax = np.max(img_buf)
-        img_buf -= float(self._intensityMin*self._contrastFactor)
-        img_buf *= (255.*self._contrastFactor
-                    /float(self._intensityMax - self._intensityMin))
+        img_buf -= float(self._intensityMin)
+        img_buf *= 255./float(self._intensityMax - self._intensityMin)
         np.clip(img_buf, 0., 255., img_buf)
 
         #far faster than calling img_buf.astype(np.uint8).repeat(4)
@@ -265,8 +298,8 @@ class MicroViewWidget(mvBase):
         if self._imageData is None:
             return
 
-        self._intensityMin = np.min(self._imageData)/self._contrastFactor
-        self._intensityMax = np.max(self._imageData)/self._contrastFactor
+        self._intensityMin = np.min(self._imageData)
+        self._intensityMax = np.max(self._imageData)
         if self._intensityMin == self._intensityMax:
             if self._intensityMax == 0:
                 self._intensityMax = 1
