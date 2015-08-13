@@ -9,13 +9,13 @@ import numpy as np
 import pandas as pd
 import pims
 
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import (QIcon, QPolygonF)
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                              QToolBar, QMessageBox, QSplitter, QToolBox,
                              QDockWidget, QWidget, QLabel, QProgressDialog)
 from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
                           QSettings, QRunnable, QThreadPool, QModelIndex,
-                          QMetaObject)
+                          QMetaObject, QPointF)
 
 from . import micro_view
 from . import toolbox_widgets
@@ -23,6 +23,7 @@ from . import toolbox_widgets
 
 class MainWindow(QMainWindow):
     __clsName = "LocatorMainWindow"
+
     def tr(self, string):
         return QApplication.translate(self.__clsName, string)
 
@@ -30,7 +31,8 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
 
         self._viewer = micro_view.MicroViewWidget()
-        
+        self._viewer.setObjectName("viewer")
+
         fileChooser = toolbox_widgets.FileChooser()
         fileChooser.selected.connect(self.open)
         self._fileModel = fileChooser.model()
@@ -77,10 +79,11 @@ class MainWindow(QMainWindow):
 
         self._currentFile = None
         self._currentLocData = None
+        self._roiPolygon = QPolygonF()
 
         self._workerThreadPool = QThreadPool(self)
-        #some algorithms are not thread safe;
-        #TODO: use more threads for thread safe algorithms
+        # some algorithms are not thread safe;
+        # TODO: use more threads for thread safe algorithms
         self._workerThreadPool.setMaxThreadCount(1)
 
         settings = QSettings("sdt", "locator")
@@ -118,8 +121,8 @@ class MainWindow(QMainWindow):
         if curFrame is None:
             return
         if self._workerWorking:
-            #The worker is already working; just store the fact that the
-            #worker needs to run again immediately after it finishes
+            # The worker is already working; just store the fact that the
+            # worker needs to run again immediately after it finishes
             self._newWorkerJob = True
             return
         self._workerSignal.emit(curFrame,
@@ -135,7 +138,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def _checkFileList(self):
-        #If currently previewed file was removed from list, remove preview
+        # If currently previewed file was removed from list, remove preview
         if self._currentFile is None:
             return
         if self._currentFile not in self._fileModel.files():
@@ -146,12 +149,20 @@ class MainWindow(QMainWindow):
     def _locateFinished(self, data):
         self._workerWorking = False
         if self._newWorkerJob:
-            #while we were busy, something new has come up; work on that
+            # while we were busy, something new has come up; work on that
             self._makeWorkerWork()
             self._newWorkerJob = False
         self._currentLocData = data
         self._locFilterDock.widget().setVariables(data.columns.values.tolist())
         self._filterLocalizations()
+
+    def _applyRoi(self, data):
+        if len(self._roiPolygon) < 2:
+            return np.ones((len(data),), dtype=bool)
+        return np.apply_along_axis(
+            lambda pos: self._roiPolygon.containsPoint(QPointF(*pos),
+                                                       Qt.OddEvenFill),
+            1, data[["x", "y"]])
 
     @pyqtSlot()
     def _filterLocalizations(self):
@@ -160,8 +171,14 @@ class MainWindow(QMainWindow):
             good = filterFunc(self._currentLocData)
         except:
             good = np.ones((len(self._currentLocData),), dtype=bool)
-        self._viewer.setLocalizationData(self._currentLocData[good],
-                                         self._currentLocData[~good])
+        inRoi = self._applyRoi(self._currentLocData)
+        self._viewer.setLocalizationData(self._currentLocData[good & inRoi],
+                                         self._currentLocData[~good & inRoi])
+
+    @pyqtSlot(QPolygonF)
+    def on_viewer_roiChanged(self, roi):
+        self._roiPolygon = roi
+        self._filterLocalizations()
 
     @pyqtSlot(str)
     def on_locateSaveWidget_saveOptions(self, fname):
@@ -178,8 +195,8 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str)
     def on_locateSaveWidget_locateAndSave(self, format):
-        #TODO: check if current localizations are up-to-date
-        #only run locate if not
+        # TODO: check if current localizations are up-to-date
+        # only run locate if not
         progDialog = QProgressDialog(
             "Locating features…", "Cancel", 0, self._fileModel.rowCount(),
             self)
@@ -212,20 +229,23 @@ class MainWindow(QMainWindow):
                                                        extsep=os.extsep)
 
             filterFunc = self._locFilterDock.widget().getFilter()
-            data = data[filterFunc(data)]
+            inRoi = self._applyRoi(data)
+            data = data[filterFunc(data) & inRoi]
             data.to_hdf(saveFileName, "data")
-            #TODO: save options
+            # TODO: save options
+            # TODO: save ROI
         elif saveFormat == "particle_tracker":
-            #TODO: implement
+            # TODO: implement
             pass
 
 
 class PreviewWorker(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
-        
+
     @pyqtSlot(np.ndarray, dict, types.ModuleType)
     def locate(self, img, options, module):
+        # TODO: restrict locating to bounding rect of ROI for performance gain
         ret = module.locate(img, **options)
         self.locateFinished.emit(ret)
 
@@ -249,6 +269,7 @@ class LocateRunner(QRunnable):
     def run(self):
         fname = self._index.data(toolbox_widgets.FileListModel.FileNameRole)
         frames = pims.open(fname)
+        # TODO: restrict locating to bounding rect of ROI for performance gain
         data = self._module.batch(frames, **self._options)
         self.signals.finished.emit(self._index, data, self._options)
 

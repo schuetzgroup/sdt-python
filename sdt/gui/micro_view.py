@@ -80,10 +80,12 @@ class MicroViewScene(QGraphicsScene):
             self._tempRoiPolygon.append(QPointF())
         if not enable:
             self._roiItem.setPolygon(self._roiPolygon)
+            self.roiChanged.emit(self._roiPolygon)
         self._roiMode = enable
         self.roiModeChanged.emit(enable)
 
     roiModeChanged = pyqtSignal(bool)
+    roiChanged = pyqtSignal(QPolygonF)
 
     @pyqtProperty(bool, fset=enableRoiMode)
     def roiMode(self):
@@ -153,7 +155,7 @@ class MicroViewWidget(mvBase):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-       
+
         # Go before setupUi for QMetaObject.connectSlotsByName to work
         self._scene = MicroViewScene(self)
         self._scene.setObjectName("scene")
@@ -185,11 +187,14 @@ class MicroViewWidget(mvBase):
         self._ui.zoomOriginalButton.pressed.connect(self.zoomOriginal)
         self._ui.zoomOutButton.pressed.connect(self.zoomOut)
         self._ui.zoomFitButton.pressed.connect(self.zoomFit)
+        self._scene.roiChanged.connect(self.roiChanged)
 
         self._locDataGood = None
         self._locDataBad = None
         self._locMarkers = None
         self.setImageSequence(None)
+
+    roiChanged = pyqtSignal(QPolygonF)
 
     def setImageSequence(self, ims):
         self._locDataGood = None
