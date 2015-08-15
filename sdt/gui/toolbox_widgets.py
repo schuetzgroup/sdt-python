@@ -9,25 +9,8 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QComboBox, QLabel,
                              QLineEdit, QFileDialog, QListWidgetItem)
 from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QObject, QTimer,
                           QCoreApplication, QAbstractListModel, QModelIndex)
-from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import (QPalette, QValidator, QIntValidator)
 from PyQt5 import uic
-
-
-methodMap = collections.OrderedDict()
-methodDesc = collections.namedtuple("methodDesc", ["widget", "module"])
-try:
-    from storm_analysis import daostorm_3d
-    methodMap["3D-DAOSTORM"] = methodDesc(
-        widget=lambda: SAOptions("3D-DAOSTORM"), module=daostorm_3d)
-except ImportError:
-    pass
-    
-try:
-    from storm_analysis import scmos
-    methodMap["sCMOS"] = methodDesc(
-        widget=lambda: SAOptions("sCMOS"), module=scmos)
-except ImportError:
-    pass
 
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -177,6 +160,82 @@ class SAOptions(saBase):
             opt["camera_calibration"] = self._calibrationData
             opt["chip_window"] = (self._ui.chipWinXBox.value(),
                                   self._ui.chipWinYBox.value())
+        return opt
+
+
+class OddIntValidator(QIntValidator):
+    def __init__(self, minimum=None, maximum=None, parent=None):
+        if minimum is None or maximum is None:
+            super().__init__(parent)
+        else:
+            super().__init__(minimum, maximum, parent)
+
+    def validate(self, input, pos):
+        state, input, pos = super().validate(input, pos)
+        if state in (QIntValidator.Invalid, QIntValidator.Intermediate):
+            return state, input, pos
+
+        inputInt, ok = self.locale().toInt(input)
+        if not ok:
+            return QValidator.Invalid, input, pos
+        if not inputInt & 1:
+            return QIntValidator.Intermediate, input, pos
+
+        return QValidator.Acceptable, input, pos
+
+    def fixup(self, input):
+        loc = self.locale()
+        inputInt, ok = loc.toInt(input)
+        if not ok:
+            return input
+        if not inputInt & 1:
+            return loc.toString(inputInt + 1)
+
+
+t2dClass, t2dBase = uic.loadUiType(os.path.join(path, "t2d_options.ui"))
+
+
+class T2DOptions(t2dBase):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._ui = t2dClass()
+        self._ui.setupUi(self)
+
+        self._diameterEdit = QLineEdit()
+        val = OddIntValidator()
+        self._diameterEdit.setValidator(val)
+        self._ui.diameterBox.setLineEdit(self._diameterEdit)
+
+        self._origLineEditPalette = self._diameterEdit.palette()
+        self._redLineEditPalette = QPalette(self._origLineEditPalette)
+        self._redLineEditPalette.setColor(QPalette.Base, Qt.red)
+
+        self._ui.minMassBox.valueChanged.connect(self.optionsChanged)
+        self._ui.thresholdBox.valueChanged.connect(self.optionsChanged)
+        self._ui.bpBox.toggled.connect(self.optionsChanged)
+
+        self._lastValidDiameter = self._ui.diameterBox.value()
+
+    @pyqtSlot(int)
+    def on_diameterBox_valueChanged(self, val):
+        if self._ui.diameterBox.hasAcceptableInput():
+            self._diameterEdit.setPalette(self._origLineEditPalette)
+            self._lastValidDiameter = val
+            self.optionsChanged.emit()
+        else:
+            self._diameterEdit.setPalette(self._redLineEditPalette)
+
+    optionsChanged = pyqtSignal()
+
+    def getOptions(self):
+        # one cannot simply use self._ui.diameterBox.value() since it may have
+        # changed to something invalid between the optionsChanged pyqtSignal
+        # and the call to getOptions
+        opt = dict(diameter=self._lastValidDiameter,
+                   minmass=self._ui.minMassBox.value(),
+                   threshold=self._ui.thresholdBox.value(),
+                   preprocess=self._ui.bpBox.isChecked())
         return opt
 
 
@@ -431,3 +490,27 @@ class LocateSaveWidget(locSaveBase):
 
     def getFormat(self):
         return self.formatIndexToName[self._ui.formatBox.currentIndex()]
+
+
+methodMap = collections.OrderedDict()
+methodDesc = collections.namedtuple("methodDesc", ["widget", "module"])
+try:
+    from storm_analysis import daostorm_3d
+    methodMap["3D-DAOSTORM"] = methodDesc(
+        widget=lambda: SAOptions("3D-DAOSTORM"), module=daostorm_3d)
+except ImportError:
+    pass
+
+try:
+    from storm_analysis import scmos
+    methodMap["sCMOS"] = methodDesc(
+        widget=lambda: SAOptions("sCMOS"), module=scmos)
+except ImportError:
+    pass
+
+try:
+    import tracking_2d
+    methodMap["tracking_2d"] = methodDesc(
+        widget=T2DOptions, module=tracking_2d)
+except ImportError:
+    pass
