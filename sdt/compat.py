@@ -59,7 +59,7 @@ mass_column = "mass"
 
 
 def load_pt2d_positions(filename, load_protocol=True,
-                        adjust_index=["x", "y", "frame"], column_names=None):
+                        adjust_index=["x", "y", "frame"]):
     """Load a _positions.mat file created by particle_tracking_2D
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -75,10 +75,6 @@ def load_pt2d_positions(filename, load_protocol=True,
             python's start at 0, some data (such as feature coordinates and
             frame numbers) may be off by one. This list contains the names of
             columns to be corrected for this. Defaults to ["x", "y", "frame"].
-        column_names (list of str): List of the column names. If None and
-            `load_protocol` is True, the names will be read from the protocol
-            file. if `load_protocol` is false, use the appropriate values of
-            the `pt2d_name_trans` dict.
 
     Returns:
         pandas.DataFrame containing the data.
@@ -98,8 +94,6 @@ def load_pt2d_positions(filename, load_protocol=True,
             if tn is None:
                 tn = n
             cols.append(tn)
-    elif column_names is not None:
-        cols = column_names
     else:
         for k, v in pt2d_name_trans.items():
             cols.append(v)
@@ -124,8 +118,7 @@ def load_pt2d_positions(filename, load_protocol=True,
 
 
 def load_pt2d_tracks(filename, load_protocol=True,
-                     adjust_index=["x", "y", "frame", "particle"],
-                     column_names=None):
+                     adjust_index=["x", "y", "frame", "particle"]):
     """Load a _tracks.mat file created by particle_tracking_2D
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -142,10 +135,6 @@ def load_pt2d_tracks(filename, load_protocol=True,
             frame numbers) may be off by one. This list contains the names of
             columns to be corrected for this. Defaults to ["x", "y", "frame",
             "particle"].
-        column_names (list of str): List of the column names. If None and
-            `load_protocol` is True, the names will be read from the protocol
-            file. if `load_protocol` is false, use the appropriate values of
-            the `pt2d_name_trans` dict.
 
     Returns:
         pandas.DataFrame containing the data.
@@ -163,10 +152,8 @@ def load_pt2d_tracks(filename, load_protocol=True,
         for n in names:
             tn = pt2d_name_trans.get(n)
             if tn is None:
-              tn = n
+                tn = n
             cols.append(tn)
-    elif column_names is not None:
-        cols = column_names
     else:
         for k, v in pt2d_name_trans.items():
             cols.append(v)
@@ -190,8 +177,7 @@ def load_pt2d_tracks(filename, load_protocol=True,
     return df
 
 
-def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
-                  column_names=None):
+def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False):
     """Load a pkmatrix from a .mat file
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -206,16 +192,11 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
         green (bool): If True, load pkmatrix_green, which is the right half
             of the image when using `prepare_peakposition` in 2 color LR mode.
             Otherwise, load pkmatrix. Defaults to False.
-        column_names (list of str): List of the column names. Defaults to
-            `pk_column_names`.
 
     Returns:
         pandas.DataFrame containing the data.
     """
     mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
-
-    if column_names is None:
-        column_names = pk_column_names
 
     if not green:
         d = mat["par"].pkmatrix
@@ -225,7 +206,7 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
     # if no localizations were found, an empty array is returned. However,
     # the DataFrame constructor expects None in this case.
     d = None if len(d) == 0 else d
-    df = pd.DataFrame(data=d, columns=column_names)
+    df = pd.DataFrame(data=d, columns=pk_column_names)
 
     for c in adjust_index:
         if c in df.columns:
@@ -239,7 +220,7 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
     return df
 
 
-def load_pks(filename, adjust_index=["x", "y", "frame"], column_names=None):
+def load_pks(filename, adjust_index=["x", "y", "frame"]):
     """Load a pks matrix from a MATLAB file
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -251,23 +232,18 @@ def load_pks(filename, adjust_index=["x", "y", "frame"], column_names=None):
             python's start at 0, some data (such as feature coordinates and
             frame numbers) may be off by one. This list contains the names of
             columns to be corrected for this. Defaults to ["x", "y", "frame"].
-        column_names (list of str): List of the column names. Defaults to
-            `pks_column_names`.
 
     Returns:
         pandas.DataFrame containing the data.
     """
     mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
 
-    if column_names is None:
-        column_names = pks_column_names
-
     d = mat["pks"]
 
     # if no localizations were found, an empty array is returned. However,
     # the DataFrame constructor expects None in this case.
     d = None if len(d) == 0 else d
-    df = pd.DataFrame(data=d, columns=column_names)
+    df = pd.DataFrame(data=d, columns=pks_column_names)
 
     for c in adjust_index:
         if c in df.columns:
