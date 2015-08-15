@@ -38,20 +38,20 @@ pt2d_name_trans = collections.OrderedDict((
     ("Radius of Gyration", "size"),
     ("Excentricity", "ecc"),
     ("Maximal Pixel Intensity", "signal"),
-    ("Background per Pixel", "bg"),
-    ("Standard Deviation of Background", "bg_deviation"),
-    ("Full Integrated Intensity - Background", "mass_wo_bg"),
+    ("Background per Pixel", "background"),
+    ("Standard Deviation of Background", "background_dev"),
+    ("Full Integrated Intensity - Background", "mass_corr"),
     ("Background per Feature", "feat_background"),
     ("Frame Number", "frame"),
     ("Time in Frames", "time"),
     ("Trace ID", "particle")))
 
 pk_column_names = ["frame", "x", "y", "size", "mass", "background",
-                   "column6", "column7", "bg_deviation", "column9",
+                   "column6", "column7", "background_dev", "column9",
                    "column10"]
 
 pks_column_names = ["frame", "x", "y", "size", "mass", "background",
-                    "bg_deviation", "pa"]
+                    "background_dev", "ep"]
 
 msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
 
@@ -96,7 +96,7 @@ def load_pt2d_positions(filename, load_protocol=True,
         for n in names:
             tn = pt2d_name_trans.get(n)
             if tn is None:
-              tn = n
+                tn = n
             cols.append(tn)
     elif column_names is not None:
         cols = column_names
@@ -104,17 +104,21 @@ def load_pt2d_positions(filename, load_protocol=True,
         for k, v in pt2d_name_trans.items():
             cols.append(v)
 
-    #append cols with names for unnamed columns
+    # append cols with names for unnamed columns
     for i in range(len(cols), pos.shape[1]+3):
         cols.append("column{}".format(i))
 
-    #columns name list cannot have more columns than there are in the file
+    # columns name list cannot have more columns than there are in the file
     cols = cols[:pos.shape[1]]
 
     df = pd.DataFrame(pos, columns=cols)
     for c in adjust_index:
         if c in df.columns:
             df[c] -= 1
+
+    if "size" in df.columns:
+        # particle_tracker returns the squared radius of gyration
+        df["size"] = np.sqrt(df["size"])
 
     return df
 
@@ -167,17 +171,21 @@ def load_pt2d_tracks(filename, load_protocol=True,
         for k, v in pt2d_name_trans.items():
             cols.append(v)
 
-    #append cols with names for unnamed columns
+    # append cols with names for unnamed columns
     for i in range(len(cols), tracks.shape[1]+3):
         cols.append("column{}".format(i))
 
-    #columns name list cannot have more columns than there are in the file
+    # columns name list cannot have more columns than there are in the file
     cols = cols[:tracks.shape[1]]
 
     df = pd.DataFrame(tracks, columns=cols)
     for c in adjust_index:
         if c in df.columns:
             df[c] -= 1
+
+    if "size" in df.columns:
+        # particle_tracker returns the squared radius of gyration
+        df["size"] = np.sqrt(df["size"])
 
     return df
 
@@ -214,14 +222,19 @@ def load_pkmatrix(filename, adjust_index=["x", "y", "frame"], green=False,
     else:
         d = mat["par"].pkmatrix_green
 
-    #if no localizations were found, an empty array is returned. However,
-    #the DataFrame constructor expects None in this case.
-    d = None if len(d)==0 else d
+    # if no localizations were found, an empty array is returned. However,
+    # the DataFrame constructor expects None in this case.
+    d = None if len(d) == 0 else d
     df = pd.DataFrame(data=d, columns=column_names)
 
     for c in adjust_index:
         if c in df.columns:
             df[c] -= 1
+
+    if "size" in df.columns:
+        # the size in a pkmatrix is FWHM; devide by 2. to get some kind of
+        # radius (instead of diameter)
+        df["size"] /= 2.
 
     return df
 
@@ -251,14 +264,21 @@ def load_pks(filename, adjust_index=["x", "y", "frame"], column_names=None):
 
     d = mat["pks"]
 
-    #if no localizations were found, an empty array is returned. However,
-    #the DataFrame constructor expects None in this case.
-    d = None if len(d)==0 else d
+    # if no localizations were found, an empty array is returned. However,
+    # the DataFrame constructor expects None in this case.
+    d = None if len(d) == 0 else d
     df = pd.DataFrame(data=d, columns=column_names)
 
     for c in adjust_index:
         if c in df.columns:
             df[c] -= 1
+
+    if "size" in df.columns:
+        # the size in a pks file is FWHM; devide by 2. to get some kind of
+        # radius (instead of diameter)
+        df["size"] /= 2.
+
+    # TODO: trackpy ep is in pixels (?), pks in nm
 
     return df
 
