@@ -131,9 +131,13 @@ class MicroViewScene(QGraphicsScene):
 
 class LocalizationMarker(QGraphicsEllipseItem):
     def __init__(self, data, color=Qt.green, parent=None):
-        size = data["size"]
-        super().__init__(data["x"]-size/2.+0.5, data["y"]-size/2.+0.5,
-                         size, size, parent)
+        if ("size_x" in data.index) and ("size_y" in data.index):
+            size_x = data["size_x"]
+            size_y = data["size_y"]
+        else:
+            size_x = size_y = data["size"]
+        super().__init__(data["x"]-size_x+0.5, data["y"]-size_y+0.5,
+                         2*size_x, 2*size_y, parent)
         pen = QPen()
         pen.setWidthF(1.25)
         pen.setCosmetic(True)
