@@ -10,15 +10,18 @@ mass_column : str
     Name of the column describing the integrated intensities ("masses") of
     the features. Defaults to "mass".
 """
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 
 mass_column = "mass"
 
 
-def plotpdf(data, lim, f, matlab_engine, ax=None, mass_column=mass_column):
-    """Call MATLAB `plotpdf`
+def plotpdf(data, lim, f, mlab, ax=None, mass_column=mass_column):
+    """Call MATLAB ``plotpdf``
 
-    This is a wrapper around `plotpdf` using MATLAB engine for python
+    This is a wrapper around ``plotpdf`` using `pymatbridge`
 
     Parameters
     ----------
@@ -29,8 +32,8 @@ def plotpdf(data, lim, f, matlab_engine, ax=None, mass_column=mass_column):
         Maximum brightness
     f : float
         Correction factor for sigma
-    matlab_engine : MATLAB engine object
-        as e.g. returned by `matlab.engine.start()`
+    matlab_engine : pymatbridge.Matlab
+        Matlab object with a running session
     ax : axis object, optional
         `matplotlib` axes to use for plotting. If None, use `gca()`. Defaults
         to None.
@@ -38,16 +41,12 @@ def plotpdf(data, lim, f, matlab_engine, ax=None, mass_column=mass_column):
         Name of the column describing the integrated intensities ("masses") of
         the features. Defaults to the `mass_column` attribute of the module.
     """
-    import matplotlib.pyplot as plt
-    import matlab.engine
-
     if ax is None:
         ax = plt.gca()
 
     if isinstance(data, pd.DataFrame):
         data = data[mass_column]
 
-    data = [[d] for d in data]
-    x, y = matlab_engine.plotpdf(matlab.double(data), float(lim), float(f),
-                                 "r", 0, nargout=2)
-    ax.plot(x._data, y._data)
+    res = mlab.run_func("plotpdf", data[:, np.newaxis], float(lim), float(f),
+                        "r", 0, nargout=2)
+    ax.plot(np.squeeze(res["result"][0]), np.squeeze(res["result"][1]))
