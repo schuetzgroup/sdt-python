@@ -1,3 +1,3 @@
 from . import chromatic
 from . import image_tools
-from . import compat
+from . import data
