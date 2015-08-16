@@ -10,22 +10,19 @@ python tools. So far it can read data from
 
 Attributes
 ----------
-    pt2d_name_trans : collections.OrderedDict
-        Keys are the names of the columns of particle_tracking_2D output .mat
-        files as found in the _protocol.mat files. Values are something shorter
-        that can be handled better and, by default, is compatible with
-        [trackpy](https://soft-matter.github.io/trackpy/).
-    pk_column_names : list of st
-        Names of the columns of a pk matrix as produced e. g. by
-        ``prepare_peakposition``. By default also compatible with trackpy.
-    pks_column_names : list of str
-        Names of the columns of a pks matrix as produced e. g. by
-        ``check_fit``. By default also compatible with trackpy.
-    msd_column_names : list of str
-        Names of the columns of a msdplot output matrix.
-    mass_column : str
-        Name of the column describing the integrated intensities ("masses") of
-        the features. Defaults to "mass".
+pt2d_name_trans : collections.OrderedDict
+    Keys are the names of the columns of particle_tracking_2D output .mat
+    files as found in the _protocol.mat files. Values are something shorter
+    that can be handled better and, by default, is compatible with
+    [trackpy](https://soft-matter.github.io/trackpy/).
+pk_column_names : list of st
+    Names of the columns of a pk matrix as produced e. g. by
+    ``prepare_peakposition``. By default also compatible with trackpy.
+pks_column_names : list of str
+    Names of the columns of a pks matrix as produced e. g. by
+    ``check_fit``. By default also compatible with trackpy.
+msd_column_names : list of str
+    Names of the columns of a msdplot output matrix.
 """
 import collections
 
@@ -52,7 +49,6 @@ pk_column_names = ["frame", "x", "y", "size", "mass", "bg", "column6",
                    "column7", "bg_dev", "column9", "column10"]
 pks_column_names = ["frame", "x", "y", "size", "mass", "bg", "bg_dev", "ep"]
 msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
-mass_column = "mass"
 
 
 def load(filename):

@@ -3,7 +3,18 @@
 Allow for calling matlab tools from python. So far, the following tools are
 supported:
 - plotpdf
+
+Attributes
+----------
+mass_column : str
+    Name of the column describing the integrated intensities ("masses") of
+    the features. Defaults to "mass".
 """
+
+
+mass_column = "mass"
+
+
 def plotpdf(data, lim, f, matlab_engine, ax=None, mass_column=mass_column):
     """Call MATLAB `plotpdf`
 
