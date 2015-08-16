@@ -41,18 +41,16 @@ pt2d_name_trans = collections.OrderedDict((
     ("Radius of Gyration", "size"),
     ("Excentricity", "ecc"),
     ("Maximal Pixel Intensity", "signal"),
-    ("Background per Pixel", "background"),
-    ("Standard Deviation of Background", "background_dev"),
+    ("Background per Pixel", "bg"),
+    ("Standard Deviation of Background", "bg_dev"),
     ("Full Integrated Intensity - Background", "mass_corr"),
-    ("Background per Feature", "feat_background"),
+    ("Background per Feature", "feat_bg"),
     ("Frame Number", "frame"),
     ("Time in Frames", "time"),
     ("Trace ID", "particle")))
-pk_column_names = ["frame", "x", "y", "size", "mass", "background",
-                   "column6", "column7", "background_dev", "column9",
-                   "column10"]
-pks_column_names = ["frame", "x", "y", "size", "mass", "background",
-                    "background_dev", "ep"]
+pk_column_names = ["frame", "x", "y", "size", "mass", "bg", "column6",
+                   "column7", "bg_dev", "column9", "column10"]
+pks_column_names = ["frame", "x", "y", "size", "mass", "bg", "bg_dev", "ep"]
 msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
 mass_column = "mass"
 
@@ -119,7 +117,8 @@ def load_pt2d_positions(filename, load_protocol=True,
 
     cols = []
     if load_protocol:
-        proto_path = filename[:filename.rfind("positions.mat")] + "protocol.mat"
+        proto_path = (filename[:filename.rfind("positions.mat")] +
+                      "protocol.mat")
         proto = sp_io.loadmat(proto_path, struct_as_record=False,
                               squeeze_me=True)
         name_str = proto["X"].positions_output
