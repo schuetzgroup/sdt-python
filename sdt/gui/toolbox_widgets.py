@@ -103,9 +103,11 @@ class LocatorOptionsContainer(QWidget):
 
 
 saClass, saBase = uic.loadUiType(os.path.join(path, "sa_options.ui"))
+
+
 class SAOptions(saBase):
     __clsName = "SAOptions"
-    
+
     def tr(self, string):
         return QCoreApplication.translate(self.__clsName, string)
 
@@ -114,7 +116,7 @@ class SAOptions(saBase):
 
         self._ui = saClass()
         self._ui.setupUi(self)
-        
+
         if method == "3D-DAOSTORM":
             self._ui.camTypeLabel.hide()
             self._ui.camTypeWidget.hide()
@@ -122,24 +124,24 @@ class SAOptions(saBase):
             pass
         else:
             raise ValueError("Unknown method {}.".format(method))
-        
+
         self._method = method
-        
-        #hide calibration file chooser
+
+        # hide calibration file chooser
         self._ui.scmosButton.toggled.emit(self._ui.scmosButton.isChecked())
-        
+
         self._calibrationData = None
         self._ui.calibrationEdit.textChanged.connect(self.readCalibrationFile)
         self._origLineEditPalette = self._ui.calibrationEdit.palette()
         self._redLineEditPalette = QPalette(self._origLineEditPalette)
         self._redLineEditPalette.setColor(QPalette.Base, Qt.red)
-        #(fail to) read calibration file, set LineEdit background color
+        # (fail to) read calibration file, set LineEdit background color
         self.readCalibrationFile()
-        
+
         self._ui.calibrationButton.pressed.connect(self.selectCalibrationFile)
-        
+
         self._lastOpenDir = ""
-        
+
         self._ui.diameterBox.valueChanged.connect(self.optionsChanged)
         self._ui.modelBox.currentTextChanged.connect(self.optionsChanged)
         self._ui.thresholdBox.valueChanged.connect(self.optionsChanged)
@@ -149,9 +151,9 @@ class SAOptions(saBase):
         self._ui.calibrationEdit.textChanged.connect(self.optionsChanged)
         self._ui.chipWinXBox.valueChanged.connect(self.optionsChanged)
         self._ui.chipWinYBox.valueChanged.connect(self.optionsChanged)
-        
+
     optionsChanged = pyqtSignal()
-        
+
     @pyqtSlot()
     def readCalibrationFile(self):
         try:
@@ -160,14 +162,14 @@ class SAOptions(saBase):
             self._calibrationData = None
             self._ui.calibrationEdit.setPalette(self._redLineEditPalette)
             return
-        
+
         if self._calibrationData.shape[0] != 3:
             self._calibrationData = None
             self._ui.calibrationEdit.setPalette(self._redLineEditPalette)
             return
-        
+
         self._ui.calibrationEdit.setPalette(self._origLineEditPalette)
-        
+
     @pyqtSlot()
     def selectCalibrationFile(self):
         fname = QFileDialog.getOpenFileName(
@@ -175,11 +177,11 @@ class SAOptions(saBase):
             self.tr("Calibration data (*.npy)") + ";;" +
                 self.tr("All files (*)"))
         if not fname[0]:
-            #cancelled
+            # cancelled
             return
         self._ui.calibrationEdit.setText(fname[0])
         self._lastOpenDir = fname[0]
-        
+
     def getOptions(self):
         opt = dict(diameter=self._ui.diameterBox.value(),
                    threshold=self._ui.thresholdBox.value(),
@@ -456,6 +458,8 @@ class FileChooser(fcBase):
 
 
 filterClass, filterBase = uic.loadUiType(os.path.join(path, "loc_filter.ui"))
+
+
 class LocFilter(filterBase):
     __clsName = "LocFilter"
     filterChangeDelay = 200
@@ -501,7 +505,7 @@ class LocFilter(filterBase):
         for fstr in filterStrList:
             fstr, cnt = varNameRex.subn(r'data["\1"]', fstr)
             if not cnt:
-                #no variable was replaced; consider this an invalid line
+                # no variable was replaced; consider this an invalid line
                 continue
             try:
                 goodLines.append(compile(fstr, "filterFunc", "eval"))
@@ -524,6 +528,8 @@ class LocFilter(filterBase):
 
 locSaveClass, locSaveBase = uic.loadUiType(
     os.path.join(path, "locate_save_widget.ui"))
+
+
 class LocateSaveWidget(locSaveBase):
     __clsName = "LocSaveOptions"
     formatIndexToName = ["hdf5", "particle_tracker", "settings", "none"]
@@ -536,7 +542,7 @@ class LocateSaveWidget(locSaveBase):
         self._ui = locSaveClass()
         self._ui.setupUi(self)
 
-        #disable particle_tracker until implemented
+        # disable particle_tracker until implemented
         formatBoxModel = self._ui.formatBox.model()
         item = formatBoxModel.item(1)
         item.setFlags(item.flags() & ~(Qt.ItemIsSelectable|Qt.ItemIsEnabled))
@@ -571,7 +577,7 @@ class LocateSaveWidget(locSaveBase):
                 self.tr("JSON data (*.json)") + ";;"
                     + self.tr("All files (*)"))
             if not fname[0]:
-                #cancelled
+                # cancelled
                 return
             self._lastOpenDir = fname[0]
             self.saveOptions.emit(fname[0])
