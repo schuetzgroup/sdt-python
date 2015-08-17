@@ -112,8 +112,16 @@ class MainWindow(QMainWindow):
 
         self._currentFile = None if (ims is None) else fname
         self._viewer.setImageSequence(ims)
+        self._locOptionsDock.widget().numFrames = (0 if (ims is None)
+                                                   else len(ims))
 
     _workerSignal = pyqtSignal(np.ndarray, dict, types.ModuleType)
+
+    @pyqtSlot(int)
+    def on_viewer_frameReadError(self, frameno):
+        QMessageBox.critical(
+            self, self.tr("Read Error"),
+            self.tr("Could not read frame number {}".format(frameno + 1)))
 
     @pyqtSlot()
     def _makeWorkerWork(self):
@@ -142,6 +150,7 @@ class MainWindow(QMainWindow):
         if self._currentFile is None:
             return
         if self._currentFile not in self._fileModel.files():
+            self._locOptionsDock.widget().numFrames = 0
             self._currentFile = None
             self._viewer.setImageSequence(None)
 
@@ -207,10 +216,14 @@ class MainWindow(QMainWindow):
         for i in range(self._fileModel.rowCount()):
             runner = LocateRunner(self._fileModel.index(i),
                                   self._locOptionsDock.widget().getOptions(),
+                                  self._locOptionsDock.widget().frameRange,
                                   self._locOptionsDock.widget().getModule())
             runner.signals.finished.connect(
                 lambda: progDialog.setValue(progDialog.value() + 1))
             runner.signals.finished.connect(self._locateRunnerFinished)
+            runner.signals.error.connect(
+                lambda: progDialog.setValue(progDialog.value() + 1))
+            runner.signals.error.connect(self._locateRunnerError)
             self._workerThreadPool.start(runner)
         progDialog.canceled.connect(self._workerThreadPool.clear)
 
@@ -238,6 +251,13 @@ class MainWindow(QMainWindow):
             # TODO: implement
             pass
 
+    @pyqtSlot(QModelIndex)
+    def _locateRunnerError(self, index):
+        QMessageBox.critical(
+            self, self.tr("Localization error"),
+            self.tr("Failed to locate features in {}".format(
+                index.data(toolbox_widgets.FileListModel.FileNameRole))))
+
 
 class PreviewWorker(QObject):
     def __init__(self, parent=None):
@@ -258,19 +278,28 @@ class LocateRunner(QRunnable):
             super().__init__(parent)
 
         finished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
+        error = pyqtSignal(QModelIndex)
 
-    def __init__(self, index, options, module):
+    def __init__(self, index, options, frameRange, module):
         super().__init__()
         self._index = index
         self._options = options
         self._module = module
+        self._frameRange = frameRange
         self.signals = self.Signals()
 
     def run(self):
         fname = self._index.data(toolbox_widgets.FileListModel.FileNameRole)
         frames = pims.open(fname)
+        end = self._frameRange[1] if self._frameRange[1] >= 0 else len(frames)
         # TODO: restrict locating to bounding rect of ROI for performance gain
-        data = self._module.batch(frames, **self._options)
+        try:
+            data = self._module.batch(frames[self._frameRange[0]:end],
+                                      **self._options)
+        except Exception:
+            self.signals.error.emit(self._index)
+            return
+
         self.signals.finished.emit(self._index, data, self._options)
 
     finished = pyqtSignal(QModelIndex, pd.DataFrame)

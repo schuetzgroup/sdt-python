@@ -216,7 +216,10 @@ class MicroViewWidget(mvBase):
         self._ui.framenoBox.setMaximum(len(ims))
         self._ui.framenoSlider.setMaximum(len(ims))
         self._ims = ims
-        self._imageData = self._ims[self._ui.framenoBox.value() - 1]
+        try:
+            self._imageData = self._ims[self._ui.framenoBox.value() - 1]
+        except Exception:
+            self.frameReadError.emit(self._ui.framenoBox.value() - 1)
 
         if np.issubdtype(self._imageData.dtype, np.float):
             # ugly hack; get min and max corresponding to integer types based
@@ -390,10 +393,15 @@ class MicroViewWidget(mvBase):
         if self._ims is None:
             return
 
-        self._imageData = self._ims[frameno - 1]
+        try:
+            self._imageData = self._ims[frameno - 1]
+        except Exception:
+            self.frameReadError.emit(frameno - 1)
         self.currentFrameChanged.emit()
         self.drawImage()
         self.drawLocalizations()
+
+    frameReadError = pyqtSignal(int)
 
     @pyqtSlot()
     def nextFrame(self):

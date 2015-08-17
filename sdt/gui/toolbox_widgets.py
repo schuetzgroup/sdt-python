@@ -6,9 +6,11 @@ import re
 import numpy as np
 
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QComboBox, QLabel,
-                             QLineEdit, QFileDialog, QListWidgetItem)
+                             QLineEdit, QFileDialog, QListWidgetItem,
+                             QFormLayout, QSpinBox)
 from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QObject, QTimer,
-                          QCoreApplication, QAbstractListModel, QModelIndex)
+                          QCoreApplication, QAbstractListModel, QModelIndex,
+                          pyqtProperty, QMetaObject)
 from PyQt5.QtGui import (QPalette, QValidator, QIntValidator)
 from PyQt5 import uic
 
@@ -19,41 +21,50 @@ path = os.path.dirname(os.path.abspath(__file__))
 class LocatorOptionsContainer(QWidget):
     __clsName = "LocatorOptionsContainer"
     optionChangeDelay = 200
-    
+
     def tr(self, string):
         return QCoreApplication.translate(self.__clsName, string)
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._layout = QVBoxLayout()
+        self._layout = QFormLayout()
         self.setLayout(self._layout)
-        self._methodLabel = QLabel(self.tr("Method"))
-        self._layout.addWidget(self._methodLabel)
+        self._startFrameBox = QSpinBox()
+        self._startFrameBox.setObjectName("startFrameBox")
+        self._endFrameBox = QSpinBox()
+        self._endFrameBox.setObjectName("endFrameBox")
+        for sb in (self._startFrameBox, self._endFrameBox):
+            sb.setRange(0, 0)
+            sb.setSpecialValueText("auto")
         self._methodBox = QComboBox()
-        self._layout.addWidget(self._methodBox)
-        
+        self._methodBox.setObjectName("methodBox")
+        self._layout.addRow(QLabel(self.tr("First frame")),
+                            self._startFrameBox)
+        self._layout.addRow(QLabel(self.tr("Last frame")), self._endFrameBox)
+        self._layout.addRow(QLabel(self.tr("Method")), self._methodBox)
+
         self._delayTimer = QTimer(self)
         self._delayTimer.setInterval(self.optionChangeDelay)
         self._delayTimer.setSingleShot(True)
         self._delayTimer.setTimerType(Qt.PreciseTimer)
         self._delayTimer.timeout.connect(self.optionsChanged)
-        
-        #make sure the widgets are not garbage collected
+
+        # make sure the widgets are not garbage collected
         self._optWidgetList = []
         for k, v in methodMap.items():
             w = v.widget()
             self._methodBox.addItem(k, (w, v.module))
-            self._layout.addWidget(w)
+            self._layout.addRow(w)
             w.hide()
             self._optWidgetList.append(w)
             w.optionsChanged.connect(self._delayTimer.start)
-            
-        self._methodBox.currentIndexChanged.connect(self._methodChangedSlot)
+
         self._currentWidget, self._currentModule = \
             self._methodBox.currentData()
-        self._methodChangedSlot()
-        self._layout.addStretch()
-        
+        self.on_methodBox_currentIndexChanged()
+
+        QMetaObject.connectSlotsByName(self)
+
     optionsChanged = pyqtSignal()
 
     def getOptions(self):
@@ -61,9 +72,9 @@ class LocatorOptionsContainer(QWidget):
 
     def getModule(self):
         return self._currentModule
-        
+
     @pyqtSlot()
-    def _methodChangedSlot(self):
+    def on_methodBox_currentIndexChanged(self):
         if self._currentWidget is not None:
             self._currentWidget.hide()
         self._currentWidget, self._currentModule = \
@@ -71,8 +82,26 @@ class LocatorOptionsContainer(QWidget):
         if self._currentWidget is not None:
             self._currentWidget.show()
         self.optionsChanged.emit()
-            
-        
+
+    def setNumFrames(self, n):
+        self._startFrameBox.setMaximum(n)
+        self._endFrameBox.setMaximum(n)
+
+    numFramesChanged = pyqtSignal(int)
+
+    @pyqtProperty(int, fset=setNumFrames, notify=numFramesChanged)
+    def numFrames(self):
+        return self._endFrameBox.maximum()
+
+    @pyqtProperty(tuple)
+    def frameRange(self):
+        start = self._startFrameBox.value()
+        start = start - 1 if start > 0 else 0
+        end = self._endFrameBox.value()
+        end = end if end > 0 else -1
+        return start, end
+
+
 saClass, saBase = uic.loadUiType(os.path.join(path, "sa_options.ui"))
 class SAOptions(saBase):
     __clsName = "SAOptions"
