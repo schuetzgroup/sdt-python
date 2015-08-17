@@ -71,7 +71,7 @@ class FilterWidget(filterBase):
         def filterFunc(data):
             filter = np.ones((len(data),), dtype=bool)
             for l in goodLines:
-                filter &= eval(l, {}, {"data": data})
+                filter &= eval(l, {}, {"data": data, "numpy": np})
             return filter
 
         return filterFunc
