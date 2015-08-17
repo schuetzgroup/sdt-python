@@ -18,7 +18,10 @@ from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
                           QMetaObject, QPointF)
 
 from . import micro_view
-from . import toolbox_widgets
+from . import locate_options
+from . import file_chooser
+from . import locate_filter
+from . import locate_saver
 
 
 class MainWindow(QMainWindow):
@@ -33,7 +36,7 @@ class MainWindow(QMainWindow):
         self._viewer = micro_view.MicroViewWidget()
         self._viewer.setObjectName("viewer")
 
-        fileChooser = toolbox_widgets.FileChooser()
+        fileChooser = file_chooser.FileChooser()
         fileChooser.selected.connect(self.open)
         self._fileModel = fileChooser.model()
         self._fileModel.rowsRemoved.connect(self._checkFileList)
@@ -41,19 +44,19 @@ class MainWindow(QMainWindow):
         self._fileDock.setObjectName("fileDock")
         self._fileDock.setWidget(fileChooser)
 
-        optionsWidget = toolbox_widgets.LocatorOptionsContainer()
+        optionsWidget = locate_options.Container()
         self._locOptionsDock = QDockWidget(self.tr("Localization options"),
                                            self)
         self._locOptionsDock.setObjectName("locOptionsDock")
         self._locOptionsDock.setWidget(optionsWidget)
 
-        filterWidget = toolbox_widgets.LocFilter()
+        filterWidget = locate_filter.FilterWidget()
         filterWidget.filterChanged.connect(self._filterLocalizations)
         self._locFilterDock = QDockWidget(self.tr("Localization filter"), self)
         self._locFilterDock.setObjectName("locFilterDock")
         self._locFilterDock.setWidget(filterWidget)
 
-        locSaveWidget = toolbox_widgets.LocateSaveWidget()
+        locSaveWidget = locate_saver.SaveWidget()
         self._locSaveDock = QDockWidget(self.tr("Save localizations"), self)
         self._locSaveDock.setObjectName("locSaveDock")
         self._locSaveDock.setWidget(locSaveWidget)
@@ -178,7 +181,7 @@ class MainWindow(QMainWindow):
         filterFunc = self._locFilterDock.widget().getFilter()
         try:
             good = filterFunc(self._currentLocData)
-        except:
+        except Exception:
             good = np.ones((len(self._currentLocData),), dtype=bool)
         inRoi = self._applyRoi(self._currentLocData)
         self._viewer.setLocalizationData(self._currentLocData[good & inRoi],
@@ -230,14 +233,14 @@ class MainWindow(QMainWindow):
     @pyqtSlot(QModelIndex, pd.DataFrame, dict)
     def _locateRunnerFinished(self, index, data, options):
         self._fileModel.setData(index, data,
-                                toolbox_widgets.FileListModel.LocDataRole)
+                                file_chooser.FileListModel.LocDataRole)
         self._fileModel.setData(index, options,
-                                toolbox_widgets.FileListModel.LocOptionsRole)
+                                file_chooser.FileListModel.LocOptionsRole)
         saveFormat = self._locSaveDock.widget().getFormat()
         if saveFormat == "hdf5":
             saveFileName = os.path.splitext(
                 self._fileModel.data(
-                    index, toolbox_widgets.FileListModel.FileNameRole))[0]
+                    index, file_chooser.FileListModel.FileNameRole))[0]
             saveFileName = "{fn}.loc{extsep}h5".format(fn=saveFileName,
                                                        extsep=os.extsep)
 
@@ -256,7 +259,7 @@ class MainWindow(QMainWindow):
         QMessageBox.critical(
             self, self.tr("Localization error"),
             self.tr("Failed to locate features in {}".format(
-                index.data(toolbox_widgets.FileListModel.FileNameRole))))
+                index.data(file_chooser.FileListModel.FileNameRole))))
 
 
 class PreviewWorker(QObject):
@@ -289,7 +292,7 @@ class LocateRunner(QRunnable):
         self.signals = self.Signals()
 
     def run(self):
-        fname = self._index.data(toolbox_widgets.FileListModel.FileNameRole)
+        fname = self._index.data(file_chooser.FileListModel.FileNameRole)
         frames = pims.open(fname)
         end = self._frameRange[1] if self._frameRange[1] >= 0 else len(frames)
         # TODO: restrict locating to bounding rect of ROI for performance gain
