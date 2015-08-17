@@ -313,6 +313,8 @@ class FileListModel(QAbstractListModel):
 
 
 fcClass, fcBase = uic.loadUiType(os.path.join(path, "file_chooser.ui"))
+
+
 class FileChooser(fcBase):
     __clsName = "FileChooser"
 
@@ -325,10 +327,10 @@ class FileChooser(fcBase):
         self._ui = fcClass()
         self._ui.setupUi(self)
 
-        #if no parent is specified for the model, one gets strange errors about
-        #QTimer and QThreads when closing the application since it gets
-        #collected by python's garbage collector; see
-        #https://stackoverflow.com/questions/13562501
+        # if no parent is specified for the model, one gets strange errors
+        # about QTimer and QThreads when closing the application since it gets
+        # collected by python's garbage collector; see
+        # https://stackoverflow.com/questions/13562501
         self._model = FileListModel(self)
         self._ui.fileListView.setModel(self._model)
 
@@ -346,7 +348,7 @@ class FileChooser(fcBase):
         fnames = QFileDialog.getOpenFileNames(
             self, self.tr("Open file"), self._lastOpenDir,
             self.tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
-                self.tr("All files (*)"))
+            self.tr("All files (*)"))
         self.addFiles(fnames[0])
 
     def addFiles(self, names):
@@ -355,8 +357,10 @@ class FileChooser(fcBase):
 
     @pyqtSlot()
     def removeSelected(self):
-        for s in self._ui.fileListView.selectionModel().selectedIndexes():
-            self._model.removeRows(s.row(), 1)
+        idx = self._ui.fileListView.selectionModel().selectedIndexes()
+        while idx:
+            self._model.removeRow(idx[0].row())
+            idx = self._ui.fileListView.selectionModel().selectedIndexes()
 
     selected = pyqtSignal(str)
 
