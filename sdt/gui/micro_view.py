@@ -216,7 +216,7 @@ class MicroViewWidget(mvBase):
         self._ui.framenoBox.setMaximum(len(ims))
         self._ui.framenoSlider.setMaximum(len(ims))
         self._ims = ims
-        self._imageData = self._ims[0]
+        self._imageData = self._ims[self._ui.framenoBox.value() - 1]
 
         if np.issubdtype(self._imageData.dtype, np.float):
             # ugly hack; get min and max corresponding to integer types based
