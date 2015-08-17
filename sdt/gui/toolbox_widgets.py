@@ -268,6 +268,63 @@ class T2DOptions(t2dBase):
         return opt
 
 
+trackpyClass, trackpyBase = uic.loadUiType(os.path.join(path,
+                                                        "trackpy_options.ui"))
+
+
+class TrackpyOptions(trackpyBase):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._ui = trackpyClass()
+        self._ui.setupUi(self)
+
+        self._diameterEdit = QLineEdit()
+        val = OddIntValidator()
+        self._diameterEdit.setValidator(val)
+        self._ui.diameterBox.setLineEdit(self._diameterEdit)
+
+        self._origLineEditPalette = self._diameterEdit.palette()
+        self._redLineEditPalette = QPalette(self._origLineEditPalette)
+        self._redLineEditPalette.setColor(QPalette.Base, Qt.red)
+
+        self._ui.minMassBox.valueChanged.connect(self.optionsChanged)
+        self._ui.percentileBox.valueChanged.connect(self.optionsChanged)
+        self._ui.thresholdCheckBox.toggled.connect(self.optionsChanged)
+        self._ui.thresholdSpinBox.valueChanged.connect(self.optionsChanged)
+        self._ui.iterationsBox.valueChanged.connect(self.optionsChanged)
+        self._ui.bpBox.toggled.connect(self.optionsChanged)
+
+        self._lastValidDiameter = self._ui.diameterBox.value()
+
+    @pyqtSlot(int)
+    def on_diameterBox_valueChanged(self, val):
+        if self._ui.diameterBox.hasAcceptableInput():
+            self._diameterEdit.setPalette(self._origLineEditPalette)
+            self._lastValidDiameter = val
+            self.optionsChanged.emit()
+        else:
+            self._diameterEdit.setPalette(self._redLineEditPalette)
+
+    optionsChanged = pyqtSignal()
+
+    def getOptions(self):
+        # one cannot simply use self._ui.diameterBox.value() since it may have
+        # changed to something invalid between the optionsChanged pyqtSignal
+        # and the call to getOptions
+        opt = dict(diameter=self._lastValidDiameter,
+                   minmass=self._ui.minMassBox.value(),
+                   threshold=(self._ui.thresholdSpinBox.value() if
+                              self._ui.thresholdCheckBox.isChecked() else
+                              None),
+                   percentile=self._ui.percentileBox.value(),
+                   max_iterations=self._ui.iterationsBox.value(),
+                   preprocess=self._ui.bpBox.isChecked())
+        return opt
+
+    optionsChanged = pyqtSignal()
+
+
 class FileListModel(QAbstractListModel):
     FileNameRole = Qt.UserRole
     LocDataRole = Qt.UserRole + 1
@@ -545,5 +602,12 @@ try:
     import tracking_2d
     methodMap["tracking_2d"] = methodDesc(
         widget=T2DOptions, module=tracking_2d)
+except ImportError:
+    pass
+
+try:
+    import trackpy
+    methodMap["trackpy"] = methodDesc(
+        widget=TrackpyOptions, module=trackpy)
 except ImportError:
     pass
