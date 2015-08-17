@@ -61,7 +61,7 @@ class LocatorOptionsContainer(QWidget):
 
         self._currentWidget, self._currentModule = \
             self._methodBox.currentData()
-        self.on_methodBox_currentIndexChanged()
+        self.on_methodBox_currentIndexChanged(self._methodBox.currentIndex())
 
         QMetaObject.connectSlotsByName(self)
 
@@ -73,8 +73,8 @@ class LocatorOptionsContainer(QWidget):
     def getModule(self):
         return self._currentModule
 
-    @pyqtSlot()
-    def on_methodBox_currentIndexChanged(self):
+    @pyqtSlot(int)
+    def on_methodBox_currentIndexChanged(self, idx):
         if self._currentWidget is not None:
             self._currentWidget.hide()
         self._currentWidget, self._currentModule = \
