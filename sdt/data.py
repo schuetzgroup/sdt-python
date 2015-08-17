@@ -15,7 +15,7 @@ pt2d_name_trans : collections.OrderedDict
     files as found in the _protocol.mat files. Values are something shorter
     that can be handled better and, by default, is compatible with
     [trackpy](https://soft-matter.github.io/trackpy/).
-pk_column_names : list of st
+pk_column_names : list of str
     Names of the columns of a pk matrix as produced e. g. by
     ``prepare_peakposition``. By default also compatible with trackpy.
 pks_column_names : list of str
