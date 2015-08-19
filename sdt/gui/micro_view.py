@@ -434,6 +434,10 @@ class MicroViewWidget(mvBase):
         return self._imageData
 
     def _updateCurrentPixelInfo(self, x, y):
+        if x >= self._imageData.shape[1] or y >= self._imageData.shape[0]:
+            # Sometimes, when hitting the border of the image, the coordinates
+            # are out of range
+            return
         self._ui.posLabel.setText("({x}, {y})".format(x=x, y=y))
         self._ui.intLabel.setText(locale.str(self._imageData[y, x]))
 
