@@ -220,6 +220,7 @@ class MicroViewWidget(mvBase):
             self._imageData = self._ims[self._ui.framenoBox.value() - 1]
         except Exception:
             self.frameReadError.emit(self._ui.framenoBox.value() - 1)
+            return
 
         if np.issubdtype(self._imageData.dtype, np.float):
             # ugly hack; get min and max corresponding to integer types based
