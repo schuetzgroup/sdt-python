@@ -300,34 +300,26 @@ class Corrector(object):
                                         index=pos_columns)
         return corr
 
-
     def _vectors_cartesian(self, features):
         """Calculate vectors of each point in features to every other point
 
-        Args:
-            features (pandas.DataFrame): Features with coordinates in columns
-                `pos_columns`
+        Parameters
+        ----------
+        features : pandas.DataFrame
+            Features with coordinates in columns `pos_columns`
 
-        Returns:
-            tuple of numpy.arrays: The first element of the tuple describes
-            the x coordinate of the vectors, the second one the y coordinates.
-
-            If we call the tuple (dx, dy), then dx[i, j] yields the x component
-            of the vector pointing from the i-th feature in `features` to the
-            j-th feature; same for dy and y coordinates.
+        Returns
+        -------
+        dx1, dx2, …, dxn : numpy.ndarray
+            x1 to xn (in 2D: x and y) coordinates of the vectors. dx1[i, j]
+            yields the x1 component of the vector pointing from the i-th
+            feature in `features` to the j-th feature.
         """
-        dx = np.zeros((len(features), len(features)))
-        dy = np.zeros((len(features), len(features)))
-
-        #first column: x coordinate, second column: y coordinate
-        data = features[self.pos_columns].as_matrix()
-        for i in range(len(features)):
-            diff = data - data[i]
-
-            dx[i, :] = diff[:, 0]
-            dy[i, :] = diff[:, 1]
-
-        return dx, dy
+        # transpose so that data[1] gives x coordinates, data[2] y coordinates
+        data = features[self.pos_columns].as_matrix().T
+        # for each coordinate (the first ':'), calculate the differences
+        # between all entries (thus 'np.newaxis, :' and ':, np.newaxis')
+        return data[:, np.newaxis, :] - data[:, :, np.newaxis]
 
     def _all_scores_cartesian(self, vec1, vec2, tol_rel, tol_abs):
         """Determine scores for all possible pairs of features
