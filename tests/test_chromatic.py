@@ -32,6 +32,13 @@ class TestChromaticCorrector(unittest.TestCase):
         np.testing.assert_allclose(dx, dx_orig)
         np.testing.assert_allclose(dy, dy_orig)
 
+    def test_all_scores_cartesian(self):
+        v1 = self.corrector._vectors_cartesian(self.corrector.feat1)
+        v2 = self.corrector._vectors_cartesian(self.corrector.feat2)
+        s = self.corrector._all_scores_cartesian(v1, v2, 0.05, 0.)
+        s_orig = np.load(os.path.join(path, "scores.npy"))
+        np.testing.assert_allclose(s, s_orig)
+
 
 if __name__ == "__main__":
     unittest.main()
