@@ -11,8 +11,8 @@ path, _ = os.path.split(os.path.abspath(__file__))
 
 class TestChromaticCorrector(unittest.TestCase):
     def setUp(self):
-        self.roi_left = ROI((0, 0), (131, 121))
-        self.roi_right = ROI((130, 0), (461, 121))
+        self.roi_left = ROI((0, 0), (231, 121))
+        self.roi_right = ROI((230, 0), (461, 121))
         self.loc_data = pd.read_hdf(os.path.join(path, "beads1.h5"),
                                     "features")
         self.corrector = Corrector(self.roi_left(self.loc_data),
@@ -28,7 +28,7 @@ class TestChromaticCorrector(unittest.TestCase):
 
     def test_vectors_cartesian(self):
         dx_orig, dy_orig = np.load(os.path.join(path, "vectors.npy"))
-        dx, dy = self.corrector._vectors_cartesian(self.corrector.feat2)
+        dx, dy = self.corrector._vectors_cartesian(self.corrector.feat1)
         np.testing.assert_allclose(dx, dx_orig)
         np.testing.assert_allclose(dy, dy_orig)
 
