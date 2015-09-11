@@ -440,22 +440,26 @@ def _extend_array(a, new_shape, value=0):
     The indices of the old values remain the same. E. g. if the array is 2D,
     then rows are added at the bottom and columns at the right
 
-    Args:
-        a (numpy.array): Array to be extended
-        new_shape (tuple of int): The new shape, must be larger than the old
-            one
-        value: value to be padded with
+    Parameters
+    ----------
+    a : numpy.ndarray
+        Array to be extended
+    new_shape : tuple of int
+        The new shape, must be larger than the old one
+    value : number
+        value to be padded with
 
-    Returns:
-        The extended numpy.array
+    Returns
+    -------
+    numpy.ndarray
+        The extended array
     """
-    b = np.array(a)
-    if len(new_shape) != len(b.shape):
+    if len(new_shape) != len(a.shape):
         raise ValueError("new_shape must have the same dimensions as a.shape")
-    if (np.array(new_shape) < np.array(b.shape)).any():
+    if (np.array(new_shape) < np.array(a.shape)).any():
         raise ValueError("new_shape must be larger a.shape")
 
-    return np.pad(b,
-                  pad_width=[(0, n-o) for o, n in zip(b.shape, new_shape)],
-                  mode="constant",
-                  constant_values=[(0, value)]*len(new_shape))
+    ret = np.empty(new_shape, dtype=a.dtype)
+    ret.fill(value)
+    ret[[slice(0, s) for s in a.shape]] = a
+    return ret
