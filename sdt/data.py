@@ -25,6 +25,7 @@ msd_column_names : list of str
     Names of the columns of a msdplot output matrix.
 """
 import collections
+import os
 
 import scipy.io as sp_io
 import pandas as pd
@@ -51,7 +52,7 @@ pks_column_names = ["frame", "x", "y", "size", "mass", "bg", "bg_dev", "ep"]
 msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
 
 
-def load(filename):
+def load(filename, data="tracks"):
     """Load data from file
 
     Use the load_* function appropriate for the file type in order to load the
@@ -67,6 +68,9 @@ def load(filename):
     ---------
     filename : str
         Name of the file
+    data : str, optional
+        If the file is HDF5, load this key. Reading fails, try to read
+        "features". Defaults to "tracks".
 
     Returns
     -------
@@ -81,6 +85,16 @@ def load(filename):
         return load_pkmatrix(filename)
     if filename.endswith(".pks"):
         return load_pks(filename)
+
+    # Try to read HDF5
+    try:
+        return pd.read_hdf(filename, data)
+    except:
+        try:
+            return pd.read_hdf(filename, "features")
+        except:
+            raise ValueError("Could read neither \"{}\" nor \"features\""
+                             "from file {}".format(data, filename))
 
 
 def load_pt2d_positions(filename, load_protocol=True,
