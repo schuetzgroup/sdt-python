@@ -26,6 +26,12 @@ class TestChromaticCorrector(unittest.TestCase):
         b_expected[:2, :2] = a
         np.testing.assert_equal(b_new, b_expected)
 
+    def test_vectors_cartesian(self):
+        dx_orig, dy_orig = np.load(os.path.join(path, "vectors.npy"))
+        dx, dy = self.corrector._vectors_cartesian(self.corrector.feat2)
+        np.testing.assert_allclose(dx, dx_orig)
+        np.testing.assert_allclose(dy, dy_orig)
+
 
 if __name__ == "__main__":
     unittest.main()
