@@ -216,28 +216,35 @@ class Corrector(object):
 
         Save `parameters1` as `key`[0] and `parameters2` as `key`[1].
 
-        Args:
-            path_or_buf: HDF5 file to write to
-            key (tuple of str, optional): Names of the parameter variables in
-                the HDF5 file. Defaults to ("chromatic_corr_ch1",
-                "chromatic_corr_ch2").
+        Parameters
+        ----------
+        path_or_buf
+            HDF5 file to write to
+        key : tuple of str, optional
+            Names of the parameter variables in the HDF5 file. Defaults to
+            ("chromatic_corr_ch1", "chromatic_corr_ch2").
         """
         self.parameters1.to_hdf(path_or_buf, key[0], mode="w", format="t")
         self.parameters2.to_hdf(path_or_buf, key[1], mode="a", format="t")
 
+    @staticmethod
     def read_hdf(path_or_buf, key=("chromatic_corr_ch1",
                                    "chromatic_corr_ch2")):
         """Read paramaters from a HDF5 file and construct a corrector
 
         Read `parameters1` from `key`[0] and `parameters2` from `key`[1].
 
-        Args:
-            path_or_buf: HDF5 file to load
-            key (tuple of str, optional): Names of the parameter variables in
-                the HDF5 file. Defaults to ("chromatic_corr_ch1",
-                "chromatic_corr_ch2").
+        Parameters
+        ----------
+        path_or_buf
+            HDF5 file to load
+        key : tuple of str, optional
+            Names of the parameter variables in the HDF5 file. Defaults to
+            ("chromatic_corr_ch1", "chromatic_corr_ch2").
 
-        Returns:
+        Returns
+        -------
+        Corrector
             A `Corrector` instance with the parameters read from the HDF5
             file.
         """
@@ -253,8 +260,10 @@ class Corrector(object):
         Warning: This only saves parameters2. In order not to lose parameters1,
         save to HDF5 using `to_hdf`().
 
-        Args:
-            path (str): Path of the .wrp file to be created
+        Paramaters
+        ----------
+        path : str
+            Path of the .wrp file to be created
         """
         k1 = self.parameters2.loc[self.pos_columns[0], "slope"]
         d1 = self.parameters2.loc[self.pos_columns[0], "intercept"]
@@ -264,6 +273,7 @@ class Corrector(object):
         S = dict(k1=k1, d1=d1, k2=k2, d2=d2)
         scipy.io.savemat(path, dict(S=S), appendmat=False)
 
+    @staticmethod
     def read_wrp(path):
         """Read parameters from a .wrp file
 
@@ -272,10 +282,14 @@ class Corrector(object):
         for channel 1 are calculated by inverting the transformation and may
         by not so accurate.
 
-        Args:
-            path (str): Path of the .wrp file
+        Parameters
+        ----------
+        path : str
+            Path of the .wrp file
 
-        Returns:
+        Returns
+        -------
+        Corrector
             A `Corrector` instance with the parameters read from the .wrp
             file.
         """
@@ -283,18 +297,18 @@ class Corrector(object):
         mat = scipy.io.loadmat(path, squeeze_me=True, struct_as_record=False)
         d = mat["S"]
 
-        #data of the wrp file is for the channel1 transformation
-        parms1 = np.empty((2, 3))
-        parms1[0, :] = np.array([d.k1, d.d1, np.NaN])
-        parms1[1, :] = np.array([d.k2, d.d2, np.NaN])
-        corr.parameters2 = pd.DataFrame(parms1,
+        # data of the wrp file is for the channel2 transformation
+        parms2 = np.empty((2, 3))
+        parms2[0, :] = np.array([d.k1, d.d1, np.NaN])
+        parms2[1, :] = np.array([d.k2, d.d2, np.NaN])
+        corr.parameters2 = pd.DataFrame(parms2,
                                         columns=["slope", "intercept",
                                                  "stderr"],
                                         index=pos_columns)
-        parms2 = np.empty((2, 3))
-        parms2[0, :] = np.array([1./d.k1, -d.d1/d.k1, np.NaN])
-        parms2[1, :] = np.array([1./d.k2, -d.d2/d.k2, np.NaN])
-        corr.parameters1 = pd.DataFrame(parms2,
+        parms1 = np.empty((2, 3))
+        parms1[0, :] = np.array([1./d.k1, -d.d1/d.k1, np.NaN])
+        parms1[1, :] = np.array([1./d.k2, -d.d2/d.k2, np.NaN])
+        corr.parameters1 = pd.DataFrame(parms1,
                                         columns=["slope", "intercept",
                                                  "stderr"],
                                         index=pos_columns)
