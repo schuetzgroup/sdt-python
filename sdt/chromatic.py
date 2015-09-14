@@ -67,7 +67,8 @@ class Corrector(object):
         self.parameters1 = None
         self.parameters2 = None
 
-    def determine_parameters(self, tol_rel=0.05, tol_abs=0.):
+    def determine_parameters(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.5,
+                             ambiguity_factor=0.8):
         """Determine the parameters for the affine transformation
 
         This takes the localizations of `feat1` and tries to match them with
@@ -77,17 +78,29 @@ class Corrector(object):
         This is a convenience function that calls `find_pairs` and
         `fit_parameters`.
 
-        Args:
-            tol_rel (float): Relative tolerance parameter for
-                `numpy.isclose()`. Defaults to 0.05.
-            tol_abs (float): Absolute tolerance parameter for
-                `numpy.isclose()`. Defaults to 0.
+        Parameters
+        ----------
+        tol_rel : float
+            Relative tolerance parameter for `numpy.isclose()`. Defaults to
+            0.05.
+        tol_abs : float
+            Absolute tolerance parameter for `numpy.isclose()`. Defaults to 0.
+        score_cutoff : float, optional
+            In order to get rid of false matches a threshold for scores can
+            be set. All scores below this threshold are discarded. The
+            threshold is calculated as score_cutoff*score.max(). Defaults to
+            0.5.
+        ambiguity_factor : float
+            If there are two candidates as a partner for a feature, and the
+            score of the lower scoring one is larger than `ambiguity_factor`
+            times the score of the higher scorer, the pairs are considered
+            ambiguous and therefore discarded. Defaults to 0.8.
         """
-        #TODO: score_cutoff
-        self.find_pairs(tol_rel, tol_abs)
+        self.find_pairs(tol_rel, tol_abs, score_cutoff, ambiguity_factor)
         self.fit_parameters()
 
-    def find_pairs(self, tol_rel=0.05, tol_abs=0.):
+    def find_pairs(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.5,
+                   ambiguity_factor=0.8):
         """Match features of `feat1` with features of `feat2`
 
         This is done by calculating the vectors from every
@@ -96,18 +109,28 @@ class Corrector(object):
         coordinate, where `tol_rel` and `tol_abs` are the relative and
         absolute tolerance parameters.
 
-
-        Args:
-            tol_rel (float): Relative tolerance parameter for
-                `numpy.isclose()`. Defaults to 0.05.
-            tol_abs (float): Absolute tolerance parameter for
-                `numpy.isclose()`. Defaults to 0.
+        Parameters
+        ----------
+        tol_rel : float
+            Relative tolerance parameter for `numpy.isclose()`. Defaults to
+            0.05.
+        tol_abs : float
+            Absolute tolerance parameter for `numpy.isclose()`. Defaults to 0.
+        score_cutoff : float, optional
+            In order to get rid of false matches a threshold for scores can
+            be set. All scores below this threshold are discarded. The
+            threshold is calculated as score_cutoff*score.max(). Defaults to
+            0.5.
+        ambiguity_factor : float
+            If there are two candidates as a partner for a feature, and the
+            score of the lower scoring one is larger than `ambiguity_factor`
+            times the score of the higher scorer, the pairs are considered
+            ambiguous and therefore discarded. Defaults to 0.8.
         """
-        #TODO: score_cutoff
         v1 = self._vectors_cartesian(self.feat1)
         v2 = self._vectors_cartesian(self.feat2)
         s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
-        self.pairs = self._pairs_from_score(s, None)
+        self.pairs = self._pairs_from_score(s, score_cutoff, ambiguity_factor)
 
     def fit_parameters(self):
         """Determine parameters for the affine transformation
@@ -396,8 +419,7 @@ class Corrector(object):
         # points have, the more likely it is that they are the same.
         return np.sum(all_small, axis=(0, 1)).T
 
-    def _pairs_from_score(self, score, score_cutoff=None,
-                          ambiguity_factor=0.8):
+    def _pairs_from_score(self, score, score_cutoff=0.5, ambiguity_factor=0.8):
         """Analyze the score matrix and determine what the pairs are
 
         For each feature, select the highest scoring corresponding feature.
@@ -406,10 +428,11 @@ class Corrector(object):
         ----------
         score : numpy.array
             The score matrix as calculated by `_all_scores_cartesian`
-        score_cutoff : float or None, optional
+        score_cutoff : float, optional
             In order to get rid of false matches a threshold for scores can
-            be set. All scores below this threshold are discarded. If set to
-            None, 0.5*score.max() will be used. Defaults to None.
+            be set. All scores below this threshold are discarded. The
+            threshold is calculated as score_cutoff*score.max(). Defaults to
+            0.5.
         ambiguity_factor : float
             If there are two candidates as a partner for a feature, and the
             score of the lower scoring one is larger than `ambiguity_factor`
@@ -424,8 +447,7 @@ class Corrector(object):
             in each channel, i. e. the columns are a MultiIndex from the
             product of the `channel_names` and `pos_columns` class attributes.
         """
-        if score_cutoff is None:
-            score_cutoff = 0.5*score.max()
+        score_cutoff *= score.max()
 
         # always search through the axis with fewer localizations since
         # since otherwise there is bound to be double matches
