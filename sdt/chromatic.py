@@ -310,10 +310,11 @@ class Corrector(object):
 
         Returns
         -------
-        dx1, dx2, …, dxn : numpy.ndarray
-            x1 to xn (in 2D: x and y) coordinates of the vectors. dx1[i, j]
-            yields the x1 component of the vector pointing from the i-th
-            feature in `features` to the j-th feature.
+        vecs : numpy.ndarray
+            The first axis specifies the coordinate component of the vectors,
+            e. g. ``vecs[0]`` gives the x components. For each ``i``,
+            ``vecs[i, j, k]`` yields the i-th component of the vector pointing
+            from the j-th feature in `features` to the k-th feature.
         """
         # transpose so that data[1] gives x coordinates, data[2] y coordinates
         data = features[self.pos_columns].as_matrix().T
@@ -328,60 +329,48 @@ class Corrector(object):
         `numpy.isclose()` to determine which pairs of features have the most
         simalar vectors pointing to the other features.
 
-        Args:
-            vec1 (numpy.array): Vectors for the first set of features as
-                determined by `_vectors_cartesian`.
-            vec2 (numpy.array): Vectors for the second set of features as
-                determined by `_vectors_cartesian`.
-            tol_rel (float): Relative tolerance parameter for `numpy.isclose`
-            tol_abs (float): absolute tolerance parameter for `numpy.isclose`
+        Parameters
+        ----------
+        vec1 : numpy.ndarray
+            Vectors for the first set of features as determined by
+            `_vectors_cartesian`.
+        vec2 : numpy.array
+            Vectors for the second set of features as determined by
+            `_vectors_cartesian`.
+        tol_rel : float
+            Relative tolerance parameter for `numpy.isclose`
+        tol_abs : float
+            Absolute tolerance parameter for `numpy.isclose`
 
-        Returns:
-            numpy.array: A matrix of scores. scores[i, j] holds the number of
-                matching vectors for the i-th entry of feat1 and the j-th
-                entry of feat2.
+        Returns
+        -------
+        numpy.array
+            A matrix of scores. scores[i, j] holds the number of matching
+            vectors for the i-th entry of feat1 and the j-th entry of feat2.
         """
-        dx1 = vec1[0]
-        dy1 = vec1[1]
-        dx2 = vec2[0]
-        dy2 = vec2[1]
+        # vectors versions for broadcasting
+        # The first index specifies the coordinate (x, y, z, …)
+        # The np.newaxis are shifted for vec1 and vec2 so that calculating
+        # vec1_b - vec2_b (as is done in np.isclose) results in a 5D array of
+        # the differences of all vectors for all coordinates.
+        vec1_b = vec1[:, np.newaxis, :, np.newaxis, :]
+        vec2_b = vec2[:, :, np.newaxis, :, np.newaxis]
 
-        score = np.zeros((len(dx1), len(dx2)), np.uint)
+        # For each coordinate k the (i, j)-th 2D matrix
+        # (vec1_b - vec2_b)[k, i, j] contains in the m-th row and n-th column
+        # the difference between the vector from feature i to feature j in
+        # feat1 and the vector from feature m to feature n in feat2
+        # diff_small contains True or False depending on whether the vectors
+        # are similar enough
+        diff_small = np.isclose(vec1_b, vec2_b, tol_rel, tol_abs)
 
-        #pad the smaller matrix with infinity to the size of the larger matrix
-        if len(dx1) > len(dx2):
-            dx2 = _extend_array(dx2, (len(dx1), len(dx1)), np.inf)
-            dy2 = _extend_array(dy2, (len(dy1), len(dy1)), np.inf)
-        else:
-            dx1 = _extend_array(dx1, (len(dx2), len(dx2)), np.inf)
-            dy1 = _extend_array(dy1, (len(dy2), len(dy2)), np.inf)
+        # All coordinates have to be similar; this is like a logical AND along
+        # only axis 0, the coordinate axis.
+        all_small = np.all(diff_small, axis=0)
 
-        for i in range(len(dx1)**2):
-            #check whether the coordinates are close enough
-            #by roll()ing one matrix we shift the elements. If we do that
-            #len(dx1)**2 times, we compare all elements of dx2 to those of dx1
-            #same for y
-            x = np.isclose(np.roll(dx2, -i), dx1, tol_rel, tol_abs)
-            y = np.isclose(np.roll(dy2, -i), dy1, tol_rel, tol_abs)
-            #x and y coordinates both have to match
-            total = x & y
-
-            #if total[i, j] is not zero, that means that the vector pointing
-            #from the i-th to the j-th feature in feat1 matches vector
-            #pointing from the k-th to the l-th feature in feat2, were k and l
-            #are the roll()ed-back indices i and j
-            #indices of matches in dx1, dy1
-            matches1 = total.nonzero()
-            #indices of matches in dx2, dy2, need to be roll()ed back
-            matches2 = np.roll(total, i).nonzero()
-            #increase the score of features i and k
-            for m1, m2 in zip(matches1[0], matches2[0]):
-                score[m1, m2] += 1
-            #increase the score of features j and l
-            for m1, m2 in zip(matches1[1], matches2[1]):
-                score[m1, m2] += 1
-
-        return score
+        # Sum up all True entries as the score. The more similar vectors two
+        # points have, the more likely it is that they are the same.
+        return np.sum(all_small, axis=(0, 1)).T
 
     def _pairs_from_score(self, score, score_cutoff=None):
         """Analyze the score matrix and determine what the pairs are
@@ -424,34 +413,3 @@ class Corrector(object):
                                  self.feat1.iloc[ind[0]][self.pos_columns[1]],
                                  self.feat2.iloc[ind[1]][self.pos_columns[0]],
                                  self.feat2.iloc[ind[1]][self.pos_columns[1]])
-
-
-def _extend_array(a, new_shape, value=0):
-    """Extend an array with constant values
-
-    The indices of the old values remain the same. E. g. if the array is 2D,
-    then rows are added at the bottom and columns at the right
-
-    Parameters
-    ----------
-    a : numpy.ndarray
-        Array to be extended
-    new_shape : tuple of int
-        The new shape, must be larger than the old one
-    value : number
-        value to be padded with
-
-    Returns
-    -------
-    numpy.ndarray
-        The extended array
-    """
-    if len(new_shape) != len(a.shape):
-        raise ValueError("new_shape must have the same dimensions as a.shape")
-    if (np.array(new_shape) < np.array(a.shape)).any():
-        raise ValueError("new_shape must be larger a.shape")
-
-    ret = np.empty(new_shape, dtype=a.dtype)
-    ret.fill(value)
-    ret[[slice(0, s) for s in a.shape]] = a
-    return ret
