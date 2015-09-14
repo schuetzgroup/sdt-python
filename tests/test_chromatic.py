@@ -31,6 +31,12 @@ class TestChromaticCorrector(unittest.TestCase):
         s_orig = np.load(os.path.join(path, "scores.npy"))
         np.testing.assert_allclose(s, s_orig)
 
+    def test_pairs_from_score(self):
+        score = np.load(os.path.join(path, "scores.npy"))
+        p = self.corrector._pairs_from_score(score)
+        p_orig = pd.read_hdf(os.path.join(path, "pairs.h5"), "pairs")
+        np.testing.assert_allclose(p, p_orig)
+
 
 if __name__ == "__main__":
     unittest.main()

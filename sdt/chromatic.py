@@ -107,7 +107,7 @@ class Corrector(object):
         v1 = self._vectors_cartesian(self.feat1)
         v2 = self._vectors_cartesian(self.feat2)
         s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
-        self._pairs_from_score(s, None)
+        self.pairs = self._pairs_from_score(s, None)
 
     def fit_parameters(self):
         """Determine parameters for the affine transformation
@@ -372,44 +372,64 @@ class Corrector(object):
         # points have, the more likely it is that they are the same.
         return np.sum(all_small, axis=(0, 1)).T
 
-    def _pairs_from_score(self, score, score_cutoff=None):
+    def _pairs_from_score(self, score, score_cutoff=None,
+                          ambiguity_factor=0.8):
         """Analyze the score matrix and determine what the pairs are
 
-        Search for the maximum value of each feature pair in the score matrix.
-        This finally sets the `pairs` attribute.
+        For each feature, select the highest scoring corresponding feature.
 
-        Args:
-            score (numpy.array): The score matrix as calculated by
-                `_all_scores_cartesian`
-            score_cutoff (float or None): In order to get rid of false matches
-                a threshold for scores can be set. All scores below this
-                threshold are discarded. If set to None, 0.5*score.max() will
-                be used.
+        Parameters
+        ----------
+        score : numpy.array
+            The score matrix as calculated by `_all_scores_cartesian`
+        score_cutoff : float or None, optional
+            In order to get rid of false matches a threshold for scores can
+            be set. All scores below this threshold are discarded. If set to
+            None, 0.5*score.max() will be used. Defaults to None.
+        ambiguity_factor : float
+            If there are two candidates as a partner for a feature, and the
+            score of the lower scoring one is larger than `ambiguity_factor`
+            times the score of the higher scorer, the pairs are considered
+            ambiguous and therefore discarded. Defaults to 0.8.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Each row of the DataFrame contains information of one feature pair.
+            This information consists of lists of coordinates of the feature
+            in each channel, i. e. the columns are a MultiIndex from the
+            product of the `channel_names` and `pos_columns` class attributes.
         """
         if score_cutoff is None:
             score_cutoff = 0.5*score.max()
 
-        #TODO: detect doubles
-        #TODO: do not solely rely on the maximum. If there are similarly high
-        #scores, discard both because of ambiguity
-        mi = pd.MultiIndex.from_product([self.channel_names, self.pos_columns])
-        self.pairs = pd.DataFrame(columns=mi)
-
-        indices = np.zeros(score.shape, bool)
-        #always search through the axis with fewer localizations since
-        #since otherwise there is bound to be double matches
+        # always search through the axis with fewer localizations since
+        # since otherwise there is bound to be double matches
         if score.shape[0] > score.shape[1]:
-            indices = [(i, j) for i, j in zip(np.argmax(score, axis=0),
-                                              range(score.shape[1]))]
+            indices = np.array([np.argmax(score, axis=0),
+                                np.arange(score.shape[1])])
+            long_axis = 0
         else:
-            indices = [(i, j) for i, j in zip(range(score.shape[0]),
-                                              np.argmax(score, axis=1))]
+            indices = np.array([np.arange(score.shape[0]),
+                                np.argmax(score, axis=1)])
+            long_axis = 1
 
-        for i, ind in enumerate(indices):
-            if score[ind] < score_cutoff:
-                #score is too low
-                continue
-            self.pairs.loc[i] = (self.feat1.iloc[ind[0]][self.pos_columns[0]],
-                                 self.feat1.iloc[ind[0]][self.pos_columns[1]],
-                                 self.feat2.iloc[ind[1]][self.pos_columns[0]],
-                                 self.feat2.iloc[ind[1]][self.pos_columns[1]])
+        # anything below score_cutoff is considered noise
+        score[score < score_cutoff] = 0
+
+        # now deal with ambiguities, i. e. if one feature has two similarly
+        # likely partners
+        # For each feature, calculate the threshold.
+        amb_thresh = score[indices.tolist()]*ambiguity_factor
+        # If there is more than one candidate's score above the threshold,
+        # discard
+        amb = score > np.expand_dims(amb_thresh, axis=long_axis)
+        amb = np.sum(amb, axis=long_axis) > 1
+        indices = indices[:, ~amb]
+
+        pair_matrix = np.hstack((
+            self.feat1.iloc[indices[0]][pos_columns],
+            self.feat2.iloc[indices[1]][pos_columns]))
+
+        mi = pd.MultiIndex.from_product([self.channel_names, self.pos_columns])
+        return pd.DataFrame(pair_matrix, columns=mi)
