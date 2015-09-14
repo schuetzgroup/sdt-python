@@ -241,13 +241,13 @@ class MainWindow(QMainWindow):
             saveFileName = os.path.splitext(
                 self._fileModel.data(
                     index, file_chooser.FileListModel.FileNameRole))[0]
-            saveFileName = "{fn}.loc{extsep}h5".format(fn=saveFileName,
-                                                       extsep=os.extsep)
+            saveFileName = "{fn}{extsep}h5".format(fn=saveFileName,
+                                                   extsep=os.extsep)
 
             filterFunc = self._locFilterDock.widget().getFilter()
             inRoi = self._applyRoi(data)
             data = data[filterFunc(data) & inRoi]
-            data.to_hdf(saveFileName, "data")
+            data.to_hdf(saveFileName, "features")
             # TODO: save options
             # TODO: save ROI
         elif saveFormat == "particle_tracker":
