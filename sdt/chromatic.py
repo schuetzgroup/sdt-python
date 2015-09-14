@@ -6,12 +6,13 @@ localizations (as determined by a localization algorithm such as trackpy or
 tracking2d) of the two channels and determine affine transformations for the
 x and y coordinates.
 
-Attributes:
-    pos_colums (list of str): Names of the columns describing the x and the y
-        coordinate of the features in pandas.DataFrames. Defaults to
-        ["x", "y"].
-    channel_names (list of str): Names of the two channels. Defaults to
-        ["channel1", "channel2"].
+Attributes
+----------
+pos_colums : list of str
+    Names of the columns describing the coordinates of the features in
+    pandas.DataFrames. Defaults to ["x", "y"].
+channel_names : list of str
+    Names of the two channels. Defaults to ["channel1", "channel2"].
 """
 
 import numpy as np
@@ -30,34 +31,43 @@ class Corrector(object):
     This class provides an easy-to-use interface to the correction
     process.
 
-    Attributes:
-        pos_columns (list of str): Names of the columns describing the x and
-            the y coordinate of the features.
-        channel_names (list of str): Names of the channels.
-        feat1 (pandas.DataFrame): Features of the first channel found by the
-            localization algorithm. The x coordinate is in the column with name
-            `pos_columns`[0], the y coordinate in `pos_columns`[1].
-        feat2 (pandas.DataFrame): Features of the second channel found by the
-            localization algorithm. The x coordinate is in the column with name
-            `pos_columns`[0], the y coordinate in `pos_columns`[1].
-        pairs (pandas.DataFrame): Contains the pairs found by
-            `determine_parameters`.
-        parameters1 (pandas.DataFrame): The parameters for the linear
-            transformation to correct coordinates of channel 1.
-        parameters2 (pandas.DataFrame): The parameters for the linear
-            transformation to correct coordinates of channel 2.
+    Attributes
+    ----------
+    pos_columns : list of str
+        Names of the columns describing the coordinates of the features.
+    channel_names : list of str
+        Names of the channels
+    feat1 : pandas.DataFrame
+        Features of the first channel found by the localization algorithm.
+        The x coordinate is in the column with name `pos_columns`[0], etc.
+    feat1 : pandas.DataFrame
+        Features of the second channel found by the localization algorithm.
+        The x coordinate is in the column with name `pos_columns`[0], etc.
+    pairs : pandas.DataFrame
+        Contains the pairs found by `determine_parameters`.
+    parameters1 : pandas.DataFrame
+        The parameters for the linear transformation to correct coordinates
+        of channel 1.
+    parameters2 : pandas.DataFrame
+        The parameters for the linear transformation to correct coordinate
+        of channel 2.
     """
     def __init__(self, feat1, feat2, pos_columns=pos_columns,
                  channel_names=channel_names):
         """Constructor
 
-        Args:
-            feat1 (pandas.DataFrame): Sets the `feat1` attribute
-            feat2 (pandas.DataFrame): Sets the `feat2` attribute
-            pos_columns (list of str): Sets the `pos_columns` attribute.
-                Defaults to the `pos_columns` attribute of the module.
-            channel_names (list of str): Sets the `channel_names` attribute.
-                Defaults to the `channel_names` attribute of the module.
+        Parameters
+        ----------
+        feat1 : pandas.DataFrame
+            Sets the `feat1` attribute
+        feat2 : pandas.DataFrame
+            Sets the `feat2` attribute
+        pos_columns : list of str, optional
+            Sets the `pos_columns` attribute. Defaults to the `pos_columns`
+            attribute of the module.
+        channel_names : list of str, optional
+            Sets the `channel_names` attribute. Defaults to the `channel_names`
+            attribute of the module.
         """
         self.feat1 = feat1
         self.feat2 = feat2
