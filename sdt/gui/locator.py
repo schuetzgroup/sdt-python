@@ -310,7 +310,14 @@ class LocateRunner(QRunnable):
 
 def main():
     app = QApplication(sys.argv)
-    w = MainWindow()
+    try:
+        w = MainWindow()
+    except Exception as e:
+        QMessageBox.critical(
+            None,
+            app.translate("main", "Startup error"),
+            app.translate("main", str(e)))
+        sys.exit(1)
     w.show()
     sys.exit(app.exec_())
 

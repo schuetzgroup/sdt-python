@@ -53,6 +53,9 @@ class Container(QWidget):
             self._optWidgetList.append(w)
             w.optionsChanged.connect(self._delayTimer.start)
 
+        if not self._optWidgetList:
+            raise RuntimeError("No locating algorithms found.")
+
         self._currentWidget, self._currentModule = \
             self._methodBox.currentData()
         self.on_methodBox_currentIndexChanged(self._methodBox.currentIndex())
