@@ -141,22 +141,24 @@ class Corrector(object):
 
         This modifies the coordinates in place.
 
-        Args:
-            data (pandas.DataFrame or ndarray): Either a DataFrame
-                containing localization data or an ndarray with image data.
-                Correction happens in place.
-            channel (int, optional): If `features` are in the first channel
-                (corresponding to the `feat1` arg of the constructor), set to
-                1. If features are in the second channel, set to 2. Depending
-                on this, a transformation will be applied to the coordinates of
-                `features` to match the other channel (mathematically speaking
-                depending on this parameter either the "original"
-                transformation or its inverse are applied.)
-            mode (str, optional): How to fill points outside of the uncorrected
-                image boundaries. Possibilities are "constant", "nearest",
-                "reflect" or "wrap". Defaults to "constant".
-            cval (scalar, optional): What value to use for `mode="constant"`.
-                Defaults to 0.0
+        Parameters
+        ----------
+        data : pandas.DataFrame or numpy.ndarray
+            Either a DataFrame containing localization data or an ndarray with
+            image data. Correction happens in place.
+        channel : int, optional
+            If `features` are in the first channel (corresponding to the
+            `feat1` arg of the constructor), set to 1. If features are in the
+            second channel, set to 2. Depending on this, a transformation will
+            be applied to the coordinates of `features` to match the other
+            channel (mathematically speaking depending on this parameter
+            either the "original" transformation or its inverse are applied.)
+        mode : str, optional
+            How to fill points outside of the uncorrected image boundaries.
+            Possibilities are "constant", "nearest", "reflect" or "wrap".
+            Defaults to "constant".
+        cval : scalar, optional
+            What value to use for `mode="constant"`. Defaults to 0.0
         """
         x_col = self.pos_columns[0]
         y_col = self.pos_columns[1]
@@ -177,8 +179,8 @@ class Corrector(object):
                 parms = self.parameters2
             if channel == 2:
                 parms = self.parameters1
-            #iloc[::-1] reverses the order since image coordinates and
-            #matrix rows/columns have different order
+            # iloc[::-1] reverses the order since image coordinates and
+            # matrix rows/columns have different order
             scipy.ndimage.affine_transform(data, parms.iloc[::-1]["slope"],
                                            parms.iloc[::-1]["intercept"],
                                            output=data, mode=mode, cval=cval)
@@ -190,6 +192,13 @@ class Corrector(object):
         the pairs that were matched in the channels. If everything went well,
         the dots (i. e. pair coordinates) should lie on the line
         (transformation function).
+
+        Parameters
+        ----------
+        ax : tuple of matplotlib axes or None, optional
+            Axes to use for plotting. The length of the tuple has to be greater
+            or equal than the length of pos_columns. If None, allocate new
+            axes using subplots(). Defaults to None.
         """
         import matplotlib.pyplot as plt
 
@@ -200,11 +209,12 @@ class Corrector(object):
             a.set_xlabel("{} ({})".format(p, self.channel_names[0]))
             a.set_ylabel("{} ({})".format(p, self.channel_names[1]))
             a.scatter(self.pairs[self.channel_names[0], p],
-                       self.pairs[self.channel_names[1], p])
+                      self.pairs[self.channel_names[1], p],
+                      marker="+", s=50, color="red")
             a.plot(self.pairs[self.channel_names[0]].sort(p)[p],
-                    self.parameters1.loc[p, "slope"] *
-                    self.pairs[self.channel_names[0]].sort(p)[p] +
-                    self.parameters1.loc[p, "intercept"])
+                   self.parameters1.loc[p, "slope"] *
+                   self.pairs[self.channel_names[0]].sort(p)[p] +
+                   self.parameters1.loc[p, "intercept"])
             a.set_title(p)
             a.set_aspect(1)
 
