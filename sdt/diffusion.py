@@ -81,9 +81,7 @@ def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
 
         for i in range(round(max(1, tlag_thresh[0])),
                        round(min(len(pdata), tlag_thresh[1] + 1))):
-            #prepend/append i NaNs to coordinate list and calculate differences
-            padding = [[np.NaN]*len(pos_columns)]*i
-            disp = np.vstack((pdata, padding)) - np.vstack((padding, pdata))
+            disp = pdata[:-i] - pdata[i:]
             #calculate sds
             sds = np.sum(disp**2, axis=1)
             #get rid of NaNs
