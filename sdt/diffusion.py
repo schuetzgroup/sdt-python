@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 import collections
 
-from expfit import expfit
+#from expfit import expfit
 
 
 pos_columns = ["x", "y"]
@@ -69,7 +69,7 @@ def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
         pdata = pdata[pos_columns].as_matrix()
 
         for i in range(round(max(1, tlag_thresh[0])),
-                       round(min(len(pdata), tlag_thresh[1])) + 1):
+                       round(min(len(pdata), tlag_thresh[1] + 1))):
             #prepend/append i NaNs to coordinate list and calculate differences
             padding = [[np.NaN]*len(pos_columns)]*i
             disp = np.vstack((pdata, padding)) - np.vstack((padding, pdata))
