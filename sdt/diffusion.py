@@ -1,13 +1,14 @@
 """Various tools for evaluation of diffusion data
 
-Attributes:
-    pos_colums (list of str): Names of the columns describing the x and the y
-        coordinate of the features in pandas.DataFrames. Defaults to
-        ["x", "y"].
-    t_column (str): Name of the column containing frame numbers. Defaults
-        to "frame".
-    trackno_column (str): Name of the column containing track numbers. Defaults
-        to "particle".
+Attributes
+----------
+pos_colums : list of str)
+    Names of the columns describing the x and the y coordinate of the features
+    in pandas.DataFrames. Defaults to ["x", "y"].
+t_column : str
+    Name of the column containing frame numbers. Defaults to "frame".
+trackno_column : str
+    Name of the column containing track numbers. Defaults to "particle".
 """
 import pandas as pd
 import numpy as np
@@ -28,25 +29,35 @@ def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
                  trackno_column=trackno_column):
     """Calculate square displacements from tracking data
 
-    Args:
-        data (pandas.DataFrame): Tracking data
-        frame_time (float): time per frame
-        pixel_size (float): width of a pixel
-        tlag_thresh (tuple of float, optional): Lower and upper boundaries of
-            time lags (i. e. time steps for square displacements) to be
-            considered. Defaults to (0, numpy.inf)
-        matlab_compat (bool, optional): The `msdplot` MATLAB tool discards all
-            trajectories with lengths not within the `tlag_thresh` interval.
-            If True, this behavior is mimicked (i. e., identical results are
-            produced.) Defaults to False.
-        pos_columns (list of str, optional): Sets the `pos_columns` attribute.
-                Defaults to the `pos_columns` attribute of the module.
-        t_column (str, optional): Name of the column containing frame numbers.
-            Defaults to the `frameno_column` of the module.
-        trackno_column (str, optional): Name of the column containing track
-            numbers. Defaults to the `trackno_column` attribute of the module.
-    Returns:
-        OrderedDict whose keys are the time lags and whose values are lists
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Tracking data
+    frame_time : float
+        time per frame (inverse frame rate) in seconds
+    pixel_size : float
+        width of a pixel in micrometers
+    tlag_thresh : tuple of float, optional
+        Lower and upper boundaries of time lags (i. e. time steps for square
+        displacements) to be considered. Defaults to (0, numpy.inf)
+    matlab_compat : bool, optional
+        The `msdplot` MATLAB tool discards all trajectories with lengths not
+        within the `tlag_thresh` interval. If True, this behavior is mimicked
+        (i. e., identical results are produced.) Defaults to False.
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `frameno_column` of the module.
+    trackno_column : str, optional
+        Name of the column containing track numbers. Defaults to the
+        `trackno_column` attribute of the module.
+
+    Returns
+    -------
+    collections.OrderedDict
+        The keys are the time lags and whose values are lists
         containing all square displacements.
     """
     sd_dict = collections.OrderedDict()
@@ -94,25 +105,36 @@ def calculate_sd_multi(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
     This calls `calculate_sd` for all tracking data in `data` and returns
     one large structure containing all square displacements.
 
-    Args:
+    Parameters
+    ----------
+    data : list of pandas.DataFrames or pandas.DataFrame
+        Tracking data
+    frame_time : float
+        time per frame (inverse frame rate) in seconds
+    pixel_size : float
+        width of a pixel in micrometers
+    tlag_thresh : tuple of float, optional
+        Lower and upper boundaries of time lags (i. e. time steps for square
+        displacements) to be considered. Defaults to (0, numpy.inf)
+    matlab_compat : bool, optional
+        The `msdplot` MATLAB tool discards all trajectories with lengths not
+        within the `tlag_thresh` interval. If True, this behavior is mimicked
+        (i. e., identical results are produced.) Defaults to False.
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `frameno_column` of the module.
+    trackno_column : str, optional
+        Name of the column containing track numbers. Defaults to the
+        `trackno_column` attribute of the module.
         data (pandas.DataFrame or list of DataFrames): Tracking data
-        frame_time (float): time per frame
-        pixel_size (float): width of a pixel
-        tlag_thresh (tuple of float, optional): Lower and upper boundaries of
-            time lags (i. e. time steps for square displacements) to be
-            considered. Defaults to (0, numpy.inf)
-        matlab_compat (bool, optional): The `msdplot` MATLAB tool discards all
-            trajectories with lengths not within the `tlag_thresh` interval.
-            If True, this behavior is mimicked (i. e., identical results are
-            produced.) Defaults to False.
-        pos_columns (list of str, optional): Sets the `pos_columns` attribute.
-                Defaults to the `pos_columns` attribute of the module.
-        t_column (str, optional): Name of the column containing frame numbers.
-            Defaults to the `frameno_column` of the module.
-        trackno_column (str, optional): Name of the column containing track
-            numbers. Defaults to the `trackno_column` attribute of the module.
-    Returns:
-        OrderedDict whose keys are the time lags and whose values are lists
+
+    Returns
+    -------
+    collections.OrderedDict
+        The keys are the time lags and whose values are lists
         containing all square displacements for all DataFrames in `data`.
     """
     if isinstance(data, pd.DataFrame):
