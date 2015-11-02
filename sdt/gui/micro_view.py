@@ -237,9 +237,9 @@ class MicroViewWidget(mvBase):
             else:
                 for t in types:
                     ii = np.iinfo(t)
-                    if min >= ii.min() and max <= ii.max():
-                        min = ii.min()
-                        max = ii.max()
+                    if min >= ii.min and max <= ii.max:
+                        min = ii.min
+                        max = ii.max
                         break
         else:
             min = np.iinfo(ims.pixel_type).min
