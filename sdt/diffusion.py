@@ -60,19 +60,27 @@ def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
         The keys are the time lags and whose values are lists
         containing all square displacements.
     """
-    sd_dict = collections.OrderedDict()
-    for pn in data[trackno_column].unique():
-        pdata = data.loc[data[trackno_column] == pn] #data for current track
+    # do not work on the original data
+    data = data.copy()
+    # sort here, not in loop
+    data.sort_values(t_column, inplace=True)
+    # set the index, needed later for reindexing, but do not do the loop
+    fnos = data[t_column].astype(int)
+    data.set_index(fnos, inplace=True)
+    # group in order to loop over each trajectory
+    data_grouped = data.groupby(trackno_column)
 
-        #fill gaps with NaNs
-        frame_nos = pdata[t_column].astype(int)
-        start_frame = min(frame_nos)
-        end_frame = max(frame_nos)
+    # dict of displacements
+    dist_dict = collections.OrderedDict()
+    for pn, pdata in data_grouped:
+        # fill gaps with NaNs
+        idx = pdata.index
+        start_frame = idx[0]
+        end_frame = idx[-1]
         frame_list = list(range(start_frame, end_frame + 1))
-        pdata.set_index(frame_nos, inplace=True)
         pdata = pdata.reindex(frame_list)
 
-        #the original msdplot matlab tool throws away all long trajectories
+        # the original msdplot matlab tool throws away all long trajectories
         if (matlab_compat
             and (not tlag_thresh[0] <= len(pdata) <= tlag_thresh[1] + 1)):
             continue
@@ -81,15 +89,23 @@ def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
 
         for i in range(round(max(1, tlag_thresh[0])),
                        round(min(len(pdata), tlag_thresh[1] + 1))):
+            # calculate coordinate differences for each time lag
             disp = pdata[:-i] - pdata[i:]
-            #calculate sds
-            sds = np.sum(disp**2, axis=1)
-            #get rid of NaNs
-            sds = sds[~np.isnan(sds)]
-            #append to output structure
-            sd_dict[i*frame_time] = np.concatenate(
-                (sd_dict.get(i*frame_time, []), sds * pixel_size**2))
+            # append to output structure
+            try:
+                dist_dict[i].append(disp)
+            except KeyError:
+                dist_dict[i] = [disp]
 
+    sd_dict = collections.OrderedDict()
+    for k, v in dist_dict.items():
+        # for each time lag, concatenate the coordinate differences
+        v = np.concatenate(v)
+        # calculate square displacements
+        v = np.sum(v**2, axis=1) * pixel_size**2
+        # get rid of NaNs from the reindexing
+        v = v[~np.isnan(v)]
+        sd_dict[k*frame_time] = v
     return sd_dict
 
 
