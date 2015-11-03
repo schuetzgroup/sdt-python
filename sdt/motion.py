@@ -13,6 +13,7 @@ trackno_column : str
 import pandas as pd
 import numpy as np
 import collections
+import warnings
 
 #from expfit import expfit
 
@@ -23,6 +24,200 @@ trackno_column = "particle"
 
 
 # TODO: Make calculate_sd, calculate_msd compatible with trackpy.motion
+
+
+def _msd_old(particle_number, particle_data, tlag_thresh, dist_dict):
+    # fill gaps with NaNs
+    idx = particle_data.index
+    start_frame = idx[0]
+    end_frame = idx[-1]
+    frame_list = list(range(start_frame, end_frame + 1))
+    pdata = particle_data.reindex(frame_list)
+
+    pdata = pdata[pos_columns].as_matrix()
+
+    for i in range(round(max(1, tlag_thresh[0])),
+                   round(min(len(pdata), tlag_thresh[1] + 1))):
+        # calculate coordinate differences for each time lag
+        disp = pdata[:-i] - pdata[i:]
+        # append to output structure
+        try:
+            dist_dict[i].append(disp)
+        except KeyError:
+            dist_dict[i] = [disp]
+
+
+def _prepare_traj(data):
+    # do not work on the original data
+    data = data.copy()
+    # sort here, not in loop
+    data.sort_values(t_column, inplace=True)
+    # set the index, needed later for reindexing, but do not do the loop
+    fnos = data[t_column].astype(int)
+    data.set_index(fnos, inplace=True)
+    return data
+
+
+def _displacements(particle_number, particle_data, max_lagtime=np.inf,
+                   pos_columns=pos_columns, disp_dict=None):
+    # fill gaps with NaNs
+    idx = particle_data.index
+    start_frame = idx[0]
+    end_frame = idx[-1]
+    frame_list = list(range(start_frame, end_frame + 1))
+    pdata = particle_data.reindex(frame_list)
+    pdata = pdata[pos_columns].as_matrix()
+
+    max_lagtime = round(min(len(pdata), max_lagtime))
+
+    if isinstance(disp_dict, dict):
+        for i in range(1, max_lagtime):
+            # calculate coordinate differences for each time lag
+            disp = pdata[:-i] - pdata[i:]
+            # append to output structure
+            try:
+                disp_dict[i].append(disp)
+            except KeyError:
+                disp_dict[i] = [disp]
+    else:
+        ret = np.empty((max_lagtime - 1, max_lagtime - 1, len(pos_columns)))
+        for i in range(1, max_lagtime):
+            # calculate coordinate differences for each time lag
+            padding = np.full((i-1, len(pos_columns)), np.nan)
+            # append to output structure
+            ret[i-1] = np.vstack((pdata[i:] - pdata[:-i], padding))
+
+        return ret
+
+
+def msd(traj, pixel_size, fps, max_lagtime=np.inf, pos_columns=pos_columns,
+        t_column=t_column, trackno_column=trackno_column):
+    # check if traj is empty
+    cols = (["<{}>".format(p) for p in pos_columns] +
+        ["<{}^2>".format(p) for p in pos_columns] +
+        ["msd", "lagt"])
+    if not len(traj):
+        return pd.DataFrame(columns=cols)
+
+    # calculate displacements
+    traj = _prepare_traj(traj)
+    pn = traj.iloc[0][trackno_column]
+    disp = _displacements(pn, traj, max_lagtime, pos_columns=pos_columns)
+
+    # time lag steps
+    idx = np.arange(1, disp.shape[0] + 1)
+    # calculate means; mean x and y displacement
+    m_disp = np.nanmean(disp, axis=1) * pixel_size
+    # square x and y displacements
+    sds = disp**2 * pixel_size**2
+    # mean square x and y displacements
+    msds = np.nanmean(sds, axis=1)
+    # mean absolute square displacement
+    msd = np.sum(msds, axis=1)[:, np.newaxis]
+    # time lags
+    lagt = (idx/fps)[:, np.newaxis]
+
+    ret = pd.DataFrame(np.hstack((m_disp, msds, msd, lagt)), columns=cols)
+    ret.index = pd.Index(idx, name="lagt")
+    return ret
+
+
+def imsd(traj, pixel_size, fps, max_lagtime=np.inf, pos_columns=pos_columns,
+         t_column=t_column, trackno_column=trackno_column):
+    # check if traj is empty
+    if not len(traj):
+        return pd.DataFrame()
+
+    traj = _prepare_traj(traj)
+    traj_grouped = traj.groupby(trackno_column)
+    disps = []
+    for pn, pdata in traj_grouped:
+        disp = _displacements(pn, pdata, max_lagtime)
+        sds = np.sum(disp**2 * pixel_size**2, axis=2)
+        disps.append(np.nanmean(sds, axis=1))
+
+    ret = pd.DataFrame(disps).T
+    ret.columns = traj_grouped.groups.keys()
+    ret.index = pd.Index(np.arange(1, len(ret)+1)/fps, name="lagt")
+    return ret
+
+
+def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
+         t_column=t_column, trackno_column=trackno_column):
+    """Calculate ensemble mean square displacements from tracking data
+
+    Parameters
+    ----------
+    data : list of pandas.DataFrames or pandas.DataFrame
+        Tracking data
+    pixel_size : float
+        width of a pixel in micrometers
+    fps : float
+        Frames per seconds
+    max_lagtime : int, optional
+        Maximum number of time lags to consider. Defaults to 100.
+    matlab_compat : bool, optional
+        The `msdplot` MATLAB tool discards all trajectories with lengths not
+        within the `tlag_thresh` interval. If True, this behavior is mimicked
+        (i. e., identical results are produced.) Defaults to False.
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `frameno_column` of the module.
+    trackno_column : str, optional
+        Name of the column containing track numbers. Defaults to the
+        `trackno_column` attribute of the module.
+
+    Returns
+    -------
+    collections.OrderedDict
+        The keys are the time lags and whose values are lists
+        containing all square displacements.
+    """
+    if isinstance(data, pd.DataFrame):
+        data = [data]
+
+    # dict of displacements
+    disp_dict = collections.OrderedDict()
+
+    for traj in data:
+        # check if traj is empty
+        if not len(traj):
+            continue
+
+        traj = _prepare_traj(traj)
+        traj_grouped = traj.groupby(trackno_column)
+
+        for pn, pdata in traj_grouped:
+            _displacements(pn, pdata, max_lagtime, disp_dict=disp_dict)
+
+        sd_dict = collections.OrderedDict()
+        for k, v in disp_dict.items():
+            # for each time lag, concatenate the coordinate differences
+            v = np.concatenate(v)
+            # calculate square displacements
+            v = np.sum(v**2, axis=1) * pixel_size**2
+            # get rid of NaNs from the reindexing
+            v = v[~np.isnan(v)]
+            sd_dict[k/fps] = v
+
+    # To return as DataFrame, write values to OrderedDict
+    ret = collections.OrderedDict()
+    idx = list(sd_dict.keys())
+    sval = sd_dict.values()
+    ret["msd"] = [sd.mean() for sd in sval]
+    with warnings.catch_warnings():
+        # if len of sd is 1, sd.std(ddof=1) will raise a RuntimeWarning
+        warnings.simplefilter("ignore", RuntimeWarning)
+        ret["stderr"] = [sd.std(ddof=1)/np.sqrt(len(sd)) for sd in sval]
+    #TODO: Quian errors
+    ret["lagt"] = idx
+    ret = pd.DataFrame(ret)
+    ret.index = pd.Index(idx, name="lagt")
+    ret.sort_values("lagt", inplace=True)
+    return ret
 
 
 def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
@@ -76,29 +271,7 @@ def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
     # dict of displacements
     dist_dict = collections.OrderedDict()
     for pn, pdata in data_grouped:
-        # fill gaps with NaNs
-        idx = pdata.index
-        start_frame = idx[0]
-        end_frame = idx[-1]
-        frame_list = list(range(start_frame, end_frame + 1))
-        pdata = pdata.reindex(frame_list)
-
-        # the original msdplot matlab tool throws away all long trajectories
-        if (matlab_compat
-            and (not tlag_thresh[0] <= len(pdata) <= tlag_thresh[1] + 1)):
-            continue
-
-        pdata = pdata[pos_columns].as_matrix()
-
-        for i in range(round(max(1, tlag_thresh[0])),
-                       round(min(len(pdata), tlag_thresh[1] + 1))):
-            # calculate coordinate differences for each time lag
-            disp = pdata[:-i] - pdata[i:]
-            # append to output structure
-            try:
-                dist_dict[i].append(disp)
-            except KeyError:
-                dist_dict[i] = [disp]
+        _msd_old(pn, pdata, tlag_thresh, dist_dict)
 
     sd_dict = collections.OrderedDict()
     for k, v in dist_dict.items():
