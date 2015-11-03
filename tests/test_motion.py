@@ -4,12 +4,12 @@ import os
 import pandas as pd
 import numpy as np
 
-from sdt.diffusion import calculate_sd
+from sdt.motion import calculate_sd
 import sdt.data
 
 
 path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_diffusion")
+data_path = os.path.join(path, "data_motion")
 
 
 class TestDiffusion(unittest.TestCase):
