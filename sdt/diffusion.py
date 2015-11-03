@@ -22,6 +22,9 @@ t_column = "frame"
 trackno_column = "particle"
 
 
+# TODO: Make calculate_sd, calculate_msd compatible with trackpy.motion
+
+
 def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
                  matlab_compat=False,
                  pos_columns=pos_columns,
@@ -168,6 +171,22 @@ def calculate_sd_multi(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
 
 
 def calculate_msd(sds):
+    """Calculate mean square displacement
+
+    from displacement data created by `calculate_sd` or `calculate_sd_multi`.
+
+    Parameters
+    ----------
+    sds : dict
+        The keys are the time lags and whose values are lists
+        containing all square displacements
+
+    Returns
+    -------
+    pandas.DataFrame([tlag, msd, stderr])
+        For each tlag the calculated mean square displacement and standard
+        error
+    """
     ret = collections.OrderedDict()
     ret["tlag"] = list(sds.keys())
     sval = sds.values()
@@ -180,7 +199,28 @@ def calculate_msd(sds):
     return ret
 
 
-def msd_fit(msds, tlags=2):
+def fit_msd(msds, tlags=2):
+    """Get the diffusion coefficient and positional accuracy from MSDs
+
+    Fit a linear function to the tlag-vs.-MSD graph
+
+    Parameters
+    ----------
+    msds : DataFrame([tlag, msd, stderr])
+        MSD data as computed by `calculate_msd`
+    tlags : int, optional
+        Use the first `tlags` time lags for fitting only. Defaults to 2.
+
+    Returns
+    -------
+    D : float
+        Diffusion coefficient
+    pa : float
+        Positional accuracy
+    """
+    # TODO: illumination time correction
+    # msdplot.m:365
+
     if tlags==2:
         k = ((msds["msd"].iloc[1] - msds["msd"].iloc[0])/
              (msds["tlag"].iloc[1] - msds["tlag"].iloc[0]))
@@ -191,6 +231,9 @@ def msd_fit(msds, tlags=2):
 
     D = k/4
     pa = np.sqrt(d)/2.
+
+    # TODO: resample to get the error of D
+    # msdplot.m:403
 
     return D, pa
 
