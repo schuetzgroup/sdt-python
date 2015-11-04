@@ -58,7 +58,7 @@ def _prepare_traj(data):
     return data
 
 
-def _displacements(particle_number, particle_data, max_lagtime=np.inf,
+def _displacements(particle_data, max_lagtime=np.inf,
                    pos_columns=pos_columns, disp_dict=None):
     # fill gaps with NaNs
     idx = particle_data.index
@@ -101,8 +101,7 @@ def msd(traj, pixel_size, fps, max_lagtime=np.inf, pos_columns=pos_columns,
 
     # calculate displacements
     traj = _prepare_traj(traj)
-    pn = traj.iloc[0][trackno_column]
-    disp = _displacements(pn, traj, max_lagtime, pos_columns=pos_columns)
+    disp = _displacements(traj, max_lagtime, pos_columns=pos_columns)
 
     # time lag steps
     idx = np.arange(1, disp.shape[0] + 1)
@@ -132,7 +131,7 @@ def imsd(traj, pixel_size, fps, max_lagtime=np.inf, pos_columns=pos_columns,
     traj_grouped = traj.groupby(trackno_column)
     disps = []
     for pn, pdata in traj_grouped:
-        disp = _displacements(pn, pdata, max_lagtime)
+        disp = _displacements(pdata, max_lagtime)
         sds = np.sum(disp**2 * pixel_size**2, axis=2)
         disps.append(np.nanmean(sds, axis=1))
 
@@ -191,7 +190,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         traj_grouped = traj.groupby(trackno_column)
 
         for pn, pdata in traj_grouped:
-            _displacements(pn, pdata, max_lagtime, disp_dict=disp_dict)
+            _displacements(pdata, max_lagtime, disp_dict=disp_dict)
 
         sd_dict = collections.OrderedDict()
         for k, v in disp_dict.items():
