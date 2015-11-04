@@ -57,6 +57,12 @@ class TestMotion(unittest.TestCase):
         imsd = sdt.motion.imsd(self.traj, 1, 1)
         np.testing.assert_allclose(imsd, orig)
 
+    def test_msd(self):
+        # orig gives the same results as trackpy.msd
+        orig = pd.read_hdf(os.path.join(data_path, "msd.h5"), "msd")
+        msd = sdt.motion.msd(self.traj[self.traj["particle"] == 0], 0.16, 100)
+        np.testing.assert_allclose(msd, orig)
+
 
 if __name__ == "__main__":
     unittest.main()
