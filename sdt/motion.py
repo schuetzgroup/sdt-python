@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 """Various tools for evaluation of diffusion data
 
 Attributes
 ----------
-pos_colums : list of str)
+pos_colums : list of str
     Names of the columns describing the x and the y coordinate of the features
     in pandas.DataFrames. Defaults to ["x", "y"].
 t_column : str
@@ -54,7 +55,7 @@ def _prepare_traj(data, t_column=t_column):
 
     Parameters
     ----------
-    data : list of pandas.DataFrames or pandas.DataFrame
+    data : pandas.DataFrame
         Tracking data
     t_column : str, optional
         Name of the column containing frame numbers. Defaults to the
@@ -283,9 +284,12 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     if isinstance(data, pd.DataFrame):
         data = [data]
 
-    # dict of displacements
+    # dict of displacements; key is the lag time, value a list of numpy arrays
+    # one displacement in all coordinates per line (see _displacements())
     disp_dict = collections.OrderedDict()
 
+    # this for loop calculates all displacements in all coordinates for all
+    # lag times and all trajectories in all DataFrames in data
     for traj in data:
         # check if traj is empty
         if not len(traj):
@@ -297,18 +301,22 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         for pn, pdata in traj_grouped:
             _displacements(pdata, max_lagtime, disp_dict=disp_dict)
 
-        sd_dict = collections.OrderedDict()
-        for k, v in disp_dict.items():
-            # for each time lag, concatenate the coordinate differences
-            v = np.concatenate(v)
-            # calculate square displacements
-            v = np.sum(v**2, axis=1) * pixel_size**2
-            # get rid of NaNs from the reindexing
-            v = v[~np.isnan(v)]
-            sd_dict[k/fps] = v
+    # this for loop calculates the square displacements for each lag time
+    # which are just the sums dx_1**2 + dx_2**2 + ... + dx_n^2 where the
+    # dx_i is the displacements in the i-th coordinate
+    sd_dict = collections.OrderedDict()
+    for k, v in disp_dict.items():
+        # for each time lag, concatenate the coordinate differences
+        v = np.concatenate(v)
+        # calculate square displacements
+        v = np.sum(v**2, axis=1) * pixel_size**2
+        # get rid of NaNs from the reindexing
+        v = v[~np.isnan(v)]
+        sd_dict[k/fps] = v
 
-    # To return as DataFrame, write values to OrderedDict
-    ret = collections.OrderedDict()
+    # This calculates the mean square displacements for each lag time from
+    # the sd_dict
+    ret = collections.OrderedDict()  # will be turned into a DataFrame
     idx = list(sd_dict.keys())
     sval = sd_dict.values()
     ret["msd"] = [sd.mean() for sd in sval]
