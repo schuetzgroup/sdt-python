@@ -23,9 +23,6 @@ t_column = "frame"
 trackno_column = "particle"
 
 
-# TODO: Make calculate_sd, calculate_msd compatible with trackpy.motion
-
-
 def _msd_old(particle_number, particle_data, tlag_thresh, dist_dict):
     # fill gaps with NaNs
     idx = particle_data.index
@@ -47,7 +44,28 @@ def _msd_old(particle_number, particle_data, tlag_thresh, dist_dict):
             dist_dict[i] = [disp]
 
 
-def _prepare_traj(data):
+def _prepare_traj(data, t_column=t_column):
+    """Prepare data for use with `_displacements`
+
+    Does sorting according to the frame number and also sets the frame number
+    as index of the DataFrame. This is not included in `_displacements`, since
+    it can be called on the whole tracking DataFrame and does not have to be
+    called for each single trajectory (yielding a performance increase).
+
+    Parameters
+    ----------
+    data : list of pandas.DataFrames or pandas.DataFrame
+        Tracking data
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `t_column` of the module.
+
+    Returns
+    -------
+    pandas.DataFrame
+        `data` ready to use for _displacements (one has to the data into
+        single trajectories, though).
+    """
     # do not work on the original data
     data = data.copy()
     # sort here, not in loop
@@ -58,8 +76,39 @@ def _prepare_traj(data):
     return data
 
 
-def _displacements(particle_data, max_lagtime=np.inf,
+def _displacements(particle_data, max_lagtime,
                    pos_columns=pos_columns, disp_dict=None):
+    """Do the actual calculation of displacements
+
+    Calculate all possible displacements for each lag time for one particle.
+
+    Parameters
+    ----------
+    particle_data : pandas.DataFrame
+        Tracking data of one single particle/trajectory that has been prepared
+        with `_prepare_traj`.
+    max_lagtime : int
+        Maximum number of time lags to consider.
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
+    disp_dict : None or dict, optional
+        If a dict is given, results will be appended to the dict. For each
+        lag time, the displacements (a 2D numpy.ndarray where each column
+        stands for a coordinate and each row for one displacement data set)
+        will be appended using ``disp_dict[lag_time].append(displacements)``.
+        If it is None, the displacement data will be returned (see `Returns`
+        section) as a numpy.ndarray. Defaults to None.
+
+    Returns
+    -------
+    numpy.ndarray or None
+        If `disp_dict` is not None, return None (since data will be written to
+        `disp_dict`). If `disp_dict` is None, return a 3D numpy.ndarray.
+        The first index is the lag time (index 0 means 1st lag time etc.),
+        the second index the displacement data set index and the third the
+        coordinate index.
+    """
     # fill gaps with NaNs
     idx = particle_data.index
     start_frame = idx[0]
@@ -90,8 +139,40 @@ def _displacements(particle_data, max_lagtime=np.inf,
         return ret
 
 
-def msd(traj, pixel_size, fps, max_lagtime=np.inf, pos_columns=pos_columns,
+def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         t_column=t_column, trackno_column=trackno_column):
+    """Calculate mean displacements from tracking data for one particle
+
+    This calculates the mean displacement (<x>) for each coordinate, the mean
+    square displacement (<x^2>) for each coordinate and the total mean square
+    displacement (<x_1^2 + x_2^2 + ... + x_n^2) for one particle/trajectory
+
+    Parameters
+    ----------
+    data : list of pandas.DataFrames or pandas.DataFrame
+        Tracking data of one single particle/trajectory
+    pixel_size : float
+        width of a pixel in micrometers
+    fps : float
+        Frames per second
+    max_lagtime : int, optional
+        Maximum number of time lags to consider. Defaults to 100.
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `t_column` of the module.
+    trackno_column : str, optional
+        Name of the column containing track numbers. Defaults to the
+        `trackno_column` attribute of the module.
+
+    Returns
+    -------
+    pandas.DataFrame([0, ..., n])
+        For each lag time and each particle/trajectory return the calculated
+        mean square displacement.
+    """
     # check if traj is empty
     cols = (["<{}>".format(p) for p in pos_columns] +
         ["<{}^2>".format(p) for p in pos_columns] +
@@ -121,13 +202,41 @@ def msd(traj, pixel_size, fps, max_lagtime=np.inf, pos_columns=pos_columns,
     return ret
 
 
-def imsd(traj, pixel_size, fps, max_lagtime=np.inf, pos_columns=pos_columns,
+def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
          t_column=t_column, trackno_column=trackno_column):
+    """Calculate mean square displacements from tracking data for each particle
+
+    Parameters
+    ----------
+    data : list of pandas.DataFrames or pandas.DataFrame
+        Tracking data
+    pixel_size : float
+        width of a pixel in micrometers
+    fps : float
+        Frames per second
+    max_lagtime : int, optional
+        Maximum number of time lags to consider. Defaults to 100.
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `t_column` of the module.
+    trackno_column : str, optional
+        Name of the column containing track numbers. Defaults to the
+        `trackno_column` attribute of the module.
+
+    Returns
+    -------
+    pandas.DataFrame([0, ..., n])
+        For each lag time and each particle/trajectory return the calculated
+        mean square displacement.
+    """
     # check if traj is empty
-    if not len(traj):
+    if not len(data):
         return pd.DataFrame()
 
-    traj = _prepare_traj(traj)
+    traj = _prepare_traj(data)
     traj_grouped = traj.groupby(trackno_column)
     disps = []
     for pn, pdata in traj_grouped:
@@ -152,28 +261,24 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     pixel_size : float
         width of a pixel in micrometers
     fps : float
-        Frames per seconds
+        Frames per second
     max_lagtime : int, optional
         Maximum number of time lags to consider. Defaults to 100.
-    matlab_compat : bool, optional
-        The `msdplot` MATLAB tool discards all trajectories with lengths not
-        within the `tlag_thresh` interval. If True, this behavior is mimicked
-        (i. e., identical results are produced.) Defaults to False.
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
         features. Defaults to the `pos_columns` attribute of the module.
     t_column : str, optional
         Name of the column containing frame numbers. Defaults to the
-        `frameno_column` of the module.
+        `t_column` of the module.
     trackno_column : str, optional
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
 
     Returns
     -------
-    collections.OrderedDict
-        The keys are the time lags and whose values are lists
-        containing all square displacements.
+    pandas.DataFrame([msd, stderr, lagt])
+        For each lag time return the calculated mean square displacement and
+        standard error.
     """
     if isinstance(data, pd.DataFrame):
         data = [data]
@@ -246,7 +351,7 @@ def calculate_sd(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
         features. Defaults to the `pos_columns` attribute of the module.
     t_column : str, optional
         Name of the column containing frame numbers. Defaults to the
-        `frameno_column` of the module.
+        `t_column` of the module.
     trackno_column : str, optional
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
@@ -314,7 +419,7 @@ def calculate_sd_multi(data, frame_time, pixel_size, tlag_thresh=(0, np.inf),
         features. Defaults to the `pos_columns` attribute of the module.
     t_column : str, optional
         Name of the column containing frame numbers. Defaults to the
-        `frameno_column` of the module.
+        `t_column` of the module.
     trackno_column : str, optional
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
