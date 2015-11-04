@@ -28,14 +28,6 @@ class TestMotion(unittest.TestCase):
             np.testing.assert_allclose(np.sort(pyi), np.sort(mati),
                                        rtol=1e-5, atol=1e-5)
 
-    def test_calculate_sd(self):
-        # Original file: 2015-06-12 - PMPC single molecule/AF-647 POPC/
-        #   B-1_000_.SPE
-        orig = np.load(os.path.join(data_path, "test_calculate_sd.npy"))
-        sd = sdt.motion.calculate_sd(self.traj, 1, 1)
-        assert(len(sd) == len(orig))
-        self._compare_matlab(sd, orig)
-
     def test_emsd(self):
         orig = np.load(os.path.join(data_path, "test_calculate_sd.npy"))
         e = sdt.motion.emsd(self.traj, 1, 1)
