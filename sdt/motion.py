@@ -371,6 +371,54 @@ def fit_msd(emsd, lags=2):
     return D, pa
 
 
+def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
+    """Plot lag time vs. MSD and the fit as calculated by `fit_msd`.
+
+    Parameters
+    ----------
+    emsd : DataFrame([lagt, msd, stderr])
+        MSD data as computed by `emsd`. If the stderr column is not present,
+        no error bars will be plotted.
+    D : float
+        Diffusion coefficient (see `fit_msd`)
+    pa : float
+        Positional accuracy (see `fit_msd`)
+    max_lagtime : int, optional
+        Maximum number of time lags to plot. Defaults to 100.
+    show_legend : bool, optional
+        Whether to show the legend (the values of the diffusion coefficient D
+        and the positional accuracy) in the plot. Defaults to True.
+    ax : matplotlib.axes.Axes or None, optional
+        If given, use this axes object to draw the plot. If None, use
+        `plt.gca`().
+    """
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+    if ax is None:
+        ax = plt.gca()
+
+    emsd = emsd.iloc[:int(max_lagtime)]
+    ax.set_xlabel("lag time [s]")
+    ax.set_ylabel("MSD [$\mu$m$^2$]")
+    if "stderr" in emsd.columns:
+        ax.errorbar(emsd["lagt"], emsd["msd"], yerr=emsd["stderr"], fmt="o")
+    else:
+        ax.plot(emsd["lagt"], emsd["msd"], linestyle="none", marker="o")
+
+    k = 4*D
+    d = 4*pa**2
+    x = np.linspace(0, emsd["lagt"].max(), num=2)
+    y = k*x + d
+    ax.plot(x, y)
+
+    if show_legend:
+        # This can be improved
+        fake_artist = mpl.lines.Line2D([0], [0], linestyle="none")
+        ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$".format(float(D)),
+                                    "PA: {:.3} $\mu$m".format(float(pa))],
+                  loc=0)
+
+
 def cdf_fit(sds, num_frac=2, poly_order=30):
     tlag = []
     fractions = []
