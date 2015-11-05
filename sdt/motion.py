@@ -332,17 +332,17 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     return ret
 
 
-def fit_msd(msds, tlags=2):
+def fit_msd(emsd, lags=2):
     """Get the diffusion coefficient and positional accuracy from MSDs
 
     Fit a linear function to the tlag-vs.-MSD graph
 
     Parameters
     ----------
-    msds : DataFrame([tlag, msd, stderr])
-        MSD data as computed by `calculate_msd`
-    tlags : int, optional
-        Use the first `tlags` time lags for fitting only. Defaults to 2.
+    emsd : DataFrame([lagt, msd, stderr])
+        MSD data as computed by `emsd`
+    lags : int, optional
+        Use the first `tlags` lag times for fitting only. Defaults to 2.
 
     Returns
     -------
@@ -354,13 +354,13 @@ def fit_msd(msds, tlags=2):
     # TODO: illumination time correction
     # msdplot.m:365
 
-    if tlags==2:
-        k = ((msds["msd"].iloc[1] - msds["msd"].iloc[0])/
-             (msds["tlag"].iloc[1] - msds["tlag"].iloc[0]))
-        d = msds["msd"].iloc[0] - k*msds["tlag"].iloc[0]
+    if lags == 2:
+        k = ((emsd["msd"].iloc[1] - emsd["msd"].iloc[0])/
+             (emsd["lagt"].iloc[1] - emsd["lagt"].iloc[0]))
+        d = emsd["msd"].iloc[0] - k*emsd["lagt"].iloc[0]
     else:
-        k, d = np.polyfit(msds["tlag"].iloc[0:tlags],
-                         msds["msd"].iloc[0:tlags], 1)
+        k, d = np.polyfit(emsd["lagt"].iloc[0:lags],
+                         emsd["msd"].iloc[0:lags], 1)
 
     D = k/4
     pa = np.sqrt(d)/2.
