@@ -150,7 +150,7 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
 
     Parameters
     ----------
-    data : list of pandas.DataFrames or pandas.DataFrame
+    traj : pandas.DataFrame
         Tracking data of one single particle/trajectory
     pixel_size : float
         width of a pixel in micrometers
@@ -209,7 +209,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
 
     Parameters
     ----------
-    data : list of pandas.DataFrames or pandas.DataFrame
+    data : pandas.DataFrame
         Tracking data
     pixel_size : float
         width of a pixel in micrometers
@@ -251,9 +251,132 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     return ret
 
 
+def all_displacements(data, max_lagtime=100,
+                      pos_columns=pos_columns, t_column=t_column,
+                      trackno_column=trackno_column):
+    """Calculate all displacements
+
+    For each lag time calculate all possible displacements for each trajectory
+    and each coordinate.
+
+    Parameters
+    ----------
+    data : list of pandas.DataFrames or pandas.DataFrame
+        Tracking data
+    max_lagtime : int, optional
+        Maximum number of time lags to consider. Defaults to 100.
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `t_column` of the module.
+    trackno_column : str, optional
+        Name of the column containing track numbers. Defaults to the
+        `trackno_column` attribute of the module.
+
+    Returns
+    -------
+    collections.OrderedDict
+        The keys of the dict are the number of lag times (if divided by the
+        frame rate, this yields the actual lag time). The values are lists of
+        numpy.ndarrays where each column stands for a coordinate and each row
+        for one displacement data set. Displacement values are in pixels.
+    """
+    if isinstance(data, pd.DataFrame):
+        data = [data]
+
+    disp_dict = collections.OrderedDict()
+
+    for traj in data:
+        # check if traj is empty
+        if not len(traj):
+            continue
+
+        traj = _prepare_traj(traj, t_column=t_column)
+        traj_grouped = traj.groupby(trackno_column)
+
+        for pn, pdata in traj_grouped:
+            _displacements(pdata, max_lagtime, pos_columns=pos_columns,
+                           disp_dict=disp_dict)
+
+    return disp_dict
+
+
+def all_square_displacements(disp_dict, pixel_size, fps):
+    """Calculate square displacements from coordinate displacements
+
+    Use the result of `all_displacements` to calculate the square
+    displacements, i. e. the sum of the squares of the coordinate displacements
+    (dx_1^2 + dx_2^2 + ... + dx_n^2).
+
+    Parameters
+    ----------
+    disp_dict : dict
+        The result of a call to `all_displacements`
+    pixel_size : float
+        width of a pixel in micrometers
+    fps : float
+        Frames per second
+
+    Returns
+    -------
+    collections.OrderedDict
+        The keys of the dict are the number of lag times in seconds.
+        The values are lists numpy.ndarrays containing square displacements
+        in μm.
+    """
+    sd_dict = collections.OrderedDict()
+    for k, v in disp_dict.items():
+        # for each time lag, concatenate the coordinate differences
+        v = np.concatenate(v)
+        # calculate square displacements
+        v = np.sum(v**2, axis=1) * pixel_size**2
+        # get rid of NaNs from the reindexing
+        v = v[~np.isnan(v)]
+        sd_dict[k/fps] = v
+
+    return sd_dict
+
+
+def emsd_from_square_displacements(sd_dict):
+    """Calculate mean square displacements from square displacements
+
+    Use the results of `all_square_displacements` for this end.
+
+    Parameters
+    ----------
+    sd_dict : dict
+        The result of a call to `all_square_displacements`
+
+    Returns
+    -------
+    pandas.DataFrame([msd, stderr, lagt])
+        For each lag time return the calculated mean square displacement and
+        standard error.
+    """
+    ret = collections.OrderedDict()  # will be turned into a DataFrame
+    idx = list(sd_dict.keys())
+    sval = sd_dict.values()
+    ret["msd"] = [sd.mean() for sd in sval]
+    with warnings.catch_warnings():
+        # if len of sd is 1, sd.std(ddof=1) will raise a RuntimeWarning
+        warnings.simplefilter("ignore", RuntimeWarning)
+        ret["stderr"] = [sd.std(ddof=1)/np.sqrt(len(sd)) for sd in sval]
+    #TODO: Quian errors
+    ret["lagt"] = idx
+    ret = pd.DataFrame(ret)
+    ret.index = pd.Index(idx, name="lagt")
+    ret.sort_values("lagt", inplace=True)
+    return ret
+
+
 def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
          t_column=t_column, trackno_column=trackno_column):
     """Calculate ensemble mean square displacements from tracking data
+
+    This is equivalent to consecutively calling `all_displacements`,
+    `all_square_displacements`, an `emsd_from_square_displacements`.
 
     Parameters
     ----------
@@ -281,55 +404,10 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         For each lag time return the calculated mean square displacement and
         standard error.
     """
-    if isinstance(data, pd.DataFrame):
-        data = [data]
-
-    # dict of displacements; key is the lag time, value a list of numpy arrays
-    # one displacement in all coordinates per line (see _displacements())
-    disp_dict = collections.OrderedDict()
-
-    # this for loop calculates all displacements in all coordinates for all
-    # lag times and all trajectories in all DataFrames in data
-    for traj in data:
-        # check if traj is empty
-        if not len(traj):
-            continue
-
-        traj = _prepare_traj(traj)
-        traj_grouped = traj.groupby(trackno_column)
-
-        for pn, pdata in traj_grouped:
-            _displacements(pdata, max_lagtime, disp_dict=disp_dict)
-
-    # this for loop calculates the square displacements for each lag time
-    # which are just the sums dx_1**2 + dx_2**2 + ... + dx_n^2 where the
-    # dx_i is the displacements in the i-th coordinate
-    sd_dict = collections.OrderedDict()
-    for k, v in disp_dict.items():
-        # for each time lag, concatenate the coordinate differences
-        v = np.concatenate(v)
-        # calculate square displacements
-        v = np.sum(v**2, axis=1) * pixel_size**2
-        # get rid of NaNs from the reindexing
-        v = v[~np.isnan(v)]
-        sd_dict[k/fps] = v
-
-    # This calculates the mean square displacements for each lag time from
-    # the sd_dict
-    ret = collections.OrderedDict()  # will be turned into a DataFrame
-    idx = list(sd_dict.keys())
-    sval = sd_dict.values()
-    ret["msd"] = [sd.mean() for sd in sval]
-    with warnings.catch_warnings():
-        # if len of sd is 1, sd.std(ddof=1) will raise a RuntimeWarning
-        warnings.simplefilter("ignore", RuntimeWarning)
-        ret["stderr"] = [sd.std(ddof=1)/np.sqrt(len(sd)) for sd in sval]
-    #TODO: Quian errors
-    ret["lagt"] = idx
-    ret = pd.DataFrame(ret)
-    ret.index = pd.Index(idx, name="lagt")
-    ret.sort_values("lagt", inplace=True)
-    return ret
+    disp_dict = all_displacements(data, max_lagtime,
+                                  pos_columns, t_column, trackno_column)
+    sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
+    return emsd_from_square_displacements(sd_dict)
 
 
 def fit_msd(emsd, lags=2):
@@ -363,6 +441,7 @@ def fit_msd(emsd, lags=2):
                          emsd["msd"].iloc[0:lags], 1)
 
     D = k/4
+    d = complex(d) if d < 0. else d
     pa = np.sqrt(d)/2.
 
     # TODO: resample to get the error of D

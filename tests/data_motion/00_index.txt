@@ -1,0 +1,15 @@
+all_displacements.pkl: Pickle of the result of `all_displacements` run on
+    B-1_00[01]__tracks.mat
+all_square_displacements.pkl: Pickle of the result of
+    `all_square_displacements` run on data in all_displacements.pkl
+B-1_*: Output of particle_tracking_2D ran on data from 2015-06-12 (PMPC single
+    molecule)
+displacements_B-1_000_.npy: Dump of the `o` variable in MATLAB `get_msd` run on
+    B-1_000__tracks.trc
+emsd.h5: Output of `emsd` run on B-1_00[01]__tracks.mat
+emsd_matlab.npy: Dump of the `a` variable in MATLAB msdplot msd_fit function
+    run on B-1_00[01]__tracks.trc
+imsd.h5: Output of `imsd` run on B-1_000__tracks.mat
+msd.h5: Output of `msd` run on B-1_000__tracks.mat
+square_displacements.npy: Dump of the `msd1` variable in MATLAB `combine_msd`
+    run on B-1_00[01]__tracks.trc
