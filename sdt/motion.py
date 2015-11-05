@@ -24,27 +24,6 @@ t_column = "frame"
 trackno_column = "particle"
 
 
-def _msd_old(particle_number, particle_data, tlag_thresh, dist_dict):
-    # fill gaps with NaNs
-    idx = particle_data.index
-    start_frame = idx[0]
-    end_frame = idx[-1]
-    frame_list = list(range(start_frame, end_frame + 1))
-    pdata = particle_data.reindex(frame_list)
-
-    pdata = pdata[pos_columns].as_matrix()
-
-    for i in range(round(max(1, tlag_thresh[0])),
-                   round(min(len(pdata), tlag_thresh[1] + 1))):
-        # calculate coordinate differences for each time lag
-        disp = pdata[:-i] - pdata[i:]
-        # append to output structure
-        try:
-            dist_dict[i].append(disp)
-        except KeyError:
-            dist_dict[i] = [disp]
-
-
 def _prepare_traj(data, t_column=t_column):
     """Prepare data for use with `_displacements`
 
