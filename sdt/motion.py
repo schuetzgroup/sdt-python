@@ -486,14 +486,18 @@ def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
 
     k = 4*D
     d = 4*pa**2
+    if isinstance(d, complex):
+        d = d.real
     x = np.linspace(0, emsd["lagt"].max(), num=2)
     y = k*x + d
     ax.plot(x, y)
 
     if show_legend:
         # This can be improved
+        if isinstance(pa, complex):
+            pa = pa.real
         fake_artist = mpl.lines.Line2D([0], [0], linestyle="none")
-        ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$".format(float(D)),
+        ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$/s".format(float(D)),
                                     "PA: {:.3} $\mu$m".format(float(pa))],
                   loc=0)
 
