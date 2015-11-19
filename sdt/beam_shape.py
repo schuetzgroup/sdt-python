@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 16 16:27:27 2015
-
-@author: lukas
-"""
-
 """Correct for inhomogeneous illumination
 
 The intensity cross section of a laser beam is usually not flat, but a
@@ -14,13 +8,14 @@ exciting laser light.
 
 This module helps correcting for that using images of a homogeneous surface.
 
-Attributes:
-    pos_colums (list of str): Names of the columns describing the x and the y
-        coordinate of the features in pandas.DataFrames. Defaults to
-        ["x", "y"].
-    mass_column (str): Name of the column describing the integrated intensities
-        ("masses") of the features. Defaults to "mass".
-
+Attributes
+----------
+pos_colums : list of str
+    Names of the columns describing the x and the y coordinate of the features
+    in pandas.DataFrames. Defaults to ["x", "y"].
+mass_column : str
+    Name of the column describing the integrated intensities ("masses") of the
+    features. Defaults to "mass".
 """
 import pandas as pd
 import numpy as np
@@ -47,31 +42,38 @@ class Corrector(object):
     - If requested, doing a 2D Gaussian fit
     - Normalizing, so that the maximum of the Gaussian or of the average image
       (if on Gaussian fit was performed) equals 1.0
-    Now, the integrated intesity of a feature at position x, y is devided by
+    Now, the integrated intesity of a feature at position x, y is divided by
     the value of the Gaussian at the positon x, y (or the pixel intensity of
     the image) to yield a corrected value.
 
-    Attributes:
-        pos_columns (list of str): Names of the columns describing the x and
-            the y coordinate of the features.
-        mass_column (str): Name of the column describing the integrated
-            intensities ("masses") of the features.
-        avg_img (numpy.array): Averaged image pixel data
+    Attributes
+    ----------
+    pos_columns : list of str
+        Names of the columns describing the x and the y coordinate of the
+        features.
+    mass_column : str
+        Name of the column describing the integrated intensities ("masses") of
+        the features.
+    avg_img : numpy.ndarray
+        Averaged image pixel data
     """
 
     def __init__(self, *images, gaussian_fit=False, pos_columns=pos_columns,
                  mass_column=mass_column):
         """Constructor
 
-        Args:
-            images (lists of numpy.arrays): List of images of a homogeneous
-                surface
-            gaussian_fit (bool): Whether to fit a Gaussian to the
-                averaged image. Default: False
-            pos_columns (list of str): Sets the `pos_columns` attribute.
-                Defaults to the `pos_columns` attribute of the module.
-            mass_column (str): Sets the `mass_column` attribute. Defaults to
-                the `mass_column` attribute of the module.
+        Parameters
+        ----------
+        images : lists of numpy.ndarrays
+            List of images of a homogeneous surface
+        gaussian_fit : bool, optional
+            Whether to fit a Gaussian to the averaged image. Default: False
+        pos_columns : list of str, optional
+            Sets the `pos_columns` attribute. Defaults to the `pos_columns`
+            attribute of the module.
+        mass_column : str
+            Sets the `mass_column` attribute. Defaults to the `mass_column`
+            attribute of the module.
         """
         self.pos_columns = pos_columns
         self.mass_column = mass_column
@@ -97,8 +99,10 @@ class Corrector(object):
 
         This modifies the coordinates in place.
 
-        Args:
-            features (pandas.DataFrame): The features to be corrected.
+        Parameters
+        ----------
+        features : pandas.DataFrame
+            The features to be corrected.
         """
         x = self.pos_columns[0]
         y = self.pos_columns[1]
@@ -113,11 +117,14 @@ class Corrector(object):
         an x and a y coordinate is calculated either from the Gaussian fit
         or the average image itself.
 
-        Args:
-            x (list of float): x coordinates of features
-            y (list of float): y coordinates of features
+        Parameters
+        ----------
+        x, y : list of float
+            x and y coordinates of features
 
-        Returns:
+        Returns
+        -------
+        list
             A list of correction factors corresponding to the features
         """
         pass
@@ -125,11 +132,14 @@ class Corrector(object):
     def _get_factors_gauss(self, x, y):
         """Get correction factors at positions x, y from Gaussian fit
 
-        Args:
-            x (list of float): x coordinates of features
-            y (list of float): y coordinates of features
+        Parameters
+        ----------
+        x, y : list of float
+            x and y coordinates of features
 
-        Returns:
+        Returns
+        -------
+        list
             A list of correction factors corresponding to the features
         """
         return 1./(self._gauss_norm*self._gauss_func(y, x))
@@ -137,11 +147,14 @@ class Corrector(object):
     def _get_factors_img(self, x, y):
         """Get correction factors at positions x, y from averaged image
 
-        Args:
-            x (list of float): x coordinates of features
-            y (list of float): y coordinates of features
+        Parameters
+        ----------
+        x, y : list of float
+            x and y coordinates of features
 
-        Returns:
+        Returns
+        -------
+        list
             A list of correction factors corresponding to the features
         """
         return 1./self.avg_img[np.round(y), np.round(x)]
