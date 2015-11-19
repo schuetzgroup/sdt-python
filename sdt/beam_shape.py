@@ -81,7 +81,9 @@ class Corrector(object):
         self.avg_img = np.zeros(images[0][0].shape, dtype=np.float)
         for stack in images:
             for img in stack:
-                self.avg_img += img
+                # divide by max so that intensity fluctuations don't affect
+                # the results
+                self.avg_img += img/img.max()
         self.avg_img /= self.avg_img.max()
 
         if gaussian_fit:
