@@ -20,6 +20,8 @@ mass_column : str
 import pandas as pd
 import numpy as np
 
+import pims
+
 from . import gaussian_fit as gfit
 
 
@@ -58,7 +60,7 @@ class Corrector(object):
         Averaged image pixel data
     """
 
-    def __init__(self, *images, gaussian_fit=False, pos_columns=pos_columns,
+    def __init__(self, *images, gaussian_fit=True, pos_columns=pos_columns,
                  mass_column=mass_column):
         """Constructor
 
@@ -67,7 +69,7 @@ class Corrector(object):
         images : lists of numpy.ndarrays
             List of images of a homogeneous surface
         gaussian_fit : bool, optional
-            Whether to fit a Gaussian to the averaged image. Default: False
+            Whether to fit a Gaussian to the averaged image. Default: True
         pos_columns : list of str, optional
             Sets the `pos_columns` attribute. Defaults to the `pos_columns`
             attribute of the module.
@@ -86,30 +88,55 @@ class Corrector(object):
                 self.avg_img += img/img.max()
         self.avg_img /= self.avg_img.max()
 
+        self._do_fit = gaussian_fit
         if gaussian_fit:
-            g_parm = gfit.FitGauss2D(self.avg_img)
-            #normalization factor so that the maximum of the Gaussian is 1.
-            self._gauss_norm = 1./(g_parm[0][0]+g_parm[0][6])
-            #Gaussian function
-            self._gauss_func = gfit.Gaussian2D(*g_parm[0])
-            self.get_factors = self._get_factors_gauss
-        else:
-            self.get_factors = self._get_factors_img
+            self._gauss_parm, success = gfit.FitGauss2D(self.avg_img)
+            if success > 2:
+                raise RuntimeError("Gaussian fit did not converge")
+            # normalization factor so that the maximum of the Gaussian is 1.
+            self._gauss_norm = 1./(self._gauss_parm[0]+self._gauss_parm[6])
+            # Gaussian function
+            self._gauss_func = gfit.Gaussian2D(*self._gauss_parm)
 
-    def __call__(self, features):
+    def __call__(self, data, inplace=False):
         """Do brightness correction on `features` intensities
-
-        This modifies the coordinates in place.
 
         Parameters
         ----------
-        features : pandas.DataFrame
-            The features to be corrected.
+        data : pandas.DataFrame or pims.FramesSequence or array-like
+            data to be processed. If a pandas.Dataframe, correct the "mass"
+            column according to the particle position in the laser beam.
+            Otherwise, `pims.pipeline` is used to correct raw image data. This
+            requires pims version > 0.2.2.
+        inplace : bool, optional
+            Only has an effect if `data` is a DataFrame. If True, the
+            feature intensities will be corrected in place. Defaults to False.
+
+        Returns
+        -------
+        pandas.DataFrame or pims.SliceableIterable or numpy.array
+            If `data` is a DataFrame and `inplace` is False, return the
+            corrected frame. If `data` is raw image data, return corrected
+            images
         """
-        x = self.pos_columns[0]
-        y = self.pos_columns[1]
-        features[self.mass_column] *= self.get_factors(features[x],
-                                                       features[y])
+        if isinstance(data, pd.DataFrame):
+            x = self.pos_columns[0]
+            y = self.pos_columns[1]
+            if not inplace:
+                data = data.copy()
+            data[self.mass_column] *= self.get_factors(data[x], data[y])
+            if not inplace:
+                # copied previously, now return
+                return data
+        else:
+            @pims.pipeline
+            def corr(img):
+                if self._do_fit:
+                    return img/(self._gauss_func(*np.indices(img.shape)) *
+                                self._gauss_norm)
+                else:
+                    return img/self.avg_img
+            return corr(data)
 
     def get_factors(self, x, y):
         """Get correction factors at positions x, y
@@ -126,37 +153,10 @@ class Corrector(object):
 
         Returns
         -------
-        list
+        numpy.ndarray
             A list of correction factors corresponding to the features
         """
-        pass
-
-    def _get_factors_gauss(self, x, y):
-        """Get correction factors at positions x, y from Gaussian fit
-
-        Parameters
-        ----------
-        x, y : list of float
-            x and y coordinates of features
-
-        Returns
-        -------
-        list
-            A list of correction factors corresponding to the features
-        """
-        return 1./(self._gauss_norm*self._gauss_func(y, x))
-
-    def _get_factors_img(self, x, y):
-        """Get correction factors at positions x, y from averaged image
-
-        Parameters
-        ----------
-        x, y : list of float
-            x and y coordinates of features
-
-        Returns
-        -------
-        list
-            A list of correction factors corresponding to the features
-        """
-        return 1./self.avg_img[np.round(y), np.round(x)]
+        if self._do_fit:
+            return 1./(self._gauss_norm*self._gauss_func(y, x))
+        else:
+            return 1./self.avg_img[np.round(y), np.round(x)]

@@ -34,7 +34,7 @@ class TestBeamShape(unittest.TestCase):
             img = amp * self.img
             imgs.append(img)
 
-        corr = sdt.beam_shape.Corrector(imgs)
+        corr = sdt.beam_shape.Corrector(imgs, gaussian_fit=False)
         np.testing.assert_allclose(corr.avg_img, img)
 
     def test_fit(self):
@@ -49,13 +49,22 @@ class TestBeamShape(unittest.TestCase):
         pdata = pd.DataFrame(dict(x=xcoord, y=ycoord, mass=mass))
         pdata1 = pdata.copy()
 
-        corr_img = sdt.beam_shape.Corrector([self.img])
-        corr_img(pdata)
+        corr_img = sdt.beam_shape.Corrector([self.img], gaussian_fit=False)
+        corr_img(pdata, inplace=True)
         np.testing.assert_allclose(pdata["mass"].tolist(), mass_orig)
 
         corr_gauss = sdt.beam_shape.Corrector([self.img], gaussian_fit=True)
-        corr_gauss(pdata1)
+        pdata1 = corr_gauss(pdata1)
         np.testing.assert_allclose(pdata1["mass"].tolist(), mass_orig,
+                                   rtol=1e-5)
+
+    def test_image_correction_with_img(self):
+        corr_img = sdt.beam_shape.Corrector([self.img], gaussian_fit=False)
+        np.testing.assert_allclose(corr_img(self.img), np.ones(self.img.shape))
+
+    def test_image_correction_with_gauss(self):
+        corr_g = sdt.beam_shape.Corrector([self.img], gaussian_fit=True)
+        np.testing.assert_allclose(corr_g(self.img), np.ones(self.img.shape),
                                    rtol=1e-5)
 
 if __name__ == "__main__":
