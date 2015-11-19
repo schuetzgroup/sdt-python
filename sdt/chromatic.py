@@ -244,9 +244,9 @@ class Corrector(object):
             a.scatter(self.pairs[self.channel_names[0], p],
                       self.pairs[self.channel_names[1], p],
                       marker="+", s=50, color="red")
-            a.plot(self.pairs[self.channel_names[0]].sort(p)[p],
+            a.plot(self.pairs[self.channel_names[0]].sort_values(p)[p],
                    self.parameters1.loc[p, "slope"] *
-                   self.pairs[self.channel_names[0]].sort(p)[p] +
+                   self.pairs[self.channel_names[0]].sort_values(p)[p] +
                    self.parameters1.loc[p, "intercept"])
             a.set_title(p)
             a.set_aspect(1)
