@@ -21,6 +21,8 @@ import scipy.io
 import scipy.stats
 import scipy.ndimage
 
+import pims
+
 pos_columns = ["x", "y"]
 channel_names = ["channel1", "channel2"]
 
@@ -169,16 +171,20 @@ class Corrector(object):
                                                  "stderr"],
                                         index=pos_columns)
 
-    def __call__(self, data, channel=2, mode="constant", cval=0.0):
-        """Do chromatic correction on `features` coordinates
+    def __call__(self, data, channel=2, inplace=False, mode="constant",
+                 cval=0.0):
+        """Correct for chromatic aberrations
 
-        This modifies the coordinates in place.
+        This can be done either on coordinates (e. g. resulting from feature
+        localization) or directly on raw images.
 
         Parameters
         ----------
-        data : pandas.DataFrame or numpy.ndarray
-            Either a DataFrame containing localization data or an ndarray with
-            image data. Correction happens in place.
+        data : pandas.DataFrame or pims.FramesSequence or array-like
+            data to be processed. If a pandas.Dataframe, the feature
+            coordinates will be corrected. Otherwise, `pims.pipeline` is used
+            to correct image data using an affine transformation. This requires
+            pims version > 0.2.2.
         channel : int, optional
             If `features` are in the first channel (corresponding to the
             `feat1` arg of the constructor), set to 1. If features are in the
@@ -186,6 +192,9 @@ class Corrector(object):
             be applied to the coordinates of `features` to match the other
             channel (mathematically speaking depending on this parameter
             either the "original" transformation or its inverse are applied.)
+        inplace : bool, optional
+            Only has an effect if `data` is a DataFrame. If True, the
+            feature coordinates will be corrected in place. Defaults to False.
         mode : str, optional
             How to fill points outside of the uncorrected image boundaries.
             Possibilities are "constant", "nearest", "reflect" or "wrap".
@@ -199,6 +208,8 @@ class Corrector(object):
             raise ValueError("channel has to be either 1 or 2")
 
         if isinstance(data, pd.DataFrame):
+            if not inplace:
+                data = data.copy()
             if channel == 1:
                 xparm = self.parameters1.loc[x_col]
                 yparm = self.parameters1.loc[y_col]
@@ -207,16 +218,23 @@ class Corrector(object):
                 yparm = self.parameters2.loc[y_col]
             data[x_col] = data[x_col]*xparm.slope + xparm.intercept
             data[y_col] = data[y_col]*yparm.slope + yparm.intercept
-        elif isinstance(data, np.ndarray):
+            if not inplace:
+                # copied previously, now return
+                return data
+        else:
             if channel == 1:
                 parms = self.parameters2
             if channel == 2:
                 parms = self.parameters1
-            # iloc[::-1] reverses the order since image coordinates and
-            # matrix rows/columns have different order
-            scipy.ndimage.affine_transform(data, parms.iloc[::-1]["slope"],
-                                           parms.iloc[::-1]["intercept"],
-                                           output=data, mode=mode, cval=cval)
+            @pims.pipeline
+            def corr(img):
+                # iloc[::-1] reverses the order since image coordinates and
+                # matrix rows/columns have different order
+                return scipy.ndimage.affine_transform(
+                    img,
+                    parms.iloc[::-1]["slope"], parms.iloc[::-1]["intercept"],
+                    mode=mode, cval=cval)
+            return corr(data)
 
     def test(self, ax=None):
         """Test validity of the correction parameters
