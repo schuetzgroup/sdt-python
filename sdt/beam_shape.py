@@ -90,13 +90,12 @@ class Corrector(object):
 
         self._do_fit = gaussian_fit
         if gaussian_fit:
-            self._gauss_parm, success = gfit.FitGauss2D(self.avg_img)
-            if success > 2:
-                raise RuntimeError("Gaussian fit did not converge")
+            self._gauss_parm = gfit.fit(self.avg_img)
             # normalization factor so that the maximum of the Gaussian is 1.
-            self._gauss_norm = 1./(self._gauss_parm[0]+self._gauss_parm[6])
+            self._gauss_norm = 1./(self._gauss_parm["amplitude"] +
+                                   self._gauss_parm["background"])
             # Gaussian function
-            self._gauss_func = gfit.Gaussian2D(*self._gauss_parm)
+            self._gauss_func = gfit.gaussian(**self._gauss_parm)
 
     def __call__(self, data, inplace=False):
         """Do brightness correction on `features` intensities
