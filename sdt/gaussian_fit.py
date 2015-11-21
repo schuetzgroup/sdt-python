@@ -1,14 +1,47 @@
-#!/usr/bin/env python
-# This script is to fit 1d or 2d gaussian profile on a 1d or 2d grid data.
-# 2d gaussian fit functions are written similar to to https://gist.github.com/andrewgiessel/6122739
-# source: https://github.com/indiajoe/HandyTools4Astronomers.git
+"""Easy fitting with Gaussian functions
 
+This module allows for fitting Gaussian functions to 1D or 2D data. It is
+based on https://gist.github.com/andrewgiessel/6122739.
 
-from __future__ import division
+Examples
+--------
+>>> data = np.load("gaussian_2d.npy")
+>>> params = fit(data)  # get parameters of the fitted Gaussian
+>>> fitted_gaussian = gaussian(**params)  # actually construct the Gaussian
+>>> fitted_gaussian(2, 3)  # get values at coordinates (2, 3)
+15.0
+"""
 import numpy as np
 import scipy.optimize
 
 def guess_paramaters(data):
+    """Initial guess of parameters of the Gaussian
+
+    This function does a crude estimation of the parameters:
+    - The background is guessed by looking at the edges of `data`.
+    - The center of the Gaussian is approximated by the center of mass.
+    - sigma as well as the angle of rotation are estimated by looking at second
+      moments
+    - The amplitude is taken as the maximum above background
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Data for which the parameter should be guessed
+
+    Returns
+    -------
+    dict
+        This dict has the follwing keys:
+        - "amplitude" (float)
+        - "center" (np.ndarray): coordinates of the guessed center
+        - "sigma" (np.ndarray)
+        - "background" (float)
+        - "angle" (float): guessed angle of rotation. Works (currently) only
+          for 2D data.
+        The keys match the arguments of `gaussian` so that the dict can be
+        passed directly to the function.
+    """
     # median of the edges as an estimate for the background
     interior_slice = slice(1, -1)
     edge_mask = np.ones(data.shape, dtype=np.bool)
@@ -52,6 +85,43 @@ def guess_paramaters(data):
 
 
 def gaussian(amplitude, center, sigma, background, angle=0.):
+    """Create a Gaussian function from parameters
+
+    This returns a callable that computes Gaussian function values from
+    coordinates according to the parameters supplied here. Currently, only
+    1D and 2D Gaussians can be created.
+
+    Parameters
+    ----------
+    amplitude : float
+        amplitude of the Gaussian
+    center : numpy.ndarray
+        center coordinates. From the number of coordinates the dimensionality
+        of the Gaussian is determined. Currently only 1D and 2D are supported.
+    sigma : float or numpy.ndarray
+        sigma of the Gaussian. If it is a float, the same sigma for all
+        coordinate axes is assumed. If it is an array, its dimensions have to
+        match `center` and the i-th element is interpreted as the sigma in
+        the i-th coordinate axis.
+    background : float
+        additive offset
+    angle : float, optional
+        angle of rotation. Only applies to 2D Gaussians. Defaults to 0.
+
+    Returns
+    -------
+    gauss : callable
+        Takes as many arguments as center coordinates were supplied. The
+        arguments need to be numpy.ndarrays, e. g. the results of a call to
+        `numpy.indices`.
+
+    Raises
+    ------
+    ValueError
+        if either sigma has the wrong length or it was attempted to created
+        a Gaussian of unsupported dimensions.
+    """
+
     ndim = len(center)
     if np.isscalar(sigma):
         sigma = [sigma]*ndim
@@ -61,21 +131,23 @@ def gaussian(amplitude, center, sigma, background, angle=0.):
 
     if ndim == 1:
         def gaussian_1d(x):
+            """1D Gaussian created using `gaussian`"""
             return (amplitude * np.exp(-((x - center[0])/sigma[0])**2/2.) +
                     background)
         return gaussian_1d
     elif ndim == 2:
-        cs = np.cos(angle)
-        sn = np.sin(angle)
+        cs = np.cos(angle)  # cache
+        sn = np.sin(angle)  # cache
 
         def rotate(x, y):
             return x*cs - y*sn, x*sn + y*cs
 
-        xc_r, yc_r = rotate(center[0], center[1])
+        xc_r, yc_r = rotate(center[0], center[1])  # center coordinates rotated
         def gaussian2d(x, y):
-            x_r, y_r = rotate(x, y)
+            """2D Gaussian created using `gaussian`"""
+            x_r, y_r = rotate(x, y)  # coordinates rotated
             arg = ((x_r - xc_r)/sigma[0])**2 + ((y_r - yc_r)/sigma[1])**2
-            return (amplitude * np.exp(-arg/2.) + background)
+            return amplitude * np.exp(-arg/2.) + background
         return gaussian2d
     else:
         raise ValueError("Only 1D and 2D Gaussians are supported at the"
@@ -83,6 +155,37 @@ def gaussian(amplitude, center, sigma, background, angle=0.):
 
 
 def fit(data, initial_guess=None):
+    """Fit a Gaussian function to `data`
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Data to which the Gaussian should be fitted
+    initial_guess : dict, optional
+        Initial guess for the parameters. The dict has the same keys and values
+        as the one returned by `initial_guess` (and this function as well) so
+        that it can be passed to `gaussian`. If None (the default), call
+        `initial_guess` to determine initial values.
+
+    Returns
+    -------
+    dict
+        The dict contains the fitted parameters of the Gaussian. It dict has
+        the follwing keys:
+        - "amplitude" (float)
+        - "center" (np.ndarray): coordinates of the center
+        - "sigma" (np.ndarray)
+        - "background" (float)
+        - "angle" (float): angle of rotation. Works (currently) only for 2D
+          data.
+        The keys match the arguments of `gaussian` so that the dict can be
+        passed directly to the function.
+
+    Raises
+    ------
+    RuntimeError
+        if the fit did not converge.
+    """
     if initial_guess is None:
         initial_guess = guess_paramaters(data)
 
