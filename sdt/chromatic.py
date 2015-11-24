@@ -480,23 +480,25 @@ class Corrector(object):
         if score.shape[0] > score.shape[1]:
             indices = np.array([np.argmax(score, axis=0),
                                 np.arange(score.shape[1])])
-            long_axis = 0
         else:
             indices = np.array([np.arange(score.shape[0]),
                                 np.argmax(score, axis=1)])
-            long_axis = 1
 
         # now deal with ambiguities, i. e. if one feature has two similarly
         # likely partners
         # For each feature, calculate the threshold.
-        amb_thresh = score[indices.tolist()]*ambiguity_factor
-        # If there is more than one candidate's score above the threshold,
-        # discard
-        amb = score > np.expand_dims(amb_thresh, axis=long_axis)
-        amb = np.sum(amb, axis=long_axis) > 1
-        indices = indices[:, ~amb]
+        amb_thresh = score[indices.tolist()] * ambiguity_factor
+        # look for high scorers along the 0 axis (rows)
+        amb0 = (score[indices[0], :] > amb_thresh[:, np.newaxis])
+        amb0 = (np.sum(amb0, axis=1) > 1)
+        # look for high scorers along the 1 axis (columns)
+        amb1 = (score[:, indices[1]] > amb_thresh[np.newaxis, :])
+        amb1 = (np.sum(amb1, axis=0) > 1)
+        # drop if there are more than one high scorers in any axis
+        indices = indices[:, ~(amb0 | amb1)]
 
         # get rid of indices with low scores
+        # TODO: Can this be gotten rid of now that the ambiguity stuff works?
         score_cutoff *= score.max()
         cutoff_mask = (score[indices.tolist()] >= score_cutoff)
         indices = indices[:, cutoff_mask]
