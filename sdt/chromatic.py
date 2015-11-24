@@ -475,8 +475,6 @@ class Corrector(object):
             in each channel, i. e. the columns are a MultiIndex from the
             product of the `channel_names` and `pos_columns` class attributes.
         """
-        score_cutoff *= score.max()
-
         # always search through the axis with fewer localizations since
         # since otherwise there is bound to be double matches
         if score.shape[0] > score.shape[1]:
@@ -488,9 +486,6 @@ class Corrector(object):
                                 np.argmax(score, axis=1)])
             long_axis = 1
 
-        # anything below score_cutoff is considered noise
-        score[score < score_cutoff] = 0
-
         # now deal with ambiguities, i. e. if one feature has two similarly
         # likely partners
         # For each feature, calculate the threshold.
@@ -500,6 +495,11 @@ class Corrector(object):
         amb = score > np.expand_dims(amb_thresh, axis=long_axis)
         amb = np.sum(amb, axis=long_axis) > 1
         indices = indices[:, ~amb]
+
+        # get rid of indices with low scores
+        score_cutoff *= score.max()
+        cutoff_mask = (score[indices.tolist()] >= score_cutoff)
+        indices = indices[:, cutoff_mask]
 
         pair_matrix = np.hstack((
             self.feat1.iloc[indices[0]][pos_columns],
