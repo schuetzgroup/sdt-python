@@ -69,6 +69,9 @@ class OdeSolver(object):
         self._c = np.zeros(p)
         self._y = np.zeros(m)
 
+        # For improved conditioning, we don't actually look at the k-th
+        # differentiation, but at the (p - k)-th integration; i. e.
+        # integrate ODE p times (integration matrix B)
         for k in range(p):
             self._B.insert(0, int_mat_legendre(m, p-k)[p:(k-p), :])
 
@@ -85,10 +88,14 @@ class OdeSolver(object):
             self._a = a
             A = np.zeros((self._m-self._p, self._m))
 
+            # \sum_{k=1}^p a_k D^k \hat{y} = e_1 is equivalent to
+            # \sum_{k=1}^p a_k B^{p-k} \hat{y} = B^p e_1
             for k in range(self._p+1):
                 A += self._a[k] * self._B[self._p-k]
 
             # L,U,P factors for the system matrix
+            # first p coefficients are determined by residual orthogonal
+            # requirement, therefore only consider A[:, p:]
             self._factors = lu_factor(A[:, self._p:])
 
             # Moment condition terms
@@ -115,6 +122,8 @@ class OdeSolver(object):
         """
         self._c = c
         self._y[:self._p] = c
+        # since residual orthogonal requirement already yields coefficients
+        # subtract from RHS
         rhs = np.dot(self._B[-1], f) - np.dot(self._cond, c)
         self._y[self._p:] = lu_solve(self._factors, rhs)
         return self._y.copy()
