@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Fit a sum of exponential functions to data
+r"""Fit a sum of exponential functions to data
 
 Given 1D data, use a variant of Prony's method to fit the parameters of
 the sum
@@ -10,8 +10,10 @@ to the data. This is based on code published by Greg von Winckel [1]_ under
 the GPLv3. Further insights about the algorithm may be gained by reading
 anything about Prony's method and [2]_.
 
-.. [1]_ www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions
-.. [2]_ M. R. Osborne, G. K. Smyth: A Modified Prony Algorithm for Fitting
+References
+----------
+.. [1] http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions
+.. [2] M. R. Osborne, G. K. Smyth: A Modified Prony Algorithm for Fitting
     Functions Defined by Difference Equations. SIAM J. on Sci. and Statist.
     Comp., Vol 12 (1991), pages 362–382.
 """
@@ -128,7 +130,7 @@ class OdeSolver(object):
 
 
 def get_exponential_coeffs(x, y, num_exp, poly_order, initial_guess=None):
-    """Calculate the exponential coefficients
+    r"""Calculate the exponential coefficients
 
     As a first step to fitting the sum of exponentials
     :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data,
@@ -213,7 +215,7 @@ def get_exponential_coeffs(x, y, num_exp, poly_order, initial_guess=None):
 
 
 def fit(x, y, num_exp, poly_order, initial_guess=None):
-    """Fit a sum of exponential functions to data
+    r"""Fit a sum of exponential functions to data
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
     :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data

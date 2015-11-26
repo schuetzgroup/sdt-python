@@ -3,14 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to sdt-python's documentation!
-======================================
+Documentation of the ``sdt`` python package
+===========================================
 
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
+    exp_fit
 
 
 Indices and tables
