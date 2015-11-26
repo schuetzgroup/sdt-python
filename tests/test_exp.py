@@ -17,7 +17,7 @@ class TestOdeSolver(unittest.TestCase):
     def setUp(self):
         legendre_order = 20
         num_exp = 2
-        self.solver = sdt.exp_fit.ode_solver(legendre_order, num_exp)
+        self.solver = sdt.exp_fit.OdeSolver(legendre_order, num_exp)
         a = np.ones(num_exp + 1)
         self.residual_condition = np.zeros(num_exp)
 
@@ -25,7 +25,7 @@ class TestOdeSolver(unittest.TestCase):
         self.rhs = np.zeros(legendre_order)
         self.rhs[0] = 1
 
-        self.solver.setCoeffs(a)
+        self.solver.coefficients = a
 
     def test_solve(self):
         # this was calculated using the original algorithm
@@ -54,7 +54,7 @@ class TestExpFit(unittest.TestCase):
         self.time = np.linspace(0, stop_time, num_steps)
         self.a0 = np.ones(num_exp + 1)
 
-        self.fitter = sdt.exp_fit.expfit(self.time, legendre_order, num_exp)
+        self.fitter = sdt.exp_fit.ExpFit(self.time, legendre_order, num_exp)
 
     def test_opt_coeff(self):
         ydata = self.alpha

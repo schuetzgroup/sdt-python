@@ -25,63 +25,113 @@ from scipy.linalg import lu_factor, lu_solve
 from scipy.optimize import leastsq
 
 
-def intMatLegendre(n, order):
-    """ Legendre polynomial integration matrix """
+def int_mat_legendre(n, order):
+    """Legendre polynomial integration matrix
+
+    Parameters
+    ----------
+    n : int
+        Number of Legendre coefficients
+    order : int
+        Integration order
+
+    Returns
+    -------
+    numpy.ndarray
+        Legendre integral matrix
+    """
     I = np.eye(n)
     B = legint(I, order)
     return B
 
 
-class ode_solver(object):
+class OdeSolver(object):
+    """Class for solving the ODE involved in fitting
+
+    Attributes
+    ----------
+    coefficients : numpy.ndarray
+        1D array of coefficients of the ODE
+    """
     def __init__(self, m, p):
-        self.m = m
-        self.p = p
-        self.B = []
-        self.a = np.zeros(p)
-        self.c = np.zeros(p)
-        self.y = np.zeros(m)
+        """Constructor
+
+        Parameters
+        ----------
+        m : int
+            Highest order Legendre polynomial in the series expansion
+            approximating the actual fit model
+        p : int
+            Number of exponentials to fit to the data
+        """
+        self._m = m
+        self._p = p
+        self._B = []
+        self._a = np.zeros(p)
+        self._c = np.zeros(p)
+        self._y = np.zeros(m)
 
         for k in range(p):
-            self.B.insert(0, intMatLegendre(m, p-k)[p:(k-p), :])
+            self._B.insert(0, int_mat_legendre(m, p-k)[p:(k-p), :])
 
-        self.B.insert(0, intMatLegendre(m, 0)[p:, :])
+        self._B.insert(0, int_mat_legendre(m, 0)[p:, :])
 
-    def setCoeffs(self, a):
-        """ Construct the solution operator given the coefficients
-            do the LU decomposition
-        """
+    @property
+    def coefficients(self):
+        return self._a
+
+    @coefficients.setter
+    def coefficients(self, a):
         # Update system matrix only if coefficients change
-        if self.a is not a:
-            self.a = a
-            A = np.zeros((self.m-self.p, self.m))
+        if self._a is not a:
+            self._a = a
+            A = np.zeros((self._m-self._p, self._m))
 
-            for k in range(self.p+1):
-                A += self.a[k] * self.B[self.p-k]
+            for k in range(self._p+1):
+                A += self._a[k] * self._B[self._p-k]
 
             # L,U,P factors for the system matrix
-            self.factors = lu_factor(A[:, self.p:])
+            self._factors = lu_factor(A[:, self._p:])
 
             # Moment condition terms
-            self.cond = A[:, :self.p]
+            self._cond = A[:, :self._p]
 
     def solve(self, c, f):
-        self.c = c
-        self.y[:self.p] = c
-        rhs = np.dot(self.B[-1], f) - np.dot(self.cond, c)
-        self.y[self.p:] = lu_solve(self.factors, rhs)
-        return self.y.copy()
+        """Solve the ODE
+
+        Parameters
+        ----------
+        c : numpy.ndarray
+            The first ``p`` (where ``p`` is the number of exponentials in the
+            fit) Legendre coefficients, which can be calculated from the
+            residual condition
+        f : numpy.ndarray
+            Right hand side of the ODE. For a fit with a constant offset,
+            this is the (1, 0, 0, …, 0), without offset it is (0, 0, …, 0)
+
+        Returns
+        -------
+        numpy.ndarray
+            1D array of Legendre coefficients of the numerical solution of
+            the ODE
+        """
+        self._c = c
+        self._y[:self._p] = c
+        rhs = np.dot(self._B[-1], f) - np.dot(self._cond, c)
+        self._y[self._p:] = lu_solve(self._factors, rhs)
+        return self._y.copy()
 
     def tangent(self):
-        dy = np.zeros((self.m, self.p+1))
+        dy = np.zeros((self._m, self._p+1))
 
-        for k in range(self.p+1):
-            By = np.dot(self.B[self.p-k], self.y)
-            dy[self.p:, k] = -lu_solve(self.factors, By)
+        for k in range(self._p+1):
+            By = np.dot(self._B[self._p-k], self._y)
+            dy[self._p:, k] = -lu_solve(self._factors, By)
 
         return dy
 
 
-class expfit(object):
+class ExpFit(object):
     def __init__(self, t, m, p):
         """
         t - original grid (possibly nonuninform)
@@ -108,14 +158,14 @@ class expfit(object):
         self.x = 2 * (t - t[0]) / (t[-1] - t[0]) - 1
         self.L = legvander(self.x, p-1)
 
-        self.solver = ode_solver(m, p)
+        self.solver = OdeSolver(m, p)
         self.yhat = np.zeros(m)
 
     def setTarget(self, z):
         self.z = z
 
     def setCoeffs(self, a):
-        self.solver.setCoeffs(a)
+        self.solver.coefficients = a
 
     def computeState(self, z, fhat):
         """ Update state """
@@ -125,7 +175,7 @@ class expfit(object):
 
     def getResidual(self, a):
         """ Computes difference between data and model """
-        self.solver.setCoeffs(a)
+        self.solver.coefficients = a
         c = np.dot(self.L.T, self.w*self.z) * (0.5 + np.arange(self.p))
         self.yhat = self.solver.solve(c, np.eye(self.m)[0])
         y = legval(self.x, self.yhat)
@@ -134,7 +184,7 @@ class expfit(object):
 
     def getJacobian(self, a):
         """ Computes the Jacobian of the residual """
-        self.solver.setCoeffs(a)
+        self.solver.coefficients = a
         J = np.zeros((self.n, self.p+1))
 
         dy = self.solver.tangent()
