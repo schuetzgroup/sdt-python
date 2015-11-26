@@ -14,6 +14,7 @@ Examples
 import numpy as np
 import scipy.optimize
 
+
 def guess_paramaters(data):
     """Initial guess of parameters of the Gaussian
 
@@ -143,6 +144,7 @@ def gaussian(amplitude, center, sigma, background, angle=0.):
             return x*cs - y*sn, x*sn + y*cs
 
         xc_r, yc_r = rotate(center[0], center[1])  # center coordinates rotated
+
         def gaussian2d(x, y):
             """2D Gaussian created using `gaussian`"""
             x_r, y_r = rotate(x, y)  # coordinates rotated
