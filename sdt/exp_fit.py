@@ -132,84 +132,170 @@ class OdeSolver(object):
 
 
 class ExpFit(object):
-    def __init__(self, t, m, p):
-        """
-        t - original grid (possibly nonuninform)
-        m - number of polynomial modes
-        p - order of differential equation
+    """Class for fitting a sum of exponentials to data
 
+    Attributes
+    ----------
+    target : numpy.ndarray
+        Target data for the fit
+    coefficients : numpy.ndarray
+        1D array of coefficients of the ODE
+    """
+    def __init__(self, t, m, p):
+        """Constructor
+
+        Parameters
+        ----------
+        t : numpy.ndarray
+            Abscissa (x- or t-axis values)
+        m : int
+            Highest order Legendre polynomial in the series expansion
+            approximating the actual fit model
+        p : int
+            Number of exponentials to fit to the data
         """
-        self.n = len(t)
+        self._n = len(t)
         dt = t[1:]-t[:-1]
 
-        self.m = m
-        self.p = p
-        self.scale = 2/(t[-1]-t[0])
+        self._m = m
+        self._p = p
+        self._scale = 2/(t[-1]-t[0])
 
         # Trapezoidal weights
-        self.w = np.zeros(self.n)
-        self.w[0] = 0.5 * dt[0]
-        self.w[1:-1] = 0.5 * (dt[1:] + dt[:-1])
-        self.w[-1] = 0.5 * dt[-1]
-        self.w *= self.scale
+        self._w = np.zeros(self._n)
+        self._w[0] = 0.5 * dt[0]
+        self._w[1:-1] = 0.5 * (dt[1:] + dt[:-1])
+        self._w[-1] = 0.5 * dt[-1]
+        self._w *= self._scale
 
-        # Mapped absiccae
-        self.t = t
-        self.x = 2 * (t - t[0]) / (t[-1] - t[0]) - 1
-        self.L = legvander(self.x, p-1)
+        # Mapped abscissa
+        self._t = t
+        self._x = 2 * (t - t[0]) / (t[-1] - t[0]) - 1
+        self._L = legvander(self._x, p-1)
 
-        self.solver = OdeSolver(m, p)
-        self.yhat = np.zeros(m)
+        self._solver = OdeSolver(m, p)
+        self._yhat = np.zeros(m)
 
-    def setTarget(self, z):
-        self.z = z
+    @property
+    def target(self):
+        return self._z
 
-    def setCoeffs(self, a):
-        self.solver.coefficients = a
+    @target.setter
+    def target(self, z):
+        self._z = z
 
-    def computeState(self, z, fhat):
-        """ Update state """
-        c = np.dot(self.L.T, self.w*z) * (0.5 + np.arange(self.p))
-        self.yhat = self.solver.solve(c, fhat)
-        return self.yhat.copy()
+    @property
+    def coefficients(self):
+        return self._solver.coefficients
 
-    def getResidual(self, a):
-        """ Computes difference between data and model """
-        self.solver.coefficients = a
-        c = np.dot(self.L.T, self.w*self.z) * (0.5 + np.arange(self.p))
-        self.yhat = self.solver.solve(c, np.eye(self.m)[0])
-        y = legval(self.x, self.yhat)
-        res = self.z - y
+    @coefficients.setter
+    def coefficients(self, a):
+        self._solver.coefficients = a
+
+    def compute_state(self, z, f):
+        """Solve the ODE for fitting
+
+        The solution to the ODE is saved and may be queried using
+        `get_current_state`(). This does not update the `target` property.
+
+        Parameters
+        ----------
+        z : numpy.ndarray
+            Target data for fitting
+        f : numpy.ndarray
+            Legendre coefficients of the right hand side of the ODE
+
+        Returns
+        -------
+        numpy.ndarray
+            Solution Legendre coefficients
+        """
+        c = np.dot(self._L.T, self._w*z) * (0.5 + np.arange(self._p))
+        self._yhat = self._solver.solve(c, f)
+        return self._yhat.copy()
+
+    def get_residual(self, a):
+        """Compute the difference between data and model
+
+        Parameters
+        ----------
+        a : numpy.ndarray
+            Coefficients for the ODE
+
+        Returns
+        -------
+        numpy.ndarray
+            Pointwise difference between data and model
+        """
+        self._solver.coefficients = a
+        c = np.dot(self._L.T, self._w*self._z) * (0.5 + np.arange(self._p))
+        self._yhat = self._solver.solve(c, np.eye(self._m)[0])
+        y = legval(self._x, self._yhat)
+        res = self._z - y
         return res
 
-    def getJacobian(self, a):
-        """ Computes the Jacobian of the residual """
-        self.solver.coefficients = a
-        J = np.zeros((self.n, self.p+1))
+    def get_jacobian(self, a):
+        """Compute the Jacobian of the residual
 
-        dy = self.solver.tangent()
-        for k in range(self.p+1):
-            J[:, k] = -legval(self.x, dy[:, k])
+        Parameters
+        ----------
+        a : numpy.ndarray
+            Coefficients for the ODE
+
+        Returns
+        -------
+        numpy.ndarray
+            Jacobian
+        """
+        self._solver.coefficients = a
+        J = np.zeros((self._n, self._p+1))
+
+        dy = self._solver.tangent()
+        for k in range(self._p+1):
+            J[:, k] = -legval(self._x, dy[:, k])
 
         return J
 
-    def getOptCoeffs(self, z, a0):
+    def get_optimal_coeffs(self, z, a0):
         """ Compute the optimal exponential and mantissa coefficients
-            so that the model best matches the data.
 
-            a0 is an initial guess  """
+        Parameters
+        ----------
+        z : numpy.ndarray
+            Target data for fitting
+        a0 : numpy.ndarray
+            Initial guess for ODE coefficients
 
-        self.setTarget(z)
-        aopt = leastsq(self.getResidual, a0, Dfun=self.getJacobian)
+        Returns
+        -------
+        alpha : float
+            Additive offset
+        beta : np.ndarray
+            Mantissa coefficients
+        lam : np.ndarray
+            Exponential coefficients
+        aopt : np.ndarray
+            ODE coefficients
+        """
+        self.target = z
+        aopt = leastsq(self.get_residual, a0, Dfun=self.get_jacobian)
 
         # Compute the roots (exponential decay rates)
-        lam = np.roots(np.flipud(aopt[0])) * self.scale
-        V = np.exp(np.outer(self.t, np.hstack((0, lam))))
+        lam = np.roots(np.flipud(aopt[0])) * self._scale
+        V = np.exp(np.outer(self._t, np.hstack((0, lam))))
         lsq = np.linalg.lstsq(V, z)
         alp = lsq[0][0]
         bet = lsq[0][1:]
 
         return alp, bet, lam, aopt[0]
 
-    def getCurrentState(self):
-        return legval(self.x, self.yhat)
+    def get_current_state(self):
+        """Evaluate the fitted function
+
+        Returns
+        -------
+        np.ndarray
+            Fitted function evaluated at the points supplied as `t` to
+            `__init__`.
+        """
+        return legval(self._x, self._yhat)

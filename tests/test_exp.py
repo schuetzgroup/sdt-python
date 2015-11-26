@@ -61,7 +61,7 @@ class TestExpFit(unittest.TestCase):
         for b, g in zip(self.beta, self.gamma):
             ydata += b*np.exp(g*self.time)
 
-        a, b, g, aopt = self.fitter.getOptCoeffs(ydata, self.a0)
+        a, b, g, aopt = self.fitter.get_optimal_coeffs(ydata, self.a0)
         orig = np.array((self.alpha, ) + self.beta + self.gamma)
         fitted = np.hstack((a, b, g))
         np.testing.assert_allclose(fitted, orig, rtol=1e-4)
