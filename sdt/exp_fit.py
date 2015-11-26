@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
-"""
-    Exponential data fitting class
+"""Fit a sum of exponential functions to data
 
-    Copyright (C) 2013  Greg von Winckel
+Given 1D data, use a variant of Prony's method to fit the parameters of
+the sum
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+.. math:: \alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+to the data. This is based on code published by Greg von Winckel [1]_ under
+the GPLv3. Further insights about the algorithm may be gained by reading
+anything about Prony's method and [2]_.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    Created: Mon Mar 25 13:15:33 MDT 2013
+.. [1]_ www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions
+.. [2]_ M. R. Osborne, G. K. Smyth: A Modified Prony Algorithm for Fitting
+    Functions Defined by Difference Equations. SIAM J. on Sci. and Statist.
+    Comp., Vol 12 (1991), pages 362–382.
 """
 import numpy as np
 from numpy.polynomial.legendre import legint, legval, legvander
@@ -131,171 +127,137 @@ class OdeSolver(object):
         return dy
 
 
-class ExpFit(object):
-    """Class for fitting a sum of exponentials to data
+def get_exponential_coeffs(x, y, num_exp, poly_order, initial_guess=None):
+    """Calculate the exponential coefficients
 
-    Attributes
+    As a first step to fitting the sum of exponentials
+    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data,
+    calculate the exponential "rate" factors :math:`lambda_k` using a
+    modified Prony's method.
+
+    Parameters
     ----------
-    target : numpy.ndarray
-        Target data for the fit
-    coefficients : numpy.ndarray
-        1D array of coefficients of the ODE
+    x : numpy.ndarray
+        Abscissa (x-axis) data
+    y : numpy.ndarray
+        Function values corresponding to `x`.
+    num_exp : int
+        Number of exponential functions (``p`` in the equation above) in the
+        sum
+    poly_order : int
+        For calculation, the sum of exponentials is approximated by a sum
+        of Legendre polynomials. This parameter gives the degree of the
+        highest order polynomial.
+
+    Returns
+    -------
+    exp_coeff : numpy.ndarray
+        List of exponential coefficients
+    ode_coeff : numpy.ndarray
+        Optimal coefficienst of the ODE involved in calculating the exponential
+        coefficients.
+
+    Other parameters
+    ----------------
+    initial_guess : numpy.ndarray or None, optional
+        An initial guess for determining the parameters of the ODE (if you
+        don't know what this is about, don't bother). The array is 1D and has
+        `num_exp` + 1 entries. If None, use ``numpy.ones(num_exp + 1)``.
+        Defaults to None.
     """
-    def __init__(self, t, m, p):
-        """Constructor
+    if initial_guess is None:
+        initial_guess = np.ones(num_exp + 1)
 
-        Parameters
-        ----------
-        t : numpy.ndarray
-            Abscissa (x- or t-axis values)
-        m : int
-            Highest order Legendre polynomial in the series expansion
-            approximating the actual fit model
-        p : int
-            Number of exponentials to fit to the data
-        """
-        self._n = len(t)
-        dt = t[1:]-t[:-1]
+    s = OdeSolver(poly_order, num_exp)
 
-        self._m = m
-        self._p = p
-        self._scale = 2/(t[-1]-t[0])
+    scale = 2/(x[-1]-x[0])
 
-        # Trapezoidal weights
-        self._w = np.zeros(self._n)
-        self._w[0] = 0.5 * dt[0]
-        self._w[1:-1] = 0.5 * (dt[1:] + dt[:-1])
-        self._w[-1] = 0.5 * dt[-1]
-        self._w *= self._scale
+    # Trapezoidal weights
+    dx = x[1:] - x[:-1]
+    w = np.zeros(len(x))
+    w[0] = 0.5 * dx[0]
+    w[1:-1] = 0.5 * (dx[1:] + dx[:-1])
+    w[-1] = 0.5 * dx[-1]
+    w *= scale
 
-        # Mapped abscissa
-        self._t = t
-        self._x = 2 * (t - t[0]) / (t[-1] - t[0]) - 1
-        self._L = legvander(self._x, p-1)
+    # Mapped abscissa to [-1, 1]
+    x_mapped = scale*(x - x[0]) - 1
+    L = legvander(x_mapped, num_exp-1)
 
-        self._solver = OdeSolver(m, p)
-        self._yhat = np.zeros(m)
+    def residual(a):
+        s.coefficients = a
+        # The following is the residual condition
+        # \hat{y}_k = (k + 1/2) \sum_{i=1}^n w_i z_i P(x_i)
+        c = np.dot(L.T, w*y) * (0.5 + np.arange(num_exp))
+        # Solve the ODE in Legendre space
+        # \sum_{k=0}^p a_k D^k \hat{y} = e_1
+        sol_hat = s.solve(c, np.eye(poly_order)[0])
+        # transform to real space
+        sol = legval(x_mapped, sol_hat)
+        return y - sol
 
-    @property
-    def target(self):
-        return self._z
+    def jacobian(a):
+        s.coefficients = a
+        J = np.zeros((len(x), num_exp+1))
 
-    @target.setter
-    def target(self, z):
-        self._z = z
-
-    @property
-    def coefficients(self):
-        return self._solver.coefficients
-
-    @coefficients.setter
-    def coefficients(self, a):
-        self._solver.coefficients = a
-
-    def compute_state(self, z, f):
-        """Solve the ODE for fitting
-
-        The solution to the ODE is saved and may be queried using
-        `get_current_state`(). This does not update the `target` property.
-
-        Parameters
-        ----------
-        z : numpy.ndarray
-            Target data for fitting
-        f : numpy.ndarray
-            Legendre coefficients of the right hand side of the ODE
-
-        Returns
-        -------
-        numpy.ndarray
-            Solution Legendre coefficients
-        """
-        c = np.dot(self._L.T, self._w*z) * (0.5 + np.arange(self._p))
-        self._yhat = self._solver.solve(c, f)
-        return self._yhat.copy()
-
-    def get_residual(self, a):
-        """Compute the difference between data and model
-
-        Parameters
-        ----------
-        a : numpy.ndarray
-            Coefficients for the ODE
-
-        Returns
-        -------
-        numpy.ndarray
-            Pointwise difference between data and model
-        """
-        self._solver.coefficients = a
-        c = np.dot(self._L.T, self._w*self._z) * (0.5 + np.arange(self._p))
-        self._yhat = self._solver.solve(c, np.eye(self._m)[0])
-        y = legval(self._x, self._yhat)
-        res = self._z - y
-        return res
-
-    def get_jacobian(self, a):
-        """Compute the Jacobian of the residual
-
-        Parameters
-        ----------
-        a : numpy.ndarray
-            Coefficients for the ODE
-
-        Returns
-        -------
-        numpy.ndarray
-            Jacobian
-        """
-        self._solver.coefficients = a
-        J = np.zeros((self._n, self._p+1))
-
-        dy = self._solver.tangent()
-        for k in range(self._p+1):
-            J[:, k] = -legval(self._x, dy[:, k])
+        dy = s.tangent()
+        for k in range(num_exp + 1):
+            J[:, k] = -legval(x_mapped, dy[:, k])
 
         return J
 
-    def get_optimal_coeffs(self, z, a0):
-        """ Compute the optimal exponential and mantissa coefficients
+    a_opt = leastsq(residual, initial_guess, Dfun=jacobian)
+    a_opt = a_opt[0]
 
-        Parameters
-        ----------
-        z : numpy.ndarray
-            Target data for fitting
-        a0 : numpy.ndarray
-            Initial guess for ODE coefficients
+    return np.roots(a_opt[::-1])*scale, a_opt
 
-        Returns
-        -------
-        alpha : float
-            Additive offset
-        beta : np.ndarray
-            Mantissa coefficients
-        lam : np.ndarray
-            Exponential coefficients
-        aopt : np.ndarray
-            ODE coefficients
-        """
-        self.target = z
-        aopt = leastsq(self.get_residual, a0, Dfun=self.get_jacobian)
 
-        # Compute the roots (exponential decay rates)
-        lam = np.roots(np.flipud(aopt[0])) * self._scale
-        V = np.exp(np.outer(self._t, np.hstack((0, lam))))
-        lsq = np.linalg.lstsq(V, z)
-        alp = lsq[0][0]
-        bet = lsq[0][1:]
+def fit(x, y, num_exp, poly_order, initial_guess=None):
+    """Fit a sum of exponential functions to data
 
-        return alp, bet, lam, aopt[0]
+    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
+    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data
+    using a modified Prony's method.
 
-    def get_current_state(self):
-        """Evaluate the fitted function
+    Parameters
+    ----------
+    x : numpy.ndarray
+        Abscissa (x-axis) data
+    y : numpy.ndarray
+        Function values corresponding to `x`.
+    num_exp : int
+        Number of exponential functions (``p`` in the equation above) in the
+        sum
+    poly_order : int
+        For calculation, the sum of exponentials is approximated by a sum
+        of Legendre polynomials. This parameter gives the degree of the
+        highest order polynomial.
 
-        Returns
-        -------
-        np.ndarray
-            Fitted function evaluated at the points supplied as `t` to
-            `__init__`.
-        """
-        return legval(self._x, self._yhat)
+    Returns
+    -------
+    offset : float
+        Additive offset (:math:`\alpha` in the equation above)
+    mant_coeff : numpy.ndarray
+        Mantissa coefficients (:math:`\beta_k`)
+    exp_coeff : numpy.ndarray
+        List of exponential coefficients (:math:`\lambda_k`)
+    ode_coeff : numpy.ndarray
+        Optimal coefficienst of the ODE involved in calculating the exponential
+        coefficients.
+
+    Other parameters
+    ----------------
+    initial_guess : numpy.ndarray or None, optional
+        An initial guess for determining the parameters of the ODE (if you
+        don't know what this is about, don't bother). The array is 1D and has
+        `num_exp` + 1 entries. If None, use ``numpy.ones(num_exp + 1)``.
+        Defaults to None.
+    """
+    exp_coeff, ode_coeff = get_exponential_coeffs(x, y, num_exp, poly_order,
+                                                  initial_guess)
+    V = np.exp(np.outer(x, np.hstack((0, exp_coeff))))
+    lsq = np.linalg.lstsq(V, y)
+    offset = lsq[0][0]
+    mant_coeff = lsq[0][1:]
+
+    return offset, mant_coeff, exp_coeff, ode_coeff

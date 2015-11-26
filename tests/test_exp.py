@@ -47,21 +47,18 @@ class TestExpFit(unittest.TestCase):
         self.beta = (-2, -4)  # amplitudes of exponents
         self.gamma = (-0.15, -0.02)  # exponential rates
 
-        legendre_order = 20
-        num_exp = len(self.gamma)
+        self.legendre_order = 20
         stop_time = 10
         num_steps = 1000
         self.time = np.linspace(0, stop_time, num_steps)
-        self.a0 = np.ones(num_exp + 1)
 
-        self.fitter = sdt.exp_fit.ExpFit(self.time, legendre_order, num_exp)
-
-    def test_opt_coeff(self):
+    def test_fit(self):
         ydata = self.alpha
         for b, g in zip(self.beta, self.gamma):
             ydata += b*np.exp(g*self.time)
 
-        a, b, g, aopt = self.fitter.get_optimal_coeffs(ydata, self.a0)
+        a, b, g, aopt = sdt.exp_fit.fit(self.time, ydata, len(self.beta),
+                                        self.legendre_order)
         orig = np.array((self.alpha, ) + self.beta + self.gamma)
         fitted = np.hstack((a, b, g))
         np.testing.assert_allclose(fitted, orig, rtol=1e-4)
