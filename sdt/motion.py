@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Various tools for evaluation of diffusion data
+"""The `motion` module provides tools for evaluation of diffusion data.
 
 Attributes
 ----------
@@ -16,7 +16,7 @@ import numpy as np
 import collections
 import warnings
 
-#from expfit import expfit
+from . import exp_fit
 
 
 pos_columns = ["x", "y"]
@@ -155,8 +155,8 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     """
     # check if traj is empty
     cols = (["<{}>".format(p) for p in pos_columns] +
-        ["<{}^2>".format(p) for p in pos_columns] +
-        ["msd", "lagt"])
+            ["<{}^2>".format(p) for p in pos_columns] +
+            ["msd", "lagt"])
     if not len(traj):
         return pd.DataFrame(columns=cols)
 
@@ -355,7 +355,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     """Calculate ensemble mean square displacements from tracking data
 
     This is equivalent to consecutively calling `all_displacements`,
-    `all_square_displacements`, an `emsd_from_square_displacements`.
+    `all_square_displacements`, and `emsd_from_square_displacements`.
 
     Parameters
     ----------
@@ -396,7 +396,7 @@ def fit_msd(emsd, lags=2):
 
     Parameters
     ----------
-    emsd : DataFrame([lagt, msd, stderr])
+    emsd : DataFrame([lagt, msd])
         MSD data as computed by `emsd`
     lags : int, optional
         Use the first `tlags` lag times for fitting only. Defaults to 2.
@@ -412,12 +412,12 @@ def fit_msd(emsd, lags=2):
     # msdplot.m:365
 
     if lags == 2:
-        k = ((emsd["msd"].iloc[1] - emsd["msd"].iloc[0])/
+        k = ((emsd["msd"].iloc[1] - emsd["msd"].iloc[0]) /
              (emsd["lagt"].iloc[1] - emsd["lagt"].iloc[0]))
         d = emsd["msd"].iloc[0] - k*emsd["lagt"].iloc[0]
     else:
         k, d = np.polyfit(emsd["lagt"].iloc[0:lags],
-                         emsd["msd"].iloc[0:lags], 1)
+                          emsd["msd"].iloc[0:lags], 1)
 
     D = k/4
     d = complex(d) if d < 0. else d
@@ -447,8 +447,8 @@ def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
         Whether to show the legend (the values of the diffusion coefficient D
         and the positional accuracy) in the plot. Defaults to True.
     ax : matplotlib.axes.Axes or None, optional
-        If given, use this axes object to draw the plot. If None, use
-        `plt.gca`().
+        If given, use this axes object to draw the plot. If None, use the
+        result of `matplotlib.pyplot.gca`.
     """
     import matplotlib as mpl
     import matplotlib.pyplot as plt
@@ -481,45 +481,199 @@ def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
                   loc=0)
 
 
-def cdf_fit(sds, num_frac=2, poly_order=30):
-    tlag = []
+def _fit_cdf_model(x, y, num_exp, poly_order, initial_guess=None):
+    r"""Variant of `exp_fit.fit` for the model of the CDF
+
+    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
+    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data
+    using a modified Prony's method. Additionally, there are the constraints
+    :math:`\sum_{k=1}^p -\beta_k = 1` and :math:`\alpha = 1`.
+
+    Parameters
+    ----------
+    x : numpy.ndarray
+        Abscissa (x-axis) data
+    y : numpy.ndarray
+        CDF function values corresponding to `x`.
+    num_exp : int
+        Number of exponential functions (``p``) in the
+        sum
+    poly_order : int
+        For calculation, the sum of exponentials is approximated by a sum
+        of Legendre polynomials. This parameter gives the degree of the
+        highest order polynomial.
+
+    Returns
+    -------
+    mant_coeff : numpy.ndarray
+        Mantissa coefficients (:math:`\beta_k`)
+    exp_coeff : numpy.ndarray
+        List of exponential coefficients (:math:`\lambda_k`)
+    ode_coeff : numpy.ndarray
+        Optimal coefficienst of the ODE involved in calculating the exponential
+        coefficients.
+
+    Other parameters
+    ----------------
+    initial_guess : numpy.ndarray or None, optional
+        An initial guess for determining the parameters of the ODE (if you
+        don't know what this is about, don't bother). The array is 1D and has
+        `num_exp` + 1 entries. If None, use ``numpy.ones(num_exp + 1)``.
+        Defaults to None.
+
+    Notes
+    -----
+    Since :math:`\sum_{i=1}^p -\beta_i = 1` and :math:`\alpha = 1`, assuming
+    :math:`\lambda_k` already known (since they are gotten by fitting the
+    coefficients of the ODE), there is only the constrained linear least
+    squares problem
+
+    ..math:: 1 + \sum_{k=1}^{p-1} \beta_k \text{e}^{\lambda_k t} +
+        (-1 - \sum_{k=1}^{p-1} \beta_k) \text{e}^{\lambda_p t} = y
+
+    left to solve. This is equivalent to
+
+    ..math:: \sum_{k=1}^{p-1} \beta_k
+        (\text{e}^{\lambda_k t} - \text{e}^{\lambda_p t}) =
+        y - 1 + \text{e}^{\lambda_p t},
+
+    which yields :math:`\beta_1, …, \beta_{p-1}`. :math:`\beta_p` can then be
+    determined from the constraint.
+    """
+    # get exponent coefficients as usual
+    exp_coeff, ode_coeff = exp_fit.get_exponential_coeffs(
+        x, y, num_exp, poly_order, initial_guess)
+    # Solve the equivalent linear lsq problem (see notes section of the
+    # docstring).
+    V = np.exp(np.outer(x, exp_coeff[:-1]))
+    restr = np.exp(x*exp_coeff[-1])
+    V -= restr.reshape(-1, 1)
+    lsq = np.linalg.lstsq(V, y - 1 + restr)
+    lsq = lsq[0]
+    # Also recover the last mantissa coefficient from the constraint
+    mant_coeff = np.hstack((lsq, -1 - lsq.sum()))
+
+    return mant_coeff, exp_coeff, ode_coeff
+
+
+def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, poly_order=30):
+    r"""Fit the CDF of square displacements to an exponential model
+
+    The cumulative density function (CDF) of square displacements is the
+    sum
+
+    .. math:: 1 - \sum_{i=1}^n \beta_i e^{-\frac{r^2}{4 D \Delta t_i}},
+
+    where :math:`n` is the number of diffusing species, :math:`\beta_i` the
+    fraction of th i-th species, :math:`r^2` the square displacement and
+    :math:`D` the diffusion coefficient. By fitting to the measured CDF, these
+    parameters can be extracted.
+
+    Parameters
+    ----------
+    sd_dict : dict
+        The result of a call to `all_square_displacements`
+    num_frac : int
+        The number of species
+    poly_order : int
+        For calculation, the sum of exponentials is approximated by a
+        polynomial. This parameter gives the degree of the polynomial.
+
+    Returns
+    -------
+    list of pandas.DataFrames([lagt, msd, fraction])
+        For each species, the DataFrame contains for each lag time the msd,
+        the fraction.
+    """
+    lagt = []
     fractions = []
     msd = []
-    offset = []
-    for tl, s in sds.items():
+    for tl, s in sd_dict.items():
         y = np.linspace(0, 1, len(s), endpoint=True)
         s = np.sort(s)
 
-        fit = expfit(s, poly_order, num_frac)
-        a, b, l, dummy = fit.getOptCoeffs(y, np.ones(num_frac+1))
-        tlag.append(tl)
-        offset.append(a)
+        b, l, _ = _fit_cdf_model(s, y, num_frac, poly_order)
+        lagt.append(tl)
         fractions.append(-b)
         msd.append(-1./l)
 
     ret = []
     for i in range(num_frac):
         r = collections.OrderedDict()
-        r["tlag"] = tlag
+        r["lagt"] = lagt
         r["msd"] = [m[i] for m in msd]
         r["fraction"] = [f[i] for f in fractions]
-        r["cd"] = offset
         r = pd.DataFrame(r)
-        r.sort("tlag", inplace=True)
+        r.sort_values("lagt", inplace=True)
         r.reset_index(inplace=True, drop=True)
         ret.append(r)
 
     return ret
+
+
+def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
+             pos_columns=pos_columns, t_column=t_column,
+             trackno_column=trackno_column):
+    r"""Calculate ensemble mean square displacements from tracking data CDF
+
+    Fit the model cumulative density function to the measured CDF of tracking
+    data. For details, see the documentation of
+    `emsd_from_square_displacements_cdf`.
+
+    This is equivalent to consecutively calling `all_displacements`,
+    `all_square_displacements`, and `emsd_from_square_displacements_cdf`.
+
+    Parameters
+    ----------
+    data : list of pandas.DataFrames or pandas.DataFrame
+        Tracking data
+    pixel_size : float
+        width of a pixel in micrometers
+    fps : float
+        Frames per second
+    num_frac : int, optional
+        The number of diffusing species. Defaults to 2
+    max_lagtime : int, optional
+        Maximum number of time lags to consider. Defaults to 100.
+    poly_order : int, optional
+        For calculation, the sum of exponentials is approximated by a
+        polynomial. This parameter gives the degree of the polynomial.
+        Defaults to 30.
+
+    Returns
+    -------
+    list of pandas.DataFrames([lagt, msd, fraction])
+        For each species, the DataFrame contains for each lag time the msd,
+        the fraction.
+
+    Other parameters
+    ----------------
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `t_column` of the module.
+    trackno_column : str, optional
+        Name of the column containing track numbers. Defaults to the
+        `trackno_column` attribute of the module.
+    """
+    disp_dict = all_displacements(data, max_lagtime, pos_columns, t_column,
+                                  trackno_column)
+    sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
+    return emsd_from_square_displacements_cdf(sd_dict, num_frac, poly_order)
+
 
 def plot_cdf_results(msds):
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(1, len(msds)+1)
 
     for i, f in enumerate(msds):
-        tlags = f["tlag"]
+        tlags = f["lagt"]
         ax[0].scatter(tlags, f["fraction"])
         ax[i+1].scatter(tlags, f["msd"])
-        D, pa = msd_fit(f, len(f))
+        D, pa = fit_msd(f, len(f))
+        print(D, pa)
         ax[i+1].plot(tlags, 4*pa**2 + 4*D*tlags)
 
     fig.tight_layout()
