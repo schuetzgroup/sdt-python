@@ -10,6 +10,11 @@ to the data. This is based on code published by Greg von Winckel [1]_ under
 the GPLv3. Further insights about the algorithm may be gained by reading
 anything about Prony's method and [2]_.
 
+Examples
+--------
+>>> # assume x and y describe the data points (x_i, y_i)
+>>> a, b, l, _ = fit(x, y, num_exp=2, poly_order=30)
+
 References
 ----------
 .. [1] http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions
@@ -143,7 +148,7 @@ def get_exponential_coeffs(x, y, num_exp, poly_order, initial_guess=None):
 
     As a first step to fitting the sum of exponentials
     :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data,
-    calculate the exponential "rate" factors :math:`lambda_k` using a
+    calculate the exponential "rate" factors :math:`\lambda_k` using a
     modified Prony's method.
 
     Parameters
