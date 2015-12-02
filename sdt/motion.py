@@ -36,15 +36,18 @@ def _prepare_traj(data, t_column=t_column):
     ----------
     data : pandas.DataFrame
         Tracking data
-    t_column : str, optional
-        Name of the column containing frame numbers. Defaults to the
-        `t_column` of the module.
 
     Returns
     -------
     pandas.DataFrame
         `data` ready to use for _displacements (one has to the data into
         single trajectories, though).
+
+    Other parameters
+    ----------------
+    t_column : str, optional
+        Name of the column containing frame numbers. Defaults to the
+        `t_column` of the module.
     """
     # do not work on the original data
     data = data.copy()
@@ -56,8 +59,8 @@ def _prepare_traj(data, t_column=t_column):
     return data
 
 
-def _displacements(particle_data, max_lagtime,
-                   pos_columns=pos_columns, disp_dict=None):
+def _displacements(particle_data, max_lagtime, disp_dict=None,
+                   pos_columns=pos_columns):
     """Do the actual calculation of displacements
 
     Calculate all possible displacements for each lag time for one particle.
@@ -69,9 +72,6 @@ def _displacements(particle_data, max_lagtime,
         with `_prepare_traj`.
     max_lagtime : int
         Maximum number of time lags to consider.
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features. Defaults to the `pos_columns` attribute of the module.
     disp_dict : None or dict, optional
         If a dict is given, results will be appended to the dict. For each
         lag time, the displacements (a 2D numpy.ndarray where each column
@@ -88,6 +88,12 @@ def _displacements(particle_data, max_lagtime,
         The first index is the lag time (index 0 means 1st lag time etc.),
         the second index the displacement data set index and the third the
         coordinate index.
+
+    Other parameters
+    ----------------
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features. Defaults to the `pos_columns` attribute of the module.
     """
     # fill gaps with NaNs
     idx = particle_data.index
@@ -137,6 +143,15 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         Frames per second
     max_lagtime : int, optional
         Maximum number of time lags to consider. Defaults to 100.
+
+    Returns
+    -------
+    pandas.DataFrame([0, ..., n])
+        For each lag time and each particle/trajectory return the calculated
+        mean square displacement.
+
+    Other parameters
+    ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
         features. Defaults to the `pos_columns` attribute of the module.
@@ -146,12 +161,6 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     trackno_column : str, optional
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
-
-    Returns
-    -------
-    pandas.DataFrame([0, ..., n])
-        For each lag time and each particle/trajectory return the calculated
-        mean square displacement.
     """
     # check if traj is empty
     cols = (["<{}>".format(p) for p in pos_columns] +
@@ -196,6 +205,15 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         Frames per second
     max_lagtime : int, optional
         Maximum number of time lags to consider. Defaults to 100.
+
+    Returns
+    -------
+    pandas.DataFrame([0, ..., n])
+        For each lag time and each particle/trajectory return the calculated
+        mean square displacement.
+
+    Other parameters
+    ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
         features. Defaults to the `pos_columns` attribute of the module.
@@ -205,12 +223,6 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     trackno_column : str, optional
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
-
-    Returns
-    -------
-    pandas.DataFrame([0, ..., n])
-        For each lag time and each particle/trajectory return the calculated
-        mean square displacement.
     """
     # check if traj is empty
     if not len(data):
@@ -244,6 +256,17 @@ def all_displacements(data, max_lagtime=100,
         Tracking data
     max_lagtime : int, optional
         Maximum number of time lags to consider. Defaults to 100.
+
+    Returns
+    -------
+    collections.OrderedDict
+        The keys of the dict are the number of lag times (if divided by the
+        frame rate, this yields the actual lag time). The values are lists of
+        numpy.ndarrays where each column stands for a coordinate and each row
+        for one displacement data set. Displacement values are in pixels.
+
+    Other parameters
+    ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
         features. Defaults to the `pos_columns` attribute of the module.
@@ -253,14 +276,6 @@ def all_displacements(data, max_lagtime=100,
     trackno_column : str, optional
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
-
-    Returns
-    -------
-    collections.OrderedDict
-        The keys of the dict are the number of lag times (if divided by the
-        frame rate, this yields the actual lag time). The values are lists of
-        numpy.ndarrays where each column stands for a coordinate and each row
-        for one displacement data set. Displacement values are in pixels.
     """
     if isinstance(data, pd.DataFrame):
         data = [data]
@@ -342,7 +357,7 @@ def emsd_from_square_displacements(sd_dict):
         # if len of sd is 1, sd.std(ddof=1) will raise a RuntimeWarning
         warnings.simplefilter("ignore", RuntimeWarning)
         ret["stderr"] = [sd.std(ddof=1)/np.sqrt(len(sd)) for sd in sval]
-    #TODO: Quian errors
+    # TODO: Quian errors
     ret["lagt"] = idx
     ret = pd.DataFrame(ret)
     ret.index = pd.Index(idx, name="lagt")
@@ -367,6 +382,15 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         Frames per second
     max_lagtime : int, optional
         Maximum number of time lags to consider. Defaults to 100.
+
+    Returns
+    -------
+    pandas.DataFrame([msd, stderr, lagt])
+        For each lag time return the calculated mean square displacement and
+        standard error.
+
+    Other parameters
+    ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
         features. Defaults to the `pos_columns` attribute of the module.
@@ -376,12 +400,6 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     trackno_column : str, optional
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
-
-    Returns
-    -------
-    pandas.DataFrame([msd, stderr, lagt])
-        For each lag time return the calculated mean square displacement and
-        standard error.
     """
     disp_dict = all_displacements(data, max_lagtime,
                                   pos_columns, t_column, trackno_column)
@@ -634,11 +652,7 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
     num_frac : int, optional
         The number of diffusing species. Defaults to 2
     max_lagtime : int, optional
-        Maximum number of time lags to consider. Defaults to 100.
-    poly_order : int, optional
-        For calculation, the sum of exponentials is approximated by a
-        polynomial. This parameter gives the degree of the polynomial.
-        Defaults to 30.
+        Maximum number of time lags to consider. Defaults to 10.
 
     Returns
     -------
@@ -648,6 +662,10 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
 
     Other parameters
     ----------------
+    poly_order : int, optional
+        For calculation, the sum of exponentials is approximated by a
+        polynomial. This parameter gives the degree of the polynomial.
+        Defaults to 30.
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
         features. Defaults to the `pos_columns` attribute of the module.
