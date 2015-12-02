@@ -563,6 +563,11 @@ def _fit_cdf_model(x, y, num_exp, poly_order, initial_guess=None):
     # get exponent coefficients as usual
     exp_coeff, ode_coeff = exp_fit.get_exponential_coeffs(
         x, y, num_exp, poly_order, initial_guess)
+
+    if num_exp < 2:
+        # for only on exponential, the mantissa coefficient is -1
+        return np.array([-1.]), exp_coeff, ode_coeff
+
     # Solve the equivalent linear lsq problem (see notes section of the
     # docstring).
     V = np.exp(np.outer(x, exp_coeff[:-1]))
