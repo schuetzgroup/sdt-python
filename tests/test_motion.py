@@ -27,14 +27,31 @@ class TestMotion(unittest.TestCase):
         disp_dict = sdt.motion.all_displacements(self.traj1)
 
         max_lagt = int(np.max(orig[:, 0]))
-        assert(len(disp_dict.keys()) == max_lagt)
-        assert(max(disp_dict.keys()) == max_lagt)
+        np.testing.assert_equal(len(disp_dict.keys()), max_lagt)
+        np.testing.assert_equal(max(disp_dict.keys()), max_lagt)
 
         for lagt in range(1, max_lagt + 1):
             o = -orig[orig[:, 0] == lagt]  # get_msd uses different sign
             o = np.sort(o[:, [1, 2]])  # get coordinate colmuns
             d = np.concatenate(disp_dict[lagt])
-            d = d[~(np.isnan(d[:, 0]) | np.isnan(d[:, 1]))] # remove NaNs
+            d = d[~(np.isnan(d[:, 0]) | np.isnan(d[:, 1]))]  # remove NaNs
+            d = np.sort(d)
+            np.testing.assert_allclose(d, o, rtol=1e-5, atol=1e-5)
+
+    def test_all_displacements_with_limit(self):
+        # orig columns: 0: lagt, 1: dx, 2: dy, 3: traj number
+        orig = np.load(os.path.join(data_path, "displacements_B-1_000_.npy"))
+
+        max_lagt = 10
+        disp_dict = sdt.motion.all_displacements(self.traj1, max_lagt)
+
+        np.testing.assert_equal(len(disp_dict.keys()), max_lagt)
+
+        for lagt in range(1, max_lagt + 1):
+            o = -orig[orig[:, 0] == lagt]  # get_msd uses different sign
+            o = np.sort(o[:, [1, 2]])  # get coordinate colmuns
+            d = np.concatenate(disp_dict[lagt])
+            d = d[~(np.isnan(d[:, 0]) | np.isnan(d[:, 1]))]  # remove NaNs
             d = np.sort(d)
             np.testing.assert_allclose(d, o, rtol=1e-5, atol=1e-5)
 
@@ -130,7 +147,7 @@ class TestMotion(unittest.TestCase):
         orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1")
         orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2")
 
-        e1, e2 = sdt.motion.emsd_cdf([self.traj2], 0.16, 100, 2, 2)
+        e1, e2 = sdt.motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1)
         np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
         np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
 

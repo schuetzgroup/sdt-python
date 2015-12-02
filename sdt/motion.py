@@ -103,10 +103,11 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
     pdata = particle_data.reindex(frame_list)
     pdata = pdata[pos_columns].as_matrix()
 
-    max_lagtime = round(min(len(pdata), max_lagtime))
+    # there can be at most len(pdata) - 1 steps
+    max_lagtime = round(min(len(pdata)-1, max_lagtime))
 
     if isinstance(disp_dict, dict):
-        for i in range(1, max_lagtime):
+        for i in range(1, max_lagtime+1):
             # calculate coordinate differences for each time lag
             disp = pdata[:-i] - pdata[i:]
             # append to output structure
@@ -115,8 +116,8 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
             except KeyError:
                 disp_dict[i] = [disp]
     else:
-        ret = np.empty((max_lagtime - 1, max_lagtime - 1, len(pos_columns)))
-        for i in range(1, max_lagtime):
+        ret = np.empty((max_lagtime, max_lagtime, len(pos_columns)))
+        for i in range(1, max_lagtime+1):
             # calculate coordinate differences for each time lag
             padding = np.full((i-1, len(pos_columns)), np.nan)
             # append to output structure
