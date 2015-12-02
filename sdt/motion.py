@@ -40,8 +40,8 @@ def _prepare_traj(data, t_column=t_column):
     Returns
     -------
     pandas.DataFrame
-        `data` ready to use for _displacements (one has to the data into
-        single trajectories, though).
+        `data` ready to use for :func:`_displacements` (one has to split the
+        data into single trajectories, though).
 
     Other parameters
     ----------------
@@ -300,7 +300,7 @@ def all_displacements(data, max_lagtime=100,
 def all_square_displacements(disp_dict, pixel_size, fps):
     """Calculate square displacements from coordinate displacements
 
-    Use the result of `all_displacements` to calculate the square
+    Use the result of :func:`all_displacements` to calculate the square
     displacements, i. e. the sum of the squares of the coordinate displacements
     (dx_1^2 + dx_2^2 + ... + dx_n^2).
 
@@ -336,7 +336,7 @@ def all_square_displacements(disp_dict, pixel_size, fps):
 def emsd_from_square_displacements(sd_dict):
     """Calculate mean square displacements from square displacements
 
-    Use the results of `all_square_displacements` for this end.
+    Use the results of :func:`all_square_displacements` for this end.
 
     Parameters
     ----------
@@ -369,8 +369,9 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
          t_column=t_column, trackno_column=trackno_column):
     """Calculate ensemble mean square displacements from tracking data
 
-    This is equivalent to consecutively calling `all_displacements`,
-    `all_square_displacements`, and `emsd_from_square_displacements`.
+    This is equivalent to consecutively calling :func:`all_displacements`,
+    :func:`all_square_displacements`, and
+    :func:`emsd_from_square_displacements`.
 
     Parameters
     ----------
@@ -590,7 +591,7 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, poly_order=30):
     Parameters
     ----------
     sd_dict : dict
-        The result of a call to `all_square_displacements`
+        The result of a call to :func:`all_square_displacements`
     num_frac : int
         The number of species
     poly_order : int
@@ -636,10 +637,11 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
 
     Fit the model cumulative density function to the measured CDF of tracking
     data. For details, see the documentation of
-    `emsd_from_square_displacements_cdf`.
+    :func:`emsd_from_square_displacements_cdf`.
 
-    This is equivalent to consecutively calling `all_displacements`,
-    `all_square_displacements`, and `emsd_from_square_displacements_cdf`.
+    This is equivalent to consecutively calling :func:`all_displacements`,
+    :func:`all_square_displacements`, and
+    :func:`emsd_from_square_displacements_cdf`.
 
     Parameters
     ----------
