@@ -758,7 +758,7 @@ $PA_\mathrm{{fit}}={pa_fit:.0f}$ nm""".format(
 
     ax[0].set_title("Fraction")
     ax[0].set_ylabel("fraction")
-    ax[0].set_ylim(0, 1)
+    ax[0].set_ylim(-0.05, 1.05)
     ax[0].legend(loc=0)
     lt_max = max(all_max_lagtimes)
     ax[0].set_xlim(0, 1.05*lt_max)
