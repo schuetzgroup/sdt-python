@@ -682,16 +682,71 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
     return emsd_from_square_displacements_cdf(sd_dict, num_frac, poly_order)
 
 
-def plot_cdf_results(msds):
+def plot_msd_cdf(emsds, ax=None):
+    """Plot lag time vs. fraction and vs. MSD for each species
+
+    Parameters
+    ----------
+    emsds : list of pandas.DataFrames
+        data as computed by :func:`emsd_cdf` or
+        :func:`emsd_from_square_displacements`.
+    ax : list of matplotlib.axes.Axes or None, optional
+        If given, use these axes object to draw the plot. The length of the
+        list needs to be `len(emsds) + 1`. If None, plot on the current
+        figure. Defaults to None.
+    """
     import matplotlib.pyplot as plt
-    fig, ax = plt.subplots(1, len(msds)+1)
+    import itertools
 
-    for i, f in enumerate(msds):
+    if ax is None:
+        ax = []
+        fig = plt.gcf()
+        num_plots = len(emsds) + 1
+        for i in range(1, num_plots + 1):
+            ax.append(fig.add_subplot(1, num_plots, i))
+    else:
+        fig = ax[0].figure
+
+    marker = itertools.cycle((".", "x", "+", "o", "*", "D", "v", "^"))
+
+    for i, f in enumerate(emsds):
         tlags = f["lagt"]
-        ax[0].scatter(tlags, f["fraction"])
-        ax[i+1].scatter(tlags, f["msd"])
-        D, pa = fit_msd(f, len(f))
-        print(D, pa)
-        ax[i+1].plot(tlags, 4*pa**2 + 4*D*tlags)
+        msds = f["msd"]
+        frac = f["fraction"]
 
+        # plot current fraction
+        label = r"species {no} (${f:.0f}\pm{f_std:.0f}$ %)".format(
+            no=i+1, f=frac.mean()*100, f_std=frac.std()*100)
+        ax[0].plot(tlags, frac, label=label,
+                   linestyle="", marker=next(marker))
+
+        # plot current lag time vs. msd
+        ax[i+1].plot(tlags, msds, linestyle="", marker=".")
+        ax[i+1].set_title("Species {}".format(i+1))
+        ax[i+1].set_ylabel("MSD [$\mu$m$^2$]")
+
+        # plot fit for lag time vs. msd
+        D, pa = fit_msd(f, len(f))
+        x = np.array([0.] + tlags.tolist())
+        ax[i+1].plot(x, 4*pa**2 + 4*D*x, color="b")
+
+        # Write D values
+        msd_cdf = msds / (4*tlags)
+        text = r"""$D_\mathrm{{CDF}}={d_cdf:.3f}\pm{std_cdf:.3f}$ $\mu$m
+$D_\mathrm{{fit}}={d_fit:.3f}$ $\mu$m
+$PA_\mathrm{{fit}}={pa_fit:.0f}$ nm""".format(
+            d_cdf=msd_cdf.mean(), std_cdf=msd_cdf.std(),
+            d_fit=D, pa_fit=pa*1000)
+        ax[i+1].text(0.03, 0.98, text, transform=ax[i+1].transAxes,
+                     ha="left", va="top")
+
+    for a in ax:
+        a.set_xlabel(r"lag time [s]".format(i+1))
+
+    ax[0].set_title("Fraction")
+    ax[0].set_ylabel("fraction")
+    ax[0].set_ylim(0, 1)
+    ax[0].legend(loc=0)
+
+    fig.autofmt_xdate()
     fig.tight_layout()
