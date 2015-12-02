@@ -712,6 +712,7 @@ def plot_msd_cdf(emsds, ax=None):
 
     marker = itertools.cycle((".", "x", "+", "o", "*", "D", "v", "^"))
 
+    all_max_lagtimes = []
     for i, f in enumerate(emsds):
         tlags = f["lagt"]
         msds = f["msd"]
@@ -733,6 +734,10 @@ def plot_msd_cdf(emsds, ax=None):
         x = np.array([0.] + tlags.tolist())
         ax[i+1].plot(x, 4*pa**2 + 4*D*x, color="b")
 
+        lt_max = tlags.max()
+        all_max_lagtimes.append(lt_max)
+        ax[i+1].set_xlim(-0.05*lt_max, 1.05*lt_max)
+
         # Write D values
         msd_cdf = msds / (4*tlags)
         text = r"""$D_\mathrm{{CDF}}={d_cdf:.3f}\pm{std_cdf:.3f}$ $\mu$m
@@ -750,6 +755,8 @@ $PA_\mathrm{{fit}}={pa_fit:.0f}$ nm""".format(
     ax[0].set_ylabel("fraction")
     ax[0].set_ylim(0, 1)
     ax[0].legend(loc=0)
+    lt_max = max(all_max_lagtimes)
+    ax[0].set_xlim(0, 1.05*lt_max)
 
     fig.autofmt_xdate()
     fig.tight_layout()
