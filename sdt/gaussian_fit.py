@@ -61,25 +61,19 @@ def guess_paramaters(data):
     center = np.fromiter((np.sum(i * data_bg)/data_bg_sum for i in all_idx),
                          dtype=np.float)
 
-    # calculate 2nd moments along lines through center as estimates for sigma
-    all_slice = slice(0, None)  # selects all
-    sigma = []
-    for i, ci in enumerate(center):
-        c = center.astype(np.int).tolist()  # indices closest to the center
-        c[i] = all_slice  # only along the i-th coordinate select whole line
-        line = data_bg[tuple(c)]
-        idx = np.arange(len(line))
-        sigma.append(np.sqrt(np.sum((line*(idx - ci)**2))/np.sum(line)))
-    sigma = np.array(sigma)
+    # Estimate the covariance matrix to determine sigma and the rotation
+    m = np.empty([len(all_idx)]*2)
+    for i in range(len(all_idx)):
+        for j in range(i+1):
+            m[i, j] = (np.sum(data_bg * (all_idx[i]-center[i]) *
+                              (all_idx[j]-center[j])) / data_bg_sum)
+            if i != j:
+                m[j, i] = m[i, j]
+    sigma = np.sqrt(m.diagonal())
 
-    # for 2D data only: Use inertia matrix to determine angle of rotation
     angle = 0.
     if data.ndim == 2:
-        m_xx = np.sum(data_bg*(all_idx[0]-center[0])**2) / data_bg_sum
-        m_xy = (np.sum(data_bg*(all_idx[0]-center[0])*(all_idx[1]-center[1])) /
-                data_bg_sum)
-        m_yy = np.sum(data_bg*(all_idx[1]-center[1])**2) / data_bg_sum
-        angle = 0.5 * np.arctan(2*m_xy / (m_xx - m_yy))
+        angle = 0.5 * np.arctan(2*m[0, 1] / (m[0, 0] - m[1, 1]))
 
     return dict(amplitude=amp, center=center, sigma=sigma, background=bg,
                 angle=angle)
