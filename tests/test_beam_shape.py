@@ -45,9 +45,10 @@ class TestBeamShape(unittest.TestCase):
                                    rtol=1e-5)
 
     def test_feature_correction(self):
-        xcoord = ycoord = np.arange(self.img_sz)
+        xcoord = np.arange(self.img_sz)
+        ycoord = len(xcoord) - xcoord - 1
         mass_orig = np.array([100]*len(xcoord))
-        mass = mass_orig * self.img[xcoord, ycoord]
+        mass = mass_orig * self.img[ycoord, xcoord]
         pdata = pd.DataFrame(dict(x=xcoord, y=ycoord, mass=mass))
         pdata1 = pdata.copy()
 
