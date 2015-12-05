@@ -19,6 +19,7 @@ mass_column : str
 """
 import pandas as pd
 import numpy as np
+import scipy.interpolate as sp_int
 
 import pims
 
@@ -173,4 +174,6 @@ class Corrector(object):
             norm = gparm["amplitude"] + gparm["offset"]
             return 1. / (self.fit_result.eval(x=y, y=x)/norm)
         else:
-            return 1. / self.corr_img[np.round(y), np.round(x)]
+            return 1. / sp_int.interpn(
+                [np.arange(i) for i in self.corr_img.shape],
+                self.corr_img, np.array([y, x]).T)
