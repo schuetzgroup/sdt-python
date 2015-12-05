@@ -13,6 +13,7 @@ Contents:
 
     motion
     exp_fit
+    gaussian_fit
 
 
 Indices and tables

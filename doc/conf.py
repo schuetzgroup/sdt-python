@@ -274,8 +274,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   (master_doc, 'sdt-python', 'sdt-python Documentation',
-   author, 'sdt-python', 'One line description of project.',
-   'Miscellaneous'),
+   author, 'sdt-python', 'Python software for fluorescence microscopy',
+   'Science'),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -291,3 +291,5 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 autodoc_member_order = "bysource"
+autoclass_content = "both"
+napoleon_use_param = False

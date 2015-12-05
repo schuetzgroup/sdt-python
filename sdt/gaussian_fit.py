@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Easy fitting with Gaussian functions
+"""Easy fitting of data with Gaussian functions
 
 This module allows for fitting Gaussian functions to 1D or 2D data. It is
-based on https://gist.github.com/andrewgiessel/6122739.
+based on the :py:mod:`lmfit` package.
 
 Examples
 --------
 >>> data = np.load("gaussian_2d.npy")
->>> params = fit(data)  # get parameters of the fitted Gaussian
->>> fitted_gaussian = gaussian(**params)  # actually construct the Gaussian
->>> fitted_gaussian(2, 3)  # get values at coordinates (2, 3)
-15.0
+>>> x, y = np.indices(data.shape)  # the corresponding x, y variables
+>>> m = Gaussian2DModel()  # create the model
+>>> p = m.guess(data, x, y)  # initial guess
+>>> res = m.fit(data, params=p, x=x, y=y)  # fit
 """
 import numpy as np
 import lmfit
@@ -23,16 +23,16 @@ def guess_paramaters(data, *indep_vars):
 
     - The background is guessed by looking at the edges of `data`.
     - The center of the Gaussian is approximated by the center of mass.
-    - sigma as well as the angle of rotation are estimated by looking at second
-      moments
-    - The amplitude is taken as the maximum above background
+    - sigma as well as the angle of rotation are estimated using calculating
+      the covariance matrix.
+    - The amplitude is taken as the maximum above background.
 
     Parameters
     ----------
     data : numpy.ndarray
         Data for which the parameter should be guessed
-    *indep_vars : numpy.ndarrays
-        Independent variables (x, y, z, …)
+    indep_vars : numpy.ndarrays
+        Independent variable arrays (x, y, z, …)
 
     Returns
     -------
@@ -169,6 +169,7 @@ class Gaussian1DModel(lmfit.Model):
         self.set_param_hint("background", min=0.)
 
     def guess(self, data, x, **kwargs):
+        """Make an initial guess using :func:`guess_parameters`"""
         pdict = guess_paramaters(data, x)
         pars = self.make_params(amplitude=pdict["amplitude"],
                                 center=pdict["center"][0],
@@ -181,6 +182,9 @@ class Gaussian2DModel(lmfit.Model):
     """Model class for fitting a 2D Gaussian
 
     Derives from :class:`lmfit.Model`
+
+    Parameters are `amplitude`, `centerx`, `sigmax`, `centery`, `sigmay`,
+    `background`, `rotation`.
     """
     def __init__(self, *args, **kwargs):
         """Constructor""" + lmfit.models.COMMON_DOC
