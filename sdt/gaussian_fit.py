@@ -21,11 +21,11 @@ def guess_paramaters(data, *indep_vars):
 
     This function does a crude estimation of the parameters:
 
-    - The background is guessed by looking at the edges of `data`.
+    - The offset is guessed by looking at the edges of `data`.
     - The center of the Gaussian is approximated by the center of mass.
     - sigma as well as the angle of rotation are estimated using calculating
       the covariance matrix.
-    - The amplitude is taken as the maximum above background.
+    - The amplitude is taken as the maximum above offset.
 
     Parameters
     ----------
@@ -42,7 +42,7 @@ def guess_paramaters(data, *indep_vars):
         - "amplitude" (float)
         - "center" (np.ndarray): coordinates of the guessed center
         - "sigma" (np.ndarray)
-        - "background" (float)
+        - "offset" (float): addititve offset
         - "rotation" (float): guessed angle of rotation. Works (currently) only
           for 2D data.
 
@@ -80,13 +80,13 @@ def guess_paramaters(data, *indep_vars):
     if data.ndim == 2:
         angle = 0.5 * np.arctan(2*m[0, 1] / (m[0, 0] - m[1, 1]))
 
-    ret = dict(amplitude=amp, center=center, sigma=sigma, background=bg)
+    ret = dict(amplitude=amp, center=center, sigma=sigma, offset=bg)
     if angle is not None:
         ret["rotation"] = angle
     return ret
 
 
-def gaussian_1d(x, amplitude=1., center=0., sigma=1., background=0.):
+def gaussian_1d(x, amplitude=1., center=0., sigma=1., offset=0.):
     r"""1D gaussian
 
     .. math:: A e^\frac{(x - c)^2}{2\sigma^2} + b
@@ -101,7 +101,7 @@ def gaussian_1d(x, amplitude=1., center=0., sigma=1., background=0.):
         `c` in the formula above. Defaults to 0.
     sigma : float, optional
         :math:`\sigma` in the formula above. Defaults to 1.
-    background : float, optional
+    offset : float, optional
         `b` in the formula above. Defaults to 0.
 
     Returns
@@ -109,11 +109,11 @@ def gaussian_1d(x, amplitude=1., center=0., sigma=1., background=0.):
     numpy.ndarray
         Function values
     """
-    return amplitude * np.exp(-((x - center)/sigma)**2/2.) + background
+    return amplitude * np.exp(-((x - center)/sigma)**2/2.) + offset
 
 
 def gaussian_2d(x, y, amplitude=1., centerx=0., sigmax=1., centery=0.,
-                sigmay=1., background=0., rotation=0.):
+                sigmay=1., offset=0., rotation=0.):
     r"""2D gaussian
 
     .. math:: A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}
@@ -132,7 +132,7 @@ def gaussian_2d(x, y, amplitude=1., centerx=0., sigmax=1., centery=0.,
     sigmax, sigmay : float, optional
         :math:`\sigma_x`,  :math:`\sigma_y` in the formula above. Defaults
         to 1.
-    background : float, optional
+    offset : float, optional
         `b` in the formula above. Defaults to 0.
     rotation : float, optional
         Rotate the Gaussian by that many radiants. Defaults to 0
@@ -152,7 +152,7 @@ def gaussian_2d(x, y, amplitude=1., centerx=0., sigmax=1., centery=0.,
     y_r = x*sn + y*cs
 
     arg = ((x_r - xc_r)/sigmax)**2 + ((y_r - yc_r)/sigmay)**2
-    return amplitude * np.exp(-arg/2.) + background
+    return amplitude * np.exp(-arg/2.) + offset
 
 
 class Gaussian1DModel(lmfit.Model):
@@ -160,13 +160,12 @@ class Gaussian1DModel(lmfit.Model):
 
     Derives from :class:`lmfit.Model`
 
-    Parameters are `amplitude`, `center`, `sigma`, `background`.
+    Parameters are `amplitude`, `center`, `sigma`, `offset`.
     """
     def __init__(self, *args, **kwargs):
         """Constructor""" + lmfit.models.COMMON_DOC
         super().__init__(gaussian_1d, *args, **kwargs)
         self.set_param_hint("sigma", min=0.)
-        self.set_param_hint("background", min=0.)
 
     def guess(self, data, x, **kwargs):
         """Make an initial guess using :func:`guess_parameters`"""
@@ -174,7 +173,7 @@ class Gaussian1DModel(lmfit.Model):
         pars = self.make_params(amplitude=pdict["amplitude"],
                                 center=pdict["center"][0],
                                 sigma=pdict["sigma"][0],
-                                background=pdict["background"])
+                                offset=pdict["offset"])
         return lmfit.models.update_param_vals(pars, self.prefix, **kwargs)
 
 
@@ -184,7 +183,7 @@ class Gaussian2DModel(lmfit.Model):
     Derives from :class:`lmfit.Model`
 
     Parameters are `amplitude`, `centerx`, `sigmax`, `centery`, `sigmay`,
-    `background`, `rotation`.
+    `offset`, `rotation`.
     """
     def __init__(self, *args, **kwargs):
         """Constructor""" + lmfit.models.COMMON_DOC
@@ -193,7 +192,6 @@ class Gaussian2DModel(lmfit.Model):
         self.set_param_hint("sigmax", min=0.)
         self.set_param_hint("sigmay", min=0.)
         self.set_param_hint("rotation", min=-np.pi, max=np.pi)
-        self.set_param_hint("background", min=0.)
 
     def guess(self, data, x, y, **kwargs):
         """Make an initial guess using :func:`guess_parameters`"""
@@ -203,6 +201,6 @@ class Gaussian2DModel(lmfit.Model):
                                 sigmax=pdict["sigma"][0],
                                 centery=pdict["center"][1],
                                 sigmay=pdict["sigma"][1],
-                                background=pdict["background"],
+                                offset=pdict["offset"],
                                 rotation=pdict["rotation"])
         return lmfit.models.update_param_vals(pars, self.prefix, **kwargs)

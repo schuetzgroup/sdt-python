@@ -17,10 +17,10 @@ data_path = os.path.join(path, "data_gaussian")
 class TestGaussianFit(unittest.TestCase):
     def setUp(self):
         self.params_1d = dict(amplitude=10, center=40, sigma=15,
-                              background=20)
+                              offset=20)
         self.x_1d = np.arange(100)
         self.params_2d = dict(amplitude=10, centerx=40, centery=120,
-                              sigmax=40, sigmay=15, background=15,
+                              sigmax=40, sigmay=15, offset=15,
                               rotation=np.deg2rad(30))
         self.x_2d = np.indices((100, 200))
 
