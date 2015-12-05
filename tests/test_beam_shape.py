@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
 import os
-import pickle
 
 import pandas as pd
 import numpy as np
@@ -39,8 +38,11 @@ class TestBeamShape(unittest.TestCase):
 
     def test_fit(self):
         corr = sdt.beam_shape.Corrector([self.img], gaussian_fit=True)
-        g2d = corr._gauss_func
-        np.testing.assert_allclose(g2d(self.y, self.x), self.img, rtol=1e-5)
+        g2d = corr.fit_result.eval
+        np.testing.assert_allclose(g2d(x=self.y, y=self.x),
+                                   self.img, rtol=1e-5)
+        np.testing.assert_allclose(corr.fit_result.best_fit, self.img,
+                                   rtol=1e-5)
 
     def test_feature_correction(self):
         xcoord = ycoord = np.arange(self.img_sz)

@@ -25,7 +25,7 @@ import pims
 from . import gaussian_fit as gfit
 
 
-pd.options.mode.chained_assignment = None #Get rid of the warning
+pd.options.mode.chained_assignment = None  # Get rid of the warning
 
 
 pos_columns = ["x", "y"]
@@ -40,24 +40,32 @@ class Corrector(object):
     images of a homogeneous surface.
 
     The factor is calculated by
+
     - Taking the averages of the pixel intensities of the images
     - If requested, doing a 2D Gaussian fit
     - Normalizing, so that the maximum of the Gaussian or of the average image
       (if on Gaussian fit was performed) equals 1.0
+
     Now, the integrated intesity of a feature at position x, y is divided by
     the value of the Gaussian at the positon x, y (or the pixel intensity of
     the image) to yield a corrected value.
 
     Attributes
     ----------
+    avg_img : numpy.ndarray
+        Averaged image pixel data
+    corr_img : numpy.ndarray
+        Image used for correction of images. Any image to be corrected is
+        divided by `corr_img` pixel by pixel.
+    fit_result : lmfit.models.ModelResult or None
+        If a Gaussian fit was done, this holds the result. Otherwise, it is
+        None.
     pos_columns : list of str
         Names of the columns describing the x and the y coordinate of the
         features.
     mass_column : str
         Name of the column describing the integrated intensities ("masses") of
         the features.
-    avg_img : numpy.ndarray
-        Averaged image pixel data
     """
 
     def __init__(self, *images, gaussian_fit=True, pos_columns=pos_columns,
@@ -80,6 +88,7 @@ class Corrector(object):
         self.pos_columns = pos_columns
         self.mass_column = mass_column
 
+        # calculate the average profile image
         self.avg_img = np.zeros(images[0][0].shape, dtype=np.float)
         for stack in images:
             for img in stack:
@@ -88,14 +97,22 @@ class Corrector(object):
                 self.avg_img += img/img.max()
         self.avg_img /= self.avg_img.max()
 
-        self._do_fit = gaussian_fit
         if gaussian_fit:
-            self._gauss_parm = gfit.fit(self.avg_img)
+            # do the fitting
+            m = gfit.Gaussian2DModel()
+            x, y = np.indices(self.avg_img.shape)
+            g = m.guess(self.avg_img, x, y)
+            g["offset"].set(min=0.)  # background cannot be less than 0.
+            self.fit_result = m.fit(self.avg_img, params=g, x=x, y=y)
+
             # normalization factor so that the maximum of the Gaussian is 1.
-            self._gauss_norm = 1./(self._gauss_parm["amplitude"] +
-                                   self._gauss_parm["background"])
-            # Gaussian function
-            self._gauss_func = gfit.gaussian(**self._gauss_parm)
+            gparm = self.fit_result.best_values
+            norm = gparm["amplitude"] + gparm["offset"]
+            # correction image
+            self.corr_img = self.fit_result.best_fit / norm
+        else:
+            self.fit_result = None
+            self.corr_img = self.avg_img
 
     def __call__(self, data, inplace=False):
         """Do brightness correction on `features` intensities
@@ -130,11 +147,7 @@ class Corrector(object):
         else:
             @pims.pipeline
             def corr(img):
-                if self._do_fit:
-                    return img/(self._gauss_func(*np.indices(img.shape)) *
-                                self._gauss_norm)
-                else:
-                    return img/self.avg_img
+                    return img/self.corr_img
             return corr(data)
 
     def get_factors(self, x, y):
@@ -155,7 +168,9 @@ class Corrector(object):
         numpy.ndarray
             A list of correction factors corresponding to the features
         """
-        if self._do_fit:
-            return 1./(self._gauss_norm*self._gauss_func(y, x))
+        if self.fit_result is not None:
+            gparm = self.fit_result.best_values
+            norm = gparm["amplitude"] + gparm["offset"]
+            return 1. / (self.fit_result.eval(x=y, y=x)/norm)
         else:
-            return 1./self.avg_img[np.round(y), np.round(x)]
+            return 1. / self.corr_img[np.round(y), np.round(x)]
