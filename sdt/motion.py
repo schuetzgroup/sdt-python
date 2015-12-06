@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 import collections
 import warnings
+import lmfit
 
 from . import exp_fit
 
@@ -501,7 +502,7 @@ def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
                   loc=0)
 
 
-def _fit_cdf_model(x, y, num_exp, poly_order, initial_guess=None):
+def _fit_cdf_model_prony(x, y, num_exp, poly_order, initial_guess=None):
     r"""Variant of `exp_fit.fit` for the model of the CDF
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
@@ -581,7 +582,86 @@ def _fit_cdf_model(x, y, num_exp, poly_order, initial_guess=None):
     return mant_coeff, exp_coeff, ode_coeff
 
 
-def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, poly_order=30):
+def _fit_cdf_model_lsq(x, y, num_exp, weighted=True, initial_b=None,
+                       initial_l=None):
+    r"""Fit CDF by least squares fitting
+
+    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
+    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data
+    using least squares fitting. Additionally, there are the constraints
+    :math:`\sum_{k=1}^p -\beta_k = 1` and :math:`\alpha = 1`.
+
+    Parameters
+    ----------
+    x : numpy.ndarray
+        Abscissa (x-axis) data
+    y : numpy.ndarray
+        CDF function values corresponding to `x`.
+    num_exp : int
+        Number of exponential functions (``p``) in the
+        sum
+    weighted : bool, optional
+        Whether to way the residual according to inverse data point density
+        on the abscissa. Usually, there are many data points close to x=0,
+        which makes the least squares fit very accurate in that region and not
+        so much everywhere else. Defaults to True.
+    initial_b : numpy.ndarray, optional
+        initial guesses for the :math:`b_k`
+    initial_l : numpy.ndarray, optional
+        initial guesses for the :math:`\lambda_k`
+
+    Returns
+    -------
+    mant_coeff : numpy.ndarray
+        Mantissa coefficients (:math:`\beta_k`)
+    exp_coeff : numpy.ndarray
+        List of exponential coefficients (:math:`\lambda_k`)
+    """
+    p_b_names = []
+    p_l_names = []
+    for i in range(num_exp):
+        p_b_names.append("b{}".format(i))
+        p_l_names.append("l{}".format(i))
+    m = lmfit.Model(exp_fit.exp_sum)
+
+    # initial guesses
+    if initial_b is None:
+        initial_b = np.logspace(-num_exp, 0, num_exp-1, base=2, endpoint=False)
+    if initial_l is None:
+        initial_l = np.logspace(-num_exp, 0, num_exp)
+
+    # set up parameter ranges, initial values, and constraints
+    m.set_param_hint("a", value=1., vary=False)
+    if num_exp > 1:
+        m.set_param_hint(p_b_names[-1], expr="-1 - "+"-".join(p_b_names[:-1]))
+        for b, v in zip(p_b_names[:-1], initial_b):
+            m.set_param_hint(b, min=-1., max=0., value=-v)
+    else:
+        m.set_param_hint("b0", value=-1, vary=False)
+    for l, v in zip(p_l_names, initial_l):
+        m.set_param_hint(l, max=0., value=-1./v)
+
+    # fit
+    if weighted:
+        w = np.empty(x.shape)
+        w[1:] = x[1:] - x[:-1]
+        w[0] = w[1]
+        w /= w.max()
+        w = np.sqrt(w)  # since residual is squared, use sqrt
+    else:
+        w = None
+    p = m.make_params()
+    f = m.fit(y, params=p, weights=w, x=x)
+
+    # return in the correct format
+    fd = f.best_values
+    mant_coeff = [fd[b] for b in p_b_names]
+    exp_coeff = [fd[l] for l in p_l_names]
+    return np.array(mant_coeff), np.array(exp_coeff)
+
+
+def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, method="prony",
+                                       poly_order=30):
     r"""Fit the CDF of square displacements to an exponential model
 
     The cumulative density function (CDF) of square displacements is the
@@ -600,15 +680,23 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, poly_order=30):
         The result of a call to :func:`all_square_displacements`
     num_frac : int
         The number of species
-    poly_order : int
-        For calculation, the sum of exponentials is approximated by a
-        polynomial. This parameter gives the degree of the polynomial.
+    method : {"prony", "lsq", "weighted-lsq"}, optional
+        Which fit method to use. "prony" is a modified Prony's method, "lsq"
+        is least squares fitting, and "weighted-lsq" is weighted least squares
+        fitting to account for the fact that the CDF data are concentrated
+        at x=0. Defaults to "prony".
 
     Returns
     -------
     list of pandas.DataFrames([lagt, msd, fraction])
         For each species, the DataFrame contains for each lag time the msd,
         the fraction.
+
+    Other parameters
+    ----------------
+    poly_order : int
+        For the "prony" method, the sum of exponentials is approximated by a
+        polynomial. This parameter gives the degree of the polynomial.
     """
     lagt = []
     fractions = []
@@ -617,7 +705,14 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, poly_order=30):
         y = np.linspace(0, 1, len(s), endpoint=True)
         s = np.sort(s)
 
-        b, l, _ = _fit_cdf_model(s, y, num_frac, poly_order)
+        if method == "prony":
+            b, l, _ = _fit_cdf_model_prony(s, y, num_frac, poly_order)
+        elif method == "lsq":
+            b, l = _fit_cdf_model_lsq(s, y, num_frac, weighted=False)
+        elif method == "weighted-lsq":
+            b, l = _fit_cdf_model_lsq(s, y, num_frac, weighted=True)
+        else:
+            raise ValueError("Unknown method")
         lagt.append(tl)
         fractions.append(-b)
         msd.append(-1./l)
@@ -636,7 +731,8 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, poly_order=30):
     return ret
 
 
-def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
+def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
+             method="prony", poly_order=30,
              pos_columns=pos_columns, t_column=t_column,
              trackno_column=trackno_column):
     r"""Calculate ensemble mean square displacements from tracking data CDF
@@ -661,6 +757,11 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
         The number of diffusing species. Defaults to 2
     max_lagtime : int, optional
         Maximum number of time lags to consider. Defaults to 10.
+    method : {"prony", "lsq", "weighted-lsq"}, optional
+        Which fit method to use. "prony" is a modified Prony's method, "lsq"
+        is least squares fitting, and "weighted-lsq" is weighted least squares
+        fitting to account for the fact that the CDF data are concentrated
+        at x=0. Defaults to "prony".
 
     Returns
     -------
@@ -671,7 +772,7 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
     Other parameters
     ----------------
     poly_order : int, optional
-        For calculation, the sum of exponentials is approximated by a
+        For the "prony" method, the sum of exponentials is approximated by a
         polynomial. This parameter gives the degree of the polynomial.
         Defaults to 30.
     pos_columns : list of str, optional
@@ -687,7 +788,8 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, poly_order=30,
     disp_dict = all_displacements(data, max_lagtime, pos_columns, t_column,
                                   trackno_column)
     sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
-    return emsd_from_square_displacements_cdf(sd_dict, num_frac, poly_order)
+    return emsd_from_square_displacements_cdf(sd_dict, num_frac,
+                                              method, poly_order)
 
 
 def plot_msd_cdf(emsds, ax=None):

@@ -277,3 +277,38 @@ def fit(x, y, num_exp, poly_order, initial_guess=None):
     mant_coeff = lsq[0][1:]
 
     return offset, mant_coeff, exp_coeff, ode_coeff
+
+
+def exp_sum(x, a=1., **params):
+    """Sum of exponentials
+
+    Return ``a + b0*exp(l0*x) + b1*exp(l1*x) + …``
+
+    Parameters
+    ----------
+    x : numpy.ndarray
+        Independent variable
+    a : float
+        Additive parameter
+    params : floats
+        To get the sum of `n+1` exponentials, one needs to supply floats
+        `b0`, `b1`, …, `bn` as mantissa coefficients and `l0`, `ln` as
+        coefficients in the exponent.
+
+    Returns
+    -------
+    numpy.ndarray
+        Result
+
+    Examples
+    --------
+    >>> x = np.arange(10)
+    >>> exp_sum(np.arange(10), a=1, b0=-0.2, l0=-0.1, b1=-0.8, l1=-0.01)
+    array([ 0.        ,  0.02699265,  0.05209491,  0.07547993,  0.09730444,
+            0.11771033,  0.13682605,  0.15476788,  0.17164113,  0.18754112])
+    """
+    num_exp = len(params) // 2
+    res = a
+    for i in range(num_exp):
+        res += params["b{}".format(i)] * np.exp(params["l{}".format(i)] * x)
+    return res

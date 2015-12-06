@@ -142,12 +142,58 @@ class TestMotion(unittest.TestCase):
         np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
         np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
 
+    def test_emsd_from_square_displacements_cdf_lsq(self):
+        # From a test run
+        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1_lsq")
+        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2_lsq")
+
+        with open(os.path.join(data_path, "all_sd_cdf.pkl"), "rb") as f:
+            sd_dict = pickle.load(f)
+
+        e1, e2 = sdt.motion.emsd_from_square_displacements_cdf(
+            sd_dict, method="lsq")
+        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
+        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+
+    def test_emsd_from_square_displacements_cdf_wlsq(self):
+        # From a test run
+        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1_wlsq")
+        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2_wlsq")
+
+        with open(os.path.join(data_path, "all_sd_cdf.pkl"), "rb") as f:
+            sd_dict = pickle.load(f)
+
+        e1, e2 = sdt.motion.emsd_from_square_displacements_cdf(
+            sd_dict, method="weighted-lsq")
+        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
+        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+
     def test_emsd_cdf(self):
         # From a test run
         orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1")
         orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2")
 
         e1, e2 = sdt.motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1)
+        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
+        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+
+    def test_emsd_cdf_lsq(self):
+        # From a test run
+        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1_lsq")
+        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2_lsq")
+
+        e1, e2 = sdt.motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
+                                     method="lsq")
+        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
+        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+
+    def test_emsd_cdf_wlsq(self):
+        # From a test run
+        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1_wlsq")
+        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2_wlsq")
+
+        e1, e2 = sdt.motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
+                                     method="weighted-lsq")
         np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
         np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
 

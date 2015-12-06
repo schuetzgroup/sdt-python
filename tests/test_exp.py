@@ -64,5 +64,32 @@ class TestExpFit(unittest.TestCase):
         np.testing.assert_allclose(fitted, orig, rtol=1e-4)
 
 
+class TestExpSum(unittest.TestCase):
+    def test_sum0(self):
+        x = np.linspace(0, 10, 100)
+        y_o = 2.5
+        y = sdt.exp_fit.exp_sum(x, a=2.5)
+        np.testing.assert_allclose(y, y_o)
+
+    def test_sum1(self):
+        x = np.linspace(0, 10, 100)
+        y_o = 2.5 - 7.6*np.exp(1.2*x)
+        y = sdt.exp_fit.exp_sum(x, a=2.5, b0=-7.6, l0=1.2)
+        np.testing.assert_allclose(y, y_o)
+
+    def test_sum2(self):
+        x = np.linspace(0, 10, 100)
+        y_o = 2.5 + 1.2*np.exp(-3.3*x) - 7.6*np.exp(1.2*x)
+        y = sdt.exp_fit.exp_sum(x, a=2.5, b0=1.2, l0=-3.3, b1=-7.6, l1=1.2)
+        np.testing.assert_allclose(y, y_o)
+
+    def test_sum3(self):
+        x = np.linspace(0, 10, 100)
+        y_o = 2.5 + 1.2*np.exp(-3.3*x) + 10.4*np.exp(0.7*x) - 7.6*np.exp(1.2*x)
+        y = sdt.exp_fit.exp_sum(x, a=2.5, b0=1.2, l0=-3.3, b1=10.4, l1=0.7,
+                                b2=-7.6, l2=1.2)
+        np.testing.assert_allclose(y, y_o)
+
+
 if __name__ == "__main__":
     unittest.main()
