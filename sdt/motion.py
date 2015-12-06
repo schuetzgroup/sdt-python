@@ -844,14 +844,11 @@ def plot_msd_cdf(emsds, ax=None):
         lt_max = tlags.max()
         all_max_lagtimes.append(lt_max)
         ax[i+1].set_xlim(-0.05*lt_max, 1.05*lt_max)
+        ax[i+1].set_ylim(bottom=0.)
 
         # Write D values
-        msd_cdf = msds / (4*tlags)
-        text = r"""$D_\mathrm{{CDF}}={d_cdf:.3f}\pm{std_cdf:.3f}$ $\mu$m
-$D_\mathrm{{fit}}={d_fit:.3f}$ $\mu$m
-$PA_\mathrm{{fit}}={pa_fit:.0f}$ nm""".format(
-            d_cdf=msd_cdf.mean(), std_cdf=msd_cdf.std(),
-            d_fit=D, pa_fit=pa*1000)
+        text = """$D={D:.3f}$ $\\mu$m$^2$/s
+$PA={pa:.0f}$ nm""".format(D=D, pa=pa*1000)
         ax[i+1].text(0.03, 0.98, text, transform=ax[i+1].transAxes,
                      ha="left", va="top")
 
