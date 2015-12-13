@@ -1,5 +1,6 @@
 import os
 import collections
+import types
 
 from PyQt5.QtWidgets import (QWidget, QFormLayout, QSpinBox, QComboBox, QLabel,
                              QLineEdit)
@@ -97,6 +98,10 @@ class Container(QWidget):
         end = self._endFrameBox.value()
         end = end if end > 0 else -1
         return start, end
+
+    @pyqtProperty(types.ModuleType)
+    def currentModule(self):
+        return self._currentModule
 
 
 saClass, saBase = uic.loadUiType(os.path.join(path, "sa_options.ui"))

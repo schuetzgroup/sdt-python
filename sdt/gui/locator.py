@@ -3,8 +3,8 @@ import os
 import sys
 import collections
 import types
-import json
 
+import yaml
 import numpy as np
 import pandas as pd
 import pims
@@ -22,6 +22,13 @@ from . import locate_options
 from . import file_chooser
 from . import locate_filter
 from . import locate_saver
+
+
+def yaml_dict_representer(dumper, data):
+    return dumper.represent_dict(data.items())
+
+
+yaml.add_representer(collections.OrderedDict, yaml_dict_representer)
 
 
 class MainWindow(QMainWindow):
@@ -189,15 +196,20 @@ class MainWindow(QMainWindow):
         self._roiPolygon = roi
         self._filterLocalizations()
 
+    def _saveMetadata(self, fname):
+        metadata = collections.OrderedDict()
+        metadata["method"] = \
+            self._locOptionsDock.widget().currentModule.__name__
+        metadata["options"] = self._locOptionsDock.widget().getOptions()
+        metadata["roi"] = [p for p in self._roiPolygon]
+        metadata["filter"] = self._locFilterDock.widget().getFilterString()
+        with open(fname, "w") as f:
+            yaml.dump(metadata, f, default_flow_style=False)
+
     @pyqtSlot(str)
     def on_locateSaveWidget_saveOptions(self, fname):
-        opt = collections.OrderedDict()
-        opt["locate options"] = self._locOptionsDock.widget().getOptions()
-        opt["filter"] = {
-            "string": self._locFilterDock.widget().getFilterString()}
         try:
-            with open(fname, "w") as f:
-                json.dump(opt, f, indent=4)
+            self._saveMetadata(fname)
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error writing to file"),
                                  self.tr(str(e)))
@@ -238,15 +250,14 @@ class MainWindow(QMainWindow):
             saveFileName = os.path.splitext(
                 self._fileModel.data(
                     index, file_chooser.FileListModel.FileNameRole))[0]
-            saveFileName = "{fn}{extsep}h5".format(fn=saveFileName,
-                                                   extsep=os.extsep)
+            saveFileName = "{fn}{extsep}".format(fn=saveFileName,
+                                                 extsep=os.extsep)
 
             filterFunc = self._locFilterDock.widget().getFilter()
             inRoi = self._applyRoi(data)
             data = data[filterFunc(data) & inRoi]
-            data.to_hdf(saveFileName, "features")
-            # TODO: save options
-            # TODO: save ROI
+            data.to_hdf(saveFileName+"h5", "features")
+            self._saveMetadata(saveFileName+"yaml")
         elif saveFormat == "particle_tracker":
             # TODO: implement
             pass

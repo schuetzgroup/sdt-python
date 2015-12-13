@@ -58,7 +58,7 @@ class SaveWidget(locSaveBase):
         elif format == "settings":
             fname = QFileDialog.getSaveFileName(
                 self, self.tr("Save file"), self._lastOpenDir,
-                self.tr("JSON data (*.json)") + ";;"
+                self.tr("YAML data (*.yaml)") + ";;"
                     + self.tr("All files (*)"))
             if not fname[0]:
                 # cancelled
