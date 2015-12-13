@@ -1,5 +1,6 @@
 import os
 import re
+from contextlib import suppress
 
 import numpy as np
 
@@ -63,15 +64,14 @@ class FilterWidget(filterBase):
             if not cnt:
                 # no variable was replaced; consider this an invalid line
                 continue
-            try:
+            with suppress(SyntaxError):
                 goodLines.append(compile(fstr, "filterFunc", "eval"))
-            except SyntaxError:
-                pass
 
         def filterFunc(data):
-            filter = np.ones((len(data),), dtype=bool)
+            filter = np.ones(len(data), dtype=bool)
             for l in goodLines:
-                filter &= eval(l, {}, {"data": data, "numpy": np})
+                with suppress(Exception):
+                    filter &= eval(l, {}, {"data": data, "numpy": np})
             return filter
 
         return filterFunc

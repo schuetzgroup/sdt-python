@@ -81,7 +81,7 @@ class MainWindow(QMainWindow):
         self._newWorkerJob = False
 
         self._currentFile = None
-        self._currentLocData = None
+        self._currentLocData = pd.DataFrame()
         self._roiPolygon = QPolygonF()
 
         self._workerThreadPool = QThreadPool(self)
@@ -179,10 +179,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def _filterLocalizations(self):
         filterFunc = self._locFilterDock.widget().getFilter()
-        try:
-            good = filterFunc(self._currentLocData)
-        except Exception:
-            good = np.ones((len(self._currentLocData),), dtype=bool)
+        good = filterFunc(self._currentLocData)
         inRoi = self._applyRoi(self._currentLocData)
         self._viewer.setLocalizationData(self._currentLocData[good & inRoi],
                                          self._currentLocData[~good & inRoi])
