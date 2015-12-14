@@ -480,7 +480,8 @@ def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
     ax.set_xlabel("lag time [s]")
     ax.set_ylabel("MSD [$\mu$m$^2$]")
     if "stderr" in emsd.columns:
-        ax.errorbar(emsd["lagt"], emsd["msd"], yerr=emsd["stderr"], fmt="o")
+        ax.errorbar(emsd["lagt"], emsd["msd"], yerr=emsd["stderr"].tolist(),
+                    fmt="o")
     else:
         ax.plot(emsd["lagt"], emsd["msd"], linestyle="none", marker="o")
 
