@@ -3,8 +3,8 @@ import os
 
 import numpy as np
 
-from daostorm_3d import find
-from daostorm_3d.data import col_nums
+from sdt.locate.daostorm_3d import find
+from sdt.locate.daostorm_3d.data import col_nums
 
 
 path, f = os.path.split(os.path.abspath(__file__))
