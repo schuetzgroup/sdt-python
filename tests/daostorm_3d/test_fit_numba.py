@@ -174,6 +174,23 @@ class FitterTest(unittest.TestCase):
         np.testing.assert_allclose(f.peaks, orig["peaks"])
         np.testing.assert_allclose(f.residual, orig["residual"])
 
+    def test_iterate_2d_beads(self):
+        # produced by the original C implementation
+        orig = np.load(os.path.join(data_path, "beads_iter_2d.npz"))
+        f = fit_impl.Fitter2D(self.beads_img, self.beads_local_max, 1e-6)
+        f.iterate()
+        np.testing.assert_allclose(f.peaks, orig["peaks"])
+        np.testing.assert_allclose(f.residual, orig["residual"])
+
+    def test_fit_2d_beads(self):
+        # produced by the original C implementation
+        orig = np.load(os.path.join(data_path, "beads_fit_2d.npz"))
+        f = fit_impl.Fitter2D(self.beads_img, self.beads_local_max, 1e-6)
+        f.max_iterations = 10
+        f.fit()
+        np.testing.assert_allclose(f.peaks, orig["peaks"])
+        np.testing.assert_allclose(f.residual, orig["residual"])
+
 
 class TestEqnSolver(unittest.TestCase):
     def setUp(self):

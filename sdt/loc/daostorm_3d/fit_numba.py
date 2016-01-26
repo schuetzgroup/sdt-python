@@ -27,7 +27,7 @@ stat_bad = feat_status.bad
 class Fitter(fit.Fitter):
     def _calc_pixel_width(self, new, old):
         new = new.copy()
-        ret = _numba_calc_pixel_width(new, old, self.hysteresis, self.margin)
+        ret = _vector_calc_pixel_width(new, old, self.hysteresis, self.margin)
         return ret
 
     def _calc_peak(self, index):
@@ -56,8 +56,7 @@ class Fitter(fit.Fitter):
             self._pixel_center, self.hysteresis, self.margin)
 
 
-@numba.vectorize
-def _numba_calc_pixel_width(new, old, hysteresis, margin):
+def _calc_pixel_width(new, old, hysteresis, margin):
     if new < 0.:
         return 1
 
@@ -65,6 +64,9 @@ def _numba_calc_pixel_width(new, old, hysteresis, margin):
     ret = tmp if np.abs(tmp - old - 0.5) > hysteresis else old
 
     return int(min(ret, margin))
+
+_vector_calc_pixel_width = numba.vectorize(_calc_pixel_width)
+_numba_calc_pixel_width = numba.jit(_calc_pixel_width, nopython=True)
 
 
 @numba.jit(nopython=True)
