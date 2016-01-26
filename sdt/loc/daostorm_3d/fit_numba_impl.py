@@ -28,6 +28,15 @@ class Fitter2D(fit_numba.Fitter):
             self.hysteresis, self.margin, self._tolerance)
 
 
+class Fitter3D(fit_numba.Fitter):
+    def iterate(self):
+        _numba_iterate_3d(
+            self._image, self._fit_image, self._bg_image, self._bg_count,
+            self._data, self._dx, self._gauss, self._sign, self._clamp,
+            self._err_old, self._pixel_center, self._pixel_width,
+            self.hysteresis, self.margin, self._tolerance)
+
+
 @numba.jit(nopython=True)
 def _chol(A):
     size = A.shape[0]
@@ -219,6 +228,89 @@ def _numba_iterate_2d(real_img, fit_img, bg_img, bg_count, data, dx,
             px_width[index, 0] = px_width[index, 1] = \
                 _numba_calc_pixel_width(cur_data[col_wx], px_width[index, 0],
                                         hysteresis, margin)
+            _numba_calc_peak(index, data, dx, gauss, px_center, px_width)
+            _numba_add_to_fit(index, fit_img, bg_img, bg_count, data, gauss,
+                              px_center, px_width)
+
+    for index in range(len(data)):
+        if data[index, col_stat] == stat_run:
+            _numba_calc_error(index, real_img, fit_img, bg_img, bg_count, data,
+                              err_old, px_center, px_width, tolerance)
+
+@numba.jit(nopython=True)
+def _numba_iterate_3d(real_img, fit_img, bg_img, bg_count, data, dx,
+                      gauss, sign, clamp, err_old, px_center, px_width,
+                      hysteresis, margin, tolerance):
+    for index in range(len(data)):
+        cur_data = data[index]
+        if cur_data[col_stat] != stat_run:
+            continue
+
+        jacobian = np.zeros(6)
+        hessian = np.zeros((6, 6))
+        jt = np.empty(6)
+
+        for i in range(2 * px_width[index, 0] + 1):
+            img_j = px_center[index, 0] - px_width[index, 0] + i
+
+            x = dx[index, 0, i]
+            ex = gauss[index, 0, i]
+
+            for j in range(2 * px_width[index, 1] + 1):
+                img_i = px_center[index, 1] - px_width[index, 1] + j
+
+                y = dx[index, 1, j]
+                e = ex * gauss[index, 1, j]
+
+                fit_with_bg = (fit_img[img_i, img_j] +
+                               bg_img[img_i, img_j]/bg_count[img_i, img_j])
+                real_px = real_img[img_i, img_j]
+
+                jt[0] = e
+                jt[1] = 2. * cur_data[col_amp] * cur_data[col_wx] * x * e
+                jt[2] = -cur_data[col_amp] * e * x**2
+                jt[3] = 2. * cur_data[col_amp] * cur_data[col_wy] * y * e
+                jt[4] = -cur_data[col_amp] * e * y**2
+                jt[5] = 1.
+
+                t1 = 2.*(1. - real_px/fit_with_bg)
+                for k in range(jt.shape[0]):
+                    jacobian[k] += t1 * jt[k]
+
+                t2 = 2. * real_px / fit_with_bg**2
+                for k in range(hessian.shape[0]):
+                    for l in range(k+1):
+                        # only lower triangle is used in _eqn_solver/_chol
+                        hessian[k, l] += t2 * jt[k] * jt[l]
+
+        # Remove now. If fitting works, an update version is added below
+        _numba_remove_from_fit(index, fit_img, bg_img, bg_count, data, gauss,
+                               px_center, px_width)
+
+        res = _eqn_solver(hessian, jacobian)
+        bad_res = False
+        for n in res:
+            if not np.isfinite(n):
+                cur_data[col_stat] = stat_err
+                bad_res = True
+                break
+        if bad_res:
+            continue
+
+        update = np.zeros(num_peak_params)
+        update[col_amp] = res[0]
+        update[col_x] = res[1]
+        update[col_wx] = res[2]
+        update[col_y] = res[3]
+        update[col_wy] = res[4]
+        update[col_bg] = res[5]
+        _numba_update_peak(index, update, real_img, data, sign, clamp,
+                           px_center, hysteresis, margin)
+        if cur_data[col_stat] != stat_err:
+            px_width[index, 0] = _numba_calc_pixel_width(
+                cur_data[col_wx], px_width[index, 0], hysteresis, margin)
+            px_width[index, 1] = _numba_calc_pixel_width(
+                cur_data[col_wy], px_width[index, 1], hysteresis, margin)
             _numba_calc_peak(index, data, dx, gauss, px_center, px_width)
             _numba_add_to_fit(index, fit_img, bg_img, bg_count, data, gauss,
                               px_center, px_width)

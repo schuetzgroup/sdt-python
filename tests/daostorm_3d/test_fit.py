@@ -181,3 +181,24 @@ class FitterTest(unittest.TestCase):
         f.fit()
         np.testing.assert_allclose(f.peaks, orig["peaks"])
         np.testing.assert_allclose(f.residual, orig["residual"])
+
+    def test_iterate_3d_beads(self):
+        # produced by the original C implementation
+        orig = np.load(os.path.join(data_path, "beads_iter_3d.npz"))
+        f = fit_impl.Fitter3D(self.beads_img, self.beads_local_max, 1e-6)
+        f.iterate()
+        np.testing.assert_allclose(f.peaks, orig["peaks"])
+        np.testing.assert_allclose(f.residual, orig["residual"])
+
+    def test_fit_3d_beads(self):
+        # produced by the original C implementation
+        orig = np.load(os.path.join(data_path, "beads_fit_3d.npz"))
+        f = fit_impl.Fitter3D(self.beads_img, self.beads_local_max, 1e-6)
+        f.max_iterations = 10
+        f.fit()
+        np.testing.assert_allclose(f.peaks, orig["peaks"])
+        np.testing.assert_allclose(f.residual, orig["residual"])
+
+
+if __name__ == "__main__":
+    unittest.main()
