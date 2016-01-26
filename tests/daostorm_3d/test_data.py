@@ -3,8 +3,8 @@ import os
 
 import numpy as np
 
-from sdt.locate.daostorm_3d import feature
-from sdt.locate.daostorm_3d.data import Peaks
+from sdt.loc.daostorm_3d import feature
+from sdt.loc.daostorm_3d.data import Peaks
 
 
 path, f = os.path.split(os.path.abspath(__file__))

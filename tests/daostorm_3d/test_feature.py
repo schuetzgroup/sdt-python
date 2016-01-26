@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from sdt.locate.daostorm_3d import feature
+from sdt.loc.daostorm_3d import feature
 
 
 path, f = os.path.split(os.path.abspath(__file__))

@@ -3,8 +3,8 @@ import os
 
 import numpy as np
 
-from sdt.locate.daostorm_3d import fit_numba as fit
-from sdt.locate.daostorm_3d.data import feat_status, col_nums
+from sdt.loc.daostorm_3d import fit_numba as fit
+from sdt.loc.daostorm_3d.data import feat_status, col_nums
 
 
 path, f = os.path.split(os.path.abspath(__file__))
