@@ -3,7 +3,6 @@ import os
 
 import numpy as np
 
-from sdt.loc.daostorm_3d import feature
 from sdt.loc.daostorm_3d.data import Peaks
 
 
@@ -58,3 +57,7 @@ class TestPeaks(unittest.TestCase):
 
         rem = peaks.remove_bad(10., 0.5)
         np.testing.assert_allclose(rem, expected)
+
+
+if __name__ == "__main__":
+    unittest.main()

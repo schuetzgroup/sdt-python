@@ -3,18 +3,19 @@ import os
 
 import numpy as np
 
-from sdt.loc.daostorm_3d import feature
+from sdt.loc.daostorm_3d import api
+from sdt.loc.daostorm_3d import locate
 
 
 path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_feature")
+data_path = os.path.join(path, "data_api")
 img_path = os.path.join(path, "data_find")
 
 
 class Test(unittest.TestCase):
     def test_make_margin(self):
         img = np.arange(16).reshape((4, 4))
-        img_with_margin = feature.make_margin(img, 2)
+        img_with_margin = api.make_margin(img, 2)
         expected = np.array([[  5.,   4.,   4.,   5.,   6.,   7.,   7.,   6.],
                              [  1.,   0.,   0.,   1.,   2.,   3.,   3.,   2.],
                              [  1.,   0.,   0.,   1.,   2.,   3.,   3.,   2.],
@@ -28,5 +29,9 @@ class Test(unittest.TestCase):
     def test_locate_2dfixed(self):
         orig = np.load(os.path.join(data_path, "locate_2dfixed.npz"))["peaks"]
         frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
-        peaks = feature.locate(frame, 4., "2dfixed", 300., 5)
+        peaks = locate(frame, 4., "2dfixed", 300., 5)
         np.testing.assert_allclose(peaks, orig)
+
+
+if __name__ == "__main__":
+    unittest.main()
