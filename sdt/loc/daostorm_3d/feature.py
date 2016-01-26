@@ -5,15 +5,19 @@ import numpy as np
 from scipy import ndimage
 
 from .data import col_nums, feat_status, Peaks
+
+numba_available = False
 try:
-    from .fit_numba_impl import Fitter2DFixed as Fitter
-    from .find_numba import Finder
+    from . import fit_numba_impl
+    from . import find_numba
+    numba_available = True
 except ImportError as e:
     warnings.warn(
         "Failed to import the numba optimized fitter. Falling back to the "
         "slow pure python fitter. Error message: {}.".format(str(e)))
-    from .fit_impl import Fitter2DFixed as Fitter
-    from .find import Finder
+
+from . import fit_impl
+from . import find
 
 
 def make_margin(image, margin):
@@ -30,12 +34,34 @@ def make_margin(image, margin):
     return img_with_margin
 
 
-def locate(raw_image, diameter, threshold, max_iterations=20):
+def locate(raw_image, diameter, model, threshold, max_iterations=20,
+           engine="numba"):
     if (hasattr(raw_image, "frame_no") and isinstance(raw_image.frame_no,
                                                       numbers.Number)):
         curf = raw_image.frame_no
     else:
         curf = None
+
+    if engine == "numba" and numba_available:
+        Finder = find_numba.Finder
+        if model == "2dfixed":
+            Fitter = fit_numba_impl.Fitter2DFixed
+        elif model == "2d":
+            Fitter = fit_numba_impl.Fitter2D
+        elif model == "3d":
+            Fitter = fit_numba_impl.Fitter3D
+        else:
+            raise ValueError("Unknown model: " + str(model))
+    else:
+        Finder = find.Finder
+        if model == "2dfixed":
+            Fitter = fit_impl.Fitter2DFixed
+        elif model == "2d":
+            Fitter = fit_impl.Fitter2D
+        elif model == "3d":
+            Fitter = fit_impl.Fitter3D
+        else:
+            raise ValueError("Unknown model: " + str(model))
 
     # prepare images
     margin = 10

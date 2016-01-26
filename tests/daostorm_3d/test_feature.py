@@ -28,5 +28,5 @@ class Test(unittest.TestCase):
     def test_locate_2dfixed(self):
         orig = np.load(os.path.join(data_path, "locate_2dfixed.npz"))["peaks"]
         frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
-        peaks = feature.locate(frame, 4., 300., 5)
+        peaks = feature.locate(frame, 4., "2dfixed", 300., 5)
         np.testing.assert_allclose(peaks, orig)
