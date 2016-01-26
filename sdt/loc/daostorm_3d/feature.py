@@ -6,13 +6,13 @@ from scipy import ndimage
 
 from .data import col_nums, feat_status, Peaks
 try:
-    from .fit_numba import Fitter
+    from .fit_numba_impl import Fitter2DFixed as Fitter
     from .find_numba import Finder
 except ImportError as e:
     warnings.warn(
         "Failed to import the numba optimized fitter. Falling back to the "
         "slow pure python fitter. Error message: {}.".format(str(e)))
-    from .fit import Fitter
+    from .fit_impl import Fitter2DFixed as Fitter
     from .find import Finder
 
 

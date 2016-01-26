@@ -1,6 +1,3 @@
-import collections
-import types
-
 import numpy as np
 
 from .data import col_nums, feat_status, Peaks
@@ -25,7 +22,7 @@ class Fitter(object):
 
         self._data[:, [col_nums.wx, col_nums.wy]] = \
             1 / (2 * self._data[:, [col_nums.wx, col_nums.wy]]**2)
-        self._pixel_width = self.calc_pixel_width(
+        self._pixel_width = self._calc_pixel_width(
             self._data[:, [col_nums.wx, col_nums.wy]],
             np.full((len(self._data), 2), -10, dtype=np.int))
 
@@ -34,11 +31,11 @@ class Fitter(object):
         self._dx = np.zeros((len(self._data), 2, 2*self.margin+1))
         self._gauss = np.zeros((len(self._data), 2, 2*self.margin+1))
 
-        self.calc_fit()
+        self._calc_fit()
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
-            self.calc_error(i)
+            self._calc_error(i)
 
-    def calc_pixel_width(self, new, old):
+    def _calc_pixel_width(self, new, old):
         ret = np.copy(old)
 
         neg_mask = (new < 0)
@@ -53,16 +50,16 @@ class Fitter(object):
 
         return ret.astype(np.int)
 
-    def calc_fit(self):
+    def _calc_fit(self):
         self._fit_image = np.ones(self._image.shape)
         self._bg_image = np.zeros(self._image.shape)
         self._bg_count = np.zeros(self._image.shape, dtype=np.int)
 
         for i in np.where(self._data[:, col_nums.stat] != feat_status.err)[0]:
-            self.calc_peak(i)
-            self.add_to_fit(i)
+            self._calc_peak(i)
+            self._add_to_fit(i)
 
-    def calc_peak(self, index):
+    def _calc_peak(self, index):
         ex = self._gauss[index]
         dx = self._dx[index]
         x, y = self._data[index, [col_nums.x, col_nums.y]]
@@ -79,7 +76,7 @@ class Fitter(object):
         ex[...] = np.exp(-dx**2 * self._data[index, [col_nums.wx, col_nums.wy],
                                              np.newaxis])
 
-    def add_to_fit(self, index):
+    def _add_to_fit(self, index):
         ex = self._gauss[index]
         amp, bg = self._data[index, [col_nums.amp, col_nums.bg]]
         p = amp * ex[0, np.newaxis, :] * ex[1, :, np.newaxis]
@@ -93,7 +90,7 @@ class Fitter(object):
         self._bg_image[sel_y, sel_x] += bg
         self._bg_count[sel_y, sel_x] += 1
 
-    def remove_from_fit(self, index):
+    def _remove_from_fit(self, index):
         ex = self._gauss[index]
         amp, bg = self._data[index, [col_nums.amp, col_nums.bg]]
         p = amp * ex[0, np.newaxis, :] * ex[1, :, np.newaxis]
@@ -107,12 +104,13 @@ class Fitter(object):
         self._bg_image[sel_y, sel_x] -= bg
         self._bg_count[sel_y, sel_x] -= 1
 
-    def get_fit_with_bg(self):
+    @property
+    def fit_with_bg(self):
         bg = self._bg_image/np.ma.masked_less_equal(self._bg_count, 0)
         return self._fit_image + bg.data
 
-    def calc_error(self, index):
-        fimg = self.get_fit_with_bg()
+    def _calc_error(self, index):
+        fimg = self.fit_with_bg
         px, py = self._pixel_center[index]
         wx, wy = self._pixel_width[index]
         cur_data = self._data[index]
@@ -136,7 +134,7 @@ class Fitter(object):
                 cur_data[col_nums.stat] != feat_status.err):
             cur_data[col_nums.stat] = feat_status.conv
 
-    def update_peak(self, index, update):
+    def _update_peak(self, index, update):
         cur_sign = self._sign[index]
         cur_clamp = self._clamp[index]
         cur_data = self._data[index]
@@ -173,61 +171,13 @@ class Fitter(object):
 
         # TODO: Check if z in range
 
-    def iterate_2d_fixed(self):
-        for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
-            px, py = self._pixel_center[i]
-            pwx, pwy = self._pixel_width[i]
-            cur_data = self._data[i]
-            amp = cur_data[col_nums.amp]
-            fwx, fwy = self._data[i, [col_nums.wx, col_nums.wy]]
-            cur_gauss = self._gauss[i]
-            fimg = self.get_fit_with_bg()
-
-            sel_x = slice(px-pwx, px+pwx+1)
-            sel_y = slice(py-pwy, py+pwy+1)
-            fimg_sel = fimg[sel_y, sel_x]
-            data_sel = self._image[sel_y, sel_x]
-            e = (cur_gauss[0, np.newaxis, :2*pwx+1] *
-                 cur_gauss[1, :2*pwy+1, np.newaxis])
-
-            dx = self._dx[i, 0, np.newaxis, :2*pwx+1]
-            dy = self._dx[i, 1, :2*pwy+1, np.newaxis]
-
-            jt = np.broadcast_arrays(e, 2*amp*fwx*dx*e, 2*amp*fwx*dy*e, 1.)
-            jt = np.array(jt)
-            jacobian = jt * 2. * (1 - data_sel/fimg_sel)[np.newaxis, ...]
-            jacobian = np.sum(jacobian, axis=(1, 2))
-
-            jt2 = jt * 2. * (data_sel/fimg_sel**2)[np.newaxis, ...]
-            hessian = (jt[np.newaxis, ...] * jt2[:, np.newaxis, ...])
-            hessian = np.sum(hessian, axis=(2, 3))
-
-            # Remove now. If fitting works, an update version is added below
-            self.remove_from_fit(i)
-
-            try:
-                res = np.linalg.solve(hessian, jacobian)
-            except np.linalg.LinAlgError:
-                cur_data[col_nums.stat] = feat_status.err
-                continue
-
-            update = np.zeros(len(col_nums))
-            update[col_nums.amp] = res[0]  # update data
-            update[col_nums.x] = res[1]
-            update[col_nums.y] = res[2]
-            update[col_nums.bg] = res[3]
-            self.update_peak(i, update)
-
-            if cur_data[col_nums.stat] != feat_status.err:
-                self.calc_peak(i)
-                self.add_to_fit(i)  # add new peak
-
-        for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
-            self.calc_error(i)
+    def iterate(self):
+        raise NotImplementedError(
+            "iterate() has to be implemented by the subclass")
 
     def fit(self):
         for i in range(self.max_iterations):
-            self.iterate_2d_fixed()
+            self.iterate()
             if not np.any(self._data[:, col_nums.stat] == feat_status.run):
                 break
         return i + 1
@@ -248,5 +198,5 @@ class Fitter(object):
 
     @property
     def residual(self):
-        self.calc_fit()  # TODO: is this necessary?
+        self._calc_fit()  # TODO: is this necessary?
         return self._image - self._fit_image
