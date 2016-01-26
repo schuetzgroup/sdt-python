@@ -246,11 +246,13 @@ def _numba_iterate_2d_fixed(real_img, fit_img, bg_img, bg_count, data, dx,
                 jt[3] = 1.
 
                 t1 = 2.*(1. - real_px/fit_with_bg)
-                jacobian += t1 * jt
+                for k in range(jt.shape[0]):
+                    jacobian[k] += t1 * jt[k]
 
                 t2 = 2. * real_px / fit_with_bg**2
                 for k in range(hessian.shape[0]):
-                    for l in range(hessian.shape[1]):
+                    for l in range(k+1):
+                        # only lower triangle is used in _eqn_solver/_chol
                         hessian[k, l] += t2 * jt[k] * jt[l]
 
         # Remove now. If fitting works, an update version is added below
