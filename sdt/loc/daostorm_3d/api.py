@@ -2,9 +2,12 @@ import numbers
 import warnings
 
 import numpy as np
-from scipy import ndimage
+import pandas as pd
 
-from .data import col_nums, feat_status, Peaks
+from .data import col_nums, feat_status
+from . import fit_impl
+from . import find
+from . import algorithm
 
 numba_available = False
 try:
@@ -15,23 +18,6 @@ except ImportError as e:
     warnings.warn(
         "Failed to import the numba optimized fitter. Falling back to the "
         "slow pure python fitter. Error message: {}.".format(str(e)))
-
-from . import fit_impl
-from . import find
-
-
-def make_margin(image, margin):
-    img_with_margin = np.empty(np.array(image.shape) + 2*margin)
-    img_with_margin[margin:-margin, margin:-margin] = image
-    img_with_margin[:margin, :] = np.flipud(
-        img_with_margin[margin:2*margin, :])
-    img_with_margin[-margin:, :] = np.flipud(
-        img_with_margin[-2*margin:-margin, :])
-    img_with_margin[:, :margin] = np.fliplr(
-        img_with_margin[:, margin:2*margin])
-    img_with_margin[:, -margin:] = np.fliplr(
-        img_with_margin[:, -2*margin:-margin])
-    return img_with_margin
 
 
 def locate(raw_image, diameter, model, threshold, max_iterations=20,
@@ -52,7 +38,7 @@ def locate(raw_image, diameter, model, threshold, max_iterations=20,
             Fitter = fit_numba_impl.Fitter3D
         else:
             raise ValueError("Unknown model: " + str(model))
-    else:
+    elif engine == "python":
         Finder = find.Finder
         if model == "2dfixed":
             Fitter = fit_impl.Fitter2DFixed
@@ -62,65 +48,33 @@ def locate(raw_image, diameter, model, threshold, max_iterations=20,
             Fitter = fit_impl.Fitter3D
         else:
             raise ValueError("Unknown model: " + str(model))
+    else:
+        raise ValueError("Unknown engine: " + str(engine))
 
-    # prepare images
-    margin = 10
-    residual = image = make_margin(raw_image, margin)
+    peaks = algorithm.locate(raw_image, diameter, threshold, max_iterations,
+                             Finder, Fitter)
 
-    # Initialize peak finding
-    cur_threshold = min(max_iterations, 4) * threshold
-    peaks = Peaks(0)
-    background_gauss_size = 8
-    neighborhood_radius = 5. * diameter / 2.
-    new_peak_radius = 1.
+    # Create DataFrame
+    converged_peaks = peaks[peaks[:, col_nums.stat] == feat_status.conv]
 
-    finder = Finder(image, diameter)
+    df = pd.DataFrame(converged_peaks[:, [col_nums.x, col_nums.y, col_nums.amp,
+                                          col_nums.bg]],
+                      columns=["x", "y", "signal", "bg"])
 
-    for i in range(max_iterations):
-        # find local maxima
-        peaks_found = finder.find(residual, cur_threshold)
-        peaks = peaks.merge(peaks_found, new_peak_radius, neighborhood_radius,
-                            compat=True)
+    # integral of the 2D Gaussian 2 * pi * amplitude * sigma_x * sigma_y
+    df["mass"] = (2 * np.pi * np.prod(
+        converged_peaks[:, [col_nums.wx, col_nums.wy, col_nums.amp]], axis=1))
 
-        # decrease threshold for the next round
-        if cur_threshold > threshold:
-            cur_threshold -= threshold
-            threshold_updated = True
-        else:
-            threshold_updated = False
+    if model in ("3D", "Z"):
+        df["size_x"] = converged_peaks[:, col_nums.wx]
+        df["size_y"] = converged_peaks[:, col_nums.wy]
+    else:
+        df["size"] = converged_peaks[:, col_nums.wx]
 
-        ### Peak fitting
-        fitter = Fitter(image, peaks)
-        fitter.fit()
-        peaks = fitter.peaks
-        # get good peaks
-        peaks = peaks.remove_bad(0.9*threshold, 0.5*diameter/2.)
+    if hasattr(raw_image, "frame_no") and raw_image.frame_no is not None:
+        df["frame"] = raw_image.frame_no
 
-        # remove close peaks
-        peaks = peaks.remove_close(diameter/2., neighborhood_radius)
-        # refit
-        fitter = Fitter(image, peaks)
-        fitter.fit()
-        peaks = fitter.peaks
-        residual = fitter.residual
-        # get good peaks again
-        peaks = peaks.remove_bad(0.9*threshold, 0.5*diameter/2.)
-
-        # subtract background from residual, update background variable
-        # estimate the background
-        est_bg = ndimage.filters.gaussian_filter(
-            residual, (background_gauss_size, background_gauss_size))
-        residual -= est_bg
-        residual += est_bg.mean()
-        finder.background = residual.mean()
-
-        # no peaks found, threshold not updated, we are finished
-        if (not len(peaks_found)) and (not threshold_updated):
-            break
-
-    peaks[:, [col_nums.x, col_nums.y]] -= margin
-
-    return peaks
+    return df
 
 
 def batch(frames):
