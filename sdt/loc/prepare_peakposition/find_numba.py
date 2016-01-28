@@ -44,6 +44,28 @@ def _numba_local_maxima(idx_of_max, mass, bg, image, threshold, im_size,
 
     for i in range(bg_radius+1, image.shape[0]-bg_radius-1):
         for j in range(bg_radius+1, image.shape[1]-bg_radius-1):
+
+            # see whether current pixel is a local maximum
+            pix_val = image[i, j]
+
+            is_max = True
+            for k in range(-search_radius, search_radius+1):
+                for l in range(-search_radius, search_radius+1):
+                    if (k <= 0) and (l <= 0):
+                        if pix_val < image[i+k, j+l]:
+                            is_max = False
+                            break
+                    else:
+                        if pix_val <= image[i+k, j+l]:
+                            is_max = False
+                            break
+
+                if not is_max:
+                    break
+
+            if not is_max:
+                continue
+
             # calculate mass
             cur_mass = 0.
             for k in range(-mass_radius, mass_radius+1):
@@ -73,26 +95,6 @@ def _numba_local_maxima(idx_of_max, mass, bg, image, threshold, im_size,
             cur_mass_corr = cur_mass - cur_avg_bg*mass_area
 
             if cur_mass_corr <= threshold:
-                continue
-
-            pix_val = image[i, j]
-
-            is_max = True
-            for k in range(-search_radius, search_radius+1):
-                for l in range(-search_radius, search_radius+1):
-                    if (k <= 0) and (l <= 0):
-                        if pix_val < image[i+k, j+l]:
-                            is_max = False
-                            break
-                    else:
-                        if pix_val <= image[i+k, j+l]:
-                            is_max = False
-                            break
-
-                if not is_max:
-                    break
-
-            if not is_max:
                 continue
 
             if cnt >= max_cnt:
