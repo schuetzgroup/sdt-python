@@ -9,6 +9,8 @@ class Finder(object):
         self.peak_radius = peak_diameter/2.
         self.search_radius = search_radius
         self.im_size = im_size
+        self.mass_radius = im_size - 1
+        self.bg_radius = im_size + 1
 
     def find(self, image, threshold):
         coords, i, bg = self.local_maxima(image, threshold)
@@ -29,14 +31,12 @@ class Finder(object):
         image = image.astype(np.float)
 
         # radius around a local max for intensity guess
-        mass_radius = self.im_size - 1
-        mass_area = (2*mass_radius + 1)**2
+        mass_area = (2*self.mass_radius + 1)**2
         # radius around a local max for background guess
-        bg_radius = self.im_size + 1
-        bg_mask = np.ones((2*bg_radius + 1,)*2)
+        bg_mask = np.ones((2*self.bg_radius + 1,)*2)
         # exclude interior, which leaves a ring of two pixels, since
         # bg_radius - amp_radius = 2
-        ring_size = bg_radius - mass_radius
+        ring_size = self.bg_radius - self.mass_radius
         bg_mask[ring_size:-ring_size, ring_size:-ring_size] = 0
         # divide so that we get the average background when convolving below
         bg_mask /= bg_mask.sum()
@@ -44,9 +44,8 @@ class Finder(object):
         # each pixel of mass_img is the sum of all pixels within a box of
         # mass_radius width, i. e. a not background corrected guess for the
         # total intensity of the peaks
-        mass_img = ndimage.filters.convolve(image,
-                                            np.ones((2*mass_radius + 1,)*2),
-                                            mode="constant")
+        mass_img = ndimage.filters.convolve(
+            image, np.ones((2*self.mass_radius + 1,)*2), mode="constant")
         # similarly, guess the average background
         bg_img = ndimage.filters.convolve(image, bg_mask, mode="constant")
         # background corrected intensities
@@ -61,8 +60,8 @@ class Finder(object):
 
         # discard maxima within `margin` pixels of the edges
         in_margin = np.any(
-            (candidates <= bg_radius) |
-            (candidates >= np.array(image.shape) - bg_radius - 1), axis=1)
+            (candidates <= self.bg_radius) |
+            (candidates >= np.array(image.shape) - self.bg_radius - 1), axis=1)
         candidates = candidates[~in_margin]
 
         # Get rid of peaks too close togther, daostorm_3d-style

@@ -14,9 +14,9 @@ class Finder(find.Finder):
             mass = np.empty(self.max_num_peaks)
             bg = np.empty(self.max_num_peaks)
 
-            num_peaks = _numba_local_maxima(idx_of_max, mass, bg, image,
-                                            threshold, self.im_size,
-                                            self.search_radius,)
+            num_peaks = _numba_local_maxima(
+                idx_of_max, mass, bg, image, threshold, self.mass_radius,
+                self.bg_radius, self.search_radius,)
 
             if num_peaks >= 0:
                 break
@@ -31,11 +31,9 @@ class Finder(find.Finder):
 
 
 @numba.jit(nopython=True)
-def _numba_local_maxima(idx_of_max, mass, bg, image, threshold, im_size,
-                        search_radius):
-    mass_radius = im_size - 1
+def _numba_local_maxima(idx_of_max, mass, bg, image, threshold, mass_radius,
+                        bg_radius, search_radius):
     mass_area = (2*mass_radius + 1)**2
-    bg_radius = im_size + 1
     bg_area = (2*bg_radius + 1)**2 - mass_area
     ring_size = bg_radius - mass_radius
 

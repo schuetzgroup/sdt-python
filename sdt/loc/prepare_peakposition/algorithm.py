@@ -4,6 +4,7 @@ def locate(raw_image, diameter, threshold, im_size, finder_class,
     peaks = finder.find(raw_image, threshold)
 
     fitter = fitter_class(raw_image, peaks)
+    # fitter.margin = finder.im_size
     fitter.fit()
 
     return peaks
