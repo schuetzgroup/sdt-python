@@ -4,14 +4,14 @@ import warnings
 import numpy as np
 import pandas as pd
 
-from ..daostorm.data import col_nums, feat_status
-from ..daostorm import fit_impl
+from ..daostorm_3d.data import col_nums, feat_status
+from ..daostorm_3d import fit_impl
 from . import find
 from . import algorithm
 
 numba_available = False
 try:
-    from ..daostorm import fit_numba_impl
+    from ..daostorm_3d import fit_numba_impl
     from . import find_numba
     numba_available = True
 except ImportError as e:
@@ -20,7 +20,7 @@ except ImportError as e:
         "slow pure python fitter. Error message: {}.".format(str(e)))
 
 
-def locate(raw_image, diameter, model, threshold, im_size=2, engine="numba"):
+def locate(raw_image, diameter, threshold, im_size=2, engine="numba"):
     if engine == "numba" and numba_available:
         Finder = find_numba.Finder
         Fitter = fit_numba_impl.Fitter2D
