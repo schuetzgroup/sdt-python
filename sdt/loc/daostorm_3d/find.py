@@ -46,7 +46,7 @@ class Finder(object):
         image : numpy.ndarray
             The image to analyze
         threshold : float
-            Minumum peak intensity
+            Minumum peak intensity (above background)
 
         Returns
         -------
@@ -85,8 +85,8 @@ class Finder(object):
         # using >= (greater or equal) below in the loop
         mask_ge = mask.copy()
         mask_ge[:radius+1, :radius+1] = False
-        # pixels in the top left quarter (including the central pixel) are compared
-        # using > (greater)
+        # pixels in the top left quarter (including the central pixel) are
+        # compared using > (greater)
         mask_gt = mask.copy()
         mask_gt[mask_ge] = False
 

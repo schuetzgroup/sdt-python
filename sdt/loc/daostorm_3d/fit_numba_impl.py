@@ -16,7 +16,7 @@ class Fitter2DFixed(fit_numba.Fitter):
             self._image, self._fit_image, self._bg_image, self._bg_count,
             self._data, self._dx, self._gauss, self._sign, self._clamp,
             self._err_old, self._pixel_center, self._pixel_width,
-            self.hysteresis, self.margin, self._tolerance)
+            self.hysteresis, self._margin, self._tolerance)
 
 
 class Fitter2D(fit_numba.Fitter):
@@ -25,7 +25,7 @@ class Fitter2D(fit_numba.Fitter):
             self._image, self._fit_image, self._bg_image, self._bg_count,
             self._data, self._dx, self._gauss, self._sign, self._clamp,
             self._err_old, self._pixel_center, self._pixel_width,
-            self.hysteresis, self.margin, self._tolerance)
+            self.hysteresis, self._margin, self._tolerance)
 
 
 class Fitter3D(fit_numba.Fitter):
@@ -34,7 +34,7 @@ class Fitter3D(fit_numba.Fitter):
             self._image, self._fit_image, self._bg_image, self._bg_count,
             self._data, self._dx, self._gauss, self._sign, self._clamp,
             self._err_old, self._pixel_center, self._pixel_width,
-            self.hysteresis, self.margin, self._tolerance)
+            self.hysteresis, self._margin, self._tolerance)
 
 
 @numba.jit(nopython=True)

@@ -25,7 +25,7 @@ class FitterTest(unittest.TestCase):
     def test_calc_pixel_width(self):
         float_width = np.array([[1., 0.5], [11, 2.1], [3.5, 1.]])
         expected = (4 * float_width).astype(np.int)
-        expected[expected > self.fitter.margin] = self.fitter.margin
+        expected[expected > self.fitter._margin] = self.fitter._margin
         float_width = 1./(2*float_width**2)
         float_width[0, 0] = -1.
         expected[0, 0] = 1

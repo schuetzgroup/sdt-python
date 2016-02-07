@@ -5,14 +5,14 @@ from .data import col_nums, feat_status, Peaks
 
 class Fitter(object):
     hysteresis = 0.6
-    margin = 10
     default_clamp = np.array([1000., 1., 0.3, 1., 0.3, 100., 0.3, 1., 1.])
     max_iterations = 200
 
-    def __init__(self, image, peaks, tolerance=1e-6):
+    def __init__(self, image, peaks, tolerance=1e-6, margin=10):
         self._data = peaks.copy()
         self._image = image
         self._tolerance = tolerance
+        self._margin = margin
 
         self._pixel_center = peaks[:, [col_nums.x, col_nums.y]].astype(np.int)
 
@@ -28,8 +28,8 @@ class Fitter(object):
 
         self._clamp = np.vstack([self.default_clamp]*len(self._data))
         self._sign = np.zeros((len(self._data), len(col_nums)), dtype=np.int)
-        self._dx = np.zeros((len(self._data), 2, 2*self.margin+1))
-        self._gauss = np.zeros((len(self._data), 2, 2*self.margin+1))
+        self._dx = np.zeros((len(self._data), 2, 2*self._margin+1))
+        self._gauss = np.zeros((len(self._data), 2, 2*self._margin+1))
 
         self._calc_fit()
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
@@ -46,7 +46,7 @@ class Fitter(object):
         hyst_mask = (np.abs(tmp - old - 0.5) > self.hysteresis)
         ret[~neg_mask & hyst_mask] = tmp[~neg_mask & hyst_mask]
 
-        ret[ret > self.margin] = self.margin
+        ret[ret > self._margin] = self._margin
 
         return ret.astype(np.int)
 
@@ -162,8 +162,8 @@ class Fitter(object):
         img_shape = np.array(self._image.shape)
         # cur_px[0] is x coordinate und corresponds to the column index
         # thus reverse cur_px
-        if ((cur_px[::-1] <= self.margin).any() or
-                (cur_px[::-1] >= (img_shape - self.margin - 1)).any()):
+        if ((cur_px[::-1] <= self._margin).any() or
+                (cur_px[::-1] >= (img_shape - self._margin - 1)).any()):
             cur_data[col_nums.stat] = feat_status.err
 
         if (cur_data[[col_nums.amp, col_nums.wx, col_nums.wy]] < 0.).any():
