@@ -20,7 +20,7 @@ except ImportError as e:
         "slow pure python fitter. Error message: {}.".format(str(e)))
 
 
-def locate(raw_image, diameter, threshold, im_size=2, engine="numba"):
+def locate(raw_image, radius, threshold, im_size=2, engine="numba"):
     if engine == "numba" and numba_available:
         Finder = find_numba.Finder
         Fitter = fit_numba_impl.Fitter2D
@@ -30,7 +30,7 @@ def locate(raw_image, diameter, threshold, im_size=2, engine="numba"):
     else:
         raise ValueError("Unknown engine: " + str(engine))
 
-    peaks = algorithm.locate(raw_image, diameter, threshold, im_size,
+    peaks = algorithm.locate(raw_image, radius, threshold, im_size,
                              Finder, Fitter)
 
     # Create DataFrame

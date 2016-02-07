@@ -5,8 +5,8 @@ from ..daostorm_3d.data import Peaks, col_nums, feat_status
 
 
 class Finder(object):
-    def __init__(self, peak_diameter, im_size=2, search_radius=2):
-        self.peak_radius = peak_diameter/2.
+    def __init__(self, peak_radius, im_size=2, search_radius=2):
+        self.peak_radius = peak_radius
         self.search_radius = search_radius
         self.im_size = im_size
         self.mass_radius = im_size - 1

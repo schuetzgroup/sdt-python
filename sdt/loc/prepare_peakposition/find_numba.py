@@ -16,7 +16,7 @@ class Finder(find.Finder):
 
             num_peaks = _numba_local_maxima(
                 idx_of_max, mass, bg, image, threshold, self.mass_radius,
-                self.bg_radius, self.search_radius,)
+                self.bg_radius, self.search_radius)
 
             if num_peaks >= 0:
                 break
