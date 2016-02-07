@@ -18,7 +18,9 @@ def main(pkcfile, img_file, frame_nos):
 
     par = loadmat(pkcfile, squeeze_me=True, struct_as_record=False)["par"]
     imsize = par.fitimsize[0] // 2
+    print("imsize: {}".format(imsize))
     thresh = par.threshold_red
+    print("threshold: {}".format(thresh))
     diameter = 2.885390082  # FWHM is 2, thus sigma = 2/log(2)
 
     max_radius = 2  # don't consider anything farther apart a pair
@@ -32,7 +34,7 @@ def main(pkcfile, img_file, frame_nos):
             continue
 
         print("frame {}:".format(f.frame_no))
-        new_pkc = locate(f, diameter, thresh, imsize)
+        new_pkc = locate(f, diameter, thresh, imsize, engine="numba")
         cur_pkc = pkc[pkc["frame"] == f.frame_no]
 
         # find pairs
