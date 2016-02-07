@@ -236,10 +236,6 @@ def load_pkmatrix(filename, green=False, adjust_index=["x", "y", "frame"]):
     ----------
     filename : str
         Name of the file to load
-    load_protocol : bool
-        Look for a _protocol.mat file (i. e. replace the "_positions.mat" part
-        of `filename` with "_protocol.mat") in order to load the column names.
-        This may be buggy for some older versions of particle_tracking_2D.
     green : bool
         If True, load ``pkmatrix_green``, which is the right half of the image
         when using ``prepare_peakposition`` in 2 color mode. Otherwise, load
@@ -272,9 +268,9 @@ def load_pkmatrix(filename, green=False, adjust_index=["x", "y", "frame"]):
             df[c] -= 1
 
     if "size" in df.columns:
-        # the size in a pkmatrix is FWHM; devide by 2. to get some kind of
-        # radius (instead of diameter)
-        df["size"] /= 2.
+        # the size in a pkmatrix is FWHM; convert to sigma of the gaussian
+        # sigma = FWHM/sqrt(8*log(2))
+        df["size"] /= 2.3548200450309493
 
     return df
 
