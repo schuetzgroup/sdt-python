@@ -60,8 +60,8 @@ class Finder(object):
 
         # discard maxima within `margin` pixels of the edges
         in_margin = np.any(
-            (candidates <= self.bg_radius) |
-            (candidates >= np.array(image.shape) - self.bg_radius - 1), axis=1)
+            (candidates < self.bg_radius) |
+            (candidates >= np.array(image.shape) - self.bg_radius), axis=1)
         candidates = candidates[~in_margin]
 
         # Get rid of peaks too close togther, daostorm_3d-style

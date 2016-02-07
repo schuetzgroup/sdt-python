@@ -40,8 +40,8 @@ def _numba_local_maxima(idx_of_max, mass, bg, image, threshold, mass_radius,
     cnt = 0
     max_cnt = len(idx_of_max)
 
-    for i in range(bg_radius+1, image.shape[0]-bg_radius-1):
-        for j in range(bg_radius+1, image.shape[1]-bg_radius-1):
+    for i in range(bg_radius, image.shape[0]-bg_radius):
+        for j in range(bg_radius, image.shape[1]-bg_radius):
 
             # see whether current pixel is a local maximum
             pix_val = image[i, j]
