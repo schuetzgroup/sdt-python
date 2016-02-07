@@ -1,3 +1,8 @@
+"""Find local maxima in an image
+
+This module provides the :py:class:`Finder` class, which implements
+local maximum detection and filtering.
+"""
 import numpy as np
 from scipy import ndimage
 
@@ -5,7 +10,23 @@ from ..daostorm_3d.data import Peaks, col_nums, feat_status
 
 
 class Finder(object):
-    def __init__(self, peak_radius, im_size=2, search_radius=2):
+    """Routines for finding local maxima in an image"""
+    def __init__(self, peak_radius, im_size, search_radius=2):
+        """Constructor
+
+        Parameters
+        ----------
+        peak_radius : float
+            Initial guess of peaks' radii
+        im_size : int
+            The maximum of a box used for peak fitting. Should be larger than
+            the peak. E. g. setting im_size=3 will use 7x7 (2*3+1 = 7) pixel
+            boxes.
+        search_radius : int, optional
+            Search for local maxima within this radius. That is, if two local
+            maxima are within search_radius of each other, only the greater
+            one will be taken. Defaults to 2
+        """
         self.peak_radius = peak_radius
         self.search_radius = search_radius
         self.im_size = im_size
@@ -13,6 +34,26 @@ class Finder(object):
         self.bg_radius = im_size + 1
 
     def find(self, image, threshold):
+        """Find and filter local maxima
+
+        This is a frontend to :py:meth:`local_maxima` which returns the data
+        in a structure compatible with :py:mod:`sdt.daostorm_3d`.
+
+        Parameters
+        ----------
+        image : numpy.ndarray
+            2D image data
+        threshold : float
+            Only accept maxima for which the estimated total intensity (mass)
+            of the feature is above threshold.
+
+        Returns
+        -------
+        sdt.daostorm_3d.data.Peaks
+            Data structure containing initial guesses for fitting using the
+            :py:mod:`sdt.daostorm_3d` fitting functions
+        """
+
         coords, i, bg = self.local_maxima(image, threshold)
 
         ret = Peaks(len(coords))
@@ -27,6 +68,34 @@ class Finder(object):
         return ret
 
     def local_maxima(self, image, threshold):
+        """Find and filter local maxima
+
+        The actual finding and filtering function. Usually one would not call
+        it directly, but use :py:meth:`find`. However, this can be overridden
+        in a subclass.
+
+        Parameters
+        ----------
+        image : numpy.ndarray
+            2D image data
+        threshold : float
+            Only accept maxima for which the estimated total intensity (mass)
+            of the feature is above threshold.
+
+        Returns
+        -------
+        indices : numpy.ndarray
+            n x 2 array, where n is the number of maxima
+            Each row is a pair of indices (row, column) of a local maximum in
+            `image`.
+        mass : numpy.ndarray
+            1D array, each entry is an estimate for the background corrected
+            mass corresponding to an index pair.
+        bg : numpy.ndarray
+            1D array, each entry is an estimate for the background
+            corresponding to an index pair.
+        """
+
         # needed for convolve, otherwise the result will be int for int images
         image = image.astype(np.float)
 

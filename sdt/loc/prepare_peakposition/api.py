@@ -1,4 +1,7 @@
-import numbers
+"""API for the prepare_peakposition feature finding and fitting algorithm
+
+Provides the standard :py:func:`locate` and :py:func:`batch` functions.
+"""
 import warnings
 
 import numpy as np
@@ -20,8 +23,47 @@ except ImportError as e:
         "slow pure python fitter. Error message: {}.".format(str(e)))
 
 
-def locate(raw_image, radius, threshold, im_size=2, engine="numba",
+def locate(raw_image, radius, threshold, im_size, engine="numba",
            max_iterations=200):
+    """Locate bright, Gaussian-like features in an image
+
+    This implements an algorithm similar to the `prepare_peakposition`
+    MATLAB program. It uses a much faster fitting algorithm (borrowed from the
+    :py:mod:`sdt.loc.daostorm_3d` module).
+
+    Parameters
+    ----------
+    raw_image : array-like
+        Raw image data
+    radius : float
+        This is in units of pixels. Initial guess for the radius of the
+        features.
+    threshold : float
+        Use a number roughly equal to the integrated intensity (mass) of the
+        dimmest peak (minus the CCD baseline) that should be detected. If this
+        is too low more background will be detected. If it is too high more
+        peaks will be missed.
+    im_size : int
+        The maximum of a box used for peak fitting. Should be larger than the
+        peak. E. g. setting im_size=3 will use 7x7 (2*3+1 = 7) pixel boxes.
+
+    Returns
+    -------
+    DataFrame([x, y, signal, bg, mass, size, frame])
+        x and y are the coordinates of the features. mass is the total
+        intensity of the feature, bg the background per pixel. size gives the
+        radii (sigma) of the features. If `raw_image` has a ``frame_no``
+        attribute, a ``frame`` column with this information will also be
+        appended.
+
+    Other parameters
+    ----------------
+    engine : {"python", "numba"}, optional
+        Which engine to use for calculations. "numba" is much faster than
+        "python", but requires numba to be installed.
+    max_iterations : int, optional
+        Maximum number of iterations for peak fitting. Default: 200
+    """
     if engine == "numba" and numba_available:
         Finder = find_numba.Finder
         Fitter = fit_numba_impl.Fitter2D
@@ -71,13 +113,16 @@ def batch(frames, radius, threshold, im_size, engine="numba",
         dimmest peak (minus the CCD baseline) that should be detected. If this
         is too low more background will be detected. If it is too high more
         peaks will be missed.
+    im_size : int
+        The maximum of a box used for peak fitting. Should be larger than the
+        peak. E. g. setting im_size=3 will use 7x7 (2*3+1 = 7) pixel boxes.
 
     Returns
     -------
     DataFrame([x, y, signal, bg, mass, size, frame])
         x and y are the coordinates of the features. mass is the total
         intensity of the feature, bg the background per pixel. size gives the
-        radii (sigma) of the featurs. frame is the frame number.
+        radii (sigma) of the features. frame is the frame number.
 
     Other parameters
     ----------------
