@@ -125,7 +125,7 @@ class MainWindow(QMainWindow):
         self._locOptionsDock.widget().numFrames = (0 if (ims is None)
                                                    else len(ims))
 
-    _workerSignal = pyqtSignal(np.ndarray, dict, types.ModuleType)
+    _workerSignal = pyqtSignal(np.ndarray, dict, types.FunctionType)
 
     @pyqtSlot(int)
     def on_viewer_frameReadError(self, frameno):
@@ -143,9 +143,10 @@ class MainWindow(QMainWindow):
             # worker needs to run again immediately after it finishes
             self._newWorkerJob = True
             return
-        self._workerSignal.emit(curFrame,
-                                self._locOptionsDock.widget().getOptions(),
-                                self._locOptionsDock.widget().getModule())
+
+        self._workerSignal.emit(
+            curFrame, self._locOptionsDock.widget().options,
+            self._locOptionsDock.widget().method.locate)
         self._workerWorking = True
 
     def closeEvent(self, event):
@@ -274,10 +275,10 @@ class PreviewWorker(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-    @pyqtSlot(np.ndarray, dict, types.ModuleType)
-    def locate(self, img, options, module):
+    @pyqtSlot(np.ndarray, dict, types.FunctionType)
+    def locate(self, img, options, locate_func):
         # TODO: restrict locating to bounding rect of ROI for performance gain
-        ret = module.locate(img, **options)
+        ret = locate_func(img, **options)
         self.locateFinished.emit(ret)
 
     locateFinished = pyqtSignal(pd.DataFrame)
