@@ -1,3 +1,8 @@
+"""Find local maxima in an image
+
+This module provides the :py:class:`Finder` class, which implements
+local maximum detection and filtering.
+"""
 import numpy as np
 from scipy import ndimage
 
@@ -5,16 +10,59 @@ from .data import Peaks, col_nums, feat_status
 
 
 class Finder(object):
+    """Routines for finding local maxima in an image
+
+    Attributes
+    ----------
+    max_peak_count : int
+        Maximum number of times one peak (at the same spot) will be picked up.
+        Defaults to 2.
+    """
     max_peak_count = 2
 
-    def __init__(self, image, peak_diameter, search_radius=5, margin=10):
+    def __init__(self, image, peak_radius, search_radius=5, margin=10):
+        """Constructor
+
+        Parameters
+        ----------
+        peak_radius : float
+            Initial guess of peaks' radii
+        search_radius : int, optional
+            Search for local maxima within this radius. That is, if two local
+            maxima are within search_radius of each other, only the greater
+            one will be taken. Defaults to 5
+        margin : int, optional
+            How much of the image's edges to discard as margin. Defaults to
+            10. Make sure this is the same as the `Fitter` margin.
+        """
         self.background = np.mean(image)
         self.margin = margin
         self.search_radius = search_radius
-        self.diameter = peak_diameter
+        self.radius = peak_radius
         self.peak_count = np.zeros(image.shape, dtype=np.int)
 
     def find(self, image, threshold):
+        """Find and filter local maxima
+
+        Finds the locations of all the local maxima in an image with
+        intensity greater than threshold.
+
+        This is a frontend to :py:meth:`local_maxima` which returns the data
+        in a structure compatible with the Fitter classes.
+
+        Parameters
+        ----------
+        image : numpy.ndarray
+            2D image data
+        threshold : float
+            Only accept maxima for which the estimated total intensity (mass)
+            of the feature is above threshold.
+
+        Returns
+        -------
+        data.Peaks
+            Data structure containing initial guesses for fitting.
+        """
         coords = self.local_maxima(image, threshold)
 
         non_excessive_count_mask = (self.peak_count[coords.T.tolist()] <
@@ -24,7 +72,7 @@ class Finder(object):
 
         ret = Peaks(len(ne_coords))
         ret[:, [col_nums.y, col_nums.x]] = ne_coords
-        ret[:, col_nums.wx] = ret[:, col_nums.wy] = self.diameter/2.
+        ret[:, col_nums.wx] = ret[:, col_nums.wy] = self.radius
         ret[:, col_nums.amp] = (image[ne_coords.T.tolist()] -
                                 self.background)
         ret[:, col_nums.bg] = self.background
@@ -38,8 +86,11 @@ class Finder(object):
         """Find local maxima in image
 
         Finds the locations of all the local maxima in an image with
-        intensity greater than threshold. Adds them to the list if
-        that location has not already been used.
+        intensity greater than threshold.
+
+        The actual finding and filtering function. Usually one would not call
+        it directly, but use :py:meth:`find`. However, this can be overridden
+        in a subclass.
 
         Parameters
         ----------

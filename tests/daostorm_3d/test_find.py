@@ -15,16 +15,16 @@ class TestFinder(unittest.TestCase):
     def setUp(self):
         self.frame = np.load(os.path.join(data_path, "comm_frame0.npy"))
         self.threshold = 100
-        self.diameter = 4.
+        self.radius = 2.
         self.search_radius = 5
         self.margin = 10
-        self.finder = find.Finder(self.frame, self.diameter,
+        self.finder = find.Finder(self.frame, self.radius,
                                   self.search_radius, self.margin)
         # determined by running the original C-based implementation
         # ia_utilities_c.findLocalMaxima(
         #     self.frame, np.zeros(self.frame.shape, dtype=np.int32),
         #     self.threshold + np.mean(frame), self.search_radius,
-        #     np.mean(frame), self.diameter/2, self.margin)
+        #     np.mean(frame), self.radius, self.margin)
         self.orig = np.load(os.path.join(data_path, "local_max.npy"))
 
     def test_local_maxima(self):

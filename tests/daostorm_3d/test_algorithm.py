@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
     def test_locate_2dfixed(self):
         orig = np.load(os.path.join(data_path, "locate_2dfixed.npz"))["peaks"]
         frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
-        peaks = algorithm.locate(frame, 4., 300., 5, find_numba.Finder,
+        peaks = algorithm.locate(frame, 2., 300., 5, find_numba.Finder,
                                  fit_numba_impl.Fitter2DFixed)
         np.testing.assert_allclose(peaks, orig)
 

@@ -1,3 +1,23 @@
+"""Stuff related to internal data structures
+
+The most import one is the :py:class:`Peaks` class, which extends numpy.ndarray
+and contains information about one peak per row.
+
+Attributes
+----------
+peak_params : list of str
+    Names of the columns of the :py:class:`Peaks` array related to a peak
+    itself (amplitude, center coordinates, ...)
+extra_params : list of str
+    Names of the columns of the :py:class:`Peaks` array related to the fitting,
+    i. e. fit status, fit error
+all_params : list of str
+    concatenation of the above
+col_nums : named tuple
+    Each entry in `all_params` with its corresponding column number.
+feat_status : types.SimpleNamespace
+    Fit status. run, conv, err, bad
+"""
 import collections
 import types
 
@@ -16,10 +36,39 @@ feat_status = types.SimpleNamespace(run=0, conv=1, err=2, bad=3)
 
 
 class Peaks(np.ndarray):
+    """Internal data structure containing information about peaks
+
+    Extends numpy.ndarray. The constructor takes one argument: the number of
+    peaks `n`. It creates an uninitialized `n` x `len(all_params)` array.
+    """
     def __new__(cls, num_peaks):
         return np.ndarray.__new__(cls, shape=(num_peaks, len(col_nums)))
 
     def merge(self, new, new_peak_radius, neighborhood_radius, compat=False):
+        """Merge `Peaks` instance with self
+
+        Parameters
+        ----------
+        new : Peaks
+            New peaks to be merged with self
+        new_peak_radius : float
+            If a new peak is within new_peak_radius of one in self, it is
+            discarded
+        neighborhood_radius : float
+            If a peak in self is within neighborhood_radius of a new one
+            (which is not discarded for being too close), mark it as
+            running (so that it will be refit).
+        compat : bool, optional
+            If True, stay compatible with the original implementation, leading
+            to a possible refit of too many peaks. The code in question is
+            marked as FIXME in the original implementation. Setting compat to
+            False gives the fixed version. Defaults to False.
+
+        Returns
+        -------
+        Peaks
+            Merged peak information
+        """
         dx = self[:, np.newaxis, col_nums.x] - new[np.newaxis, :, col_nums.x]
         dy = self[:, np.newaxis, col_nums.y] - new[np.newaxis, :, col_nums.y]
         dr2 = dx**2 + dy**2  # dr[i, j] is the distance from self[i] to new[j]
@@ -80,6 +129,24 @@ class Peaks(np.ndarray):
         return ret.view(Peaks)
 
     def remove_close(self, close_radius, neighborhood_radius):
+        """Remove peaks that are too close
+
+        If multiple peaks are close to each other, remove all but the highest.
+
+        Parameters
+        ----------
+        close_radius : float
+            If two peaks are within close_radius of each other, remove the
+            smaller one.
+        neighborhood_radius : float
+            If a peak has a peak that is being removed within
+            neighborhood_radius, mark it as running (so that it will be refit).
+
+        Returns
+        -------
+        Peaks
+            self with close peaks removed
+        """
         dx = self[:, np.newaxis, col_nums.x] - self[np.newaxis, :, col_nums.x]
         dy = self[:, np.newaxis, col_nums.y] - self[np.newaxis, :, col_nums.y]
         dr2 = dx**2 + dy**2  # dr[i, j] is the distance from self[i] to self[j]
@@ -108,20 +175,26 @@ class Peaks(np.ndarray):
         return np.delete(self, bad_idx, axis=0)
 
     def remove_bad(self, amp_thresh, width_thresh):
+        """Filter peaks
+
+        Removes peaks that are marked as erraneous or don't fulfill
+        thresholds
+
+        Parameters
+        ----------
+        amp_thresh : float
+            Discard everything with an amplitude below amp_thresh
+        width_thresh : float
+            Discard everything with widths (either x or y direction) below
+            width_thresh
+
+        Returns
+        -------
+        Peaks
+            filtered self
+        """
         good_peaks_mask = ((self[:, col_nums.stat] != feat_status.err) &
                            (self[:, col_nums.amp] > amp_thresh) &
                            (self[:, col_nums.wx] > width_thresh) &
                            (self[:, col_nums.wy] > width_thresh))
         return self[good_peaks_mask, :]
-
-    def as_df(self):
-        import pandas as pd
-
-        col_num_order = [col_nums.x, col_nums.y, col_nums.z, col_nums.wx,
-                         col_nums.wy, col_nums.amp, col_nums.bg]
-        df_col_names = ["x", "y", "z", "size_x", "size_y", "signal", "bg"]
-
-        df = pd.DataFrame(self[:, col_num_order], columns=df_col_names)
-        df["mass"] = (2 * np.pi * self[:, col_nums.amp] *
-                      self[:, col_nums.wx] * self[:, col_nums.wy])
-        return df

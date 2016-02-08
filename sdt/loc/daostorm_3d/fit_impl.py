@@ -1,3 +1,7 @@
+"""Actual Fitter implementations
+
+This module provides subclasses of :py:class:`fit.Fitter` that implement
+the :py:meth:`fit.Fitter.iterate` method"""
 import numpy as np
 
 from . import fit
@@ -5,6 +9,7 @@ from .data import col_nums, feat_status
 
 
 class Fitter2DFixed(fit.Fitter):
+    """Fitter that fits center coordinates, background, and amplitude"""
     def iterate(self):
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
             px, py = self._pixel_center[i]
@@ -59,6 +64,11 @@ class Fitter2DFixed(fit.Fitter):
 
 
 class Fitter2D(fit.Fitter):
+    """Fitter that fits center coordinates, sigma, background, and amplitude
+
+    Circular peaks are assumed, i. e. sigma is fitted uniformely in x and y
+    directions.
+    """
     def iterate(self):
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
             px, py = self._pixel_center[i]
@@ -118,6 +128,11 @@ class Fitter2D(fit.Fitter):
 
 
 class Fitter3D(fit.Fitter):
+    """Fitter that fits center coordinates, sigma, background, and amplitude
+
+    Elliptic peaks are assumed, i. e. sigma is fitted separately in x and y
+    directions.
+    """
     def iterate(self):
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
             px, py = self._pixel_center[i]

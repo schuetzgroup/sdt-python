@@ -1,6 +1,6 @@
+"""Numba accelerated version of the :py:mod:`fit` module"""
 import numba
 import numpy as np
-import enum
 
 from . import fit
 from .data import peak_params, col_nums, feat_status
@@ -26,31 +26,92 @@ stat_bad = feat_status.bad
 
 class Fitter(fit.Fitter):
     def _calc_pixel_width(self, new, old):
+        """Calculate the number of pixels to consider for fitting
+
+        For each feature box of 2*(min(4*sigma, self.margin) + 1 pixels width
+        around the center is used for fitting. When calculating the width of
+        the box, `self.hysteresis` is also considered to prevent oscillations.
+
+        Parameters
+        ----------
+        new : numpy.ndarray
+            n x 2 array whose rows are pairs (sigma_x, sigma_y) for which to
+            calculate the width.
+        old : numpy.ndarray
+            Array of the same shape as new. This is used to prevent
+            oscillations in combination with the `hysteresis` attribute
+
+        Returns
+        -------
+        numpy.ndarray
+            n x 2 integer array whose rows are roughly (4*sigma_x, 4*sigma_y),
+            (or margin, if any of those values would be greater than that).
+        """
         new = new.copy()
         ret = _vector_calc_pixel_width(new, old, self.hysteresis, self._margin)
         return ret
 
     def _calc_peak(self, index):
+        """Calculate the Gaussian from fitted parameters
+
+        Parameters
+        ----------
+        index : int
+            Index of the peak in self._data
+        """
         _numba_calc_peak(index, self._data, self._dx, self._gauss,
                          self._pixel_center, self._pixel_width)
 
     def _add_to_fit(self, index):
+        """Add peak to the fitted image and background image
+
+        Parameters
+        ----------
+        index : int
+            Index of the peak in self._data
+        """
         _numba_add_to_fit(
             index, self._fit_image, self._bg_image, self._bg_count,
             self._data, self._gauss, self._pixel_center, self._pixel_width)
 
     def _remove_from_fit(self, index):
+        """Remove peak from the fitted image and background image
+
+        Parameters
+        ----------
+        index : int
+            Index of the peak in self._data
+        """
         _numba_remove_from_fit(
             index, self._fit_image, self._bg_image, self._bg_count,
             self._data, self._gauss, self._pixel_center, self._pixel_width)
 
     def _calc_error(self, index):
+        """Calculate the error of the fitted peak compared to the real image
+
+        This may also update the peak's status (e. g. set it to err or conv)
+
+        Parameters
+        ----------
+        index : int
+            Index of the peak in self._data
+        """
         _numba_calc_error(
             index, self._image, self._fit_image, self._bg_image,
             self._bg_count, self._data, self._err_old,
             self._pixel_center, self._pixel_width, self._tolerance)
 
     def _update_peak(self, index, update):
+        """Update peak datat after a fitting iteration
+
+        Parameters
+        ----------
+        index : int
+            Index of the peak in self._data
+        update : numpy.array
+            Update vector. Basically the new data is _data[index] - update
+            (with some scaling to prevent oscillations and error checking)
+        """
         _numba_update_peak(
             index, update, self._image, self._data, self._sign, self._clamp,
             self._pixel_center, self.hysteresis, self._margin)
@@ -81,6 +142,7 @@ def _numba_calc_peak(index, data, dx, gauss, px_center, px_width):
             dx[index, i, j] = cur_absc
             gauss[index, i, j] = np.exp(-cur_absc**2 * data[index, col_w[i]])
 
+
 @numba.jit(nopython=True)
 def _numba_add_to_fit(index, fit_img, bg_img, bg_count,
                       data, gauss, px_center, px_width):
@@ -96,6 +158,7 @@ def _numba_add_to_fit(index, fit_img, bg_img, bg_count,
             fit_img[img_i, img_j] += e*gauss[index, 1, j]
             bg_img[img_i, img_j] += bg
             bg_count[img_i, img_j] += 1.
+
 
 @numba.jit(nopython=True)
 def _numba_remove_from_fit(index, fit_img, bg_img, bg_count,
@@ -135,8 +198,9 @@ def _numba_calc_error(index, real_img, fit_img, bg_img, bg_count,
 
     err_old[index] = data[index, col_err]
     data[index, col_err] = err
-    if (err ==  0.) or (abs(err - err_old[index])/err < tolerance):
+    if (err == 0.) or (abs(err - err_old[index])/err < tolerance):
         data[index, col_stat] = stat_conv
+
 
 @numba.jit(nopython=True)
 def _numba_update_peak(index, update, real_img, data, sign, clamp, px_center,

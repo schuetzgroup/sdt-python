@@ -170,8 +170,7 @@ class FitterTest(unittest.TestCase):
         # produced by the original C implementation
         orig = np.load(os.path.join(data_path, "beads_fit_2dfixed.npz"))
         f = fit_numba_impl.Fitter2DFixed(self.beads_img, self.beads_local_max,
-                                         1e-6)
-        f.max_iterations = 10
+                                         1e-6, max_iterations=10)
         f.fit()
         np.testing.assert_allclose(f.peaks, orig["peaks"])
         np.testing.assert_allclose(f.residual, orig["residual"])
@@ -187,8 +186,8 @@ class FitterTest(unittest.TestCase):
     def test_fit_2d_beads(self):
         # produced by the original C implementation
         orig = np.load(os.path.join(data_path, "beads_fit_2d.npz"))
-        f = fit_numba_impl.Fitter2D(self.beads_img, self.beads_local_max, 1e-6)
-        f.max_iterations = 10
+        f = fit_numba_impl.Fitter2D(self.beads_img, self.beads_local_max, 1e-6,
+                                    max_iterations=10)
         f.fit()
         np.testing.assert_allclose(f.peaks, orig["peaks"])
         np.testing.assert_allclose(f.residual, orig["residual"])
@@ -204,12 +203,9 @@ class FitterTest(unittest.TestCase):
     def test_fit_3d_beads(self):
         # produced by the original C implementation
         orig = np.load(os.path.join(data_path, "beads_fit_3d.npz"))
-        f = fit_numba_impl.Fitter3D(self.beads_img, self.beads_local_max, 1e-6)
-        f.max_iterations = 10
+        f = fit_numba_impl.Fitter3D(self.beads_img, self.beads_local_max, 1e-6,
+                                    max_iterations=10)
         f.fit()
-        print("")
-        print(f.peaks[4])
-        print(orig["peaks"][4])
         np.testing.assert_allclose(f.peaks, orig["peaks"])
         np.testing.assert_allclose(f.residual, orig["residual"])
 

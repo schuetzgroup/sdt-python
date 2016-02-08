@@ -1,3 +1,7 @@
+"""Numba accelerated version of the :py:mod:`fit_impl` module
+
+For documentation, look at :py:mod:`fit_impl`
+"""
 import numba
 import numpy as np
 
@@ -39,6 +43,20 @@ class Fitter3D(fit_numba.Fitter):
 
 @numba.jit(nopython=True)
 def _chol(A):
+    """Calculate Cholesky decomposition of positive definite, symmetric `A`
+
+    Only uses the lower triangle of `A`.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        Positive definite, symmetric matrix to be decomposed
+
+    Returns
+    -------
+    numpy.ndarray
+        Lower triangular matrix such that L @ L.T == A
+    """
     size = A.shape[0]
     L = np.zeros(A.shape)
     for j in range(size):
@@ -58,6 +76,22 @@ def _chol(A):
 
 @numba.jit(nopython=True)
 def _eqn_solver(A, b):
+    """Solve system of linear equations
+
+    Solve A @ x == b for x for positive definite, symmetric A.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        Coefficient matrix. Has to be positive definite and symmetric.
+    b : numpy.ndarray
+        Right hand side
+
+    Returns
+    -------
+    numpy.ndarray
+        The solution
+    """
     L = _chol(A)
     size = A.shape[0]
 
@@ -236,6 +270,7 @@ def _numba_iterate_2d(real_img, fit_img, bg_img, bg_count, data, dx,
         if data[index, col_stat] == stat_run:
             _numba_calc_error(index, real_img, fit_img, bg_img, bg_count, data,
                               err_old, px_center, px_width, tolerance)
+
 
 @numba.jit(nopython=True)
 def _numba_iterate_3d(real_img, fit_img, bg_img, bg_count, data, dx,

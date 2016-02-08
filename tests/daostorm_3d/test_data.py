@@ -28,7 +28,7 @@ class TestPeaks(unittest.TestCase):
                              [11.0, 14.0, 1.0, 10.0, 1.0, 0.0, 0.0, 0, 0.0],
                              [11.0, 17.0, 1.0, 10.0, 1.0, 0.0, 0.0, 0, 0.0]])
 
-        merged = peaks.merge(new_peaks, 2.5, 4.)
+        merged = peaks.merge(new_peaks, 2.5, 4., False)
         np.testing.assert_allclose(merged, expected)
 
     def test_remove_close_peaks(self):
