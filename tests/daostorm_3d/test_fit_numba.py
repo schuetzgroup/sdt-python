@@ -218,12 +218,16 @@ class TestEqnSolver(unittest.TestCase):
 
     def test_chol(self):
         expected = np.array([[2, 0, 0], [6, 1, 0], [-8, 5, 3]], dtype=np.float)
-        np.testing.assert_allclose(fit_numba_impl._chol(self.A), expected)
+        res = np.empty(self.A.shape)
+        fit_numba_impl._chol(self.A, res)
+        np.testing.assert_allclose(res, expected)
 
     def test_eqn_solver(self):
         x = np.array([1, 2, 3])
         b = self.A.dot(x)
-        np.testing.assert_allclose(fit_numba_impl._eqn_solver(self.A, b), x)
+        x2 = np.empty(x.shape)
+        fit_numba_impl._eqn_solver(self.A, b, x2)
+        np.testing.assert_allclose(x2, x)
 
 
 if __name__ == "__main__":

@@ -42,7 +42,7 @@ class Fitter3D(fit_numba.Fitter):
 
 
 @numba.jit(nopython=True)
-def _chol(A):
+def _chol(A, L):
     """Calculate Cholesky decomposition of positive definite, symmetric `A`
 
     Only uses the lower triangle of `A`.
@@ -51,31 +51,37 @@ def _chol(A):
     ----------
     A : numpy.ndarray
         Positive definite, symmetric matrix to be decomposed
+    L : numpy.ndarray
+        Output: lower triangular matrix such that L @ L.T == A
 
     Returns
     -------
-    numpy.ndarray
-        Lower triangular matrix such that L @ L.T == A
+    int
+        -1 if there was an error, 1 otherwise
     """
     size = A.shape[0]
-    L = np.zeros(A.shape)
     for j in range(size):
         Ljj = A[j, j]
         for k in range(j):
             Ljj -= L[j, k]**2
+        if Ljj <= 0:
+            return -1
         Ljj = np.sqrt(Ljj)
         L[j, j] = Ljj
+
+        for i in range(0, j):
+            L[i, j] = 0
 
         for i in range(j, size):
             Lij = A[i, j]
             for k in range(j):
                 Lij -= L[i, k] * L[j, k]
             L[i, j] = Lij / Ljj
-    return L
+    return 1
 
 
 @numba.jit(nopython=True)
-def _eqn_solver(A, b):
+def _eqn_solver(A, b, x):
     """Solve system of linear equations
 
     Solve A @ x == b for x for positive definite, symmetric A.
@@ -86,13 +92,17 @@ def _eqn_solver(A, b):
         Coefficient matrix. Has to be positive definite and symmetric.
     b : numpy.ndarray
         Right hand side
+    x : numpy.array
+        Output: solution
 
     Returns
     -------
-    numpy.ndarray
-        The solution
+    int
+        -1 if there was an error, 1 otherwise
     """
-    L = _chol(A)
+    L = np.empty(A.shape)
+    if _chol(A, L) < 0:
+        return -1
     size = A.shape[0]
 
     # Solve L @ y == b by forward substitution
@@ -104,14 +114,13 @@ def _eqn_solver(A, b):
         y[i] = yi / L[i, i]
 
     # Solve L.T @ x == y by backward substitution
-    x = np.empty(size)
     for i in range(1, size+1):
         xi = y[-i]
         for j in range(1, i):
             xi -= L[-j, -i] * x[-j]  # transpose L
         x[-i] = xi / L[-i, -i]
 
-    return x
+    return 1
 
 
 @numba.jit(nopython=True)
@@ -162,14 +171,9 @@ def _numba_iterate_2d_fixed(real_img, fit_img, bg_img, bg_count, data, dx,
         _numba_remove_from_fit(index, fit_img, bg_img, bg_count, data, gauss,
                                px_center, px_width)
 
-        res = _eqn_solver(hessian, jacobian)
-        bad_res = False
-        for n in res:
-            if not np.isfinite(n):
-                cur_data[col_stat] = stat_err
-                bad_res = True
-                break
-        if bad_res:
+        res = np.empty(4)
+        if _eqn_solver(hessian, jacobian, res) < 0:
+            cur_data[col_stat] = stat_err
             continue
 
         update = np.zeros(num_peak_params)
@@ -238,15 +242,9 @@ def _numba_iterate_2d(real_img, fit_img, bg_img, bg_count, data, dx,
         # Remove now. If fitting works, an update version is added below
         _numba_remove_from_fit(index, fit_img, bg_img, bg_count, data, gauss,
                                px_center, px_width)
-
-        res = _eqn_solver(hessian, jacobian)
-        bad_res = False
-        for n in res:
-            if not np.isfinite(n):
-                cur_data[col_stat] = stat_err
-                bad_res = True
-                break
-        if bad_res:
+        res = np.empty(5)
+        if _eqn_solver(hessian, jacobian, res) < 0:
+            cur_data[col_stat] = stat_err
             continue
 
         update = np.zeros(num_peak_params)
@@ -322,14 +320,9 @@ def _numba_iterate_3d(real_img, fit_img, bg_img, bg_count, data, dx,
         _numba_remove_from_fit(index, fit_img, bg_img, bg_count, data, gauss,
                                px_center, px_width)
 
-        res = _eqn_solver(hessian, jacobian)
-        bad_res = False
-        for n in res:
-            if not np.isfinite(n):
-                cur_data[col_stat] = stat_err
-                bad_res = True
-                break
-        if bad_res:
+        res = np.empty(6)
+        if _eqn_solver(hessian, jacobian, res) < 0:
+            cur_data[col_stat] = stat_err
             continue
 
         update = np.zeros(num_peak_params)
