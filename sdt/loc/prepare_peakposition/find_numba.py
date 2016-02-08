@@ -29,8 +29,8 @@ class Finder(find.Finder):
                 idx_of_max, mass, bg, image, threshold, self.mass_radius,
                 self.bg_radius, self.search_radius)
 
-            # no error
             if num_peaks >= 0:
+                # no error
                 break
 
             # too little memory pre-allocated, allocate more
@@ -59,7 +59,7 @@ def _numba_local_maxima(idx_of_max, mass, bg, image, threshold, mass_radius,
         Preallocated 1D array of the same length as `idx_of_mass` for output
         of an estimate for the background corrected mass corresponding to each
         index pair.
-    mass : numpy.ndarray
+    bg : numpy.ndarray
         Preallocated 1D array of the same length as `idx_of_mass` for output
         of an estimate for the background corresponding to each index pair.
     image : numpy.ndarray
@@ -70,7 +70,7 @@ def _numba_local_maxima(idx_of_max, mass, bg, image, threshold, mass_radius,
     mass_radius : int
         Use a square box of 2*mass_radius+1 width to estimate the mass of a
         peak
-    mass_radius : int
+    bg_radius : int
         Use a square box of 2*bg_radius+1 width to estimate the background of a
         peak
     search_radius : int

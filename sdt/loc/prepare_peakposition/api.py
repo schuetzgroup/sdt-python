@@ -49,7 +49,7 @@ def locate(raw_image, radius, threshold, im_size, engine="numba",
 
     Returns
     -------
-    DataFrame([x, y, signal, bg, mass, size, frame])
+    DataFrame([x, y, signal, bg, mass, size])
         x and y are the coordinates of the features. mass is the total
         intensity of the feature, bg the background per pixel. size gives the
         radii (sigma) of the features. If `raw_image` has a ``frame_no``
@@ -60,7 +60,7 @@ def locate(raw_image, radius, threshold, im_size, engine="numba",
     ----------------
     engine : {"python", "numba"}, optional
         Which engine to use for calculations. "numba" is much faster than
-        "python", but requires numba to be installed.
+        "python", but requires numba to be installed. Defaults to "numba".
     max_iterations : int, optional
         Maximum number of iterations for peak fitting. Default: 200
     """
