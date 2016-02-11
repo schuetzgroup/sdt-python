@@ -63,7 +63,8 @@ class Fitter(object):
             np.full((len(self._data), 2), -10, dtype=np.int))
 
         # clamp values for each peak
-        self._clamp = np.vstack([self.default_clamp]*len(self._data))
+        self._clamp = np.repeat(self.default_clamp[np.newaxis, :],
+                                len(self._data), axis=0)
         # record the sign to catch oscillations
         self._sign = np.zeros((len(self._data), len(col_nums)), dtype=np.int)
         # abscissae of the gaussians
