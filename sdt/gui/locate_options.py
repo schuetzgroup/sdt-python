@@ -72,7 +72,7 @@ class Container(QWidget):
         self._layout.addRow(QLabel(self._tr("First frame")),
                             self._startFrameBox)
         self._layout.addRow(QLabel(self._tr("Last frame")), self._endFrameBox)
-        self._layout.addRow(QLabel(self._tr("Method")), self._methodBox)
+        self._layout.addRow(QLabel(self._tr("Algorithm")), self._methodBox)
 
         self._delayTimer = QTimer(self)
         self._delayTimer.setInterval(self.optionChangeDelay)
