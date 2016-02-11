@@ -200,9 +200,9 @@ class MainWindow(QMainWindow):
 
     def _saveMetadata(self, fname):
         metadata = collections.OrderedDict()
-        metadata["method"] = \
-            self._locOptionsDock.widget().currentModule.__name__
-        metadata["options"] = self._locOptionsDock.widget().getOptions()
+        metadata["algorithm"] = \
+            self._locOptionsDock.widget().method.name
+        metadata["options"] = self._locOptionsDock.widget().options
         metadata["roi"] = [p for p in self._roiPolygon]
         metadata["filter"] = self._locFilterDock.widget().getFilterString()
         with open(fname, "w") as f:
@@ -229,9 +229,9 @@ class MainWindow(QMainWindow):
 
         for i in range(self._fileModel.rowCount()):
             runner = LocateRunner(self._fileModel.index(i),
-                                  self._locOptionsDock.widget().getOptions(),
+                                  self._locOptionsDock.widget().options,
                                   self._locOptionsDock.widget().frameRange,
-                                  self._locOptionsDock.widget().getModule())
+                                  self._locOptionsDock.widget().method.batch)
             runner.signals.finished.connect(
                 lambda: progDialog.setValue(progDialog.value() + 1))
             runner.signals.finished.connect(self._locateRunnerFinished)
@@ -293,11 +293,11 @@ class LocateRunner(QRunnable):
         finished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
         error = pyqtSignal(QModelIndex)
 
-    def __init__(self, index, options, frameRange, module):
+    def __init__(self, index, options, frameRange, batch_func):
         super().__init__()
         self._index = index
         self._options = options
-        self._module = module
+        self._batch_func = batch_func
         self._frameRange = frameRange
         self.signals = self.Signals()
 
@@ -307,8 +307,8 @@ class LocateRunner(QRunnable):
         end = self._frameRange[1] if self._frameRange[1] >= 0 else len(frames)
         # TODO: restrict locating to bounding rect of ROI for performance gain
         try:
-            data = self._module.batch(frames[self._frameRange[0]:end],
-                                      **self._options)
+            data = self._batch_func(frames[self._frameRange[0]:end],
+                                    **self._options)
         except Exception:
             self.signals.error.emit(self._index)
             return
