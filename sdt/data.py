@@ -63,13 +63,15 @@ def load(filename, data="tracks"):
     - particle_tracking_2D tracks (*_tracks.mat)
     - pkc files (*.pkc)
     - pks files (*.pks)
+    - trc files (*.trc)
+    - HDF5 files (*.h5)
 
     Arguments
     ---------
     filename : str
         Name of the file
     data : str, optional
-        If the file is HDF5, load this key. Reading fails, try to read
+        If the file is HDF5, load this key. If reading fails, try to read
         "features". Defaults to "tracks".
 
     Returns
@@ -85,6 +87,8 @@ def load(filename, data="tracks"):
         return load_pkmatrix(filename)
     if filename.endswith(".pks"):
         return load_pks(filename)
+    if filename.endswith(".trc"):
+        return load_trc(filename)
 
     # Try to read HDF5
     try:
@@ -323,8 +327,18 @@ def load_pks(filename, adjust_index=["x", "y", "frame"]):
         df["size"] /= 2.
 
     # TODO: trackpy ep is in pixels (?), pks in nm
-
     return df
+
+
+def load_trc(filename, adjust_index=["x", "y", "frame", "particle"]):
+    df = pd.read_table(filename, sep=r"\s+",
+                       names=["particle", "frame", "x", "y", "mass", "idx"])
+
+    for c in adjust_index:
+        if c in df.columns:
+            df[c] -= 1
+
+    return df[["x", "y", "mass", "frame", "particle"]]
 
 
 def load_msdplot(filename):
