@@ -40,6 +40,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QComboBox" name="modelBox">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
      <item>
       <property name="text">
        <string>2dfixed</string>
