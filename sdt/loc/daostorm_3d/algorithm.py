@@ -84,6 +84,8 @@ def locate(raw_image, radius, threshold, max_iterations,
     finder = finder_class(image, radius)
 
     for i in range(max_iterations):
+        # remember how many peaks there were before this iteration
+        old_num_peaks = len(peaks)
         # find local maxima
         peaks_found = finder.find(residual, cur_threshold)
         peaks = peaks.merge(peaks_found, new_peak_radius, neighborhood_radius,
@@ -121,8 +123,8 @@ def locate(raw_image, radius, threshold, max_iterations,
         residual += est_bg.mean()
         finder.background = residual.mean()
 
-        # no peaks found, threshold not updated, we are finished
-        if (not len(peaks_found)) and (not threshold_updated):
+        if (len(peaks) <= old_num_peaks) and (not threshold_updated):
+            # no new peaks found, threshold not updated, we are finished
             break
 
     peaks[:, [col_nums.x, col_nums.y]] -= margin
