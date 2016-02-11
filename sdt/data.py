@@ -10,46 +10,20 @@ python tools. So far it can read data from
 
 Attributes
 ----------
-pt2d_name_trans : collections.OrderedDict
-    Keys are the names of the columns of particle_tracking_2D output .mat
-    files as found in the _protocol.mat files. Values are something shorter
-    that can be handled better and, by default, is compatible with
-    [trackpy](https://soft-matter.github.io/trackpy/).
-pk_column_names : list of str
-    Names of the columns of a pk matrix as produced e. g. by
-    ``prepare_peakposition``. By default also compatible with trackpy.
-pks_column_names : list of str
-    Names of the columns of a pks matrix as produced e. g. by
-    ``check_fit``. By default also compatible with trackpy.
-msd_column_names : list of str
-    Names of the columns of a msdplot output matrix.
+adjust_index : list of str
+    Since MATLAB's indices start at 1 and python's start at 0, some data
+    (such as feature coordinates and frame numbers) may be off by one.
+    This list contains the names of columns to be corrected. Defaults to
+    ["x", "y", "frame", "particle].
 """
 import collections
-import os
 
 import scipy.io as sp_io
 import pandas as pd
 import numpy as np
 
 
-pt2d_name_trans = collections.OrderedDict((
-    ("x-Position", "x"),
-    ("y-Position", "y"),
-    ("Integrated Intensity", "mass"),
-    ("Radius of Gyration", "size"),
-    ("Excentricity", "ecc"),
-    ("Maximal Pixel Intensity", "signal"),
-    ("Background per Pixel", "bg"),
-    ("Standard Deviation of Background", "bg_dev"),
-    ("Full Integrated Intensity - Background", "mass_corr"),
-    ("Background per Feature", "feat_bg"),
-    ("Frame Number", "frame"),
-    ("Time in Frames", "time"),
-    ("Trace ID", "particle")))
-pk_column_names = ["frame", "x", "y", "size", "mass", "bg", "column6",
-                   "column7", "bg_dev", "column9", "column10"]
-pks_column_names = ["frame", "x", "y", "size", "mass", "bg", "bg_dev", "ep"]
-msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
+adjust_index = ["x", "y", "frame", "particle"]
 
 
 def load(filename, data="tracks"):
@@ -101,8 +75,23 @@ def load(filename, data="tracks"):
                              "from file {}".format(data, filename))
 
 
-def load_pt2d_positions(filename, load_protocol=True,
-                        adjust_index=["x", "y", "frame"]):
+pt2d_name_trans = collections.OrderedDict((
+    ("x-Position", "x"),
+    ("y-Position", "y"),
+    ("Integrated Intensity", "mass"),
+    ("Radius of Gyration", "size"),
+    ("Excentricity", "ecc"),
+    ("Maximal Pixel Intensity", "signal"),
+    ("Background per Pixel", "bg"),
+    ("Standard Deviation of Background", "bg_dev"),
+    ("Full Integrated Intensity - Background", "mass_corr"),
+    ("Background per Feature", "feat_bg"),
+    ("Frame Number", "frame"),
+    ("Time in Frames", "time"),
+    ("Trace ID", "particle")))
+
+
+def load_pt2d_positions(filename, load_protocol=True):
     """Load a _positions.mat file created by particle_tracking_2D
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -116,11 +105,6 @@ def load_pt2d_positions(filename, load_protocol=True,
         Look for a _protocol.mat file (i. e. replace the "_positions.mat" part
         of `filename` with "_protocol.mat") in order to load the column names.
         This may be buggy for some older versions of particle_tracking_2D.
-    adjust_index : list of str
-        Since MATLAB's indices start at 1 and python's start at 0, some data
-        (such as feature coordinates and frame numbers) may be off by one.
-        This list contains the names of columns to be corrected. Defaults to
-        ["x", "y", "frame"].
 
     Returns
     -------
@@ -166,8 +150,7 @@ def load_pt2d_positions(filename, load_protocol=True,
     return df
 
 
-def load_pt2d_tracks(filename, load_protocol=True,
-                     adjust_index=["x", "y", "frame", "particle"]):
+def load_pt2d_tracks(filename, load_protocol=True):
     """Load a _tracks.mat file created by particle_tracking_2D
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -181,11 +164,6 @@ def load_pt2d_tracks(filename, load_protocol=True,
         Look for a _protocol.mat file (i. e. replace the "_tracks.mat" part
         of `filename` with "_protocol.mat") in order to load the column names.
         This may be buggy for some older versions of particle_tracking_2D.
-    adjust_index : list of str
-        Since MATLAB's indices start at 1 and python's start at 0, some data
-        (such as feature coordinates and frame numbers) may be off by one.
-        This list contains the names of columns to be corrected. Defaults to
-        ["x", "y", "frame", "particle"].
 
     Returns
     -------
@@ -230,7 +208,12 @@ def load_pt2d_tracks(filename, load_protocol=True,
     return df
 
 
-def load_pkmatrix(filename, green=False, adjust_index=["x", "y", "frame"]):
+_pk_column_names = ["frame", "x", "y", "size", "mass", "bg", "column6",
+                    "column7", "bg_dev", "column9", "column10"]
+_pk_ret_column_names = ["x", "y", "size", "mass", "bg", "bg_dev", "frame"]
+
+
+def load_pkmatrix(filename, green=False):
     """Load a pkmatrix from a .mat file
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -244,11 +227,6 @@ def load_pkmatrix(filename, green=False, adjust_index=["x", "y", "frame"]):
         If True, load ``pkmatrix_green``, which is the right half of the image
         when using ``prepare_peakposition`` in 2 color mode. Otherwise, load
         ``pkmatrix``. Defaults to False.
-    adjust_index : list of str
-        Since MATLAB's indices start at 1 and python's start at 0, some data
-        (such as feature coordinates and frame numbers) may be off by one.
-        This list contains the names of columns to be corrected. Defaults to
-        ["x", "y", "frame"].
 
     Returns
     -------
@@ -265,7 +243,7 @@ def load_pkmatrix(filename, green=False, adjust_index=["x", "y", "frame"]):
     # if no localizations were found, an empty array is returned. However,
     # the DataFrame constructor expects None in this case.
     d = None if len(d) == 0 else d
-    df = pd.DataFrame(data=d, columns=pk_column_names)
+    df = pd.DataFrame(data=d, columns=_pk_column_names)
 
     for c in adjust_index:
         if c in df.columns:
@@ -276,10 +254,14 @@ def load_pkmatrix(filename, green=False, adjust_index=["x", "y", "frame"]):
         # sigma = FWHM/sqrt(8*log(2))
         df["size"] /= 2.3548200450309493
 
-    return df
+    return df[_pk_ret_column_names]
 
 
-def load_pks(filename, adjust_index=["x", "y", "frame"]):
+_pks_column_names = ["frame", "x", "y", "size", "mass", "bg", "bg_dev",
+                     "ep"]
+
+
+def load_pks(filename):
     """Load a pks matrix from a MATLAB file
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -297,11 +279,6 @@ def load_pks(filename, adjust_index=["x", "y", "frame"]):
         If True, load ``pkmatrix_green``, which is the right half of the image
         when using ``prepare_peakposition`` in 2 color mode. Otherwise, load
         ``pkmatrix``. Defaults to False.
-    adjust_index : list of str
-        Since MATLAB's indices start at 1 and python's start at 0, some data
-        (such as feature coordinates and frame numbers) may be off by one.
-        This list contains the names of columns to be corrected. Defaults to
-        ["x", "y", "frame"].
 
     Returns
     -------
@@ -315,7 +292,7 @@ def load_pks(filename, adjust_index=["x", "y", "frame"]):
     # if no localizations were found, an empty array is returned. However,
     # the DataFrame constructor expects None in this case.
     d = None if len(d) == 0 else d
-    df = pd.DataFrame(data=d, columns=pks_column_names)
+    df = pd.DataFrame(data=d, columns=_pks_column_names)
 
     for c in adjust_index:
         if c in df.columns:
@@ -330,15 +307,21 @@ def load_pks(filename, adjust_index=["x", "y", "frame"]):
     return df
 
 
-def load_trc(filename, adjust_index=["x", "y", "frame", "particle"]):
-    df = pd.read_table(filename, sep=r"\s+",
-                       names=["particle", "frame", "x", "y", "mass", "idx"])
+_trc_col_names = ["particle", "frame", "x", "y", "mass", "idx"]
+_trc_ret_col_names = ["x", "y", "mass", "frame", "particle"]
+
+
+def load_trc(filename):
+    df = pd.read_table(filename, sep=r"\s+", names=_trc_col_names)
 
     for c in adjust_index:
         if c in df.columns:
             df[c] -= 1
 
-    return df[["x", "y", "mass", "frame", "particle"]]
+    return df[_trc_ret_col_names]
+
+
+_msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
 
 
 def load_msdplot(filename):
@@ -360,4 +343,4 @@ def load_msdplot(filename):
                 stderr=mat["dstd1"],
                 qianerr=mat["dstd_qian1"],
                 pa=mat["pos1"],
-                data=pd.DataFrame(mat["msd1"], columns=msd_column_names))
+                data=pd.DataFrame(mat["msd1"], columns=_msd_column_names))
