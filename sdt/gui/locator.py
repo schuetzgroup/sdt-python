@@ -9,13 +9,14 @@ import numpy as np
 import pandas as pd
 import pims
 
-from PyQt5.QtGui import (QIcon, QPolygonF)
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
-                             QToolBar, QMessageBox, QSplitter, QToolBox,
-                             QDockWidget, QWidget, QLabel, QProgressDialog)
-from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
-                          QSettings, QRunnable, QThreadPool, QModelIndex,
-                          QMetaObject, QPointF)
+import qtpy
+from qtpy.QtGui import (QIcon, QPolygonF)
+from qtpy.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
+                            QToolBar, QMessageBox, QSplitter, QToolBox,
+                            QDockWidget, QWidget, QLabel, QProgressDialog)
+from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
+                         QSettings, QRunnable, QThreadPool, QModelIndex,
+                         QMetaObject, QPointF)
 
 from . import micro_view
 from . import locate_options

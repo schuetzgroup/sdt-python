@@ -6,10 +6,11 @@ displays the settings widget for the currently selected one.
 import os
 import collections
 
-from PyQt5.QtWidgets import QWidget, QFormLayout, QSpinBox, QComboBox, QLabel
-from PyQt5.QtCore import (pyqtSignal, pyqtSlot, pyqtProperty, QCoreApplication,
-                          QTimer, Qt, QMetaObject)
-from PyQt5 import uic
+import qtpy
+from qtpy.QtWidgets import QWidget, QFormLayout, QSpinBox, QComboBox, QLabel
+from qtpy.QtCore import (pyqtSignal, pyqtSlot, pyqtProperty, QCoreApplication,
+                         QTimer, Qt, QMetaObject)
+from qtpy import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -76,7 +77,8 @@ class Container(QWidget):
         self._delayTimer = QTimer(self)
         self._delayTimer.setInterval(self.optionChangeDelay)
         self._delayTimer.setSingleShot(True)
-        self._delayTimer.setTimerType(Qt.PreciseTimer)
+        if not (qtpy.PYQT4 or qtpy.PYSIDE):
+            self._delayTimer.setTimerType(Qt.PreciseTimer)
         self._delayTimer.timeout.connect(self.optionsChanged)
 
         # make sure the widgets are not garbage collected; save them in list
@@ -152,7 +154,7 @@ class Daostorm3DOptions(d3dBase):
         self._ui.setupUi(self)
 
         self._ui.radiusBox.valueChanged.connect(self.optionsChanged)
-        self._ui.modelBox.currentTextChanged.connect(self.optionsChanged)
+        self._ui.modelBox.currentIndexChanged.connect(self.optionsChanged)
         self._ui.thresholdBox.valueChanged.connect(self.optionsChanged)
         self._ui.iterationsBox.valueChanged.connect(self.optionsChanged)
 

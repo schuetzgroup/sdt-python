@@ -6,15 +6,16 @@ import locale
 import numpy as np
 import pandas as pd
 
-from PyQt5.QtCore import (QRectF, QPointF, Qt, pyqtSignal, pyqtProperty,
-                          pyqtSlot, QTimer, QObject)
-from PyQt5.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform, QPen,
-                         QPolygonF, QPainter)
-from PyQt5.QtWidgets import (QGraphicsView, QGraphicsPixmapItem,
-                             QGraphicsScene, QSpinBox, QDoubleSpinBox,
-                             QGraphicsEllipseItem, QGraphicsItemGroup,
-                             QGraphicsItem, QGraphicsPolygonItem)
-from PyQt5 import uic
+import qtpy
+from qtpy.QtCore import (QRectF, QPointF, Qt, pyqtSignal, pyqtProperty,
+                         pyqtSlot, QTimer, QObject)
+from qtpy.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform, QPen,
+                        QPolygonF, QPainter)
+from qtpy.QtWidgets import (QGraphicsView, QGraphicsPixmapItem,
+                            QGraphicsScene, QSpinBox, QDoubleSpinBox,
+                            QGraphicsEllipseItem, QGraphicsItemGroup,
+                            QGraphicsItem, QGraphicsPolygonItem)
+from qtpy import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -180,7 +181,8 @@ class MicroViewWidget(mvBase):
 
         self._playing = False
         self._playTimer = QTimer()
-        self._playTimer.setTimerType(Qt.PreciseTimer)
+        if not (qtpy.PYQT4 or qtpy.PYSIDE):
+            self._playTimer.setTimerType(Qt.PreciseTimer)
         self._playTimer.setSingleShot(False)
 
         self._ui.framenoBox.valueChanged.connect(self.selectFrame)

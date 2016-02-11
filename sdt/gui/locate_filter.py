@@ -4,10 +4,11 @@ from contextlib import suppress
 
 import numpy as np
 
-from PyQt5.QtWidgets import QListWidgetItem
-from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QTimer, QCoreApplication,
-                          pyqtProperty)
-from PyQt5 import uic
+import qtpy
+from qtpy.QtWidgets import QListWidgetItem
+from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QTimer, QCoreApplication,
+                         pyqtProperty)
+from qtpy import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +33,8 @@ class FilterWidget(filterBase):
         self._delayTimer = QTimer(self)
         self._delayTimer.setInterval(self.filterChangeDelay)
         self._delayTimer.setSingleShot(True)
-        self._delayTimer.setTimerType(Qt.PreciseTimer)
+        if not (qtpy.PYQT4 or qtpy.PYSIDE):
+            self._delayTimer.setTimerType(Qt.PreciseTimer)
         self._delayTimer.timeout.connect(self.filterChanged)
 
         self._ui.splitter.setStretchFactor(0, 1)

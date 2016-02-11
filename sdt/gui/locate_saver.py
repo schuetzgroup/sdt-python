@@ -1,10 +1,11 @@
 import os
 
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication,
-                          pyqtProperty)
-from PyQt5.QtGui import QPalette
-from PyQt5 import uic
+import qtpy
+from qtpy.QtWidgets import QFileDialog
+from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication,
+                         pyqtProperty)
+from qtpy.QtGui import QPalette
+from qtpy import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))

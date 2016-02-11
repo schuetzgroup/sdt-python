@@ -1,10 +1,12 @@
 import os
 import types
 
-from PyQt5.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication,
-                          QAbstractListModel, QModelIndex, pyqtProperty)
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5 import uic
+import qtpy
+import qtpy.compat
+from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication,
+                         QAbstractListModel, QModelIndex, pyqtProperty)
+from qtpy.QtWidgets import QFileDialog
+from qtpy import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -47,7 +49,9 @@ class FileListModel(QAbstractListModel):
         else:
             return False
 
-        self.dataChanged.emit(index, index, [role])
+        # specifying role not supported by Qt4
+        # self.dataChanged.emit(index, index, [role])
+        self.dataChanged.emit(index, index)
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._data)
@@ -89,7 +93,7 @@ fcClass, fcBase = uic.loadUiType(os.path.join(path, "file_chooser.ui"))
 class FileChooser(fcBase):
     __clsName = "FileChooser"
 
-    def tr(self, string):
+    def _tr(self, string):
         return QCoreApplication.translate(self.__clsName, string)
 
     def __init__(self, parent=None):
@@ -116,10 +120,14 @@ class FileChooser(fcBase):
 
     @pyqtSlot()
     def _addFilesSlot(self):
-        fnames = QFileDialog.getOpenFileNames(
-            self, self.tr("Open file"), self._lastOpenDir,
-            self.tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
-            self.tr("All files (*)"))
+#        fnames = QFileDialog.getOpenFileNames(
+#            self, self._tr("Open file"), self._lastOpenDir,
+#            self._tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
+#            self._tr("All files (*)"))
+        fnames = qtpy.compat.getopenfilenames(
+            self, self._tr("Open file"), self._lastOpenDir,
+            self._tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
+            self._tr("All files (*)"))
         self.addFiles(fnames[0])
 
     def addFiles(self, names):
@@ -138,4 +146,3 @@ class FileChooser(fcBase):
     @pyqtSlot(QModelIndex)
     def select(self, index):
         self.selected.emit(self._model.data(index, FileListModel.FileNameRole))
-
