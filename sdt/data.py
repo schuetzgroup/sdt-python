@@ -312,6 +312,18 @@ _trc_ret_col_names = ["x", "y", "mass", "frame", "particle"]
 
 
 def load_trc(filename):
+    """Load tracking data from a .trc file
+
+    Parameters
+    ----------
+    filename : str
+        Name of the file to load
+
+    Returns
+    -------
+    pandas.DataFrame
+        Loaded data.
+    """
     df = pd.read_table(filename, sep=r"\s+", names=_trc_col_names)
 
     for c in adjust_index:
