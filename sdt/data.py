@@ -356,3 +356,83 @@ def load_msdplot(filename):
                 qianerr=mat["dstd_qian1"],
                 pa=mat["pos1"],
                 data=pd.DataFrame(mat["msd1"], columns=_msd_column_names))
+
+
+def save(filename, data, fmt="auto", typ="auto"):
+    """Save feature/tracking data
+
+    This supports HDF5 and particle_tracker formats.
+
+    Parameter
+    ---------
+    filename : str
+        Name of the file to write to
+    data : pandas.DataFrame
+        Data to save
+    fmt : {"auto", "hdf5", "particle_tracker"}
+        Output format. If "auto", infer the format from `filename`. Otherwise,
+        write the given format.
+    typ : {"auto", "features", "tracks"}
+        Specify whether to save feature data or tracking data. If "auto",
+        consider `data` tracking data if a "particle" column is present,
+        otherwise treat as feature data.
+    """
+    if typ not in ("tracks", "features", "auto"):
+        raise ValueError("Unknown type: " + typ)
+
+    if fmt == "auto":
+        if filename.endswith(".h5"):
+            fmt = "hdf5"
+        if (filename.endswith("_positions.mat") or
+                filename.endswith("_tracks.mat")):
+            fmt = "particle_tracker"
+        else:
+            raise ValueError("Could not determine format from file name " +
+                             filename + ".")
+
+    if typ == "auto":
+        if "particle" in data.columns:
+            typ = "tracks"
+        else:
+            typ = "features"
+
+    if fmt == "hdf5":
+        data.to_hdf(filename, typ)
+        return
+    if fmt == "particle_tracker":
+        save_pt2d(filename, data, typ)
+    else:
+        raise ValueError('Unknown format "{}"'.format(format))
+
+
+def save_pt2d(filename, data, typ="tracks"):
+    """Save feature/tracking data in particle_tracker format
+
+    Parameter
+    ---------
+    filename : str
+        Name of the file to write to
+    data : pandas.DataFrame
+        Data to save
+    typ : {"features", "tracks"}
+        Specify whether to save feature data or tracking data.
+    """
+    data_cols = []
+    num_features = len(data)
+    for v in pt2d_name_trans.values():
+        if (v == "particle") and (typ != "tracks"):
+            continue
+
+        if v in data.columns:
+            cur_col = data[v]
+        else:
+            cur_col = np.zeros(num_features)
+
+        if v in adjust_index:
+            data_cols.append(cur_col + 1)
+        elif v == "size":
+            data_cols.append(cur_col**2)
+        else:
+            data_cols.append(cur_col)
+
+    sp_io.savemat(filename, dict(MT=np.column_stack(data_cols)))
