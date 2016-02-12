@@ -299,9 +299,9 @@ def load_pks(filename):
             df[c] -= 1
 
     if "size" in df.columns:
-        # the size in a pks file is FWHM; devide by 2. to get some kind of
-        # radius (instead of diameter)
-        df["size"] /= 2.
+        # the size in a pkmatrix is FWHM; convert to sigma of the gaussian
+        # sigma = FWHM/sqrt(8*log(2))
+        df["size"] /= 2.3548200450309493
 
     # TODO: trackpy ep is in pixels (?), pks in nm
     return df
