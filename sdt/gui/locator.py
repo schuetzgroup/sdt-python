@@ -23,6 +23,7 @@ from . import locate_options
 from . import file_chooser
 from . import locate_filter
 from . import locate_saver
+from ..data import save
 
 
 def yaml_dict_representer(dumper, data):
@@ -248,21 +249,28 @@ class MainWindow(QMainWindow):
         self._fileModel.setData(index, options,
                                 file_chooser.FileListModel.LocOptionsRole)
         saveFormat = self._locSaveDock.widget().getFormat()
-        if saveFormat == "hdf5":
-            saveFileName = os.path.splitext(
-                self._fileModel.data(
-                    index, file_chooser.FileListModel.FileNameRole))[0]
-            saveFileName = "{fn}{extsep}".format(fn=saveFileName,
-                                                 extsep=os.extsep)
 
-            filterFunc = self._locFilterDock.widget().getFilter()
-            inRoi = self._applyRoi(data)
-            data = data[filterFunc(data) & inRoi]
-            data.to_hdf(saveFileName+"h5", "features")
-            self._saveMetadata(saveFileName+"yaml")
+        saveFileName = os.path.splitext(
+            self._fileModel.data(
+                index, file_chooser.FileListModel.FileNameRole))[0]
+
+        metaFileName = saveFileName + os.extsep + "yaml"
+
+        if saveFormat == "hdf5":
+            saveFileName += os.extsep + "h5"
         elif saveFormat == "particle_tracker":
-            # TODO: implement
-            pass
+            fname = os.path.basename(saveFileName) + "_positions.mat"
+            fdir = os.path.dirname(saveFileName)
+            outdir = os.path.join(fdir, "Analysis_particle_tracking")
+            os.makedirs(outdir, exist_ok=True)
+            saveFileName = os.path.join(outdir, fname)
+
+        filterFunc = self._locFilterDock.widget().getFilter()
+        inRoi = self._applyRoi(data)
+        data = data[filterFunc(data) & inRoi]
+
+        save(saveFileName, data)  # sdt.data.save
+        self._saveMetadata(metaFileName)
 
     @pyqtSlot(QModelIndex)
     def _locateRunnerError(self, index):
