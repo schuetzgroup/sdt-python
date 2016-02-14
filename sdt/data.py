@@ -27,7 +27,7 @@ import numpy as np
 adjust_index = ["x", "y", "frame", "particle"]
 
 
-def load(filename, data="tracks"):
+def load(filename, typ="auto", fmt="auto", color="red"):
     """Load data from file
 
     Use the load_* function appropriate for the file type in order to load the
@@ -45,35 +45,62 @@ def load(filename, data="tracks"):
     ---------
     filename : str
         Name of the file
-    data : str, optional
-        If the file is HDF5, load this key. If reading fails, try to read
-        "features". Defaults to "tracks".
+    typ : str, optional
+        If the file is HDF5, load this key (usually either "features" or
+        "tracks"), unless it is "auto". Then try to read "tracks" and if that
+        fails, try to read "features".
+        If the file is in particle_tracker format, this can be either "auto",
+        "features" or "tracks". Defaults to "auto".
+    fmt : {"auto", "hdf5", "particle_tracker", "pkc", "pks", "trc"}, optional
+        Output format. If "auto", infer the format from `filename`. Otherwise,
+        write the given format.
+    color : {"red", "green"}, optional
+        For pkc files, specify whether to load the red (default) or green
+        channel.
 
     Returns
     -------
     pandas.DataFrame
         Loaded data
     """
-    if filename.endswith("_positions.mat"):
-        return load_pt2d_positions(filename)
-    if filename.endswith("_tracks.mat"):
-        return load_pt2d_tracks(filename)
-    if filename.endswith(".pkc"):
-        return load_pkmatrix(filename)
-    if filename.endswith(".pks"):
+    if fmt == "auto":
+        if filename.endswith(os.extsep + "h5"):
+            fmt = "hdf5"
+        elif filename.endswith("_positions.mat"):
+            fmt = "particle_tracker"
+            if typ == "auto":
+                typ = "features"
+        elif filename.endswith("_tracks.mat"):
+            fmt = "particle_tracker"
+            if typ == "auto":
+                typ = "tracks"
+        elif filename.endswith(".pkc"):
+            fmt = "pkc"
+        elif filename.endswith(".pks"):
+            fmt = "pks"
+        elif filename.endswith(".trc"):
+            fmt = "trc"
+        else:
+            raise ValueError("Could not determine format from file name " +
+                             filename + ".")
+
+    if fmt == "hdf5":
+        if typ == "auto":
+            try:
+                return pd.read_hdf(filename, "tracks")
+            except Exception:
+                typ = "features"
+        return pd.read_hdf(filename, typ)
+    if fmt == "particle_tracker":
+        return load_pt2d(filename, typ=typ)
+    if fmt == "pkc":
+        return load_pkmatrix(filename, (color == "green"))
+    if fmt == "pks":
         return load_pks(filename)
-    if filename.endswith(".trc"):
+    if fmt == "trc":
         return load_trc(filename)
 
-    # Try to read HDF5
-    try:
-        return pd.read_hdf(filename, data)
-    except:
-        try:
-            return pd.read_hdf(filename, "features")
-        except:
-            raise ValueError("Could read neither \"{}\" nor \"features\""
-                             "from file {}".format(data, filename))
+    raise ValueError('Unknown format "{}"'.format(fmt))
 
 
 _pt2d_name_trans = collections.OrderedDict((
