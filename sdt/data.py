@@ -18,6 +18,7 @@ adjust_index : list of str
 """
 import os
 import collections
+import logging
 
 import scipy.io as sp_io
 import pandas as pd
@@ -25,6 +26,8 @@ import numpy as np
 
 
 adjust_index = ["x", "y", "frame", "particle"]
+
+_logger = logging.getLogger(__name__)
 
 
 def load(filename, typ="auto", fmt="auto", color="red"):
@@ -119,7 +122,7 @@ _pt2d_name_trans = collections.OrderedDict((
     ("Trace ID", "particle")))
 
 
-def load_pt2d(filename, typ, load_protocol=False):
+def load_pt2d(filename, typ, load_protocol=True):
     """Load a _positions.mat file created by particle_tracking_2D
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -132,10 +135,12 @@ def load_pt2d(filename, typ, load_protocol=False):
     typ : {"features", "tracks"}
         Specify whether to load feature data (positions.mat) or tracking data
         (tracks.mat)
-    load_protocol : bool
+    load_protocol : bool, optional
         Look for a _protocol.mat file (i. e. replace the "_positions.mat" part
         of `filename` with "_protocol.mat") in order to load the column names.
-        This may be buggy for some older versions of particle_tracking_2D.
+        This may be buggy for some older versions of particle_tracking_2D. If
+        reading the protocol fails, this behaves as if load_protocol=False.
+        Defaults to True.
 
     Returns
     -------
@@ -155,23 +160,22 @@ def load_pt2d(filename, typ, load_protocol=False):
 
     mt = sp_io.loadmat(filename)[mat_component]
 
-    cols = []
-    if load_protocol:
-        proto_path = (filename[:filename.rfind(filename_component)] +
-                      "protocol.mat")
-        proto = sp_io.loadmat(proto_path, struct_as_record=False,
-                              squeeze_me=True)
-        name_str = getattr(proto["X"], protocol_component)
-        names = name_str.split(", ")
+    # column names for DataFrame, will be overridden if load_protocol == True
+    cols = list(_pt2d_name_trans.values())
 
-        for n in names:
-            tn = _pt2d_name_trans.get(n)
-            if tn is None:
-                tn = n
-            cols.append(tn)
-    else:
-        for k, v in _pt2d_name_trans.items():
-            cols.append(v)
+    if load_protocol:
+        try:
+            proto_path = (filename[:filename.rfind(filename_component)] +
+                          "protocol.mat")
+            proto = sp_io.loadmat(proto_path, struct_as_record=False,
+                                  squeeze_me=True)
+            name_str = getattr(proto["X"], protocol_component)
+            names = name_str.split(", ")
+
+            cols = [_pt2d_name_trans.get(n, n) for n in names]
+        except Exception:
+            _logger.info("Failed to read protocol for " + filename +
+                         ". Falling back to using hard-coded names.")
 
     # append cols with names for unnamed columns
     for i in range(len(cols), mt.shape[1]):
