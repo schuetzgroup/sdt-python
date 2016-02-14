@@ -342,7 +342,7 @@ def load_msdplot(filename):
                 data=pd.DataFrame(mat["msd1"], columns=_msd_column_names))
 
 
-def save(filename, data, fmt="auto", typ="auto"):
+def save(filename, data, typ="auto", fmt="auto"):
     """Save feature/tracking data
 
     This supports HDF5 and particle_tracker formats.
@@ -353,13 +353,13 @@ def save(filename, data, fmt="auto", typ="auto"):
         Name of the file to write to
     data : pandas.DataFrame
         Data to save
-    fmt : {"auto", "hdf5", "particle_tracker"}
-        Output format. If "auto", infer the format from `filename`. Otherwise,
-        write the given format.
     typ : {"auto", "features", "tracks"}
         Specify whether to save feature data or tracking data. If "auto",
         consider `data` tracking data if a "particle" column is present,
         otherwise treat as feature data.
+    fmt : {"auto", "hdf5", "particle_tracker"}
+        Output format. If "auto", infer the format from `filename`. Otherwise,
+        write the given format.
     """
     if typ not in ("tracks", "features", "auto"):
         raise ValueError("Unknown type: " + typ)
@@ -367,12 +367,12 @@ def save(filename, data, fmt="auto", typ="auto"):
     if fmt == "auto":
         if filename.endswith(".h5"):
             fmt = "hdf5"
-        if (filename.endswith("_positions.mat") or
+        elif (filename.endswith("_positions.mat") or
                 filename.endswith("_tracks.mat")):
             fmt = "particle_tracker"
         else:
             raise ValueError("Could not determine format from file name " +
-                             filename + ".")
+                             filename)
 
     if typ == "auto":
         if "particle" in data.columns:
@@ -403,7 +403,7 @@ def save_pt2d(filename, data, typ="tracks"):
     """
     data_cols = []
     num_features = len(data)
-    for v in pt2d_name_trans.values():
+    for v in _pt2d_name_trans.values():
         if (v == "particle") and (typ != "tracks"):
             continue
 
@@ -419,4 +419,5 @@ def save_pt2d(filename, data, typ="tracks"):
         else:
             data_cols.append(cur_col)
 
-    sp_io.savemat(filename, dict(MT=np.column_stack(data_cols)))
+    key_name = ("MT" if typ == "features" else "tracks")
+    sp_io.savemat(filename, {key_name: np.column_stack(data_cols)})
