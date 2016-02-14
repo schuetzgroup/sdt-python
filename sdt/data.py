@@ -16,6 +16,7 @@ adjust_index : list of str
     This list contains the names of columns to be corrected. Defaults to
     ["x", "y", "frame", "particle].
 """
+import os
 import collections
 
 import scipy.io as sp_io
@@ -75,7 +76,7 @@ def load(filename, data="tracks"):
                              "from file {}".format(data, filename))
 
 
-pt2d_name_trans = collections.OrderedDict((
+_pt2d_name_trans = collections.OrderedDict((
     ("x-Position", "x"),
     ("y-Position", "y"),
     ("Integrated Intensity", "mass"),
@@ -91,7 +92,7 @@ pt2d_name_trans = collections.OrderedDict((
     ("Trace ID", "particle")))
 
 
-def load_pt2d_positions(filename, load_protocol=True):
+def load_pt2d(filename, typ, load_protocol=False):
     """Load a _positions.mat file created by particle_tracking_2D
 
     Use `scipy.io.loadmat` to load the file and convert data to a
@@ -101,6 +102,9 @@ def load_pt2d_positions(filename, load_protocol=True):
     ----------
     filename : str
         Name of the file to load
+    typ : {"features", "tracks"}
+        Specify whether to load feature data (positions.mat) or tracking data
+        (tracks.mat)
     load_protocol : bool
         Look for a _protocol.mat file (i. e. replace the "_positions.mat" part
         of `filename` with "_protocol.mat") in order to load the column names.
@@ -111,92 +115,45 @@ def load_pt2d_positions(filename, load_protocol=True):
     pandas.DataFrame
         Loaded data.
     """
-    pos = sp_io.loadmat(filename)["MT"]
+    if typ == "features":
+        mat_component = "MT"
+        filename_component = "positions.mat"
+        protocol_component = "positions_output"
+    elif typ == "tracks":
+        mat_component = "tracks"
+        filename_component = "tracks.mat"
+        protocol_component = "tracking_output"
+    else:
+        raise ValueError("Unknown type: " + typ)
+
+    mt = sp_io.loadmat(filename)[mat_component]
 
     cols = []
     if load_protocol:
-        proto_path = (filename[:filename.rfind("positions.mat")] +
+        proto_path = (filename[:filename.rfind(filename_component)] +
                       "protocol.mat")
         proto = sp_io.loadmat(proto_path, struct_as_record=False,
                               squeeze_me=True)
-        name_str = proto["X"].positions_output
+        name_str = getattr(proto["X"], protocol_component)
         names = name_str.split(", ")
 
         for n in names:
-            tn = pt2d_name_trans.get(n)
+            tn = _pt2d_name_trans.get(n)
             if tn is None:
                 tn = n
             cols.append(tn)
     else:
-        for k, v in pt2d_name_trans.items():
+        for k, v in _pt2d_name_trans.items():
             cols.append(v)
 
     # append cols with names for unnamed columns
-    for i in range(len(cols), pos.shape[1]+3):
+    for i in range(len(cols), mt.shape[1]):
         cols.append("column{}".format(i))
 
     # columns name list cannot have more columns than there are in the file
-    cols = cols[:pos.shape[1]]
+    cols = cols[:mt.shape[1]]
 
-    df = pd.DataFrame(pos, columns=cols)
-    for c in adjust_index:
-        if c in df.columns:
-            df[c] -= 1
-
-    if "size" in df.columns:
-        # particle_tracker returns the squared radius of gyration
-        df["size"] = np.sqrt(df["size"])
-
-    return df
-
-
-def load_pt2d_tracks(filename, load_protocol=True):
-    """Load a _tracks.mat file created by particle_tracking_2D
-
-    Use `scipy.io.loadmat` to load the file and convert data to a
-    `pandas.DataFrame`.
-
-    Parameters
-    ----------
-    filename : str
-        Name of the file to load
-    load_protocol : bool
-        Look for a _protocol.mat file (i. e. replace the "_tracks.mat" part
-        of `filename` with "_protocol.mat") in order to load the column names.
-        This may be buggy for some older versions of particle_tracking_2D.
-
-    Returns
-    -------
-    pandas.DataFrame
-        Loaded data.
-    """
-    tracks = sp_io.loadmat(filename)["tracks"]
-
-    cols = []
-    if load_protocol:
-        proto_path = filename[:filename.rfind("tracks.mat")] + "protocol.mat"
-        proto = sp_io.loadmat(proto_path, struct_as_record=False,
-                              squeeze_me=True)
-        name_str = proto["X"].tracking_output
-        names = name_str.split(", ")
-
-        for n in names:
-            tn = pt2d_name_trans.get(n)
-            if tn is None:
-                tn = n
-            cols.append(tn)
-    else:
-        for k, v in pt2d_name_trans.items():
-            cols.append(v)
-
-    # append cols with names for unnamed columns
-    for i in range(len(cols), tracks.shape[1]+3):
-        cols.append("column{}".format(i))
-
-    # columns name list cannot have more columns than there are in the file
-    cols = cols[:tracks.shape[1]]
-
-    df = pd.DataFrame(tracks, columns=cols)
+    df = pd.DataFrame(mt, columns=cols)
     for c in adjust_index:
         if c in df.columns:
             df[c] -= 1
