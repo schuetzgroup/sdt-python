@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from sdt.loc.prepare_peakposition import find
+from sdt.loc.fast_peakposition import find
 
 
 path, f = os.path.split(os.path.abspath(__file__))
