@@ -1,5 +1,5 @@
 import numpy as np
-form scipy import signal
+from scipy import signal
 
 
 def bandpass(image, feature_radius, noise_radius=1):
