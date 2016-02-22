@@ -1,3 +1,4 @@
+"""Put together finding and fitting for feature localization"""
 import collections
 
 import numpy as np
@@ -12,12 +13,43 @@ col_nums = ColumnNums(**{k: v for v, k in enumerate(peak_params)})
 
 
 def make_margin(image, margin):
+    """Draw a margin of zeros around an image
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        image data
+    margin : int
+        margin size
+
+    Returns
+    -------
+    numpy.ndarray
+        image with margin
+    """
     img_with_margin = np.zeros(np.array(image.shape) + 2*margin)
     img_with_margin[margin:-margin, margin:-margin] = image
     return img_with_margin
 
 
 def shift_image(image, shift):
+    """Shift an image
+
+    Work similarly to ``scipy.ndimage.shift`` with ``order=1`` but behaves
+    somewhat differently at the edges.
+
+    Parameters
+    ----------
+    image : np.ndarray
+        image data
+    shift : tuple of float
+        Shift amount for each axis
+
+    Returns
+    -------
+    np.ndarray
+        Shifted image
+    """
     shift = np.array(shift)
     # split into integer and fractional part s. t. 0. <= fractional part < 1.
     int_shift = np.floor(shift).astype(np.int)
@@ -38,6 +70,47 @@ def shift_image(image, shift):
 
 def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
            noise_radius=1):
+    """Locate bright, Gaussian-like features in an image
+
+    This implements an algorithm proposed by Crocker & Grier [1]_ and is based
+    on the implementation by the Kilfoil group, see
+    http://people.umass.edu/kilfoil/tools.php
+
+    This is the actual implementation. Usually, one would not call this
+    directly but the wrapper functions :py:func:`api.locate` and
+    :py:func:`api.batch`
+
+    ..[1] Crocker, J. C. & Grier, D. G.: "Methods of digital video microscopy
+        for colloidal studies", Journal of colloid and interface science,
+        Elsevier, 1996, 179, 298-310
+
+    Parameters
+    ----------
+    raw_image : array-like
+        Raw image data
+    radius : int
+        This should be a number a little greater than the radius of the
+        peaks.
+    int_thresh : float
+        A number roughly equal to the value of the brightest pixel (minus the
+        CCD baseline) in the dimmest peak to be detected. Local maxima with
+        brightest pixels below this threshold will be discarded.
+    mass_thresh : float
+        Use a number roughly equal to the integrated intensity (mass) of the
+        dimmest peak (minus the CCD baseline) that should be detected. If this
+        is too low more background will be detected. If it is too high more
+        peaks will be missed.
+    bandpass : bool, optional
+        Set to True to turn on bandpass filtering, false otherwise. Default is
+        True.
+    noise_size : float, optional
+        Noise correlation length in pixels. Defaults to 1.
+
+    Returns
+    -------
+    numpy.ndarray
+        Peak data. Column order is given by the ``col_nums`` attribute.
+    """
     if bandpass:
         image = bp(raw_image, radius, noise_radius)  # bandpass.bandpass()
     else:

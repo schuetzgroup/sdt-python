@@ -1,3 +1,4 @@
+"""Method for bandpass filtering of image data"""
 import numpy as np
 from scipy import signal
 
@@ -23,6 +24,21 @@ def bandpass(image, feature_radius, noise_radius=1):
 
     The first term in the sum in :math:`K` does Gaussian smoothing, the
     second one is a boxcar filter to get rid of long-range fluctuations.
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        image data
+    feature_radius : int
+        This should be a number a little greater than the radius of the
+        peaks.
+    noise_radius : float, optional
+        Noise correlation length in pixels. Defaults to 1.
+
+    Returns
+    -------
+    numpy.ndarray
+        bandpass filtered image
     """
     w = max(feature_radius, 2*noise_radius)
     gaussian_1d = np.exp(- (np.arange(-w, w+1)/(2*noise_radius))**2)

@@ -51,7 +51,7 @@ def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
     bandpass : bool, optional
         Set to True to turn on bandpass filtering, false otherwise. Default is
         True.
-    noise_size : float, optional
+    noise_radius : float, optional
         Noise correlation length in pixels. Defaults to 1.
     """
     peaks = algorithm.locate(raw_image, radius, int_thresh, mass_thresh,
@@ -102,7 +102,7 @@ def batch(frames, radius, int_thresh, mass_thresh, bandpass=True,
     bandpass : bool, optional
         Set to True to turn on bandpass filtering, false otherwise. Default is
         True.
-    noise_size : float, optional
+    noise_radius : float, optional
         Noise correlation length in pixels. Defaults to 1.
     """
     all_features = []

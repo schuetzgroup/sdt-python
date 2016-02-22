@@ -1,13 +1,68 @@
+"""Find local maxima in an image
+
+This module provides the :py:function:`find` function, which implements
+local maximum detection and filtering.
+"""
 import numpy as np
 from scipy import ndimage
 
 
 def find(image, search_radius, threshold):
+    """Find and filter local maxima
+
+    Finds the locations of all the local maxima in an image with
+    intensity greater than threshold.
+
+    This is a frontend to :py:func:`local_maxima` which returns the data
+    in a structure compatible with the Fitter classes.
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        2D image data
+    search_radius : int
+        Search for local maxima within this radius. That is, if two local
+        maxima are within ``search_radius`` of each other, only the greater
+        one will be taken.
+    threshold : float
+        Minumum peak intensity
+
+    Returns
+    -------
+    np.ndarray
+        nx2 array. Each row holds the x and the y coordinate of one local
+        maximum.
+    """
     # reverse column order to convert image matrix indices to x, y coordinates
     return local_maxima(image, search_radius, threshold)[:, ::-1]
 
 
 def local_maxima(image, search_radius, threshold):
+    """Find local maxima in image
+
+    Finds the locations of all the local maxima in an image with
+    intensity greater than threshold.
+
+    The actual finding and filtering function. Usually one would not call
+    it directly, but use :py:func:`find`.
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        The image to analyze
+    search_radius : int
+        Search for local maxima within this radius. That is, if two local
+        maxima are within ``search_radius`` of each other, only the greater
+        one will be taken.
+    threshold : float
+        Minumum peak intensity
+
+    Returns
+    -------
+    maxima : numpy.ndarray
+        Indices of the detected maxima. Each row is a set of indices giving
+        where in the `image` array one can find a maximum.
+    """
     # create circular mask with radius `search_radius`
     x_sq = np.arange(-search_radius, search_radius + 1)**2
     mask = x_sq[:, np.newaxis] + x_sq[np.newaxis, :]
