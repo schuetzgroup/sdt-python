@@ -55,8 +55,7 @@ class Finder(object):
         image : numpy.ndarray
             2D image data
         threshold : float
-            Only accept maxima for which the estimated total intensity (mass)
-            of the feature is above threshold.
+            Minumum peak intensity (above background)
 
         Returns
         -------
