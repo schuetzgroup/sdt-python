@@ -104,7 +104,7 @@ def locate(raw_image, radius, model, threshold, engine="numba",
     df["mass"] = (2 * np.pi * np.prod(
         converged_peaks[:, [col_nums.wx, col_nums.wy, col_nums.amp]], axis=1))
 
-    if model in ("3D", "Z"):
+    if model in ("3d", "Z"):
         df["size_x"] = converged_peaks[:, col_nums.wx]
         df["size_y"] = converged_peaks[:, col_nums.wy]
     else:
