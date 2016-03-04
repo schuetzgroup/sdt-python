@@ -152,7 +152,7 @@ def distribution(data, abscissa, smooth=2.):
     Returns
     -------
     x : numpy.ndarray
-        The x axis values (the ``abscissa`` paramater if it was given as an
+        The x axis values (the ``abscissa`` parameter if it was given as an
         array)
     y : numpy.ndarray
         y axis values
