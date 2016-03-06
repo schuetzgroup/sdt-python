@@ -103,7 +103,7 @@ def locate(raw_image, radius, threshold, max_iterations,
         fitter.fit()
         peaks = fitter.peaks
         # get good peaks
-        peaks = peaks.remove_bad(0.9*threshold, 0.5*radius)
+        peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
 
         # remove close peaks
         peaks = peaks.remove_close(radius, neighborhood_radius)
@@ -113,7 +113,7 @@ def locate(raw_image, radius, threshold, max_iterations,
         peaks = fitter.peaks
         residual = fitter.residual
         # get good peaks again
-        peaks = peaks.remove_bad(0.9*threshold, 0.5*radius)
+        peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
 
         # subtract background from residual, update background variable
         # estimate the background
