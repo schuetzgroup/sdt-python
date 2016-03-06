@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from sdt.loc.daostorm_3d import algorithm, find_numba, fit_numba_impl
+from sdt.loc.daostorm_3d import algorithm, find, find_numba, fit_numba_impl
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -25,11 +25,25 @@ class Test(unittest.TestCase):
                              [  9.,   8.,   8.,   9.,  10.,  11.,  11.,  10.]])
         np.testing.assert_allclose(img_with_margin, expected)
 
-    def test_locate_2dfixed(self):
-        orig = np.load(os.path.join(data_path, "locate_2dfixed.npz"))["peaks"]
+    def test_locate_2dfixed_numba(self):
+        orig = np.load(os.path.join(data_path, "beads_2dfixed.npy"))
         frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
-        peaks = algorithm.locate(frame, 2., 300., 5, find_numba.Finder,
+        peaks = algorithm.locate(frame, 1., 400., 20, find_numba.Finder,
                                  fit_numba_impl.Fitter2DFixed)
+        np.testing.assert_allclose(peaks, orig)
+
+    def test_locate_2d_numba(self):
+        orig = np.load(os.path.join(data_path, "beads_2d.npy"))
+        frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
+        peaks = algorithm.locate(frame, 1., 400., 20, find.Finder,
+                                 fit_numba_impl.Fitter2D)
+        np.testing.assert_allclose(peaks, orig)
+
+    def test_locate_3d_numba(self):
+        orig = np.load(os.path.join(data_path, "beads_3d.npy"))
+        frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
+        peaks = algorithm.locate(frame, 1., 400., 20, find.Finder,
+                                 fit_numba_impl.Fitter3D)
         np.testing.assert_allclose(peaks, orig)
 
 
