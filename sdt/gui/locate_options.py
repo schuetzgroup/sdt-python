@@ -5,6 +5,7 @@ displays the settings widget for the currently selected one.
 """
 import os
 import collections
+import contextlib
 
 import qtpy
 from qtpy.QtWidgets import QWidget, QFormLayout, QSpinBox, QComboBox, QLabel
@@ -193,22 +194,48 @@ class FastPeakpositionOptions(fpBase):
         return opt
 
 
+cgClass, cgBase = uic.loadUiType(os.path.join(path, "cg_options.ui"))
+
+
+class CGOptions(cgBase):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._ui = cgClass()
+        self._ui.setupUi(self)
+
+        self._ui.radiusBox.valueChanged.connect(self.optionsChanged)
+        self._ui.sigThresholdBox.valueChanged.connect(self.optionsChanged)
+        self._ui.massThresholdBox.valueChanged.connect(self.optionsChanged)
+
+    optionsChanged = pyqtSignal()
+
+    @pyqtProperty(dict, doc="Localization algorithm parameters")
+    def options(self):
+        opt = dict(radius=self._ui.radiusBox.value(),
+                   signal_thresh=self._ui.sigThresholdBox.value(),
+                   mass_thresh=self._ui.massThresholdBox.value())
+        return opt
+
 # Look for algorithms
-try:
+with contextlib.suppress(ImportError):
     from sdt.loc import daostorm_3d
     methodList.append(
         methodDesc("daostorm_3d",
                    Daostorm3DOptions,
                    locate=daostorm_3d.locate,
                    batch=daostorm_3d.batch))
-except ImportError:
-    pass
-try:
+with contextlib.suppress(ImportError):
     from sdt.loc import fast_peakposition
     methodList.append(
         methodDesc("fast_peakposition",
                    FastPeakpositionOptions,
                    locate=fast_peakposition.locate,
                    batch=fast_peakposition.batch))
-except ImportError:
-    pass
+with contextlib.suppress(ImportError):
+    from sdt.loc import cg
+    methodList.append(
+        methodDesc("cg",
+                   CGOptions,
+                   locate=cg.locate,
+                   batch=cg.batch))
