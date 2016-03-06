@@ -8,7 +8,7 @@ from . import algorithm
 from .algorithm import col_nums
 
 
-def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
+def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
            noise_radius=1):
     """Locate bright, Gaussian-like features in an image
 
@@ -27,7 +27,7 @@ def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
     radius : int
         This should be a number a little greater than the radius of the
         peaks.
-    int_thresh : float
+    signal_thresh : float
         A number roughly equal to the value of the brightest pixel (minus the
         CCD baseline) in the dimmest peak to be detected. Local maxima with
         brightest pixels below this threshold will be discarded.
@@ -54,7 +54,7 @@ def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
     noise_radius : float, optional
         Noise correlation length in pixels. Defaults to 1.
     """
-    peaks = algorithm.locate(raw_image, radius, int_thresh, mass_thresh,
+    peaks = algorithm.locate(raw_image, radius, signal_thresh, mass_thresh,
                              bandpass, noise_radius)
 
     df = pd.DataFrame(peaks[:, [col_nums.x, col_nums.y, col_nums.mass,
@@ -67,7 +67,7 @@ def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
     return df
 
 
-def batch(frames, radius, int_thresh, mass_thresh, bandpass=True,
+def batch(frames, radius, signal_thresh, mass_thresh, bandpass=True,
           noise_radius=1):
     """Call `locate` on a series of frames.
 
@@ -80,7 +80,7 @@ def batch(frames, radius, int_thresh, mass_thresh, bandpass=True,
     radius : int
         This should be a number a little greater than the radius of the
         peaks.
-    int_thresh : float
+    signal_thresh : float
         A number roughly equal to the value of the brightest pixel (minus the
         CCD baseline) in the dimmest peak to be detected. Local maxima with
         brightest pixels below this threshold will be discarded.
@@ -107,7 +107,7 @@ def batch(frames, radius, int_thresh, mass_thresh, bandpass=True,
     """
     all_features = []
     for i, img in enumerate(frames):
-        features = locate(img, radius, int_thresh, mass_thresh, bandpass,
+        features = locate(img, radius, signal_thresh, mass_thresh, bandpass,
                           noise_radius)
 
         if not hasattr(img, "frame_no") or img.frame_no is None:

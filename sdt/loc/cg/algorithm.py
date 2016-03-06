@@ -68,7 +68,7 @@ def shift_image(image, shift):
     return ret
 
 
-def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
+def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
            noise_radius=1):
     """Locate bright, Gaussian-like features in an image
 
@@ -91,7 +91,7 @@ def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
     radius : int
         This should be a number a little greater than the radius of the
         peaks.
-    int_thresh : float
+    signal_thresh : float
         A number roughly equal to the value of the brightest pixel (minus the
         CCD baseline) in the dimmest peak to be detected. Local maxima with
         brightest pixels below this threshold will be discarded.
@@ -116,7 +116,7 @@ def locate(raw_image, radius, int_thresh, mass_thresh, bandpass=True,
     else:
         image = raw_image
 
-    peaks_found = find(image, radius, int_thresh)
+    peaks_found = find(image, radius, signal_thresh)
 
     # draw margin to make sure we can always apply the masks created below
     image = make_margin(image, radius)
