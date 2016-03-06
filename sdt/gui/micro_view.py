@@ -19,6 +19,7 @@ from qtpy import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
+iconpath = os.path.join(path, "icons")
 
 
 class ImageGraphicsItem(QGraphicsPixmapItem):
@@ -185,6 +186,7 @@ class MicroViewWidget(mvBase):
             self._playTimer.setTimerType(Qt.PreciseTimer)
         self._playTimer.setSingleShot(False)
 
+        # connect signals and slots
         self._ui.framenoBox.valueChanged.connect(self.selectFrame)
         self._ui.playButton.pressed.connect(
             lambda: self.setPlaying(not self._playing))
@@ -195,6 +197,25 @@ class MicroViewWidget(mvBase):
         self._ui.zoomFitButton.pressed.connect(self.zoomFit)
         self._scene.roiChanged.connect(self.roiChanged)
 
+        # set button icons
+        self._ui.zoomOutButton.setIcon(
+            QIcon(os.path.join(iconpath, "zoom-out.svg")))
+        self._ui.zoomOriginalButton.setIcon(
+            QIcon(os.path.join(iconpath, "zoom-original.svg")))
+        self._ui.zoomFitButton.setIcon(
+            QIcon(os.path.join(iconpath, "zoom-fit-best.svg")))
+        self._ui.zoomInButton.setIcon(
+            QIcon(os.path.join(iconpath, "zoom-in.svg")))
+        self._ui.roiButton.setIcon(
+            QIcon(os.path.join(iconpath, "draw-polygon.svg")))
+
+        self._playIcon = QIcon(
+            os.path.join(iconpath, "media-playback-start.svg"))
+        self._pauseIcon = QIcon(
+            os.path.join(iconpath, "media-playback-pause.svg"))
+        self._ui.playButton.setIcon(self._playIcon)
+
+        # initialize image data
         self._locDataGood = None
         self._locDataBad = None
         self._locMarkers = None
@@ -310,8 +331,8 @@ class MicroViewWidget(mvBase):
         self._ui.framenoBox.setEnabled(not play)
         self._ui.framenoSlider.setEnabled(not play)
         self._ui.framenoLabel.setEnabled(not play)
-        self._ui.playButton.setIcon(QIcon.fromTheme(
-            "media-playback-pause" if play else "media-playback-start"))
+        self._ui.playButton.setIcon(
+            self._pauseIcon if play else self._playIcon)
         self._playing = play
 
     def drawImage(self):

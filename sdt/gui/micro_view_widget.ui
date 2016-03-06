@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>552</width>
-    <height>409</height>
+    <height>428</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,47 +31,57 @@
      </item>
      <item>
       <widget class="QToolButton" name="zoomOutButton">
+       <property name="toolTip">
+        <string>Zoom out</string>
+       </property>
        <property name="text">
-        <string>...</string>
+        <string>Zoom in</string>
        </property>
        <property name="icon">
-        <iconset theme="zoom-out">
-         <normaloff/>
-        </iconset>
+        <iconset>
+         <normaloff>icons/zoom-out.svg</normaloff>icons/zoom-out.svg</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="zoomOriginalButton">
+       <property name="toolTip">
+        <string>Zoom 1:1</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
        <property name="icon">
         <iconset theme="zoom-original">
-         <normaloff/>
-        </iconset>
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="zoomFitButton">
+       <property name="toolTip">
+        <string>Zoom to fit</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset theme="zoom-fit-best"/>
+        <iconset theme="zoom-fit-best">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="zoomInButton">
+       <property name="toolTip">
+        <string>Zoom in</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
        <property name="icon">
         <iconset theme="zoom-in">
-         <normaloff/>
-        </iconset>
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -90,6 +100,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="roiButton">
+       <property name="toolTip">
+        <string>Polygon ROI</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
@@ -183,13 +196,15 @@
      </item>
      <item>
       <widget class="QToolButton" name="playButton">
+       <property name="toolTip">
+        <string>Play/pause</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
        <property name="icon">
         <iconset theme="media-playback-start">
-         <normaloff/>
-        </iconset>
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
