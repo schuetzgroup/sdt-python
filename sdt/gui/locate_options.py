@@ -169,14 +169,14 @@ class Daostorm3DOptions(d3dBase):
         return opt
 
 
-ppClass, ppBase = uic.loadUiType(os.path.join(path, "pp_options.ui"))
+fpClass, fpBase = uic.loadUiType(os.path.join(path, "fp_options.ui"))
 
 
-class PreparePeakpositionOptions(ppBase):
+class FastPeakpositionOptions(fpBase):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self._ui = ppClass()
+        self._ui = fpClass()
         self._ui.setupUi(self)
 
         self._ui.radiusBox.valueChanged.connect(self.optionsChanged)
@@ -204,11 +204,11 @@ try:
 except ImportError:
     pass
 try:
-    from sdt.loc import prepare_peakposition
+    from sdt.loc import fast_peakposition
     methodList.append(
-        methodDesc("prepare_peakposition",
-                   PreparePeakpositionOptions,
-                   locate=prepare_peakposition.locate,
-                   batch=prepare_peakposition.batch))
+        methodDesc("fast_peakposition",
+                   FastPeakpositionOptions,
+                   locate=fast_peakposition.locate,
+                   batch=fast_peakposition.batch))
 except ImportError:
     pass
