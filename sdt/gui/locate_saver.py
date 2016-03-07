@@ -27,14 +27,6 @@ class SaveWidget(locSaveBase):
         self._ui = locSaveClass()
         self._ui.setupUi(self)
 
-        # disable particle_tracker until implemented
-        formatBoxModel = self._ui.formatBox.model()
-        item = formatBoxModel.item(1)
-        item.setFlags(item.flags() & ~(Qt.ItemIsSelectable|Qt.ItemIsEnabled))
-        item.setData(self._ui.formatBox.palette().color(QPalette.Disabled,
-                                                        QPalette.Text),
-                     Qt.TextColorRole)
-
         self._lastOpenDir = ""
 
     locateAndSave = pyqtSignal(str)
