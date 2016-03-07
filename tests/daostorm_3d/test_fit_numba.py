@@ -36,12 +36,13 @@ class FitterTest(unittest.TestCase):
             expected)
 
     def test_calc_pixel_width_hysteresis(self):
-        width = np.array([1/(2*1.5**2)])
+        width = np.array([[1/(2*1.5**2)]])
         np.testing.assert_equal(
             self.fitter._calc_pixel_width(width,
-                                          np.array([-10])), np.array([6]))
+                                          np.array([[-10]])), np.array([[6]]))
         np.testing.assert_equal(
-            self.fitter._calc_pixel_width(width, np.array([5])), np.array([5]))
+            self.fitter._calc_pixel_width(width, np.array([[5]])),
+            np.array([[5]]))
 
     def test_calc_peak(self):
         for i in range(len(self.fitter._data)):

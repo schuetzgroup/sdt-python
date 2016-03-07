@@ -117,7 +117,8 @@ class Fitter(fit.Fitter):
             self._pixel_center, self.hysteresis, self._margin)
 
 
-def _calc_pixel_width(new, old, hysteresis, margin):
+@numba.jit(nopython=True, nogil=True, cache=True)
+def _numba_calc_pixel_width(new, old, hysteresis, margin):
     if new < 0.:
         return 1
 
@@ -126,8 +127,15 @@ def _calc_pixel_width(new, old, hysteresis, margin):
 
     return int(min(ret, margin))
 
-_vector_calc_pixel_width = numba.vectorize(_calc_pixel_width)
-_numba_calc_pixel_width = numba.jit(_calc_pixel_width, nopython=True)
+
+@numba.jit(nopython=True, nogil=True, cache=True)
+def _vector_calc_pixel_width(new, old, hysteresis, margin):
+    ret = np.empty_like(old)
+    for i in range(new.shape[0]):
+        for j in range(new.shape[1]):
+            ret[i, j] = _numba_calc_pixel_width(new[i, j], old[i, j],
+                                                hysteresis, margin)
+    return ret
 
 
 @numba.jit(nopython=True)
