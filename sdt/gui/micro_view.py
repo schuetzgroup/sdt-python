@@ -8,7 +8,7 @@ import pandas as pd
 
 import qtpy
 from qtpy.QtCore import (QRectF, QPointF, Qt, pyqtSignal, pyqtProperty,
-                         pyqtSlot, QTimer, QObject)
+                         pyqtSlot, QTimer, QObject, QCoreApplication)
 from qtpy.QtGui import (QPen, QImage, QPixmap, QIcon, QTransform, QPen,
                         QPolygonF, QPainter)
 from qtpy.QtWidgets import (QGraphicsView, QGraphicsPixmapItem,
@@ -157,7 +157,7 @@ class MicroViewWidget(mvBase):
     __clsName = "MicroViewWidget"
 
     def tr(self, string):
-        return QApplication.translate(self.__clsName, string)
+        return QCoreApplication.translate(self.__clsName, string)
 
     def __init__(self, parent=None):
         super().__init__(parent)
