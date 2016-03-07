@@ -138,7 +138,7 @@ def _vector_calc_pixel_width(new, old, hysteresis, margin):
     return ret
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_calc_peak(index, data, dx, gauss, px_center, px_width):
     col_c = [col_x, col_y]  # peak center column numbers
     col_w = [col_wx, col_wy]  # peak width column numbers
@@ -151,7 +151,7 @@ def _numba_calc_peak(index, data, dx, gauss, px_center, px_width):
             gauss[index, i, j] = np.exp(-cur_absc**2 * data[index, col_w[i]])
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_add_to_fit(index, fit_img, bg_img, bg_count,
                       data, gauss, px_center, px_width):
     amp = data[index, col_amp]
@@ -168,7 +168,7 @@ def _numba_add_to_fit(index, fit_img, bg_img, bg_count,
             bg_count[img_i, img_j] += 1.
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_remove_from_fit(index, fit_img, bg_img, bg_count,
                            data, gauss, px_center, px_width):
     amp = data[index, col_amp]
@@ -184,7 +184,7 @@ def _numba_remove_from_fit(index, fit_img, bg_img, bg_count,
             bg_img[img_i, img_j] -= bg
             bg_count[img_i, img_j] -= 1.
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_calc_error(index, real_img, fit_img, bg_img, bg_count,
                       data, err_old, px_center, px_width, tolerance):
     err = 0.
@@ -210,7 +210,7 @@ def _numba_calc_error(index, real_img, fit_img, bg_img, bg_count,
         data[index, col_stat] = stat_conv
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_update_peak(index, update, real_img, data, sign, clamp, px_center,
                        hysteresis, margin):
     cur_data = data[index]

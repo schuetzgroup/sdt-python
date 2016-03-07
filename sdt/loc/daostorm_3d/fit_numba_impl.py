@@ -41,7 +41,7 @@ class Fitter3D(fit_numba.Fitter):
             self.hysteresis, self._margin, self._tolerance)
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _chol(A, L):
     """Calculate Cholesky decomposition of positive definite, symmetric `A`
 
@@ -80,7 +80,7 @@ def _chol(A, L):
     return 1
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _eqn_solver(A, b, x):
     """Solve system of linear equations
 
@@ -123,7 +123,7 @@ def _eqn_solver(A, b, x):
     return 1
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_iterate_2d_fixed(real_img, fit_img, bg_img, bg_count, data, dx,
                             gauss, sign, clamp, err_old, px_center, px_width,
                             hysteresis, margin, tolerance):
@@ -194,7 +194,7 @@ def _numba_iterate_2d_fixed(real_img, fit_img, bg_img, bg_count, data, dx,
                               err_old, px_center, px_width, tolerance)
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_iterate_2d(real_img, fit_img, bg_img, bg_count, data, dx,
                       gauss, sign, clamp, err_old, px_center, px_width,
                       hysteresis, margin, tolerance):
@@ -270,7 +270,7 @@ def _numba_iterate_2d(real_img, fit_img, bg_img, bg_count, data, dx,
                               err_old, px_center, px_width, tolerance)
 
 
-@numba.jit(nopython=True)
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_iterate_3d(real_img, fit_img, bg_img, bg_count, data, dx,
                       gauss, sign, clamp, err_old, px_center, px_width,
                       hysteresis, margin, tolerance):
