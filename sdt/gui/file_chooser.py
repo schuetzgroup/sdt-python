@@ -3,9 +3,9 @@ import types
 
 import qtpy
 import qtpy.compat
-from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication,
-                         QAbstractListModel, QModelIndex, pyqtProperty)
-from qtpy.QtWidgets import QFileDialog
+from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication, QObject,
+                         QAbstractListModel, QModelIndex, pyqtProperty,
+                         QEvent)
 from qtpy import uic
 
 
@@ -87,6 +87,51 @@ class FileListModel(QAbstractListModel):
         return (d.fileName for d in self._data)
 
 
+class KbdEventFilter(QObject):
+    """Event filter for the file list QListView that handles key presses
+
+    Signals
+    -------
+    enterPressed : QModelIndex
+        Enter/return/space key was pressed. Passes the current index of the
+        model.
+    delPressed
+        Delete/backspace was pressed
+    """
+    enterPressed = pyqtSignal(QModelIndex)
+    delPressed = pyqtSignal()
+
+    def eventFilter(self, watched, event):
+        """Event filter that handles return, del, etc. key presses
+
+        Parameters
+        ----------
+        watched : QObject
+            Object the event filter is installed for
+        event : QEvent
+            The event
+
+        Returns
+        -------
+        bool
+            Returns True if the key press was handled (delete, backspace,
+            enter, return, space) to indicate that no further processing is
+            wanted. Returns False otherwise
+        """
+        if event.type() == QEvent.KeyPress and not event.isAutoRepeat():
+            key = event.key()
+            if key in (Qt.Key_Delete, Qt.Key_Backspace):
+                self.delPressed.emit()
+                return True
+            elif key in (Qt.Key_Return, Qt.Key_Enter, Qt.Key_Space):
+                idx = watched.selectionModel().currentIndex()
+                if idx.isValid():
+                    self.enterPressed.emit(idx)
+                return True
+
+        return False
+
+
 fcClass, fcBase = uic.loadUiType(os.path.join(path, "file_chooser.ui"))
 
 
@@ -114,6 +159,12 @@ class FileChooser(fcBase):
         self._ui.fileListView.doubleClicked.connect(self.select)
 
         self._lastOpenDir = ""
+
+        # install the event filter for handling key presses
+        self._kbdEventFilter = KbdEventFilter(self)
+        self._kbdEventFilter.enterPressed.connect(self.select)
+        self._kbdEventFilter.delPressed.connect(self.removeSelected)
+        self._ui.fileListView.installEventFilter(self._kbdEventFilter)
 
     def model(self):
         return self._model
