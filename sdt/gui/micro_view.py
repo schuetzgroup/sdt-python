@@ -291,6 +291,8 @@ class MicroViewWidget(mvBase):
         else:
             self.drawImage()
 
+        self._scene.setSceneRect(self._scene.itemsBoundingRect())
+
         self.currentFrameChanged.emit()
 
     @pyqtSlot(int)
