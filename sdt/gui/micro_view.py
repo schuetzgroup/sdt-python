@@ -146,7 +146,8 @@ class LocalizationMarker(QGraphicsEllipseItem):
         pen.setColor(color)
         self.setPen(pen)
 
-        ttStr = "\n".join(["{}: {}".format(k, v) for k, v in data.items()])
+        ttStr = "\n".join(["{}: {:.2f}".format(k, v) for k, v in data.items()
+                           if k != "frame"])
         self.setToolTip(ttStr)
 
 
