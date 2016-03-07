@@ -124,6 +124,7 @@ class MainWindow(QMainWindow):
 
         self._currentFile = None if (ims is None) else fname
         self._viewer.setImageSequence(ims)
+        self._viewer.zoomFit()
         self._locOptionsDock.widget().numFrames = (0 if (ims is None)
                                                    else len(ims))
 
