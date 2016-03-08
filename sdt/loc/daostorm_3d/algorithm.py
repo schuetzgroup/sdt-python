@@ -90,6 +90,7 @@ def locate(raw_image, radius, threshold, max_iterations,
         peaks_found = finder.find(residual, cur_threshold)
         peaks = peaks.merge(peaks_found, new_peak_radius, neighborhood_radius,
                             compat=True)
+        found_new_peaks = (len(peaks) > old_num_peaks)
 
         # decrease threshold for the next round
         if cur_threshold > threshold:
@@ -123,7 +124,7 @@ def locate(raw_image, radius, threshold, max_iterations,
         residual += est_bg.mean()
         finder.background = residual.mean()
 
-        if (len(peaks) <= old_num_peaks) and (not threshold_updated):
+        if not (found_new_peaks or threshold_updated):
             # no new peaks found, threshold not updated, we are finished
             break
 
