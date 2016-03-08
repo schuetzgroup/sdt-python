@@ -6,6 +6,7 @@ import pandas as pd
 
 from . import algorithm
 from .algorithm import col_nums
+from .. import make_batch
 
 
 def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
@@ -67,53 +68,5 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
     return df
 
 
-def batch(frames, radius, signal_thresh, mass_thresh, bandpass=True,
-          noise_radius=1):
-    """Call `locate` on a series of frames.
-
-    For details, see the `locate` documentation.
-
-    Parameters
-    ----------
-    frames : iterable of images
-        Iterable of array-like objects that represent image data
-    radius : int
-        This should be a number a little greater than the radius of the
-        peaks.
-    signal_thresh : float
-        A number roughly equal to the value of the brightest pixel (minus the
-        CCD baseline) in the dimmest peak to be detected. Local maxima with
-        brightest pixels below this threshold will be discarded.
-    mass_thresh : float
-        Use a number roughly equal to the integrated intensity (mass) of the
-        dimmest peak (minus the CCD baseline) that should be detected. If this
-        is too low more background will be detected. If it is too high more
-        peaks will be missed.
-
-    Returns
-    -------
-    DataFrame(["x", "y", "mass", "size", "ecc"])
-        x and y are the coordinates of the features. mass is the total
-        intensity of the feature. size gives the radii of gyration of the
-        features and ecc the eccentricity. frame is the frame number.
-
-    Other parameters
-    ----------------
-    bandpass : bool, optional
-        Set to True to turn on bandpass filtering, false otherwise. Default is
-        True.
-    noise_radius : float, optional
-        Noise correlation length in pixels. Defaults to 1.
-    """
-    all_features = []
-    for i, img in enumerate(frames):
-        features = locate(img, radius, signal_thresh, mass_thresh, bandpass,
-                          noise_radius)
-
-        if not hasattr(img, "frame_no") or img.frame_no is None:
-            features["frame"] = i
-            # otherwise it has been set in locate()
-
-        all_features.append(features)
-
-    return pd.concat(all_features, ignore_index=True)
+# Threaded version makes it slower
+batch = make_batch.make_batch(locate)

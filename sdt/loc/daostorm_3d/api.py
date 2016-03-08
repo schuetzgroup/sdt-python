@@ -3,6 +3,8 @@
 Provides the standard :py:func:`locate` and :py:func:`batch` functions.
 """
 import warnings
+import multiprocessing
+import concurrent.futures
 
 import numpy as np
 import pandas as pd
@@ -11,6 +13,7 @@ from .data import col_nums, feat_status
 from . import fit_impl
 from . import find
 from . import algorithm
+from .. import make_batch
 
 numba_available = False
 try:
@@ -21,6 +24,9 @@ except ImportError as e:
     warnings.warn(
         "Failed to import the numba optimized fitter. Falling back to the "
         "slow pure python fitter. Error message: {}.".format(str(e)))
+
+
+num_threads = multiprocessing.cpu_count()
 
 
 def locate(raw_image, radius, model, threshold, engine="numba",
@@ -116,55 +122,4 @@ def locate(raw_image, radius, model, threshold, engine="numba",
     return df
 
 
-def batch(frames, radius, model, threshold, engine="numba", max_iterations=20):
-    """Call `locate` on a series of frames.
-
-    For details, see the py:func:`locate` documentation.
-
-    Parameters
-    ----------
-    frames : iterable of images
-        Iterable of array-like objects that represent image data
-    radius : float
-        This is in units of pixels. Initial guess for the radius of the
-        features.
-    model : {"2dfixed", "2d", "3d", "Z"}
-        "2dfixed" - fixed sigma 2d gaussian fitting.
-        "2d" - variable sigma 2d gaussian fitting.
-        "3d" - x, y sigma are independently variable, z will be fit after peak
-               fitting.
-    threshold : float
-        A number roughly equal to the value of the brightest pixel (minus the
-        CCD baseline) in the dimmest peak to be detected. Local maxima with
-        brightest pixels below this threshold will be discarded.
-
-    Returns
-    -------
-    DataFrame([x, y, z, signal, mass, bg, size, frame])
-        x and y are the coordinates of the features. mass is the total
-        intensity of the feature, bg the background per pixel. size gives the
-        radii (sigma) of the features. If `raw_image` has a ``frame_no``
-        attribute, a ``frame`` column with this information will also be
-        appended.
-
-    Other parameters
-    ----------------
-    engine : {"python", "numba"}, optional
-        Which engine to use for calculations. "numba" is much faster than
-        "python", but requires numba to be installed. Defaults to "numba"
-    max_iterations : int, optional
-        Maximum number of iterations for successive peak finding and fitting.
-        Default: 20
-    """
-    all_features = []
-    for i, img in enumerate(frames):
-        features = locate(img, radius, model, threshold, engine,
-                          max_iterations)
-
-        if not hasattr(img, "frame_no") or img.frame_no is None:
-            features["frame"] = i
-            # otherwise it has been set in locate()
-
-        all_features.append(features)
-
-    return pd.concat(all_features, ignore_index=True)
+batch = make_batch.make_batch_threaded(locate)
