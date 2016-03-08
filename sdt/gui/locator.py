@@ -94,8 +94,7 @@ class MainWindow(QMainWindow):
         self._roiPolygon = QPolygonF()
 
         self._workerThreadPool = QThreadPool(self)
-        # some algorithms are not thread safe;
-        # TODO: use more threads for thread safe algorithms
+        # where it makes sense, the batch functions are already threaded
         self._workerThreadPool.setMaxThreadCount(1)
 
         settings = QSettings("sdt", "locator")
