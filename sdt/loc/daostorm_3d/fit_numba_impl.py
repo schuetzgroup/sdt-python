@@ -22,6 +22,14 @@ class Fitter2DFixed(fit_numba.Fitter):
             self._err_old, self._pixel_center, self._pixel_width,
             self.hysteresis, self._margin, self._tolerance)
 
+    def fit(self):
+        return _numba_fit_2d_fixed(
+            self._image, self._fit_image, self._bg_image, self._bg_count,
+            self._data, self._dx, self._gauss, self._sign, self._clamp,
+            self._err_old, self._pixel_center, self._pixel_width,
+            self.hysteresis, self._margin, self._tolerance,
+            self._max_iterations)
+
 
 class Fitter2D(fit_numba.Fitter):
     def iterate(self):
@@ -31,6 +39,14 @@ class Fitter2D(fit_numba.Fitter):
             self._err_old, self._pixel_center, self._pixel_width,
             self.hysteresis, self._margin, self._tolerance)
 
+    def fit(self):
+        return _numba_fit_2d(
+            self._image, self._fit_image, self._bg_image, self._bg_count,
+            self._data, self._dx, self._gauss, self._sign, self._clamp,
+            self._err_old, self._pixel_center, self._pixel_width,
+            self.hysteresis, self._margin, self._tolerance,
+            self._max_iterations)
+
 
 class Fitter3D(fit_numba.Fitter):
     def iterate(self):
@@ -39,6 +55,14 @@ class Fitter3D(fit_numba.Fitter):
             self._data, self._dx, self._gauss, self._sign, self._clamp,
             self._err_old, self._pixel_center, self._pixel_width,
             self.hysteresis, self._margin, self._tolerance)
+
+    def fit(self):
+        return _numba_fit_3d(
+            self._image, self._fit_image, self._bg_image, self._bg_count,
+            self._data, self._dx, self._gauss, self._sign, self._clamp,
+            self._err_old, self._pixel_center, self._pixel_width,
+            self.hysteresis, self._margin, self._tolerance,
+            self._max_iterations)
 
 
 @numba.jit(nopython=True, nogil=True, cache=True)
@@ -195,6 +219,27 @@ def _numba_iterate_2d_fixed(real_img, fit_img, bg_img, bg_count, data, dx,
 
 
 @numba.jit(nopython=True, nogil=True, cache=True)
+def _numba_fit_2d_fixed(real_img, fit_img, bg_img, bg_count, data, dx,
+                        gauss, sign, clamp, err_old, px_center, px_width,
+                        hysteresis, margin, tolerance, max_iterations):
+    for i in range(max_iterations):
+        _numba_iterate_2d_fixed(
+            real_img, fit_img, bg_img, bg_count, data, dx, gauss, sign, clamp,
+            err_old, px_center, px_width, hysteresis, margin, tolerance)
+
+        still_running = False
+        for j in range(len(data)):
+            if data[j, col_stat] == stat_run:
+                still_running = True
+                break
+
+        if not still_running:
+            break
+
+    return i + 1
+
+
+@numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_iterate_2d(real_img, fit_img, bg_img, bg_count, data, dx,
                       gauss, sign, clamp, err_old, px_center, px_width,
                       hysteresis, margin, tolerance):
@@ -268,6 +313,27 @@ def _numba_iterate_2d(real_img, fit_img, bg_img, bg_count, data, dx,
         if data[index, col_stat] == stat_run:
             _numba_calc_error(index, real_img, fit_img, bg_img, bg_count, data,
                               err_old, px_center, px_width, tolerance)
+
+
+@numba.jit(nopython=True, nogil=True, cache=True)
+def _numba_fit_2d(real_img, fit_img, bg_img, bg_count, data, dx,
+                  gauss, sign, clamp, err_old, px_center, px_width,
+                  hysteresis, margin, tolerance, max_iterations):
+    for i in range(max_iterations):
+        _numba_iterate_2d(
+            real_img, fit_img, bg_img, bg_count, data, dx, gauss, sign, clamp,
+            err_old, px_center, px_width, hysteresis, margin, tolerance)
+
+        still_running = False
+        for j in range(len(data)):
+            if data[j, col_stat] == stat_run:
+                still_running = True
+                break
+
+        if not still_running:
+            break
+
+    return i + 1
 
 
 @numba.jit(nopython=True, nogil=True, cache=True)
@@ -347,3 +413,24 @@ def _numba_iterate_3d(real_img, fit_img, bg_img, bg_count, data, dx,
         if data[index, col_stat] == stat_run:
             _numba_calc_error(index, real_img, fit_img, bg_img, bg_count, data,
                               err_old, px_center, px_width, tolerance)
+
+
+@numba.jit(nopython=True, nogil=True, cache=True)
+def _numba_fit_3d(real_img, fit_img, bg_img, bg_count, data, dx,
+                  gauss, sign, clamp, err_old, px_center, px_width,
+                  hysteresis, margin, tolerance, max_iterations):
+    for i in range(max_iterations):
+        _numba_iterate_3d(
+            real_img, fit_img, bg_img, bg_count, data, dx, gauss, sign, clamp,
+            err_old, px_center, px_width, hysteresis, margin, tolerance)
+
+        still_running = False
+        for j in range(len(data)):
+            if data[j, col_stat] == stat_run:
+                still_running = True
+                break
+
+        if not still_running:
+            break
+
+    return i + 1
