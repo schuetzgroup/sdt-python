@@ -1,4 +1,8 @@
-# -*- coding: utf-8 -*-
+"""Main window of the peak locator
+
+Contains MainWindow (derived from QMainWindow), which is launched if
+this is called as a script (__main__)
+"""
 import os
 import sys
 import collections
@@ -27,6 +31,11 @@ from ..data import save
 
 
 def yaml_dict_representer(dumper, data):
+    """Represent an OrderedDict using PyYAML
+
+    This is to be passed as
+    `yaml.add_representer(collections.OrderedDict, yaml_dict_representer)`
+    """
     return dumper.represent_dict(data.items())
 
 
@@ -34,17 +43,22 @@ yaml.add_representer(collections.OrderedDict, yaml_dict_representer)
 
 
 class MainWindow(QMainWindow):
+    """Main window of the locator app"""
     __clsName = "LocatorMainWindow"
 
     def tr(self, string):
+        """Translate the string using ``QApplication.translate``"""
         return QApplication.translate(self.__clsName, string)
 
     def __init__(self, parent=None):
+        """Constructor"""
         super().__init__(parent)
 
+        # Create viewer widget
         self._viewer = micro_view.MicroViewWidget()
         self._viewer.setObjectName("viewer")
 
+        # Create dock widgets
         fileChooser = file_chooser.FileChooser()
         fileChooser.selected.connect(self.open)
         self._fileModel = fileChooser.model()
@@ -78,6 +92,7 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self._viewer)
 
+        # Set up the QThread where the previews are calculated
         self._previewWorker = PreviewWorker()
         optionsWidget.optionsChanged.connect(self._makeWorkerWork)
         self._viewer.currentFrameChanged.connect(self._makeWorkerWork)
@@ -89,14 +104,17 @@ class MainWindow(QMainWindow):
         self._workerWorking = False
         self._newWorkerJob = False
 
+        # Some things to keep track of
         self._currentFile = None
         self._currentLocData = pd.DataFrame()
         self._roiPolygon = QPolygonF()
 
+        # The heavy lifting (localizing all) is done in this thread pool
         self._workerThreadPool = QThreadPool(self)
         # where it makes sense, the batch functions are already threaded
         self._workerThreadPool.setMaxThreadCount(1)
 
+        # load settings and restore window geometry
         settings = QSettings("sdt", "locator")
         v = settings.value("MainWindow/geometry")
         if v is not None:
@@ -109,6 +127,16 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str)
     def open(self, fname):
+        """Open an image sequence
+
+        Open an image sequence from a file and load it into the viewer widget.
+        This is a PyQt slot.
+
+        Parameters
+        ----------
+        fname : str
+            Path of the file
+        """
         try:
             ims = pims.open(fname)
         except Exception as e:
@@ -124,19 +152,29 @@ class MainWindow(QMainWindow):
         self._currentFile = None if (ims is None) else fname
         self._viewer.setImageSequence(ims)
         self._viewer.zoomFit()
+        # also the options widget needs to know how many frames there are
         self._locOptionsDock.widget().numFrames = (0 if (ims is None)
                                                    else len(ims))
 
+    # This is emitted to tell the preview worker that there is something to
+    # do (i. e. locate peaks in the current frame for preview)
     _workerSignal = pyqtSignal(np.ndarray, dict, types.FunctionType)
 
     @pyqtSlot(int)
     def on_viewer_frameReadError(self, frameno):
+        """Slot getting called when a frame could not be read"""
         QMessageBox.critical(
             self, self.tr("Read Error"),
             self.tr("Could not read frame number {}".format(frameno + 1)))
 
     @pyqtSlot()
     def _makeWorkerWork(self):
+        """Called when something happens that requires a new preview
+
+        E. g. a new frame is displayed. If the preview worker is already
+        working, just tell it that there is yet another job to be done.
+        Otherwise start the preview worker (by emitting self._workerSignal).
+        """
         curFrame = self._viewer.getCurrentFrame()
         if curFrame is None:
             return
@@ -152,6 +190,7 @@ class MainWindow(QMainWindow):
         self._workerWorking = True
 
     def closeEvent(self, event):
+        """Window is closed, save state"""
         settings = QSettings("sdt", "locator")
         settings.setValue("MainWindow/geometry", self.saveGeometry())
         settings.setValue("MainWindow/state", self.saveState())
@@ -159,7 +198,10 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def _checkFileList(self):
-        # If currently previewed file was removed from list, remove preview
+        """If currently previewed file was removed from list, remove preview
+
+        This gets triggered by the file list model's ``rowsRemoved`` signal
+        """
         if self._currentFile is None:
             return
         if self._currentFile not in self._fileModel.files():
@@ -169,6 +211,14 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(pd.DataFrame)
     def _locateFinished(self, data):
+        """The preview worker thread finished
+
+        If new job has come up while working, call ``_makeWorkerWork`` to
+        start the new job immediately.
+
+        In any case, update the filter widget with the data column names
+        and filter the data using ``_filterLocalizations``.
+        """
         self._workerWorking = False
         if self._newWorkerJob:
             # while we were busy, something new has come up; work on that
@@ -179,6 +229,12 @@ class MainWindow(QMainWindow):
         self._filterLocalizations()
 
     def _applyRoi(self, data):
+        """Select peaks in ROI
+
+        Return a boolean vector with the same length as data whose entries are
+        True or False depending on whether a data point is inside or outside
+        the ROI polygon.
+        """
         if len(self._roiPolygon) < 2:
             return np.ones((len(data),), dtype=bool)
         return np.apply_along_axis(
@@ -188,6 +244,15 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def _filterLocalizations(self):
+        """Set good/bad localizations in the viewer
+
+        Anything that passes the filter (from the filter widget) and is in the
+        ROI polygon is considered a good localization. Anything that does not
+        pass the filter and is in the ROI is considered bad. Anything outside
+        the ROI is not considered at all.
+
+        Call the viewer's ``setLocalizationData`` accordingly.
+        """
         filterFunc = self._locFilterDock.widget().getFilter()
         good = filterFunc(self._currentLocData)
         inRoi = self._applyRoi(self._currentLocData)
@@ -196,10 +261,21 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(QPolygonF)
     def on_viewer_roiChanged(self, roi):
+        """Update ROI polygon and filter localizations"""
         self._roiPolygon = roi
         self._filterLocalizations()
 
     def _saveMetadata(self, fname):
+        """Save metadata to YAML
+
+        This saves currently selected algorithm, options, ROI, and filter to
+        the file specified by ``fname``.
+
+        Parameters
+        ----------
+        fname : str
+            Name of the output file
+        """
         metadata = collections.OrderedDict()
         metadata["algorithm"] = \
             self._locOptionsDock.widget().method.name
@@ -211,6 +287,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str)
     def on_locateSaveWidget_saveOptions(self, fname):
+        """Only save metadata, do not locate"""
         try:
             self._saveMetadata(fname)
         except Exception as e:
@@ -219,8 +296,11 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(str)
     def on_locateSaveWidget_locateAndSave(self, format):
+        """Locate all features in all files and save the and metadata"""
         # TODO: check if current localizations are up-to-date
         # only run locate if not
+
+        # Progress bar
         progDialog = QProgressDialog(
             "Locating features…", "Cancel", 0, self._fileModel.rowCount(),
             self)
@@ -228,6 +308,7 @@ class MainWindow(QMainWindow):
         progDialog.setValue(0)
         progDialog.setMinimumDuration(0)
 
+        # for every file, create a LocateRunner (QRunnable)
         for i in range(self._fileModel.rowCount()):
             runner = LocateRunner(self._fileModel.index(i),
                                   self._locOptionsDock.widget().options,
@@ -240,10 +321,26 @@ class MainWindow(QMainWindow):
                 lambda: progDialog.setValue(progDialog.value() + 1))
             runner.signals.error.connect(self._locateRunnerError)
             self._workerThreadPool.start(runner)
+
+        # if cancel was pressed, abort after current worker finishes
         progDialog.canceled.connect(self._workerThreadPool.clear)
 
     @pyqtSlot(QModelIndex, pd.DataFrame, dict)
     def _locateRunnerFinished(self, index, data, options):
+        """A LocateRunner finished locating all peaks in a sequence
+
+        Save data and metadata to a file with the same name as the image file,
+        except for the extension.
+
+        Parameters
+        ----------
+        index : QModelIndex
+            Index of the file in the file list model
+        data : pandas.DataFrame
+            Localization data
+        options : dict
+            Options used for locating peaks
+        """
         self._fileModel.setData(index, data,
                                 file_chooser.FileListModel.LocDataRole)
         self._fileModel.setData(index, options,
@@ -274,6 +371,15 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot(QModelIndex)
     def _locateRunnerError(self, index):
+        """A LocateRunner encountered an error
+
+        Show an error message box.
+
+        Parameters
+        ----------
+        index : QModelIndex
+            Index (in the file list model) of the file that caused the error
+        """
         QMessageBox.critical(
             self, self.tr("Localization error"),
             self.tr("Failed to locate features in {}".format(
@@ -281,11 +387,31 @@ class MainWindow(QMainWindow):
 
 
 class PreviewWorker(QObject):
+    """Worker object that does peak localizations for the preview
+
+    This is made to be owned by a worker thread. Connect some signal to the
+    :py:meth:`locate` slot, which in turn will emit the ``locateFinished``
+    signal when done
+    """
     def __init__(self, parent=None):
+        """Constructor"""
         super().__init__(parent)
 
     @pyqtSlot(np.ndarray, dict, types.FunctionType)
     def locate(self, img, options, locate_func):
+        """Do the preview localization
+
+        Emits the ``locateFinished`` signal when finished.
+
+        Parameters
+        ----------
+        img : numpy.ndarray
+            image data
+        options : dict
+            keyword arg dict for ``locate_func``
+        locate_func : callable
+            actual localization function
+        """
         # TODO: restrict locating to bounding rect of ROI for performance gain
         ret = locate_func(img, **options)
         self.locateFinished.emit(ret)
@@ -294,7 +420,26 @@ class PreviewWorker(QObject):
 
 
 class LocateRunner(QRunnable):
+    """Runnable for locating peaks in am image sequence
+
+    Attributes
+    ----------
+    signals : Signals
+        The QObject signals
+    """
     class Signals(QObject):
+        """Collection of signals for LocateRunner
+
+        PyQt will not allow deriving LocateRunner from QRunnable and QObject,
+        so this is the workaround.
+
+        Signals
+        -------
+        finished : (QModelIndex, pandas.DataFrame, dict)
+            Emitted when the localization is finished
+        error : QModelIndex
+            Emitted when an error occured
+        """
         def __init__(self, parent=None):
             super().__init__(parent)
 
@@ -302,6 +447,19 @@ class LocateRunner(QRunnable):
         error = pyqtSignal(QModelIndex)
 
     def __init__(self, index, options, frameRange, batch_func):
+        """Constructor
+
+        Parameters
+        ----------
+        index : QModelIndex
+            Used to access information about the file the runner is works on
+        options : dict
+            Keyword arguments for ``batch_func``
+        frame_range : tuple of int
+            Range of frames to work on. If frameRange[1] < 0, go until the end
+        batch_func : callable
+            Batch localization implementation
+        """
         super().__init__()
         self._index = index
         self._options = options
@@ -310,6 +468,11 @@ class LocateRunner(QRunnable):
         self.signals = self.Signals()
 
     def run(self):
+        """Do the work
+
+        Emits ``self.signals.finished`` if it finishes without errors and
+        and ``self.signals.error`` if there was an error.
+        """
         fname = self._index.data(file_chooser.FileListModel.FileNameRole)
         frames = pims.open(fname)
         end = self._frameRange[1] if self._frameRange[1] >= 0 else len(frames)
@@ -327,6 +490,7 @@ class LocateRunner(QRunnable):
 
 
 def main():
+    """Start a QApplication and show the main window"""
     app = QApplication(sys.argv)
     try:
         w = MainWindow()
