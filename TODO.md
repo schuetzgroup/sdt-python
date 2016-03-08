@@ -4,6 +4,7 @@ TODO
   additionally to/instead of the relationship between channel coordinates
 - implement "Z" model in daostorm_3d
 - implement z fitting in daostorm_3d
+- handle negative values in daostorm_3d
 - merge Kilfoil tracking alogrithm
 - update sphinx doc
 - locator: Adjust threshold spin boxes to image data type range (e.g.
