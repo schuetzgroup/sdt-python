@@ -15,7 +15,7 @@ import pandas as pd
 import pims
 
 import qtpy
-from qtpy.QtGui import (QIcon, QPolygonF)
+from qtpy.QtGui import (QIcon, QPolygonF, QCursor)
 from qtpy.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                             QToolBar, QMessageBox, QSplitter, QToolBox,
                             QDockWidget, QWidget, QLabel, QProgressDialog)
@@ -284,6 +284,7 @@ class MainWindow(QMainWindow):
 
         self._workerSignal.emit(curFrame, cur_opts, cur_method.locate)
         self._workerWorking = True
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
     def closeEvent(self, event):
         """Window is closed, save state"""
@@ -312,11 +313,13 @@ class MainWindow(QMainWindow):
         In any case, update the filter widget with the data column names
         and filter the data using ``_filterLocalizations``.
         """
+        QApplication.restoreOverrideCursor()
         self._workerWorking = False
         if self._newWorkerJob:
             # while we were busy, something new has come up; work on that
-            self._makeWorkerWork()
+            self._makePreviewWorkerWork()
             self._newWorkerJob = False
+
         self._currentLocData = data
         self._locFilterDock.widget().setVariables(data.columns.values.tolist())
         self._filterLocalizations()
