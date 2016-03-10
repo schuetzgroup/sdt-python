@@ -217,6 +217,32 @@ class CGOptions(cgBase):
                    mass_thresh=self._ui.massThresholdBox.value())
         return opt
 
+
+fileClass, fileBase = uic.loadUiType(os.path.join(path, "file_options.ui"))
+
+
+class FileOptions(fileBase):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._ui = fileClass()
+        self._ui.setupUi(self)
+
+        self._ui.formatBox.currentIndexChanged.connect(self.optionsChanged)
+
+    optionsChanged = pyqtSignal()
+
+    @pyqtProperty(dict, doc="Localization algorithm parameters")
+    def options(self):
+        fmt = self._ui.formatBox.currentText()
+        if fmt == "particle tracker":
+            fmt = "particle_tracker"
+        elif fmt == "HDF5":
+            fmt = "hdf5"
+        opt = dict(fmt=fmt)
+        return opt
+
+
 # Look for algorithms
 with contextlib.suppress(ImportError):
     from sdt.loc import daostorm_3d
@@ -239,3 +265,7 @@ with contextlib.suppress(ImportError):
                    CGOptions,
                    locate=cg.locate,
                    batch=cg.batch))
+methodList.append(
+    methodDesc("load file",
+               FileOptions,
+               None, None))
