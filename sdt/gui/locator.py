@@ -43,6 +43,52 @@ def yaml_dict_representer(dumper, data):
 yaml.add_representer(collections.OrderedDict, yaml_dict_representer)
 
 
+def determine_filename(imgname, fmt):
+    """Determine name of data file from name of image file
+
+    Depending on the format (``fmt``) parameter, return the name of the data
+    file corresponding to the image file ``imgname``.
+
+    Parameters
+    ----------
+    imgname : str
+        Name of the image file
+    fmt : {hdf5, particle_tracker, pkc, pks, yaml}
+        Data file format
+
+    Returns
+    -------
+    dirname : str
+        directory of the data file
+    fname : str
+        name of the data file relative to ``dir``
+
+    Examples
+    --------
+    >>> determine_filename("tests/beads.tiff", "hdf5")
+    ('tests', 'beads.h5')
+    >>> determine_filename("tests/beads.tiff", "particle_tracker")
+    ('tests/Analysis_particle_tracking', 'beads_positions.mat')
+    """
+    imgdir = os.path.dirname(imgname)
+    imgbase = os.path.basename(imgname)
+    imgbase_no_ext = os.path.splitext(imgbase)[0]
+
+    if fmt == "particle_tracker":
+        dirname = os.path.join(imgdir, "Analysis_particle_tracking")
+        fname = imgbase_no_ext + "_positions.mat"
+        return dirname, fname
+
+    if fmt == "hdf5":
+        ext = "h5"
+    elif fmt in ("pks", "pkc", "yaml"):
+        ext = fmt
+    else:
+        raise ValueError("Unsupported format: " + fmt)
+
+    return imgdir, imgbase_no_ext + os.extsep + ext
+
+
 class MainWindow(QMainWindow):
     """Main window of the locator app"""
     __clsName = "LocatorMainWindow"
@@ -341,26 +387,19 @@ class MainWindow(QMainWindow):
         options : dict
             Options used for locating peaks
         """
-        self._fileModel.setData(index, data,
-                                file_chooser.FileListModel.LocDataRole)
-        self._fileModel.setData(index, options,
-                                file_chooser.FileListModel.LocOptionsRole)
+        self._fileModel.setData(index, data, FileListModel.LocDataRole)
+        self._fileModel.setData(index, options, FileListModel.LocOptionsRole)
+        self._fileModel.setData(index,
+                                self._locOptionsDock.widget().method.name,
+                                FileListModel.LocMethodRole)
         saveFormat = self._locSaveDock.widget().getFormat()
 
-        saveFileName = os.path.splitext(
-            self._fileModel.data(
-                index, file_chooser.FileListModel.FileNameRole))[0]
+        saveFileName = self._fileModel.data(index, FileListModel.FileNameRole)
 
-        metaFileName = saveFileName + os.extsep + "yaml"
-
-        if saveFormat == "hdf5":
-            saveFileName += os.extsep + "h5"
-        elif saveFormat == "particle_tracker":
-            fname = os.path.basename(saveFileName) + "_positions.mat"
-            fdir = os.path.dirname(saveFileName)
-            outdir = os.path.join(fdir, "Analysis_particle_tracking")
-            os.makedirs(outdir, exist_ok=True)
-            saveFileName = os.path.join(outdir, fname)
+        metaFileName = os.path.join(*determine_filename(saveFileName, "yaml"))
+        fdir, fname = determine_filename(saveFileName, saveFormat)
+        saveFileName = os.path.join(fdir, fname)
+        os.makedirs(fdir, exist_ok=True)
 
         filterFunc = self._locFilterDock.widget().getFilter()
         inRoi = self._applyRoi(data)
