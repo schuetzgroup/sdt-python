@@ -459,6 +459,10 @@ class MicroViewWidget(mvBase):
     def getCurrentFrame(self):
         return self._imageData
 
+    @pyqtProperty(int, doc="Number of the currently displayed frame")
+    def currentFrameNumber(self):
+        return self._ui.framenoBox.value() - 1
+
     def _updateCurrentPixelInfo(self, x, y):
         if x >= self._imageData.shape[1] or y >= self._imageData.shape[0]:
             # Sometimes, when hitting the border of the image, the coordinates
