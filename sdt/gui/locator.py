@@ -28,7 +28,7 @@ from . import file_chooser
 from .file_chooser import FileListModel
 from . import locate_filter
 from . import locate_saver
-from ..data import save
+from ..data import save, load
 
 
 def yaml_dict_representer(dumper, data):
@@ -224,7 +224,51 @@ class MainWindow(QMainWindow):
         working, just tell it that there is yet another job to be done.
         Otherwise start the preview worker (by emitting self._workerSignal).
         """
+        cur_method = self._locOptionsDock.widget().method
+        cur_opts = self._locOptionsDock.widget().options
+
+        if not self._currentFile.isValid():
+            return
+
+        file_method = self._currentFile.data(FileListModel.LocMethodRole)
+        file_opts = self._currentFile.data(FileListModel.LocOptionsRole)
+
         curFrame = self._viewer.getCurrentFrame()
+
+        if file_method == cur_method.name and file_opts == cur_opts:
+            curFrameNo = self._viewer.currentFrameNumber
+
+            data = self._currentFile.data(FileListModel.LocDataRole)
+            data = data[data["frame"] == curFrameNo]
+
+            self._currentLocData = data
+            self._locFilterDock.widget().setVariables(
+                data.columns.values.tolist())
+            self._filterLocalizations()
+
+            return
+
+        if cur_method.name == "load file":
+            fname = os.path.join(*determine_filename(
+                self._currentFile.data(FileListModel.FileNameRole),
+                cur_opts["fmt"]))
+            # TODO: Move to worker thread
+            try:
+                data = load(fname)  # sdt.data.load
+            except Exception:
+                data = pd.DataFrame()
+
+            modelIdx = QModelIndex(self._currentFile)
+            self._fileModel.setData(modelIdx, data,
+                                    FileListModel.LocDataRole)
+            self._fileModel.setData(modelIdx, cur_opts,
+                                    FileListModel.LocOptionsRole)
+            self._fileModel.setData(modelIdx, cur_method.name,
+                                    FileListModel.LocMethodRole)
+            # call recursively to update viewer
+            self._makeWorkerWork()
+            return
+
         if curFrame is None:
             return
         if self._workerWorking:
@@ -233,9 +277,7 @@ class MainWindow(QMainWindow):
             self._newWorkerJob = True
             return
 
-        self._workerSignal.emit(
-            curFrame, self._locOptionsDock.widget().options,
-            self._locOptionsDock.widget().method.locate)
+        self._workerSignal.emit(curFrame, cur_opts, cur_method.locate)
         self._workerWorking = True
 
     def closeEvent(self, event):
