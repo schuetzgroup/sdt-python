@@ -7,6 +7,7 @@ import os
 import sys
 import collections
 import types
+import queue
 
 import yaml
 import numpy as np
@@ -139,27 +140,31 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self._viewer)
 
-        # Set up the QThread where the previews are calculated
-        self._previewWorker = PreviewWorker()
-        optionsWidget.optionsChanged.connect(self._makeWorkerWork)
-        self._viewer.currentFrameChanged.connect(self._makeWorkerWork)
-        self._workerSignal.connect(self._previewWorker.locate)
+        # Set up the QThread where the localizations are calculated
         self._workerThread = QThread(self)
-        self._previewWorker.moveToThread(self._workerThread)
         self._workerThread.start()
+
+        # set up the object that computes the preview
+        self._previewWorker = PreviewWorker()
+        optionsWidget.optionsChanged.connect(self._makePreviewWorkerWork)
+        self._viewer.currentFrameChanged.connect(self._makePreviewWorkerWork)
+        self._workerSignal.connect(self._previewWorker.locate)
+        self._previewWorker.moveToThread(self._workerThread)
         self._previewWorker.locateFinished.connect(self._locateFinished)
         self._workerWorking = False
         self._newWorkerJob = False
+
+        # set up the object that does the batch localization conputing
+        self._batchWorker = BatchWorker()
+        self._batchWorker.moveToThread(self._workerThread)
+        self._batchSignal.connect(self._batchWorker.locate)
+        self._batchWorker.finished.connect(self._locateRunnerFinished)
+        self._batchWorker.error.connect(self._locateRunnerError)
 
         # Some things to keep track of
         self._currentFile = QPersistentModelIndex()
         self._currentLocData = pd.DataFrame()
         self._roiPolygon = QPolygonF()
-
-        # The heavy lifting (localizing all) is done in this thread pool
-        self._workerThreadPool = QThreadPool(self)
-        # where it makes sense, the batch functions are already threaded
-        self._workerThreadPool.setMaxThreadCount(1)
 
         # load settings and restore window geometry
         settings = QSettings("sdt", "locator")
@@ -217,7 +222,7 @@ class MainWindow(QMainWindow):
             self.tr("Could not read frame number {}".format(frameno + 1)))
 
     @pyqtSlot()
-    def _makeWorkerWork(self):
+    def _makePreviewWorkerWork(self):
         """Called when something happens that requires a new preview
 
         E. g. a new frame is displayed. If the preview worker is already
@@ -382,6 +387,9 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, self.tr("Error writing to file"),
                                  self.tr(str(e)))
 
+    # This is emitted to tell the batch worker that there is something to do
+    _batchSignal = pyqtSignal()
+
     @pyqtSlot(str)
     def on_locateSaveWidget_locateAndSave(self, format):
         """Locate all features in all files and save the and metadata"""
@@ -396,22 +404,30 @@ class MainWindow(QMainWindow):
         progDialog.setValue(0)
         progDialog.setMinimumDuration(0)
 
-        # for every file, create a LocateRunner (QRunnable)
+        def increase_progress():
+            progDialog.setValue(progDialog.value() + 1)
+
+        # get options
+        opts = self._locOptionsDock.widget().options
+        frameRange = self._locOptionsDock.widget().frameRange
+        batch_func = self._locOptionsDock.widget().method.batch
+
+        # enqueue jobs for _batchWorker to execute in the worker thread
         for i in range(self._fileModel.rowCount()):
-            runner = LocateRunner(self._fileModel.index(i),
-                                  self._locOptionsDock.widget().options,
-                                  self._locOptionsDock.widget().frameRange,
-                                  self._locOptionsDock.widget().method.batch)
-            runner.signals.finished.connect(
-                lambda: progDialog.setValue(progDialog.value() + 1))
-            runner.signals.finished.connect(self._locateRunnerFinished)
-            runner.signals.error.connect(
-                lambda: progDialog.setValue(progDialog.value() + 1))
-            runner.signals.error.connect(self._locateRunnerError)
-            self._workerThreadPool.start(runner)
+            self._batchWorker.queue.put_nowait(
+                (self._fileModel.index(i), opts, frameRange, batch_func))
+
+        self._batchWorker.finished.connect(increase_progress)
+        self._batchWorker.error.connect(increase_progress)
+
+        # tell the _batchWorker that there is something to do
+        self._batchSignal.emit()
 
         # if cancel was pressed, abort after current worker finishes
-        progDialog.canceled.connect(self._workerThreadPool.clear)
+        # Connect directly to _batchWorker.clear, since otherwise
+        # it would run in the worker thread (after locate is finished...)
+        progDialog.canceled.connect(self._batchWorker.clear,
+                                    type=Qt.DirectConnection)
 
     @pyqtSlot(QModelIndex, pd.DataFrame, dict)
     def _locateRunnerFinished(self, index, data, options):
@@ -500,74 +516,45 @@ class PreviewWorker(QObject):
     locateFinished = pyqtSignal(pd.DataFrame)
 
 
-class LocateRunner(QRunnable):
-    """Runnable for locating peaks in am image sequence
+class BatchWorker(QObject):
+    """Worker object that does batch peak localizations
 
-    Attributes
-    ----------
-    signals : Signals
-        The QObject signals
+    This is made to be owned by a worker thread. Connect some signal to the
+    :py:meth:`locate` slot, which in turn will emit the ``finised``
+    signal for each processed file.
     """
-    class Signals(QObject):
-        """Collection of signals for LocateRunner
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.queue = queue.Queue()
 
-        PyQt will not allow deriving LocateRunner from QRunnable and QObject,
-        so this is the workaround.
+    @pyqtSlot()
+    def locate(self):
+        while True:
+            try:
+                idx, opts, frameRange, batch_func = self.queue.get_nowait()
+            except queue.Empty:
+                return
 
-        Signals
-        -------
-        finished : (QModelIndex, pandas.DataFrame, dict)
-            Emitted when the localization is finished
-        error : QModelIndex
-            Emitted when an error occured
-        """
-        def __init__(self, parent=None):
-            super().__init__(parent)
+            fname = idx.data(FileListModel.FileNameRole)
+            frames = pims.open(fname)
+            end = frameRange[1] if frameRange[1] >= 0 else len(frames)
+            # TODO: restrict locating to bounding rect of ROI for performance
+            # gain
+            try:
+                data = batch_func(frames[frameRange[0]:end], **opts)
+            except Exception:
+                self.error.emit(idx)
+                continue
 
-        finished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
-        error = pyqtSignal(QModelIndex)
+            self.finished.emit(idx, data, opts)
 
-    def __init__(self, index, options, frameRange, batch_func):
-        """Constructor
+    @pyqtSlot()
+    def clear(self):
+        while not self.queue.empty():
+            self.queue.get_nowait()
 
-        Parameters
-        ----------
-        index : QModelIndex
-            Used to access information about the file the runner is works on
-        options : dict
-            Keyword arguments for ``batch_func``
-        frame_range : tuple of int
-            Range of frames to work on. If frameRange[1] < 0, go until the end
-        batch_func : callable
-            Batch localization implementation
-        """
-        super().__init__()
-        self._index = index
-        self._options = options
-        self._batch_func = batch_func
-        self._frameRange = frameRange
-        self.signals = self.Signals()
-
-    def run(self):
-        """Do the work
-
-        Emits ``self.signals.finished`` if it finishes without errors and
-        and ``self.signals.error`` if there was an error.
-        """
-        fname = self._index.data(file_chooser.FileListModel.FileNameRole)
-        frames = pims.open(fname)
-        end = self._frameRange[1] if self._frameRange[1] >= 0 else len(frames)
-        # TODO: restrict locating to bounding rect of ROI for performance gain
-        try:
-            data = self._batch_func(frames[self._frameRange[0]:end],
-                                    **self._options)
-        except Exception:
-            self.signals.error.emit(self._index)
-            return
-
-        self.signals.finished.emit(self._index, data, self._options)
-
-    finished = pyqtSignal(QModelIndex, pd.DataFrame)
+    finished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
+    error = pyqtSignal(QModelIndex)
 
 
 def main():
