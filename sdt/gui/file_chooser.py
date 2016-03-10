@@ -162,13 +162,13 @@ class FileChooser(fcBase):
 
         self._ui.addButton.pressed.connect(self._addFilesSlot)
         self._ui.removeButton.pressed.connect(self.removeSelected)
-        self._ui.fileListView.doubleClicked.connect(self.select)
+        self._ui.fileListView.doubleClicked.connect(self.selected)
 
         self._lastOpenDir = ""
 
         # install the event filter for handling key presses
         self._kbdEventFilter = KbdEventFilter(self)
-        self._kbdEventFilter.enterPressed.connect(self.select)
+        self._kbdEventFilter.enterPressed.connect(self.selected)
         self._kbdEventFilter.delPressed.connect(self.removeSelected)
         self._ui.fileListView.installEventFilter(self._kbdEventFilter)
 
@@ -198,8 +198,4 @@ class FileChooser(fcBase):
             self._model.removeRow(idx[0].row())
             idx = self._ui.fileListView.selectionModel().selectedIndexes()
 
-    selected = pyqtSignal(str)
-
-    @pyqtSlot(QModelIndex)
-    def select(self, index):
-        self.selected.emit(self._model.data(index, FileListModel.FileNameRole))
+    selected = pyqtSignal(QModelIndex)

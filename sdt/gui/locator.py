@@ -20,11 +20,12 @@ from qtpy.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                             QDockWidget, QWidget, QLabel, QProgressDialog)
 from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
                          QSettings, QRunnable, QThreadPool, QModelIndex,
-                         QMetaObject, QPointF)
+                         QPersistentModelIndex, QMetaObject, QPointF)
 
 from . import micro_view
 from . import locate_options
 from . import file_chooser
+from .file_chooser import FileListModel
 from . import locate_filter
 from . import locate_saver
 from ..data import save
@@ -105,7 +106,7 @@ class MainWindow(QMainWindow):
         self._newWorkerJob = False
 
         # Some things to keep track of
-        self._currentFile = None
+        self._currentFile = QPersistentModelIndex()
         self._currentLocData = pd.DataFrame()
         self._roiPolygon = QPolygonF()
 
@@ -125,8 +126,8 @@ class MainWindow(QMainWindow):
 
         QMetaObject.connectSlotsByName(self)
 
-    @pyqtSlot(str)
-    def open(self, fname):
+    @pyqtSlot(QModelIndex)
+    def open(self, file):
         """Open an image sequence
 
         Open an image sequence from a file and load it into the viewer widget.
@@ -134,22 +135,24 @@ class MainWindow(QMainWindow):
 
         Parameters
         ----------
-        fname : str
-            Path of the file
+        file : QModelIndex
+            Index of the entry in a ``FileListModel``
         """
         try:
-            ims = pims.open(fname)
+            ims = pims.open(file.data(FileListModel.FileNameRole))
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error opening image"),
                                  self.tr(str(e)))
             ims = None
+            file = None
 
         if isinstance(ims, collections.Iterable) and not len(ims):
             QMessageBox.critical(self, self.tr(""),
                                  self.tr("Empty image"))
             ims = None
+            file = None
 
-        self._currentFile = None if (ims is None) else fname
+        self._currentFile = QPersistentModelIndex(file)
         self._viewer.setImageSequence(ims)
         self._viewer.zoomFit()
         # also the options widget needs to know how many frames there are
@@ -202,11 +205,8 @@ class MainWindow(QMainWindow):
 
         This gets triggered by the file list model's ``rowsRemoved`` signal
         """
-        if self._currentFile is None:
-            return
-        if self._currentFile not in self._fileModel.files():
+        if not self._currentFile.isValid():
             self._locOptionsDock.widget().numFrames = 0
-            self._currentFile = None
             self._viewer.setImageSequence(None)
 
     @pyqtSlot(pd.DataFrame)
