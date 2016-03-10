@@ -16,6 +16,7 @@ class FileListModel(QAbstractListModel):
     FileNameRole = Qt.UserRole
     LocDataRole = Qt.UserRole + 1
     LocOptionsRole = Qt.UserRole + 2
+    LocMethodRole = Qt.UserRole + 3
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -34,6 +35,8 @@ class FileListModel(QAbstractListModel):
             return cur.locData
         elif role == self.LocOptionsRole:
             return cur.locOptions
+        elif role == self.LocMethodRole:
+            return cur.locMethod
 
     def setData(self, index, value, role=Qt.EditRole):
         if not index.isValid() or index.row() >= len(self._data):
@@ -46,6 +49,8 @@ class FileListModel(QAbstractListModel):
             cur.locData = value
         elif role == self.LocOptionsRole:
             cur.locOptions = value
+        elif role == self.LocMethodRole:
+            cur.locMethod = value
         else:
             return False
 
@@ -75,13 +80,14 @@ class FileListModel(QAbstractListModel):
         self.endRemoveRows()
         return True
 
-    def addItem(self, fname, locData=None, locOptions=None):
+    def addItem(self, fname, locData=None, locOptions=None, locMethod=None):
         row = self.rowCount()
         self.insertRows(row, 1)
         idx = self.index(row)
         self.setData(idx, fname, self.FileNameRole)
         self.setData(idx, locData, self.LocDataRole)
         self.setData(idx, locOptions, self.LocOptionsRole)
+        self.setData(idx, locMethod, self.LocMethodRole)
 
     def files(self):
         return (d.fileName for d in self._data)
