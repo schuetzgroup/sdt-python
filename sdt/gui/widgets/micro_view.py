@@ -19,7 +19,7 @@ from qtpy import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
-iconpath = os.path.join(path, "icons")
+iconpath = os.path.join(path, os.pardir, "icons")
 
 
 class ImageGraphicsItem(QGraphicsPixmapItem):

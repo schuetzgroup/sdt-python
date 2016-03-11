@@ -4,7 +4,6 @@ Contains MainWindow (derived from QMainWindow), which is launched if
 this is called as a script (__main__)
 """
 import os
-import sys
 import collections
 import types
 import queue
@@ -14,7 +13,6 @@ import numpy as np
 import pandas as pd
 import pims
 
-import qtpy
 from qtpy.QtGui import (QIcon, QPolygonF, QCursor)
 from qtpy.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                             QToolBar, QMessageBox, QSplitter, QToolBox,
@@ -23,13 +21,13 @@ from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
                          QSettings, QRunnable, QThreadPool, QModelIndex,
                          QPersistentModelIndex, QMetaObject, QPointF)
 
-from . import micro_view
+from ..widgets import micro_view
 from . import locate_options
 from . import file_chooser
 from .file_chooser import FileListModel
 from . import locate_filter
 from . import locate_saver
-from ..data import save, load
+from ...data import save, load
 
 
 def yaml_dict_representer(dumper, data):
@@ -558,21 +556,3 @@ class BatchWorker(QObject):
 
     finished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
     error = pyqtSignal(QModelIndex)
-
-
-def main():
-    """Start a QApplication and show the main window"""
-    app = QApplication(sys.argv)
-    try:
-        w = MainWindow()
-    except Exception as e:
-        QMessageBox.critical(
-            None,
-            app.translate("main", "Startup error"),
-            app.translate("main", str(e)))
-        sys.exit(1)
-    w.show()
-    sys.exit(app.exec_())
-
-if __name__ == "__main__":
-    main()
