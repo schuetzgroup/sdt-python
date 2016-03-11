@@ -27,6 +27,7 @@ from . import file_chooser
 from .file_chooser import FileListModel
 from . import locate_filter
 from . import locate_saver
+from . import workers
 from ...data import save, load
 
 
@@ -142,15 +143,13 @@ class MainWindow(QMainWindow):
         self._workerThread = QThread(self)
         self._workerThread.start()
 
-        # set up the object that computes the preview
-        self._previewWorker = PreviewWorker()
+        # set up the preview worker
+        self._previewWorker = workers.PreviewWorker(self)
         optionsWidget.optionsChanged.connect(self._makePreviewWorkerWork)
         self._viewer.currentFrameChanged.connect(self._makePreviewWorkerWork)
-        self._workerSignal.connect(self._previewWorker.locate)
-        self._previewWorker.moveToThread(self._workerThread)
-        self._previewWorker.locateFinished.connect(self._locateFinished)
-        self._workerWorking = False
-        self._newWorkerJob = False
+        self._previewWorker.finished.connect(self._previewFinished)
+        self._previewWorker.enabled = True
+        self._previewWorker.busyChanged.connect(self._setBusyCursor)
 
         # set up the object that does the batch localization conputing
         self._batchWorker = BatchWorker()
@@ -272,17 +271,7 @@ class MainWindow(QMainWindow):
             self._makeWorkerWork()
             return
 
-        if curFrame is None:
-            return
-        if self._workerWorking:
-            # The worker is already working; just store the fact that the
-            # worker needs to run again immediately after it finishes
-            self._newWorkerJob = True
-            return
-
-        self._workerSignal.emit(curFrame, cur_opts, cur_method.locate)
-        self._workerWorking = True
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        self._previewWorker.makePreview(curFrame, cur_opts, cur_method.locate)
 
     def closeEvent(self, event):
         """Window is closed, save state"""
@@ -301,23 +290,20 @@ class MainWindow(QMainWindow):
             self._locOptionsDock.widget().numFrames = 0
             self._viewer.setImageSequence(None)
 
+    @pyqtSlot(bool)
+    def _setBusyCursor(self, busy):
+        if busy:
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        else:
+            QApplication.restoreOverrideCursor()
+
     @pyqtSlot(pd.DataFrame)
-    def _locateFinished(self, data):
-        """The preview worker thread finished
+    def _previewFinished(self, data):
+        """The preview worker finished
 
-        If new job has come up while working, call ``_makeWorkerWork`` to
-        start the new job immediately.
-
-        In any case, update the filter widget with the data column names
-        and filter the data using ``_filterLocalizations``.
+        Update the filter widget with the data column names and filter the
+        data using ``_filterLocalizations``.
         """
-        QApplication.restoreOverrideCursor()
-        self._workerWorking = False
-        if self._newWorkerJob:
-            # while we were busy, something new has come up; work on that
-            self._makePreviewWorkerWork()
-            self._newWorkerJob = False
-
         self._currentLocData = data
         self._locFilterDock.widget().setVariables(data.columns.values.tolist())
         self._filterLocalizations()
@@ -482,39 +468,6 @@ class MainWindow(QMainWindow):
             self, self.tr("Localization error"),
             self.tr("Failed to locate features in {}".format(
                 index.data(file_chooser.FileListModel.FileNameRole))))
-
-
-class PreviewWorker(QObject):
-    """Worker object that does peak localizations for the preview
-
-    This is made to be owned by a worker thread. Connect some signal to the
-    :py:meth:`locate` slot, which in turn will emit the ``locateFinished``
-    signal when done
-    """
-    def __init__(self, parent=None):
-        """Constructor"""
-        super().__init__(parent)
-
-    @pyqtSlot(np.ndarray, dict, types.FunctionType)
-    def locate(self, img, options, locate_func):
-        """Do the preview localization
-
-        Emits the ``locateFinished`` signal when finished.
-
-        Parameters
-        ----------
-        img : numpy.ndarray
-            image data
-        options : dict
-            keyword arg dict for ``locate_func``
-        locate_func : callable
-            actual localization function
-        """
-        # TODO: restrict locating to bounding rect of ROI for performance gain
-        ret = locate_func(img, **options)
-        self.locateFinished.emit(ret)
-
-    locateFinished = pyqtSignal(pd.DataFrame)
 
 
 class BatchWorker(QObject):
