@@ -6,7 +6,6 @@ this is called as a script (__main__)
 import os
 import collections
 import types
-import queue
 
 import yaml
 import numpy as np
@@ -17,9 +16,9 @@ from qtpy.QtGui import (QIcon, QPolygonF, QCursor)
 from qtpy.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
                             QToolBar, QMessageBox, QSplitter, QToolBox,
                             QDockWidget, QWidget, QLabel, QProgressDialog)
-from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QDir, QObject, QThread,
-                         QSettings, QRunnable, QThreadPool, QModelIndex,
-                         QPersistentModelIndex, QMetaObject, QPointF)
+from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QObject, QSettings,
+                         QModelIndex, QPersistentModelIndex, QMetaObject,
+                         QPointF)
 
 from ..widgets import micro_view
 from . import locate_options
@@ -27,6 +26,7 @@ from . import file_chooser
 from .file_chooser import FileListModel
 from . import locate_filter
 from . import locate_saver
+from . import batch_progress
 from . import workers
 from ...data import save, load
 
@@ -139,10 +139,6 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self._viewer)
 
-        # Set up the QThread where the localizations are calculated
-        self._workerThread = QThread(self)
-        self._workerThread.start()
-
         # set up the preview worker
         self._previewWorker = workers.PreviewWorker(self)
         optionsWidget.optionsChanged.connect(self._makePreviewWorkerWork)
@@ -151,12 +147,21 @@ class MainWindow(QMainWindow):
         self._previewWorker.enabled = True
         self._previewWorker.busyChanged.connect(self._setBusyCursor)
 
-        # set up the object that does the batch localization conputing
-        self._batchWorker = BatchWorker()
-        self._batchWorker.moveToThread(self._workerThread)
-        self._batchSignal.connect(self._batchWorker.locate)
-        self._batchWorker.finished.connect(self._locateRunnerFinished)
-        self._batchWorker.error.connect(self._locateRunnerError)
+        # set up the batch worker
+        self._batchWorker = workers.BatchWorker(self)
+        self._batchWorker.fileFinished.connect(self._locateRunnerFinished)
+        self._batchWorker.fileError.connect(self._locateRunnerError)
+
+        # batch progress dialog
+        self._progressDialog = batch_progress.BatchProgressDialog(self)
+        self._progressDialog.setWindowModality(Qt.WindowModal)
+
+        def inc_progress():
+            self._progressDialog.value += 1
+
+        self._batchWorker.fileFinished.connect(inc_progress)
+        self._batchWorker.fileError.connect(inc_progress)
+        self._progressDialog.canceled.connect(self._batchWorker.abort)
 
         # Some things to keep track of
         self._currentFile = QPersistentModelIndex()
@@ -374,47 +379,18 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, self.tr("Error writing to file"),
                                  self.tr(str(e)))
 
-    # This is emitted to tell the batch worker that there is something to do
-    _batchSignal = pyqtSignal()
-
     @pyqtSlot(str)
     def on_locateSaveWidget_locateAndSave(self, format):
-        """Locate all features in all files and save the and metadata"""
+        """Locate all features in all files and save the data and metadata"""
         # TODO: check if current localizations are up-to-date
         # only run locate if not
+        self._progressDialog.value = 0
+        self._progressDialog.maximum = self._fileModel.rowCount()
+        self._progressDialog.show()
 
-        # Progress bar
-        progDialog = QProgressDialog(
-            "Locating features…", "Cancel", 0, self._fileModel.rowCount(),
-            self)
-        progDialog.setWindowModality(Qt.WindowModal)
-        progDialog.setValue(0)
-        progDialog.setMinimumDuration(0)
-
-        def increase_progress():
-            progDialog.setValue(progDialog.value() + 1)
-
-        # get options
-        opts = self._locOptionsDock.widget().options
-        frameRange = self._locOptionsDock.widget().frameRange
-        batch_func = self._locOptionsDock.widget().method.batch
-
-        # enqueue jobs for _batchWorker to execute in the worker thread
-        for i in range(self._fileModel.rowCount()):
-            self._batchWorker.queue.put_nowait(
-                (self._fileModel.index(i), opts, frameRange, batch_func))
-
-        self._batchWorker.finished.connect(increase_progress)
-        self._batchWorker.error.connect(increase_progress)
-
-        # tell the _batchWorker that there is something to do
-        self._batchSignal.emit()
-
-        # if cancel was pressed, abort after current worker finishes
-        # Connect directly to _batchWorker.clear, since otherwise
-        # it would run in the worker thread (after locate is finished...)
-        progDialog.canceled.connect(self._batchWorker.clear,
-                                    type=Qt.DirectConnection)
+        optWid = self._locOptionsDock.widget()
+        self._batchWorker.processFiles(self._fileModel, optWid.frameRange,
+                                       optWid.options, optWid.method.batch)
 
     @pyqtSlot(QModelIndex, pd.DataFrame, dict)
     def _locateRunnerFinished(self, index, data, options):
@@ -468,44 +444,3 @@ class MainWindow(QMainWindow):
             self, self.tr("Localization error"),
             self.tr("Failed to locate features in {}".format(
                 index.data(file_chooser.FileListModel.FileNameRole))))
-
-
-class BatchWorker(QObject):
-    """Worker object that does batch peak localizations
-
-    This is made to be owned by a worker thread. Connect some signal to the
-    :py:meth:`locate` slot, which in turn will emit the ``finised``
-    signal for each processed file.
-    """
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.queue = queue.Queue()
-
-    @pyqtSlot()
-    def locate(self):
-        while True:
-            try:
-                idx, opts, frameRange, batch_func = self.queue.get_nowait()
-            except queue.Empty:
-                return
-
-            fname = idx.data(FileListModel.FileNameRole)
-            frames = pims.open(fname)
-            end = frameRange[1] if frameRange[1] >= 0 else len(frames)
-            # TODO: restrict locating to bounding rect of ROI for performance
-            # gain
-            try:
-                data = batch_func(frames[frameRange[0]:end], **opts)
-            except Exception:
-                self.error.emit(idx)
-                continue
-
-            self.finished.emit(idx, data, opts)
-
-    @pyqtSlot()
-    def clear(self):
-        while not self.queue.empty():
-            self.queue.get_nowait()
-
-    finished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
-    error = pyqtSignal(QModelIndex)

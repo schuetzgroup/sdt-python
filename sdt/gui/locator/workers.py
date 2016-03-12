@@ -8,13 +8,19 @@ import types
 import numpy as np
 import pandas as pd
 
-from qtpy.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty, QThread
+import pims
+
+import qtpy
+from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QThread,
+                         QModelIndex)
+
+from .file_chooser import FileListModel
 
 
 class PreviewWorker(QObject):
     """Create a preview of localizations
 
-    Locate peaks in one frame at a time in a background frame
+    Locate peaks in one frame at a time in a background thread
     """
     class _ThreadWorker(QObject):
         """Object which does the actual work in the background thread"""
@@ -88,14 +94,14 @@ class PreviewWorker(QObject):
     def enabled(self):
         return self._enabled
 
-    _workerSignal = pyqtSignal(np.ndarray, dict, types.FunctionType)
-
     busyChanged = pyqtSignal(bool)
 
     @pyqtProperty(bool, notify=busyChanged,
                   doc="Indicates whether the worker is busy")
     def busy(self):
         return self._busy
+
+    _workerSignal = pyqtSignal(np.ndarray, dict, types.FunctionType)
 
     def makePreview(self, frame, options, locateFunc):
         """Start calculating a preview in the background
@@ -146,3 +152,87 @@ class PreviewWorker(QObject):
             self._busy = False
 
     finished = pyqtSignal(pd.DataFrame)
+
+
+class BatchWorker(QObject):
+    """Locate peaks in image series"""
+    class _WorkerThread(QThread):
+        """Object which does the actual work in the background thread
+
+        We reimplement the :py:meth:`run` method since otherwise it is not
+        possible to call `terminate` on the thread without Qt complaining.
+        """
+        def __init__(self, parent=None):
+            super().__init__(parent)
+            self.busy = False
+            self.model = None
+            self.options = {}
+            self.frameRange = (0, 0)
+            self.batchFunc = lambda x: pd.DataFrame()
+
+        def run(self):
+            for i in range(self.model.rowCount()):
+                idx = self.model.index(i)
+                fname = idx.data(FileListModel.FileNameRole)
+                frames = pims.open(fname)
+                end = self.frameRange[1]
+                if end < 0:
+                    end = len(frames)
+
+                self.fileStarted.emit(idx)
+                try:
+                    data = self.batchFunc(frames[self.frameRange[0]:end],
+                                          **self.options)
+                except Exception:
+                    self.fileError.emit(idx)
+                    continue
+
+                self.fileFinished.emit(idx, data, self.options)
+
+        fileStarted = pyqtSignal(QModelIndex)
+        fileFinished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
+        fileError = pyqtSignal(QModelIndex)
+
+    def __init__(self, parent=None):
+        """Parameters
+        -------------
+        parent : QObject, optional
+            parent QObject, defaults to None
+        """
+        super().__init__(parent)
+
+        # init background thread related stuff
+        self._thread = self._WorkerThread(self)
+        self._thread.fileStarted.connect(self.fileStarted)
+        self._thread.fileFinished.connect(self.fileFinished)
+        self._thread.fileError.connect(self.fileError)
+        self._thread.started.connect(self._threadStateChanged)
+        self._thread.finished.connect(self._threadStateChanged)
+        if qtpy.PYQT4 or qtpy.PYSIDE:
+            self._thread.terminated.connect(self._threadStateChanged)
+
+    def processFiles(self, model, frameRange, options, batchFunc):
+        self._thread.model = model
+        self._thread.frameRange = frameRange
+        self._thread.options = options
+        self._thread.batchFunc = batchFunc
+        self._thread.start()
+
+    @pyqtSlot()
+    def abort(self):
+        self._thread.terminate()
+
+    @pyqtSlot()
+    def _threadStateChanged(self):
+        self.busyChanged.emit(self._thread.isRunning())
+
+    busyChanged = pyqtSignal(bool)
+
+    @pyqtProperty(bool, notify=busyChanged,
+                  doc="Indicates whether the worker is busy")
+    def busy(self):
+        return self._thread.isRunning()
+
+    fileStarted = pyqtSignal(QModelIndex)
+    fileFinished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
+    fileError = pyqtSignal(QModelIndex)
