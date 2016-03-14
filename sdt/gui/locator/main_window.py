@@ -165,7 +165,7 @@ class MainWindow(QMainWindow):
 
         # Some things to keep track of
         self._currentFile = QPersistentModelIndex()
-        self._currentLocData = pd.DataFrame()
+        self._currentLocData = pd.DataFrame(columns=["x", "y"])
         self._roiPolygon = QPolygonF()
 
         # load settings and restore window geometry
