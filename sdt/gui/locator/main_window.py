@@ -149,6 +149,7 @@ class MainWindow(QMainWindow):
 
         # set up the batch worker
         self._batchWorker = workers.BatchWorker(self)
+        self._batchWorker.setObjectName("batchWorker")
         self._batchWorker.fileFinished.connect(self._locateRunnerFinished)
         self._batchWorker.fileError.connect(self._locateRunnerError)
 
@@ -161,7 +162,22 @@ class MainWindow(QMainWindow):
 
         self._batchWorker.fileFinished.connect(inc_progress)
         self._batchWorker.fileError.connect(inc_progress)
-        self._progressDialog.canceled.connect(self._batchWorker.abort)
+        self._progressDialog.canceled.connect(self._batchWorker.stop)
+
+        # message box for when cancelling the batch worker times out
+        self._batchTimeoutBox = QMessageBox(
+            QMessageBox.Warning,
+            self.tr("Problem stopping image processing"),
+            self.tr("It seems like it takes a long time to stop the "
+                    "image processing. Do you want to forcefully "
+                    "abort or wait longer?"),
+            QMessageBox.NoButton, self)
+        self._batchTimeoutBox.addButton(self.tr("Abort"),
+                                        QMessageBox.RejectRole)
+        self._batchTimeoutBox.addButton(self.tr("Wait"),
+                                        QMessageBox.AcceptRole)
+        self._batchTimeoutBox.accepted.connect(self._batchWorker.stop)
+        self._batchTimeoutBox.rejected.connect(self._batchWorker.terminate)
 
         # Some things to keep track of
         self._currentFile = QPersistentModelIndex()
@@ -444,3 +460,7 @@ class MainWindow(QMainWindow):
             self, self.tr("Localization error"),
             self.tr("Failed to locate features in {}".format(
                 index.data(file_chooser.FileListModel.FileNameRole))))
+
+    @pyqtSlot()
+    def on_batchWorker_stopTimedOut(self):
+        self._batchTimeoutBox.show()

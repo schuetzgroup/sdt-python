@@ -12,7 +12,7 @@ import pims
 
 import qtpy
 from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QThread,
-                         QModelIndex)
+                         QModelIndex, QTimer)
 
 from .file_chooser import FileListModel
 
@@ -169,9 +169,14 @@ class BatchWorker(QObject):
             self.options = {}
             self.frameRange = (0, 0)
             self.batchFunc = lambda x: pd.DataFrame()
+            self.stop = False
 
         def run(self):
+            self.stop = False
             for i in range(self.model.rowCount()):
+                if self.stop:
+                    return
+
                 idx = self.model.index(i)
                 fname = idx.data(FileListModel.FileNameRole)
                 frames = pims.open(fname)
@@ -211,6 +216,16 @@ class BatchWorker(QObject):
         if qtpy.PYQT4 or qtpy.PYSIDE:
             self._thread.terminated.connect(self._threadStateChanged)
 
+        # timer that signals that stopping didn't work/timed out
+        self._stopTimeoutTimer = QTimer()
+        self._stopTimeoutTimer.setSingleShot(True)
+        self._stopTimeoutTimer.setInterval(5000)
+        self._thread.finished.connect(self._stopTimeoutTimer.stop)
+        if qtpy.PYQT4 or qtpy.PYSIDE:
+            self._thread.terminated.connect(self._stopTimeoutTimer.stop)
+        self._stopTimeoutTimer.timeout.connect(
+            self.on_stopTimeoutTimer_timeout)
+
     def processFiles(self, model, frameRange, options, batchFunc):
         self._thread.model = model
         self._thread.frameRange = frameRange
@@ -219,7 +234,12 @@ class BatchWorker(QObject):
         self._thread.start()
 
     @pyqtSlot()
-    def abort(self):
+    def stop(self):
+        self._thread.stop = True
+        self._stopTimeoutTimer.start()
+
+    @pyqtSlot()
+    def terminate(self):
         self._thread.terminate()
 
     @pyqtSlot()
@@ -232,6 +252,21 @@ class BatchWorker(QObject):
                   doc="Indicates whether the worker is busy")
     def busy(self):
         return self._thread.isRunning()
+
+    @pyqtProperty(int, doc="How long to wait until raising a signal that a"
+                           "stopping attempt timed out")
+    def stopTimeout(self):
+        return self._stopTimeoutTimer.interval()
+
+    @stopTimeout.setter
+    def stopTimeout(self, t):
+        self._stopTimeoutTimer.setInterval(t)
+
+    stopTimedOut = pyqtSignal()
+
+    def on_stopTimeoutTimer_timeout(self):
+        if self._thread.isRunning():
+            self.stopTimedOut.emit()
 
     fileStarted = pyqtSignal(QModelIndex)
     fileFinished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
