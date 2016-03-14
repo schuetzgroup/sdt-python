@@ -3,8 +3,6 @@
 These classes implement the calls to the localization algorithms and related
 things. These are done in separate threads to ensure GUI responsiveness
 """
-import types
-
 import numpy as np
 import pandas as pd
 
@@ -12,7 +10,7 @@ import pims
 
 import qtpy
 from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QThread,
-                         QModelIndex, QTimer)
+                         QModelIndex, QTimer, QWaitCondition, QMutex)
 
 from .file_chooser import FileListModel
 
@@ -22,29 +20,69 @@ class PreviewWorker(QObject):
 
     Locate peaks in one frame at a time in a background thread
     """
-    class _ThreadWorker(QObject):
-        """Object which does the actual work in the background thread"""
-        @pyqtSlot(np.ndarray, dict, types.FunctionType)
-        def locate(self, frame, options, locateFunc):
-            """Do the preview localization
+    class _WorkerThread(QThread):
+        def __init__(self, parent=None):
+            super().__init__(parent)
+            self._waitCondition = QWaitCondition()
+            self._mutex = QMutex()
+            self._frame = np.array([[]])
+            self._options = {}
+            self._locateFunc = \
+                lambda imgs, opts: pd.DataFrame(columns=["x", "y"])
+            self.stop = False
+            self._newJob = False
+            self._busy = False
 
-            Emits the ``locateFinished`` signal when finished.
+        def run(self):
+            self.stop = False
+            while True:
+                self._mutex.lock()
+                if not self._newJob:
+                    self._setBusy(False)
+                    self._waitCondition.wait(self._mutex)
 
-            Parameters
-            ----------
-            frame : numpy.ndarray
-                image data
-            options : dict
-                keyword arg dict for ``locate_func``
-            locate_func : callable
-                actual localization function
-            """
-            # TODO: restrict locating to bounding rect of ROI for performance
-            # gain
-            ret = locateFunc(frame, **options)
-            self.finished.emit(ret)
+                if self.stop:
+                    self._setBusy(False)
+                    self._mutex.unlock()
+                    return
+
+                self._setBusy(True)
+
+                locateFunc = self._locateFunc
+                frame = self._frame
+                options = self._options
+                self._newJob = False
+                self._mutex.unlock()
+
+                # TODO: restrict locating to bounding rect of ROI for
+                # performance gain
+                # TODO: exception handling
+                ret = locateFunc(frame, **options)
+                self.finished.emit(ret)
+
+        def makeWork(self, frame, options, locateFunc):
+            self._mutex.lock()
+            self._frame = frame
+            self._options = options
+            self._locateFunc = locateFunc
+            self._newJob = True
+            self._mutex.unlock()
+            self._waitCondition.wakeAll()
 
         finished = pyqtSignal(pd.DataFrame)
+
+        def _setBusy(self, isBusy):
+            if isBusy == self._busy:
+                return
+            self.busyChanged.emit(isBusy)
+            self._busy = isBusy
+
+        busyChanged = pyqtSignal(bool)
+
+        @pyqtProperty(bool, notify=busyChanged,
+                      doc="Indicates whether the worker is busy")
+        def busy(self):
+            return self._busy
 
     def __init__(self, parent=None):
         """Parameters
@@ -56,18 +94,19 @@ class PreviewWorker(QObject):
         self._enabled = False
 
         # init background thread related stuff
-        self._thread = QThread(self)
-        self._threadWorker = self._ThreadWorker()
-        self._threadWorker.moveToThread(self._thread)
-        self._threadWorker.finished.connect(self.finished)
-        self._threadWorker.finished.connect(self._finishedSlot)
+        self._thread = self._WorkerThread(self)
+        self._thread.busyChanged.connect(self.busyChanged)
+        self._thread.finished.connect(self.finished)
 
-        # init state tracking
-        self._curFrame = None
-        self._curOptions = dict()
-        self._curLocateFunc = lambda f, o, l: pd.DataFrame(colums=["x", "y"])
-        self._busy = False
-        self._newJob = False
+        # timer that signals that stopping didn't work/timed out
+        self._stopTimeoutTimer = QTimer()
+        self._stopTimeoutTimer.setSingleShot(True)
+        self._stopTimeoutTimer.setInterval(1000)
+        self._thread.finished.connect(self._stopTimeoutTimer.stop)
+        if qtpy.PYQT4 or qtpy.PYSIDE:
+            self._thread.terminated.connect(self._stopTimeoutTimer.stop)
+        self._stopTimeoutTimer.timeout.connect(
+            self.on_stopTimeoutTimer_timeout)
 
     def setEnabled(self, enable):
         if enable == self._enabled:
@@ -75,14 +114,9 @@ class PreviewWorker(QObject):
 
         if enable:
             self._thread.start()
-            self._workerSignal.connect(self._threadWorker.locate)
         else:
-            self._workerSignal.disconnect(self._threadWorker.locate)
-            self._thread.terminate()
-            if self._busy:
-                self.busyChanged.emit(False)
-            self._busy = False
-            self._newJob = False
+            self._thread.stop()
+            self._stopTimeoutTimer.start()
 
         self._enabled = enable
         self.enabledChanged.emit(enable)
@@ -99,9 +133,7 @@ class PreviewWorker(QObject):
     @pyqtProperty(bool, notify=busyChanged,
                   doc="Indicates whether the worker is busy")
     def busy(self):
-        return self._busy
-
-    _workerSignal = pyqtSignal(np.ndarray, dict, types.FunctionType)
+        return self._thread.busy
 
     def makePreview(self, frame, options, locateFunc):
         """Start calculating a preview in the background
@@ -123,35 +155,24 @@ class PreviewWorker(QObject):
         if not self._enabled or frame is None:
             return
 
-        self._curFrame = frame
-        self._curOptions = options
-        self._curLocateFunc = locateFunc
-
-        if self._busy:
-            self._newJob = True
-            return
-
-        self._busy = True
-        self.busyChanged.emit(True)
-        self._workerSignal.emit(frame, options, locateFunc)
-
-    @pyqtSlot()
-    def _finishedSlot(self):
-        """Bookkeeping after a preview is finished
-
-        - Check if a new job has arrived already
-        - If not, set the busy property to `False`
-        """
-        if self._newJob:
-            self._newJob = False
-            self._workerSignal.emit(self._curFrame, self._curOptions,
-                                    self._curLocateFunc)
-        else:
-            if self._busy:
-                self.busyChanged.emit(False)
-            self._busy = False
+        self._thread.makeWork(frame, options, locateFunc)
 
     finished = pyqtSignal(pd.DataFrame)
+
+    @pyqtProperty(int, doc="How long to wait until raising a signal that a"
+                           "stopping attempt timed out")
+    def stopTimeout(self):
+        return self._stopTimeoutTimer.interval()
+
+    @stopTimeout.setter
+    def stopTimeout(self, t):
+        self._stopTimeoutTimer.setInterval(t)
+
+    stopTimedOut = pyqtSignal()
+
+    def on_stopTimeoutTimer_timeout(self):
+        if self._thread.isRunning():
+            self.stopTimedOut.emit()
 
 
 class BatchWorker(QObject):
