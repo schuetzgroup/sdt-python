@@ -350,6 +350,12 @@ class MainWindow(QMainWindow):
         self._roiPolygon = roi
         self._filterLocalizations()
 
+    @pyqtSlot(bool)
+    def on_viewer_showLocalizationsChanged(self, show):
+        self._previewWorker.enabled = show
+        if show:
+            self._makePreviewWorkerWork()
+
     def _saveMetadata(self, fname):
         """Save metadata to YAML
 
