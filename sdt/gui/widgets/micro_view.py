@@ -224,6 +224,14 @@ class MicroViewWidget(mvBase):
             os.path.join(iconpath, "media-playback-pause.svg"))
         self._ui.playButton.setIcon(self._playIcon)
 
+        # these are to be setEnable(False)'ed if there is no image sequence
+        self._noImsDisable = [
+            self._ui.zoomOutButton, self._ui.zoomOriginalButton,
+            self._ui.zoomFitButton, self._ui.zoomInButton,
+            self._ui.roiButton,
+            self._ui.view, self._ui.pixelInfo, self._ui.frameSelector,
+            self._ui.contrastGroup]
+
         # initialize image data
         self._locDataGood = None
         self._locDataBad = None
@@ -239,12 +247,14 @@ class MicroViewWidget(mvBase):
         if ims is None:
             self._ims = None
             self._imageData = None
-            self.setEnabled(False)
+            for w in self._noImsDisable:
+                w.setEnabled(False)
             self.drawImage()
             self.drawLocalizations()
             return
 
-        self.setEnabled(True)
+        for w in self._noImsDisable:
+            w.setEnabled(True)
         self._ui.framenoBox.setMaximum(len(ims))
         self._ui.framenoSlider.setMaximum(len(ims))
         self._ims = ims
