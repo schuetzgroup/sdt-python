@@ -187,6 +187,12 @@ class MicroViewWidget(mvBase):
             self._playTimer.setTimerType(Qt.PreciseTimer)
         self._playTimer.setSingleShot(False)
 
+        # set up preview button
+        self._locEnabledStr = "Localizations are shown"
+        self._locDisabledStr = "Localizations are not shown"
+        self._ui.locButton.setToolTip(self.tr(self._locEnabledStr))
+        self._ui.locButton.toggled.connect(self.showLocalizationsChanged)
+
         # connect signals and slots
         self._ui.framenoBox.valueChanged.connect(self.selectFrame)
         self._ui.playButton.pressed.connect(
@@ -199,6 +205,8 @@ class MicroViewWidget(mvBase):
         self._scene.roiChanged.connect(self.roiChanged)
 
         # set button icons
+        self._ui.locButton.setIcon(
+            QIcon(os.path.join(iconpath, "view-preview.svg")))
         self._ui.zoomOutButton.setIcon(
             QIcon(os.path.join(iconpath, "zoom-out.svg")))
         self._ui.zoomOriginalButton.setIcon(
@@ -365,6 +373,9 @@ class MicroViewWidget(mvBase):
         if isinstance(self._locMarkers, QGraphicsItem):
             self._scene.removeItem(self._locMarkers)
             self._locMarkers = None
+        if not self.showLocalizations:
+            return
+
         try:
             sel = self._locDataGood["frame"] == self._ui.framenoBox.value() - 1
             dGood = self._locDataGood[sel]
@@ -478,3 +489,20 @@ class MicroViewWidget(mvBase):
     @pyqtSlot(bool)
     def on_scene_roiModeChanged(self, enabled):
         self._ui.roiButton.setChecked(enabled)
+
+    def setShowLocalizations(self, show):
+        self._ui.locButton.setChecked(show)
+
+    showLocalizationsChanged = pyqtSignal(bool)
+
+    @pyqtProperty(bool, fset=setShowLocalizations,
+                  notify=showLocalizationsChanged)
+    def showLocalizations(self):
+        return self._ui.locButton.isChecked()
+
+    def on_locButton_toggled(self, checked):
+        tooltip = (self.tr(self._locEnabledStr) if checked else
+                   self.tr(self._locDisabledStr))
+        self._ui.locButton.setToolTip(tooltip)
+
+        self.drawLocalizations()
