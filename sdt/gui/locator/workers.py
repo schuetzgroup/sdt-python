@@ -88,6 +88,10 @@ class PreviewWorker(QObject):
             self._mutex.unlock()
             self._waitCondition.wakeAll()
 
+        def terminate(self):
+            self._setBusy(False)
+            super().terminate()
+
         previewFinished = pyqtSignal(pd.DataFrame)
 
         def _setBusy(self, isBusy):
