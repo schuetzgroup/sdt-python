@@ -28,6 +28,7 @@ from . import locate_filter
 from . import locate_saver
 from . import batch_progress
 from . import workers
+from .worker_timeout_dialog import WorkerTimeoutDialog
 from ...data import save, load
 
 
@@ -165,17 +166,8 @@ class MainWindow(QMainWindow):
         self._progressDialog.canceled.connect(self._batchWorker.stop)
 
         # message box for when cancelling the batch worker times out
-        self._batchTimeoutBox = QMessageBox(
-            QMessageBox.Warning,
-            self.tr("Problem stopping image processing"),
-            self.tr("It seems like it takes a long time to stop the "
-                    "image processing. Do you want to forcefully "
-                    "abort or wait longer?"),
-            QMessageBox.NoButton, self)
-        self._batchTimeoutBox.addButton(self.tr("Abort"),
-                                        QMessageBox.RejectRole)
-        self._batchTimeoutBox.addButton(self.tr("Wait"),
-                                        QMessageBox.AcceptRole)
+        self._batchTimeoutBox = WorkerTimeoutDialog(
+            self.tr("image processing"), self)
         self._batchTimeoutBox.accepted.connect(self._batchWorker.stop)
         self._batchTimeoutBox.rejected.connect(self._batchWorker.terminate)
 
