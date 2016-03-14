@@ -177,6 +177,10 @@ class MainWindow(QMainWindow):
         if v is not None:
             self.restoreState(v)
 
+        # restore enable/disable preview
+        show = settings.value("Viewer/showPreview", True, type=bool)
+        self._viewer.showLocalizations = show
+
         QMetaObject.connectSlotsByName(self)
 
     @pyqtSlot(QModelIndex)
@@ -283,6 +287,7 @@ class MainWindow(QMainWindow):
         settings = QSettings("sdt", "locator")
         settings.setValue("MainWindow/geometry", self.saveGeometry())
         settings.setValue("MainWindow/state", self.saveState())
+        settings.setValue("Viewer/showPreview", self._viewer.showLocalizations)
         super().closeEvent(event)
 
     @pyqtSlot()
