@@ -33,19 +33,28 @@ class PreviewWorker(QObject):
             self._options = {}
             self._locateFunc = \
                 lambda imgs, opts: pd.DataFrame(columns=["x", "y"])
-            self.stop = False
+            self._stop = False
             self._newJob = False
             self._busy = False
 
         def run(self):
-            self.stop = False
+            self._stop = False
             while True:
                 self._mutex.lock()
+
+                if self._stop:
+                    # stop set to True while we were calling locateFunc
+                    self._setBusy(False)
+                    self._mutex.unlock()
+                    return
+
                 if not self._newJob:
+                    # no new job has arrived yet, wait
                     self._setBusy(False)
                     self._waitCondition.wait(self._mutex)
 
-                if self.stop:
+                if self._stop:
+                    # stop set to True while waiting on _waitCondition
                     self._setBusy(False)
                     self._mutex.unlock()
                     return
@@ -62,7 +71,7 @@ class PreviewWorker(QObject):
                 # performance gain
                 # TODO: exception handling
                 ret = locateFunc(frame, **options)
-                self.finished.emit(ret)
+                self.previewFinished.emit(ret)
 
         def makeWork(self, frame, options, locateFunc):
             self._mutex.lock()
@@ -73,7 +82,13 @@ class PreviewWorker(QObject):
             self._mutex.unlock()
             self._waitCondition.wakeAll()
 
-        finished = pyqtSignal(pd.DataFrame)
+        def stop(self):
+            self._mutex.lock()
+            self._stop = True
+            self._mutex.unlock()
+            self._waitCondition.wakeAll()
+
+        previewFinished = pyqtSignal(pd.DataFrame)
 
         def _setBusy(self, isBusy):
             if isBusy == self._busy:
@@ -100,7 +115,7 @@ class PreviewWorker(QObject):
         # init background thread related stuff
         self._thread = self._WorkerThread(self)
         self._thread.busyChanged.connect(self.busyChanged)
-        self._thread.finished.connect(self.finished)
+        self._thread.previewFinished.connect(self.finished)
 
         # timer that signals that stopping didn't work/timed out
         self._stopTimeoutTimer = QTimer()
@@ -118,7 +133,7 @@ class PreviewWorker(QObject):
         if enable:
             self._thread.start()
         else:
-            self._thread.stop = True
+            self._thread.stop()
             self._stopTimeoutTimer.start()
 
         self._enabled = enable
@@ -127,7 +142,7 @@ class PreviewWorker(QObject):
     enabledChanged = pyqtSignal(bool)
 
     @pyqtProperty(bool, fset=setEnabled, notify=enabledChanged,
-                  doc="Enable or disable the worker")
+                  doc="Indicates whether the worker is enabled")
     def enabled(self):
         return self._enabled
 
