@@ -16,9 +16,7 @@ class WorkerTimeoutDialog(QMessageBox):
             self.tr("It seems like it takes a long time to stop the "
                     "{}. Do you want to forcefully abort or wait"
                     "longer?").format(what),
-            QMessageBox.NoButton, self)
+            QMessageBox.NoButton, parent)
 
-        self._batchTimeoutBox.addButton(self.tr("Abort"),
-                                        QMessageBox.RejectRole)
-        self._batchTimeoutBox.addButton(self.tr("Wait"),
-                                        QMessageBox.AcceptRole)
+        self.addButton(self.tr("Abort"), QMessageBox.RejectRole)
+        self.addButton(self.tr("Wait"), QMessageBox.AcceptRole)
