@@ -189,7 +189,7 @@ class BatchWorker(QObject):
             self.model = None
             self.options = {}
             self.frameRange = (0, 0)
-            self.batchFunc = lambda x: pd.DataFrame()
+            self.batchFunc = lambda imgs, opts: pd.DataFrame()
             self.stop = False
 
         def run(self):
@@ -206,6 +206,8 @@ class BatchWorker(QObject):
                     end = len(frames)
 
                 self.fileStarted.emit(idx)
+                # TODO: restrict locating to bounding rect of ROI for
+                # performance gain
                 try:
                     data = self.batchFunc(frames[self.frameRange[0]:end],
                                           **self.options)
