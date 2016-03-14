@@ -1,3 +1,5 @@
+import traceback
+
 from qtpy.QtWidgets import QApplication, QMessageBox
 
 from .main_window import MainWindow
@@ -23,7 +25,7 @@ def run(argv):
         QMessageBox.critical(
             None,
             app.translate("main", "Startup error"),
-            app.translate("main", str(e)))
+            str(e) + "\n\n" + traceback.format_exc())
         return 1
     w.show()
     return app.exec_()
