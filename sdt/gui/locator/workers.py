@@ -5,6 +5,7 @@ things. These are done in separate threads to ensure GUI responsiveness
 """
 import numpy as np
 import pandas as pd
+import logging
 
 import pims
 
@@ -13,6 +14,9 @@ from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QThread,
                          QModelIndex, QTimer, QWaitCondition, QMutex)
 
 from .file_chooser import FileListModel
+
+
+_logger = logging.getLogger(__name__)
 
 
 class PreviewWorker(QObject):
@@ -105,8 +109,7 @@ class PreviewWorker(QObject):
         self._thread.finished.connect(self._stopTimeoutTimer.stop)
         if qtpy.PYQT4 or qtpy.PYSIDE:
             self._thread.terminated.connect(self._stopTimeoutTimer.stop)
-        self._stopTimeoutTimer.timeout.connect(
-            self.on_stopTimeoutTimer_timeout)
+        self._stopTimeoutTimer.timeout.connect(self._terminate)
 
     def setEnabled(self, enable):
         if enable == self._enabled:
@@ -115,7 +118,7 @@ class PreviewWorker(QObject):
         if enable:
             self._thread.start()
         else:
-            self._thread.stop()
+            self._thread.stop = True
             self._stopTimeoutTimer.start()
 
         self._enabled = enable
@@ -127,6 +130,11 @@ class PreviewWorker(QObject):
                   doc="Enable or disable the worker")
     def enabled(self):
         return self._enabled
+
+    @pyqtSlot()
+    def _terminate(self):
+        _logger.warn("Terminating PreviewWorker background thread.")
+        self._thread.terminate()
 
     busyChanged = pyqtSignal(bool)
 
@@ -167,12 +175,6 @@ class PreviewWorker(QObject):
     @stopTimeout.setter
     def stopTimeout(self, t):
         self._stopTimeoutTimer.setInterval(t)
-
-    stopTimedOut = pyqtSignal()
-
-    def on_stopTimeoutTimer_timeout(self):
-        if self._thread.isRunning():
-            self.stopTimedOut.emit()
 
 
 class BatchWorker(QObject):
@@ -246,8 +248,7 @@ class BatchWorker(QObject):
         self._thread.finished.connect(self._stopTimeoutTimer.stop)
         if qtpy.PYQT4 or qtpy.PYSIDE:
             self._thread.terminated.connect(self._stopTimeoutTimer.stop)
-        self._stopTimeoutTimer.timeout.connect(
-            self.on_stopTimeoutTimer_timeout)
+        self._stopTimeoutTimer.timeout.connect(self._terminate)
 
     def processFiles(self, model, frameRange, options, batchFunc):
         self._thread.model = model
@@ -262,7 +263,8 @@ class BatchWorker(QObject):
         self._stopTimeoutTimer.start()
 
     @pyqtSlot()
-    def terminate(self):
+    def _terminate(self):
+        _logger.warn("Terminating BatchWorker background thread.")
         self._thread.terminate()
 
     @pyqtSlot()
@@ -284,12 +286,6 @@ class BatchWorker(QObject):
     @stopTimeout.setter
     def stopTimeout(self, t):
         self._stopTimeoutTimer.setInterval(t)
-
-    stopTimedOut = pyqtSignal()
-
-    def on_stopTimeoutTimer_timeout(self):
-        if self._thread.isRunning():
-            self.stopTimedOut.emit()
 
     fileStarted = pyqtSignal(QModelIndex)
     fileFinished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
