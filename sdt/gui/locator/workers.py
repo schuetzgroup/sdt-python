@@ -13,6 +13,7 @@ import qtpy
 from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QThread,
                          QModelIndex, QTimer, QWaitCondition, QMutex, QPointF,
                          Qt)
+from qtpy.QtGui import QPolygonF
 
 from .file_chooser import FileListModel
 from ...image_tools import ROI
@@ -30,6 +31,17 @@ def applyROI(roiPolygon, data):
     return data[mask]
 
 
+def makeROICropper(roiPolygon, frame):
+    if len(roiPolygon) > 2:
+        bRect = roiPolygon.boundingRect()
+        tl = bRect.topLeft()
+        br = bRect.bottomRight()
+        return ROI((int(tl.x()), int(tl.y())),
+                   (int(br.x()+0.5), int(br.y()+0.5)))
+    else:
+        return ROI((0, 0), frame.shape[::-1])
+
+
 class PreviewWorker(QObject):
     """Create a preview of localizations
 
@@ -42,6 +54,7 @@ class PreviewWorker(QObject):
             self._mutex = QMutex()
             self._frame = np.array([[]])
             self._options = {}
+            self._roi = QPolygonF()
             self._locateFunc = \
                 lambda imgs, opts: pd.DataFrame(columns=["x", "y"])
             self._stop = False
@@ -80,15 +93,8 @@ class PreviewWorker(QObject):
                 self._mutex.unlock()
 
                 # TODO: exception handling
-                if len(roiPolygon) > 2:
-                    # restrict to ROI bounding rectangle for performance gain
-                    bRect = roiPolygon.boundingRect()
-                    tl = bRect.topLeft()
-                    br = bRect.bottomRight()
-                    roiCropper = ROI((int(tl.x()), int(tl.y())),
-                                     (int(br.x()+0.5), int(br.y()+0.5)))
-                else:
-                    roiCropper = ROI((0, 0), frame.shape[::-1])
+                # restrict to ROI bounding rectangle for performance gain
+                roiCropper = makeROICropper(roiPolygon, frame)
                 ret = locateFunc(roiCropper(frame), **options)
 
                 # since we cropped the image, we have to add to the coordinates
@@ -236,6 +242,7 @@ class BatchWorker(QObject):
             self.model = None
             self.options = {}
             self.frameRange = (0, 0)
+            self.roi = QPolygonF()
             self.batchFunc = lambda imgs, opts: pd.DataFrame()
             self.stop = False
 
@@ -248,16 +255,22 @@ class BatchWorker(QObject):
                 idx = self.model.index(i)
                 fname = idx.data(FileListModel.FileNameRole)
                 frames = pims.open(fname)
+                start = self.frameRange[0]
                 end = self.frameRange[1]
                 if end < 0:
                     end = len(frames)
 
                 self.fileStarted.emit(idx)
-                # TODO: restrict locating to bounding rect of ROI for
-                # performance gain
                 try:
-                    data = self.batchFunc(frames[self.frameRange[0]:end],
-                                          **self.options)
+                    # restrict to ROI bounding rectangle for performance gain
+                    roiCropper = makeROICropper(self.roi, frames[start])
+                    data = self.batchFunc(
+                        roiCropper(frames)[start:end], **self.options)
+                    # since we cropped the image, we have to
+                    # add to the coordinates
+                    data[["x", "y"]] += roiCropper.top_left
+                    # now get only stuff within the polygon
+                    data = applyROI(self.roi, data)
                 except Exception:
                     self.fileError.emit(idx)
                     continue
@@ -295,11 +308,12 @@ class BatchWorker(QObject):
             self._thread.terminated.connect(self._stopTimeoutTimer.stop)
         self._stopTimeoutTimer.timeout.connect(self._terminate)
 
-    def processFiles(self, model, frameRange, options, batchFunc):
+    def processFiles(self, model, frameRange, options, batchFunc, roi):
         self._thread.model = model
         self._thread.frameRange = frameRange
         self._thread.options = options
         self._thread.batchFunc = batchFunc
+        self._thread.roi = roi
         self._thread.start()
 
     @pyqtSlot()

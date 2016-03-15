@@ -314,20 +314,6 @@ class MainWindow(QMainWindow):
         self._locFilterDock.widget().setVariables(data.columns.values.tolist())
         self._filterLocalizations()
 
-    def _applyRoi(self, data):
-        """Select peaks in ROI
-
-        Return a boolean vector with the same length as data whose entries are
-        True or False depending on whether a data point is inside or outside
-        the ROI polygon.
-        """
-        if len(self._roiPolygon) < 2:
-            return np.ones((len(data),), dtype=bool)
-        return np.apply_along_axis(
-            lambda pos: self._roiPolygon.containsPoint(QPointF(*pos),
-                                                       Qt.OddEvenFill),
-            1, data[["x", "y"]])
-
     @pyqtSlot()
     def _filterLocalizations(self):
         """Set good/bad localizations in the viewer
@@ -395,7 +381,8 @@ class MainWindow(QMainWindow):
 
         optWid = self._locOptionsDock.widget()
         self._batchWorker.processFiles(self._fileModel, optWid.frameRange,
-                                       optWid.options, optWid.method.batch)
+                                       optWid.options, optWid.method.batch,
+                                       self._roiPolygon)
 
     @pyqtSlot(QModelIndex, pd.DataFrame, dict)
     def _locateRunnerFinished(self, index, data, options):
@@ -428,8 +415,7 @@ class MainWindow(QMainWindow):
         os.makedirs(fdir, exist_ok=True)
 
         filterFunc = self._locFilterDock.widget().getFilter()
-        inRoi = self._applyRoi(data)
-        data = data[filterFunc(data) & inRoi]
+        data = data[filterFunc(data)]
 
         save(saveFileName, data)  # sdt.data.save
         self._saveMetadata(metaFileName)
