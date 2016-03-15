@@ -6,6 +6,7 @@ import qtpy.compat
 from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication, QObject,
                          QAbstractListModel, QModelIndex, pyqtProperty,
                          QEvent)
+from qtpy.QtGui import QPolygonF
 from qtpy import uic
 
 
@@ -17,6 +18,8 @@ class FileListModel(QAbstractListModel):
     LocDataRole = Qt.UserRole + 1
     LocOptionsRole = Qt.UserRole + 2
     LocMethodRole = Qt.UserRole + 3
+    ROIRole = Qt.UserRole + 4
+    FrameRangeRole = Qt.UserRole + 5
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -37,6 +40,10 @@ class FileListModel(QAbstractListModel):
             return cur.locOptions
         elif role == self.LocMethodRole:
             return cur.locMethod
+        elif role == self.ROIRole:
+            return cur.roi
+        elif role == self.FrameRangeRole:
+            return cur.frameRange
 
     def setData(self, index, value, role=Qt.EditRole):
         if not index.isValid() or index.row() >= len(self._data):
@@ -51,6 +58,10 @@ class FileListModel(QAbstractListModel):
             cur.locOptions = value
         elif role == self.LocMethodRole:
             cur.locMethod = value
+        elif role == self.ROIRole:
+            cur.roi = value
+        elif role == self.FrameRangeRole:
+            cur.frameRange = value
         else:
             return False
 
@@ -67,7 +78,8 @@ class FileListModel(QAbstractListModel):
         self.beginInsertRows(parent, row, row + count - 1)
         for i in range(count):
             self._data.insert(row, types.SimpleNamespace(
-                fileName=None, locData=None, locOptions=None))
+                fileName=None, locData=None, locOptions=None, roi=QPolygonF(),
+                frameRange=(0, 0)))
         self.endInsertRows()
         return True
 
@@ -80,7 +92,8 @@ class FileListModel(QAbstractListModel):
         self.endRemoveRows()
         return True
 
-    def addItem(self, fname, locData=None, locOptions=None, locMethod=None):
+    def addItem(self, fname, locData=None, locOptions=None, locMethod=None,
+                roi=QPolygonF(), frameRange=(0, 0)):
         row = self.rowCount()
         self.insertRows(row, 1)
         idx = self.index(row)
@@ -88,6 +101,8 @@ class FileListModel(QAbstractListModel):
         self.setData(idx, locData, self.LocDataRole)
         self.setData(idx, locOptions, self.LocOptionsRole)
         self.setData(idx, locMethod, self.LocMethodRole)
+        self.setData(idx, roi, self.ROIRole)
+        self.setData(idx, frameRange, self.FrameRangeRole)
 
     def files(self):
         return (d.fileName for d in self._data)
