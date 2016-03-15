@@ -216,10 +216,6 @@ class MainWindow(QMainWindow):
         self._locOptionsDock.widget().numFrames = (0 if (ims is None)
                                                    else len(ims))
 
-    # This is emitted to tell the preview worker that there is something to
-    # do (i. e. locate peaks in the current frame for preview)
-    _workerSignal = pyqtSignal(np.ndarray, dict, types.FunctionType)
-
     @pyqtSlot(int)
     def on_viewer_frameReadError(self, frameno):
         """Slot getting called when a frame could not be read"""
@@ -231,15 +227,14 @@ class MainWindow(QMainWindow):
     def _makePreviewWorkerWork(self):
         """Called when something happens that requires a new preview
 
-        E. g. a new frame is displayed. If the preview worker is already
-        working, just tell it that there is yet another job to be done.
-        Otherwise start the preview worker (by emitting self._workerSignal).
+        e. g. a new frame is displayed..
         """
+        if (not self._currentFile.isValid() or
+                not self._viewer.showLocalizations):
+            return
+
         cur_method = self._locOptionsDock.widget().method
         cur_opts = self._locOptionsDock.widget().options
-
-        if not self._currentFile.isValid():
-            return
 
         file_method = self._currentFile.data(FileListModel.LocMethodRole)
         file_opts = self._currentFile.data(FileListModel.LocOptionsRole)
@@ -280,7 +275,8 @@ class MainWindow(QMainWindow):
             self._makeWorkerWork()
             return
 
-        self._previewWorker.makePreview(curFrame, cur_opts, cur_method.locate)
+        self._previewWorker.makePreview(curFrame, cur_opts, cur_method.locate,
+                                        self._roiPolygon)
 
     def closeEvent(self, event):
         """Window is closed, save state"""
@@ -345,21 +341,19 @@ class MainWindow(QMainWindow):
         """
         filterFunc = self._locFilterDock.widget().getFilter()
         good = filterFunc(self._currentLocData)
-        inRoi = self._applyRoi(self._currentLocData)
-        self._viewer.setLocalizationData(self._currentLocData[good & inRoi],
-                                         self._currentLocData[~good & inRoi])
+        self._viewer.setLocalizationData(self._currentLocData[good],
+                                         self._currentLocData[~good])
 
     @pyqtSlot(QPolygonF)
     def on_viewer_roiChanged(self, roi):
         """Update ROI polygon and filter localizations"""
         self._roiPolygon = roi
-        self._filterLocalizations()
+        self._makePreviewWorkerWork()
 
     @pyqtSlot(bool)
     def on_viewer_showLocalizationsChanged(self, show):
         self._previewWorker.enabled = show
-        if show:
-            self._makePreviewWorkerWork()
+        self._makePreviewWorkerWork()
 
     def _saveMetadata(self, fname):
         """Save metadata to YAML

@@ -11,12 +11,23 @@ import pims
 
 import qtpy
 from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QThread,
-                         QModelIndex, QTimer, QWaitCondition, QMutex)
+                         QModelIndex, QTimer, QWaitCondition, QMutex, QPointF,
+                         Qt)
 
 from .file_chooser import FileListModel
+from ...image_tools import ROI
 
 
 _logger = logging.getLogger(__name__)
+
+
+def applyROI(roiPolygon, data):
+    if len(roiPolygon) < 2:
+        return data
+    mask = np.apply_along_axis(
+        lambda pos: roiPolygon.containsPoint(QPointF(*pos), Qt.OddEvenFill),
+        1, data[["x", "y"]])
+    return data[mask]
 
 
 class PreviewWorker(QObject):
@@ -64,20 +75,35 @@ class PreviewWorker(QObject):
                 locateFunc = self._locateFunc
                 frame = self._frame
                 options = self._options
+                roiPolygon = self._roi
                 self._newJob = False
                 self._mutex.unlock()
 
-                # TODO: restrict locating to bounding rect of ROI for
-                # performance gain
                 # TODO: exception handling
-                ret = locateFunc(frame, **options)
+                if len(roiPolygon) > 2:
+                    # restrict to ROI bounding rectangle for performance gain
+                    bRect = roiPolygon.boundingRect()
+                    tl = bRect.topLeft()
+                    br = bRect.bottomRight()
+                    roiCropper = ROI((int(tl.x()), int(tl.y())),
+                                     (int(br.x()+0.5), int(br.y()+0.5)))
+                else:
+                    roiCropper = ROI((0, 0), frame.shape[::-1])
+                ret = locateFunc(roiCropper(frame), **options)
+
+                # since we cropped the image, we have to add to the coordinates
+                ret[["x", "y"]] += roiCropper.top_left
+
+                # now get only stuff within the polygon
+                ret = applyROI(roiPolygon, ret)
                 self.previewFinished.emit(ret)
 
-        def makeWork(self, frame, options, locateFunc):
+        def makeWork(self, frame, options, locateFunc, roi):
             self._mutex.lock()
             self._frame = frame
             self._options = options
             self._locateFunc = locateFunc
+            self._roi = roi
             self._newJob = True
             self._mutex.unlock()
             self._waitCondition.wakeAll()
@@ -162,7 +188,7 @@ class PreviewWorker(QObject):
     def busy(self):
         return self._thread.busy
 
-    def makePreview(self, frame, options, locateFunc):
+    def makePreview(self, frame, options, locateFunc, roi):
         """Start calculating a preview in the background
 
         When finished, the `finished` signal will be emitted with the
@@ -182,7 +208,7 @@ class PreviewWorker(QObject):
         if not self._enabled or frame is None:
             return
 
-        self._thread.makeWork(frame, options, locateFunc)
+        self._thread.makeWork(frame, options, locateFunc, roi)
 
     finished = pyqtSignal(pd.DataFrame)
 
