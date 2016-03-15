@@ -40,7 +40,13 @@ def yaml_dict_representer(dumper, data):
     return dumper.represent_dict(data.items())
 
 
+def yaml_qpolygon_representer(dumper, data):
+    point_list = [[p.x(), p.y()] for p in data]
+    return dumper.represent_list(point_list)
+
+
 yaml.add_representer(collections.OrderedDict, yaml_dict_representer)
+yaml.add_representer(QPolygonF, yaml_qpolygon_representer)
 
 
 def determine_filename(imgname, fmt):
@@ -359,7 +365,7 @@ class MainWindow(QMainWindow):
         metadata["algorithm"] = \
             self._locOptionsDock.widget().method.name
         metadata["options"] = self._locOptionsDock.widget().options
-        metadata["roi"] = [p for p in self._roiPolygon]
+        metadata["roi"] = self._roiPolygon
         metadata["filter"] = self._locFilterDock.widget().getFilterString()
         with open(fname, "w") as f:
             yaml.dump(metadata, f, default_flow_style=False)
