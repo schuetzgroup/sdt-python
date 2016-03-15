@@ -238,12 +238,15 @@ class MainWindow(QMainWindow):
 
         file_method = self._currentFile.data(FileListModel.LocMethodRole)
         file_opts = self._currentFile.data(FileListModel.LocOptionsRole)
+        file_roi = self._currentFile.data(FileListModel.ROIRole)
+        file_frameRange = self._currentFile.data(FileListModel.FrameRangeRole)
 
         curFrame = self._viewer.getCurrentFrame()
+        curFrameNo = self._viewer.currentFrameNumber
 
-        if file_method == cur_method.name and file_opts == cur_opts:
-            curFrameNo = self._viewer.currentFrameNumber
-
+        if (file_method == cur_method.name and file_opts == cur_opts and
+                self._roiPolygon == file_roi and
+                file_frameRange[0] <= curFrameNo < file_frameRange[1]):
             data = self._currentFile.data(FileListModel.LocDataRole)
             data = data[data["frame"] == curFrameNo]
 
@@ -400,11 +403,15 @@ class MainWindow(QMainWindow):
         options : dict
             Options used for locating peaks
         """
+        optsWidget = self._locOptionsDock.widget()
         self._fileModel.setData(index, data, FileListModel.LocDataRole)
         self._fileModel.setData(index, options, FileListModel.LocOptionsRole)
         self._fileModel.setData(index,
-                                self._locOptionsDock.widget().method.name,
+                                optsWidget.method.name,
                                 FileListModel.LocMethodRole)
+        self._fileModel.setData(index, self._roiPolygon, FileListModel.ROIRole)
+        self._fileModel.setData(index, optsWidget.frameRange,
+                                FileListModel.FrameRangeRole)
         saveFormat = self._locSaveDock.widget().getFormat()
 
         saveFileName = self._fileModel.data(index, FileListModel.FileNameRole)
