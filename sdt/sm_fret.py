@@ -156,11 +156,11 @@ def match_pair_tracks(pairs, acceptor_tracks, donor_tracks, threshold=0.75,
         don_track = donor_tracks[donor_tracks[trackno_column] == m_don]
 
         #find starting frame of the one starting earlier
-        start_frame = min(acc_track[frameno_column].min(),
-                          don_track[frameno_column].min())
+        start_frame = int(min(acc_track[frameno_column].min(),
+                              don_track[frameno_column].min()))
         #find last frame of the one ending last
-        end_frame = max(acc_track[frameno_column].max(),
-                        don_track[frameno_column].max())
+        end_frame = int(max(acc_track[frameno_column].max(),
+                            don_track[frameno_column].max()))
         #create a DataFrame that consists only of the frame column but contains
         #all frame numbers between start_frame and end_frame
         frames = pd.DataFrame(list(range(start_frame, end_frame + 1)),
