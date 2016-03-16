@@ -182,7 +182,12 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     # square x and y displacements
     sds = disp**2 * pixel_size**2
     # mean square x and y displacements
-    msds = np.nanmean(sds, axis=1)
+    with warnings.catch_warnings():
+        # nanmean raises a RuntimeWarning if all entries are NaNs.
+        # this can legitately happen if there are "holes" in a trajectory,
+        # which are representet by NaNs, therefore suppress the warning
+        warnings.simplefilter("ignore", RuntimeWarning)
+        msds = np.nanmean(sds, axis=1)
     # mean absolute square displacement
     msd = np.sum(msds, axis=1)[:, np.newaxis]
     # time lags
@@ -236,7 +241,13 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     for pn, pdata in traj_grouped:
         disp = _displacements(pdata, max_lagtime)
         sds = np.sum(disp**2 * pixel_size**2, axis=2)
-        disps.append(np.nanmean(sds, axis=1))
+        with warnings.catch_warnings():
+            # nanmean raises a RuntimeWarning if all entries are NaNs.
+            # this can legitately happen if there are "holes" in a trajectory,
+            # which are representet by NaNs, therefore suppress the warning
+            warnings.simplefilter("ignore", RuntimeWarning)
+            msds = np.nanmean(sds, axis=1)
+        disps.append(msds)
 
     ret = pd.DataFrame(disps).T
     ret.columns = traj_grouped.groups.keys()
