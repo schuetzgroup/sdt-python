@@ -117,7 +117,7 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
             except KeyError:
                 disp_dict[i] = [disp]
     else:
-        ret = np.empty((max_lagtime, max_lagtime, len(pos_columns)))
+        ret = np.empty((max_lagtime, len(pdata)-1, len(pos_columns)))
         for i in range(1, max_lagtime+1):
             # calculate coordinate differences for each time lag
             padding = np.full((i-1, len(pos_columns)), np.nan)
