@@ -39,7 +39,7 @@ class SaveWidget(locSaveBase):
         if format == "none":
             return
         if format == "settings":
-            self._ui.saveButton.setText(self.tr("Save as…"))
+            self._ui.saveButton.setText(self.tr("Save as..."))
         else:
             self._ui.saveButton.setText(self.tr("Locate and save"))
 

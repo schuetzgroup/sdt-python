@@ -21,7 +21,8 @@ class BatchProgressDialog(bpBase):
         self._ui = bpClass()
         self._ui.setupUi(self)
 
-        self._progressLabel = self._tr("Locating peaks…")
+        self._progressLabel = self._tr("Locating peaks...")
+        self._progressFileLabel = self.tr("Processing {}...")
         self._finishedLabel = self._tr("Finished.")
 
         self._ui.buttonBox.rejected.connect(self.canceled)
