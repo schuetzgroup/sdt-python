@@ -160,13 +160,15 @@ class MainWindow(QMainWindow):
 
         # batch progress dialog
         self._progressDialog = batch_progress.BatchProgressDialog(self)
-        self._progressDialog.setWindowModality(Qt.WindowModal)
 
         def inc_progress():
             self._progressDialog.value += 1
 
         self._batchWorker.fileFinished.connect(inc_progress)
         self._batchWorker.fileError.connect(inc_progress)
+        self._batchWorker.fileStarted.connect(
+            lambda idx: self._progressDialog.setFilename(
+                idx.data(Qt.DisplayRole)))
         self._progressDialog.canceled.connect(self._batchWorker.stop)
 
         # Some things to keep track of

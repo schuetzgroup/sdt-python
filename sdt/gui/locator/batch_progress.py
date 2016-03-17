@@ -28,11 +28,13 @@ class BatchProgressDialog(bpBase):
         self._ui.buttonBox.rejected.connect(self.canceled)
 
     def _setTextAndButton(self):
-        if self._ui.progressBar.value() == self._ui.progressBar.maximum():
+        val = self._ui.progressBar.value()
+        maxi = self._ui.progressBar.maximum()
+        if val == maxi:
             self._ui.buttonBox.clear()
             self._ui.buttonBox.addButton(QDialogButtonBox.Ok)
             self._ui.label.setText(self._finishedLabel)
-        else:
+        elif val == 0:
             self._ui.buttonBox.clear()
             self._ui.buttonBox.addButton(QDialogButtonBox.Cancel)
             self._ui.label.setText(self._progressLabel)
@@ -62,5 +64,9 @@ class BatchProgressDialog(bpBase):
     def maximum(self, val):
         self._ui.progressBar.setMaximum(val)
         self._setTextAndButton()
+
+    @pyqtSlot(str)
+    def setFilename(self, fn):
+        self._ui.label.setText(self._progressFileLabel.format(fn))
 
     canceled = pyqtSignal()
