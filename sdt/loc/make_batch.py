@@ -87,7 +87,7 @@ def make_batch_threaded(locate_func):
 
         Apply :py:func:`locate` to each image in ``frames``. The image is
         passed as the first argument. For details on function parameters, see
-        the:py:func:`{loc_fn}` documentation.
+        the:py:func:`locate` documentation.
 
         Parameters
         ----------
