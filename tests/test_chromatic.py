@@ -6,16 +6,18 @@ import numpy as np
 
 from sdt.image_tools import ROI
 from sdt.chromatic import Corrector
+from sdt.data import load
+
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_chromatic")
+
 
 class TestChromaticCorrector(unittest.TestCase):
     def setUp(self):
         self.roi_left = ROI((0, 0), (231, 121))
         self.roi_right = ROI((230, 0), (461, 121))
-        self.loc_data = pd.read_hdf(os.path.join(data_path, "beads1.h5"),
-                                    "features")
+        self.loc_data = load(os.path.join(data_path, "beads1.h5"))
         self.corrector = Corrector(self.roi_left(self.loc_data),
                                    self.roi_right(self.loc_data))
 
