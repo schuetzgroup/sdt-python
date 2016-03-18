@@ -48,10 +48,10 @@ class Corrector(object):
     pairs : pandas.DataFrame
         Contains the pairs found by `determine_parameters`.
     parameters1 : pandas.DataFrame
-        The parameters for the linear transformation to correct coordinates
+        The parameters for the affine transformation to correct coordinates
         of channel 1.
     parameters2 : pandas.DataFrame
-        The parameters for the linear transformation to correct coordinate
+        The parameters for the affine transformation to correct coordinate
         of channel 2.
     """
     def __init__(self, feat1, feat2, pos_columns=pos_columns,
@@ -147,29 +147,34 @@ class Corrector(object):
     def fit_parameters(self):
         """Determine parameters for the affine transformation
 
-        A linear fit is used to map x and y coordinates of `feat1` to to those
-        of `feat2`. This requires `find_pairs` to be run first.
+        An affine transformation is used to map x and y coordinates of `feat1`
+        to to those of `feat2`. This requires `find_pairs` to be run first.
+        The result is save in the `parameters1` (transform of channel 1
+        coordinates to channel 2) and `parameters2` (transform of channel 2
+        coordinates to channel 1). In an ideal world, these would be inverse,
+        but the world is hardly ever ideal.
+
+        The transformations are calculated by a linear least squares fit
+        of the embedding of the affine space into a higher dimensional vector
+        space.
         """
-        pars = []
-        for p in self.pos_columns:
-            r = scipy.stats.linregress(self.pairs[self.channel_names[0]][p],
-                                       self.pairs[self.channel_names[1]][p])
-            pars.append([r[i] for i in [0, 1, 4]])
-        self.parameters1 = pd.DataFrame(pars,
-                                        columns=["slope",
-                                                 "intercept",
-                                                 "stderr"],
-                                        index=pos_columns)
-        pars = []
-        for p in self.pos_columns:
-            r = scipy.stats.linregress(self.pairs[self.channel_names[1]][p],
-                                       self.pairs[self.channel_names[0]][p])
-            pars.append([r[i] for i in [0, 1, 4]])
-        self.parameters2 = pd.DataFrame(pars,
-                                        columns=["slope",
-                                                 "intercept",
-                                                 "stderr"],
-                                        index=pos_columns)
+        one_padding = np.ones((len(self.pairs), 1))
+        ch1_name = self.channel_names[0]
+        ch2_name = self.channel_names[1]
+        affine_embedding_header = np.zeros((1, len(self.pos_columns) + 1))
+        affine_embedding_header[0, 0] = 1
+
+        # first transform
+        coeff = np.hstack((one_padding, self.pairs[ch1_name][pos_columns]))
+        rhs = self.pairs[ch2_name][pos_columns].as_matrix()
+        params = np.linalg.lstsq(coeff, rhs)[0].T
+        self.parameters1 = np.vstack((affine_embedding_header, params))
+
+        # second transform
+        coeff = np.hstack((one_padding, self.pairs[ch2_name][pos_columns]))
+        rhs = self.pairs[ch1_name][pos_columns].as_matrix()
+        params = np.linalg.lstsq(coeff, rhs)[0].T
+        self.parameters2 = np.vstack((affine_embedding_header, params))
 
     def __call__(self, data, channel=2, inplace=False, mode="constant",
                  cval=0.0):
@@ -202,8 +207,6 @@ class Corrector(object):
         cval : scalar, optional
             What value to use for `mode="constant"`. Defaults to 0.0
         """
-        x_col = self.pos_columns[0]
-        y_col = self.pos_columns[1]
         if channel not in (1, 2):
             raise ValueError("channel has to be either 1 or 2")
 
@@ -211,13 +214,16 @@ class Corrector(object):
             if not inplace:
                 data = data.copy()
             if channel == 1:
-                xparm = self.parameters1.loc[x_col]
-                yparm = self.parameters1.loc[y_col]
+                corr_coords = np.dot(data[self.pos_columns].as_matrix(),
+                                     self.parameters1[1:, 1:].T)
+                corr_coords += self.parameters1[1:, 0]
             if channel == 2:
-                xparm = self.parameters2.loc[x_col]
-                yparm = self.parameters2.loc[y_col]
-            data[x_col] = data[x_col]*xparm.slope + xparm.intercept
-            data[y_col] = data[y_col]*yparm.slope + yparm.intercept
+                corr_coords = np.dot(data[self.pos_columns].as_matrix(),
+                                     self.parameters2[1:, 1:].T)
+                corr_coords += self.parameters2[1:, 0]
+
+            data[pos_columns] = corr_coords
+
             if not inplace:
                 # copied previously, now return
                 return data
@@ -226,13 +232,11 @@ class Corrector(object):
                 parms = self.parameters2
             if channel == 2:
                 parms = self.parameters1
+
             @pims.pipeline
             def corr(img):
-                # iloc[::-1] reverses the order since image coordinates and
-                # matrix rows/columns have different order
                 return scipy.ndimage.affine_transform(
-                    img,
-                    parms.iloc[::-1]["slope"], parms.iloc[::-1]["intercept"],
+                    img, parms[1:, 1:], parms[1:, 0],
                     mode=mode, cval=cval)
             return corr(data)
 
