@@ -317,7 +317,8 @@ class Corrector(object):
             raise ValueError("Unknown format: {}".format(fmt))
 
     @staticmethod
-    def load(file, fmt="npz", key=("chromatic_param1", "chromatic_param2")):
+    def load(file, fmt="npz", key=("chromatic_param1", "chromatic_param2"),
+             pos_columns=pos_columns):
         """Read paramaters from a file and construct a `Corrector`
 
         Parameters
@@ -338,8 +339,11 @@ class Corrector(object):
         key : tuple of str, optional
             Name of the variables in the saved file (does not apply to "wrp").
             Defaults to ("chromatic_param1", "chromatic_param2").
+        pos_columns : list of str, optional
+            Sets the `pos_columns` attribute. Defaults to the `pos_columns`
+            attribute of the module.
         """
-        corr = Corrector(None, None)
+        corr = Corrector(None, None, pos_columns=pos_columns)
         if fmt == "npz":
             npz = np.load(file)
             corr.parameters1 = npz[key[0]]
