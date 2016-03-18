@@ -247,29 +247,42 @@ class Corrector(object):
         Parameters
         ----------
         ax : tuple of matplotlib axes or None, optional
-            Axes to use for plotting. The length of the tuple has to be greater
-            or equal than the length of pos_columns. If None, allocate new
-            axes using subplots(). Defaults to None.
+            Axes to use for plotting. The length of the tuple has to be 2.
+            If None, allocate new axes using subplots(). Defaults to None.
         """
         import matplotlib.pyplot as plt
 
         if ax is None:
-            fig, ax = plt.subplots(1, len(pos_columns))
+            grid_kw = dict(width_ratios=(1, 2))
+            fig, ax = plt.subplots(1, 2, gridspec_kw=grid_kw)
 
-        for a, p in zip(ax, self.pos_columns):
-            a.set_xlabel("{} ({})".format(p, self.channel_names[0]))
-            a.set_ylabel("{} ({})".format(p, self.channel_names[1]))
-            a.scatter(self.pairs[self.channel_names[0], p],
-                      self.pairs[self.channel_names[1], p],
-                      marker="+", s=50, color="red")
-            a.plot(self.pairs[self.channel_names[0]].sort_values(p)[p],
-                   self.parameters1.loc[p, "slope"] *
-                   self.pairs[self.channel_names[0]].sort_values(p)[p] +
-                   self.parameters1.loc[p, "intercept"])
-            a.set_title(p)
-            a.set_aspect(1)
+        c1 = self.pairs[self.channel_names[0]]
+        c1_corr = self(c1, channel=1)
+        diff1 = (c1_corr[self.pos_columns] -
+                 self.pairs[self.channel_names[1]][self.pos_columns])
+        diff1 = np.sqrt(np.sum(diff1**2, axis=1))
 
-        a.figure.tight_layout()
+        c2 = self.pairs[self.channel_names[1]]
+        c2_corr = self(c2, channel=2)
+        diff2 = (c2_corr[self.pos_columns] -
+                 self.pairs[self.channel_names[0]][self.pos_columns])
+        diff2 = np.sqrt(np.sum(diff2**2, axis=1))
+
+        ax[0].scatter(np.zeros(len(diff1)), diff1, marker="x", color="blue")
+        ax[0].scatter(np.ones(len(diff2)), diff2, marker="+", color="green")
+        ax[0].set_xticks([0, 1])
+        ax[0].set_xticklabels([r"$1\rightarrow 2$", r"$2\rightarrow 1$"])
+        ax[0].set_xlim([-0.5, 1.5])
+        ax[0].set_title("Error")
+
+        ax[1].scatter(c1_corr[self.pos_columns[0]],
+                      c1_corr[self.pos_columns[1]], marker="x", color="blue")
+        ax[1].scatter(c2[self.pos_columns[0]],
+                      c2[self.pos_columns[1]], marker="+", color="red")
+        ax[1].set_aspect(1, adjustable="datalim")
+        ax[1].set_title("Overlay")
+
+        ax[0].figure.tight_layout()
 
     def to_hdf(self, path_or_buf, key=("chromatic_corr_ch1",
                                        "chromatic_corr_ch2")):
