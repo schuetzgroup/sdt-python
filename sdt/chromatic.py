@@ -290,108 +290,75 @@ class Corrector(object):
 
         ax[0].figure.tight_layout()
 
-    def to_hdf(self, path_or_buf, key=("chromatic_corr_ch1",
-                                       "chromatic_corr_ch2")):
-        """Save parameters to a HDF5 file
-
-        Save `parameters1` as `key`[0] and `parameters2` as `key`[1].
+    def save(self, file, fmt="npz", key=("chromatic_param1",
+                                         "chromatic_param2")):
+        """Save transformation parameters to file
 
         Parameters
         ----------
-        path_or_buf
-            HDF5 file to write to
+        file : str or file
+            File name or an open file-like object to save data to.
+        fmt : {"npz", "mat"}, optional
+            Format to save data. Either numpy ("npz") or MATLAB ("mat").
+            Defaults to "npz".
+
+        Other parameters
+        ----------------
         key : tuple of str, optional
-            Names of the parameter variables in the HDF5 file. Defaults to
-            ("chromatic_corr_ch1", "chromatic_corr_ch2").
+            Name of the variables in the saved file. Defaults to
+            ("chromatic_param1", "chromatic_param2").
         """
-        self.parameters1.to_hdf(path_or_buf, key[0], mode="w", format="t")
-        self.parameters2.to_hdf(path_or_buf, key[1], mode="a", format="t")
+        vardict = {key[0]: self.parameters1, key[1]: self.parameters2}
+        if fmt == "npz":
+            np.savez(file, **vardict)
+        elif fmt == "mat":
+            scipy.io.savemat(file, vardict)
+        else:
+            raise ValueError("Unknown format: {}".format(fmt))
 
     @staticmethod
-    def read_hdf(path_or_buf, key=("chromatic_corr_ch1",
-                                   "chromatic_corr_ch2")):
-        """Read paramaters from a HDF5 file and construct a corrector
-
-        Read `parameters1` from `key`[0] and `parameters2` from `key`[1].
+    def load(file, fmt="npz", key=("chromatic_param1", "chromatic_param2")):
+        """Read paramaters from a file and construct a `Corrector`
 
         Parameters
         ----------
-        path_or_buf
-            HDF5 file to load
-        key : tuple of str, optional
-            Names of the parameter variables in the HDF5 file. Defaults to
-            ("chromatic_corr_ch1", "chromatic_corr_ch2").
+        file : str or file
+            File name or an open file-like object to load data from.
+        fmt : {"npz", "mat", "wrp"}, optional
+            Format to save data. Either numpy ("npz") or MATLAB ("mat") or
+            `determine_shiftstretch`'s wrp ("wrp"). Defaults to "npz".
 
         Returns
         -------
         Corrector
-            A `Corrector` instance with the parameters read from the HDF5
-            file.
+            A `Corrector` instance with the parameters read from the file.
+
+        Other parameters
+        ----------------
+        key : tuple of str, optional
+            Name of the variables in the saved file (does not apply to "wrp").
+            Defaults to ("chromatic_param1", "chromatic_param2").
         """
         corr = Corrector(None, None)
-        corr.parameters1 = pd.read_hdf(path_or_buf, key[0])
-        corr.pos_columns = corr.parameters1.index.tolist()
-        corr.parameters2 = pd.read_hdf(path_or_buf, key[1])
-        return corr
+        if fmt == "npz":
+            npz = np.load(file)
+            corr.parameters1 = npz[key[0]]
+            corr.parameters2 = npz[key[1]]
+        elif fmt == "mat":
+            mat = scipy.io.loadmat(file)
+            corr.parameters1 = mat[key[0]]
+            corr.parameters2 = mat[key[1]]
+        elif fmt == "wrp":
+            d = scipy.io.loadmat(file, squeeze_me=True,
+                                 struct_as_record=False)["S"]
+            corr.parameters2 = np.array([[1., 0., 0.]
+                                         [d.d1, d.k1, 0.],
+                                         [d.d2, 0., d.k2]])
+            corr.parameters1 = np.linalg.inv(corr.parameters2)
 
-    def to_wrp(self, path):
-        """Save parameters to .wrp file
+        else:
+            raise ValueError("Unknown format: {}".format(fmt))
 
-        Warning: This only saves parameters2. In order not to lose parameters1,
-        save to HDF5 using `to_hdf`().
-
-        Paramaters
-        ----------
-        path : str
-            Path of the .wrp file to be created
-        """
-        k1 = self.parameters2.loc[self.pos_columns[0], "slope"]
-        d1 = self.parameters2.loc[self.pos_columns[0], "intercept"]
-        k2 = self.parameters2.loc[self.pos_columns[1], "slope"]
-        d2 = self.parameters2.loc[self.pos_columns[1], "intercept"]
-
-        S = dict(k1=k1, d1=d1, k2=k2, d2=d2)
-        scipy.io.savemat(path, dict(S=S), appendmat=False)
-
-    @staticmethod
-    def read_wrp(path):
-        """Read parameters from a .wrp file
-
-        Construct a Corrector with those parameters. Warning: The .wrp file
-        only contains paramaters for the correction of channel 2. Parameters
-        for channel 1 are calculated by inverting the transformation and may
-        by not so accurate.
-
-        Parameters
-        ----------
-        path : str
-            Path of the .wrp file
-
-        Returns
-        -------
-        Corrector
-            A `Corrector` instance with the parameters read from the .wrp
-            file.
-        """
-        corr = Corrector(None, None)
-        mat = scipy.io.loadmat(path, squeeze_me=True, struct_as_record=False)
-        d = mat["S"]
-
-        # data of the wrp file is for the channel2 transformation
-        parms2 = np.empty((2, 3))
-        parms2[0, :] = np.array([d.k1, d.d1, np.NaN])
-        parms2[1, :] = np.array([d.k2, d.d2, np.NaN])
-        corr.parameters2 = pd.DataFrame(parms2,
-                                        columns=["slope", "intercept",
-                                                 "stderr"],
-                                        index=pos_columns)
-        parms1 = np.empty((2, 3))
-        parms1[0, :] = np.array([1./d.k1, -d.d1/d.k1, np.NaN])
-        parms1[1, :] = np.array([1./d.k2, -d.d2/d.k2, np.NaN])
-        corr.parameters1 = pd.DataFrame(parms1,
-                                        columns=["slope", "intercept",
-                                                 "stderr"],
-                                        index=pos_columns)
         return corr
 
     def _vectors_cartesian(self, features):
