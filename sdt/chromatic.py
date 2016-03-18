@@ -229,16 +229,18 @@ class Corrector(object):
                 return data
         else:
             if channel == 1:
-                parms = self.parameters2
+                parms = np.linalg.inv(self.parameters1)
             if channel == 2:
-                parms = self.parameters1
+                parms = np.linalg.inv(self.parameters2)
 
             @pims.pipeline
             def corr(img):
+                # transpose image since matrix axes are reversed compared to
+                # coordinate axes
                 return scipy.ndimage.affine_transform(
-                    img, parms[1:, 1:], parms[1:, 0],
+                    img.T, parms[1:, 1:], parms[1:, 0],
                     mode=mode, cval=cval)
-            return corr(data)
+            return corr(data).T  # transpose back
 
     def test(self, ax=None):
         """Test validity of the correction parameters
