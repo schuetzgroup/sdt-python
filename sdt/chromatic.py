@@ -49,10 +49,10 @@ class Corrector(object):
         Contains the pairs found by `determine_parameters`.
     parameters1 : pandas.DataFrame
         The parameters for the affine transformation to correct coordinates
-        of channel 1.
+        of channel 1 (embedded in a vector space of higher dimension).
     parameters2 : pandas.DataFrame
         The parameters for the affine transformation to correct coordinate
-        of channel 2.
+        of channel 2 (embedded in a vector space of higher dimension).
     """
     def __init__(self, feat1, feat2, pos_columns=pos_columns,
                  channel_names=channel_names):
@@ -161,20 +161,20 @@ class Corrector(object):
         one_padding = np.ones((len(self.pairs), 1))
         ch1_name = self.channel_names[0]
         ch2_name = self.channel_names[1]
-        affine_embedding_header = np.zeros((1, len(self.pos_columns) + 1))
-        affine_embedding_header[0, 0] = 1
+        affine_embedding_footer = np.zeros((1, len(self.pos_columns) + 1))
+        affine_embedding_footer[-1, -1] = 1  # last column is translation
 
         # first transform
-        coeff = np.hstack((one_padding, self.pairs[ch1_name][pos_columns]))
+        coeff = np.hstack((self.pairs[ch1_name][pos_columns], one_padding))
         rhs = self.pairs[ch2_name][pos_columns].as_matrix()
         params = np.linalg.lstsq(coeff, rhs)[0].T
-        self.parameters1 = np.vstack((affine_embedding_header, params))
+        self.parameters1 = np.vstack((params, affine_embedding_footer))
 
         # second transform
-        coeff = np.hstack((one_padding, self.pairs[ch2_name][pos_columns]))
+        coeff = np.hstack((self.pairs[ch2_name][pos_columns], one_padding))
         rhs = self.pairs[ch1_name][pos_columns].as_matrix()
         params = np.linalg.lstsq(coeff, rhs)[0].T
-        self.parameters2 = np.vstack((affine_embedding_header, params))
+        self.parameters2 = np.vstack((params, affine_embedding_footer))
 
     def __call__(self, data, channel=2, inplace=False, mode="constant",
                  cval=0.0):
@@ -215,12 +215,12 @@ class Corrector(object):
                 data = data.copy()
             if channel == 1:
                 corr_coords = np.dot(data[self.pos_columns].as_matrix(),
-                                     self.parameters1[1:, 1:].T)
-                corr_coords += self.parameters1[1:, 0]
+                                     self.parameters1[:-1, :-1].T)
+                corr_coords += self.parameters1[:-1, -1]
             if channel == 2:
                 corr_coords = np.dot(data[self.pos_columns].as_matrix(),
-                                     self.parameters2[1:, 1:].T)
-                corr_coords += self.parameters2[1:, 0]
+                                     self.parameters2[:-1, :-1].T)
+                corr_coords += self.parameters2[:-1, -1]
 
             data[pos_columns] = corr_coords
 
@@ -238,7 +238,7 @@ class Corrector(object):
                 # transpose image since matrix axes are reversed compared to
                 # coordinate axes
                 return scipy.ndimage.affine_transform(
-                    img.T, parms[1:, 1:], parms[1:, 0],
+                    img.T, parms[:-1, :-1], parms[:-1, -1],
                     mode=mode, cval=cval)
             return corr(data).T  # transpose back
 
@@ -351,9 +351,9 @@ class Corrector(object):
         elif fmt == "wrp":
             d = scipy.io.loadmat(file, squeeze_me=True,
                                  struct_as_record=False)["S"]
-            corr.parameters2 = np.array([[1., 0., 0.]
-                                         [d.d1, d.k1, 0.],
-                                         [d.d2, 0., d.k2]])
+            corr.parameters2 = np.array([[d.k1, 0., d.d1],
+                                         [0., d.k2, d.d2],
+                                         [0., 0., 1.]])
             corr.parameters1 = np.linalg.inv(corr.parameters2)
 
         else:
