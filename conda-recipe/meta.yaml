@@ -1,0 +1,50 @@
+package:
+    name: sdt-python
+    version: {{ environ.get('GIT_DESCRIBE_TAG', '') }}{{ '.post' + environ.get('GIT_DESCRIBE_NUMBER', "0") if environ.get('GIT_DESCRIBE_NUMBER', "0") != "0" else ''}}
+
+source:
+    git_url: ../
+
+build:
+    number: 8
+
+requirements:
+    build:
+        - nomkl  # [unix]
+        - python
+        - setuptools
+        - numpy
+        - pandas
+        - pytables
+        - scipy
+        - python-dateutil
+        - tifffile
+        - pyyaml
+        - pims >=0.3.0
+        - slicerator >=0.9.7
+        - lmfit
+
+    run:
+        - python
+        - numpy
+        - pandas
+        - pytables
+        - scipy
+        - python-dateutil
+        - tifffile
+        - pyyaml
+        - pims >=0.3.0
+        - slicerator >=0.9.7
+        - numba
+        - qtpy >=1.0b1
+        - matplotlib
+        - lmfit
+
+test:
+    requires:
+        - nomkl  # [unix]
+        - nose
+
+about:
+    summary: "Tools related to fluorescence microscopy"
+
