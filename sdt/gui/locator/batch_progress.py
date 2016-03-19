@@ -25,6 +25,8 @@ class BatchProgressDialog(bpBase):
         self._progressFileLabel = self.tr("Processing {}...")
         self._finishedLabel = self._tr("Finished.")
 
+        self._ui.progressBar.setFormat(self._tr("%v file(s) of %m"))
+
         self._ui.buttonBox.rejected.connect(self.canceled)
 
     def _setTextAndButton(self):
