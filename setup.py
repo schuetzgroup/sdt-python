@@ -37,7 +37,7 @@ setup(
                       "pims>=0.3.0",
                       "slicerator>=0.9.7",
                       "lmfit"],
-    packages=find_packages(include=["sdt.*"]),
+    packages=find_packages(include=["sdt*"]),
     package_data={"": ["*.ui"],
                   "sdt.gui": ["icons/*.svg"]},
     long_description=read("README.md")
