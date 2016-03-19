@@ -48,6 +48,10 @@ class BatchProgressDialog(bpBase):
         self._ui.progressBar.setValue(val)
         self._setTextAndButton()
 
+    @pyqtSlot()
+    def increaseValue(self):
+        self.value += 1
+
     @pyqtProperty(int, doc="The progress bar's minimum value")
     def minimum(self):
         return self._ui.progressBar.minimum()
