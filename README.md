@@ -1,8 +1,8 @@
 Single dye tracking
 ===================
 
-sdt-python is a collection of tools for analysis of single molecule microscopy
-data. SDT stands for single dye tracking.
+sdt-python is a collection of tools for analysis of fluorescence microscopy
+data.
 
 
 Requirements
@@ -11,10 +11,13 @@ Requirements
 - numpy
 - pandas
 - dateutil
-- pims > 0.2.2
+- pims > 0.3.0
 - tifffile
+- pyyaml
 
 
 Recommended packages
 --------------------
 - numba
+- matplotlib
+- qtpy >= 1.0b1
