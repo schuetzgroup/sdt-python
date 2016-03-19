@@ -29,6 +29,7 @@ from . import locate_saver
 from . import batch_progress
 from . import workers
 from ...data import save, load
+from . import algorithms
 
 
 def yaml_dict_representer(dumper, data):
@@ -252,7 +253,7 @@ class MainWindow(QMainWindow):
         curFrame = self._viewer.getCurrentFrame()
         curFrameNo = self._viewer.currentFrameNumber
 
-        if (file_method == cur_method.name and file_opts == cur_opts and
+        if (file_method == cur_method and file_opts == cur_opts and
                 self._roiPolygon == file_roi and
                 file_frameRange[0] <= curFrameNo < file_frameRange[1]):
             data = self._currentFile.data(FileListModel.LocDataRole)
@@ -265,7 +266,7 @@ class MainWindow(QMainWindow):
 
             return
 
-        if cur_method.name == "load file":
+        if cur_method == "load file":
             fname = os.path.join(*determine_filename(
                 self._currentFile.data(FileListModel.FileNameRole),
                 cur_opts["fmt"]))
@@ -280,14 +281,14 @@ class MainWindow(QMainWindow):
                                     FileListModel.LocDataRole)
             self._fileModel.setData(modelIdx, cur_opts,
                                     FileListModel.LocOptionsRole)
-            self._fileModel.setData(modelIdx, cur_method.name,
+            self._fileModel.setData(modelIdx, cur_method,
                                     FileListModel.LocMethodRole)
             # call recursively to update viewer
-            self._makeWorkerWork()
+            self._makePreviewWorkerWork()
             return
 
-        self._previewWorker.makePreview(curFrame, cur_opts, cur_method.locate,
-                                        self._roiPolygon)
+        self._previewWorker.processImage(curFrame, cur_opts, cur_method,
+                                         self._roiPolygon)
 
     def closeEvent(self, event):
         """Window is closed, save state"""
@@ -364,8 +365,7 @@ class MainWindow(QMainWindow):
             Name of the output file
         """
         metadata = collections.OrderedDict()
-        metadata["algorithm"] = \
-            self._locOptionsDock.widget().method.name
+        metadata["algorithm"] = self._locOptionsDock.widget().method
         metadata["options"] = self._locOptionsDock.widget().options
         metadata["roi"] = self._roiPolygon
         metadata["filter"] = self._locFilterDock.widget().getFilterString()
@@ -392,7 +392,7 @@ class MainWindow(QMainWindow):
 
         optWid = self._locOptionsDock.widget()
         self._batchWorker.processFiles(self._fileModel, optWid.frameRange,
-                                       optWid.options, optWid.method.batch,
+                                       optWid.options, optWid.method,
                                        self._roiPolygon)
 
     @pyqtSlot(QModelIndex, pd.DataFrame, dict)
@@ -414,8 +414,7 @@ class MainWindow(QMainWindow):
         optsWidget = self._locOptionsDock.widget()
         self._fileModel.setData(index, data, FileListModel.LocDataRole)
         self._fileModel.setData(index, options, FileListModel.LocOptionsRole)
-        self._fileModel.setData(index,
-                                optsWidget.method.name,
+        self._fileModel.setData(index, optsWidget.method,
                                 FileListModel.LocMethodRole)
         self._fileModel.setData(index, self._roiPolygon, FileListModel.ROIRole)
         self._fileModel.setData(index, optsWidget.frameRange,

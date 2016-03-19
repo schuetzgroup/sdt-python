@@ -4,8 +4,6 @@ There is a container widget that allows for selection of the alogorithm which
 displays the settings widget for the currently selected one.
 """
 import os
-import collections
-import contextlib
 
 import qtpy
 from qtpy.QtWidgets import QWidget, QFormLayout, QSpinBox, QComboBox, QLabel
@@ -13,27 +11,13 @@ from qtpy.QtCore import (pyqtSignal, pyqtSlot, pyqtProperty, QCoreApplication,
                          QTimer, Qt, QMetaObject)
 from qtpy import uic
 
+from . import algorithms
+
 
 path = os.path.dirname(os.path.abspath(__file__))
 
 
-methodDesc = collections.namedtuple("methodDesc",
-                                    ["name", "widget", "locate", "batch"])
-methodDesc.__doc__ = """Localization method descriptor
-
-    Attributes
-    ----------
-    name : string
-        Name of the algorithm
-    widget : subclass of QWidget
-        Settings widget class (not instance!)
-    locate : function
-        Function to locate peaks in a single image
-    batch : function
-        Function to locate peaks in a series of images
-    """
-# List of methodDescs. This is populated at the very end of the file
-methodList = []
+algo_widget_dict = {}  # populated at the end of the file
 
 
 class Container(QWidget):
@@ -84,20 +68,20 @@ class Container(QWidget):
 
         # make sure the widgets are not garbage collected; save them in list
         self._optWidgetList = []
-        for mDesc in methodList:
-            w = mDesc.widget()
-            self._methodBox.addItem(mDesc.name, (w, mDesc))
+        for name in list(algorithms.desc.keys()) + ["load file"]:
+            w_class = algo_widget_dict.get(name)
+            if w_class is None:
+                continue
+            w = w_class()
+            self._methodBox.addItem(name, w)
             self._layout.addRow(w)
             w.hide()
             self._optWidgetList.append(w)
             w.optionsChanged.connect(self._delayTimer.start)
 
-        if not self._optWidgetList:
-            raise RuntimeError("No locating algorithms found.")
-
         cur_idx = self._methodBox.currentIndex()
-        self._currentWidget, self._currentMethod = \
-            self._methodBox.itemData(cur_idx)
+        self._currentMethod = self._methodBox.itemText(cur_idx)
+        self._currentWidget = self._methodBox.itemData(cur_idx)
         self.on_methodBox_currentIndexChanged(cur_idx)
 
         QMetaObject.connectSlotsByName(self)
@@ -108,9 +92,7 @@ class Container(QWidget):
     def options(self):
         return self._currentWidget.options
 
-    @pyqtProperty(methodDesc,
-                  doc="methodDesc descriptor of the currently selected"
-                  "algorithm")
+    @pyqtProperty(str, doc="Name of the currently selected algorithm")
     def method(self):
         return self._currentMethod
 
@@ -118,8 +100,8 @@ class Container(QWidget):
     def on_methodBox_currentIndexChanged(self, idx):
         if self._currentWidget is not None:
             self._currentWidget.hide()
-        self._currentWidget, self._currentMethod = \
-            self._methodBox.itemData(idx)
+        self._currentMethod = self._methodBox.itemText(idx)
+        self._currentWidget = self._methodBox.itemData(idx)
         if self._currentWidget is not None:
             self._currentWidget.show()
         self.optionsChanged.emit()
@@ -243,29 +225,7 @@ class FileOptions(fileBase):
         return opt
 
 
-# Look for algorithms
-with contextlib.suppress(ImportError):
-    from sdt.loc import daostorm_3d
-    methodList.append(
-        methodDesc("daostorm_3d",
-                   Daostorm3DOptions,
-                   locate=daostorm_3d.locate,
-                   batch=daostorm_3d.batch))
-with contextlib.suppress(ImportError):
-    from sdt.loc import fast_peakposition
-    methodList.append(
-        methodDesc("fast_peakposition",
-                   FastPeakpositionOptions,
-                   locate=fast_peakposition.locate,
-                   batch=fast_peakposition.batch))
-with contextlib.suppress(ImportError):
-    from sdt.loc import cg
-    methodList.append(
-        methodDesc("cg",
-                   CGOptions,
-                   locate=cg.locate,
-                   batch=cg.batch))
-methodList.append(
-    methodDesc("load file",
-               FileOptions,
-               None, None))
+algo_widget_dict["daostorm_3d"] = Daostorm3DOptions
+algo_widget_dict["fast_peakposition"] = FastPeakpositionOptions
+algo_widget_dict["cg"] = CGOptions
+algo_widget_dict["load file"] = FileOptions
