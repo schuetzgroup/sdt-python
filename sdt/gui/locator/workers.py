@@ -1,28 +1,40 @@
 """Classes for the computational intensive stuff
 
 These classes implement the calls to the localization algorithms and related
-things. These are done in separate threads to ensure GUI responsiveness
+things. These are done in separate processes to ensure GUI responsiveness.
+
+Separate processes are used in order to be able to terminate workers
+cleanly if desired (e. g. they take too long and should therefore be aborted).
+Also, this makes the code a lot simpler.
 """
 import numpy as np
 import pandas as pd
 import logging
+import multiprocessing as mp
 
 import pims
 
-import qtpy
-from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QThread,
-                         QModelIndex, QTimer, QWaitCondition, QMutex, QPointF,
+from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QPointF,
                          Qt)
 from qtpy.QtGui import QPolygonF
 
 from .file_chooser import FileListModel
+from . import algorithms
 from ...image_tools import ROI
 
 
 _logger = logging.getLogger(__name__)
 
 
-def applyROI(roiPolygon, data):
+def _polygonToList(poly):
+    return [[r.x(), r.y()] for r in poly]
+
+
+def _listToPolygon(li):
+    return QPolygonF([QPointF(*r) for r in li])
+
+
+def _applyROI(roiPolygon, data):
     if len(roiPolygon) < 2:
         return data
     mask = np.apply_along_axis(
@@ -31,7 +43,7 @@ def applyROI(roiPolygon, data):
     return data[mask]
 
 
-def makeROICropper(roiPolygon, frame):
+def _makeROICropper(roiPolygon, frame):
     if len(roiPolygon) > 2:
         bRect = roiPolygon.boundingRect()
         tl = bRect.topLeft()
@@ -47,98 +59,6 @@ class PreviewWorker(QObject):
 
     Locate peaks in one frame at a time in a background thread
     """
-    class _WorkerThread(QThread):
-        def __init__(self, parent=None):
-            super().__init__(parent)
-            self._waitCondition = QWaitCondition()
-            self._mutex = QMutex()
-            self._frame = np.array([[]])
-            self._options = {}
-            self._roi = QPolygonF()
-            self._locateFunc = \
-                lambda imgs, opts: pd.DataFrame(columns=["x", "y"])
-            self._stop = False
-            self._newJob = False
-            self._busy = False
-
-        def run(self):
-            self._stop = False
-            while True:
-                self._mutex.lock()
-
-                if self._stop:
-                    # stop set to True while we were calling locateFunc
-                    self._setBusy(False)
-                    self._mutex.unlock()
-                    return
-
-                if not self._newJob:
-                    # no new job has arrived yet, wait
-                    self._setBusy(False)
-                    self._waitCondition.wait(self._mutex)
-
-                if self._stop:
-                    # stop set to True while waiting on _waitCondition
-                    self._setBusy(False)
-                    self._mutex.unlock()
-                    return
-
-                self._setBusy(True)
-
-                locateFunc = self._locateFunc
-                frame = self._frame
-                options = self._options
-                roiPolygon = self._roi
-                self._newJob = False
-                self._mutex.unlock()
-
-                # TODO: exception handling
-                # restrict to ROI bounding rectangle for performance gain
-                roiCropper = makeROICropper(roiPolygon, frame)
-                ret = locateFunc(roiCropper(frame), **options)
-
-                # since we cropped the image, we have to add to the coordinates
-                ret[["x", "y"]] += roiCropper.top_left
-
-                # now get only stuff within the polygon
-                ret = applyROI(roiPolygon, ret)
-                self.previewFinished.emit(ret)
-
-        def makeWork(self, frame, options, locateFunc, roi):
-            self._mutex.lock()
-            self._frame = frame
-            self._options = options
-            self._locateFunc = locateFunc
-            self._roi = roi
-            self._newJob = True
-            self._mutex.unlock()
-            self._waitCondition.wakeAll()
-
-        def stop(self):
-            self._mutex.lock()
-            self._stop = True
-            self._mutex.unlock()
-            self._waitCondition.wakeAll()
-
-        def terminate(self):
-            self._setBusy(False)
-            super().terminate()
-
-        previewFinished = pyqtSignal(pd.DataFrame)
-
-        def _setBusy(self, isBusy):
-            if isBusy == self._busy:
-                return
-            self.busyChanged.emit(isBusy)
-            self._busy = isBusy
-
-        busyChanged = pyqtSignal(bool)
-
-        @pyqtProperty(bool, notify=busyChanged,
-                      doc="Indicates whether the worker is busy")
-        def busy(self):
-            return self._busy
-
     def __init__(self, parent=None):
         """Parameters
         -------------
@@ -147,54 +67,15 @@ class PreviewWorker(QObject):
         """
         super().__init__(parent)
         self._enabled = False
+        self._busy = False
 
-        # init background thread related stuff
-        self._thread = self._WorkerThread(self)
-        self._thread.busyChanged.connect(self.busyChanged)
-        self._thread.previewFinished.connect(self.finished)
+        self._newJob = False
+        self._newFrame = np.array([[]])
+        self._newOptions = {}
+        self._newMethod = ""
+        self._newRoi = QPolygonF()
 
-        # timer that signals that stopping didn't work/timed out
-        self._stopTimeoutTimer = QTimer()
-        self._stopTimeoutTimer.setSingleShot(True)
-        self._stopTimeoutTimer.setInterval(1000)
-        self._thread.finished.connect(self._stopTimeoutTimer.stop)
-        if qtpy.PYQT4 or qtpy.PYSIDE:
-            self._thread.terminated.connect(self._stopTimeoutTimer.stop)
-        self._stopTimeoutTimer.timeout.connect(self._terminate)
-
-    def setEnabled(self, enable):
-        if enable == self._enabled:
-            return
-
-        if enable:
-            self._thread.start()
-        else:
-            self._thread.stop()
-            self._stopTimeoutTimer.start()
-
-        self._enabled = enable
-        self.enabledChanged.emit(enable)
-
-    enabledChanged = pyqtSignal(bool)
-
-    @pyqtProperty(bool, fset=setEnabled, notify=enabledChanged,
-                  doc="Indicates whether the worker is enabled")
-    def enabled(self):
-        return self._enabled
-
-    @pyqtSlot()
-    def _terminate(self):
-        _logger.warn("Terminating PreviewWorker background thread.")
-        self._thread.terminate()
-
-    busyChanged = pyqtSignal(bool)
-
-    @pyqtProperty(bool, notify=busyChanged,
-                  doc="Indicates whether the worker is busy")
-    def busy(self):
-        return self._thread.busy
-
-    def makePreview(self, frame, options, locateFunc, roi):
+    def processImage(self, frame, options, method, roi):
         """Start calculating a preview in the background
 
         When finished, the `finished` signal will be emitted with the
@@ -207,80 +88,100 @@ class PreviewWorker(QObject):
         options : dict
             Options to the localization algorithm. Will be passed as keyword
             arguments
-        locateFunc : callable
-            Localization function. Takes `frame` as its first agument and
-            `options` as keyword arguments
+        method : str
+            Name of the localization method (as key to `algorithms.desc`)
+        roi : QPolygonF
+            Region of interest polygon
         """
-        if not self._enabled or frame is None:
+        roi = _polygonToList(roi)
+
+        if self.busy:
+            self._newJob = True
+            self._newFrame = frame
+            self._newOptions = options
+            self._newMethod = method
+            self._newRoi = roi
+        else:
+            self._setBusy(True)
+            self._pool.apply_async(
+                _previewWorkerFunc, (frame, options, method, roi),
+                callback=self._finishedCallback)
+
+    def setEnabled(self, enable):
+        if enable == self._enabled:
             return
 
-        self._thread.makeWork(frame, options, locateFunc, roi)
+        if enable:
+            self._pool = mp.Pool(processes=1)
+        else:
+            self._pool.terminate()
+
+        self._setBusy(False)
+        self._enabled = enable
+        self.enabledChanged.emit(enable)
+
+    enabledChanged = pyqtSignal(bool)
+
+    @pyqtProperty(bool, fset=setEnabled, notify=enabledChanged,
+                  doc="Indicates whether the worker is enabled")
+    def enabled(self):
+        return self._enabled
+
+    def _setBusy(self, isBusy):
+        if isBusy == self._busy:
+            return
+        self.busyChanged.emit(isBusy)
+        self._busy = isBusy
+
+    busyChanged = pyqtSignal(bool)
+
+    @pyqtProperty(bool, notify=busyChanged,
+                  doc="Indicates whether the worker is busy")
+    def busy(self):
+        return self._busy
 
     finished = pyqtSignal(pd.DataFrame)
 
-    @pyqtProperty(int, doc="How long to wait until raising a signal that a"
-                           "stopping attempt timed out")
-    def stopTimeout(self):
-        return self._stopTimeoutTimer.interval()
+    def _finishedCallback(self, result):
+        """Called by the `multiprocessing.pool.Pool` when task is finished
 
-    @stopTimeout.setter
-    def stopTimeout(self, t):
-        self._stopTimeoutTimer.setInterval(t)
+        If new work has surfaced while completing the old task, start that.
+        Otherwise set the `busy` property to False. In any case emit the
+        `finished` signal.
+        """
+        if self._newJob:
+            self._pool.apply_async(
+                _previewWorkerFunc,
+                (self._newFrame, self._newOptions, self._newMethod,
+                 self._newRoi),
+                callback=self._finishedCallback)
+            self._newJob = False
+        else:
+            self._setBusy(False)
+
+        self.finished.emit(result)
+
+
+def _previewWorkerFunc(frame, options, method, roi_list):
+    """Does the heavy lifting in the worker process"""
+    locateFunc = algorithms.desc[method].locate
+    roi = _listToPolygon(roi_list)
+
+    # TODO: exception handling
+    # restrict to ROI bounding rectangle for performance gain
+    roiCropper = _makeROICropper(roi, frame)
+    ret = locateFunc(roiCropper(frame), **options)
+
+    # since we cropped the image, we have to add to the coordinates
+    ret[["x", "y"]] += roiCropper.top_left
+
+    # now get only stuff within the polygon
+    ret = _applyROI(roi, ret)
+    return ret
 
 
 class BatchWorker(QObject):
     """Locate peaks in image series"""
-    class _WorkerThread(QThread):
-        """Object which does the actual work in the background thread
-
-        We reimplement the :py:meth:`run` method since otherwise it is not
-        possible to call `terminate` on the thread without Qt complaining.
-        """
-        def __init__(self, parent=None):
-            super().__init__(parent)
-            self.busy = False
-            self.model = None
-            self.options = {}
-            self.frameRange = (0, 0)
-            self.roi = QPolygonF()
-            self.batchFunc = lambda imgs, opts: pd.DataFrame()
-            self.stop = False
-
-        def run(self):
-            self.stop = False
-            for i in range(self.model.rowCount()):
-                if self.stop:
-                    return
-
-                idx = self.model.index(i)
-                fname = idx.data(FileListModel.FileNameRole)
-                frames = pims.open(fname)
-                start = self.frameRange[0]
-                end = self.frameRange[1]
-                if end < 0:
-                    end = len(frames)
-
-                self.fileStarted.emit(idx)
-                try:
-                    # restrict to ROI bounding rectangle for performance gain
-                    roiCropper = makeROICropper(self.roi, frames[start])
-                    data = self.batchFunc(
-                        roiCropper(frames)[start:end], **self.options)
-                    # since we cropped the image, we have to
-                    # add to the coordinates
-                    data[["x", "y"]] += roiCropper.top_left
-                    # now get only stuff within the polygon
-                    data = applyROI(self.roi, data)
-                except Exception:
-                    self.fileError.emit(idx)
-                    continue
-
-                self.fileFinished.emit(idx, data, self.options)
-
-        fileStarted = pyqtSignal(QModelIndex)
-        fileFinished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
-        fileError = pyqtSignal(QModelIndex)
-
     def __init__(self, parent=None):
         """Parameters
         -------------
@@ -288,64 +189,90 @@ class BatchWorker(QObject):
             parent QObject, defaults to None
         """
         super().__init__(parent)
+        self._newPool()
 
-        # init background thread related stuff
-        self._thread = self._WorkerThread(self)
-        self._thread.fileStarted.connect(self.fileStarted)
-        self._thread.fileFinished.connect(self.fileFinished)
-        self._thread.fileError.connect(self.fileError)
-        self._thread.started.connect(self._threadStateChanged)
-        self._thread.finished.connect(self._threadStateChanged)
-        if qtpy.PYQT4 or qtpy.PYSIDE:
-            self._thread.terminated.connect(self._threadStateChanged)
+    def processFiles(self, model, frameRange, options, method, roi):
+        """Locate peaks in all files in `model`
 
-        # timer that signals that stopping didn't work/timed out
-        self._stopTimeoutTimer = QTimer()
-        self._stopTimeoutTimer.setSingleShot(True)
-        self._stopTimeoutTimer.setInterval(5000)
-        self._thread.finished.connect(self._stopTimeoutTimer.stop)
-        if qtpy.PYQT4 or qtpy.PYSIDE:
-            self._thread.terminated.connect(self._stopTimeoutTimer.stop)
-        self._stopTimeoutTimer.timeout.connect(self._terminate)
+        When a file is finished, the `fileFinished` signal is emitted with
+        the results (row index, localization data, options).
 
-    def processFiles(self, model, frameRange, options, batchFunc, roi):
-        self._thread.model = model
-        self._thread.frameRange = frameRange
-        self._thread.options = options
-        self._thread.batchFunc = batchFunc
-        self._thread.roi = roi
-        self._thread.start()
+        Parameters
+        ----------
+        model : file_chooser.FileListModel
+            The files with image data
+        frameRange : tuple of int, len 2
+            Start and end frame numbers. If the end frame is negative, use the
+            last frame in the file.
+        options : dict
+            Arguments to pass to the localization function
+        method : str
+            Name of the localization method (as key to `algorithms.desc`)
+        roi : QPolygonF
+            Region of interest polygon
+        """
+        for i in range(model.rowCount()):
+            idx = model.index(i)
+            fname = idx.data(FileListModel.FileNameRole)
+
+            # cannot pass QPolygonF directly via apply_async
+            roi_list = _polygonToList(roi)
+
+            self._pool.apply_async(
+                _batchWorkerFunc,
+                (i, fname, frameRange, options, method, roi_list),
+                callback=self._finishedCallback)
 
     @pyqtSlot()
     def stop(self):
-        self._thread.stop = True
-        self._stopTimeoutTimer.start()
+        """Terminate the worker
 
-    @pyqtSlot()
-    def _terminate(self):
-        _logger.warn("Terminating BatchWorker background thread.")
-        self._thread.terminate()
+        Immediately terminate the worker and start a new one
+        """
+        self._pool.terminate()
+        self._newPool()
 
-    @pyqtSlot()
-    def _threadStateChanged(self):
-        self.busyChanged.emit(self._thread.isRunning())
+    fileFinished = pyqtSignal(int, pd.DataFrame, dict)
+    fileError = pyqtSignal(int, Exception)
 
-    busyChanged = pyqtSignal(bool)
+    def _newPool(self):
+        """Start a new worker pool"""
+        self._pool = mp.Pool(processes=1)
 
-    @pyqtProperty(bool, notify=busyChanged,
-                  doc="Indicates whether the worker is busy")
-    def busy(self):
-        return self._thread.isRunning()
+    def _finishedCallback(self, result):
+        """Called by the `multiprocessing.pool.Pool` when task is finished
 
-    @pyqtProperty(int, doc="How long to wait until raising a signal that a"
-                           "stopping attempt timed out")
-    def stopTimeout(self):
-        return self._stopTimeoutTimer.interval()
+        Emit the `fileError` signal if there was an error (then result is a
+        tuple of len 2: model index, Exception instance) or the
+        `fileFinished` signal if everything went fine.
+        """
+        if len(result) == 2:
+            # error
+            idx, e = result
+            self.fileError.emit(idx, e)
+        else:
+            idx, data, options = result
+            self.fileFinished.emit(idx, data, options)
 
-    @stopTimeout.setter
-    def stopTimeout(self, t):
-        self._stopTimeoutTimer.setInterval(t)
 
-    fileStarted = pyqtSignal(QModelIndex)
-    fileFinished = pyqtSignal(QModelIndex, pd.DataFrame, dict)
-    fileError = pyqtSignal(QModelIndex)
+def _batchWorkerFunc(idx, fileName, frameRange, options, method, roi_list):
+    """Does the heavy lifting in the worker process"""
+    try:
+        frames = pims.open(fileName)
+        start = frameRange[0]
+        end = frameRange[1]
+        if end < 0:
+            end = len(frames)
+
+        roi = _listToPolygon(roi_list)
+        roiCropper = _makeROICropper(roi, frames[start])
+
+        batchFunc = algorithms.desc[method].batch
+        data = batchFunc(roiCropper(frames)[start:end], **options)
+
+        data[["x", "y"]] += roiCropper.top_left
+        data = _applyROI(roi, data)
+    except Exception as e:
+        return idx, e
+
+    return idx, data, options

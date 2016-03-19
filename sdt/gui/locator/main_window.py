@@ -167,9 +167,6 @@ class MainWindow(QMainWindow):
 
         self._batchWorker.fileFinished.connect(inc_progress)
         self._batchWorker.fileError.connect(inc_progress)
-        self._batchWorker.fileStarted.connect(
-            lambda idx: self._progressDialog.setFilename(
-                idx.data(Qt.DisplayRole)))
         self._progressDialog.canceled.connect(self._batchWorker.stop)
 
         # Some things to keep track of
@@ -395,8 +392,8 @@ class MainWindow(QMainWindow):
                                        optWid.options, optWid.method,
                                        self._roiPolygon)
 
-    @pyqtSlot(QModelIndex, pd.DataFrame, dict)
-    def _locateRunnerFinished(self, index, data, options):
+    @pyqtSlot(int, pd.DataFrame, dict)
+    def _locateRunnerFinished(self, idx, data, options):
         """A LocateRunner finished locating all peaks in a sequence
 
         Save data and metadata to a file with the same name as the image file,
@@ -412,6 +409,7 @@ class MainWindow(QMainWindow):
             Options used for locating peaks
         """
         optsWidget = self._locOptionsDock.widget()
+        index = self._fileModel.index(idx)
         self._fileModel.setData(index, data, FileListModel.LocDataRole)
         self._fileModel.setData(index, options, FileListModel.LocOptionsRole)
         self._fileModel.setData(index, optsWidget.method,
@@ -434,8 +432,8 @@ class MainWindow(QMainWindow):
         save(saveFileName, data)  # sdt.data.save
         self._saveMetadata(metaFileName)
 
-    @pyqtSlot(QModelIndex)
-    def _locateRunnerError(self, index):
+    @pyqtSlot(int, Exception)
+    def _locateRunnerError(self, idx, e):
         """A LocateRunner encountered an error
 
         Show an error message box.
@@ -445,7 +443,8 @@ class MainWindow(QMainWindow):
         index : QModelIndex
             Index (in the file list model) of the file that caused the error
         """
+        index = self._fileModel.index(idx)
         QMessageBox.critical(
             self, self.tr("Localization error"),
-            self.tr("Failed to locate features in {}".format(
-                index.data(file_chooser.FileListModel.FileNameRole))))
+            self.tr("Failed to locate features in {}\n\n{}".format(
+                index.data(file_chooser.FileListModel.FileNameRole), str(e))))
