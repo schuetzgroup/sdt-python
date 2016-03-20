@@ -50,6 +50,8 @@ class PreviewWorker(QObject):
         self._newMethod = ""
         self._newRoi = QPolygonF()
 
+        self.finished.connect(self._finishedSlot)
+
     def processImage(self, frame, options, method, roi):
         """Start calculating a preview in the background
 
@@ -122,9 +124,18 @@ class PreviewWorker(QObject):
     def _finishedCallback(self, result):
         """Called by the `multiprocessing.pool.Pool` when task is finished
 
+        This runs in a separate thread. Just emit the finished signal, the
+        rest will be done in the `_finishedSlot` in the main thread to avoid
+        race conditions.
+        """
+        self.finished.emit(result)
+
+    @pyqtSlot()
+    def _finishedSlot(self):
+        """Called when a job was finished
+
         If new work has surfaced while completing the old task, start that.
-        Otherwise set the `busy` property to False. In any case emit the
-        `finished` signal.
+        Otherwise set the `busy` property to False
         """
         if self._newJob:
             self._pool.apply_async(
@@ -135,8 +146,6 @@ class PreviewWorker(QObject):
             self._newJob = False
         else:
             self._setBusy(False)
-
-        self.finished.emit(result)
 
     def _errorCallback(self, err):
         self.error.emit(err)
