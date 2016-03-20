@@ -250,7 +250,7 @@ class MainWindow(QMainWindow):
         curFrameNo = self._viewer.currentFrameNumber
 
         if (file_method == cur_method and file_opts == cur_opts and
-                self._roiPolygon == file_roi and
+                (self._roiPolygon == file_roi or cur_method == "load file") and
                 file_frameRange[0] <= curFrameNo < file_frameRange[1]):
             data = self._currentFile.data(FileListModel.LocDataRole)
             data = data[data["frame"] == curFrameNo]
@@ -279,6 +279,8 @@ class MainWindow(QMainWindow):
                                     FileListModel.LocOptionsRole)
             self._fileModel.setData(modelIdx, cur_method,
                                     FileListModel.LocMethodRole)
+            self._fileModel.setData(modelIdx, (-np.inf, np.inf),
+                                    FileListModel.FrameRangeRole)
             # call recursively to update viewer
             self._makePreviewWorkerWork()
             return
