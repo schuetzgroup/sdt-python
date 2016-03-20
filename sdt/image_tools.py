@@ -173,6 +173,8 @@ class PathROI(object):
         Extra space around the path. Does not affect the size of the a image,
         which is just the size of the bounding box of the `polygon`, without
         `radius`. Read-only
+    image_mask : numpy.ndarray, dtype=bool
+        Boolean pixel mask of the path. Read-only
     """
     def __init__(self, path, radius=0.):
         """Parameters
@@ -216,6 +218,10 @@ class PathROI(object):
     @property
     def radius(self):
         return self._radius
+
+    @property
+    def image_mask(self):
+        return self._img_mask
 
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
                  fill_value=0):
