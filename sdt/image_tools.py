@@ -10,12 +10,8 @@ import json
 import numpy as np
 import pandas as pd
 import tifffile
+from slicerator import pipeline
 
-try:
-    from pims import pipeline
-except ImportError:
-    def pipeline(func):
-        return func
 
 pd.options.mode.chained_assignment = None  # Get rid of the warning
 
