@@ -14,13 +14,12 @@ import multiprocessing as mp
 
 import pims
 
-from qtpy.QtCore import (QObject, pyqtSignal, pyqtSlot, pyqtProperty, QPointF,
-                         Qt)
+from qtpy.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
 from qtpy.QtGui import QPolygonF
 
 from .file_chooser import FileListModel
 from . import algorithms
-from ...image_tools import ROI
+from ...image_tools import ROI, PathROI
 
 
 _logger = logging.getLogger(__name__)
@@ -28,30 +27,6 @@ _logger = logging.getLogger(__name__)
 
 def _polygonToList(poly):
     return [[r.x(), r.y()] for r in poly]
-
-
-def _listToPolygon(li):
-    return QPolygonF([QPointF(*r) for r in li])
-
-
-def _applyROI(roiPolygon, data):
-    if len(roiPolygon) < 2:
-        return data
-    mask = np.apply_along_axis(
-        lambda pos: roiPolygon.containsPoint(QPointF(*pos), Qt.OddEvenFill),
-        1, data[["x", "y"]])
-    return data[mask]
-
-
-def _makeROICropper(roiPolygon, frame):
-    if len(roiPolygon) > 2:
-        bRect = roiPolygon.boundingRect()
-        tl = bRect.topLeft()
-        br = bRect.bottomRight()
-        return ROI((int(tl.x()), int(tl.y())),
-                   (int(br.x()+0.5), int(br.y()+0.5)))
-    else:
-        return ROI((0, 0), frame.shape[::-1])
 
 
 class PreviewWorker(QObject):
@@ -165,19 +140,20 @@ class PreviewWorker(QObject):
 def _previewWorkerFunc(frame, options, method, roi_list):
     """Does the heavy lifting in the worker process"""
     locateFunc = algorithms.desc[method].locate
-    roi = _listToPolygon(roi_list)
 
-    # TODO: exception handling
-    # restrict to ROI bounding rectangle for performance gain
-    roiCropper = _makeROICropper(roi, frame)
-    ret = locateFunc(roiCropper(frame), **options)
+    if len(roi_list) > 2:
+        polyRoi = PathROI(roi_list, no_image=True)
 
-    # since we cropped the image, we have to add to the coordinates
-    ret[["x", "y"]] += roiCropper.top_left
+        # restrict to ROI bounding rectangle for performance gain
+        cropRoi = ROI(*polyRoi.bounding_rect)
+        ret = locateFunc(cropRoi(frame), **options)
 
-    # now get only stuff within the polygon
-    ret = _applyROI(roi, ret)
-    return ret
+        # since we cropped the image, we have to add to the coordinates
+        ret[["x", "y"]] += cropRoi.top_left
+        # now get only stuff within the polygon
+        return polyRoi(ret, reset_origin=False)
+    else:
+        return locateFunc(frame, **options)
 
 
 class BatchWorker(QObject):
@@ -258,20 +234,27 @@ class BatchWorker(QObject):
 def _batchWorkerFunc(idx, fileName, frameRange, options, method, roi_list):
     """Does the heavy lifting in the worker process"""
     try:
+        batchFunc = algorithms.desc[method].batch
+
         frames = pims.open(fileName)
         start = frameRange[0]
         end = frameRange[1]
         if end < 0:
             end = len(frames)
 
-        roi = _listToPolygon(roi_list)
-        roiCropper = _makeROICropper(roi, frames[start])
+        if len(roi_list) > 2:
+            polyRoi = PathROI(roi_list, no_image=True)
 
-        batchFunc = algorithms.desc[method].batch
-        data = batchFunc(roiCropper(frames)[start:end], **options)
+            # restrict to ROI bounding rectangle for performance gain
+            cropRoi = ROI(*polyRoi.bounding_rect)
+            data = batchFunc(cropRoi(frames)[start:end], **options)
 
-        data[["x", "y"]] += roiCropper.top_left
-        data = _applyROI(roi, data)
+            # since we cropped the image, we have to add to the coordinates
+            data[["x", "y"]] += cropRoi.top_left
+            # now get only stuff within the polygon
+            data = polyRoi(data, reset_origin=False)
+        else:
+            data = batchFunc(frames[start:end], **options)
     except Exception as e:
         return idx, e
 
