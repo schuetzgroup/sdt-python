@@ -17,7 +17,7 @@ except ImportError:
     def pipeline(func):
         return func
 
-pd.options.mode.chained_assignment = None #Get rid of the warning
+pd.options.mode.chained_assignment = None  # Get rid of the warning
 
 _logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ def save_as_tiff(frames, filename):
         for f in frames:
             desc = None
             if hasattr(f, "metadata") and isinstance(f.metadata, dict):
-                #Some metadata fields need to be made serializable
+                # Some metadata fields need to be made serializable
                 md = f.metadata.copy()
                 with suppress(Exception):
                     md["DateTime"] = md["DateTime"].isoformat()
@@ -142,10 +142,10 @@ class ROI(object):
         if isinstance(data, pd.DataFrame):
             x = pos_columns[0]
             y = pos_columns[1]
-            roi_data = data[(data[x] > self.top_left[0])
-                            & (data[x] < self.bottom_right[0])
-                            & (data[y] > self.top_left[1])
-                            & (data[y] < self.bottom_right[1])]
+            roi_data = data[(data[x] > self.top_left[0]) &
+                            (data[x] < self.bottom_right[0]) &
+                            (data[y] > self.top_left[1]) &
+                            (data[y] < self.bottom_right[1])]
             if reset_origin:
                 roi_data.loc[:, x] -= self.top_left[0]
                 roi_data.loc[:, y] -= self.top_left[1]
