@@ -39,8 +39,7 @@
           </property>
           <property name="icon">
            <iconset theme="document-open">
-            <normaloff/>
-           </iconset>
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -238,8 +237,7 @@
               </property>
               <property name="icon">
                <iconset theme="document-open">
-                <normaloff/>
-               </iconset>
+                <normaloff>.</normaloff>.</iconset>
               </property>
              </widget>
             </item>
@@ -286,28 +284,8 @@
      </property>
      <layout class="QVBoxLayout" name="trafoLayout">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QLabel" name="label_12">
-          <property name="text">
-           <string>Relative tolerance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="rTolBox">
-          <property name="maximum">
-           <double>100.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.010000000000000</double>
-          </property>
-          <property name="value">
-           <double>0.050000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="2">
          <spacer name="horizontalSpacer_4">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -320,17 +298,77 @@
           </property>
          </spacer>
         </item>
-        <item>
+        <item row="0" column="4">
+         <widget class="QDoubleSpinBox" name="aTolBox">
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
          <widget class="QLabel" name="label_13">
           <property name="text">
            <string>Absolute tolerance</string>
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="aTolBox">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>Relative tolerance</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="rTolBox">
           <property name="maximum">
-           <double>1000.000000000000000</double>
+           <double>100.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.050000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>Score cutoff</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Ambiguity factor</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="cutoffBox">
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.500000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QDoubleSpinBox" name="ambiguityBox">
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.800000000000000</double>
           </property>
          </widget>
         </item>
@@ -368,8 +406,7 @@
        </property>
        <property name="icon">
         <iconset theme="document-save-as">
-         <normaloff/>
-        </iconset>
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextBesideIcon</enum>

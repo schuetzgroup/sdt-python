@@ -3,11 +3,20 @@ import sys
 
 import pandas as pd
 
-from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg \
-    as FigureCanvas
-from matplotlib.figure import Figure
+import qtpy
+import qtpy.compat
+from qtpy import uic
+from qtpy.QtWidgets import QApplication, QFileDialog, QMessageBox
+
+import matplotlib as mpl
+if qtpy.PYQT4:
+    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg \
+        as FigureCanvas
+else:
+    mpl.use("Qt5Agg")
+    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg \
+        as FigureCanvas
+import matplotlib.pyplot as plt
 
 from .. import data
 from .. import image_tools
@@ -37,47 +46,46 @@ class ChromaticDialog(guiBase):
         self._ui.locFileEdit.textChanged.connect(self._locFileChanged)
         self._locFileChanged()
 
-        self._figure = Figure()
+        grid_kw = dict(width_ratios=(1, 2))
+        self._figure, self._axes = plt.subplots(1, 2, gridspec_kw=grid_kw)
         self._canvas = FigureCanvas(self._figure)
         self._ui.trafoLayout.addWidget(self._canvas)
-        self._axes = (self._figure.add_subplot(121),
-                        self._figure.add_subplot(122))
 
         self._corrector = None
 
     def _getLocFile(self, editWidget):
         """Choose localization file button slot"""
-        fname, dummy = QFileDialog.getOpenFileName(
+        fname, dummy = qtpy.compat.getopenfilename(
             self, "Open localization file", self._filePath,
             "Localization data (*.h5 *.mat *.pkc *.pks)")
         if not fname:
             return
-        self._filePath = os.path.abspath(fname)
+        self._filePath = os.path.dirname(os.path.abspath(fname))
         editWidget.setText(fname)
 
     def _locFileChanged(self):
         """Localization file text edit changed"""
-        self._ui.inputTabWidget.setTabEnabled(2,
-            os.path.splitext(self._ui.locFileEdit.text())[1] == ".pkc")
+        self._ui.inputTabWidget.setTabEnabled(
+            2, os.path.splitext(self._ui.locFileEdit.text())[1] == ".pkc")
 
     def _save(self):
         """Save file button slot"""
-        fname, dummy = QFileDialog.getSaveFileName(
+        fname, _ = qtpy.compat.getsavefilename(
             self, "Save file", self._filePath,
-            "HDF5(*.h5);;wrp(*.wrp)")
+            "numpy (*.npz);;MATLAB (*.mat)")
         if not fname:
             return
         self._filePath = os.path.abspath(fname)
         fext = os.path.splitext(fname)[1]
 
-        if fext == ".h5":
-            self._corrector.to_hdf(fname)
-        elif fext == ".wrp":
-            self._corrector.to_wrp(fname)
+        if fext == ".npz":
+            self._corrector.save(fname, fmt="npz")
+        elif fext == ".mat":
+            self._corrector.save(fname, fmt="mat")
         else:
             QMessageBox.critical(self, "File format error",
-                                    'Could not determine file format from '
-                                    'extension "{}".'.format(fext))
+                                 'Could not determine file format from '
+                                 'extension "{}".'.format(fext))
 
     def _load_features(self, fname):
         """Helper function to load features from data files"""
@@ -92,7 +100,7 @@ class ChromaticDialog(guiBase):
 
         tabi = self._ui.inputTabWidget.currentIndex()
         if tabi == 0:
-            #split one-color
+            # split one-color
             roi_left = image_tools.ROI(
                 (self._ui.leftRoiTlX.value(), self._ui.leftRoiTlY.value()),
                 (self._ui.leftRoiBrX.value(), self._ui.leftRoiBrY.value()))
@@ -102,28 +110,34 @@ class ChromaticDialog(guiBase):
             feat2 = roi_right(feat1)
             feat1 = roi_left(feat1)
         elif tabi == 1:
-            #two one-color
+            # two one-color
             feat2 = self._load_features(self._ui.locFile2Edit.text())
         elif tabi == 2:
-            #two-color
+            # two-color
             feat2 = data.load_pkmatrix(
                 self._ui.locFileEdit.text(), green=True)
 
         if feat1.empty:
             QMessageBox.critical(self, "Read error",
-                                    "Could not read channel 1 data.")
+                                 "Could not read channel 1 data.")
             return
         if feat2.empty:
             QMessageBox.critical(self, "Read error",
-                                    "Could not read channel 2 data.")
+                                 "Could not read channel 2 data.")
             return
 
-        self._corrector = chromatic.Corrector(feat1, feat2)
-        self._corrector.determine_parameters(
-            self._ui.rTolBox.value(), self._ui.aTolBox.value())
-        for a in self._axes:
-            a.cla()
-        self._corrector.test(self._axes)
+        try:
+            self._corrector = chromatic.Corrector(feat1, feat2)
+            self._corrector.determine_parameters(
+                self._ui.rTolBox.value(), self._ui.aTolBox.value(),
+                self._ui.cutoffBox.value(), self._ui.ambiguityBox.value())
+            for a in self._axes:
+                a.cla()
+            self._corrector.test(self._axes)
+        except Exception:
+            for a in self._axes:
+                a.cla()
+
         self._canvas.draw()
 
 
