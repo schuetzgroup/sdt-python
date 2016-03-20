@@ -175,18 +175,24 @@ class PathROI(object):
         `radius`. Read-only
     image_mask : numpy.ndarray, dtype=bool
         Boolean pixel mask of the path. Read-only
+    bounding_rect : numpy.ndarray, shape=(2, 2), dtype=int
+        Integer bounding rectangle of the path
     """
-    def __init__(self, path, radius=0.):
+    def __init__(self, path, radius=0., no_image=False):
         """Parameters
         ----------
         path : list of vertices or matplotlib.path.Path
             Description of the path. Either a list of vertices that will
             be used to construct a :py:class:`matplotlib.path.Path` or a
             :py:class:`matplotlib.path.Path` instance.
-        radius : float
+        radius : float, optional
             Add extra space around the path. This, however, does not
             affect the size of the cropped image, which is just the size of
-            the bounding box of the `polygon`, without `radius`.
+            the bounding box of the `polygon`, without `radius`. Defaults to 0
+        no_image : bool, optional
+            If True, don't compute the image mask (which is quite time
+            consuming). This implies that this instance only works for
+            DataFrames. Defaults to False.
         """
         if isinstance(path, mpl.path.Path):
             self._path = path.cleaned()
@@ -195,11 +201,17 @@ class PathROI(object):
 
         self._radius = radius
 
-        # Make ROI polygon, but only for bounding box of the polygon, for
-        # performance reasons
-        # get bounding box
+        # calculate bounding box
         bb = self._path.get_extents()
         self._top_left, self._bottom_right = bb.get_points()
+        self._top_left = np.floor(self._top_left).astype(np.int)
+        self._bottom_right = np.ceil(self._bottom_right).astype(np.int)
+
+        if no_image:
+            return
+
+        # Make ROI polygon, but only for bounding box of the polygon, for
+        # performance reasons
         mask_size = self._bottom_right - self._top_left
         # move polygon to the top left, subtract another half pixel so that
         # coordinates are pixel centers
@@ -222,6 +234,10 @@ class PathROI(object):
     @property
     def image_mask(self):
         return self._img_mask
+
+    @property
+    def bounding_rect(self):
+        return np.array([self._top_left, self._bottom_right])
 
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
                  fill_value=0):
@@ -260,11 +276,9 @@ class PathROI(object):
         if isinstance(data, pd.DataFrame):
             roi_mask = self._path.contains_points(data[pos_columns])
             roi_data = data[roi_mask]
-
             if reset_origin:
                 roi_data.loc[:, pos_columns[0]] -= self._top_left[0]
                 roi_data.loc[:, pos_columns[1]] -= self._top_left[1]
-
             return roi_data
 
         else:
@@ -273,7 +287,6 @@ class PathROI(object):
                 img = img.T
                 img = img[self._top_left[0]:self._bottom_right[0],
                           self._top_left[1]:self._bottom_right[1]]
-                img *= self._img_mask
                 img[~self._img_mask] = fill_value
                 return img.T
             return crop(data)
