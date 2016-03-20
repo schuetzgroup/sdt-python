@@ -80,7 +80,8 @@ class PreviewWorker(QObject):
             self._setBusy(True)
             self._pool.apply_async(
                 _previewWorkerFunc, (frame, options, method, roi),
-                callback=self._finishedCallback)
+                callback=self._finishedCallback,
+                error_callback=self._errorCallback)
 
     def setEnabled(self, enable):
         if enable == self._enabled:
@@ -116,6 +117,7 @@ class PreviewWorker(QObject):
         return self._busy
 
     finished = pyqtSignal(pd.DataFrame)
+    error = pyqtSignal(Exception)
 
     def _finishedCallback(self, result):
         """Called by the `multiprocessing.pool.Pool` when task is finished
@@ -135,6 +137,9 @@ class PreviewWorker(QObject):
             self._setBusy(False)
 
         self.finished.emit(result)
+
+    def _errorCallback(self, err):
+        self.error.emit(err)
 
 
 def _previewWorkerFunc(frame, options, method, roi_list):

@@ -5,7 +5,6 @@ this is called as a script (__main__)
 """
 import os
 import collections
-import types
 
 import yaml
 import numpy as np
@@ -29,7 +28,6 @@ from . import locate_saver
 from . import batch_progress
 from . import workers
 from ...data import save, load
-from . import algorithms
 
 
 def yaml_dict_representer(dumper, data):
@@ -151,6 +149,7 @@ class MainWindow(QMainWindow):
         optionsWidget.optionsChanged.connect(self._makePreviewWorkerWork)
         self._viewer.currentFrameChanged.connect(self._makePreviewWorkerWork)
         self._previewWorker.finished.connect(self._previewFinished)
+        self._previewWorker.error.connect(self._previewError)
         self._previewWorker.enabled = True
         self._previewWorker.busyChanged.connect(self._setBusyCursor)
 
@@ -323,6 +322,12 @@ class MainWindow(QMainWindow):
         self._currentLocData = data
         self._locFilterDock.widget().setVariables(data.columns.values.tolist())
         self._filterLocalizations()
+
+    @pyqtSlot(Exception)
+    def _previewError(self, err):
+        QMessageBox.critical(
+            self, self.tr("Localization error"),
+            self.tr("Failed to create preview.\n\n{}").format(err))
 
     @pyqtSlot()
     def _filterLocalizations(self):
