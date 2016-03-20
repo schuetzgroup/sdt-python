@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-"""Various tools for dealing with microscope images"""
-
+"""Various tools for dealing with microscopy images"""
 import logging
 from contextlib import suppress
 from collections import OrderedDict
@@ -68,10 +66,10 @@ def save_as_tiff(frames, filename):
 
 
 class ROI(object):
-    """Region of interest in a picture
+    """Rectangular region of interest in a picture
 
-    This class represents a region of interest. It can crop images or restrict
-    data (such as feature localization data) to a specified region.
+    This class represents a rectangular region of interest. It can crop images
+    or restrict data (such as feature localization data) to a specified region.
 
     At the moment, this works only for single channel (i. e. grayscale) images.
 
@@ -97,9 +95,7 @@ class ROI(object):
     (64, 64)
     """
     def __init__(self, top_left, bottom_right):
-        """Initialze the top_left and bottom_right attributes.
-
-        Parameters
+        """Parameters
         ----------
         top_left : tuple of int
             x and y coordinates of the top-left corner. Pixels with coordinates
@@ -114,13 +110,15 @@ class ROI(object):
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True):
         """Restrict data to the region of interest.
 
+        If the input is localization data, it is filtered depending on whether
+        the coordinates are within the rectangle. If it is image data, it is
+        cropped to the rectangle.
+
         Parameters
         ----------
         data : pandas.DataFrame or pims.FramesSequence or array-like
-            data to be processed. If a pandas.Dataframe, select only those
-            lines with coordinate values within the ROI. Otherwise,
-            `pims.pipeline` is used to crop image data. This requires pims
-            version > 0.2.2.
+            Data to be processed. If a pandas.Dataframe, select only those
+            lines with coordinate values within the ROI. Crop the image.
         pos_columns : list of str, optional
             The names of the columns of the x and y coordinates of features.
             This only applies to DataFrame `data` arguments. Defaults to
@@ -132,7 +130,7 @@ class ROI(object):
 
         Returns
         -------
-        pandas.DataFrame or pims.SliceableIterable or numpy.array
+        pandas.DataFrame or slicerator.Slicerator or numpy.array
             Data restricted to the ROI represented by this class.
         """
         if isinstance(data, pd.DataFrame):
