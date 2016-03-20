@@ -22,6 +22,7 @@ requirements:
         - pyyaml
         - pims >=0.3.0
         - slicerator >=0.9.7
+        - matplotlib
         - lmfit
 
     run:
