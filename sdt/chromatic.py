@@ -278,7 +278,8 @@ class Corrector(object):
         ax[0].scatter(np.ones(len(diff2)), diff2, marker="+", color="green")
         ax[0].set_xticks([0, 1])
         ax[0].set_xticklabels([r"$1\rightarrow 2$", r"$2\rightarrow 1$"])
-        ax[0].set_xlim([-0.5, 1.5])
+        ax[0].set_xlim(-0.5, 1.5)
+        ax[0].set_ylim(0)
         ax[0].set_title("Error")
 
         ax[1].scatter(c1_corr[self.pos_columns[0]],
