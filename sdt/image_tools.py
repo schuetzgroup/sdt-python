@@ -264,9 +264,9 @@ class PathROI(object):
             If True, the top-left corner coordinates of the path's bounding
             rectangle will be subtracted off all feature coordinates, i. e.
             the top-left corner will be the new origin. Defaults to True.
-        fill_value : number, optional
-            Fill value for pixels that are not contained in the path. Defaults
-            to 0
+        fill_value : "mean" or number, optional
+            Fill value for pixels that are not contained in the path. If
+            "mean", use the mean of the array in the ROI. Defaults to 0
 
         Returns
         -------
@@ -287,6 +287,10 @@ class PathROI(object):
                 img = img.T
                 img = img[self._top_left[0]:self._bottom_right[0],
                           self._top_left[1]:self._bottom_right[1]]
-                img[~self._img_mask] = fill_value
+                if isinstance(fill_value, str):
+                    fv = np.mean(img[self._img_mask])
+                else:
+                    fv = fill_value
+                img[~self._img_mask] = fv
                 return img.T
             return crop(data)
