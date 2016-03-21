@@ -7,6 +7,7 @@ import pandas as pd
 from . import algorithm
 from .algorithm import col_nums
 from .. import make_batch
+from . import restrict_roi
 
 
 def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
@@ -68,5 +69,7 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
     return df
 
 
-# Threaded version makes it slower
+# Multihreaded version makes it slower, use the single threaded one
 batch = make_batch.make_batch(locate)
+locate_roi = restrict_roi.restrict_roi(locate)
+batch_roi = restrict_roi.restrict_roi(batch)

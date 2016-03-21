@@ -8,4 +8,4 @@ http://people.umass.edu/kilfoil/tools.php
     for colloidal studies", Journal of colloid and interface science,
     Elsevier, 1996, 179, 298-310
 """
-from .api import locate, batch
+from .api import locate, locate_roi, batch, batch_roi
