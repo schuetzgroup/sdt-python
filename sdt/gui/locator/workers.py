@@ -153,21 +153,13 @@ class PreviewWorker(QObject):
 
 def _previewWorkerFunc(frame, options, method, roi_list):
     """Does the heavy lifting in the worker process"""
-    locateFunc = algorithms.desc[method].locate
+    algoDesc = algorithms.desc[method]
 
     if len(roi_list) > 2:
-        polyRoi = PathROI(roi_list, no_image=True)
-
-        # restrict to ROI bounding rectangle for performance gain
-        cropRoi = ROI(*polyRoi.bounding_rect)
-        ret = locateFunc(cropRoi(frame), **options)
-
-        # since we cropped the image, we have to add to the coordinates
-        ret[["x", "y"]] += cropRoi.top_left
-        # now get only stuff within the polygon
-        return polyRoi(ret, reset_origin=False)
+        return algoDesc.locate_roi(frame, roi_list, reset_origin=False,
+                                   **options)
     else:
-        return locateFunc(frame, **options)
+        return algoDesc.locate(frame, **options)
 
 
 class BatchWorker(QObject):
@@ -248,7 +240,7 @@ class BatchWorker(QObject):
 def _batchWorkerFunc(idx, fileName, frameRange, options, method, roi_list):
     """Does the heavy lifting in the worker process"""
     try:
-        batchFunc = algorithms.desc[method].batch
+        algoDesc = algorithms.desc[method]
 
         frames = pims.open(fileName)
         start = frameRange[0]
@@ -257,18 +249,10 @@ def _batchWorkerFunc(idx, fileName, frameRange, options, method, roi_list):
             end = len(frames)
 
         if len(roi_list) > 2:
-            polyRoi = PathROI(roi_list, no_image=True)
-
-            # restrict to ROI bounding rectangle for performance gain
-            cropRoi = ROI(*polyRoi.bounding_rect)
-            data = batchFunc(cropRoi(frames)[start:end], **options)
-
-            # since we cropped the image, we have to add to the coordinates
-            data[["x", "y"]] += cropRoi.top_left
-            # now get only stuff within the polygon
-            data = polyRoi(data, reset_origin=False)
+            data = algoDesc.batch_roi(frames[start:end], roi_list,
+                                      reset_origin=False, **options)
         else:
-            data = batchFunc(frames[start:end], **options)
+            data = algoDesc.batch(frames[start:end], **options)
     except Exception as e:
         return idx, e
 
