@@ -4,7 +4,6 @@ Provides the standard :py:func:`locate` and :py:func:`batch` functions.
 """
 import warnings
 import multiprocessing
-import concurrent.futures
 
 import numpy as np
 import pandas as pd
@@ -14,6 +13,7 @@ from . import fit_impl
 from . import find
 from . import algorithm
 from .. import make_batch
+from .. import restrict_roi
 
 numba_available = False
 try:
@@ -123,3 +123,5 @@ def locate(raw_image, radius, model, threshold, engine="numba",
 
 
 batch = make_batch.make_batch_threaded(locate)
+locate_roi = restrict_roi.restrict_roi(locate)
+batch_roi = restrict_roi.restrict_roi(batch)
