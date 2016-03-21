@@ -26,29 +26,29 @@ def make_batch(locate_func):
     Returns
     -------
     callable
-        Batch version of ``locate_func``
+        Batch version of `locate_func`
     """
     def batch(frames, *args, **kwargs):
-        """Process an image stack using :py:func:`locate`
+        """Process an image stack using :py:func:`{fname}`
 
-        Apply :py:func:`locate` to each image in ``frames``. The image is
+        Apply :py:func:`{fname}` to each image in ``frames``. The image is
         passed as the first argument. For details on function parameters, see
-        the :py:func:`locate` documentation.
+        the :py:func:`{fname}` documentation.
 
         Parameters
         ----------
         frames : iterable of images
             Iterable of array-like objects that represent image data
         *args
-            Positional arguments passed to :py:func:`locate`
+            Positional arguments passed to :py:func:`{fname}`
         **kwargs
-            Keyword arguments passed to :py:func:`locate`
+            Keyword arguments passed to :py:func:`{fnam}`
 
         Returns
         -------
         pandas.DataFrame
             Concatenation of DataFrames returned by the individual
-            :py:func:`locate` calls. Additionally, there is a "frame"
+            :py:func:`{fname}` calls. Additionally, there is a "frame"
             column specifying the frame number.
         """
         all_features = []
@@ -63,6 +63,7 @@ def make_batch(locate_func):
 
         return pd.concat(all_features, ignore_index=True)
 
+    batch.__doc__ = batch.__doc__.format(fname=locate_func.__name__)
     return batch
 
 
@@ -80,29 +81,29 @@ def make_batch_threaded(locate_func):
     Returns
     -------
     callable
-        Batch version of ``locate_func``
+        Batch version of `locate_func`
     """
     def batch(frames, *args, **kwargs):
-        """Process an image stack using :py:func:`locate`
+        """Process an image stack using :py:func:`{fname}`
 
-        Apply :py:func:`locate` to each image in ``frames``. The image is
+        Apply :py:func:`{fname}` to each image in ``frames``. The image is
         passed as the first argument. For details on function parameters, see
-        the:py:func:`locate` documentation.
+        the:py:func:`{fname}` documentation.
 
         Parameters
         ----------
         frames : iterable of images
             Iterable of array-like objects that represent image data
         *args
-            Positional arguments passed to :py:func:`locate`
+            Positional arguments passed to :py:func:`{fname}`
         **kwargs
-            Keyword arguments passed to :py:func:`locate`
+            Keyword arguments passed to :py:func:`{fname}`
 
         Returns
         -------
         pandas.DataFrame
             Concatenation of DataFrames returned by the individual
-            :py:meth:`locate` calls. Additionally, there is a "frame"
+            :py:meth:`{fname}` calls. Additionally, there is a "frame"
             column specifying the frame number.
 
         Other parameters
@@ -125,4 +126,5 @@ def make_batch_threaded(locate_func):
 
         return pd.concat(all_features, ignore_index=True)
 
+    batch.__doc__ = batch.__doc__.format(fname=locate_func.__name__)
     return batch
