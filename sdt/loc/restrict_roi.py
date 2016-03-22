@@ -2,7 +2,7 @@
 from ..image_tools import PathROI
 
 
-def restrict_roi(locate_func, buffer=0):
+def restrict_roi(locate_func, buffer=10):
     """Restrict a ``locate`` or ``batch`` function to a ROI
 
     Create a function that takes a path describing a ROI as an additional

@@ -10,7 +10,7 @@ def bandpass_pipe(*args):
     return bandpass(*args)
 
 
-def restrict_roi(locate_func, buffer=0):
+def restrict_roi(locate_func, buffer=10):
     """Restrict a this module's ``locate`` and ``batch`` functions to a ROI
 
     Spezialization of :py:func:`sdt.loc.restrict_roi` for the
