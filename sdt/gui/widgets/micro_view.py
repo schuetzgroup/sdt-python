@@ -127,7 +127,8 @@ class MicroViewScene(QGraphicsScene):
 
     def mouseDoubleClickEvent(self, event):
         super().mouseDoubleClickEvent(event)
-        self._appendPointToRoi(event.scenePos(), self._roiPolygon, False)
+        # the first click of the double click is a normal mousePressEvent,
+        # thus the current point has already been added. Simply exit ROI mode
         self.roiMode = False
 
 
