@@ -211,6 +211,10 @@ class PathROI(object):
         if no_image:
             return
 
+        # if the path is clockwise, the `radius` argument to
+        # Path.contains_points needs to be negative to enlarge the ROI
+        buf_sign = -1 if polygon_area(self._path.vertices) > 0 else 1
+
         # Make ROI polygon, but only for bounding box of the polygon, for
         # performance reasons
         mask_size = self._bottom_right - self._top_left
@@ -221,7 +225,7 @@ class PathROI(object):
         # this is rather slow
         idx = np.indices(mask_size).reshape((2, -1))
         self._img_mask = self._path.contains_points(
-            idx.T, trans, self._buffer)
+            idx.T, trans, buf_sign*self._buffer)
         self._img_mask = self._img_mask.reshape(mask_size)
 
     @property
@@ -295,3 +299,29 @@ class PathROI(object):
                 img[~self._img_mask] = fv
                 return img.T
             return crop(data)
+
+
+def polygon_area(vertices):
+    """Calculate the (signed) area of a simple polygon
+
+    This is based on JavaScript code from
+    http://www.mathopenref.com/coordpolygonarea2.html.
+
+    .. code-block:: javascript
+
+        function polygonArea(X, Y, numPoints)
+        {
+            area = 0;           // Accumulates area in the loop
+            j = numPoints - 1;  // The last vertex is the 'previous' one to the
+                                // first
+
+            for (i=0; i<numPoints; i++)
+            {
+                area = area +  (X[j]+X[i]) * (Y[j]-Y[i]);
+                j = i;  // j is previous vertex to i
+            }
+            return area/2;
+        }
+    """
+    x, y = np.vstack((vertices[-1], vertices)).T
+    return np.sum((x[:-1] + x[1:]) * (y[:-1] - y[1:]))/2
