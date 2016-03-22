@@ -1,13 +1,10 @@
 """PIMS plugins for image sequences created by SDT-control software"""
 import logging
 from datetime import datetime
-import json
 from contextlib import suppress
 from collections import OrderedDict
-import base64
 
-import dateutil
-
+import yaml
 import numpy as np
 import pims
 
@@ -172,10 +169,24 @@ class SdtSpeStack(pims.SpeStack):
             return super().get_frame(j)
 
 
+# This is to load key, value pairs into an OrderedDict
+class _MetadataLoader(yaml.SafeLoader):
+    pass
+
+
+def _yaml_odict_constructor(loader, data):
+    loader.flatten_mapping(data)
+    return OrderedDict(loader.construct_pairs(data))
+
+
+_MetadataLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+                                _yaml_odict_constructor)
+
+
 class SdtTiffStack(pims.TiffStack):
     """Version of pims.TiffStack extended for SDT needs
 
-    This tries to read metadata that has been serialized as JSON using
+    This tries to read metadata that has been serialized as YAML using
     `save_as_tiff`().
 
     The class_priority is set to 20, so that importing `sdt.pims` should be
@@ -188,20 +199,16 @@ class SdtTiffStack(pims.TiffStack):
         f = super().get_frame(j)
         md = {}
         with suppress(Exception):
-            md = json.loads(f.metadata["ImageDescription"],
-                            object_pairs_hook=OrderedDict)
+            md = yaml.load(f.metadata["ImageDescription"], _MetadataLoader)
+
         if md:
             f.metadata.pop("ImageDescription", None)
-            #restore resemblence with original (pre-JSON) data type
-            with suppress(Exception):
-                md["DateTime"] = dateutil.parser.parse(md["DateTime"])
+            # restore resemblence with original (pre-YAML) data type
             with suppress(Exception):
                 rs = md["ROIs"]
                 dtype = dict(names=list(rs[0].keys()),
                              formats=["<H"]*len(rs[0]))
                 md["ROIs"] = np.rec.fromrecords(
                     [list(r.values()) for r in rs], dtype=dtype)
-            with suppress(Exception):
-                md["spare4"] = base64.b64decode(md["spare4"].encode("latin1"))
         f.metadata.update(md)
         return f
