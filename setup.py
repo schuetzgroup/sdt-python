@@ -31,7 +31,6 @@ setup(
                       "scipy",
                       "pandas",
                       "tables",
-                      "python-dateutil",
                       "tifffile",
                       "pyyaml",
                       "pims>=0.3.0",

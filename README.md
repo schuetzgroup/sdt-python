@@ -10,7 +10,6 @@ Requirements
 - Python >= 3.4
 - numpy
 - pandas
-- pythno-dateutil
 - pims >= 0.3.0
 - slicerator >= 0.9.7
 - tifffile

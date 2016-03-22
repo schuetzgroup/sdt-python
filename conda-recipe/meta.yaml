@@ -17,7 +17,6 @@ requirements:
         - pandas
         - pytables
         - scipy
-        - python-dateutil
         - tifffile
         - pyyaml
         - pims >=0.3.0
@@ -31,7 +30,6 @@ requirements:
         - pandas
         - pytables
         - scipy
-        - python-dateutil
         - tifffile
         - pyyaml
         - pims >=0.3.0
