@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-"""PIMS plugins for image sequences created by SDT software"""
-
+"""PIMS plugins for image sequences created by SDT-control software"""
 import logging
 from datetime import datetime
 import json
@@ -16,12 +14,12 @@ import pims
 _logger = logging.getLogger(__name__)
 
 SdtComments = {
-    #format of dict entries:
-    # name: (comment_number, slice, converter, [factor, optional])
+    # format of dict entries:
+    # name: (comment_number, slice, converter, [factor])
     #
     # relevant_characters = metadata["comments"][comment_number][slice]
     # data = converter(relevant_characters)
-    # metadata[name] = data*factor #if factor is given
+    # metadata[name] = data * factor  # if factor is given
     "SDTcontrol major version": (4, slice(66, 68), int),
     "SDTcontrol minor version": (4, slice(68, 70), int),
     "SDT controller name": (4, slice(0, 6), str),
@@ -30,11 +28,11 @@ SdtComments = {
     "detection channels": (4, slice(15, 16), int),
     "background subtraction": (4, 14, lambda x: x == "B"),
     "EM active": (4, 32, lambda x: x == "E"),
-    "EM gain": (4, slice(28,32), int),
+    "EM gain": (4, slice(28, 32), int),
     "laser modulation": (4, 33, lambda x: x == "A"),
     "pixel size": (4, slice(25, 28), float, 0.1),
-    "method": (4, slice(6,10), str),
-    "grid": (4, slice(16,25), float, 10**-6),
+    "method": (4, slice(6, 10), str),
+    "grid": (4, slice(16, 25), float, 10**-6),
     "N macro": (1, slice(0, 4), int),
     "delay macro": (1, slice(10, 19), float, 10**-3),
     "N mini": (1, slice(4, 7), int),
@@ -45,21 +43,22 @@ SdtComments = {
     "shutter delay": (1, slice(73, 79), float, 10**-6),
     "prebleach delay": (1, slice(37, 46), float, 10**-6),
     "bleach time": (1, slice(46, 55), float, 10**-6),
-    "recovery time": (1, slice(55,64), float, 10**-6)
+    "recovery time": (1, slice(55, 64), float, 10**-6)
 }
 
 months = {
-    #Convert SDTcontrol month strings to month numbers
-    "Jan": 1, "Feb": 2, "Mär": 3, "Mar": 3, "Apr": 4, "Mai": 5, "May": 5,
-    "Jun": 6, "Jul": 7, "Aug": 8, "Sep": 9, "Okt": 10, "Oct": 10, "Nov": 11,
-    "Dez": 12, "Dec": 12
+    # Convert SDTcontrol month strings to month numbers
+    "Jän": 1, "Jan": 1, "Feb": 2, "Mär": 3, "Mar": 3, "Apr": 4, "Mai": 5,
+    "May": 5, "Jun": 6, "Jul": 7, "Aug": 8, "Sep": 9, "Okt": 10, "Oct": 10,
+    "Nov": 11, "Dez": 12, "Dec": 12
 }
 
 methods = {
-    #TODO: complete
+    # TODO: complete
     "SEQU": "Sequence", "SETO": "Sequence TOCCSL", "KINE": "Kinetics",
     "SEAR": "Sequence arbitrary"
 }
+
 
 class SdtSpeStack(pims.SpeStack):
     """Specialized version of pims.SpeStack for SDTcontrol
@@ -72,31 +71,38 @@ class SdtSpeStack(pims.SpeStack):
     enough to make `pims.open`() automatically select this class for reading
     SPE files.
 
-    Attributes:
-        metadata (dict): Contains SDTcontrol metadata
+    Attributes
+    ----------
+    metadata : dict
+        Contains SDT-control metadata
     """
-    class_priority = 20 #>10, so use instead of SpeStack
+    class_priority = 20  # > 10, so use instead of pims.SpeStack in pims.open()
 
     def __init__(self, filename, process_func=None, dtype=None, as_grey=False,
                  char_encoding="latin1", split_kinetics=True):
-        """Create an iterable object that returns image data as numpy arrays
-
-        Args:
-            filename (str): Name of the SPE file
-            process_func (callable, optional): Takes one image array as its
-                sole argument. It is applied to each image. Defaults to None.
-            dtype (numpy.dtype, optional): Which data type to convert the
-                images too. No conversion if None. Defaults to None.
-            as_grey (bool, optional): Convert image to greyscale. Do not use
-                in conjunction with process_func. Defaults to False.
-            char_encoding (str, optional): Specifies what character encoding
-                is used for metatdata strings. Defaults to "latin1".
-            split_kinetics (bool, optional): Whether to split the large
-                kinetics mode images into smaller subimages. Defaults to True.
+        """Parameters
+        ----------
+        filename : str
+            Name of the SPE file
+        process_func : callable, optional
+            Takes one image array as its sole argument. It is applied to each
+            image. Defaults to None.
+        dtype : numpy.dtype, optional
+            Which data type to convert the images too. No conversion if None.
+            Defaults to None.
+        as_grey : bool, optional
+            Convert image to greyscale. Do not use in conjunction with
+            process_func. Defaults to False.
+        char_encoding : str, optional
+            Specifies what character encoding is used for metatdata strings.
+            Defaults to "latin1".
+        split_kinetics : bool, optional
+            Whether to split the large kinetics mode images into smaller
+            subimages. Defaults to True.
         """
         super().__init__(filename, process_func, dtype, as_grey, char_encoding)
 
-        #Parse SDTcontrol comments
+        # Parse SDTcontrol comments
         comments = self.metadata["comments"]
         if comments[4][70:] == "COMVER0500":
             for name, spec in SdtComments.items():
@@ -113,7 +119,7 @@ class SdtSpeStack(pims.SpeStack):
         else:
             _logger.info("SDTcontrol comments not found.")
 
-        #Get date and time in a usable format
+        # Get date and time in a usable format
         date = self.metadata["date"]
         time = self.metadata["ExperimentTimeLocal"]
         try:
@@ -126,19 +132,20 @@ class SdtSpeStack(pims.SpeStack):
         self.metadata.pop("date", None)
         self.metadata.pop("ExperimentTimeLocal", None)
 
-        #Rename this
+        # Rename this
         self.metadata["laser mod script"] = self.metadata["spare4"].decode(
             char_encoding)
         self.metadata.pop("spare4", None)
         if self.metadata.get("readoutMode", "") != "kinetics":
             self.metadata.pop("WindowSize", None)
 
-        #Get rid of unused data
+        # Get rid of unused data
         self.metadata.pop("ExperimentTimeUTC", None)
         self.metadata.pop("exp_sec", None)
 
-        #Necessary to split kinetics mode images
-        self._is_kinetics = (split_kinetics &
+        # Necessary to split kinetics mode images
+        self._is_kinetics = (
+            split_kinetics &
             (self.metadata.get("readoutMode", "") == "kinetics"))
         if self._is_kinetics:
             self._subpic_height = self.metadata["WindowSize"]
@@ -160,7 +167,7 @@ class SdtSpeStack(pims.SpeStack):
             full = super().get_frame(int(j/self._no_subpics))
             start_row = (j % self._no_subpics)*self._subpic_height
             return pims.Frame(full[start_row:start_row+self._subpic_height, :],
-                         frame_no=j, metadata=self.metadata)
+                              frame_no=j, metadata=self.metadata)
         else:
             return super().get_frame(j)
 
@@ -175,7 +182,7 @@ class SdtTiffStack(pims.TiffStack):
     enough to make `pims.open`() automatically select this class for reading
     TIFF files.
     """
-    class_priority = 20 #>10, so use instead of any builtin TIFF reader
+    class_priority = 20  # >10, so use instead of any builtin TIFF reader
 
     def get_frame(self, j):
         f = super().get_frame(j)
