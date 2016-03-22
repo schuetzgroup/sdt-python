@@ -163,32 +163,33 @@ class PathROI(object):
     It uses :py:class:matplotlib.path.Path` to this end. It can crop images
     or restrict data (such as feature localization data) to a specified region.
 
-    At the moment, this works only for single channel (i. e. grayscale) images.
+    This works only for paths that do not intersects themselves and for single
+    channel (i. e. grayscale) images.
 
     Attributes
     ----------
     path : matplotlib.path.Path
         The path outlining the region of interest. Read-only.
-    radius : float
+    buffer : float
         Extra space around the path. Does not affect the size of the a image,
         which is just the size of the bounding box of the `polygon`, without
-        `radius`. Read-only
+        `buffer`. Read-only
     image_mask : numpy.ndarray, dtype=bool
         Boolean pixel mask of the path. Read-only
     bounding_rect : numpy.ndarray, shape=(2, 2), dtype=int
         Integer bounding rectangle of the path
     """
-    def __init__(self, path, radius=0., no_image=False):
+    def __init__(self, path, buffer=0., no_image=False):
         """Parameters
         ----------
         path : list of vertices or matplotlib.path.Path
             Description of the path. Either a list of vertices that will
             be used to construct a :py:class:`matplotlib.path.Path` or a
             :py:class:`matplotlib.path.Path` instance.
-        radius : float, optional
+        buffer : float, optional
             Add extra space around the path. This, however, does not
             affect the size of the cropped image, which is just the size of
-            the bounding box of the `polygon`, without `radius`. Defaults to 0
+            the bounding box of the `polygon`, without `buffer`. Defaults to 0
         no_image : bool, optional
             If True, don't compute the image mask (which is quite time
             consuming). This implies that this instance only works for
@@ -199,7 +200,7 @@ class PathROI(object):
         else:
             self._path = mpl.path.Path(path)
 
-        self._radius = radius
+        self._buffer = buffer
 
         # calculate bounding box
         bb = self._path.get_extents()
@@ -220,7 +221,7 @@ class PathROI(object):
         # this is rather slow
         idx = np.indices(mask_size).reshape((2, -1))
         self._img_mask = self._path.contains_points(
-            idx.T, trans, self._radius)
+            idx.T, trans, self._buffer)
         self._img_mask = self._img_mask.reshape(mask_size)
 
     @property
@@ -228,8 +229,8 @@ class PathROI(object):
         return self._path
 
     @property
-    def radius(self):
-        return self._radius
+    def buffer(self):
+        return self._buffer
 
     @property
     def image_mask(self):
@@ -252,7 +253,7 @@ class PathROI(object):
         ----------
         data : pandas.DataFrame or pims.FramesSequence or array-like
             Data to be processed. If a pandas.Dataframe, select only those
-            lines with coordinate values within the ROI path (+ radius).
+            lines with coordinate values within the ROI path (+ buffer).
             Otherwise, `slicerator.pipeline` is used to crop image data to the
             bounding rectangle of the path and set all pixels not within the
             path to `fill_value`
