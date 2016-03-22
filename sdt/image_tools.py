@@ -2,9 +2,8 @@
 import logging
 from contextlib import suppress
 from collections import OrderedDict
-import base64
-import json
 
+import yaml
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -18,53 +17,80 @@ pd.options.mode.chained_assignment = None  # Get rid of the warning
 _logger = logging.getLogger(__name__)
 
 
+# Save tuples and OrderedDicts to YAML
+class _MetadataDumper(yaml.SafeDumper):
+    pass
+
+
+def _yaml_dict_representer(dumper, data):
+    return dumper.represent_dict(data.items())
+
+
+def _yaml_list_representer(dumper, data):
+    return dumper.represent_list(data)
+
+
+_MetadataDumper.add_representer(OrderedDict, _yaml_dict_representer)
+_MetadataDumper.add_representer(tuple, _yaml_list_representer)
+
+
+def metadata_to_yaml(metadata):
+    """Serialize a metadata dict to a YAML string
+
+    Parameters
+    ----------
+    metadata : dict
+        Metadata as created by pims.open()'ing an SPE file
+
+    Returns
+    -------
+    str
+        YAML string
+    """
+    md = metadata.copy()
+    with suppress(Exception):
+        rs = md["ROIs"]
+        md["ROIs"] = [OrderedDict(zip(rs.dtype.names, r.tolist()))
+                      for r in rs]
+    with suppress(Exception):
+        md["comments"] = md["comments"].tolist()
+    with suppress(Exception):
+        md.pop("DateTime")
+
+    return yaml.dump(md, Dumper=_MetadataDumper)
+
+
 def save_as_tiff(frames, filename):
     """Write a sequence of images to a TIFF stack
 
     If the items in `frames` contain a dict named `metadata`, an attempt to
-    serialize it to JSON and save it as the TIFF file's ImageDescription
+    serialize it to YAML and save it as the TIFF file's ImageDescription
     tags.
 
     Parameters
     ----------
-    frames : iterable of numpy.arrays)
+    frames : iterable of numpy.arrays
         Frames to be written to TIFF file. This can e.g. be any subclass of
         `pims.FramesSequence` like `pims.ImageSequence`.
     filename : str
         Name of the output file
     """
-    def serialize_numpy(number):
-        if isinstance(number, np.integer):
-            return int(number)
-        else:
-            raise TypeError("Cannot serialize type {}.".format(type(number)))
-
     with tifffile.TiffWriter(filename, software="sdt.pims") as tw:
         for f in frames:
             desc = None
+            dt = None
             if hasattr(f, "metadata") and isinstance(f.metadata, dict):
-                # Some metadata fields need to be made serializable
-                md = f.metadata.copy()
-                with suppress(Exception):
-                    md["DateTime"] = md["DateTime"].isoformat()
-                with suppress(Exception):
-                    rs = md["ROIs"]
-                    md["ROIs"] = [OrderedDict(zip(rs.dtype.names, r))
-                                  for r in rs]
-                with suppress(Exception):
-                    md["comments"] = md["comments"].tolist()
-                with suppress(Exception):
-                    b64 = base64.b64encode(md["spare4"])
-                    md["spare4"] = b64.decode("latin1")
-
                 try:
-                    desc = json.dumps(md, default=serialize_numpy, indent=2)
+                    desc = metadata_to_yaml(f.metadata)
                 except Exception:
                     _logger.error(
-                        "{}: Failed to serialize metadata to JSON ".format(
+                        "{}: Failed to serialize metadata to YAML ".format(
                             filename))
 
-            tw.save(f, description=desc)
+                with suppress(Exception):
+                    dt = f.metadata["DateTime"]
+
+            tw.save(f, description=desc, datetime=dt)
 
 
 class ROI(object):
