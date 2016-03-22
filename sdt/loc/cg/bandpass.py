@@ -53,6 +53,6 @@ def bandpass(image, feature_radius, noise_radius=1):
     filtered_img = signal.convolve2d(image, K, "valid")
 
     # pad to the same size as the original image and set negative values to 0
-    ret = np.zeros(image.shape)
+    ret = np.zeros_like(image, dtype=np.float)
     ret[w:-w, w:-w] = np.clip(filtered_img, 0, np.inf)
     return ret
