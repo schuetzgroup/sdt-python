@@ -2,7 +2,7 @@
 from slicerator import pipeline
 
 from .bandpass import bandpass
-from ..image_tools import PathROI
+from ...image_tools import PathROI
 
 
 @pipeline

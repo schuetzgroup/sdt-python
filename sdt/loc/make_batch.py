@@ -42,7 +42,7 @@ def make_batch(locate_func):
         *args
             Positional arguments passed to :py:func:`{fname}`
         **kwargs
-            Keyword arguments passed to :py:func:`{fnam}`
+            Keyword arguments passed to :py:func:`{fname}`
 
         Returns
         -------
