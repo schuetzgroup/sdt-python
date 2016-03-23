@@ -168,12 +168,13 @@ class TestMotion(unittest.TestCase):
         np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
         np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
 
-    def test_emsd_cdf(self):
+    def test_emsd_cdf_prony(self):
         # From a test run
         orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1")
         orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2")
 
-        e1, e2 = sdt.motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1)
+        e1, e2 = sdt.motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
+                                     method="prony")
         np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
         np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
 

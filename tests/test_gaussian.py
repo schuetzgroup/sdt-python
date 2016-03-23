@@ -36,7 +36,7 @@ class TestGaussianFit(unittest.TestCase):
 
     def test_guess_1d(self):
         data = np.load(os.path.join(data_path, "gaussian_1d.npy"))
-        guess = sdt.gaussian_fit.guess_paramaters(data, self.x_1d)
+        guess = sdt.gaussian_fit.guess_parameters(data, self.x_1d)
 
         for k, v in guess.items():
             # if the guess is within 10% of the actual values, this is good
@@ -44,7 +44,7 @@ class TestGaussianFit(unittest.TestCase):
 
     def test_guess_2d(self):
         data = np.load(os.path.join(data_path, "gaussian_2d.npy"))
-        guess = sdt.gaussian_fit.guess_paramaters(data, *self.x_2d)
+        guess = sdt.gaussian_fit.guess_parameters(data, *self.x_2d)
 
         for k, v in guess.items():
             if k == "rotation":
