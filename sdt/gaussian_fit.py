@@ -16,7 +16,7 @@ import numpy as np
 import lmfit
 
 
-def guess_paramaters(data, *indep_vars):
+def guess_parameters(data, *indep_vars):
     """Initial guess of parameters of the Gaussian
 
     This function does a crude estimation of the parameters:
@@ -169,7 +169,7 @@ class Gaussian1DModel(lmfit.Model):
 
     def guess(self, data, x, **kwargs):
         """Make an initial guess using :func:`guess_parameters`"""
-        pdict = guess_paramaters(data, x)
+        pdict = guess_parameters(data, x)
         pars = self.make_params(amplitude=pdict["amplitude"],
                                 center=pdict["center"][0],
                                 sigma=pdict["sigma"][0],
@@ -195,7 +195,7 @@ class Gaussian2DModel(lmfit.Model):
 
     def guess(self, data, x, y, **kwargs):
         """Make an initial guess using :func:`guess_parameters`"""
-        pdict = guess_paramaters(data, x, y)
+        pdict = guess_parameters(data, x, y)
         pars = self.make_params(amplitude=pdict["amplitude"],
                                 centerx=pdict["center"][0],
                                 sigmax=pdict["sigma"][0],
