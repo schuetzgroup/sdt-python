@@ -8,10 +8,6 @@ pos_columns = ["x", "y"]
 """Names of the columns describing the x and the y coordinate of the features
 in pandas.DataFrames
 """
-t_column = "frame"
-mass_column = "mass"
-bg_column = "background"
-bg_dev_column = "bg_dev"
 
 
 def _from_raw_image_single(data, frames, radius=2, bg_frame=2):
@@ -111,14 +107,14 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
         features in `positions`.
     """
     # convert to numpy array for performance reasons
-    t_pos_matrix = positions[[t_column] + pos_columns].as_matrix()
+    t_pos_matrix = positions[["frame"] + pos_columns].as_matrix()
     brightness = np.apply_along_axis(_from_raw_image_single, 1,
                                      t_pos_matrix,
                                      frames, radius, bg_frame)
 
-    positions[mass_column] = brightness[:, 0]
-    positions[bg_column] = brightness[:, 1]
-    positions[bg_dev_column] = brightness[:, 2]
+    positions["mass"] = brightness[:, 0]
+    positions["bg"] = brightness[:, 1]
+    positions["bg_dev"] = brightness[:, 2]
 
 
 def distribution(data, abscissa, smooth=2.):
