@@ -28,7 +28,6 @@ pd.options.mode.chained_assignment = None  # Get rid of the warning
 
 
 pos_columns = ["x", "y"]
-mass_column = "mass"
 
 
 class Corrector(object):
@@ -62,26 +61,17 @@ class Corrector(object):
     pos_columns : list of str
         Names of the columns describing the x and the y coordinate of the
         features.
-    mass_column : str
-        Name of the column describing the integrated intensities ("masses") of
-        the features.
     """
 
-    def __init__(self, *images, gaussian_fit=True, pos_columns=pos_columns,
-                 mass_column=mass_column):
+    def __init__(self, *images, gaussian_fit=True, pos_columns=pos_columns):
         """Parameters
         ----------
         images : lists of numpy.ndarrays
             List of images of a homogeneous surface
         gaussian_fit : bool, optional
             Whether to fit a Gaussian to the averaged image. Default: True
-        pos_columns : list of str, optional
-            Sets the `pos_columns` attribute.
-        mass_column : str, optional
-            Sets the `mass_column` attribute.
         """
         self.pos_columns = pos_columns
-        self.mass_column = mass_column
 
         # calculate the average profile image
         self.avg_img = np.zeros(images[0][0].shape, dtype=np.float)
@@ -135,7 +125,11 @@ class Corrector(object):
             y = self.pos_columns[1]
             if not inplace:
                 data = data.copy()
-            data[self.mass_column] *= self.get_factors(data[x], data[y])
+            factors = self.get_factors(data[x], data[y])
+            if "mass" in data.columns:
+                data["mass"] *= factors
+            if "signal" in data.columns:
+                data["signal"] *= factors
             if not inplace:
                 # copied previously, now return
                 return data
