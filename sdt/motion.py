@@ -715,7 +715,7 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, method="prony",
 
 
 def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
-             method="prony", poly_order=30, pos_columns=pos_columns):
+             method="lsq", poly_order=30, pos_columns=pos_columns):
     r"""Calculate ensemble mean square displacements from tracking data CDF
 
     Fit the model cumulative density function to the measured CDF of tracking
