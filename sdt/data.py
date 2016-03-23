@@ -351,8 +351,8 @@ def save(filename, data, typ="auto", fmt="auto"):
 
     This supports HDF5 and particle_tracker formats.
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     filename : str
         Name of the file to write to
     data : pandas.DataFrame
@@ -361,7 +361,7 @@ def save(filename, data, typ="auto", fmt="auto"):
         Specify whether to save feature data or tracking data. If "auto",
         consider `data` tracking data if a "particle" column is present,
         otherwise treat as feature data.
-    fmt : {"auto", "hdf5", "particle_tracker"}
+    fmt : {"auto", "hdf5", "particle_tracker", "trc"}
         Output format. If "auto", infer the format from `filename`. Otherwise,
         write the given format.
     """
@@ -374,6 +374,8 @@ def save(filename, data, typ="auto", fmt="auto"):
         elif (filename.endswith("_positions.mat") or
                 filename.endswith("_tracks.mat")):
             fmt = "particle_tracker"
+        elif filename.endswith(".trc"):
+            fmt = "trc"
         else:
             raise ValueError("Could not determine format from file name " +
                              filename)
@@ -389,15 +391,19 @@ def save(filename, data, typ="auto", fmt="auto"):
         return
     if fmt == "particle_tracker":
         save_pt2d(filename, data, typ)
+        return
+    if fmt == "trc":
+        save_trc(filename, data)
+        return
     else:
-        raise ValueError('Unknown format "{}"'.format(format))
+        raise ValueError('Unknown format "{}"'.format(fmt))
 
 
 def save_pt2d(filename, data, typ="tracks"):
     """Save feature/tracking data in particle_tracker format
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     filename : str
         Name of the file to write to
     data : pandas.DataFrame
@@ -425,3 +431,29 @@ def save_pt2d(filename, data, typ="tracks"):
 
     key_name = ("MT" if typ == "features" else "tracks")
     sp_io.savemat(filename, {key_name: np.column_stack(data_cols)})
+
+
+def save_trc(filename, data):
+    """Save tracking data in trc format
+
+    Parameters
+    ----------
+    filename : str
+        Name of the file to write to
+    data : pandas.DataFrame
+        Data to save
+    """
+    df = data.copy()
+
+    idx = np.arange(len(df))
+
+    if "particle" not in df.columns:
+        df["particle"] = idx
+
+    for c in adjust_index:
+        if c in df.columns:
+            df[c] += 1
+
+    df["_trc_index"] = idx
+    df.to_csv(filename, sep=" ", header=False, index=False,
+              columns=["particle", "frame", "x", "y", "mass", "_trc_idx"])

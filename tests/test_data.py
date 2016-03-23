@@ -233,6 +233,26 @@ class TestData(unittest.TestCase):
 
             np.testing.assert_allclose(read_back, orig)
 
+    def test_save_trc(self):
+        h5name = os.path.join(data_path, "orig_trc.h5")
+        orig = pd.read_hdf(h5name, "tracks")
+        with tempfile.TemporaryDirectory() as td:
+            tmp_out = os.path.join(td, "out.trc")
+            sdt.data.save(tmp_out, orig, fmt="trc")
+            read_back = sdt.data.load(tmp_out)
+
+            np.testing.assert_allclose(read_back, orig)
+
+    def test_save_auto_trc(self):
+        h5name = os.path.join(data_path, "orig_trc.h5")
+        orig = pd.read_hdf(h5name, "tracks")
+        with tempfile.TemporaryDirectory() as td:
+            tmp_out = os.path.join(td, "out.trc")
+            sdt.data.save(tmp_out, orig)
+            read_back = sdt.data.load(tmp_out)
+
+            np.testing.assert_allclose(read_back, orig)
+
 
 if __name__ == "__main__":
     unittest.main()
