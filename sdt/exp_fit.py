@@ -57,9 +57,7 @@ class OdeSolver(object):
         1D array of coefficients of the ODE
     """
     def __init__(self, m, p):
-        """Constructor
-
-        Parameters
+        """Parameters
         ----------
         m : int
             Highest order Legendre polynomial in the series expansion
@@ -242,7 +240,7 @@ def fit(x, y, num_exp, poly_order, initial_guess=None):
     y : numpy.ndarray
         Function values corresponding to `x`.
     num_exp : int
-        Number of exponential functions (``p`` in the equation above) in the
+        Number of exponential functions (`p` in the equation above) in the
         sum
     poly_order : int
         For calculation, the sum of exponentials is approximated by a sum

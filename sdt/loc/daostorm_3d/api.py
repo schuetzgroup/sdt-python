@@ -45,11 +45,11 @@ def locate(raw_image, radius, model, threshold, engine="numba",
     radius : float
         This is in units of pixels. Initial guess for the radius of the
         features.
-    model : {"2dfixed", "2d", "3d", "Z"}
-        "2dfixed" - fixed sigma 2d gaussian fitting.
-        "2d" - variable sigma 2d gaussian fitting.
-        "3d" - x, y sigma are independently variable, z will be fit after peak
-               fitting.
+    model : {"2dfixed", "2d", "3d"}
+        "2dfixed" will do fixed sigma 2d Gaussian fitting. "2d" does variable
+        sigma 2d Gaussian fitting. "3d" means that x, y sigma are independently
+        variables (elliptical Gaussian, this is intened for determining the
+        z position from astigmatism).
     threshold : float
         A number roughly equal to the value of the brightest pixel (minus the
         CCD baseline) in the dimmest peak to be detected. Local maxima with

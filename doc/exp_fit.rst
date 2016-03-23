@@ -1,5 +1,6 @@
-Fitting a sum of exponential functions
+Fit of  a sum of exponential functions
 ======================================
+
 The :py:mod:`sdt.exp_fit` module provides routines to fit a sum of exponential
 functions
 
@@ -9,11 +10,22 @@ to data represented by pairs :math:`(t_k, z_k)`. This is done by using a
 modified Prony's method.
 
 The mathematics behind this as well as the code are based on a blog post and
-code by Greg von Winckel which can be found at [1]_.
+GPLv3-licensed code by Greg von Winckel which can be found at [1]_. Further
+insights about the algorithm may be gained by reading anything about Prony's
+method and [2]_.
 
+
+.. [1] http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions
+.. [2] M. R. Osborne, G. K. Smyth: A Modified Prony Algorithm for Fitting
+    Functions Defined by Difference Equations. SIAM J. on Sci. and Statist.
+    Comp., Vol 12 (1991), pages 362–382.
+
+
+.. _theory:
 
 Theory
 ------
+
 :math:`y(t)` is the general solution of the ordinary differential equation (ODE)
 
 .. math:: \sum_{j=0}^p a_j \frac{d^j y}{dt^j} = \alpha
@@ -75,7 +87,23 @@ A linear least squares fit can then be used to determine the remaining
 parameters :math:`\alpha` and :math:`\beta_i`.
 
 
-Documentation of ``sdt.exp_fit``
---------------------------------
-.. automodule:: sdt.exp_fit
-    :members:
+High level API
+--------------
+
+.. py:module:: sdt.exp_fit
+
+.. autofunction:: fit
+.. autofunction:: exp_sum
+
+
+Low level functions
+-------------------
+
+The functions above use (as documented in the :ref:`theory` section) several
+lower level functions.
+
+.. autofunction:: int_mat_legendre
+.. autoclass:: OdeSolver
+  :members:
+  :undoc-members:
+.. autofunction:: get_exponential_coeffs

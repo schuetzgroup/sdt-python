@@ -2,11 +2,9 @@
 """Correct for inhomogeneous illumination
 
 The intensity cross section of a laser beam is usually not flat, but a
-Gaussian curve or worse. That means that flourophores closer to the edges of
+Gaussian curve or worse. That means that fluorophores closer to the edges of
 the image will appear dimmer simply because they do not receive so much
 exciting laser light.
-
-This module helps correcting for that using images of a homogeneous surface.
 
 Attributes
 ----------
@@ -38,7 +36,7 @@ class Corrector(object):
 
     This works by multiplying features' integrated intensities ("mass") by
     a position-dependent correction factor calculated from a series of
-    images of a homogeneous surface.
+    images of a homogeneously fluorescent surface.
 
     The factor is calculated by
 
@@ -47,8 +45,8 @@ class Corrector(object):
     - Normalizing, so that the maximum of the Gaussian or of the average image
       (if on Gaussian fit was performed) equals 1.0
 
-    Now, the integrated intesity of a feature at position x, y is divided by
-    the value of the Gaussian at the positon x, y (or the pixel intensity of
+    The "signal" and "mass" of a feature at position (x, y) are then divided by
+    the value of the Gaussian at the positon (x, y) (or the pixel intensity of
     the image) to yield a corrected value.
 
     Attributes
@@ -71,20 +69,16 @@ class Corrector(object):
 
     def __init__(self, *images, gaussian_fit=True, pos_columns=pos_columns,
                  mass_column=mass_column):
-        """Constructor
-
-        Parameters
+        """Parameters
         ----------
         images : lists of numpy.ndarrays
             List of images of a homogeneous surface
         gaussian_fit : bool, optional
             Whether to fit a Gaussian to the averaged image. Default: True
         pos_columns : list of str, optional
-            Sets the `pos_columns` attribute. Defaults to the `pos_columns`
-            attribute of the module.
-        mass_column : str
-            Sets the `mass_column` attribute. Defaults to the `mass_column`
-            attribute of the module.
+            Sets the `pos_columns` attribute.
+        mass_column : str, optional
+            Sets the `mass_column` attribute.
         """
         self.pos_columns = pos_columns
         self.mass_column = mass_column

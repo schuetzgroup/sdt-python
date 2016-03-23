@@ -1,4 +1,4 @@
-"""Various tools for dealing with microscopy images"""
+"""Various simple tools for dealing with microscopy images"""
 import logging
 from contextlib import suppress
 from collections import OrderedDict
@@ -40,7 +40,7 @@ def metadata_to_yaml(metadata):
     Parameters
     ----------
     metadata : dict
-        Metadata as created by pims.open()'ing an SPE file
+        Metadata as created by :py:func:`pims.open`'ing an SPE file
 
     Returns
     -------
@@ -186,7 +186,7 @@ class PathROI(object):
     """Region of interest in a picture determined by a path
 
     This class represents a region of interest that is described by a path.
-    It uses :py:class:matplotlib.path.Path` to this end. It can crop images
+    It uses :py:class:`matplotlib.path.Path` to this end. It can crop images
     or restrict data (such as feature localization data) to a specified region.
 
     This works only for paths that do not intersects themselves and for single
@@ -211,11 +211,12 @@ class PathROI(object):
         path : list of vertices or matplotlib.path.Path
             Description of the path. Either a list of vertices that will
             be used to construct a :py:class:`matplotlib.path.Path` or a
-            :py:class:`matplotlib.path.Path` instance.
+            :py:class:`matplotlib.path.Path` instance that will be copied.
         buffer : float, optional
             Add extra space around the path. This, however, does not
             affect the size of the cropped image, which is just the size of
-            the bounding box of the `polygon`, without `buffer`. Defaults to 0
+            the bounding box of the :py:attr:`path`, without `buffer`.
+            Defaults to 0.
         no_image : bool, optional
             If True, don't compute the image mask (which is quite time
             consuming). This implies that this instance only works for

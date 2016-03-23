@@ -1,16 +1,4 @@
-# -*- coding: utf-8 -*-
-"""The `motion` module provides tools for evaluation of diffusion data.
-
-Attributes
-----------
-pos_colums : list of str
-    Names of the columns describing the x and the y coordinate of the features
-    in pandas.DataFrames. Defaults to ["x", "y"].
-t_column : str
-    Name of the column containing frame numbers. Defaults to "frame".
-trackno_column : str
-    Name of the column containing track numbers. Defaults to "particle".
-"""
+"""The `motion` module provides tools for evaluation of diffusion data."""
 import pandas as pd
 import numpy as np
 import collections
@@ -21,12 +9,16 @@ from . import exp_fit
 
 
 pos_columns = ["x", "y"]
+"""Names of the columns describing the x and the y coordinate of the features.
+"""
 t_column = "frame"
+"""Name of the column containing frame numbers."""
 trackno_column = "particle"
+"""Name of the column containing track numbers."""
 
 
 def _prepare_traj(data, t_column=t_column):
-    """Prepare data for use with `_displacements`
+    """Prepare data for use with :func:`_displacements`
 
     Does sorting according to the frame number and also sets the frame number
     as index of the DataFrame. This is not included in `_displacements`, since
@@ -129,11 +121,13 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
 
 def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         t_column=t_column, trackno_column=trackno_column):
-    """Calculate mean displacements from tracking data for one particle
+    r"""Calculate mean displacements from tracking data for one particle
 
-    This calculates the mean displacement (<x>) for each coordinate, the mean
-    square displacement (<x^2>) for each coordinate and the total mean square
-    displacement (<x_1^2 + x_2^2 + ... + x_n^2) for one particle/trajectory
+    This calculates the mean displacement :math:`\langle x_i\rangle` for each
+    coordinate, the mean square displacement :math:`\langle x_i^2\rangle` for
+    each coordinate and the total mean square displacement
+    :math:`\langle x_1^2 + x_2^2 + ... + x_n^2\rangle` for one
+    particle/trajectory.
 
     Parameters
     ----------
@@ -148,9 +142,8 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
 
     Returns
     -------
-    pandas.DataFrame([0, ..., n])
-        For each lag time and each particle/trajectory return the calculated
-        mean square displacement.
+    pandas.DataFrame([<x>, <y>, ..., <x^2>, <y^2>, ..., msd, lagt])
+        Calculated parameters for each lag time.
 
     Other parameters
     ----------------

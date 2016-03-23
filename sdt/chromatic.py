@@ -1,18 +1,10 @@
-"""Correct chromatic aberrations of localizations.
+"""This module allows for correction of chromatic aberrations.
 
 When doing multi-color single molecule microscopy, chromatic aberrations pose
 a problem. To circumvent this, one can record an image of beads, match the
-localizations (as determined by a localization algorithm such as trackpy or
-tracking2d) of the two channels and determine affine transformations for the
-x and y coordinates.
-
-Attributes
-----------
-pos_colums : list of str
-    Names of the columns describing the coordinates of the features in
-    pandas.DataFrames. Defaults to ["x", "y"].
-channel_names : list of str
-    Names of the two channels. Defaults to ["channel1", "channel2"].
+localizations (as determined by a localization algorithm such as those in the
+:py:mod:`sdt.loc` package) of the two channels and determine affine
+transformations for the x and y coordinates.
 """
 
 import numpy as np
@@ -24,7 +16,11 @@ import scipy.ndimage
 import pims
 
 pos_columns = ["x", "y"]
+"""Names of the columns describing the coordinates of the features in
+    pandas.DataFrames.
+"""
 channel_names = ["channel1", "channel2"]
+"""Names of the two channels."""
 
 
 class Corrector(object):
@@ -39,37 +35,27 @@ class Corrector(object):
         Names of the columns describing the coordinates of the features.
     channel_names : list of str
         Names of the channels
-    feat1 : pandas.DataFrame
-        Features of the first channel found by the localization algorithm.
-        The x coordinate is in the column with name `pos_columns`[0], etc.
-    feat1 : pandas.DataFrame
-        Features of the second channel found by the localization algorithm.
-        The x coordinate is in the column with name `pos_columns`[0], etc.
+    feat1, feat2 : pandas.DataFrame
+        Features of the first and second channel found by the localization
+        algorithm. The x coordinate is in the column with name
+        ``pos_columns[0]``, etc.
     pairs : pandas.DataFrame
-        Contains the pairs found by `determine_parameters`.
-    parameters1 : pandas.DataFrame
+        The pairs found by `determine_parameters`.
+    parameters1, parameters2 : pandas.DataFrame
         The parameters for the affine transformation to correct coordinates
-        of channel 1 (embedded in a vector space of higher dimension).
-    parameters2 : pandas.DataFrame
-        The parameters for the affine transformation to correct coordinate
-        of channel 2 (embedded in a vector space of higher dimension).
+        of channel 1 and channel 2 respectively, embedded in a vector space of
+        higher dimension.
     """
     def __init__(self, feat1, feat2, pos_columns=pos_columns,
                  channel_names=channel_names):
-        """Constructor
-
-        Parameters
+        """Parameters
         ----------
-        feat1 : pandas.DataFrame
-            Sets the `feat1` attribute
-        feat2 : pandas.DataFrame
-            Sets the `feat2` attribute
+        feat1, feat2 : pandas.DataFrame
+            Set the `feat1` and `feat2` attribute
         pos_columns : list of str, optional
-            Sets the `pos_columns` attribute. Defaults to the `pos_columns`
-            attribute of the module.
+            Set the `pos_columns` attribute.
         channel_names : list of str, optional
-            Sets the `channel_names` attribute. Defaults to the `channel_names`
-            attribute of the module.
+            Set the `channel_names` attribute.
         """
         self.feat1 = feat1
         self.feat2 = feat2
@@ -83,25 +69,27 @@ class Corrector(object):
                              ambiguity_factor=0.8):
         """Determine the parameters for the affine transformation
 
-        This takes the localizations of `feat1` and tries to match them with
-        those of `feat2`. Then a linear fit is used to determine the affine
-        transformation to correct for chromatic aberrations.
+        This takes the localizations of :py:attr:`feat1` and tries to match
+        them with those of :py:attr:`feat2`. Then a linear fit is used to
+        determine the affine transformation to correct for chromatic
+        aberrations.
 
-        This is a convenience function that calls `find_pairs` and
-        `fit_parameters`.
+        This is a convenience function that calls :py:meth:`find_pairs` and
+        :py:meth:`fit_parameters`.
 
         Parameters
         ----------
         tol_rel : float
-            Relative tolerance parameter for `numpy.isclose()`. Defaults to
-            0.05.
+            Relative tolerance parameter for :py:func:`numpy.isclose()`.
+            Defaults to 0.05.
         tol_abs : float
-            Absolute tolerance parameter for `numpy.isclose()`. Defaults to 0.
+            Absolute tolerance parameter for :py:func:`numpy.isclose()`.
+            Defaults to 0.
         score_cutoff : float, optional
             In order to get rid of false matches a threshold for scores can
             be set. All scores below this threshold are discarded. The
-            threshold is calculated as score_cutoff*score.max(). Defaults to
-            0.5.
+            threshold is calculated as ``score_cutoff*score.max()``. Defaults
+            to 0.5.
         ambiguity_factor : float
             If there are two candidates as a partner for a feature, and the
             score of the lower scoring one is larger than `ambiguity_factor`
@@ -116,8 +104,9 @@ class Corrector(object):
         """Match features of `feat1` with features of `feat2`
 
         This is done by calculating the vectors from every
-        feature all the other features in `feat1` and compare them to those of
-        `feat2` using the `numpy.isclose` function on both the x and the y
+        feature all the other features in :py:attr:`feat1` and compare them to
+        those of :py:attr:`feat2` using the :py:func:`numpy.isclose` function
+        on both the x and the y
         coordinate, where `tol_rel` and `tol_abs` are the relative and
         absolute tolerance parameters.
 
@@ -131,7 +120,7 @@ class Corrector(object):
         score_cutoff : float, optional
             In order to get rid of false matches a threshold for scores can
             be set. All scores below this threshold are discarded. The
-            threshold is calculated as score_cutoff*score.max(). Defaults to
+            threshold is calculated as score_cutoff * score.max(). Defaults to
             0.5.
         ambiguity_factor : float
             If there are two candidates as a partner for a feature, and the
@@ -148,11 +137,12 @@ class Corrector(object):
         """Determine parameters for the affine transformation
 
         An affine transformation is used to map x and y coordinates of `feat1`
-        to to those of `feat2`. This requires `find_pairs` to be run first.
-        The result is save in the `parameters1` (transform of channel 1
-        coordinates to channel 2) and `parameters2` (transform of channel 2
-        coordinates to channel 1). In an ideal world, these would be inverse,
-        but the world is hardly ever ideal.
+        to to those of `feat2`. This requires :py:meth:`find_pairs` to be run
+        first or the :py:attr:`pairs` attribute to be set manually.
+        The result is saved as :py:attr:`parameters1` (transform of channel 1
+        coordinates to channel 2) and :py:attr:`parameters2` (transform of
+        channel 2  coordinates to channel 1) attributes. In an ideal world,
+        these would be inverse, but the world is hardly ever ideal.
 
         The transformations are calculated by a linear least squares fit
         of the embedding of the affine space into a higher dimensional vector
@@ -254,7 +244,8 @@ class Corrector(object):
         ----------
         ax : tuple of matplotlib axes or None, optional
             Axes to use for plotting. The length of the tuple has to be 2.
-            If None, allocate new axes using subplots(). Defaults to None.
+            If None, allocate new axes using
+            :py:func:`matplotlib.pyplot.subplots`. Defaults to None.
         """
         import matplotlib.pyplot as plt
 
@@ -333,7 +324,8 @@ class Corrector(object):
         Returns
         -------
         Corrector
-            A `Corrector` instance with the parameters read from the file.
+            A :py:class:`Corrector` instance with the parameters read from the
+            file.
 
         Other parameters
         ----------------

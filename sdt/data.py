@@ -3,18 +3,11 @@
 
 This module allows for reading data files produced by various MATLAB and
 python tools. So far it can read data from
+
 - particle_tracking_2D
 - prepare_peakposition (and anything als that produces pk files)
 - check_fit (i. e. pks files)
 - msdplot.
-
-Attributes
-----------
-adjust_index : list of str
-    Since MATLAB's indices start at 1 and python's start at 0, some data
-    (such as feature coordinates and frame numbers) may be off by one.
-    This list contains the names of columns to be corrected. Defaults to
-    ["x", "y", "frame", "particle].
 """
 import os
 import collections
@@ -26,23 +19,29 @@ import numpy as np
 
 
 adjust_index = ["x", "y", "frame", "particle"]
+"""Since MATLAB's indices start at 1 and python's start at 0, some data
+(such as feature coordinates and frame numbers) may be off by one.
+This list contains the names of columns to be corrected.
+"""
 
 _logger = logging.getLogger(__name__)
 
 
 def load(filename, typ="auto", fmt="auto", color="red"):
-    """Load data from file
+    r"""Load localization or tracking data from file
 
-    Use the load_* function appropriate for the file type in order to load the
-    data. The file type is determined by the file's extensions.
+    Use the :func:`load_\*` function appropriate for the file type in order to
+    load the data. The file type is determined by the file's extension or
+    the `fmt` parameter.
 
     Supported file types:
-    - particle_tracking_2D positions (*_positions.mat)
-    - particle_tracking_2D tracks (*_tracks.mat)
-    - pkc files (*.pkc)
-    - pks files (*.pks)
-    - trc files (*.trc)
-    - HDF5 files (*.h5)
+
+    - particle_tracking_2D positions (\*_positions.mat)
+    - particle_tracking_2D tracks (\*_tracks.mat)
+    - pkc files (\*.pkc)
+    - pks files (\*.pks)
+    - trc files (\*.trc)
+    - HDF5 files (\*.h5)
 
     Arguments
     ---------
@@ -50,8 +49,8 @@ def load(filename, typ="auto", fmt="auto", color="red"):
         Name of the file
     typ : str, optional
         If the file is HDF5, load this key (usually either "features" or
-        "tracks"), unless it is "auto". Then try to read "tracks" and if that
-        fails, try to read "features".
+        "tracks"), unless it is "auto". In that case try to read "tracks" and
+        if that fails, try to read "features".
         If the file is in particle_tracker format, this can be either "auto",
         "features" or "tracks". Defaults to "auto".
     fmt : {"auto", "hdf5", "particle_tracker", "pkc", "pks", "trc"}, optional
@@ -125,8 +124,8 @@ _pt2d_name_trans = collections.OrderedDict((
 def load_pt2d(filename, typ, load_protocol=True):
     """Load a _positions.mat file created by particle_tracking_2D
 
-    Use `scipy.io.loadmat` to load the file and convert data to a
-    `pandas.DataFrame`.
+    Use :py:func:`scipy.io.loadmat` to load the file and convert data to a
+    :py:class:`pandas.DataFrame`.
 
     Parameters
     ----------
@@ -204,17 +203,17 @@ _pk_ret_column_names = ["x", "y", "size", "mass", "bg", "bg_dev", "frame"]
 def load_pkmatrix(filename, green=False):
     """Load a pkmatrix from a .mat file
 
-    Use `scipy.io.loadmat` to load the file and convert data to a
-    `pandas.DataFrame`.
+    Use :py:func:`scipy.io.loadmat` to load the file and convert data to a
+    :py:class:`pandas.DataFrame`.
 
     Parameters
     ----------
     filename : str
         Name of the file to load
     green : bool
-        If True, load ``pkmatrix_green``, which is the right half of the image
-        when using ``prepare_peakposition`` in 2 color mode. Otherwise, load
-        ``pkmatrix``. Defaults to False.
+        If True, load `pkmatrix_green`, which is the right half of the image
+        when using ``prepare_peakposition`` in 2 color mode. Otherwise,
+        load `pkmatrix`. Defaults to False.
 
     Returns
     -------
@@ -252,21 +251,13 @@ _pks_column_names = ["frame", "x", "y", "size", "mass", "bg", "bg_dev",
 def load_pks(filename):
     """Load a pks matrix from a MATLAB file
 
-    Use `scipy.io.loadmat` to load the file and convert data to a
-    `pandas.DataFrame`.
+    Use :py:func:`scipy.io.loadmat` to load the file and convert data to a
+    :py:class:`pandas.DataFrame`.
 
     Parameters
     ----------
     filename : str
         Name of the file to load
-    load_protocol : bool
-        Look for a _protocol.mat file (i. e. replace the "_positions.mat" part
-        of `filename` with "_protocol.mat") in order to load the column names.
-        This may be buggy for some older versions of particle_tracking_2D.
-    green : bool
-        If True, load ``pkmatrix_green``, which is the right half of the image
-        when using ``prepare_peakposition`` in 2 color mode. Otherwise, load
-        ``pkmatrix``. Defaults to False.
 
     Returns
     -------
@@ -349,7 +340,7 @@ def load_msdplot(filename):
 def save(filename, data, typ="auto", fmt="auto"):
     """Save feature/tracking data
 
-    This supports HDF5 and particle_tracker formats.
+    This supports HDF5, trc, and particle_tracker formats.
 
     Parameters
     ----------

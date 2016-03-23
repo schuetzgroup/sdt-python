@@ -1,17 +1,13 @@
-"""
-Collection of functions related to the brightness of fluorophores
-
-Attributes:
-    pos_colums (list of str): Names of the columns describing the x and the y
-        coordinate of the features in pandas.DataFrames. Defaults to
-        ["x", "y"].
-"""
+"""Collection of functions related to the brightness of fluorophores"""
 import numpy as np
 import pandas as pd
 import scipy.stats
 
 
 pos_columns = ["x", "y"]
+"""Names of the columns describing the x and the y coordinate of the features
+in pandas.DataFrames
+"""
 t_column = "frame"
 mass_column = "mass"
 bg_column = "background"
@@ -107,10 +103,12 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
         2*3 + 1 = 7 pixels width.
     bg_frame (int, optional): Width of frame (in pixels) for background
         determination. Defaults to 2.
+
+    Other parameters
+    ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinates of the
-        features in ``positions``. Defaults to the ``pos_columns`` attribute
-        of the module.
+        features in `positions`.
     """
     # convert to numpy array for performance reasons
     t_pos_matrix = positions[[t_column] + pos_columns].as_matrix()
@@ -126,13 +124,13 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
 def distribution(data, abscissa, smooth=2.):
     """Calculate the brightness distribution
 
-    Given a list of peak masses (``data``), calculate the distribution
+    Given a list of peak masses (`data`), calculate the distribution
     as a function of the masses. This can be considered a probability
     density.
 
-    This works by considering each data point (``mass``) the result of many
+    This works by considering each data point (`mass`) the result of many
     single photon measurements. Thus, it is normal distributed with mean
-    ``mass`` and sigma ``sqrt(mass)``. The total distribution is the
+    `mass` and sigma `sqrt(mass)`. The total distribution is the
     normalized sum of the normal distribution PDFs of all data points.
 
     Parameters
@@ -152,7 +150,7 @@ def distribution(data, abscissa, smooth=2.):
     Returns
     -------
     x : numpy.ndarray
-        The x axis values (the ``abscissa`` parameter if it was given as an
+        The x axis values (the `abscissa` parameter if it was given as an
         array)
     y : numpy.ndarray
         y axis values

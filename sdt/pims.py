@@ -58,15 +58,15 @@ methods = {
 
 
 class SdtSpeStack(pims.SpeStack):
-    """Specialized version of pims.SpeStack for SDTcontrol
+    """Specialized version of :py:class:`pims.SpeStack` for `SDT-control`
 
-    If special metadata written by SDTcontrol is found, it will be decoded to
-    something human-readable. Also, there is the option to split the large
+    If special metadata written by `SDT-control` is found, it will be decoded
+    to something human-readable. Also, there is the option to split the large
     kinetics mode images into smaller subimages.
 
-    The class_priority is set to 20, so that importing `sdt.pims` should be
-    enough to make `pims.open`() automatically select this class for reading
-    SPE files.
+    The :py:attr:`class_priority` is set to 20, so that importing
+    :py:mod:`sdt.pims` should be enough to make :py:func:`pims.open`
+    automatically select this class for reading SPE files.
 
     Attributes
     ----------
@@ -187,11 +187,11 @@ class SdtTiffStack(pims.TiffStack):
     """Version of pims.TiffStack extended for SDT needs
 
     This tries to read metadata that has been serialized as YAML using
-    `save_as_tiff`().
+    :py:func:`sdt.image_tools.save_as_tiff`.
 
-    The class_priority is set to 20, so that importing `sdt.pims` should be
-    enough to make `pims.open`() automatically select this class for reading
-    TIFF files.
+    The :py:attr:`class_priority` is set to 20, so that importing
+    :py:mod:`sdt.pims` should be enough to make :py:func:`pims.open`
+    automatically select this class for reading TIFF files.
     """
     class_priority = 20  # >10, so use instead of any builtin TIFF reader
 
