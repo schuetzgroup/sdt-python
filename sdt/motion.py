@@ -11,13 +11,9 @@ from . import exp_fit
 pos_columns = ["x", "y"]
 """Names of the columns describing the x and the y coordinate of the features.
 """
-t_column = "frame"
-"""Name of the column containing frame numbers."""
-trackno_column = "particle"
-"""Name of the column containing track numbers."""
 
 
-def _prepare_traj(data, t_column=t_column):
+def _prepare_traj(data):
     """Prepare data for use with :func:`_displacements`
 
     Does sorting according to the frame number and also sets the frame number
@@ -35,19 +31,13 @@ def _prepare_traj(data, t_column=t_column):
     pandas.DataFrame
         `data` ready to use for :func:`_displacements` (one has to split the
         data into single trajectories, though).
-
-    Other parameters
-    ----------------
-    t_column : str, optional
-        Name of the column containing frame numbers. Defaults to the
-        `t_column` of the module.
     """
     # do not work on the original data
     data = data.copy()
     # sort here, not in loop
-    data.sort_values(t_column, inplace=True)
+    data.sort_values("frame", inplace=True)
     # set the index, needed later for reindexing, but do not do the loop
-    fnos = data[t_column].astype(int)
+    fnos = data["frame"].astype(int)
     data.set_index(fnos, inplace=True)
     return data
 
@@ -119,8 +109,7 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
         return ret
 
 
-def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
-        t_column=t_column, trackno_column=trackno_column):
+def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     r"""Calculate mean displacements from tracking data for one particle
 
     This calculates the mean displacement :math:`\langle x_i\rangle` for each
@@ -150,12 +139,6 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
         features. Defaults to the `pos_columns` attribute of the module.
-    t_column : str, optional
-        Name of the column containing frame numbers. Defaults to the
-        `t_column` of the module.
-    trackno_column : str, optional
-        Name of the column containing track numbers. Defaults to the
-        `trackno_column` attribute of the module.
     """
     # check if traj is empty
     cols = (["<{}>".format(p) for p in pos_columns] +
@@ -191,8 +174,7 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     return ret
 
 
-def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
-         t_column=t_column, trackno_column=trackno_column):
+def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     """Calculate mean square displacements from tracking data for each particle
 
     Parameters
@@ -229,7 +211,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         return pd.DataFrame()
 
     traj = _prepare_traj(data)
-    traj_grouped = traj.groupby(trackno_column)
+    traj_grouped = traj.groupby("particle")
     disps = []
     for pn, pdata in traj_grouped:
         disp = _displacements(pdata, max_lagtime)
@@ -248,9 +230,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
     return ret
 
 
-def all_displacements(data, max_lagtime=100,
-                      pos_columns=pos_columns, t_column=t_column,
-                      trackno_column=trackno_column):
+def all_displacements(data, max_lagtime=100, pos_columns=pos_columns):
     """Calculate all displacements
 
     For each lag time calculate all possible displacements for each trajectory
@@ -293,8 +273,8 @@ def all_displacements(data, max_lagtime=100,
         if not len(traj):
             continue
 
-        traj = _prepare_traj(traj, t_column=t_column)
-        traj_grouped = traj.groupby(trackno_column)
+        traj = _prepare_traj(traj)
+        traj_grouped = traj.groupby("particle")
 
         for pn, pdata in traj_grouped:
             _displacements(pdata, max_lagtime, pos_columns=pos_columns,
@@ -371,8 +351,7 @@ def emsd_from_square_displacements(sd_dict):
     return ret
 
 
-def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
-         t_column=t_column, trackno_column=trackno_column):
+def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     """Calculate ensemble mean square displacements from tracking data
 
     This is equivalent to consecutively calling :func:`all_displacements`,
@@ -408,8 +387,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns,
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
     """
-    disp_dict = all_displacements(data, max_lagtime,
-                                  pos_columns, t_column, trackno_column)
+    disp_dict = all_displacements(data, max_lagtime, pos_columns)
     sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
     return emsd_from_square_displacements(sd_dict)
 
@@ -737,9 +715,7 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, method="prony",
 
 
 def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
-             method="prony", poly_order=30,
-             pos_columns=pos_columns, t_column=t_column,
-             trackno_column=trackno_column):
+             method="prony", poly_order=30, pos_columns=pos_columns):
     r"""Calculate ensemble mean square displacements from tracking data CDF
 
     Fit the model cumulative density function to the measured CDF of tracking
@@ -790,8 +766,7 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
         Name of the column containing track numbers. Defaults to the
         `trackno_column` attribute of the module.
     """
-    disp_dict = all_displacements(data, max_lagtime, pos_columns, t_column,
-                                  trackno_column)
+    disp_dict = all_displacements(data, max_lagtime, pos_columns)
     sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
     return emsd_from_square_displacements_cdf(sd_dict, num_frac,
                                               method, poly_order)
