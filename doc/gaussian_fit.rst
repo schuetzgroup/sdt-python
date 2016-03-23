@@ -31,6 +31,6 @@ Models
 Auxiliary functions
 -------------------
 
-.. autofunction:: guess_paramaters
+.. autofunction:: guess_parameters
 .. autofunction:: gaussian_1d
 .. autofunction:: gaussian_2d
