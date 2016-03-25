@@ -1,10 +1,8 @@
 import os
 
-import qtpy
-from qtpy.QtWidgets import QFileDialog
+import qtpy.compat
 from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication,
                          pyqtProperty)
-from qtpy.QtGui import QPalette
 from qtpy import uic
 
 
@@ -49,15 +47,15 @@ class SaveWidget(locSaveBase):
         if format == "none":
             pass
         elif format == "settings":
-            fname = QFileDialog.getSaveFileName(
+            fname, _ = qtpy.compat.getsavefilename(
                 self, self.tr("Save file"), self._lastOpenDir,
-                self.tr("YAML data (*.yaml)") + ";;"
-                    + self.tr("All files (*)"))
-            if not fname[0]:
+                self.tr("YAML data (*.yaml)") + ";;" +
+                self.tr("All files (*)"))
+            if not fname:
                 # cancelled
                 return
-            self._lastOpenDir = fname[0]
-            self.saveOptions.emit(fname[0])
+            self._lastOpenDir = fname
+            self.saveOptions.emit(fname)
         else:
             self.locateAndSave.emit(format)
 
