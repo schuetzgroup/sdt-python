@@ -1,4 +1,6 @@
 """Collection of functions related to the brightness of fluorophores"""
+import warnings
+
 import numpy as np
 import pandas as pd
 import scipy.stats
@@ -117,8 +119,125 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
     positions["bg_dev"] = brightness[:, 2]
 
 
+class Distribution(object):
+    """Brightness distribution of fluorescent signals
+
+    Given a list of peak masses (integrated intensities), calculate the
+    masses' distribution as a function of the masses.
+
+    This works by considering each data point (`mass`) the result of many
+    single photon measurements. Thus, it is normal distributed with mean
+    `mass` and sigma `sqrt(mass)`. The total distribution is the
+    normalized sum of the normal distribution PDFs of all data points.
+
+    Attributes
+    ----------
+    graph : numpy.ndarray, shape=(2, n)
+        First row is the abscissa, second row is the ordinate of the normalized
+        distribution function.
+    """
+    def __init__(self, data, abscissa, smooth=2.):
+        """Parameters
+        ----------
+        data : pandas.DataFrame or numpy.ndarray or list of float
+            If a DataFrame is given, extract the masses from the "mass" column.
+            Otherwise consider it a list of mass values (i. e. the ndarray has
+            to be one-dimensional).
+        abscissa : numpy.ndarray or float
+            The abscissa (x axis) values for the calculated distribution.
+            Providing a float is equivalent to ``numpy.arange(abscissa + 1)``.
+        smooth : float, optional
+            Smoothing factor. The sigma of each individual normal PDF is
+            multiplied by this factor to achieve some smoothing. Defaults to 2.
+        """
+        if isinstance(data, pd.DataFrame):
+            data = data["mass"]
+        data = np.array(data, copy=False)
+
+        if isinstance(abscissa, np.ndarray):
+            x = abscissa
+        else:
+            x = np.arange(float(abscissa + 1))
+
+        y = np.zeros_like(x, dtype=np.float)
+        sigma = smooth * np.sqrt(data)
+
+        for m, s in zip(data, sigma):
+            y += scipy.stats.norm.pdf(x, m, s)
+
+        self.norm_factor = np.trapz(y, x)
+
+        y /= self.norm_factor
+        self.graph = np.array([x, y], copy=False)
+
+    def mean(self):
+        """Mean
+
+        Returns
+        -------
+        float
+            Mean (1st moment) of the distribution
+        """
+        x, y = self.graph
+        return np.trapz(x*y, x)
+
+    def std(self):
+        """Standard deviation
+
+        Returns
+        -------
+        float
+            Standard deviation (square root of the 2nd central moment) of the
+            distribution
+        """
+        m = self.mean()
+        x, y = self.graph
+        var = np.trapz((x-m)**2*y, x)
+        return np.sqrt(var)
+
+    def most_probable(self):
+        """Most probable value
+
+        Returns
+        -------
+        float
+            Most probable brightness (brightness value were the distribution
+            function has its maximum)
+        """
+        x, y = self.graph
+        return x[np.argmax(y)]
+
+    def plot(self, ax=None, label=None):
+        """Plot the distribution function graph
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes or None, optional
+            Axes to draw on. If `None`, use :py:func:`matplotlib.gca`.
+            Defaults to `None`.
+        label : str or None, optional
+            Label for the legend. Defaults to None
+        """
+        import matplotlib.pyplot as plt
+
+        if ax is None:
+            ax = plt.gca()
+
+        ax.plot(*self.graph, label=label)
+
+    def __repr__(self):
+        return """Brightness distribution
+Most probable value: {mp:.4g}
+Mean:                {mn:.4g}
+Standard deviation:  {std:.4g}""".format(
+            mp=self.most_probable(), mn=self.mean(), std=self.std())
+
+
 def distribution(data, abscissa, smooth=2.):
     """Calculate the brightness distribution
+
+    **WARNING: This function is depricated.** Use the :py:class:`Distribution`
+    class instead.
 
     Given a list of peak masses (`data`), calculate the distribution
     as a function of the masses. This can be considered a probability
@@ -151,6 +270,9 @@ def distribution(data, abscissa, smooth=2.):
     y : numpy.ndarray
         y axis values
     """
+    warnings.warn("Deprecated. Use the `Distribution` class instead.",
+                  FutureWarning)
+
     if isinstance(data, pd.DataFrame):
         data = data["mass"]
     data = np.array(data, copy=False)

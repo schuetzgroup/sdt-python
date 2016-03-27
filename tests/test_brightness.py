@@ -15,6 +15,7 @@ loc_path = os.path.join(path, "data_data")
 
 class TestBrightness(unittest.TestCase):
     def setUp(self):
+        # for raw image tests
         self.radius = 2
         self.bg_frame = 1
         self.pos1 = [30, 20]
@@ -43,6 +44,15 @@ class TestBrightness(unittest.TestCase):
         self.img[self.pos2[1]-self.radius:self.pos2[1]+self.radius+1,
                  self.pos2[0]-self.radius:self.pos2[0]+self.radius+1] = sig2
 
+        # for distribution tests
+        # output of MATLAB plotpdf
+        self.orig_pdf = np.load(os.path.join(data_path, "plot_pdf_xy.npz"))
+        # from data_data/pMHC_AF647_200k_000_.pkc
+        self.peak_data = \
+            pd.read_hdf(os.path.join(data_path, "peak_data.h5"), "features")
+
+        self.dist = sdt.brightness.Distribution(self.peak_data, 10000, 3)
+
     def test_from_raw_image_single(self):
         res = sdt.brightness._from_raw_image_single(
             [0] + self.pos1, [self.img], self.radius, self.bg_frame)
@@ -61,15 +71,28 @@ class TestBrightness(unittest.TestCase):
                                       self.bg_frame)
         np.testing.assert_allclose(data, expected)
 
-    def test_distribution(self):
-        # output of MATLAB plotpdf
-        orig = np.load(os.path.join(data_path, "plot_pdf_xy.npz"))
-        # from data_data/pMHC_AF647_200k_000_.pkc
-        data = pd.read_hdf(os.path.join(data_path, "peak_data.h5"), "features")
+    def test_distribution_graph(self):
+        x, y = self.dist.graph
+        np.testing.assert_allclose(x, self.orig_pdf["x"])
+        # different integration algorithm, need more tolerance
+        np.testing.assert_allclose(y, self.orig_pdf["y"], rtol=1e-4)
 
-        x, y = sdt.brightness.distribution(data, 10000, 3)
-        np.testing.assert_allclose(x, orig["x"])
-        np.testing.assert_allclose(y, orig["y"])
+    def test_distribution_mean(self):
+        # result of a test run
+        np.testing.assert_allclose(self.dist.mean(), 4724.816822941333)
+
+    def test_distribution_std(self):
+        # result of a test run
+        np.testing.assert_allclose(self.dist.std(), 2350.467296431491)
+
+    def test_distribution_most_probable(self):
+        # verified using MATLAB `plot_pdf`
+        np.testing.assert_allclose(self.dist.most_probable(), 2186)
+
+    def test_distribution(self):
+        x, y = sdt.brightness.distribution(self.peak_data, 10000, 3)
+        np.testing.assert_allclose(x, self.orig_pdf["x"])
+        np.testing.assert_allclose(y, self.orig_pdf["y"])
 
 
 if __name__ == "__main__":
