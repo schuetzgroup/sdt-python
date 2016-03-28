@@ -67,7 +67,6 @@ def _from_raw_image_single(data, frames, radius=2, bg_frame=2):
         # signal region without background frame (i. e. only the actual signal)
         signal_slice = [slice(bg_frame, -bg_frame)]*ndim
         uncorr_intensity = signal_region[signal_slice].sum()
-        # TODO: threshold uncorr intensity?
 
         # background correction: Only take frame pixels
         signal_region[signal_slice] = 0
@@ -93,13 +92,14 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
     positions : pandas.DataFrame
         Localization data. Brightness, background, and background deviation
         columns are added and/or replaced directly in this object.
-    frames : list of numpy.ndarrays
+    frames : iterable of numpy.ndarrays
         Raw image data
-    radius (int):
+    radius : int
         Half width of the box in which pixel values are summed up. E. g.
         using ``radius=3`` leads to the summation of pixels in a square of
         2*3 + 1 = 7 pixels width.
-    bg_frame (int, optional): Width of frame (in pixels) for background
+    bg_frame : int, optional
+        Width of frame (in pixels) around a feature for background
         determination. Defaults to 2.
 
     Other parameters
@@ -236,7 +236,7 @@ Standard deviation:  {std:.4g}""".format(
 def distribution(data, abscissa, smooth=2.):
     """Calculate the brightness distribution
 
-    **WARNING: This function is depricated.** Use the :py:class:`Distribution`
+    **WARNING: This function is deprecated.** Use the :py:class:`Distribution`
     class instead.
 
     Given a list of peak masses (`data`), calculate the distribution
