@@ -31,6 +31,8 @@ Overview
   (regions of interest) in image and localization data.
 - Using the :py:mod:`sdt.beam_shape` module, flat field correction of image
   and localization data can be achieved.
+- With help of the :py:mod:`sdt.sim` module, fluorescence microscopy images
+  can be simulated.
 - :py:mod:`sdt.pims` is an extension to the
   `pims <https://github.com/soft-matter/pims>`_ package for reading image data
   created by the *SDT-control* software and TIFF files created using
@@ -61,6 +63,7 @@ Table of contents
   data
   image_tools
   beam_shape
+  sim
   pims
   exp_fit
   gaussian_fit
