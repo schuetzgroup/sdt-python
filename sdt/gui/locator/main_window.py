@@ -206,8 +206,9 @@ class MainWindow(QMainWindow):
         if isinstance(file, str):
             file = self._fileModel.addItem(file)
 
+        filename = file.data(FileListModel.FileNameRole)
         try:
-            ims = pims.open(file.data(FileListModel.FileNameRole))
+            ims = pims.open(filename)
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error opening image"),
                                  self.tr(str(e)))
@@ -226,6 +227,10 @@ class MainWindow(QMainWindow):
         # also the options widget needs to know how many frames there are
         self._locOptionsDock.widget().numFrames = (0 if (ims is None)
                                                    else len(ims))
+        if file is not None:
+            self.setWindowTitle("locator - {}".format(filename))
+        else:
+            self.setWindowTitle("locator")
 
     @pyqtSlot(int)
     def on_viewer_frameReadError(self, frameno):
