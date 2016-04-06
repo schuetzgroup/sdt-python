@@ -104,6 +104,8 @@ class FileListModel(QAbstractListModel):
         self.setData(idx, roi, self.ROIRole)
         self.setData(idx, frameRange, self.FrameRangeRole)
 
+        return idx
+
     def files(self):
         return (d.fileName for d in self._data)
 

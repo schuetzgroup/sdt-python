@@ -1,7 +1,6 @@
 """Main window of the peak locator
 
-Contains MainWindow (derived from QMainWindow), which is launched if
-this is called as a script (__main__)
+Contains MainWindow (derived from QMainWindow)
 """
 import os
 import collections
@@ -11,13 +10,11 @@ import numpy as np
 import pandas as pd
 import pims
 
-from qtpy.QtGui import (QIcon, QPolygonF, QCursor)
-from qtpy.QtWidgets import (QApplication, QMainWindow, QAction, QFileDialog,
-                            QToolBar, QMessageBox, QSplitter, QToolBox,
-                            QDockWidget, QWidget, QLabel, QProgressDialog)
-from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QObject, QSettings,
-                         QModelIndex, QPersistentModelIndex, QMetaObject,
-                         QPointF)
+from qtpy.QtGui import QPolygonF, QCursor
+from qtpy.QtWidgets import (QApplication, QMainWindow, QMessageBox,
+                            QDockWidget)
+from qtpy.QtCore import (pyqtSignal, pyqtSlot, pyqtProperty, Qt, QSettings,
+                         QModelIndex, QPersistentModelIndex, QMetaObject)
 
 from ..widgets import micro_view
 from . import locate_options
@@ -31,15 +28,20 @@ from ...data import save, load
 
 
 def yaml_dict_representer(dumper, data):
-    """Represent an OrderedDict using PyYAML
+    """Represent an :py:class:`OrderedDict` using PyYAML
 
     This is to be passed as
-    `yaml.add_representer(collections.OrderedDict, yaml_dict_representer)`
+    ``yaml.add_representer(collections.OrderedDict, yaml_dict_representer)``
     """
     return dumper.represent_dict(data.items())
 
 
 def yaml_qpolygon_representer(dumper, data):
+    """Represent a :py:class:`QPolygon` using PyYAML
+
+    This is to be passed as
+    ``yaml.add_representer(QPolygonF, yaml_qpolygon_representer)``
+    """
     point_list = [[p.x(), p.y()] for p in data]
     return dumper.represent_list(point_list)
 
@@ -98,17 +100,17 @@ class MainWindow(QMainWindow):
     """Main window of the locator app"""
     __clsName = "LocatorMainWindow"
 
-    def tr(self, string):
-        """Translate the string using ``QApplication.translate``"""
+    def _tr(self, string):
+        """Translate the string using :py:func:`QApplication.translate`"""
         return QApplication.translate(self.__clsName, string)
 
     def __init__(self, parent=None):
-        """Constructor"""
         super().__init__(parent)
 
         # Create viewer widget
         self._viewer = micro_view.MicroViewWidget()
         self._viewer.setObjectName("viewer")
+        self._viewer.showLocalizationsChanged.connect(self.setShowPreview)
 
         # Create dock widgets
         fileChooser = file_chooser.FileChooser()
@@ -187,7 +189,7 @@ class MainWindow(QMainWindow):
 
         QMetaObject.connectSlotsByName(self)
 
-    @pyqtSlot(QModelIndex)
+    @pyqtSlot(QModelIndex, str)
     def open(self, file):
         """Open an image sequence
 
@@ -196,9 +198,14 @@ class MainWindow(QMainWindow):
 
         Parameters
         ----------
-        file : QModelIndex
-            Index of the entry in a ``FileListModel``
+        file : QModelIndex or str
+            Index of the entry in a `FileListModel` or the file name. If
+            `file` is a string, add the file to the `FileListModel` and show
+            it.
         """
+        if isinstance(file, str):
+            file = self._fileModel.addItem(file)
+
         try:
             ims = pims.open(file.data(FileListModel.FileNameRole))
         except Exception as e:
@@ -351,10 +358,19 @@ class MainWindow(QMainWindow):
         self._roiPolygon = roi
         self._makePreviewWorkerWork()
 
-    @pyqtSlot(bool)
-    def on_viewer_showLocalizationsChanged(self, show):
+    def setShowPreview(self, show):
+        if (self._viewer.showLocalizations == show and
+                self._previewWorker.enabled == show):
+            return
+
         self._previewWorker.enabled = show
+        self._viewer.showLocalizations = show
         self._makePreviewWorkerWork()
+
+    @pyqtProperty(bool, fset=setShowPreview,
+                  doc="Show preview of localizations")
+    def showPreview(self):
+        return self._viewer.showLocalizations
 
     def _saveMetadata(self, fname):
         """Save metadata to YAML
