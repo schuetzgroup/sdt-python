@@ -6,9 +6,7 @@ displays the settings widget for the currently selected one.
 import os
 
 import qtpy
-from qtpy.QtWidgets import QWidget, QFormLayout, QSpinBox, QComboBox, QLabel
-from qtpy.QtCore import (pyqtSignal, pyqtSlot, pyqtProperty, QCoreApplication,
-                         QTimer, Qt, QMetaObject)
+from qtpy.QtCore import pyqtSignal, pyqtSlot, pyqtProperty, QTimer, Qt
 from qtpy import uic
 
 from . import algorithms
@@ -20,7 +18,10 @@ path = os.path.dirname(os.path.abspath(__file__))
 algo_widget_dict = {}  # populated at the end of the file
 
 
-class Container(QWidget):
+contClass, contBase = uic.loadUiType(os.path.join(path, "locate_options.ui"))
+
+
+class Container(contBase):
     """Container widget
 
     Allows for selection of the alogorithm which displays the settings widget
@@ -28,36 +29,18 @@ class Container(QWidget):
     """
     __clsName = "LocateOptionsContainer"
     optionChangeDelay = 200
-    """How long to wait for more changes until updating the preview"""
-
-    def _tr(self, string):
-        """Translate string"""
-        return QCoreApplication.translate(self.__clsName, string)
+    """How long (ms) to wait for more changes until updating the preview"""
 
     def __init__(self, parent=None):
-        """Constructor
-
-        Parameters
+        """Parameters
         ----------
         parent : QWidget
             Parent widget
         """
         super().__init__(parent)
-        self._layout = QFormLayout()
-        self.setLayout(self._layout)
-        self._startFrameBox = QSpinBox()
-        self._startFrameBox.setObjectName("startFrameBox")
-        self._endFrameBox = QSpinBox()
-        self._endFrameBox.setObjectName("endFrameBox")
-        for sb in (self._startFrameBox, self._endFrameBox):
-            sb.setRange(0, 0)
-            sb.setSpecialValueText("auto")
-        self._methodBox = QComboBox()
-        self._methodBox.setObjectName("methodBox")
-        self._layout.addRow(QLabel(self._tr("First frame")),
-                            self._startFrameBox)
-        self._layout.addRow(QLabel(self._tr("Last frame")), self._endFrameBox)
-        self._layout.addRow(QLabel(self._tr("Algorithm")), self._methodBox)
+
+        self._ui = contClass()
+        self._ui.setupUi(self)
 
         self._delayTimer = QTimer(self)
         self._delayTimer.setInterval(self.optionChangeDelay)
@@ -66,62 +49,46 @@ class Container(QWidget):
             self._delayTimer.setTimerType(Qt.PreciseTimer)
         self._delayTimer.timeout.connect(self.optionsChanged)
 
-        # make sure the widgets are not garbage collected; save them in list
-        self._optWidgetList = []
         for name in list(algorithms.desc.keys()) + ["load file"]:
             w_class = algo_widget_dict.get(name)
             if w_class is None:
                 continue
             w = w_class()
-            self._methodBox.addItem(name, w)
-            self._layout.addRow(w)
-            w.hide()
-            self._optWidgetList.append(w)
+            self._ui.algorithmBox.addItem(name)
+            self._ui.stackedWidget.addWidget(w)
             w.optionsChanged.connect(self._delayTimer.start)
-
-        cur_idx = self._methodBox.currentIndex()
-        self._currentMethod = self._methodBox.itemText(cur_idx)
-        self._currentWidget = self._methodBox.itemData(cur_idx)
-        self.on_methodBox_currentIndexChanged(cur_idx)
-
-        QMetaObject.connectSlotsByName(self)
 
     optionsChanged = pyqtSignal()
 
     @pyqtProperty(dict, doc="Parameters to the currently selected algorithm")
     def options(self):
-        return self._currentWidget.options
+        return self._ui.stackedWidget.currentWidget().options
 
     @pyqtProperty(str, doc="Name of the currently selected algorithm")
     def method(self):
-        return self._currentMethod
+        return self._ui.algorithmBox.currentText()
 
     @pyqtSlot(int)
-    def on_methodBox_currentIndexChanged(self, idx):
-        if self._currentWidget is not None:
-            self._currentWidget.hide()
-        self._currentMethod = self._methodBox.itemText(idx)
-        self._currentWidget = self._methodBox.itemData(idx)
-        if self._currentWidget is not None:
-            self._currentWidget.show()
+    def on_algorithmBox_currentIndexChanged(self, idx):
+        self._ui.stackedWidget.setCurrentIndex(idx)
         self.optionsChanged.emit()
 
     def setNumFrames(self, n):
-        self._startFrameBox.setMaximum(n)
-        self._endFrameBox.setMaximum(n)
+        self._ui.startFrameBox.setMaximum(n)
+        self._ui.endFrameBox.setMaximum(n)
 
     numFramesChanged = pyqtSignal(int)
 
     @pyqtProperty(int, fset=setNumFrames, notify=numFramesChanged,
                   doc="Number of frames")
     def numFrames(self):
-        return self._endFrameBox.maximum()
+        return self._ui.endFrameBox.maximum()
 
     @pyqtProperty(tuple, doc="(startFrame, endFrame) as set in the GUI")
     def frameRange(self):
-        start = self._startFrameBox.value()
+        start = self._ui.startFrameBox.value()
         start = start - 1 if start > 0 else 0
-        end = self._endFrameBox.value()
+        end = self._ui.endFrameBox.value()
         end = end if end > 0 else -1
         return start, end
 
