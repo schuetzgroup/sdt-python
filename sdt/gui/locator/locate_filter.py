@@ -5,9 +5,10 @@ from contextlib import suppress
 import numpy as np
 
 import qtpy
-from qtpy.QtWidgets import QListWidgetItem
+from qtpy.QtWidgets import QListWidgetItem, QMenu, QAction
 from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QTimer, QCoreApplication,
                          pyqtProperty)
+from qtpy.QtGui import QCursor
 from qtpy import uic
 
 
@@ -37,20 +38,18 @@ class FilterWidget(filterBase):
             self._delayTimer.setTimerType(Qt.PreciseTimer)
         self._delayTimer.timeout.connect(self.filterChanged)
 
-        self._ui.splitter.setStretchFactor(0, 1)
-        self._ui.splitter.setStretchFactor(1, 2)
-
         self._ui.filterEdit.textChanged.connect(self._delayTimer.start)
-        self._ui.varListWidget.itemDoubleClicked.connect(
-            self._addVariableFromList)
+
+        self._menu = QMenu()
+        self._menu.triggered.connect(self._addVariable)
 
     filterChanged = pyqtSignal()
 
     @pyqtSlot(list)
     def setVariables(self, var):
-        while self._ui.varListWidget.count():
-            self._ui.varListWidget.takeItem(0)
-        self._ui.varListWidget.addItems(var)
+        self._menu.clear()
+        for v in var:
+            self._menu.addAction(v)
 
     def getFilterString(self):
         return self._ui.filterEdit.toPlainText()
@@ -78,8 +77,12 @@ class FilterWidget(filterBase):
 
         return filterFunc
 
-    @pyqtSlot(QListWidgetItem)
-    def _addVariableFromList(self, var):
+    @pyqtSlot(QAction)
+    def _addVariable(self, act):
         self._ui.filterEdit.textCursor().insertText(
-            "{{{0}}}".format(var.text()))
+            "{{{0}}}".format(act.text()))
 
+    @pyqtSlot(str)
+    def on_showVarLabel_linkActivated(self, link):
+        if not self._menu.isEmpty():
+            self._menu.exec(QCursor.pos())
