@@ -6,11 +6,12 @@ import qtpy.compat
 from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication, QObject,
                          QAbstractListModel, QModelIndex, pyqtProperty,
                          QEvent)
-from qtpy.QtGui import QPolygonF
+from qtpy.QtGui import QPolygonF, QIcon
 from qtpy import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
+iconpath = os.path.join(path, os.pardir, "icons")
 
 
 class FileListModel(QAbstractListModel):
@@ -177,7 +178,11 @@ class FileChooser(fcBase):
         self._model = FileListModel(self)
         self._ui.fileListView.setModel(self._model)
 
+        self._ui.addButton.setIcon(
+            QIcon(os.path.join(iconpath, "document-open.svg")))
         self._ui.addButton.pressed.connect(self._addFilesSlot)
+        self._ui.removeButton.setIcon(
+            QIcon(os.path.join(iconpath, "document-close.svg")))
         self._ui.removeButton.pressed.connect(self.removeSelected)
         self._ui.fileListView.doubleClicked.connect(self.selected)
 
