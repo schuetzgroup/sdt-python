@@ -1,6 +1,6 @@
 import traceback
+import argparse
 
-from qtpy.QtCore import QCommandLineParser, QCommandLineOption
 from qtpy.QtWidgets import QApplication, QMessageBox
 
 from .main_window import MainWindow
@@ -26,17 +26,15 @@ def run(argv):
     app = QApplication(argv)
     app.setApplicationName("locator")
 
-    cp = QCommandLineParser()
-    cp.setApplicationDescription(_tr("Locate fluorescent features in images"))
-    cp.addHelpOption()
-    previewOption = QCommandLineOption(
-        ["p", "preview"], _tr("Show preview"), "true/false")
-    cp.addOption(previewOption)
-    cp.addPositionalArgument("files", _tr("Files to open, optional"))
-    cp.process(app)
-
-    preview = cp.value(previewOption)
-    files = cp.positionalArguments()
+    ap = argparse.ArgumentParser(
+        prog="python -m sdt.gui.locator",
+        description=_tr("Locate fluorescent features in images"))
+    ap.add_argument("files", metavar="FILE", nargs="*",
+                    help=_tr("File to open, optional"))
+    ap.add_argument("-p", "--preview",
+                    type=lambda x: x in ("t", "1", "true", "yes"),
+                    help=_tr("Show preview (true/false), optional"))
+    args = ap.parse_args(app.arguments()[1:])  # first arg is the executable
 
     try:
         w = MainWindow()
@@ -49,10 +47,10 @@ def run(argv):
 
     w.show()
 
-    for f in files:
+    for f in args.files:
         w.open(f)
 
-    if preview:
-        w.showPreview = preview.lower() in ("t", "1", "true", "yes")
+    if args.preview is not None:
+        w.showPreview = args.preview
 
     return app.exec_()
