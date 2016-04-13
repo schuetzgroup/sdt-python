@@ -125,8 +125,8 @@ class Distribution(object):
     Given a list of peak masses (integrated intensities), calculate the
     masses' distribution as a function of the masses.
 
-    This works by considering each data point (`mass`) the result of many
-    single photon measurements. Thus, it is normal distributed with mean
+    This works by considering each data point (`mass`) the result of a
+    photon counting experiment. Thus, it is distributed with mean
     `mass` and sigma `sqrt(mass)`. The total distribution is the
     normalized sum of the normal distribution PDFs of all data points.
 
@@ -135,6 +135,9 @@ class Distribution(object):
     graph : numpy.ndarray, shape=(2, n)
         First row is the abscissa, second row is the ordinate of the normalized
         distribution function.
+    num_data : int
+        Number of data points (single molecules) used to create the
+        distribution
     """
     def __init__(self, data, abscissa, smooth=2.):
         """Parameters
@@ -169,6 +172,8 @@ class Distribution(object):
 
         y /= self.norm_factor
         self.graph = np.array([x, y], copy=False)
+
+        self.num_data = len(data)
 
     def mean(self):
         """Mean
@@ -227,10 +232,12 @@ class Distribution(object):
 
     def __repr__(self):
         return """Brightness distribution
-Most probable value: {mp:.4g}
-Mean:                {mn:.4g}
-Standard deviation:  {std:.4g}""".format(
-            mp=self.most_probable(), mn=self.mean(), std=self.std())
+Number of data points: {num_d}
+Most probable value:   {mp:.4g}
+Mean:                  {mn:.4g}
+Standard deviation:    {std:.4g}""".format(
+            num_d=self.num_data, mp=self.most_probable(), mn=self.mean(),
+            std=self.std())
 
 
 def distribution(data, abscissa, smooth=2.):
