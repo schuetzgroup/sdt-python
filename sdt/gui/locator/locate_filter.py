@@ -51,7 +51,12 @@ class FilterWidget(filterBase):
         for v in var:
             self._menu.addAction(v)
 
-    def getFilterString(self):
+    def setFilterString(self, filt):
+        self._ui.filterEdit.setPlainText(filt)
+
+    @pyqtProperty(str, fset=setFilterString,
+                  doc="String describing the filter")
+    def filterString(self):
         return self._ui.filterEdit.toPlainText()
 
     def getFilter(self):

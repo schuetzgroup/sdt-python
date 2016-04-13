@@ -4,15 +4,18 @@ There is a container widget that allows for selection of the alogorithm which
 displays the settings widget for the currently selected one.
 """
 import os
+import numbers
 
 import qtpy
 from qtpy.QtCore import pyqtSignal, pyqtSlot, pyqtProperty, QTimer, Qt
+from qtpy.QtGui import QIcon
 from qtpy import uic
 
 from . import algorithms
 
 
 path = os.path.dirname(os.path.abspath(__file__))
+iconpath = os.path.join(path, os.pardir, "icons")
 
 
 algo_widget_dict = {}  # populated at the end of the file
@@ -58,13 +61,32 @@ class Container(contBase):
             self._ui.stackedWidget.addWidget(w)
             w.optionsChanged.connect(self._delayTimer.start)
 
+        self._ui.saveButton.setIcon(
+            QIcon(os.path.join(iconpath, "document-save-as.svg")))
+        self._ui.loadButton.setIcon(
+            QIcon(os.path.join(iconpath, "document-open.svg")))
+
+        self._ui.saveButton.pressed.connect(self.save)
+        self._ui.loadButton.pressed.connect(self.load)
+
+    def setOptions(self, opts):
+        self._ui.stackedWidget.currentWidget().options = opts
+
     optionsChanged = pyqtSignal()
 
-    @pyqtProperty(dict, doc="Parameters to the currently selected algorithm")
+    @pyqtProperty(dict, fset=setOptions, notify=optionsChanged,
+                  doc="Parameters to the currently selected algorithm")
     def options(self):
         return self._ui.stackedWidget.currentWidget().options
 
-    @pyqtProperty(str, doc="Name of the currently selected algorithm")
+    def setMethod(self, meth):
+        idx = self._ui.algorithmBox.findText(meth)
+        if idx < 0:
+            raise ValueError("Unsupported algorithm")
+        self._ui.algorithmBox.setCurrentIndex(idx)
+
+    @pyqtProperty(str, fset=setMethod,
+                  doc="Name of the currently selected algorithm")
     def method(self):
         return self._ui.algorithmBox.currentText()
 
@@ -92,6 +114,9 @@ class Container(contBase):
         end = end if end > 0 else -1
         return start, end
 
+    save = pyqtSignal()
+    load = pyqtSignal()
+
 
 d3dClass, d3dBase = uic.loadUiType(os.path.join(path, "d3d_options.ui"))
 
@@ -110,7 +135,34 @@ class Daostorm3DOptions(d3dBase):
 
     optionsChanged = pyqtSignal()
 
-    @pyqtProperty(dict, doc="Localization algorithm parameters")
+    def setOptions(self, opts):
+        v = opts.get("radius")
+        changed = False
+        if isinstance(v, numbers.Number) and v != self._ui.radiusBox.value():
+            self._ui.radiusBox.setValue(v)
+            changed = True
+        v = opts.get("threshold")
+        if (isinstance(v, numbers.Number) and
+                v != self._ui.thresholdBox.value()):
+            self._ui.thresholdBox.setValue(v)
+            changed = True
+        v = opts.get("max_iterations")
+        if (isinstance(v, numbers.Number) and
+                v != self._ui.iterationsBox.value()):
+            self._ui.iterationsBox.setValue(v)
+            changed = True
+        v = opts.get("model")
+        if (isinstance(v, str) and v != self._ui.modelBox.currentText()):
+            idx = self._ui.modelBox.findText(v)
+            if idx >= 0:
+                self._ui.modelBox.setCurrentIndex(idx)
+            changed = True
+
+        if changed:
+            self.optionsChanged.emit()
+
+    @pyqtProperty(dict, fset=setOptions,
+                  doc="Localization algorithm parameters")
     def options(self):
         opt = dict(radius=self._ui.radiusBox.value(),
                    threshold=self._ui.thresholdBox.value(),
@@ -135,7 +187,27 @@ class FastPeakpositionOptions(fpBase):
 
     optionsChanged = pyqtSignal()
 
-    @pyqtProperty(dict, doc="Localization algorithm parameters")
+    def setOptions(self, opts):
+        v = opts.get("radius")
+        changed = False
+        if isinstance(v, numbers.Number) and v != self._ui.radiusBox.value():
+            self._ui.radiusBox.setValue(v)
+            changed = True
+        v = opts.get("threshold")
+        if (isinstance(v, numbers.Number) and
+                v != self._ui.thresholdBox.value()):
+            self._ui.thresholdBox.setValue(v)
+            changed = True
+        v = opts.get("im_size")
+        if isinstance(v, int) and v != self._ui.imsizeBox.value():
+            self._ui.imsizeBox.setValue(v)
+            changed = True
+
+        if changed:
+            self.optionsChanged.emit()
+
+    @pyqtProperty(dict, fset=setOptions,
+                  doc="Localization algorithm parameters")
     def options(self):
         opt = dict(radius=self._ui.radiusBox.value(),
                    threshold=self._ui.thresholdBox.value(),
@@ -158,6 +230,26 @@ class CGOptions(cgBase):
         self._ui.massThresholdBox.valueChanged.connect(self.optionsChanged)
 
     optionsChanged = pyqtSignal()
+
+    def setOptions(self, opts):
+        v = opts.get("radius")
+        changed = False
+        if isinstance(v, numbers.Number) and v != self._ui.radiusBox.value():
+            self._ui.radiusBox.setValue(v)
+            changed = True
+        v = opts.get("signal_thresh")
+        if (isinstance(v, numbers.Number) and
+                v != self._ui.sigThresholdBox.value()):
+            self._ui.sigThresholdBox.setValue(v)
+            changed = True
+        v = opts.get("mass_thresh")
+        if (isinstance(v, numbers.Number) and
+                v != self._ui.massThresholdBox.value()):
+            self._ui.massThresholdBox.setValue(v)
+            changed = True
+
+        if changed:
+            self.optionsChanged.emit()
 
     @pyqtProperty(dict, doc="Localization algorithm parameters")
     def options(self):

@@ -87,11 +87,24 @@ class MicroViewScene(QGraphicsScene):
         self.roiModeChanged.emit(enable)
 
     roiModeChanged = pyqtSignal(bool)
-    roiChanged = pyqtSignal(QPolygonF)
 
     @pyqtProperty(bool, fset=enableRoiMode)
     def roiMode(self):
         return self._roiMode
+
+    def setRoi(self, roi):
+        if self._roiPolygon == roi:
+            return
+        self._roiPolygon = roi
+        self._roiItem.setPolygon(self._roiPolygon)
+        self.roiChanged.emit(roi)
+
+    roiChanged = pyqtSignal(QPolygonF)
+
+    @pyqtProperty(QPolygonF, fset=setRoi,
+                  doc="Polygon describing the region of interest (ROI)")
+    def roi(self):
+        return self._roiPolygon
 
     def _appendPointToRoi(self, pos, polygon, replace_last=False):
         br = self._imageItem.boundingRect()
@@ -239,7 +252,15 @@ class MicroViewWidget(mvBase):
         self._locMarkers = None
         self.setImageSequence(None)
 
+    def setRoi(self, roi):
+        self._scene.roi = roi
+
     roiChanged = pyqtSignal(QPolygonF)
+
+    @pyqtProperty(QPolygonF, fset=setRoi,
+                  doc="Polygon describing the region of interest (ROI)")
+    def roi(self):
+        return self._scene.roi
 
     def setImageSequence(self, ims):
         self._locDataGood = None

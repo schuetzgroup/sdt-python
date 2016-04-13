@@ -4,17 +4,20 @@ Contains MainWindow (derived from QMainWindow)
 """
 import os
 import collections
+import contextlib
 
 import yaml
 import numpy as np
 import pandas as pd
 import pims
 
+import qtpy
 from qtpy.QtGui import QPolygonF, QCursor
 from qtpy.QtWidgets import (QApplication, QMainWindow, QMessageBox,
                             QDockWidget)
 from qtpy.QtCore import (pyqtSignal, pyqtSlot, pyqtProperty, Qt, QSettings,
-                         QModelIndex, QPersistentModelIndex, QMetaObject)
+                         QModelIndex, QPersistentModelIndex, QMetaObject,
+                         QPointF)
 
 from ..widgets import micro_view
 from . import locate_options
@@ -121,17 +124,18 @@ class MainWindow(QMainWindow):
         self._fileDock.setObjectName("fileDock")
         self._fileDock.setWidget(fileChooser)
 
-        optionsWidget = locate_options.Container()
+        self._locOptionsWidget = locate_options.Container()
+        self._locOptionsWidget.setObjectName("locOptionsWidget")
         self._locOptionsDock = QDockWidget(self.tr("Localization options"),
                                            self)
         self._locOptionsDock.setObjectName("locOptionsDock")
-        self._locOptionsDock.setWidget(optionsWidget)
+        self._locOptionsDock.setWidget(self._locOptionsWidget)
 
-        filterWidget = locate_filter.FilterWidget()
-        filterWidget.filterChanged.connect(self._filterLocalizations)
+        self._locFilterWidget = locate_filter.FilterWidget()
+        self._locFilterWidget.filterChanged.connect(self._filterLocalizations)
         self._locFilterDock = QDockWidget(self.tr("Localization filter"), self)
         self._locFilterDock.setObjectName("locFilterDock")
-        self._locFilterDock.setWidget(filterWidget)
+        self._locFilterDock.setWidget(self._locFilterWidget)
 
         locSaveWidget = locate_saver.SaveWidget()
         self._locSaveDock = QDockWidget(self.tr("Save localizations"), self)
@@ -148,7 +152,8 @@ class MainWindow(QMainWindow):
 
         # set up the preview worker
         self._previewWorker = workers.PreviewWorker(self)
-        optionsWidget.optionsChanged.connect(self._makePreviewWorkerWork)
+        self._locOptionsWidget.optionsChanged.connect(
+            self._makePreviewWorkerWork)
         self._viewer.currentFrameChanged.connect(self._makePreviewWorkerWork)
         self._previewWorker.finished.connect(self._previewFinished)
         self._previewWorker.error.connect(self._previewError)
@@ -173,6 +178,7 @@ class MainWindow(QMainWindow):
         self._currentFile = QPersistentModelIndex()
         self._currentLocData = pd.DataFrame(columns=["x", "y"])
         self._roiPolygon = QPolygonF()
+        self._lastDir = ""
 
         # load settings and restore window geometry
         settings = QSettings("sdt", "locator")
@@ -225,8 +231,8 @@ class MainWindow(QMainWindow):
         self._viewer.setImageSequence(ims)
         self._viewer.zoomFit()
         # also the options widget needs to know how many frames there are
-        self._locOptionsDock.widget().numFrames = (0 if (ims is None)
-                                                   else len(ims))
+        self._locOptionsWidget.numFrames = (0 if (ims is None)
+                                            else len(ims))
         if file is not None:
             self.setWindowTitle("locator - {}".format(filename))
         else:
@@ -249,8 +255,8 @@ class MainWindow(QMainWindow):
                 not self._viewer.showLocalizations):
             return
 
-        cur_method = self._locOptionsDock.widget().method
-        cur_opts = self._locOptionsDock.widget().options
+        cur_method = self._locOptionsWidget.method
+        cur_opts = self._locOptionsWidget.options
 
         file_method = self._currentFile.data(FileListModel.LocMethodRole)
         file_opts = self._currentFile.data(FileListModel.LocOptionsRole)
@@ -267,7 +273,7 @@ class MainWindow(QMainWindow):
             data = data[data["frame"] == curFrameNo]
 
             self._currentLocData = data
-            self._locFilterDock.widget().setVariables(
+            self._locFilterWidget.setVariables(
                 data.columns.values.tolist())
             self._filterLocalizations()
 
@@ -314,7 +320,7 @@ class MainWindow(QMainWindow):
         This gets triggered by the file list model's ``rowsRemoved`` signal
         """
         if not self._currentFile.isValid():
-            self._locOptionsDock.widget().numFrames = 0
+            self._locOptionsWidget.numFrames = 0
             self._viewer.setImageSequence(None)
 
     @pyqtSlot(bool)
@@ -332,7 +338,7 @@ class MainWindow(QMainWindow):
         data using ``_filterLocalizations``.
         """
         self._currentLocData = data
-        self._locFilterDock.widget().setVariables(data.columns.values.tolist())
+        self._locFilterWidget.setVariables(data.columns.values.tolist())
         self._filterLocalizations()
 
     @pyqtSlot(Exception)
@@ -352,7 +358,7 @@ class MainWindow(QMainWindow):
 
         Call the viewer's ``setLocalizationData`` accordingly.
         """
-        filterFunc = self._locFilterDock.widget().getFilter()
+        filterFunc = self._locFilterWidget.getFilter()
         good = filterFunc(self._currentLocData)
         self._viewer.setLocalizationData(self._currentLocData[good],
                                          self._currentLocData[~good])
@@ -389,21 +395,76 @@ class MainWindow(QMainWindow):
             Name of the output file
         """
         metadata = collections.OrderedDict()
-        metadata["algorithm"] = self._locOptionsDock.widget().method
-        metadata["options"] = self._locOptionsDock.widget().options
+        metadata["algorithm"] = self._locOptionsWidget.method
+        metadata["options"] = self._locOptionsWidget.options
         metadata["roi"] = self._roiPolygon
-        metadata["filter"] = self._locFilterDock.widget().getFilterString()
+        metadata["filter"] = self._locFilterWidget.filterString
         with open(fname, "w") as f:
             yaml.dump(metadata, f, default_flow_style=False)
 
-    @pyqtSlot(str)
-    def on_locateSaveWidget_saveOptions(self, fname):
-        """Only save metadata, do not locate"""
+    @pyqtSlot()
+    def on_locOptionsWidget_save(self):
+        # save options
+        fname, _ = qtpy.compat.getsavefilename(
+            self, self.tr("Save file"), self._lastDir,
+            self.tr("YAML data (*.yaml)") + ";;" +
+            self.tr("All files (*)"))
+        if not fname:
+            # cancelled
+            return
+        self._lastDir = os.path.dirname(fname)
+
         try:
             self._saveMetadata(fname)
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error writing to file"),
                                  self.tr(str(e)))
+
+    @pyqtSlot()
+    def on_locOptionsWidget_load(self):
+        # load options
+        fname, _ = qtpy.compat.getopenfilename(
+            self, self.tr("Save file"), self._lastDir,
+            self.tr("YAML data (*.yaml)") + ";;" +
+            self.tr("All files (*)"))
+        if not fname:
+            # cancelled
+            return
+        self._lastDir = os.path.dirname(fname)
+
+        try:
+            with open(fname) as f:
+                md = yaml.safe_load(f)
+            if not isinstance(md, dict):
+                raise RuntimeError()
+        except:
+            QMessageBox.critical(self, self.tr("Error loading settings"),
+                                 self.tr("Error reading file."))
+            return
+
+        algo = md.get("algorithm")
+        if isinstance(algo, str):
+            try:
+                self._locOptionsWidget.method = algo
+            except:
+                QMessageBox.critical(self, self.tr("Error loading settings"),
+                                     self.tr("Unsupported algorithm"))
+                return
+            opts = md.get("options")
+            self._locOptionsWidget.options = opts
+
+        filt = md.get("filter")
+        if isinstance(filt, str):
+            self._locFilterWidget.filterString = filt
+
+        roi = md.get("roi")
+        with contextlib.suppress(Exception):
+            vert = []
+            for x, y in roi:
+                vert.append(QPointF(x, y))
+            r = QPolygonF(vert)
+            self._viewer.roi = r
+            self._roiPolygon = r
 
     @pyqtSlot(str)
     def on_locateSaveWidget_locateAndSave(self, format):
@@ -414,7 +475,7 @@ class MainWindow(QMainWindow):
         self._progressDialog.maximum = self._fileModel.rowCount()
         self._progressDialog.show()
 
-        optWid = self._locOptionsDock.widget()
+        optWid = self._locOptionsWidget
         self._batchWorker.processFiles(self._fileModel, optWid.frameRange,
                                        optWid.options, optWid.method,
                                        self._roiPolygon)
@@ -435,7 +496,7 @@ class MainWindow(QMainWindow):
         options : dict
             Options used for locating peaks
         """
-        optsWidget = self._locOptionsDock.widget()
+        optsWidget = self._locOptionsWidget
         index = self._fileModel.index(idx)
         self._fileModel.setData(index, data, FileListModel.LocDataRole)
         self._fileModel.setData(index, options, FileListModel.LocOptionsRole)
@@ -453,7 +514,7 @@ class MainWindow(QMainWindow):
         saveFileName = os.path.join(fdir, fname)
         os.makedirs(fdir, exist_ok=True)
 
-        filterFunc = self._locFilterDock.widget().getFilter()
+        filterFunc = self._locFilterWidget.getFilter()
         data = data[filterFunc(data)]
 
         save(saveFileName, data)  # sdt.data.save
