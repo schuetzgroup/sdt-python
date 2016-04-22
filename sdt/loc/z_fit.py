@@ -9,6 +9,7 @@ import collections
 
 import numpy as np
 import yaml
+from scipy.optimize import curve_fit
 
 
 # Save arrays and OrderedDicts to YAML
@@ -28,17 +29,14 @@ _ParameterDumper.add_representer(collections.OrderedDict,
                                  _yaml_dict_representer)
 
 
-ParamTuple = collections.namedtuple("ParamTuple", ["w0", "c", "d", "a"])
-
-
 class Fitter(object):
     """Class for fitting the z position from the elipticity of PSFs
 
-    This implements the Zhuang group's z fitting algorithm [1]_. The
+    This implements the Zhuang group's z fitting algorithm [*]_. The
     calibration curves for x and y are calculated from the parameters and the
     z position is determined by finding the minimum "distance" from the curve.
 
-    .. [1] See the `fitz` program in the `sa_utilities` directory in
+    .. [*] See the `fitz` program in the `sa_utilities` directory in
         `their git repository <https://github.com/ZhuangLab/storm-analysis>`_.
     """
     def __init__(self, params, min=-.5, max=.5, resolution=1e-3):
@@ -90,13 +88,28 @@ class Parameters(object):
     """
     _file_header = "# z fit parameters\n"
 
+    _PTuple = collections.namedtuple("ParamTuple", ["w0", "c", "d", "a"])
+    _PTuple.__new__.__doc__ = ""
+
+    class Tuple(_PTuple):
+        """Named tuple of the parameters for one axis
+
+        Attributes
+        ----------
+        w0, c, d : float
+            :math:`w_0, c, d` of the calibration curve
+        a : numpy.ndarray
+            Polynomial coefficients :math:`a_i` of the calibration curve
+        """
+        pass
+
     def __init__(self):
-        self.x = ParamTuple(1, 0, np.inf, np.array([]))
-        self.y = ParamTuple(1, 0, np.inf, np.array([]))
+        self.x = self.Tuple(1, 0, np.inf, np.array([]))
+        self.y = self.Tuple(1, 0, np.inf, np.array([]))
 
     @property
     def x(self):
-        """x calibration curve"""
+        """x calibration curve parameter :py:class:`Tuple`"""
         return self._x
 
     @x.setter
@@ -106,7 +119,7 @@ class Parameters(object):
 
     @property
     def y(self):
-        """y calibration curve"""
+        """y calibration curve parameter :py:class:`Tuple`"""
         return self._y
 
     @y.setter
@@ -164,6 +177,11 @@ class Parameters(object):
         ----------
         file : str or file-like object
             File name or the file to read from
+
+        Returns
+        -------
+        Parameters
+            Class instance with parameters loaded from file
         """
         if isinstance(file, str):
             with open(file, "r") as f:
@@ -173,10 +191,48 @@ class Parameters(object):
 
         ret = cls()
         ret.x, ret.y = \
-            (ParamTuple(d["w0"], d["c"], d["d"], np.array(d["a"]))
+            (cls.Tuple(d["w0"], d["c"], d["d"], np.array(d["a"]))
              for d in (s["x"], s["y"]))
         return ret
 
     @classmethod
-    def calibrate(cls, pos, loc):
-        pass
+    def calibrate(cls, loc, guess=Tuple(1., 0., 1., np.ones(2))):
+        """Get parameters from calibration sample
+
+        Extract fitting parameters from PSFs where the z position is known.
+
+        Parameters
+        ----------
+        loc : pandas.DataFrame
+            Localization data of a calibration sample. `z`, `size_x`, and
+            `size_y` columns need to be present.
+        guess : ParamTuple, optional
+            Initial guess for the parameter fitting. The length of the
+            `guess.a` array also determines the number of polynomial parameters
+            to be fitted. Defaults to (1., 0., 1., np.ones(2)).
+
+        Returns
+        -------
+        Parameters
+            Class instance with parameters from the calibration sample
+        """
+        def curve(pos, w0, c, d, *a):
+            p = np.polynomial.Polynomial(np.hstack(([1, 0, 1], a)))
+            t = (pos - c)/d
+            return w0**2*p(t)
+
+        ret = cls()
+        pos = loc["z"]
+        fit_bounds = (np.array([0, -np.inf, 0] + [-np.inf]*len(guess.a)),
+                      np.inf)
+
+        for coord in ("x", "y"):
+            sigma = loc["size_" + coord]
+            fit = curve_fit(
+                curve, pos, sigma**2,
+                [guess.w0, guess.c, guess.d] + [1.]*len(guess.a),
+                bounds=fit_bounds)[0]
+            p = cls.Tuple(fit[0], fit[1], fit[2], fit[3:])
+            setattr(ret, coord, p)
+
+        return ret
