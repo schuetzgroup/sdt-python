@@ -15,8 +15,18 @@ data_path = os.path.join(path, "data_loc")
 class TestZFit(unittest.TestCase):
     def setUp(self):
         self.parameters = z_fit.Parameters()
-        self.parameters.x = z_fit.ParamTuple(2., 0.15, 0.4, np.array([0.5]))
-        self.parameters.y = z_fit.ParamTuple(2., -0.15, 0.4, np.array([0.5]))
+        self.parameters.x = z_fit.Parameters.Tuple(2., 0.15, 0.4,
+                                                   np.array([0.5, 0]))
+        self.parameters.y = z_fit.Parameters.Tuple(2., -0.15, 0.4,
+                                                   np.array([0.5, 0]))
+
+    def _assert_params_close(self, params):
+        for n in ("x", "y"):
+            par = getattr(params, n)
+            orig = getattr(self.parameters, n)
+            p_arr = np.array([par.w0, par.c, par.d] + par.a.tolist())
+            o_arr = np.array([orig.w0, orig.c, orig.d] + orig.a.tolist())
+            np.testing.assert_allclose(p_arr, o_arr, atol=1e-15)
 
     def test_sigma_from_z(self):
         z = np.array([-0.15, 0, 0.15])
@@ -31,24 +41,29 @@ class TestZFit(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             fname = os.path.join(td, "p.yaml")
             self.parameters.save(fname)
-            new_params = z_fit.Parameters.load(fname)
-            assert(new_params.x == self.parameters.x)
-            assert(new_params.y == self.parameters.y)
+            p = z_fit.Parameters.load(fname)
+        self._assert_params_close(p)
 
     def test_load(self):
         p = z_fit.Parameters.load(os.path.join(data_path, "params.yaml"))
-        assert(p.x == self.parameters.x)
-        assert(p.y == self.parameters.y)
+        self._assert_params_close(p)
 
     def test_calibrate(self):
-        pass
+        pos = np.linspace(-0.5, 0.5, 1001)
+        sigmas = self.parameters.sigma_from_z(pos)
+        loc = pd.DataFrame(np.vstack((pos, sigmas)).T,
+                           columns=["z", "size_x", "size_y"])
+        p = z_fit.Parameters.calibrate(loc)
+        self._assert_params_close(p)
 
 
 class TestFitter(unittest.TestCase):
     def setUp(self):
         self.parameters = z_fit.Parameters()
-        self.parameters.x = z_fit.ParamTuple(2., 0.15, 0.4, np.array([0.5]))
-        self.parameters.y = z_fit.ParamTuple(2., -0.15, 0.4, np.array([0.5]))
+        self.parameters.x = z_fit.Parameters.Tuple(2., 0.15, 0.4,
+                                                   np.array([0.5]))
+        self.parameters.y = z_fit.Parameters.Tuple(2., -0.15, 0.4,
+                                                   np.array([0.5]))
 
         self.fitter = z_fit.Fitter(self.parameters)
 
