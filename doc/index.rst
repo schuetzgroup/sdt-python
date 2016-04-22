@@ -17,6 +17,8 @@ Overview
   features in images. To that end, several algorithms are provided
   (:py:mod:`sdt.loc.daostorm_3d`, :py:mod:`sdt.loc.cg`,
   :py:mod:`sdt.loc.fast_peakposition`),  which all share a similar API.
+  Additionally, :py:mod:`sdt.loc.z_fit` allows for determining the z
+  position of features from astigmatism.
 - The :py:mod:`sdt.motion` module contains functions for determination of
   motion parameters (mean square displacements, diffusion coefficients, …)
   from tracking experiments
@@ -57,6 +59,7 @@ Table of contents
   :maxdepth: 2
 
   loc
+  z_fit
   motion
   brightness
   chromatic
