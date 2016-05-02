@@ -15,7 +15,7 @@ It contains
 - much more.
 
 
-Extended documentation can be found at https://hal.iap.tuwien.ac.at/py_sdt_doc/
+Extensive documentation can be found at https://hal.iap.tuwien.ac.at/py_sdt_doc/
 
 
 Requirements
