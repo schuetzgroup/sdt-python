@@ -24,8 +24,8 @@ class Finder(find.Finder):
 
             # actual calculations
             num_peaks = _numba_local_maxima(
-                idx_of_max, image, self.background + threshold,
-                self.peak_count, self.search_radius, self.margin)
+                idx_of_max, image, threshold, self.peak_count,
+                self.search_radius, self.margin)
 
             if num_peaks >= 0:
                 # no error

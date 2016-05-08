@@ -7,6 +7,7 @@ import numpy as np
 from scipy import ndimage
 
 from .data import Peaks, col_nums, feat_status
+from .. import bg_estimator as _bg_est
 
 
 class Finder(object):
@@ -20,10 +21,9 @@ class Finder(object):
     """
     max_peak_count = 2
 
-    def __init__(self, image, peak_radius, search_radius=5, margin=10):
-        """Constructor
-
-        Parameters
+    def __init__(self, image, peak_radius, search_radius=5, margin=10,
+                 bg_estimator=_bg_est.GaussianSmooth()):
+        """Parameters
         ----------
         peak_radius : float
             Initial guess of peaks' radii
@@ -34,12 +34,17 @@ class Finder(object):
         margin : int, optional
             How much of the image's edges to discard as margin. Defaults to
             10. Make sure this is the same as the `Fitter` margin.
+        bg_estimator : callable, optional
+            Takes the image as the only argument and returns an estimate
+            "image" (i. e. array) of its background. Defaults to a Gaussian
+            smoothing filter.
         """
-        self.background = np.mean(image)
+        self.image = image
         self.margin = margin
         self.search_radius = search_radius
         self.radius = peak_radius
         self.peak_count = np.zeros(image.shape, dtype=np.int)
+        self.bg_estimator = bg_estimator
 
     def find(self, image, threshold):
         """Find and filter local maxima
@@ -62,26 +67,34 @@ class Finder(object):
         data.Peaks
             Data structure containing initial guesses for fitting.
         """
-        coords = self.local_maxima(image, threshold)
+        bg = self.bg_estimator(image)
+        image_wo_bg = image - bg
+        coords = self.local_maxima(image_wo_bg, threshold)
 
         non_excessive_count_mask = (self.peak_count[coords.T.tolist()] <
                                     self.max_peak_count)
         ne_coords = coords[non_excessive_count_mask, :]
-        self.peak_count[ne_coords.T.tolist()] += 1
+        ne_coords_list = ne_coords.T.tolist()
+        self.peak_count[ne_coords_list] += 1
+        ne_coords_bg = bg[ne_coords_list]
 
         ret = Peaks(len(ne_coords))
         ret[:, [col_nums.y, col_nums.x]] = ne_coords
         ret[:, col_nums.wx] = ret[:, col_nums.wy] = self.radius
-        ret[:, col_nums.amp] = (image[ne_coords.T.tolist()] -
-                                self.background)
-        ret[:, col_nums.bg] = self.background
+        # it would seem more logical to use the residual, like so:
+        ret[:, col_nums.amp] = image_wo_bg[ne_coords_list]
+        # however, this seems (in some quick tests) to produce more
+        # spurious localizations than the code below (which is also what the
+        # original implementation uses)
+        ret[:, col_nums.amp] = self.image[ne_coords_list] - ne_coords_bg
+        ret[:, col_nums.bg] = ne_coords_bg
         ret[:, col_nums.z] = 0.
         ret[:, col_nums.stat] = feat_status.run
         ret[:, col_nums.err] = 0.
 
         return ret
 
-    def local_maxima(self, image, threshold):
+    def local_maxima(self, image_wo_bg, threshold):
         """Find local maxima in image
 
         Finds the locations of all the local maxima in an image with
@@ -93,8 +106,8 @@ class Finder(object):
 
         Parameters
         ----------
-        image : numpy.ndarray
-            The image to analyze
+        image_wo_bg : numpy.ndarray
+            The image to analyze with background (estimate) subtracted
         threshold : float
             Minumum peak intensity (above background)
 
@@ -102,7 +115,7 @@ class Finder(object):
         -------
         maxima : numpy.ndarray
             Indices of the detected maxima. Each row is a set of indices giving
-            where in the `image` array one can find a maximum.
+            where in the `image_wo_bg` array one can find a maximum.
         """
         radius = round(self.search_radius)
         # TODO: cache,
@@ -114,18 +127,20 @@ class Finder(object):
         mask = (mask < radius**2)
 
         # use mask to dilate the image
-        dil = ndimage.grey_dilation(image, footprint=mask, mode="constant")
+        dil = ndimage.grey_dilation(image_wo_bg, footprint=mask,
+                                    mode="constant")
 
         # wherever the image value is equal to the dilated value, we have a
         # candidate for a maximum
-        candidates = np.where(np.isclose(dil, image) &
-                              (image > self.background + threshold))
+        candidates = np.where(np.isclose(dil, image_wo_bg) &
+                              (image_wo_bg > threshold))
         candidates = np.vstack(candidates).T
 
         # discard maxima within `margin` pixels of the edges
         in_margin = np.any(
             (candidates < self.margin) |
-            (candidates > np.array(image.shape) - self.margin - 1), axis=1)
+            (candidates > np.array(image_wo_bg.shape) - self.margin - 1),
+            axis=1)
         candidates = candidates[~in_margin]
 
         # Get rid of peaks too close togther, compatible with the original
@@ -144,7 +159,7 @@ class Finder(object):
         for cnt, (i, j) in enumerate(candidates):
             # for each candidate, check if greater (or equal) pixels are within
             # the mask
-            roi = image[i-radius:i+radius+1, j-radius:j+radius+1]
-            is_max[cnt] = (not ((roi[mask_gt] > image[i, j]).any() |
-                                (roi[mask_ge] >= image[i, j]).any()))
+            roi = image_wo_bg[i-radius:i+radius+1, j-radius:j+radius+1]
+            is_max[cnt] = (not ((roi[mask_gt] > image_wo_bg[i, j]).any() |
+                                (roi[mask_ge] >= image_wo_bg[i, j]).any()))
         return candidates[is_max]

@@ -1,8 +1,8 @@
 """Put together finding and fitting for feature localization"""
 import numpy as np
-from scipy import ndimage
 
 from .data import col_nums, Peaks
+from .. import bg_estimator
 
 
 def make_margin(image, margin):
@@ -78,10 +78,11 @@ def locate(raw_image, radius, threshold, max_iterations,
     cur_threshold = min(max_iterations, 4) * threshold
     peaks = Peaks(0)
     background_gauss_size = 8
+    bg_est = bg_estimator.GaussianSmooth(background_gauss_size)
     neighborhood_radius = 5. * radius
     new_peak_radius = 1.
 
-    finder = finder_class(image, radius)
+    finder = finder_class(image, radius, bg_estimator=bg_est)
 
     for i in range(max_iterations):
         # remember how many peaks there were before this iteration
@@ -105,7 +106,6 @@ def locate(raw_image, radius, threshold, max_iterations,
         peaks = fitter.peaks
         # get good peaks
         peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
-
         # remove close peaks
         peaks = peaks.remove_close(radius, neighborhood_radius)
         # refit
@@ -115,14 +115,6 @@ def locate(raw_image, radius, threshold, max_iterations,
         residual = fitter.residual
         # get good peaks again
         peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
-
-        # subtract background from residual, update background variable
-        # estimate the background
-        est_bg = ndimage.filters.gaussian_filter(
-            residual, (background_gauss_size, background_gauss_size))
-        residual -= est_bg
-        residual += est_bg.mean()
-        finder.background = residual.mean()
 
         if not (found_new_peaks or threshold_updated):
             # no new peaks found, threshold not updated, we are finished
