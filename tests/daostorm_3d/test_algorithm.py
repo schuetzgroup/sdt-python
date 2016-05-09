@@ -11,7 +11,7 @@ data_path = os.path.join(path, "data_algorithm")
 img_path = os.path.join(path, "data_find")
 
 
-class Test(unittest.TestCase):
+class TestAlgorithm(unittest.TestCase):
     def test_make_margin(self):
         img = np.arange(16).reshape((4, 4))
         img_with_margin = algorithm.make_margin(img, 2)
@@ -26,22 +26,22 @@ class Test(unittest.TestCase):
         np.testing.assert_allclose(img_with_margin, expected)
 
     def test_locate_2dfixed_numba(self):
-        orig = np.load(os.path.join(data_path, "beads_2dfixed.npy"))
-        frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
+        orig = np.load(os.path.join(data_path, "beads_2dfixed.npz"))["peaks"]
+        frame = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
         peaks = algorithm.locate(frame, 1., 400., 20, find_numba.Finder,
                                  fit_numba_impl.Fitter2DFixed)
         np.testing.assert_allclose(peaks, orig)
 
     def test_locate_2d_numba(self):
-        orig = np.load(os.path.join(data_path, "beads_2d.npy"))
-        frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
+        orig = np.load(os.path.join(data_path, "beads_2d.npz"))["peaks"]
+        frame = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
         peaks = algorithm.locate(frame, 1., 400., 20, find.Finder,
                                  fit_numba_impl.Fitter2D)
         np.testing.assert_allclose(peaks, orig)
 
     def test_locate_3d_numba(self):
-        orig = np.load(os.path.join(data_path, "beads_3d.npy"))
-        frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
+        orig = np.load(os.path.join(data_path, "beads_3d.npz"))["peaks"]
+        frame = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
         peaks = algorithm.locate(frame, 1., 400., 20, find.Finder,
                                  fit_numba_impl.Fitter3D)
         np.testing.assert_allclose(peaks, orig)
