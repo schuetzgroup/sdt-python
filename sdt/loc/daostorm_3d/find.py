@@ -39,7 +39,8 @@ class Finder(object):
             "image" (i. e. array) of its background. Defaults to a Gaussian
             smoothing filter.
         """
-        self.image = image
+        # cast to float to avoid integer overflow on background subtraction
+        self.image = image.astype(np.float, copy=False)
         self.margin = margin
         self.search_radius = search_radius
         self.radius = peak_radius
@@ -67,6 +68,8 @@ class Finder(object):
         data.Peaks
             Data structure containing initial guesses for fitting.
         """
+        # cast to float to avoid integer overflow on background subtraction
+        image = image.astype(np.float, copy=False)
         bg = self.bg_estimator(image)
         image_wo_bg = image - bg
         coords = self.local_maxima(image_wo_bg, threshold)
