@@ -18,9 +18,9 @@ class FitterTest(unittest.TestCase):
         self.peaks = np.array([[400., 10., 2., 12., 2.5, 102., 0., 0., 0.],
                                [500., 23.4, 2.3, 45., 2.4, 132., 0., 0., 0.]])
         self.fitter = fit_numba.Fitter(np.ones((100, 200)), self.peaks)
-        beads_input = np.load(os.path.join(img_path, "beads.npz"))
-        self.beads_img = beads_input["img"]
-        self.beads_local_max = beads_input["local_max"]
+        self.beads_img = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
+        self.beads_local_max = \
+            np.load(os.path.join(img_path, "bead_finder.npz"))["peaks"]
 
     def test_calc_pixel_width(self):
         float_width = np.array([[1., 0.5], [11, 2.1], [3.5, 1.]])
