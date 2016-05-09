@@ -24,7 +24,7 @@ class TestFinder(unittest.TestCase):
         self.finder = find.Finder(self.frame, self.radius,
                                   self.search_radius, self.margin)
         # determined by running the original C-based implementation
-        # see `test_scripts/find.py`
+        # see `debug/daostorm_3d/find.py`
         orig = np.load(os.path.join(data_path, "bead_finder.npz"))
         self.orig = orig["peaks"]
 
