@@ -17,7 +17,7 @@ class TestApi(unittest.TestCase):
         orig = pd.read_hdf(os.path.join(data_path, "locate_2dfixed.h5"),
                            "peaks")
         frame = np.load(os.path.join(img_path, "beads.npz"))["img"]
-        peaks = locate(frame, 2., "2dfixed", 300., "numba", 20)
+        peaks = locate(frame, 1., "2dfixed", 400., "numba", 20)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()])
 
 
