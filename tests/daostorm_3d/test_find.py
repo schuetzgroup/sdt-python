@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 
+from sdt.loc import bg_estimator
 from sdt.loc.daostorm_3d import find
 from sdt.loc.daostorm_3d.data import col_nums
 
@@ -13,22 +14,25 @@ data_path = os.path.join(path, "data_find")
 
 class TestFinder(unittest.TestCase):
     def setUp(self):
-        self.frame = np.load(os.path.join(data_path, "comm_frame0.npy"))
-        self.threshold = 100
-        self.radius = 2.
+        self.frame = np.load(os.path.join(data_path, "bead_img.npz"))["img"]
+        orig = np.load(os.path.join(data_path, "bead_finder.npz"))
+        self.orig = orig["peaks"]
+        self.threshold = 400
+        self.radius = 1.
         self.search_radius = 5
         self.margin = 10
         self.finder = find.Finder(self.frame, self.radius,
                                   self.search_radius, self.margin)
         # determined by running the original C-based implementation
-        # ia_utilities_c.findLocalMaxima(
-        #     self.frame, np.zeros(self.frame.shape, dtype=np.int32),
-        #     self.threshold + np.mean(frame), self.search_radius,
-        #     np.mean(frame), self.radius, self.margin)
-        self.orig = np.load(os.path.join(data_path, "local_max.npy"))
+        # see `test_scripts/find.py`
+        orig = np.load(os.path.join(data_path, "bead_finder.npz"))
+        self.orig = orig["peaks"]
 
     def test_local_maxima(self):
-        maxima = self.finder.local_maxima(self.frame, self.threshold)
+        fr = self.frame.astype(np.float)
+        bg_est = bg_estimator.GaussianSmooth()
+        bg = bg_est(fr)
+        maxima = self.finder.local_maxima(fr-bg, self.threshold)
         np.testing.assert_allclose(maxima, self.orig[:, [3, 1]])
 
     def test_find(self):
@@ -57,3 +61,7 @@ class TestFinder(unittest.TestCase):
         self.finder.peak_count[:] = self.finder.max_peak_count
         peaks = self.finder.find(self.frame, self.threshold)
         assert(not peaks.size)
+
+
+if __name__ == "__main__":
+    unittest.main()
