@@ -28,6 +28,9 @@ class TestZFit(unittest.TestCase):
             o_arr = np.array([orig.w0, orig.c, orig.d] + orig.a.tolist())
             np.testing.assert_allclose(p_arr, o_arr, atol=1e-15)
 
+        np.testing.assert_allclose(np.array(self.parameters.z_range),
+                                   np.array(params.z_range))
+
     def test_sigma_from_z(self):
         z = np.array([-0.15, 0, 0.15])
         s = self.parameters.sigma_from_z(z)

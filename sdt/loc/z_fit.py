@@ -27,6 +27,10 @@ def _yaml_list_representer(dumper, data):
 
 _ParameterDumper.add_representer(collections.OrderedDict,
                                  _yaml_dict_representer)
+_ParameterDumper.add_representer(tuple, _yaml_list_representer)
+
+
+default_z_range = (-0.5, 0.5)  # z positions only valid in this range
 
 
 class Fitter(object):
@@ -39,18 +43,15 @@ class Fitter(object):
     .. [*] See the `fitz` program in the `sa_utilities` directory in
         `their git repository <https://github.com/ZhuangLab/storm-analysis>`_.
     """
-    def __init__(self, params, min=-.5, max=.5, resolution=1e-3):
+    def __init__(self, params, resolution=1e-3):
         """Parameters
         ----------
         params : Parameters
             Z fit parameters
-        min : float, optional
-            Minimum valid z position. Defaults to 0.5.
-        max : float, optional
-            Maximum valid z position. Defaults to 0.5.
         resolution : float, optional
             Resolution, i. e. smallest z change detectable. Defaults to 1e-3.
         """
+        min, max = params.z_range
         self._absc = np.linspace(min, max, (max - min)/resolution + 1,
                                  dtype=np.float)
         self._curve_x, self._curve_y = params.sigma_from_z(self._absc)
@@ -85,6 +86,11 @@ class Parameters(object):
         w = w_0 \sqrt{1 + \left(\frac{z - c}{d}\right)^2 +
         a_1 \left(\frac{z - c}{d}\right)^3 +
         a_2 \left(\frac{z - c}{d}\right)^4 + \ldots}
+
+    Attributes
+    ----------
+    z_range : tuple of float
+        Minimum and maximum valid z positions. Defaults to (-0.5, 0.5).
     """
     _file_header = "# z fit parameters\n"
 
@@ -103,9 +109,10 @@ class Parameters(object):
         """
         pass
 
-    def __init__(self):
+    def __init__(self, z_range=default_z_range):
         self.x = self.Tuple(1, 0, np.inf, np.array([]))
         self.y = self.Tuple(1, 0, np.inf, np.array([]))
+        self.z_range = z_range
 
     @property
     def x(self):
@@ -223,9 +230,11 @@ class Parameters(object):
         """
         s = collections.OrderedDict()
         for name, par in zip(("x", "y"), (self.x, self.y)):
-            d = collections.OrderedDict(w0=par.w0, c=par.c, d=par.d,
-                                        a=par.a.tolist())
+            d = collections.OrderedDict((("w0", par.w0), ("c", par.c),
+                                         ("d", par.d), ("a", par.a.tolist())))
             s[name] = d
+
+        s["z range"] = self.z_range
 
         if isinstance(file, str):
             with open(file, "w") as f:
@@ -255,14 +264,15 @@ class Parameters(object):
         else:
             s = yaml.safe_load(file)
 
-        ret = cls()
+        ret = cls(z_range=s["z range"])
         ret.x, ret.y = \
             (cls.Tuple(d["w0"], d["c"], d["d"], np.array(d["a"]))
              for d in (s["x"], s["y"]))
         return ret
 
     @classmethod
-    def calibrate(cls, loc, guess=Tuple(1., 0., 1., np.ones(2))):
+    def calibrate(cls, loc, guess=Tuple(1., 0., 1., np.ones(2)),
+                  z_range=default_z_range):
         """Get parameters from calibration sample
 
         Extract fitting parameters from PSFs where the z position is known.
@@ -276,6 +286,8 @@ class Parameters(object):
             Initial guess for the parameter fitting. The length of the
             `guess.a` array also determines the number of polynomial parameters
             to be fitted. Defaults to (1., 0., 1., np.ones(2)).
+        z_range : tuple of float
+            Minimum and maximum valid z positions. Defaults to (-0.5, 0.5).
 
         Returns
         -------
@@ -287,7 +299,7 @@ class Parameters(object):
             t = (pos - c)/d
             return w0**2*p(t)
 
-        ret = cls()
+        ret = cls(z_range=z_range)
         pos = loc["z"]
         fit_bounds = (np.array([0, -np.inf, 0] + [-np.inf]*len(guess.a)),
                       np.inf)
