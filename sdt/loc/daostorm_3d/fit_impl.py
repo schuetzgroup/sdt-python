@@ -190,3 +190,80 @@ class Fitter3D(fit.Fitter):
 
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
             self._calc_error(i)
+
+
+class FitterZ(fit.Fitter):
+    """Fitter that fits center coordinates, background, amplitude and z
+
+    Sigmas are determined from the z calibration curves.
+    """
+    def __init__(self, image, peaks, z_params, tolerance=1e-6, margin=10,
+                 max_iterations=200):
+        self.z_params = z_params
+        super().__init__(image, peaks, tolerance, margin, max_iterations)
+
+    def _init_exp_factor(self):
+        return self.z_params.exp_factor_from_z(self._data[:, col_nums.z]).T
+
+    def iterate(self):
+        for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
+            px, py = self._pixel_center[i]
+            pwx, pwy = self._pixel_width[i]
+            cur_data = self._data[i]
+            amp = cur_data[col_nums.amp]
+            z = cur_data[col_nums.z]
+            fwx, fwy = self._data[i, [col_nums.wx, col_nums.wy]]
+            cur_gauss = self._gauss[i]
+            fimg = self.fit_with_bg
+
+            sel_x = slice(px-pwx, px+pwx+1)
+            sel_y = slice(py-pwy, py+pwy+1)
+            fimg_sel = fimg[sel_y, sel_x]
+            data_sel = self._image[sel_y, sel_x]
+            e = (cur_gauss[0, np.newaxis, :2*pwx+1] *
+                 cur_gauss[1, :2*pwy+1, np.newaxis])
+
+            dx = self._dx[i, 0, np.newaxis, :2*pwx+1]
+            dy = self._dx[i, 1, :2*pwy+1, np.newaxis]
+
+            ds_dx, ds_dy = self.z_params.exp_factor_der(
+                z, np.array([[fwx], [fwy]]))
+
+            jt = np.broadcast_arrays(e, 2*amp*fwx*dx*e, 2*amp*fwy*dy*e,
+                                     -amp*e*(dx**2*ds_dx + dy**2*ds_dy), 1.)
+            jt = np.array(jt)
+            jacobian = jt * 2. * (1 - data_sel/fimg_sel)[np.newaxis, ...]
+            jacobian = np.sum(jacobian, axis=(1, 2))
+
+            jt2 = jt * 2. * (data_sel/fimg_sel**2)[np.newaxis, ...]
+            hessian = (jt[np.newaxis, ...] * jt2[:, np.newaxis, ...])
+            hessian = np.sum(hessian, axis=(2, 3))
+
+            # Remove now. If fitting works, updated values are added below
+            self._remove_from_fit(i)
+
+            try:
+                res = np.linalg.solve(hessian, jacobian)
+            except np.linalg.LinAlgError:
+                cur_data[col_nums.stat] = feat_status.err
+                continue
+
+            update = np.zeros(len(col_nums))
+            update[col_nums.amp] = res[0]  # update data
+            update[col_nums.x] = res[1]
+            update[col_nums.y] = res[2]
+            update[col_nums.z] = res[3]
+            update[col_nums.bg] = res[4]
+            self._update_peak(i, update)
+
+            if cur_data[col_nums.stat] != feat_status.err:
+                cur_data[[col_nums.wx, col_nums.wy]] = \
+                    self.z_params.exp_factor_from_z(cur_data[col_nums.z])
+                self._pixel_width[i] = self._calc_pixel_width(
+                    cur_data[[col_nums.wx, col_nums.wy]],
+                    self._pixel_width[i])
+                self._calc_peak(i)
+                self._add_to_fit(i)  # add new peak
+
+        for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
+            self._calc_error(i)

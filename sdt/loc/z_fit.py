@@ -116,6 +116,9 @@ class Parameters(object):
     def x(self, par):
         self._x = par
         self._x_poly = np.polynomial.Polynomial(np.hstack(([1, 0, 1], par.a)))
+        self._x_der_poly = np.polynomial.Polynomial(
+            np.hstack(([0, 2], par.a * np.arange(3, len(par.a)))))
+        self._x_w0_sq = par.w0**2
 
     @property
     def y(self):
@@ -126,6 +129,9 @@ class Parameters(object):
     def y(self, par):
         self._y = par
         self._y_poly = np.polynomial.Polynomial(np.hstack(([1, 0, 1], par.a)))
+        self._y_der_poly = np.polynomial.Polynomial(
+            np.hstack(([0, 2], par.a * np.arange(3, len(par.a)))))
+        self._y_w0_sq = par.w0**2
 
     def sigma_from_z(self, z):
         """Calculate x and y sigmas corresponding to a z position
@@ -139,7 +145,7 @@ class Parameters(object):
         -------
         numpy.ndarray, shape=(2, len(z))
             First row contains sigmas in x direction, second row is for the
-            y direction
+            y direction.
         """
         t = (z - self._x.c)/self._x.d
         sigma_x = self._x.w0 * np.sqrt(self._x_poly(t))
@@ -147,13 +153,73 @@ class Parameters(object):
         sigma_y = self._y.w0 * np.sqrt(self._y_poly(t))
         return np.vstack((sigma_x, sigma_y))
 
+    def exp_factor_from_z(self, z):
+        """Calculate the factor in the exponential of the Gaussian
+
+        Calculate the factors :math:`s_x, s_y` in :math:`A \exp(-s_x(x-x_c)^2)
+        \exp(-s_y(y-y_c)^2)`. These factors are therefore
+        :math:`\frac{1}{2\sigma^2}`.
+
+        Parameters
+        ----------
+        z : numpy.ndarray
+            Array of z positions
+
+        Returns
+        -------
+        numpy.ndarray, shape=(2, len(z))
+            First row contains s in x direction, second row is for the
+            y direction.
+        """
+        t = (z - self._x.c)/self._x.d
+        sigma_x_sq = self._x_w0_sq * self._x_poly(t)
+        t = (z - self._y.c)/self._y.d
+        sigma_y_sq = self._y_w0_sq * self._y_poly(t)
+        return 1/(2*np.vstack((sigma_x_sq, sigma_y_sq)))
+
+    def exp_factor_der(self, z, factor=None):
+        r"""Calculate the derivative of the the exponential factor w.r.t. z
+
+        The analytical expression for this is
+
+        .. math:: \frac{ds}{dz} = -\frac{2 w_0^2 s^2}{d}
+            \left(2\frac{z - c}{d} + 3 a_1 \left(\frac{z - c}{d}\right)^2 +
+            4 a_2 \left(\frac{z - c}{d}\right)^3 + \ldots \right).
+
+        Parameters
+        ----------
+        z : numpy.ndarray
+            Array of z positions
+        factor : numpy.ndarray or None, optional
+            Result of :py:meth:`exp_factor_from_z` call. If `None`, it
+            will be called in this method. The purpose of this is to speed
+            up computation if the exponential factor has already been
+            calculated.
+
+        Returns
+        -------
+        numpy.ndarray, shape=(2, len(z))
+            First row contains :math:`\frac{ds}{dz}` in x direction, second
+            row is for the y direction.
+        """
+        if factor is None:
+            factor = self.exp_factor_from_z(z)
+
+        f = factor**2
+
+        t = (z - self._x.c)/self._x.d
+        ds_dx = self._x_w0_sq * self._x_der_poly(t) / self._x.d
+        t = (z - self._y.c)/self._y.d
+        ds_dy = self._y_w0_sq * self._y_der_poly(t) / self._y.d
+        return -2 * np.vstack((ds_dx, ds_dy)) * f
+
     def save(self, file):
         """Save parameters to a yaml file
 
         Parameters
         ----------
         file : str or file-like object
-            File name or the file to write to
+            File name or file to write to
         """
         s = collections.OrderedDict()
         for name, par in zip(("x", "y"), (self.x, self.y)):
@@ -176,7 +242,7 @@ class Parameters(object):
         Parameters
         ----------
         file : str or file-like object
-            File name or the file to read from
+            File name or file to read from
 
         Returns
         -------

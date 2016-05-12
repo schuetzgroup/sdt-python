@@ -21,7 +21,7 @@ class Fitter(object):
         fitting. For examples, see e. g. :py:meth:`_update_peak`.
     """
     hysteresis = 0.6
-    default_clamp = np.array([1000., 1., 0.3, 1., 0.3, 100., 0.3, 1., 1.])
+    default_clamp = np.array([1000., 1., 0.3, 1., 0.3, 100., 0.1, 1., 1.])
 
     def __init__(self, image, peaks, tolerance=1e-6, margin=10,
                  max_iterations=200):
@@ -55,8 +55,7 @@ class Fitter(object):
         self._data[run_mask, col_nums.err] = 0.
         self._err_old = self._data[:, col_nums.err].copy()
 
-        self._data[:, [col_nums.wx, col_nums.wy]] = \
-            1 / (2 * self._data[:, [col_nums.wx, col_nums.wy]]**2)
+        self._data[:, [col_nums.wx, col_nums.wy]] = self._init_exp_factor()
         # number of pixels to consider for the fit
         self._pixel_width = self._calc_pixel_width(
             self._data[:, [col_nums.wx, col_nums.wy]],
@@ -76,6 +75,23 @@ class Fitter(object):
         self._calc_fit()
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
             self._calc_error(i)
+
+    def _init_exp_factor(self):
+        """Initially calculate the exponential factor of the Gaussian
+
+        If the Gaussian is :math:`A \exp(-(s_x x^2 + s_y y^2)`, calculate the
+        exponential factors :math:`s_x, s_y`, i. e. :math:`1/(2\sigma^2)`. This
+        needs to be overriden e. g. for z position fitting, where they are
+        derived from the z position.
+
+        This is called in :py:meth:`__init__`.
+
+        Returns
+        -------
+        numpy.ndarray
+            Exponential factors for each entry in `self._data`
+        """
+        return 1 / (2 * self._data[:, [col_nums.wx, col_nums.wy]]**2)
 
     def _calc_pixel_width(self, new, old):
         """Calculate the number of pixels to consider for fitting
