@@ -277,3 +277,18 @@ class FitterZ(fit.Fitter):
 
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
             self._calc_error(i)
+
+
+def fitter_z_factory(z_params):
+    """Create :py:class:`FitterZ` objects with certain z parameters
+
+    This returns a callable that accepts the same arguments as
+    :py:class:`fit.Fitter`'s constructor and creates a :py:class:`FitterZ`
+    instance with those arguments and `z_params`.
+
+    Useful for passing as the `fitter_class` argument to `algorithm.locate`.
+    """
+    def _z_factory(image, peaks, tolerance=1e-6, margin=10,
+                   max_iterations=200):
+        return FitterZ(image, peaks, z_params, margin, max_iterations)
+    return _z_factory
