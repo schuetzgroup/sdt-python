@@ -57,7 +57,8 @@ def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5.,
     sigmas = np.broadcast_to(sigmas, centers.shape)
 
     if engine == "numba":
-        return gauss_psf_numba(shape, centers, amplitudes, sigmas, cutoff)
+        return gauss_psf_numba(np.array(shape, copy=False), centers,
+                               amplitudes, sigmas, cutoff)
     if engine == "python":
         return gauss_psf(shape, centers, amplitudes, sigmas, cutoff)
     if engine == "python_full":
