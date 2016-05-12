@@ -117,7 +117,7 @@ class Parameters(object):
         self._x = par
         self._x_poly = np.polynomial.Polynomial(np.hstack(([1, 0, 1], par.a)))
         self._x_der_poly = np.polynomial.Polynomial(
-            np.hstack(([0, 2], par.a * np.arange(3, len(par.a)))))
+            np.hstack(([0, 2], par.a * np.arange(3, len(par.a)+3))))
         self._x_w0_sq = par.w0**2
 
     @property
@@ -130,7 +130,7 @@ class Parameters(object):
         self._y = par
         self._y_poly = np.polynomial.Polynomial(np.hstack(([1, 0, 1], par.a)))
         self._y_der_poly = np.polynomial.Polynomial(
-            np.hstack(([0, 2], par.a * np.arange(3, len(par.a)))))
+            np.hstack(([0, 2], par.a * np.arange(3, len(par.a)+3))))
         self._y_w0_sq = par.w0**2
 
     def sigma_from_z(self, z):
