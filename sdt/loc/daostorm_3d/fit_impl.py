@@ -209,10 +209,11 @@ class FitterZ(fit.Fitter):
         super()._update_peak(index, update)
 
         cur_z = self._data[index, col_nums.z]
-        if cur_z < self.z_params[0]:
-            self._data[index, col_nums.z] = self.z_params[0]
-        elif cur_z > self.z_params[1]:
-            self._data[index, col_nums.z] = self.z_params[1]
+        min_z, max_z = self.z_params.z_range
+        if cur_z < min_z:
+            self._data[index, col_nums.z] = min_z
+        elif cur_z > max_z:
+            self._data[index, col_nums.z] = max_z
 
     def iterate(self):
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
@@ -267,7 +268,7 @@ class FitterZ(fit.Fitter):
 
             if cur_data[col_nums.stat] != feat_status.err:
                 cur_data[[col_nums.wx, col_nums.wy]] = \
-                    self.z_params.exp_factor_from_z(cur_data[col_nums.z])
+                    self.z_params.exp_factor_from_z(cur_data[col_nums.z]).T
                 self._pixel_width[i] = self._calc_pixel_width(
                     cur_data[[col_nums.wx, col_nums.wy]],
                     self._pixel_width[i])
