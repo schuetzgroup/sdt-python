@@ -293,8 +293,6 @@ class Fitter(object):
         if (cur_data[[col_nums.amp, col_nums.wx, col_nums.wy]] < 0.).any():
             cur_data[col_nums.stat] = feat_status.err
 
-        # TODO: Check if z in range
-
     def iterate(self):
         """Perform fitting iteration
 

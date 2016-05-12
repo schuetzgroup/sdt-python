@@ -205,6 +205,15 @@ class FitterZ(fit.Fitter):
     def _init_exp_factor(self):
         return self.z_params.exp_factor_from_z(self._data[:, col_nums.z]).T
 
+    def _update_peak(self, index, update):
+        super()._update_peak(index, update)
+
+        cur_z = self._data[index, col_nums.z]
+        if cur_z < self.z_params[0]:
+            self._data[index, col_nums.z] = self.z_params[0]
+        elif cur_z > self.z_params[1]:
+            self._data[index, col_nums.z] = self.z_params[1]
+
     def iterate(self):
         for i in np.where(self._data[:, col_nums.stat] == feat_status.run)[0]:
             px, py = self._pixel_center[i]
