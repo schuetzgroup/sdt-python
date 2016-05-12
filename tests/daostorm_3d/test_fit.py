@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 
+from sdt.loc import z_fit
 from sdt.loc.daostorm_3d import fit, fit_impl
 from sdt.loc.daostorm_3d.data import feat_status, col_nums
 
@@ -17,9 +18,17 @@ class FitterTest(unittest.TestCase):
         self.peaks = np.array([[400., 10., 2., 12., 2.5, 102., 0., 0., 0.],
                                [500., 23.4, 2.3, 45., 2.4, 132., 0., 0., 0.]])
         self.fitter = fit.Fitter(np.ones((100, 200)), self.peaks)
+
         self.beads_img = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
         self.beads_local_max = \
             np.load(os.path.join(img_path, "bead_finder.npz"))["peaks"]
+
+        self.z_sim_img = np.load(
+            os.path.join(data_path, "z_sim_img.npz"))["img"]
+        self.z_sim_local_max = \
+            np.load(os.path.join(data_path, "z_sim_finder.npz"))["peaks"]
+        self.z_params = z_fit.Parameters.load(
+            os.path.join(data_path, "z_params.yaml"))
 
     def test_calc_pixel_width(self):
         float_width = np.array([[1., 0.5], [11, 2.1], [3.5, 1.]])
@@ -195,6 +204,28 @@ class FitterTest(unittest.TestCase):
         orig = np.load(os.path.join(data_path, "beads_fit_3d.npz"))
         f = fit_impl.Fitter3D(self.beads_img, self.beads_local_max, 1e-6,
                               max_iterations=10)
+        f.fit()
+        np.testing.assert_allclose(f.peaks, orig["peaks"])
+        np.testing.assert_allclose(f.residual, orig["residual"])
+
+    def test_iterate_z_sim(self):
+        # Produced by a test run of this implementation. Differs from
+        # the original C implementation in the "z" column due to different
+        # calculation of the Jacobian
+        orig = np.load(os.path.join(data_path, "z_sim_iter_z.npz"))
+        f = fit_impl.FitterZ(self.z_sim_img, self.z_sim_local_max,
+                             self.z_params, 1e-6)
+        f.iterate()
+        np.testing.assert_allclose(f.peaks, orig["peaks"])
+        np.testing.assert_allclose(f.residual, orig["residual"])
+
+    def test_fit_z_sim(self):
+        # Produced by a test run of this implementation. Differs from
+        # the original C implementation in the "z" column due to different
+        # calculation of the Jacobian
+        orig = np.load(os.path.join(data_path, "z_sim_fit_z.npz"))
+        f = fit_impl.FitterZ(self.z_sim_img, self.z_sim_local_max,
+                             self.z_params, 1e-6, max_iterations=10)
         f.fit()
         np.testing.assert_allclose(f.peaks, orig["peaks"])
         np.testing.assert_allclose(f.residual, orig["residual"])

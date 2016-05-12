@@ -215,8 +215,10 @@ class Parameters(object):
         f = factor**2
 
         t = (z - self._x.c)/self._x.d
+        # below differs from the Zhuang impl by the self._x.d division
         ds_dx = self._x_w0_sq * self._x_der_poly(t) / self._x.d
         t = (z - self._y.c)/self._y.d
+        # below differs from the Zhuang impl by the self._y.d division
         ds_dy = self._y_w0_sq * self._y_der_poly(t) / self._y.d
         return -2 * np.vstack((ds_dx, ds_dy)) * f
 
