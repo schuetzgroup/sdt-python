@@ -290,5 +290,6 @@ def fitter_z_factory(z_params):
     """
     def _z_factory(image, peaks, tolerance=1e-6, margin=10,
                    max_iterations=200):
-        return FitterZ(image, peaks, z_params, margin, max_iterations)
+        return FitterZ(image, peaks, z_params, tolerance, margin,
+                       max_iterations)
     return _z_factory
