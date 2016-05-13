@@ -11,6 +11,8 @@ import numpy as np
 import yaml
 from scipy.optimize import curve_fit
 
+from ..numba_helper import jit
+
 
 # Save arrays and OrderedDicts to YAML
 class _ParameterDumper(yaml.SafeDumper):
@@ -316,3 +318,99 @@ class Parameters(object):
             setattr(ret, coord, p)
 
         return ret
+
+
+@jit(nopython=True, nogil=True, cache=True)
+def numba_sigma_from_z(z_param, z):
+    """Numba-accelerated version of :py:meth:`Parameters.sigma_from_z`
+
+    This calculates sigma in one direction (x OR y) for one single z.
+
+    Parameters
+    ----------
+    z_param : numpy.ndarray
+        z fit parameters, i. e. ``np.hstack(params.x)`` (or `params.y`) for a
+        :py:class:`Parameters` object
+    z : float
+        z value
+
+    Returns
+    -------
+    float
+        Corresponding sigma value
+    """
+    t_x = (z - z_param[1])/z_param[2]
+    t = t_x**2
+    p_x = 1 + t
+    for j in range(3, len(z_param)):
+        t *= t_x
+        p_x += z_param[j] * t
+    return z_param[0] * np.sqrt(p_x)
+
+
+@jit(nopython=True, nogil=True, cache=True)
+def numba_exp_factor_from_z(z_param, z):
+    """Numba-accelerated version of :py:meth:`Parameters.exp_factor_from_z`
+
+    This calculates exponential factor in one direction (x OR y) for one
+    single z.
+
+    Parameters
+    ----------
+    z_param : numpy.ndarray
+        z fit parameters, i. e. ``np.hstack(params.x)`` (or `params.y`) for a
+        :py:class:`Parameters` object
+    z : float
+        z value
+
+    Returns
+    -------
+    float
+        Corresponding exponential factor
+    """
+    t_x = (z - z_param[1])/z_param[2]
+    t = t_x**2
+    p_x = 1 + t
+    for j in range(3, len(z_param)):
+        t *= t_x
+        p_x += z_param[j] * t
+    return 1 / (2 * z_param[0]**2 * p_x)
+
+
+@jit(nopython=True, nogil=True, cache=True)
+def numba_exp_factor_der(z_param, z, factor=np.nan):
+    """Numba-accelerated version of :py:meth:`Parameters.exp_factor_der`
+
+    This calculates the derivative of the exponential factor w.r.t. z in one
+    direction (x OR y) for one single z.
+
+    Parameters
+    ----------
+    z_param : numpy.ndarray
+        z fit parameters, i. e. ``np.hstack(params.x)`` (or `params.y`) for a
+        :py:class:`Parameters` object
+    z : float
+        z value
+    factor : float, optional
+        Result of :py:func:`numba_exp_factor_from_z` call. If `numpy.nan`, it
+        will be called in this method. The purpose of this is to speed
+        up computation if the exponential factor has already been
+        calculated. Defaults to numpy.nan.
+
+    Returns
+    -------
+    float
+        Corresponding exponential factor
+    """
+    if np.isnan(factor):
+        factor = numba_exp_factor_from_z(z_param, z)
+
+    f = factor**2
+
+    t_x = (z - z_param[1])/z_param[2]
+    t = t_x
+    p_x = 2 * t
+    for j in range(3, len(z_param)):
+        t *= t_x
+        p_x += j * z_param[j] * t
+    return -2 * z_param[0]**2 * f * p_x / z_param[2]
