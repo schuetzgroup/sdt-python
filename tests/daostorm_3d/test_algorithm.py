@@ -3,12 +3,14 @@ import os
 
 import numpy as np
 
+from sdt.loc import z_fit
 from sdt.loc.daostorm_3d import algorithm, find, find_numba, fit_numba_impl
 
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_algorithm")
 img_path = os.path.join(path, "data_find")
+z_path = os.path.join(path, "data_fit")
 
 
 class TestAlgorithm(unittest.TestCase):
@@ -45,6 +47,15 @@ class TestAlgorithm(unittest.TestCase):
         peaks = algorithm.locate(frame, 1., 400., 20, find.Finder,
                                  fit_numba_impl.Fitter3D)
         np.testing.assert_allclose(peaks, orig)
+
+    def test_locate_z_numba(self):
+        orig = np.load(os.path.join(z_path, "z_sim_fit_z.npz"))["peaks"]
+        frame = np.load(os.path.join(z_path, "z_sim_img.npz"))["img"]
+        z_params = z_fit.Parameters.load(
+            os.path.join(z_path, "z_params.yaml"))
+        peaks = algorithm.locate(frame, 1., 300., 10, find.Finder,
+                                 fit_numba_impl.fitter_z_factory(z_params))
+        np.testing.assert_allclose(peaks, orig, atol=1e-8)
 
 
 if __name__ == "__main__":
