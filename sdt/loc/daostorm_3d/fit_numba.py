@@ -184,6 +184,7 @@ def _numba_remove_from_fit(index, fit_img, bg_img, bg_count,
             bg_img[img_i, img_j] -= bg
             bg_count[img_i, img_j] -= 1.
 
+
 @numba.jit(nopython=True, nogil=True, cache=True)
 def _numba_calc_error(index, real_img, fit_img, bg_img, bg_count,
                       data, err_old, px_center, px_width, tolerance):
@@ -234,6 +235,3 @@ def _numba_update_peak(index, update, real_img, data, sign, clamp, px_center,
     if ((cur_data[col_amp] < 0.) or (cur_data[col_wx] < 0.) or
             (cur_data[col_wy] < 0.)):
         data[index, col_stat] = stat_err
-
-    # TODO: Check z range
-

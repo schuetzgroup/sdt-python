@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 
+from sdt.loc import z_fit
 from sdt.loc.daostorm_3d import fit_numba
 from sdt.loc.daostorm_3d import fit_numba_impl
 from sdt.loc.daostorm_3d.data import feat_status, col_nums
@@ -21,6 +22,13 @@ class FitterTest(unittest.TestCase):
         self.beads_img = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
         self.beads_local_max = \
             np.load(os.path.join(img_path, "bead_finder.npz"))["peaks"]
+
+        self.z_sim_img = np.load(
+            os.path.join(data_path, "z_sim_img.npz"))["img"]
+        self.z_sim_local_max = \
+            np.load(os.path.join(data_path, "z_sim_finder.npz"))["peaks"]
+        self.z_params = z_fit.Parameters.load(
+            os.path.join(data_path, "z_params.yaml"))
 
     def test_calc_pixel_width(self):
         float_width = np.array([[1., 0.5], [11, 2.1], [3.5, 1.]])
@@ -208,6 +216,28 @@ class FitterTest(unittest.TestCase):
                                     max_iterations=10)
         f.fit()
         np.testing.assert_allclose(f.peaks, orig["peaks"])
+        np.testing.assert_allclose(f.residual, orig["residual"])
+
+    def test_iterate_z_sim(self):
+        # Produced by a test run of the pure python implementation. Differs
+        # from the original C implementation in the "z" column due to different
+        # calculation of the Jacobian
+        orig = np.load(os.path.join(data_path, "z_sim_iter_z.npz"))
+        f = fit_numba_impl.FitterZ(self.z_sim_img, self.z_sim_local_max,
+                                   self.z_params, 1e-6)
+        f.iterate()
+        np.testing.assert_allclose(f.peaks, orig["peaks"], atol=1e-8)
+        np.testing.assert_allclose(f.residual, orig["residual"])
+
+    def test_fit_z_sim(self):
+        # Produced by a test run of the pure python implementation. Differs
+        # from the original C implementation in the "z" column due to different
+        # calculation of the Jacobian
+        orig = np.load(os.path.join(data_path, "z_sim_fit_z.npz"))
+        f = fit_numba_impl.FitterZ(self.z_sim_img, self.z_sim_local_max,
+                                   self.z_params, 1e-6, max_iterations=10)
+        f.fit()
+        np.testing.assert_allclose(f.peaks, orig["peaks"], atol=1e-8)
         np.testing.assert_allclose(f.residual, orig["residual"])
 
 
