@@ -49,7 +49,7 @@ so watch out for those!
 ---
 - Support ROIs in loc.* locate/batch functions
 - Save additional metadata as YAML (previously it was JSON) with
-    `image_tools.save_as_tiff` (API break)
+  `image_tools.save_as_tiff` (API break)
 - Cosmetic overhaul of pims
 - Make pims load YAML metadata from TIFF files (API break)
 - Minor bug fixes
@@ -57,7 +57,7 @@ so watch out for those!
 3.0
 ---
 - Use full affine transformation in chromatic. This also leads to a different
-    save file format etc. (API break, file format break)
+  save file format etc. (API break, file format break)
 - fix gui.chromatic accordingly
 
 2.1
