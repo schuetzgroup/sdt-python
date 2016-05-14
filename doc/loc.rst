@@ -21,6 +21,12 @@ accuracy. This package includes the following:
 All share a similar API modeled after
 `trackpy <https://github.com/soft-matter/trackpy>`_'s.
 
+
+Additionally, one can fit the z position from astigmatism (if a zylindrical
+lense is inserted into the emission path) with help of the :py:mod:`z_fit`
+module.
+
+
 daostorm_3d
 -----------
 

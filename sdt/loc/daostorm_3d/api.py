@@ -58,18 +58,18 @@ def locate(raw_image, radius, model, threshold, z_params=None, engine="numba",
         brightest pixels below this threshold will be discarded.
     z_params : z_fit.Parameters or str or pandas.DataFrame or None
         Only necessary if the `model` is "z" (then it cannot be `None`),
-        otherwise it is ignored. A :py:class:`z_fit.Parameters` object can be
-        passed or a filename to load the parameters from or a
-        py:class:`pandas.DataFrame` with calibration data (z vs. size_x and
-        size_y).
+        otherwise it is ignored. One may pass a :py:class:`z_fit.Parameters`
+        instance or a filename to load the parameters from or a
+        :py:class:`pandas.DataFrame` with calibration data (`z` vs. `size_x`
+        and `size_y`).
 
     Returns
     -------
     DataFrame([x, y, z, signal, mass, bg, size])
         x and y are the coordinates of the features. mass is the total
         intensity of the feature, bg the background per pixel. size gives the
-        radii (sigma) of the features. If `raw_image` has a ``frame_no``
-        attribute, a ``frame`` column with this information will also be
+        radii (sigma) of the features. If `raw_image` has a `frame_no`
+        attribute, a `frame` column with this information will also be
         appended.
 
     Other parameters

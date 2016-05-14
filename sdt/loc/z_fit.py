@@ -163,7 +163,7 @@ class Parameters(object):
         return np.vstack((sigma_x, sigma_y))
 
     def exp_factor_from_z(self, z):
-        """Calculate the factor in the exponential of the Gaussian
+        r"""Calculate the factor in the exponential of the Gaussian
 
         Calculate the factors :math:`s_x, s_y` in :math:`A \exp(-s_x(x-x_c)^2)
         \exp(-s_y(y-y_c)^2)`. These factors are therefore

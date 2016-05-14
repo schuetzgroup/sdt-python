@@ -10,8 +10,20 @@ position of the emitter, provided the feature fitting algorithm supports
 fitting elliptical features. Currently, this is true only for
 :py:mod:`sdt.loc.daostorm_3d`.
 
+
+Z fitting classes
+-----------------
+
 .. autoclass:: Parameters
     :members:
 
 .. autoclass:: Fitter
     :members:
+
+
+`Numba` accelerated functions
+-----------------------------
+
+.. autofunction:: numba_sigma_from_z
+.. autofunction:: numba_exp_factor_from_z
+.. autofunction:: numba_exp_factor_der
