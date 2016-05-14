@@ -5,6 +5,7 @@ sdt-python is a collection of tools for analysis of fluorescence microscopy
 data.
 
 It contains
+
 - algorithms for localization of fluorescent features in images
 - methods for evaluation of tracking data
 - functions to evaluate brightness data
