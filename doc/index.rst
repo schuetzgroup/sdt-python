@@ -52,8 +52,14 @@ the above modules are built on top of:
   fitting of 1D and 2D Gaussian function parameters.
 
 
+List of changes
+---------------
+
+See the :ref:`CHANGELOG` for a list of changes between software versions.
+
+
 Table of contents
-=================
+-----------------
 
 .. toctree::
   :maxdepth: 2
@@ -70,10 +76,11 @@ Table of contents
   pims
   exp_fit
   gaussian_fit
+  CHANGELOG
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
