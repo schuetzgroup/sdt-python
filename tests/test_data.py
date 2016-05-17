@@ -13,7 +13,7 @@ path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_data")
 
 
-class TestData(unittest.TestCase):
+class TestFile(unittest.TestCase):
     def setUp(self):
         self.fname = "pMHC_AF647_200k_000_"
 
@@ -252,6 +252,41 @@ class TestData(unittest.TestCase):
             read_back = sdt.data.load(tmp_out)
 
             np.testing.assert_allclose(read_back, orig)
+
+
+class TestFilter(unittest.TestCase):
+    def setUp(self):
+        self.data = pd.DataFrame(np.repeat(np.arange(10)[:, np.newaxis], 2, 1),
+                                 columns=["c1", "c2"])
+
+    def testCall(self):
+        f = sdt.data.Filter("{c1} < 5")
+        np.testing.assert_allclose(f(self.data),
+                                   self.data[self.data["c1"] < 5])
+
+    def testBooleanIndex(self):
+        f = sdt.data.Filter("{c1} < 5")
+        np.testing.assert_allclose(f.boolean_index(self.data),
+                                   self.data["c1"] < 5)
+
+    def testAddCondition(self):
+        f = sdt.data.Filter("{c1} < 5")
+        f.add_condition("{c2} > 1")
+        np.testing.assert_allclose(f.boolean_index(self.data),
+                                   ((self.data["c1"] < 5) &
+                                    (self.data["c2"] > 1)))
+
+    def testAddConditionMultiline(self):
+        f = sdt.data.Filter()
+        f.add_condition("{c1} < 5\n{c2} > 1")
+        np.testing.assert_allclose(f.boolean_index(self.data),
+                                   ((self.data["c1"] < 5) &
+                                    (self.data["c2"] > 1)))
+
+    def testAddConditionNumpy(self):
+        f = sdt.data.Filter("numpy.sqrt({c1}) <= 2")
+        np.testing.assert_allclose(f.boolean_index(self.data),
+                                   np.sqrt(self.data["c1"]) <= 2)
 
 
 if __name__ == "__main__":
