@@ -13,11 +13,11 @@ requirements:
         - nomkl  # [unix]
         - python
         - setuptools
-        - numpy
+        - numpy >=1.10
         - pandas
         - pytables
         - scipy
-        - tifffile
+        - tifffile >=0.7.0
         - pyyaml
         - pims >=0.3.0
         - slicerator >=0.9.7

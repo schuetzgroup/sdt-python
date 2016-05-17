@@ -26,7 +26,7 @@ Requirements
 - pandas
 - pims >= 0.3.0
 - slicerator >= 0.9.7
-- tifffile
+- tifffile >= 0.7.0
 - pyyaml
 - lmfit
 
