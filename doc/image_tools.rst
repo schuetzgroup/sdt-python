@@ -13,11 +13,13 @@ sequences to TIFF files that include all metadata.
 
 .. autoclass:: ROI
   :members:
+  :special-members: __call__
 
 
 .. _path_roi:
 .. autoclass:: PathROI
   :members:
+  :special-members: __call__
 
 
 .. autofunction:: save_as_tiff

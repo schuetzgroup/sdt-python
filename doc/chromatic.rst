@@ -3,4 +3,5 @@ Correction of chromatic aberrations
 
 .. automodule:: sdt.chromatic
 .. autoclass:: Corrector
-  :members:
+    :members:
+    :special-members: __call__
