@@ -32,7 +32,7 @@ class Filter:
         self.add_condition(spec)
 
     def add_condition(self, spec):
-        """Add a filter condition
+        r"""Add a filter condition
 
         All conditions (either added by :py:meth:`__init__` or this) are
         combined by logical AND.
@@ -49,7 +49,7 @@ class Filter:
             pass where the square root of the value of the x column is less
             than one.
 
-            Multiple conditions may be separated by '\n'.
+            Multiple conditions may be separated by '\\n'.
         """
         spec_list = spec.split("\n")
         var_name_rex = re.compile(r"\{(\w*)\}")
@@ -84,7 +84,7 @@ class Filter:
         and `False` if it does not.
 
         :py:meth:`__call__` is in fact equivalent to
-        ``data[:py:meth:`boolean_index`(data)]``.
+        ``data[boolean_index(data)]``.
 
         Parameters
         ----------

@@ -1,4 +1,7 @@
 .. py:module:: sdt.data
+    :noindex:
+
+.. _data_read_write:
 
 Read and write data in various formats
 ======================================
@@ -33,5 +36,3 @@ Each of those implements loading or saving one specific file format.
 
 .. autofunction:: save_pt2d
 .. autofunction:: save_trc
-
-.. autodata:: adjust_index
