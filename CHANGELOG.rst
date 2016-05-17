@@ -6,6 +6,16 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+6.0
+---
+- Add data.Filter class for filtering of single molecule microscopy data
+- Implement the "z" model in daostorm_3d for z position fitting (slight API
+  break)
+- Create loc.z_fit with a class for z fit parameters and a fitter class for
+  z positions from astigmatism
+- Better background handling in peak finding in daostorm_3d
+- sim: Allow for simultion of elliptical Gaussians (API break)
+
 5.5
 ---
 - gui.locator: Add support for load options from file
