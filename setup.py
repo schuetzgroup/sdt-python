@@ -40,5 +40,5 @@ setup(
     packages=find_packages(include=["sdt*"]),
     package_data={"": ["*.ui"],
                   "sdt.gui": ["icons/*.svg"]},
-    long_description=read("README.md")
+    long_description=read("README.rst")
 )
