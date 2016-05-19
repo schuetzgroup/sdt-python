@@ -34,7 +34,10 @@ def run(argv):
     ap.add_argument("-p", "--preview",
                     type=lambda x: x in ("t", "1", "true", "yes"),
                     help=_tr("Show preview (true/false), optional"))
-    args = ap.parse_args(app.arguments()[1:])  # first arg is the executable
+    # don't use app.arguments()[1:] since that doesn't work on at least one
+    # Windows machine when called as python -m <module name>
+    # In that case, "-m" and "<module name>" also end up in the arg list
+    args = ap.parse_args(argv[1:])  # first arg is the executable
 
     try:
         w = MainWindow()
