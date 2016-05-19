@@ -6,6 +6,10 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+6.1
+---
+- Fix start-up of sdt.gui.locator on Windows
+
 6.0
 ---
 - Add data.Filter class for filtering of single molecule microscopy data
