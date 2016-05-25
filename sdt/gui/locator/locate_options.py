@@ -31,7 +31,7 @@ class Container(contBase):
     for the currently selected one.
     """
     __clsName = "LocateOptionsContainer"
-    optionChangeDelay = 200
+    optionChangeDelay = 300
     """How long (ms) to wait for more changes until updating the preview"""
 
     def __init__(self, parent=None):
