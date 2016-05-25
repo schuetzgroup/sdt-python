@@ -100,21 +100,25 @@ def locate(raw_image, radius, threshold, max_iterations,
         else:
             threshold_updated = False
 
-        # Peak fitting
-        fitter = fitter_class(image, peaks)
-        fitter.fit()
-        peaks = fitter.peaks
-        # get good peaks
-        peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
-        # remove close peaks
-        peaks = peaks.remove_close(radius, neighborhood_radius)
-        # refit
-        fitter = fitter_class(image, peaks)
-        fitter.fit()
-        peaks = fitter.peaks
-        residual = fitter.residual
-        # get good peaks again
-        peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
+        # this if is necessary because there is some numba problem (i. e.
+        # double free on numba up to at least 0.26.0) if the peaks array is
+        # empty and threaded batch is used
+        if len(peaks):
+            # Peak fitting
+            fitter = fitter_class(image, peaks)
+            fitter.fit()
+            peaks = fitter.peaks
+            # get good peaks
+            peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
+            # remove close peaks
+            peaks = peaks.remove_close(radius, neighborhood_radius)
+            # refit
+            fitter = fitter_class(image, peaks)
+            fitter.fit()
+            peaks = fitter.peaks
+            residual = fitter.residual
+            # get good peaks again
+            peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
 
         if not (found_new_peaks or threshold_updated):
             # no new peaks found, threshold not updated, we are finished
