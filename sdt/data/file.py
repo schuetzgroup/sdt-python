@@ -312,7 +312,7 @@ def load_trc(filename):
     return df[_trc_ret_col_names]
 
 
-_msd_column_names = ["tlag", "msd", "stderr", "qianerr"]
+_msd_column_names = ["lagt", "msd", "stderr", "qianerr"]
 
 
 def load_msdplot(filename):
@@ -324,17 +324,19 @@ def load_msdplot(filename):
         Name of the file to load
 
     Returns:
-    dict([d, stderr, qianerr, pa, data])
+    dict([d, stderr, qianerr, pa, emsd])
         d is the diffusion coefficient in μm²/s, stderr its standard
         error, qianerr its Qian error, pa the positional accuracy in nm and
-        data a pandas.DataFrame containing the msd-vs.-tlag data.
+        emsd a pandas.DataFrame containing the msd-vs.-tlag data.
     """
     mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
+    data = mat["msd1"]
+    data[:, 0] /= 1000.
     return dict(d=mat["d1"],
                 stderr=mat["dstd1"],
                 qianerr=mat["dstd_qian1"],
                 pa=mat["pos1"],
-                data=pd.DataFrame(mat["msd1"], columns=_msd_column_names))
+                emsd=pd.DataFrame(data, columns=_msd_column_names))
 
 
 def save(filename, data, typ="auto", fmt="auto"):
