@@ -463,7 +463,7 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None):
     ax.set_ylabel("MSD [$\mu$m$^2$]")
     if "stderr" in emsd.columns:
         ax.errorbar(emsd["lagt"], emsd["msd"], yerr=emsd["stderr"].tolist(),
-                    fmt="o")
+                    fmt="o", markerfacecolor="none")
     else:
         ax.plot(emsd["lagt"], emsd["msd"], linestyle="none", marker="o")
 
@@ -481,7 +481,7 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None):
             pa = pa.real
         fake_artist = mpl.lines.Line2D([0], [0], linestyle="none")
         ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$/s".format(float(d)),
-                                    "PA: {:.3} $\mu$m".format(float(pa))],
+                                    "PA: {:.0} nm".format(float(pa*1000))],
                   loc=0)
 
 
