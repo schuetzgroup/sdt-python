@@ -432,7 +432,7 @@ def fit_msd(emsd, lags=2):
     return D, pa
 
 
-def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
+def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None):
     """Plot lag time vs. MSD and the fit as calculated by `fit_msd`.
 
     Parameters
@@ -440,7 +440,7 @@ def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
     emsd : DataFrame([lagt, msd, stderr])
         MSD data as computed by `emsd`. If the stderr column is not present,
         no error bars will be plotted.
-    D : float
+    d : float
         Diffusion coefficient (see `fit_msd`)
     pa : float
         Positional accuracy (see `fit_msd`)
@@ -467,12 +467,12 @@ def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
     else:
         ax.plot(emsd["lagt"], emsd["msd"], linestyle="none", marker="o")
 
-    k = 4*D
-    d = 4*pa**2
-    if isinstance(d, complex):
-        d = d.real
+    k = 4*d
+    ic = 4*pa**2
+    if isinstance(ic, complex):
+        d = ic.real
     x = np.linspace(0, emsd["lagt"].max(), num=2)
-    y = k*x + d
+    y = k*x + ic
     ax.plot(x, y)
 
     if show_legend:
@@ -480,7 +480,7 @@ def plot_msd(emsd, D, pa, max_lagtime=100, show_legend=True, ax=None):
         if isinstance(pa, complex):
             pa = pa.real
         fake_artist = mpl.lines.Line2D([0], [0], linestyle="none")
-        ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$/s".format(float(D)),
+        ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$/s".format(float(d)),
                                     "PA: {:.3} $\mu$m".format(float(pa))],
                   loc=0)
 
