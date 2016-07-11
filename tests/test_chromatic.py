@@ -23,20 +23,22 @@ class TestChromaticCorrector(unittest.TestCase):
 
     def test_vectors_cartesian(self):
         dx_orig, dy_orig = np.load(os.path.join(data_path, "vectors.npy"))
-        dx, dy = self.corrector._vectors_cartesian(self.corrector.feat1)
+        dx, dy = self.corrector._vectors_cartesian(self.corrector.feat1[0])
         np.testing.assert_allclose(dx, dx_orig)
         np.testing.assert_allclose(dy, dy_orig)
 
     def test_all_scores_cartesian(self):
-        v1 = self.corrector._vectors_cartesian(self.corrector.feat1)
-        v2 = self.corrector._vectors_cartesian(self.corrector.feat2)
+        v1 = self.corrector._vectors_cartesian(self.corrector.feat1[0])
+        v2 = self.corrector._vectors_cartesian(self.corrector.feat2[0])
         s = self.corrector._all_scores_cartesian(v1, v2, 0.05, 0.)
         s_orig = np.load(os.path.join(data_path, "scores.npy"))
         np.testing.assert_allclose(s, s_orig)
 
     def test_pairs_from_score(self):
         score = np.load(os.path.join(data_path, "scores.npy"))
-        p = self.corrector._pairs_from_score(score)
+        p = self.corrector._pairs_from_score(self.corrector.feat1[0],
+                                             self.corrector.feat2[0],
+                                             score)
         p_orig = pd.read_hdf(os.path.join(data_path, "pairs.h5"), "pairs")
         np.testing.assert_allclose(p, p_orig)
 

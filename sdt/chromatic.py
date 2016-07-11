@@ -35,10 +35,12 @@ class Corrector(object):
         Names of the columns describing the coordinates of the features.
     channel_names : list of str
         Names of the channels
-    feat1, feat2 : pandas.DataFrame
-        Features of the first and second channel found by the localization
-        algorithm. The x coordinate is in the column with name
-        ``pos_columns[0]``, etc.
+    feat1, feat2 : list of pandas.DataFrames
+        Bead positions of the first and second channel found by the
+        localization algorithm. The x coordinate is in the column with name
+        ``pos_columns[0]``, etc. Each DataFrame corresponds to one image
+        (sequence), thus multiple bead images can be used to increase
+        the accuracy.
     pairs : pandas.DataFrame
         The pairs found by `determine_parameters`.
     parameters1, parameters2 : pandas.DataFrame
@@ -50,15 +52,16 @@ class Corrector(object):
                  channel_names=channel_names):
         """Parameters
         ----------
-        feat1, feat2 : pandas.DataFrame
-            Set the `feat1` and `feat2` attribute
+        feat1, feat2 : list of pandas.DataFrame or pandas.DataFrame
+            Set the `feat1` and `feat2` attribute (turning it into a list
+            if it is a single DataFrame)
         pos_columns : list of str, optional
             Set the `pos_columns` attribute.
         channel_names : list of str, optional
             Set the `channel_names` attribute.
         """
-        self.feat1 = feat1
-        self.feat2 = feat2
+        self.feat1 = [feat1] if isinstance(feat1, pd.DataFrame) else feat1
+        self.feat2 = [feat2] if isinstance(feat2, pd.DataFrame) else feat2
         self.pos_columns = pos_columns
         self.channel_names = channel_names
         self.pairs = None
@@ -128,10 +131,14 @@ class Corrector(object):
             times the score of the higher scorer, the pairs are considered
             ambiguous and therefore discarded. Defaults to 0.8.
         """
-        v1 = self._vectors_cartesian(self.feat1)
-        v2 = self._vectors_cartesian(self.feat2)
-        s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
-        self.pairs = self._pairs_from_score(s, score_cutoff, ambiguity_factor)
+        p = []
+        for f1, f2 in zip(self.feat1, self.feat2):
+            v1 = self._vectors_cartesian(f1)
+            v2 = self._vectors_cartesian(f2)
+            s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
+            p.append(self._pairs_from_score(f1, f2, s, score_cutoff,
+                                            ambiguity_factor))
+        self.pairs = pd.concat(p)
 
     def fit_parameters(self):
         """Determine parameters for the affine transformation
@@ -430,13 +437,16 @@ class Corrector(object):
         # points have, the more likely it is that they are the same.
         return np.sum(all_small, axis=(0, 1)).T
 
-    def _pairs_from_score(self, score, score_cutoff=0.5, ambiguity_factor=0.8):
+    def _pairs_from_score(self, feat1, feat2, score, score_cutoff=0.5,
+                          ambiguity_factor=0.8):
         """Analyze the score matrix and determine what the pairs are
 
         For each feature, select the highest scoring corresponding feature.
 
         Parameters
         ----------
+        feat1, feat2 : pandas.DataFrame
+            Bead localizations
         score : numpy.array
             The score matrix as calculated by `_all_scores_cartesian`
         score_cutoff : float, optional
@@ -487,8 +497,8 @@ class Corrector(object):
         indices = indices[:, cutoff_mask]
 
         pair_matrix = np.hstack((
-            self.feat1.iloc[indices[0]][pos_columns],
-            self.feat2.iloc[indices[1]][pos_columns]))
+            feat1.iloc[indices[0]][pos_columns],
+            feat2.iloc[indices[1]][pos_columns]))
 
         mi = pd.MultiIndex.from_product([self.channel_names, self.pos_columns])
         return pd.DataFrame(pair_matrix, columns=mi)
