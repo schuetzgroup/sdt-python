@@ -60,7 +60,7 @@ class Singleton(object):
         TypeError
             There can only be one instance.
         """
-        raise TypeError("Singletons must be access by instance")
+        raise TypeError("Singletons must be accessed by instance")
 
     def __instancecheck__(self, inst):
         return isinstance(inst, self.__cls)
@@ -114,7 +114,7 @@ class ThreadSafeSingleton(object):
         TypeError
             There can only be one instance.
         """
-        raise TypeError("Singletons must be access by instance")
+        raise TypeError("Singletons must be accessed by instance")
 
     def __instancecheck__(self, inst):
         return isinstance(inst, self.__cls)
