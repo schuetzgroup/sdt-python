@@ -13,7 +13,7 @@ import scipy.io
 import scipy.stats
 import scipy.ndimage
 
-import pims
+import slicerator
 
 pos_columns = ["x", "y"]
 """Names of the columns describing the coordinates of the features in
@@ -182,11 +182,11 @@ class Corrector(object):
 
         Parameters
         ----------
-        data : pandas.DataFrame or pims.FramesSequence or array-like
+        data : pandas.DataFrame or slicerator.Slicerator or array-like
             data to be processed. If a pandas.Dataframe, the feature
-            coordinates will be corrected. Otherwise, `pims.pipeline` is used
-            to correct image data using an affine transformation. This requires
-            pims version > 0.2.2.
+            coordinates will be corrected. Otherwise, `slicerator.pipeline` is
+            used to correct image data using an affine transformation (if
+            available)
         channel : int, optional
             If `features` are in the first channel (corresponding to the
             `feat1` arg of the constructor), set to 1. If features are in the
@@ -230,14 +230,15 @@ class Corrector(object):
             if channel == 2:
                 parms = np.linalg.inv(self.parameters2)
 
-            @pims.pipeline
+            @slicerator.pipeline
             def corr(img):
                 # transpose image since matrix axes are reversed compared to
                 # coordinate axes
-                return scipy.ndimage.affine_transform(
+                ret = scipy.ndimage.affine_transform(
                     img.T, parms[:-1, :-1], parms[:-1, -1],
                     mode=mode, cval=cval)
-            return corr(data).T  # transpose back
+                return ret.T  # transpose back
+            return corr(data)
 
     def test(self, ax=None):
         """Test validity of the correction parameters
