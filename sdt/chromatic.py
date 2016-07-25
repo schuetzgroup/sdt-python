@@ -133,11 +133,26 @@ class Corrector(object):
         """
         p = []
         for f1, f2 in zip(self.feat1, self.feat2):
-            v1 = self._vectors_cartesian(f1)
-            v2 = self._vectors_cartesian(f2)
-            s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
-            p.append(self._pairs_from_score(f1, f2, s, score_cutoff,
-                                            ambiguity_factor))
+            if ("frame" in f1.columns and
+                    "frame" in f2.columns):
+                # If there is a "frame" column, split data according to
+                # frame number since pairs can only be in the same frame
+                data = ((f1[f1["frame"] == i], f2[f2["frame"] == i])
+                        for i in f1["frame"].unique())
+            else:
+                # If there is no "frame" column, just take everything
+                data = ((f1, f2),)
+            for f1_frame_data, f2_frame_data in data:
+                if f1_frame_data.empty or f2_frame_data.empty:
+                    # Don't even try to operate on empty frames. Weird things
+                    # are bound to happen
+                    continue
+                v1 = self._vectors_cartesian(f1_frame_data)
+                v2 = self._vectors_cartesian(f2_frame_data)
+                s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
+                p.append(self._pairs_from_score(
+                    f1_frame_data, f2_frame_data, s, score_cutoff,
+                    ambiguity_factor))
         self.pairs = pd.concat(p)
 
     def fit_parameters(self):
