@@ -151,7 +151,7 @@ class TestFile(unittest.TestCase):
         np.testing.assert_allclose(pa, msd["pa"])
         np.testing.assert_allclose(qianerr, msd["qianerr"])
         np.testing.assert_allclose(stderr, msd["stderr"])
-        np.testing.assert_allclose(data, msd["data"])
+        np.testing.assert_allclose(data, msd["emsd"])
 
     def test_save_hdf5_features(self):
         h5name = os.path.join(data_path, "orig_pt2d.h5")
