@@ -122,13 +122,21 @@ class TestMotion(unittest.TestCase):
 
         emsd = pd.read_hdf(os.path.join(data_path, "emsd.h5"), "emsd")
 
-        D_2, pa_2 = sdt.motion.fit_msd(emsd, lags=2)
-        D_5, pa_5 = sdt.motion.fit_msd(emsd, lags=5)
+        D_2, pa_2 = sdt.motion.fit_msd(emsd, max_lagtime=2)
+        D_5, pa_5 = sdt.motion.fit_msd(emsd, max_lagtime=5)
 
         np.testing.assert_allclose(D_2, orig_D_2, rtol=1e-5)
         np.testing.assert_allclose(pa_2, orig_pa_2, rtol=1e-5)
         np.testing.assert_allclose(D_5, orig_D_5, rtol=1e-5)
         np.testing.assert_allclose(pa_5, orig_pa_5, rtol=1e-5)
+
+    def test_fit_msd_exposure_corr(self):
+        emsd = pd.read_hdf(os.path.join(data_path, "msdplot.h5"), "msd_data")
+        expt = 0.05
+        d0, pa0 = sdt.motion.fit_msd(emsd, exposure_time=0.)
+        d5, pa5 = sdt.motion.fit_msd(emsd, exposure_time=expt)
+        np.testing.assert_allclose(d5, d0)
+        np.testing.assert_allclose(4*pa0**2, 4*pa5**2 - 4*d0*expt/3.)
 
     def test_emsd_from_square_displacements_cdf(self):
         # From a test run
