@@ -34,7 +34,8 @@ class TestApi(unittest.TestCase):
         z_params = z_fit.Parameters.load(os.path.join(z_path, "z_params.yaml"))
         peaks = locate(frame, 1., "z", 200., z_params, engine="numba",
                        max_iterations=10)
-        np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()])
+        np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
+                                   atol=1e-16)
 
     def test_locate_z_param_load(self):
         orig = pd.read_hdf(os.path.join(data_path, "locate_z.h5"),
@@ -43,7 +44,8 @@ class TestApi(unittest.TestCase):
         z_params = os.path.join(z_path, "z_params.yaml")
         peaks = locate(frame, 1., "z", 200., z_params, engine="numba",
                        max_iterations=10)
-        np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()])
+        np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
+                                   atol=1e-16)
 
 
 if __name__ == "__main__":
