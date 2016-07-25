@@ -6,6 +6,21 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+7.0
+---
+- Fix `chromatic.Corrector.__call__` when applied to `Slicerator`s.
+- chromatic: Allow for using multiple files and files with multiple frames for
+  calculation of the correction parameters in `Corrector` (slight API break:
+  The `feat1` and `feat2` attributes are now lists of DataFrames, not
+  plain DataFrames anymore.)
+- helper.singleton: Add a singleton type class decorator. Based on
+  https://github.com/reyoung/singleton
+- Minor GUI and plotting tweaks
+- data, motion: Be more consistent with naming of things (e. g. use "lagt"
+  everywhere and not also sometimes "tlag", make all variable names lower case,
+  ...) (API break)
+- Fix crash in loc.daostorm_3d in images without localizations
+
 6.1
 ---
 - Fix start-up of sdt.gui.locator on Windows
