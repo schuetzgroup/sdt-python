@@ -42,6 +42,34 @@ class TestChromaticCorrector(unittest.TestCase):
         p_orig = pd.read_hdf(os.path.join(data_path, "pairs.h5"), "pairs")
         np.testing.assert_allclose(p, p_orig)
 
+    def test_pairs_no_frame(self):
+        loc_data2 = self.loc_data.copy()
+        loc_data2.drop("frame", 1, inplace=True)
+        corrector2 = Corrector(self.roi_left(loc_data2),
+                               self.roi_right(loc_data2))
+        corrector2.determine_parameters()
+        self.corrector.determine_parameters()
+        np.testing.assert_allclose(corrector2.pairs, self.corrector.pairs)
+
+    def test_pairs_multi_file(self):
+        corrector2 = Corrector((self.roi_left(self.loc_data),)*2,
+                               (self.roi_right(self.loc_data),)*2)
+        corrector2.determine_parameters()
+        self.corrector.determine_parameters()
+        np.testing.assert_allclose(corrector2.pairs,
+                                   pd.concat((self.corrector.pairs,)*2))
+
+    def test_pairs_multi_frame(self):
+        loc_data2 = self.loc_data.copy()
+        loc_data2["frame"] += 1
+        loc_data_concat = pd.concat([self.loc_data, loc_data2])
+        corrector2 = Corrector(self.roi_left(loc_data_concat),
+                               self.roi_right(loc_data_concat))
+        corrector2.determine_parameters()
+        self.corrector.determine_parameters()
+        np.testing.assert_allclose(corrector2.pairs,
+                                   pd.concat((self.corrector.pairs,)*2))
+
     def test_call_dataframe(self):
         self.corrector.determine_parameters()
         data = self.roi_left(self.loc_data)
