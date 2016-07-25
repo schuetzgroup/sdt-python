@@ -392,7 +392,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     return emsd_from_square_displacements(sd_dict)
 
 
-def fit_msd(emsd, lags=2):
+def fit_msd(emsd, max_lagtime=2, exposure_time=0):
     """Get the diffusion coefficient and positional accuracy from MSDs
 
     Fit a linear function to the tlag-vs.-MSD graph
@@ -401,8 +401,11 @@ def fit_msd(emsd, lags=2):
     ----------
     emsd : DataFrame([lagt, msd])
         MSD data as computed by `emsd`
-    lags : int, optional
-        Use the first `tlags` lag times for fitting only. Defaults to 2.
+    max_lagtime : int, optional
+        Use the first `max_lagtime` lag times for fitting only. Defaults to 2.
+    exposure_time : float, optional
+        Correct positional accuracy for motion during exposure. Settings to 0
+        turns this off. Defaults to 0.
 
     Returns
     -------
@@ -411,16 +414,13 @@ def fit_msd(emsd, lags=2):
     pa : float
         Positional accuracy
     """
-    # TODO: illumination time correction
-    # msdplot.m:365
-
-    if lags == 2:
+    if max_lagtime == 2:
         k = ((emsd["msd"].iloc[1] - emsd["msd"].iloc[0]) /
              (emsd["lagt"].iloc[1] - emsd["lagt"].iloc[0]))
-        d = emsd["msd"].iloc[0] - k*emsd["lagt"].iloc[0]
+        d = emsd["msd"].iloc[0] - k*(emsd["lagt"].iloc[0] - exposure_time/3.)
     else:
-        k, d = np.polyfit(emsd["lagt"].iloc[0:lags],
-                          emsd["msd"].iloc[0:lags], 1)
+        k, d = np.polyfit(emsd["lagt"].iloc[0:max_lagtime] - exposure_time/3,
+                          emsd["msd"].iloc[0:max_lagtime], 1)
 
     D = k/4
     d = complex(d) if d < 0. else d
@@ -432,7 +432,8 @@ def fit_msd(emsd, lags=2):
     return D, pa
 
 
-def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None):
+def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
+             exposure_time=0.):
     """Plot lag time vs. MSD and the fit as calculated by `fit_msd`.
 
     Parameters
@@ -445,13 +446,17 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None):
     pa : float
         Positional accuracy (see `fit_msd`)
     max_lagtime : int, optional
-        Maximum number of time lags to plot. Defaults to 100.
+        Maximum number of lag times to plot. Defaults to 100.
     show_legend : bool, optional
         Whether to show the legend (the values of the diffusion coefficient D
         and the positional accuracy) in the plot. Defaults to True.
     ax : matplotlib.axes.Axes or None, optional
         If given, use this axes object to draw the plot. If None, use the
         result of `matplotlib.pyplot.gca`.
+    exposure_time : float, optional
+        Correct positional accuracy for motion during exposure. Settings to 0
+        turns this off. This has to match the exposure time of the
+        :py:func:`fit_msd` call. Defaults to 0.
     """
     import matplotlib as mpl
     import matplotlib.pyplot as plt
@@ -470,9 +475,11 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None):
     k = 4*d
     ic = 4*pa**2
     if isinstance(ic, complex):
-        d = ic.real
+        icr = ic.real
+    else:
+        icr = ic
     x = np.linspace(0, emsd["lagt"].max(), num=2)
-    y = k*x + ic
+    y = k*(x - exposure_time/3.) + icr
     ax.plot(x, y)
 
     if show_legend:
@@ -481,7 +488,7 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None):
             pa = pa.real
         fake_artist = mpl.lines.Line2D([0], [0], linestyle="none")
         ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$/s".format(float(d)),
-                                    "PA: {:.0} nm".format(float(pa*1000))],
+                                    "PA: {:.0f} nm".format(float(pa*1000))],
                   loc=0)
 
 
