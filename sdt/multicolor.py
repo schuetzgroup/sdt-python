@@ -117,7 +117,7 @@ def merge_channels(features1, features2, max_dist=2., pos_columns=pos_columns):
 
     max_dist_sq = max_dist**2
     f2_non_coloc = []
-    for frame_no in np.intersect1d(f1_mat[:, -1], f2_mat[:, -1]):
+    for frame_no in np.union1d(f1_mat[:, -1], f2_mat[:, -1]):
         # indices of features in current frame
         f1_idx = np.nonzero(f1_mat[:, -1] == frame_no)[0]
         f2_idx = np.nonzero(f2_mat[:, -1] == frame_no)[0]
@@ -133,9 +133,14 @@ def merge_channels(features1, features2, max_dist=2., pos_columns=pos_columns):
         # features in `features2` that colocalize with something
         coloc_mask = np.any(d <= max_dist_sq, axis=0)
         # append to list of indices in features2 that don't colocalize
-        f2_non_coloc.append(f2_idx[~coloc_mask])
+        non_coloc_idx = f2_idx[~coloc_mask]
+        non_coloc_idx.size and f2_non_coloc.append(non_coloc_idx)
 
-    f2_non_coloc = np.hstack(f2_non_coloc)
-    # combine `features1` and features from `features2` that don't colocalize
-    return pd.concat((features1, features2.iloc[f2_non_coloc]),
-                     ignore_index=True)
+    if f2_non_coloc:
+        f2_non_coloc = np.hstack(f2_non_coloc)
+        # combine `features1` and features from `features2` that don't
+        # colocalize
+        return pd.concat((features1, features2.iloc[f2_non_coloc]),
+                         ignore_index=True)
+    else:
+        return features1

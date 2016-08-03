@@ -23,7 +23,8 @@ class TestBrightness(unittest.TestCase):
                       [40, 50, 10, 0],
                       [18, 20, 10, 0],
                       [10, 20, 30, 1],
-                      [17, 30, 10, 1]])
+                      [17, 30, 10, 1],
+                      [20, 30, 40, 3]])
         self.pos2 = pd.DataFrame(b, columns=["x", "y", "z", "frame"])
 
     def test_find_colocalizations_channel_names(self):
