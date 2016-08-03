@@ -29,12 +29,17 @@ def find_colocalizations(features1, features2, max_dist=2.,
         Defaults to 2.
     channel_names : list of str, optional
         Names of the two channels.
+
+    Returns
+    -------
+    pandas.Panel
+        The panel has items named according to `channel_names`.
+
+    Other parameters
+    ----------------
     pos_colums : list of str, optional
         Names of the columns describing the x and the y coordinate of the
         features in :py:class:`pandas.DataFrames`.
-
-    Returns:
-        pandas.Panel which has items named according to `channel_names`.
     """
     p1_mat = features1[pos_columns + ["frame"]].values
     p2_mat = features2[pos_columns + ["frame"]].values
@@ -42,7 +47,7 @@ def find_colocalizations(features1, features2, max_dist=2.,
     max_dist_sq = max_dist**2
     pairs1 = []
     pairs2 = []
-    for frame_no in np.unique(p1_mat[:, 2]):
+    for frame_no in np.unique(p1_mat[:, -1]):
         # indices of features in current frame
         p1_idx = np.nonzero(p1_mat[:, -1] == frame_no)[0]
         p2_idx = np.nonzero(p2_mat[:, -1] == frame_no)[0]
