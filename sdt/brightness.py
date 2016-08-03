@@ -42,7 +42,7 @@ def _from_raw_image_single(data, frames, radius=2, bg_frame=2):
         Standard deviation of the background
     """
     frameno = int(data[0])
-    pos = np.round(data[1:])  # round to nearest pixel value
+    pos = np.round(data[1:]).astype(np.int)  # round to nearest pixel value
     ndim = len(pos)  # number of dimensions
     fr = frames[frameno]  # current image
     start = pos - radius - bg_frame
