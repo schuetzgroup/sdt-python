@@ -14,13 +14,13 @@ data_path = os.path.join(path, "data_multicolor")
 
 class TestBrightness(unittest.TestCase):
     def setUp(self):
-        a = np.array([[10, 20, 10, 0],
+        a = np.array([[10, 20, 10, 2],
+                      [10, 20, 10, 0],
                       [15, 15, 10, 0],
-                      [10, 20, 10, 1],
-                      [10, 20, 10, 2]])
+                      [10, 20, 10, 1]])
         self.pos1 = pd.DataFrame(a, columns=["x", "y", "z", "frame"])
-        b = np.array([[40, 50, 10, 0],
-                      [10, 21, 10, 0],
+        b = np.array([[10, 21, 10, 0],
+                      [40, 50, 10, 0],
                       [18, 20, 10, 0],
                       [10, 20, 30, 1],
                       [17, 30, 10, 1]])
@@ -36,15 +36,15 @@ class TestBrightness(unittest.TestCase):
         pairs = sdt.multicolor.find_colocalizations(
             self.pos1, self.pos2, 2)
 
-        np.testing.assert_allclose(pairs.channel1, self.pos1.iloc[[0, 2]])
-        np.testing.assert_allclose(pairs.channel2, self.pos2.iloc[[1, 3]])
+        np.testing.assert_allclose(pairs.channel1, self.pos1.iloc[[1, 3]])
+        np.testing.assert_allclose(pairs.channel2, self.pos2.iloc[[0, 3]])
 
     def test_find_colocalizations_pairs_3d(self):
         pairs = sdt.multicolor.find_colocalizations(
             self.pos1, self.pos2, 2, pos_columns=["x", "y", "z"])
 
-        np.testing.assert_allclose(pairs.channel1, self.pos1.iloc[[0]])
-        np.testing.assert_allclose(pairs.channel2, self.pos2.iloc[[1]])
+        np.testing.assert_allclose(pairs.channel1, self.pos1.iloc[[1]])
+        np.testing.assert_allclose(pairs.channel2, self.pos2.iloc[[0]])
 
 
 if __name__ == "__main__":
