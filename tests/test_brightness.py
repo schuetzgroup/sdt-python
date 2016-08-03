@@ -33,6 +33,8 @@ class TestBrightness(unittest.TestCase):
 
         self.mass1 = sig1.sum() - self.bg*(2*self.radius + 1)**2
         self.mass2 = sig2.sum() - self.bg*(2*self.radius + 1)**2
+        self.signal1 = sig1.max() - self.bg
+        self.signal2 = sig2.max() - self.bg
 
         self.img = np.zeros((50, 50))
         self.img[self.pos1[1]-bg_radius:self.pos1[1]+bg_radius+1,
@@ -57,13 +59,15 @@ class TestBrightness(unittest.TestCase):
         res = sdt.brightness._from_raw_image_single(
             [0] + self.pos1, [self.img], self.radius, self.bg_frame)
         np.testing.assert_allclose(
-            np.array(res), np.array([self.mass1, self.bg, self.bg_dev]))
+            np.array(res),
+            np.array([self.signal1, self.mass1, self.bg, self.bg_dev]))
 
     def test_from_raw_image(self):
         data = np.array([self.pos1, self.pos2])
         data = pd.DataFrame(data, columns=["x", "y"])
         data["frame"] = 0
         expected = data.copy()
+        expected["signal"] = np.array([self.signal1, self.signal2])
         expected["mass"] = np.array([self.mass1, self.mass2])
         expected["bg"] = self.bg
         expected["bg_dev"] = self.bg_dev

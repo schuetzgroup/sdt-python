@@ -34,6 +34,8 @@ def _from_raw_image_single(data, frames, radius=2, bg_frame=2):
 
     Returns
     -------
+    signal : float
+        Maximum intensity value (minus background)
     mass : float
         Total brightness (minus background)
     bg : float
@@ -56,17 +58,21 @@ def _from_raw_image_single(data, frames, radius=2, bg_frame=2):
         # The signal was too close to the egde of the image, we could not read
         # all the pixels we wanted
         mass = np.NaN
+        signal = np.NaN
         background_intensity = np.NaN
         background_std = np.NaN
     elif bg_frame == 0 or bg_frame is None:
         # no background correction
         mass = signal_region.sum()
+        signal = signal_region.max()
         background_intensity = 0
         background_std = 0
     else:
         # signal region without background frame (i. e. only the actual signal)
         signal_slice = [slice(bg_frame, -bg_frame)]*ndim
-        uncorr_intensity = signal_region[signal_slice].sum()
+        foreground_pixels = signal_region[signal_slice]
+        uncorr_intensity = foreground_pixels.sum()
+        uncorr_signal = foreground_pixels.max()
 
         # background correction: Only take frame pixels
         signal_region[signal_slice] = 0
@@ -74,8 +80,9 @@ def _from_raw_image_single(data, frames, radius=2, bg_frame=2):
         background_intensity = np.mean(background_pixels)
         background_std = np.std(background_pixels)
         mass = uncorr_intensity - background_intensity * (2*radius + 1)**ndim
+        signal = uncorr_signal - background_intensity
 
-    return [mass, background_intensity, background_std]
+    return [signal, mass, background_intensity, background_std]
 
 
 def from_raw_image(positions, frames, radius, bg_frame=2,
@@ -90,7 +97,7 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
     Parameters
     ----------
     positions : pandas.DataFrame
-        Localization data. Brightness, background, and background deviation
+        Localization data. "signal", "mass", "bg", and "bg_dev"
         columns are added and/or replaced directly in this object.
     frames : iterable of numpy.ndarrays
         Raw image data
@@ -114,9 +121,10 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
                                      t_pos_matrix,
                                      frames, radius, bg_frame)
 
-    positions["mass"] = brightness[:, 0]
-    positions["bg"] = brightness[:, 1]
-    positions["bg_dev"] = brightness[:, 2]
+    positions["signal"] = brightness[:, 0]
+    positions["mass"] = brightness[:, 1]
+    positions["bg"] = brightness[:, 2]
+    positions["bg_dev"] = brightness[:, 3]
 
 
 class Distribution(object):
