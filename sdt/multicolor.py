@@ -85,3 +85,57 @@ def find_colocalizations(features1, features2, max_dist=2.,
         ((channel_names[0], pd.concat(pairs1, ignore_index=True)),
          (channel_names[1], pd.concat(pairs2, ignore_index=True))))
     return pd.Panel(df_dict)
+
+
+def merge_channels(features1, features2, max_dist=2., pos_columns=pos_columns):
+    """Merge features of `features1` and `features2`
+
+    Concatenate all of `features1` and those entries of `features2` that do
+    not colocalize with any of `features1` (in the same frame).
+
+    Parameters
+    ----------
+    features1, features2 : pandas.DataFrame
+        Localization data. Requires `pos_columns` and "frame" columns
+    max_dist : float, optional
+        Maximum distance between features to still be considered colocalizing.
+        Defaults to 2.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame of merged features.
+
+    Other parameters
+    ----------------
+    pos_colums : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features in :py:class:`pandas.DataFrames`.
+    """
+    f1_mat = features1[pos_columns + ["frame"]].values
+    f2_mat = features2[pos_columns + ["frame"]].values
+
+    max_dist_sq = max_dist**2
+    f2_non_coloc = []
+    for frame_no in np.intersect1d(f1_mat[:, -1], f2_mat[:, -1]):
+        # indices of features in current frame
+        f1_idx = np.nonzero(f1_mat[:, -1] == frame_no)[0]
+        f2_idx = np.nonzero(f2_mat[:, -1] == frame_no)[0]
+        # current frame positions with the frame column excluded
+        f1_f = f1_mat[f1_idx, :-1]
+        f2_f = f2_mat[f2_idx, :-1]
+
+        # d[i, j, k] is the difference of the k-th coordinate of
+        # loc `i` in pos1 and loc `j` in pos2
+        d = f1_f[:, np.newaxis, :] - f2_f[np.newaxis, :, :]
+        # euclidian distance squared
+        d = np.sum(d**2, axis=2)
+        # features in `features2` that colocalize with something
+        coloc_mask = np.any(d <= max_dist_sq, axis=0)
+        # append to list of indices in features2 that don't colocalize
+        f2_non_coloc.append(f2_idx[~coloc_mask])
+
+    f2_non_coloc = np.hstack(f2_non_coloc)
+    # combine `features1` and features from `features2` that don't colocalize
+    return pd.concat((features1, features2.iloc[f2_non_coloc]),
+                     ignore_index=True)

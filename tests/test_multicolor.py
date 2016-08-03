@@ -46,6 +46,15 @@ class TestBrightness(unittest.TestCase):
         np.testing.assert_allclose(pairs.channel1, self.pos1.iloc[[1]])
         np.testing.assert_allclose(pairs.channel2, self.pos2.iloc[[0]])
 
+    def test_merge_channels(self):
+        merged = sdt.multicolor.merge_channels(self.pos1, self.pos2, 2.)
+        merged = merged.sort_values(["frame", "x", "y"])
+
+        expected = pd.concat((self.pos1, self.pos2.drop([0, 3])))
+        expected = expected.sort_values(["frame", "x", "y"])
+
+        np.testing.assert_allclose(merged, expected)
+
 
 if __name__ == "__main__":
     unittest.main()
