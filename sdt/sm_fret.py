@@ -18,6 +18,7 @@ Attributes:
         ("masses") of the features. Defaults to "mass".
 """
 import collections
+import warnings
 
 import pandas as pd
 import numpy as np
@@ -85,6 +86,8 @@ def match_pairs(acceptors, donors, max_dist=2., pos_columns=pos_columns,
         pandas.Dataframe where each line contains the data of an acceptor
         localization and its matching donor.
     """
+    warnings.warn("Deprecated. Use `multicolor.find_colocalizations` "
+                  "instead.", np.VisibleDeprecationWarning)
     pairs = []
     x = pos_columns[0]
     y = pos_columns[1]
