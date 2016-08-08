@@ -68,7 +68,7 @@ class Corrector(object):
         self.parameters1 = np.eye(3)
         self.parameters2 = np.eye(3)
 
-    def determine_parameters(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.5,
+    def determine_parameters(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
                              ambiguity_factor=0.8):
         """Determine the parameters for the affine transformation
 
@@ -102,7 +102,7 @@ class Corrector(object):
         self.find_pairs(tol_rel, tol_abs, score_cutoff, ambiguity_factor)
         self.fit_parameters()
 
-    def find_pairs(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.5,
+    def find_pairs(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
                    ambiguity_factor=0.8):
         """Match features of `feat1` with features of `feat2`
 
