@@ -138,6 +138,8 @@ def match_pair_tracks(pairs, acceptor_tracks, donor_tracks, threshold=0.75,
         contains one frame. If in this frame one channel has no localization,
         its entries are NaNs.
     """
+    warnings.warn("Deprecated. Use `multicolor.find_codiffusion` instead.",
+                  np.VisibleDeprecationWarning)
     matches = []
     for acc_track_no in set(pairs[channel_names[0], trackno_column]):
         don_tracks = pairs.loc[pairs[channel_names[0], trackno_column]

@@ -144,3 +144,111 @@ def merge_channels(features1, features2, max_dist=2., pos_columns=pos_columns):
                          ignore_index=True)
     else:
         return features1
+
+
+def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
+                     return_data="data", feature_pairs=None, max_dist=2,
+                     channel_names=channel_names, pos_columns=pos_columns):
+    """Find codiffusion in tracking data
+
+    First, find pairs of localizations, the look up to which tracks they
+    belong to and thus match tracks.
+
+    Parameters
+    ----------
+    tracks1, tracks2 : pandas.DataFrame
+        Tracking data. In addition to what is required by
+        :py:func:`find_colocalizations`, a "particle" column has to be present.
+    abs_threshold : int, optional
+        Minimum number of matched localizations per track pair. Defaults to 3
+    rel_threshold : float, optional
+        Minimum fraction of matched localizations that have to belong to the
+        same pair of tracks. E. g., if localizations of  aparticle in the
+        first channel match five localizations of a particle in the second
+        channel, and there are eight frames between the first and the last
+        match, that fraction would be 5/8. Defaults to 0.75.
+    return_data : {"data", "numbers", "both"}, optional
+        Whether to return the full data of the codiffusing particles, only
+        their particle numbers, or both. Defaults to "data".
+    feature_pairs : pandas.Panel or None, optional
+        If :py:func:`find_colocalizations` has already been called on the
+        data, the result can be passed to save re-computation. If `None`,
+        :py:func:`find_colocalizations` is called in this function. Defaults
+        to None
+    max_dist : float, optional
+        `max_dist` parameter for :py:func:`find_colocalizations` call.
+        Defaults to 2.
+    channel_names : list of str, optional
+        Names of the two channels.
+
+    Returns
+    -------
+    data : pandas.DataFrame
+        Full data (from `tracks1` and `tracks2`) of the codiffusing particles.
+        Returned if `return_data` is "data" or "both".
+    match_numbers : numpy.ndarray, shape=(n, 4)
+        Each row's first entry is a particle number in the first channel and
+        its second entry is the matching particle number in the second channel.
+        Third and fourth colums are start and end frame, respectively.
+        Returned if `return_data` is "numbers" or "both"
+
+    Other parameters
+    ----------------
+    pos_colums : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features in :py:class:`pandas.DataFrames`.
+    """
+    if feature_pairs is None:
+        feature_pairs = find_colocalizations(tracks1, tracks2, max_dist,
+                                             channel_names, pos_columns)
+
+    ch1_pairs = feature_pairs[channel_names[0]]
+    ch2_pairs = feature_pairs[channel_names[1]]
+    matches = []
+    for pn, data1 in ch1_pairs.groupby("particle"):
+        # get channel 2 pair data corresponding to particle `pn` in channel 1
+        # (only "particle" and "frame" columns)
+        data2 = ch2_pairs.loc[data1.index, ["particle", "frame"]].values
+        # count how often which channel 2 particle appears
+        count = collections.Counter(data2[:, 0])
+        # turn into array where each row is (channel2_particle_number, count)
+        count_arr = np.array([(k, v) for k, v in count.items()])
+        # only take those which appear >= abs_threshold times
+        candidate_pns = count_arr[count_arr[:, 1] >= abs_threshold]
+        for c_pn, c_cnt in candidate_pns:
+            # for each, get frame number for first and last match
+            c_data2 = data2[data2[:, 0] == c_pn, 1]
+            start = c_data2.min()
+            end = c_data2.max()
+            if c_cnt / (end - start + 1) >= rel_threshold:
+                # if greater or equal to threshold, record as valid
+                matches.append((pn, c_pn, start, end))
+
+    matches = np.array(matches)
+    if return_data == "numbers":
+        return matches
+
+    data = []
+    # construct the Panel
+    for new_pn, (pn1, pn2, start, end) in enumerate(matches):
+        # get tracks between start frame and end frame
+        t1 = tracks1[tracks1["particle"] == pn1]
+        t1 = t1[(int(start) <= t1["frame"]) & (t1["frame"] <= int(end))]
+        t2 = tracks2[tracks2["particle"] == pn2]
+        t2 = t2[(int(start) <= t2["frame"]) & (t2["frame"] <= int(end))]
+        # use frame as the index (=axis for merging when creating the Panel)
+        t1 = t1.set_index("frame", drop=False)  # copy so that the original
+        t2 = t2.set_index("frame", drop=False)  # is not overridden here
+        t1["particle"] = t2["particle"] = new_pn  # and here
+
+        data.append(pd.Panel({channel_names[0]: t1, channel_names[1]: t2}))
+
+    data = (pd.concat(data, axis=1, ignore_index=True))
+
+    if return_data == "data":
+        return data
+    elif return_data == "both":
+        return data, matches
+    else:
+        raise ValueError("`return_data` has to be one of 'data', 'numbers', "
+                         "or 'both'.")
