@@ -26,6 +26,8 @@ Overview
   :py:mod:`sdt.brightness` module.
 - Methods for correction of chromatic aberrations can be found in the
   :py:mod:`sdt.chromatic` module.
+- Functions for dealing with multi-color data (colocalization, codiffusion, …)
+  are featured in the :py:mod:`sdt.multicolor` module.
 - The :py:mod:`sdt.data` module includes support for :ref:`reading and
   writing data <data_read_write>` from and to files in various formats and
   also for :ref:`filtering <data_filter>` of the data.
@@ -70,6 +72,7 @@ Table of contents
   motion
   brightness
   chromatic
+  multicolor
   data_file
   data_filter
   image_tools

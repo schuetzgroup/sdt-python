@@ -307,3 +307,4 @@ texinfo_documents = [
 
 autodoc_member_order = "bysource"
 autoclass_content = "both"
+napoleon_use_param = False

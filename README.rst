@@ -9,6 +9,7 @@ It contains
 - algorithms for localization of fluorescent features in images
 - methods for evaluation of tracking data
 - functions to evaluate brightness data
+- as well as multi-color data
 - support for automated determination and correction of chromatic aberrations
 - methods for reading and writing single molecule data in various formats
 - handling of ROIs (both rectangular and described by arbitrary paths)
