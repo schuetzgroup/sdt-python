@@ -6,9 +6,15 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+7.1
+---
+- Introduce the `multicolor` module. This is a better version (faster, with
+  tests) of the `sm_fret` module, which is now deprecated.
+- Minor fixes and improvements.
+
 7.0
 ---
-- Fix `chromatic.Corrector.__call__` when applied to `Slicerator`s.
+- Fix `chromatic.Corrector.__call__` when applied to `Slicerator`.
 - chromatic: Allow for using multiple files and files with multiple frames for
   calculation of the correction parameters in `Corrector` (slight API break:
   The `feat1` and `feat2` attributes are now lists of DataFrames, not
