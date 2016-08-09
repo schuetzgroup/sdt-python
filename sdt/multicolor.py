@@ -1,4 +1,4 @@
-"""Tools for evaluation multi-color fluorescence microscopy data
+"""Tools for evaluation of multi-color fluorescence microscopy data
 
 Analyze colocalizations, co-diffusion, etc.
 """
@@ -259,7 +259,7 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
                          "or 'both'.")
 
 
-def plot_codiffusion(data, particle=None, ax=None, cmap=None, show_legend=True,
+def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
                      legend_loc=0, linestyles=["-", "--", ":", "-."],
                      channel_names=None, pos_columns=_pos_columns):
     """Plot trajectories of codiffusing particles
@@ -276,9 +276,8 @@ def plot_codiffusion(data, particle=None, ax=None, cmap=None, show_legend=True,
         :py:func:`find_codiffusion` (i. e. matching indices in the DataFrames
         correspond to matching localizations) or a tuple of DataFrames, one
         for each channel.
-    particle : int or tuple of int, optional
-        If `data` contains information about more than one particle, specify
-        its ID number here. In case `data` is a list of DataFrames and the
+    particle : int or tuple of int
+        Specify particle ID. In case `data` is a list of DataFrames and the
         particles have different IDs, one can pass the tuple of IDs.
     ax : matplotlib.axes.Axes
         To be used for plotting. If `None`, ``matplotlib.pyplot.gca()`` will be
@@ -322,7 +321,9 @@ def plot_codiffusion(data, particle=None, ax=None, cmap=None, show_legend=True,
     else:
         if channel_names is None:
             channel_names = _channel_names
-        d_iter = (d[d["particle"] == particle] for d in data)
+        if not isinstance(particle, collections.Iterable):
+            particle = (particle,) * len(data)
+        d_iter = (d[d["particle"] == p] for d, p in zip(data, particle))
 
     legend = []
     for d, ls in zip(d_iter, linestyles):
