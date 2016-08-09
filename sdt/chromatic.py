@@ -249,9 +249,14 @@ class Corrector(object):
             def corr(img):
                 # transpose image since matrix axes are reversed compared to
                 # coordinate axes
-                ret = scipy.ndimage.affine_transform(
-                    img.T, parms[:-1, :-1], parms[:-1, -1],
+                img_t = img.T
+
+                # this way, the original subclass of np.ndarray is preserved
+                ret = np.empty_like(img_t)
+                scipy.ndimage.affine_transform(
+                    img_t, parms[:-1, :-1], parms[:-1, -1], output=ret,
                     mode=mode, cval=cval)
+
                 return ret.T  # transpose back
             return corr(data)
 
