@@ -28,6 +28,10 @@ import matplotlib.pyplot as plt
 from . import image_tools
 
 
+warnings.warn("Deprecated. Use the `multicolor` module instead.",
+              np.VisibleDeprecationWarning)
+
+
 pos_columns = ["x", "y"]
 channel_names = ["acceptor", "donor"]
 frameno_column = "frame"
@@ -218,6 +222,8 @@ def plot_track(data, ax=None, cmap=plt.get_cmap("Paired"),
         channel_names (list of str): Names of the two channels. Defaults to
             the`channel_names` attribute of the module.
     """
+    warnings.warn("Deprecated. Use `multicolor.plot_codiffusion` instead.",
+                  np.VisibleDeprecationWarning)
     if ax is None:
         ax = plt.gca()
 

@@ -8,12 +8,14 @@ import pandas as pd
 import numpy as np
 
 
-pos_columns = ["x", "y"]
-channel_names = ["channel1", "channel2"]
+# Default values. If changed, also change doc strings
+_pos_columns = ["x", "y"]
+_channel_names = ["channel1", "channel2"]
 
 
 def find_colocalizations(features1, features2, max_dist=2.,
-                         channel_names=channel_names, pos_columns=pos_columns):
+                         channel_names=_channel_names,
+                         pos_columns=_pos_columns):
     """Match localizations in one channel to localizations in another
 
     For every localization in `features1` find localizations in
@@ -39,7 +41,7 @@ def find_colocalizations(features1, features2, max_dist=2.,
     ----------------
     pos_colums : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`.
+        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
     """
     p1_mat = features1[pos_columns + ["frame"]].values
     p2_mat = features2[pos_columns + ["frame"]].values
@@ -87,7 +89,8 @@ def find_colocalizations(features1, features2, max_dist=2.,
     return pd.Panel(df_dict)
 
 
-def merge_channels(features1, features2, max_dist=2., pos_columns=pos_columns):
+def merge_channels(features1, features2, max_dist=2.,
+                   pos_columns=_pos_columns):
     """Merge features of `features1` and `features2`
 
     Concatenate all of `features1` and those entries of `features2` that do
@@ -110,7 +113,7 @@ def merge_channels(features1, features2, max_dist=2., pos_columns=pos_columns):
     ----------------
     pos_colums : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`.
+        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
     """
     f1_mat = features1[pos_columns + ["frame"]].values
     f2_mat = features2[pos_columns + ["frame"]].values
@@ -148,7 +151,7 @@ def merge_channels(features1, features2, max_dist=2., pos_columns=pos_columns):
 
 def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
                      return_data="data", feature_pairs=None, max_dist=2,
-                     channel_names=channel_names, pos_columns=pos_columns):
+                     channel_names=_channel_names, pos_columns=_pos_columns):
     """Find codiffusion in tracking data
 
     First, find pairs of localizations, the look up to which tracks they
@@ -179,24 +182,26 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         `max_dist` parameter for :py:func:`find_colocalizations` call.
         Defaults to 2.
     channel_names : list of str, optional
-        Names of the two channels.
+        Names of the two channels. Defaults to ["channel1", "channel2"].
 
     Returns
     -------
-    data : pandas.DataFrame
+    data : pandas.Panel
         Full data (from `tracks1` and `tracks2`) of the codiffusing particles.
-        Returned if `return_data` is "data" or "both".
+        For each item of the panel, entries with the same index (i. e. lines
+        in the DataFrame) correspond to matching localizations. Returned if
+        `return_data` is "data" or "both".
     match_numbers : numpy.ndarray, shape=(n, 4)
         Each row's first entry is a particle number in the first channel and
         its second entry is the matching particle number in the second channel.
         Third and fourth colums are start and end frame, respectively.
-        Returned if `return_data` is "numbers" or "both"
+        Returned if `return_data` is "numbers" or "both".
 
     Other parameters
     ----------------
     pos_colums : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`.
+        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
     """
     if feature_pairs is None:
         feature_pairs = find_colocalizations(tracks1, tracks2, max_dist,
@@ -252,3 +257,88 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
     else:
         raise ValueError("`return_data` has to be one of 'data', 'numbers', "
                          "or 'both'.")
+
+
+def plot_codiffusion(data, particle=None, ax=None, cmap=None, show_legend=True,
+                     legend_loc=0, linestyles=["-", "--", ":", "-."],
+                     channel_names=None, pos_columns=_pos_columns):
+    """Plot trajectories of codiffusing particles
+
+    Each step is colored differently so that by comparing colors one can
+    figure out which steps in one channel correspond to which steps in the
+    other channel.
+
+    Parameters
+    ----------
+    data : pandas.Panel or tuple of pandas.DataFrames
+        Tracking data of codiffusing particles. This can be a
+        :py:class:`pandas.Panel` as e. g. returned by
+        :py:func:`find_codiffusion` (i. e. matching indices in the DataFrames
+        correspond to matching localizations) or a tuple of DataFrames, one
+        for each channel.
+    particle : int or tuple of int, optional
+        If `data` contains information about more than one particle, specify
+        its ID number here. In case `data` is a list of DataFrames and the
+        particles have different IDs, one can pass the tuple of IDs.
+    ax : matplotlib.axes.Axes
+        To be used for plotting. If `None`, ``matplotlib.pyplot.gca()`` will be
+        used. Defaults to `None`.
+    cmap: matplotlib.colors.Colormap, optional
+        To be used for coloring steps. Defaults to the "Paired" map of
+        `matplotlib`.
+    show_legend : bool, optional
+        Whether to print a legend or not. Defaults to True.
+    legend_loc : int or str
+        Is passed as the `loc` parameter to matplotlib's axes' `legend` method.
+        Defaults to 0.
+    pos_colums : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features in pandas.DataFrames.
+    channel_names : list of str or None, optional
+        Names of the channels. If None, use the item names of `data` if it is
+        a panel, otherwise use ["channel1", "channel2"]. Defaults to None.
+
+    Other parameters
+    ----------------
+    pos_colums : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
+    """
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+
+    if ax is None:
+        ax = plt.gca()
+
+    if cmap is None:
+        cmap = plt.get_cmap("Paired")
+
+    ax.set_aspect(1.)
+
+    if isinstance(data, pd.Panel):
+        if channel_names is None:
+            channel_names = data.items
+        d_iter = (d[d["particle"] == particle] for n, d in data.iteritems())
+    else:
+        if channel_names is None:
+            channel_names = _channel_names
+        d_iter = (d[d["particle"] == particle] for d in data)
+
+    legend = []
+    for d, ls in zip(d_iter, linestyles):
+        # the following two lines create a 3D array s. t. the i-th entry is
+        # the matrix [[start_x, start_y], [end_x, end_y]]
+        xy = d.sort_values("frame")[pos_columns].values[:, np.newaxis, :]
+        segments = np.concatenate([xy[:-1], xy[1:]], axis=1)
+
+        lc = mpl.collections.LineCollection(
+            segments, cmap=cmap, array=np.linspace(0., 1., len(d)),
+            linestyles=ls)
+        ax.add_collection(lc, autolim=True)
+
+        legend.append(mpl.lines.Line2D([0, 1], [0, 1], ls=ls, c="black"))
+
+    ax.autoscale_view()
+
+    if show_legend:
+        ax.legend(legend, channel_names[:len(legend)], loc=legend_loc)
