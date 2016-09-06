@@ -1,13 +1,6 @@
 """Function to restrict peak localization to a ROI"""
-from slicerator import pipeline
-
-from .bandpass import bandpass
+from ...background import remove_bg_cg
 from ...image_tools import PathROI
-
-
-@pipeline
-def bandpass_pipe(*args):
-    return bandpass(*args)
 
 
 def restrict_roi(locate_func, buffer=10):
@@ -78,7 +71,7 @@ def restrict_roi(locate_func, buffer=10):
             except IndexError:
                 noise_radius = kwargs.pop("noise_radius", 1)
 
-            frames = bandpass_pipe(frames, radius, noise_radius)
+            frames = remove_bg_cg(frames, radius, noise_radius, nonneg=True)
 
         # slightly larger ROI to avoid boundary artefacts
         img_roi = PathROI(roi, buffer)

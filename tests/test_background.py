@@ -53,7 +53,7 @@ class TestWavelet(unittest.TestCase):
 class TestCG(unittest.TestCase):
     def setUp(self):
         self.img, self.bg = mkimg()
-        self.options = dict(feature_radius=3, noise_radius=1)
+        self.options = dict(feature_radius=3, noise_radius=1, nonneg=False)
 
         # created from a test run
         self.orig = np.load(os.path.join(data_path, "cg.npz"))["bp_img"]

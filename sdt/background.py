@@ -114,7 +114,7 @@ def remove_bg_wavelet(image, *args, **kwargs):
 
 
 @pipeline
-def remove_bg_cg(image, feature_radius, noise_radius=1):
+def remove_bg_cg(image, feature_radius, noise_radius=1, nonneg=False):
     r"""Remove background using a bandpass filter according to Crocker & Grier
 
     Convolve with kernel
@@ -155,6 +155,9 @@ def remove_bg_cg(image, feature_radius, noise_radius=1):
         peaks.
     noise_radius : float, optional
         Noise correlation length in pixels. Defaults to 1.
+    nonneg : bool, optional
+        If True, clip values of the filtered image to [0, infinity). Defaults
+        to False.
 
     Returns
     -------
@@ -175,7 +178,10 @@ def remove_bg_cg(image, feature_radius, noise_radius=1):
 
     # pad to the same size as the original image
     ret = np.zeros_like(image, dtype=np.float)
-    ret[w:-w, w:-w] = filtered_img
+    if nonneg:
+        ret[w:-w, w:-w] = np.clip(filtered_img, 0, np.inf)
+    else:
+        ret[w:-w, w:-w] = filtered_img
     return ret
 
 
