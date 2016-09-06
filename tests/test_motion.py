@@ -207,5 +207,35 @@ class TestMotion(unittest.TestCase):
         np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
 
 
+class TestFindImmobilizations(unittest.TestCase):
+    def setUp(self):
+        tracks1 = pd.DataFrame(
+            np.array([10, 10, 10, 10, 11, 11, 11, 12, 12, 12]),
+            columns=["x"])
+        tracks1["y"] = 20
+        tracks1["particle"] = 0
+        tracks1["frame"] = np.arange(len(tracks1))
+        tracks2 = tracks1.copy()
+        tracks2["particle"] = 1
+        self.tracks = pd.concat((tracks1, tracks2))
+
+    def test_overlapping(self):
+        # Test where multiple immobilization candidates overlap in their frame
+        # range
+        orig = self.tracks.copy()
+        immob = np.array([0]*7 + [1]*3 + [2]*7 + [3]*3)
+        orig["immob"] = immob
+        sdt.motion.find_immobilizations(self.tracks, 2, 1)
+        np.testing.assert_allclose(self.tracks, orig)
+
+    def test_longest_only(self):
+        # Test `longest_only` option
+        orig = self.tracks.copy()
+        immob = np.array([0]*7 + [-1]*3 + [1]*7 + [-1]*3)
+        orig["immob"] = immob
+        sdt.motion.find_immobilizations(self.tracks, 2, 1, longest_only=True)
+        np.testing.assert_allclose(self.tracks, orig)
+
+
 if __name__ == "__main__":
     unittest.main()

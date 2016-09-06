@@ -12,7 +12,7 @@ path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_multicolor")
 
 
-class TestBrightness(unittest.TestCase):
+class TestMulticolor(unittest.TestCase):
     def setUp(self):
         a = np.array([[10, 20, 10, 2],
                       [10, 20, 10, 0],

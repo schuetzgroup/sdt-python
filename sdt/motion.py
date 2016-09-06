@@ -8,7 +8,7 @@ import lmfit
 from . import exp_fit
 
 
-pos_columns = ["x", "y"]
+_pos_columns = ["x", "y"]
 """Names of the columns describing the x and the y coordinate of the features.
 """
 
@@ -43,7 +43,7 @@ def _prepare_traj(data):
 
 
 def _displacements(particle_data, max_lagtime, disp_dict=None,
-                   pos_columns=pos_columns):
+                   pos_columns=_pos_columns):
     """Do the actual calculation of displacements
 
     Calculate all possible displacements for each lag time for one particle.
@@ -76,7 +76,7 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
     ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features. Defaults to the `pos_columns` attribute of the module.
+        features.
     """
     # fill gaps with NaNs
     idx = particle_data.index
@@ -109,7 +109,7 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
         return ret
 
 
-def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
+def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
     r"""Calculate mean displacements from tracking data for one particle
 
     This calculates the mean displacement :math:`\langle x_i\rangle` for each
@@ -138,7 +138,7 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features. Defaults to the `pos_columns` attribute of the module.
+        features.
     """
     # check if traj is empty
     cols = (["<{}>".format(p) for p in pos_columns] +
@@ -174,7 +174,7 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     return ret
 
 
-def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
+def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
     """Calculate mean square displacements from tracking data for each particle
 
     Parameters
@@ -198,13 +198,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features. Defaults to the `pos_columns` attribute of the module.
-    t_column : str, optional
-        Name of the column containing frame numbers. Defaults to the
-        `t_column` of the module.
-    trackno_column : str, optional
-        Name of the column containing track numbers. Defaults to the
-        `trackno_column` attribute of the module.
+        features.
     """
     # check if traj is empty
     if not len(data):
@@ -230,7 +224,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     return ret
 
 
-def all_displacements(data, max_lagtime=100, pos_columns=pos_columns):
+def all_displacements(data, max_lagtime=100, pos_columns=_pos_columns):
     """Calculate all displacements
 
     For each lag time calculate all possible displacements for each trajectory
@@ -255,13 +249,7 @@ def all_displacements(data, max_lagtime=100, pos_columns=pos_columns):
     ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features. Defaults to the `pos_columns` attribute of the module.
-    t_column : str, optional
-        Name of the column containing frame numbers. Defaults to the
-        `t_column` of the module.
-    trackno_column : str, optional
-        Name of the column containing track numbers. Defaults to the
-        `trackno_column` attribute of the module.
+        features.
     """
     if isinstance(data, pd.DataFrame):
         data = [data]
@@ -351,7 +339,7 @@ def emsd_from_square_displacements(sd_dict):
     return ret
 
 
-def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
+def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
     """Calculate ensemble mean square displacements from tracking data
 
     This is equivalent to consecutively calling :func:`all_displacements`,
@@ -379,13 +367,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=pos_columns):
     ----------------
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features. Defaults to the `pos_columns` attribute of the module.
-    t_column : str, optional
-        Name of the column containing frame numbers. Defaults to the
-        `t_column` of the module.
-    trackno_column : str, optional
-        Name of the column containing track numbers. Defaults to the
-        `trackno_column` attribute of the module.
+        features.
     """
     disp_dict = all_displacements(data, max_lagtime, pos_columns)
     sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
@@ -722,7 +704,7 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, method="prony",
 
 
 def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
-             method="lsq", poly_order=30, pos_columns=pos_columns):
+             method="lsq", poly_order=30, pos_columns=_pos_columns):
     r"""Calculate ensemble mean square displacements from tracking data CDF
 
     Fit the model cumulative density function to the measured CDF of tracking
@@ -765,13 +747,7 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
         Defaults to 30.
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features. Defaults to the `pos_columns` attribute of the module.
-    t_column : str, optional
-        Name of the column containing frame numbers. Defaults to the
-        `t_column` of the module.
-    trackno_column : str, optional
-        Name of the column containing track numbers. Defaults to the
-        `trackno_column` attribute of the module.
+        features.
     """
     disp_dict = all_displacements(data, max_lagtime, pos_columns)
     sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
@@ -851,3 +827,95 @@ $PA={pa:.0f}$ nm""".format(D=D, pa=pa*1000)
 
     fig.autofmt_xdate()
     fig.tight_layout()
+
+
+def find_immobilizations(tracks, min_duration, max_dist, longest_only=False,
+                         pos_columns=_pos_columns):
+    """Find immobilizations in particle trajectories
+
+    Analyze trajectories and mark parts where a particle doesn't move out
+    of a certain area (a circle of radius `max_dist`) for at least a certain
+    number (`min_length`) of frames as an immobilization.
+
+    The `tracks` DataFrame gets a new column ("immob") appended
+    (or overwritten), where every immobilzation is assigned a different number
+    greater or equal than 0. Parts of trajectories that are not immobilized
+    are assigned -1.
+
+    Parameters
+    ----------
+    tracks : pandas.DataFrame
+        Tracking data
+    min_duration : int
+        Minimum number of frames the particle has to stay at the same place
+        for a part of a trajectory to be considered immobilized
+    max_dist : float
+        Maximum radius within a particle may move while still being considered
+        immobilized
+    longest_only : bool, optional
+        If True, search only for the longest immobilzation in each track to
+        speed up the process. Defaults to False.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Although the `tracks` DataFrame is modified in place, it is also
+        returned for convenience.
+
+    Other parameters
+    ----------------
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features.
+    """
+    max_dist_sq = max_dist**2
+    counter = 0
+    #  new column for `tracks` that holds the immobilization number
+    immob_column = []
+
+    for p_no, t in tracks.groupby("particle"):
+        t = t.sort_values("frame")
+        pos = t[pos_columns].values
+        frames = t["frame"].values
+        # to be appended to immob_column
+        icol = np.full(len(t), -1, dtype=int)
+
+        # d[i, j, k] is the difference of the k-th coordinate of
+        # loc `i` and loc `j` in the current track
+        d = pos[:, np.newaxis, :] - pos[np.newaxis, :, :]
+        # Euclidian distance squared
+        d = np.sum(d**2, axis=2)
+
+        close_enough = (d <= max_dist_sq)
+        # Set lower triangle to True so that only entries in upper triangle
+        # are found when searching for False, i. e. not close enough
+        close_enough[np.tri(*close_enough.shape, -1, dtype=bool)] = True
+        # Find first False entry in every row. If there is none, min_col will
+        # be 0 for that column
+        min_col = np.argmin(close_enough, axis=1)
+        min_col[min_col == 0] = len(t)
+        # First frame of the possible immobilization is the diagonal element
+        # of a row, the last is the row's min_col - 1
+        duration = frames[min_col - 1] - frames  # last frame - first frame
+        # array that has start index, end index, duration as columns
+        immob = np.column_stack((frames, min_col - 1, duration))
+        # take only those that are long enough
+        immob = immob[duration >= min_duration]
+
+        if immob.size:
+            # sort by duration
+            immob = immob[immob[:, 2].argsort()[::-1]]
+
+            for s, e, d in immob:
+                # check if it overlaps with a longer immobilization
+                if not np.any(icol[s:e+1] != -1):
+                    icol[s:e+1] = counter
+                    counter += 1
+                if longest_only:
+                    # break after first iteration
+                    break
+
+        immob_column.append(icol)
+
+    tracks["immob"] = np.hstack(immob_column)
+    return tracks
