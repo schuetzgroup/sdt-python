@@ -171,7 +171,7 @@ def remove_bg_cg(image, feature_radius, noise_radius=1):
 
     # convolution with kernel K
     K = (np.outer(gaussian_1d, gaussian_1d)/B - 1/(2*w+1)**2)/K_0
-    filtered_img = scipy.signal.convolve2d(image, K, "valid")
+    filtered_img = scipy.signal.fftconvolve(image, K, "valid")
 
     # pad to the same size as the original image
     ret = np.zeros_like(image, dtype=np.float)
