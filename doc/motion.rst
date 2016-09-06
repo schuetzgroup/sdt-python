@@ -37,6 +37,12 @@ For visualization, MSDs and diffusion coefficients can be plotted.
 .. autofunction:: plot_msd_cdf
 
 
+Detection of immobilizations in trajectories
+--------------------------------------------
+
+.. autofunction:: find_immobilizations
+
+
 Lower level helper functions
 ----------------------------
 
