@@ -25,7 +25,7 @@ def estimate_bg_wavelet(image, threshold, wtype="db4", wlevel=2,
     to single images or image sequences (as long as they are of type
     :py:class:`slicerator.Slicerator`).
 
-    ..[Galloway2009] Galloway, C. M. et al.: "An iterative algorithm for
+    .. [Galloway2009] Galloway, C. M. et al.: "An iterative algorithm for
         background removal in spectroscopy by wavelet transforms". Appl
         Spectrosc, 2009, 63, 1370-1376
 
@@ -38,12 +38,25 @@ def estimate_bg_wavelet(image, threshold, wtype="db4", wlevel=2,
         at least `threshold` a feature and do not include it in the
         consecutive iteration of the background estimation process.
     wtype : str or pywt.Wavelet, optional
-        Wavelet type. See :py:func`pywt.wavelist` for available wavelet types.
+        Wavelet type. See :py:func:`pywt.wavelist` for available wavelet types.
         Defaults to "db4".
     wlevel : int, optional
         Wavelet decomposition level. The maximum level depends on the
         wavelet type. See :py:func:`pywt.dwt_max_level` for details. Defaults
         to 2.
+
+    Returns
+    -------
+    Slicerator or numpy.ndarray
+        Estimate for the background
+
+    Raises
+    ------
+    NoConvergence
+        when the estimate did not converge within `max_iterations`.
+
+    Other parameters
+    ----------------
     ext_mode : str, optional
         Signal extension mode for wavelet de/recomposition. Refer to the
         `pywavelets` documentation for details. Defaults to "smooth".
@@ -59,18 +72,6 @@ def estimate_bg_wavelet(image, threshold, wtype="db4", wlevel=2,
         it. If this does not happen within `max_iterations`, raise a
         :py:class:`NoConvergence` exception instead (with the last result as
         its `last_result` attribute).
-
-    Returns
-    -------
-    Slicerator or numpy.ndarray
-        Estimate for the background
-    img = np.copy(image)
-    bg = np.zeros_like(img)
-
-    Raises
-    ------
-    NoConvergence
-        when the estimate did not converge within `max_iterations`.
     """
     img = np.copy(image)
     bg = np.zeros_like(img)
@@ -142,7 +143,7 @@ def remove_bg_cg(image, feature_radius, noise_radius=1, nonneg=False):
     to single images or image sequences (as long as they are of type
     :py:class:`slicerator.Slicerator`).
 
-    ..[Crocker1996] Crocker, J. C. & Grier, D. G.: "Methods of digital video
+    .. [Crocker1996] Crocker, J. C. & Grier, D. G.: "Methods of digital video
         microscopy for colloidal studies", Journal of colloid and interface
         science, Elsevier, 1996, 179, 298-310
 
