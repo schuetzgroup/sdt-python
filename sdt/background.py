@@ -1,5 +1,6 @@
 """Methods for background estimation and -subtraction in microscopy images"""
 import numpy as np
+import scipy.signal
 import pywt
 from slicerator import pipeline
 
@@ -110,3 +111,83 @@ def remove_bg_wavelet(image, *args, **kwargs):
     :py:class:`slicerator.Slicerator`).
     """
     return image - estimate_bg_wavelet(image, *args, **kwargs)
+
+
+@pipeline
+def remove_bg_cg(image, feature_radius, noise_radius=1):
+    r"""Remove background using a bandpass filter according to Crocker & Grier
+
+    Convolve with kernel
+
+    .. math:: K(i, j) = \frac{1}{K_0} \left[\frac{1}{B}
+        \exp\left(-\frac{i^2 + j^2}{4\lambda^2}\right) -
+        \frac{1}{(2w+1)^2}\right]
+
+    where :math:`w` is ``feature_radius``, :math:`\lambda` is the
+    ``noise_radius``, and :math:`B, K_0` are normalization constants
+
+    .. math:: B = \left[\sum_{i=-w}^w \exp\left(-\frac{i^2}{4\lambda^2}\right)
+        \right]^2
+
+    .. math:: K_0 = \frac{1}{B} \left[\sum_{i=-w}^w
+        \exp\left(-\frac{i^2}{2\lambda^2}\right)\right]^2 -
+        \frac{B}{(2w+1)^2}.
+
+    The first term in the sum in :math:`K` does Gaussian smoothing, the
+    second one is a boxcar filter to get rid of long-range fluctuations.
+
+    The algorithm has been described in [Crocker1996]_.
+
+    This is a :py:func:`slicerator.pipeline`, meaning that it can be applied
+    to single images or image sequences (as long as they are of type
+    :py:class:`slicerator.Slicerator`).
+
+    ..[Crocker1996] Crocker, J. C. & Grier, D. G.: "Methods of digital video
+        microscopy for colloidal studies", Journal of colloid and interface
+        science, Elsevier, 1996, 179, 298-310
+
+    Parameters
+    ----------
+    image : numpy.ndarray
+        image data
+    feature_radius : int
+        This should be a number a little greater than the radius of the
+        peaks.
+    noise_radius : float, optional
+        Noise correlation length in pixels. Defaults to 1.
+
+    Returns
+    -------
+    Slicerator or numpy.ndarray
+        Bandpass filtered image (sequence)
+    """
+    w = max(feature_radius, 2*noise_radius)
+    gaussian_1d = np.exp(-(np.arange(-w, w+1)/(2*noise_radius))**2)
+
+    # normalization factors
+    B = np.sum(gaussian_1d)**2
+    # gaussian_1d**2 is exp(- i^2/(2*lambda))
+    K_0 = np.sum(gaussian_1d**2)**2/B - B/(2*w+1)**2
+
+    # convolution with kernel K
+    K = (np.outer(gaussian_1d, gaussian_1d)/B - 1/(2*w+1)**2)/K_0
+    filtered_img = scipy.signal.convolve2d(image, K, "valid")
+
+    # pad to the same size as the original image
+    ret = np.zeros_like(image, dtype=np.float)
+    ret[w:-w, w:-w] = filtered_img
+    return ret
+
+
+@pipeline
+def estimate_bg_cg(image, *args, **kwargs):
+    r"""Estimate background using bandpass filter according to Crocker & Grier
+
+    This returns ``image - remove_bg_cg(image, *args, **kwargs)``. See
+    the :py:func:`remove_bg_cg` documentation for details.
+
+    This is a :py:func:`slicerator.pipeline`, meaning that it can be applied
+    to single images or image sequences (as long as they are of type
+    :py:class:`slicerator.Slicerator`).
+    """
+    return image - remove_bg_cg(image, *args, **kwargs)
