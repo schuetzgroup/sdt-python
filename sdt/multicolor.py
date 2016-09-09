@@ -244,9 +244,15 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         # use frame as the index (=axis for merging when creating the Panel)
         t1 = t1.set_index("frame", drop=False)  # copy so that the original
         t2 = t2.set_index("frame", drop=False)  # is not overridden here
-        t1["particle"] = t2["particle"] = new_pn  # and here
 
-        data.append(pd.Panel({channel_names[0]: t1, channel_names[1]: t2}))
+        p = pd.Panel({channel_names[0]: t1, channel_names[1]: t2})
+        # assign new particle number
+        p.loc[:, :, "particle"] = new_pn
+        # assign frame number even to localizations that are missing in one
+        # channel (instead of a NaN). Thanks to set_index above, axes[1] is
+        # the list of frame numbers
+        p.loc[:, :, "frame"] = p.axes[1]
+        data.append(p)
 
     data = (pd.concat(data, axis=1, ignore_index=True))
 
