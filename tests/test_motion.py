@@ -236,6 +236,22 @@ class TestFindImmobilizations(unittest.TestCase):
         sdt.motion.find_immobilizations(self.tracks, 2, 1, longest_only=True)
         np.testing.assert_allclose(self.tracks, orig)
 
+    def test_find_diag_blocks(self):
+        a = np.array([[1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0],
+                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                      [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                      [0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+                      [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                      [1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                      [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                      [0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                      [0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+                      [0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+                      [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1]])
+        start, end = sdt.motion._find_diag_blocks(a)
+        np.testing.assert_equal(start, [0, 1, 6, 7])
+        np.testing.assert_equal(end, [2, 6, 9, 10])
+
 
 if __name__ == "__main__":
     unittest.main()
