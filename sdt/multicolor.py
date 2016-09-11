@@ -251,7 +251,10 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         # assign frame number even to localizations that are missing in one
         # channel (instead of a NaN). Thanks to set_index above, axes[1] is
         # the list of frame numbers
-        p.loc[:, :, "frame"] = p.axes[1]
+        # Unfortunately, p.loc[:, :, "frame"] = p.axes[1] does not work
+        # as of pandas 0.18.1 if the frame columns have different dtypes
+        for label in p:
+            p.loc[label, :, "frame"] = p.axes[1]
         data.append(p)
 
     data = (pd.concat(data, axis=1, ignore_index=True))

@@ -89,7 +89,7 @@ class TestMulticolor(unittest.TestCase):
         orig1 = self.track.copy()
         orig1["particle"] = 0
         orig2 = orig1.copy()
-        orig2.loc[4] = np.NaN
+        orig2.loc[4, ["x", "y"]] = np.NaN
 
         np.testing.assert_allclose(codiff["channel1"], orig1)
         np.testing.assert_allclose(codiff["channel2"], orig2)
