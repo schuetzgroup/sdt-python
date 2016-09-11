@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 
 import sdt.motion
+import sdt.motion.immobilization
 import sdt.data
 
 
@@ -248,7 +249,7 @@ class TestFindImmobilizations(unittest.TestCase):
                       [0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
                       [0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
                       [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1]])
-        start, end = sdt.motion._find_diag_blocks(a)
+        start, end = sdt.motion.immobilization._find_diag_blocks(a)
         np.testing.assert_equal(start, [0, 1, 6, 7])
         np.testing.assert_equal(end, [2, 6, 9, 10])
 
