@@ -4,7 +4,7 @@ import numpy as np
 from .msd import _pos_columns
 
 
-def find_immobilizations(tracks, min_duration, max_dist, longest_only=False,
+def find_immobilizations(tracks, max_dist, min_duration, longest_only=False,
                          pos_columns=_pos_columns):
     """Find immobilizations in particle trajectories
 
@@ -24,12 +24,14 @@ def find_immobilizations(tracks, min_duration, max_dist, longest_only=False,
     ----------
     tracks : pandas.DataFrame
         Tracking data
-    min_duration : int
-        Minimum number of frames the particle has to stay at the same place
-        for a part of a trajectory to be considered immobilized
     max_dist : float
         Maximum radius within a particle may move while still being considered
         immobilized
+    min_duration : int
+        Minimum duration the particle has to stay at the same place
+        for a part of a trajectory to be considered immobilized. Duration
+        is the difference of the maximum frame number and the minimum frame
+        number. E. g. if the frames 1, 2, and 4 would lead to a duration of 3.
     longest_only : bool, optional
         If True, search only for the longest immobilzation in each track to
         speed up the process. Defaults to False.
