@@ -34,6 +34,39 @@ _MetadataDumper.add_representer(OrderedDict, _yaml_dict_representer)
 _MetadataDumper.add_representer(tuple, _yaml_list_representer)
 
 
+def roi_array_to_odict(a):
+    """Convert the `ROIs` structured arrays to :py:class:`OrderedDict`
+
+    :py:class:`pims.SpeStack` reads the ROI data into a structured numpy array.
+    This converts the array into a list of :py:class:`OrderedDict`.
+
+    Parameters
+    ----------
+    a : numpy.ndarray
+        Structured array containing ROI data as in the ``metadata["ROIs"]``
+        fields of a :py:class:`pims.SpeStack`. Required dtype names are
+        "startx", "starty", "endx", "endy", "groupx", and "groupy".
+
+    Returns
+    -------
+    list of OrderedDict
+        One dict per ROI. Keys are "top_left", "bottom_right", and "bin",
+        values are tuples whose first element is the x axis value and the
+        second element is the y axis value.
+    """
+    # This cannot be put into pims.py since then importing this function
+    # would also make the classes in pims.py known and pims.open() would
+    # use them.
+    l = []
+    a = a[["startx", "starty", "endx", "endy", "groupx", "groupy"]]
+    for sx, sy, ex, ey, gx, gy in a:
+        d = OrderedDict((("top_left", [int(sx), int(sy)]),
+                         ("bottom_right", [int(ex), int(ey)]),
+                         ("bin", [int(gx), int(gy)])))
+        l.append(d)
+    return l
+
+
 def metadata_to_yaml(metadata):
     """Serialize a metadata dict to a YAML string
 
@@ -50,8 +83,8 @@ def metadata_to_yaml(metadata):
     md = metadata.copy()
     with suppress(Exception):
         rs = md["ROIs"]
-        md["ROIs"] = [OrderedDict(zip(rs.dtype.names, r.tolist()))
-                      for r in rs]
+        if isinstance(rs, np.ndarray):
+            md["ROIs"] = roi_array_to_odict(rs)
     with suppress(Exception):
         md["comments"] = md["comments"].tolist()
     with suppress(Exception):
@@ -75,7 +108,7 @@ def save_as_tiff(frames, filename):
     filename : str
         Name of the output file
     """
-    with tifffile.TiffWriter(filename, software="sdt.pims") as tw:
+    with tifffile.TiffWriter(filename, software="sdt.image_tools") as tw:
         for f in frames:
             desc = None
             dt = None
@@ -197,7 +230,7 @@ class PathROI(object):
     path : matplotlib.path.Path
         The path outlining the region of interest. Read-only.
     buffer : float
-        Extra space around the path. Does not affect the size of the a image,
+        Extra space around the path. Does not affect the size of the image,
         which is just the size of the bounding box of the `polygon`, without
         `buffer`. Read-only
     image_mask : numpy.ndarray, dtype=bool
@@ -240,7 +273,7 @@ class PathROI(object):
 
         # if the path is clockwise, the `radius` argument to
         # Path.contains_points needs to be negative to enlarge the ROI
-        buf_sign = -1 if polygon_area(self._path.vertices) > 0 else 1
+        buf_sign = -1 if polygon_area(self._path.vertices) < 0 else 1
 
         # Make ROI polygon, but only for bounding box of the polygon, for
         # performance reasons
@@ -331,6 +364,8 @@ class PathROI(object):
 def polygon_area(vertices):
     """Calculate the (signed) area of a simple polygon
 
+    The polygon may not self-intersect.
+
     This is based on JavaScript code from
     http://www.mathopenref.com/coordpolygonarea2.html.
 
@@ -349,6 +384,17 @@ def polygon_area(vertices):
             }
             return area/2;
         }
+
+    Parameters
+    ----------
+    vertices : list of 2-tuples or numpy.ndarray, shape=(n, 2)
+        Coordinates of the poligon vertices.
+
+    Returns
+    -------
+    float
+        Signed area of the polygon. Area is > 0 if vertices are given
+        counterclockwise.
     """
     x, y = np.vstack((vertices[-1], vertices)).T
-    return np.sum((x[:-1] + x[1:]) * (y[:-1] - y[1:]))/2
+    return np.sum((x[1:] + x[:-1]) * (y[1:] - y[:-1]))/2

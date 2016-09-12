@@ -8,6 +8,8 @@ import yaml
 import numpy as np
 import pims
 
+from .image_tools import roi_array_to_odict
+
 _logger = logging.getLogger(__name__)
 
 SdtComments = {
@@ -136,6 +138,11 @@ class SdtSpeStack(pims.SpeStack):
         if self.metadata.get("readoutMode", "") != "kinetics":
             self.metadata.pop("WindowSize", None)
 
+        # Convert to OrderedDict, which is easier to use and easier to
+        # serialize in YAML
+        with suppress(Exception):
+            self.metadata["ROIs"] = roi_array_to_odict(self.metadata["ROIs"])
+
         # Get rid of unused data
         self.metadata.pop("ExperimentTimeUTC", None)
         self.metadata.pop("exp_sec", None)
@@ -195,20 +202,22 @@ class SdtTiffStack(pims.TiffStack):
     """
     class_priority = 20  # >10, so use instead of any builtin TIFF reader
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if len(self):
+            # load metadata from first frame
+            f = self.get_frame(0)
+            self.metadata = f.metadata
+        else:
+            self.metadata = {}
+
     def get_frame(self, j):
         f = super().get_frame(j)
         md = {}
         with suppress(Exception):
             md = yaml.load(f.metadata["ImageDescription"], _MetadataLoader)
-
         if md:
             f.metadata.pop("ImageDescription", None)
-            # restore resemblence with original (pre-YAML) data type
-            with suppress(Exception):
-                rs = md["ROIs"]
-                dtype = dict(names=list(rs[0].keys()),
-                             formats=["<H"]*len(rs[0]))
-                md["ROIs"] = np.rec.fromrecords(
-                    [list(r.values()) for r in rs], dtype=dtype)
         f.metadata.update(md)
         return f
