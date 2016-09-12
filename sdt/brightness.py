@@ -147,23 +147,31 @@ class Distribution(object):
         Number of data points (single molecules) used to create the
         distribution
     """
-    def __init__(self, data, abscissa, smooth=2.):
+    def __init__(self, data, abscissa, smooth=2., cam_eff=1.):
         """Parameters
         ----------
-        data : pandas.DataFrame or numpy.ndarray or list of float
+        data : list of pandas.DataFrame or pandas.DataFrame or numpy.ndarray
             If a DataFrame is given, extract the masses from the "mass" column.
-            Otherwise consider it a list of mass values (i. e. the ndarray has
-            to be one-dimensional).
+            A list of DataFrames will be concatenated. Brightness values can
+            also be passed as an one-dimensional ndarray.
         abscissa : numpy.ndarray or float
             The abscissa (x axis) values for the calculated distribution.
             Providing a float is equivalent to ``numpy.arange(abscissa + 1)``.
         smooth : float, optional
             Smoothing factor. The sigma of each individual normal PDF is
             multiplied by this factor to achieve some smoothing. Defaults to 2.
+        cam_eff : float, optional
+            Camera efficiency, i. e. how many photons correspond to one
+            camera count. The brightness data will be divided by this number.
+            Defaults to 1.
         """
         if isinstance(data, pd.DataFrame):
             data = data["mass"]
-        data = np.array(data, copy=False)
+        elif not isinstance(data, np.ndarray):
+            # assume it is an iterable of DataFrames
+            data = pd.concat((d["mass"] for d in data))
+
+        data = data / cam_eff  # don't change original data by using /=
 
         if isinstance(abscissa, np.ndarray):
             x = abscissa
