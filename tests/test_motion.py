@@ -226,7 +226,7 @@ class TestFindImmobilizations(unittest.TestCase):
         orig = self.tracks.copy()
         immob = np.array([0]*7 + [1]*3 + [2]*7 + [3]*3)
         orig["immob"] = immob
-        sdt.motion.find_immobilizations(self.tracks, 2, 1)
+        sdt.motion.find_immobilizations(self.tracks, 1, 2)
         np.testing.assert_allclose(self.tracks, orig)
 
     def test_longest_only(self):
@@ -234,7 +234,7 @@ class TestFindImmobilizations(unittest.TestCase):
         orig = self.tracks.copy()
         immob = np.array([0]*7 + [-1]*3 + [1]*7 + [-1]*3)
         orig["immob"] = immob
-        sdt.motion.find_immobilizations(self.tracks, 2, 1, longest_only=True)
+        sdt.motion.find_immobilizations(self.tracks, 1, 2, longest_only=True)
         np.testing.assert_allclose(self.tracks, orig)
 
     def test_find_diag_blocks(self):
