@@ -56,7 +56,7 @@ def find_immobilizations(tracks, max_dist, min_duration, longest_only=False,
     for p_no, t in tracks.groupby("particle"):
         t = t.sort_values("frame")
         pos = t[pos_columns].values
-        frames = t["frame"].values
+        frames = t["frame"].values.astype(int)
         # to be appended to immob_column
         icol = np.full(len(t), -1, dtype=int)
 
