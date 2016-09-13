@@ -6,6 +6,23 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+8.0
+---
+- Create `background` module for estimation and subtraction of background in
+  fluorescence microscopy images. Unfortunately, there is no sphinx
+  documentation yet since `slicerator.pipeline` does not work (yet) with
+  sphinx autodoc.
+- Add `motion.find_immobilizations` to find immobilized sections of particle
+  trajectories.
+- Fix an issue where NaNs where present in `multicolor.find_codiffusion`
+  where they should not be.
+- Improve `brightness.Distribution.__init__`. It now accepts also lists of
+  DataFrames (but no more lists of floats) and a new `cam_eff` parameter to
+  account for camera photoconversion efficiency (API break).
+- Add unit tests for `image_tools`. In the course of this, some bugs were
+  fixed, but also handling of ROI metadata in the `sdt.pims` classes changed;
+  ROIs are now a list of dicts instead of a structured array (API break).
+
 7.1
 ---
 - Introduce the `multicolor` module. This is a better version (faster, with
