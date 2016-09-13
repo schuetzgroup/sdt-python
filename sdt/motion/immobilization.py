@@ -106,6 +106,7 @@ def find_immobilizations(tracks, max_dist, min_duration, longest_only=False,
                     immob[cur_row] = (s, e, d)
                     immob = immob[cur_row:]
                     immob = immob[immob[:, 2] >= min_duration]
+                    immob = immob[immob[:, 2].argsort()[::-1]]
                     cur_row = 0
 
                     continue
