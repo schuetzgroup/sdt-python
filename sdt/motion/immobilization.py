@@ -93,11 +93,17 @@ def find_immobilizations(tracks, max_dist, min_duration, longest_only=False,
                 if is_overlap.any():
                     # if it overlaps with a longer immobilization, strip
                     # overlapping frames
-                    s += np.argmin(is_overlap)
-                    e -= np.argmin(is_overlap[::-1])
+                    if is_overlap.all():
+                        # here argmin won't work
+                        e = s
+                        d = 0
+                    else:
+                        s += np.argmin(is_overlap)
+                        e -= np.argmin(is_overlap[::-1])
+                        d = frames[e-1] - frames[s]
 
                     # re-sort remaining part of immob
-                    immob[cur_row] = (s, e, frames[e-1] - frames[s])
+                    immob[cur_row] = (s, e, d)
                     immob = immob[cur_row:]
                     immob = immob[immob[:, 2] >= min_duration]
                     cur_row = 0
