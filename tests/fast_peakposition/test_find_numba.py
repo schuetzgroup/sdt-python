@@ -12,7 +12,7 @@ data_path = os.path.join(path, "data")
 
 class TestFinder(unittest.TestCase):
     def setUp(self):
-        self.frame = np.load(os.path.join(data_path, "beads.npz"))["img"]
+        self.frame = np.load(os.path.join(data_path, "bead_img.npz"))["img"]
         self.threshold = 2000
         self.radius = 1.
         self.im_size = 3

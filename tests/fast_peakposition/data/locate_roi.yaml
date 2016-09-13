@@ -1,0 +1,15 @@
+algorithm: fast_peakposition
+options:
+  im_size: 3
+  radius: 1.0
+  threshold: 1000
+roi:
+- - 50.0
+  - 30.0
+- - 200.0
+  - 30.0
+- - 200.0
+  - 90.0
+- - 50.0
+  - 90.0
+filter: ''

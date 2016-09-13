@@ -7,7 +7,7 @@ from sdt.loc.cg import find
 
 
 path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_find")
+data_path = os.path.join(path, "data")
 
 
 class TestFinder(unittest.TestCase):

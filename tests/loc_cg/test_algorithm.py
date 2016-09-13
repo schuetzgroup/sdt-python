@@ -7,14 +7,13 @@ from sdt.loc.cg import algorithm
 
 
 path, f = os.path.split(os.path.abspath(__file__))
-img_path = os.path.join(path, "data_find")
-data_path = os.path.join(path, "data_algorithm")
+data_path = os.path.join(path, "data")
 
 
 class TestFinder(unittest.TestCase):
     def setUp(self):
         self.frames = np.load(
-            os.path.join(img_path, "pMHC_AF647_200k_000_.npz"))["frames"]
+            os.path.join(data_path, "pMHC_AF647_200k_000_.npz"))["frames"]
 
     def test_make_margin(self):
         orig = np.array([[0, 0, 0, 0, 0, 0],
