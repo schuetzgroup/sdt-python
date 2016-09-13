@@ -1,4 +1,6 @@
 """Function to restrict peak localization to a ROI"""
+import slicerator
+
 from ..image_tools import PathROI
 
 
@@ -24,7 +26,7 @@ def restrict_roi(locate_func, buffer=10):
     callable
         Version of ``locate_func`` that is restrictable to a ROI.
     """
-    def restricted_locate(frames, roi, *args, **kwargs):
+    def restricted_locate(data, roi, *args, **kwargs):
         """Process a ROI in an image or image sequence using :py:func:`{fname}`
 
         This chooses a region of interest in an image (or image sequence)
@@ -32,11 +34,12 @@ def restrict_roi(locate_func, buffer=10):
 
         Parameters
         ----------
-        frames : numpy.ndarray or iterable of numpy.ndarrays
-            Iterable of array-like objects that represent image data
-        roi : path
-            This is used by the :py:class:`sdt.image_tools.PathROI` constructor
-            to create the ROI
+        data : image data
+            Passed to :py:func:`{fname}` as the first argument.
+        roi : image_tools.PathROI or path
+            If this isn't already a py:class:`PathROI`, use it to construct
+            one, i. e. it is passed as the first parameter to the
+            :py:class:`PathROI` constructor.
         reset_origin : bool, optional
             If True, the top-left corner coordinates of the path's bounding
             rectangle will be subtracted off all feature coordinates, i. e.
@@ -52,13 +55,19 @@ def restrict_roi(locate_func, buffer=10):
         pandas.DataFrame
             Result of the calls to :py:func:`{fname}` restricted to the ROI.
         """
+        if isinstance(roi, PathROI):
+            roi = roi.path
         # slightly larger ROI to avoid boundary artefacts
         img_roi = PathROI(roi, buffer)
         feat_roi = PathROI(roi, no_image=True)
 
+        if isinstance(data, (tuple, list)):
+            # Turn into Slicerator to make the img_roi pipeline work
+            data = slicerator.Slicerator(data)
+
         reset_origin = kwargs.pop("reset_origin", True)
 
-        loc = locate_func(img_roi(frames, fill_value="mean"), *args, **kwargs)
+        loc = locate_func(img_roi(data, fill_value="mean"), *args, **kwargs)
 
         # since we cropped the image, we have to add to the coordinates
         loc[["x", "y"]] += img_roi.bounding_rect[0]
