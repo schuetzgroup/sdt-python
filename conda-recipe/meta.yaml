@@ -23,6 +23,7 @@ requirements:
         - slicerator >=0.9.7
         - matplotlib
         - lmfit
+        - pywavelets >=0.3.0
 
     run:
         - python
@@ -38,6 +39,7 @@ requirements:
         - qtpy >=1.0b1
         - matplotlib
         - lmfit
+        - pywavelets >=0.3.0
 
 test:
     requires:
