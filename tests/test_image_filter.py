@@ -3,8 +3,7 @@ import os
 
 import numpy as np
 
-import sdt.brightness
-import sdt.background
+from sdt import image_filter
 import sdt.sim
 
 
@@ -40,12 +39,12 @@ class TestWavelet(unittest.TestCase):
         self.orig = self.orig["bg_est"]
 
     def test_estimate_bg(self):
-        bg_est = sdt.background.estimate_bg_wavelet(
+        bg_est = image_filter.wavelet_bg(
             self.bg+self.img, **self.wavelet_options)
         np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
 
     def test_remove_bg(self):
-        img_est = sdt.background.remove_bg_wavelet(
+        img_est = image_filter.wavelet(
             self.bg+self.img, **self.wavelet_options)
         np.testing.assert_allclose(img_est, self.img+self.bg-self.orig)
 
@@ -59,12 +58,12 @@ class TestCG(unittest.TestCase):
         self.orig = np.load(os.path.join(data_path, "cg.npz"))["bp_img"]
 
     def test_remove_bg(self):
-        bp_img = sdt.background.remove_bg_cg(
+        bp_img = image_filter.cg(
             self.img+self.bg, **self.options)
         np.testing.assert_allclose(bp_img, self.orig)
 
     def test_estimate_bg(self):
-        bp_img = sdt.background.estimate_bg_cg(
+        bp_img = image_filter.cg_bg(
             self.img+self.bg, **self.options)
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
 

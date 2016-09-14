@@ -8,9 +8,8 @@ from .exceptions import NoConvergence
 
 
 @pipeline
-def estimate_bg_wavelet(image, threshold, wtype="db4", wlevel=2,
-                        ext_mode="smooth", max_iterations=20, detail=0,
-                        conv_threshold=5e-3):
+def wavelet_bg(image, threshold, wtype="db4", wlevel=2, ext_mode="smooth",
+               max_iterations=20, detail=0, conv_threshold=5e-3):
     """Estimate the background using wavelets
 
     This is an implementation of the algorithm described in [Galloway2009]_
@@ -100,21 +99,21 @@ def estimate_bg_wavelet(image, threshold, wtype="db4", wlevel=2,
 
 
 @pipeline
-def remove_bg_wavelet(image, *args, **kwargs):
+def wavelet(image, *args, **kwargs):
     """Remove the background using wavelets
 
-    This returns ``image - estimate_bg_wavelet(image, *args, **kwargs)``. See
-    the :py:func:`estimate_bg_wavelet` documentation for details.
+    This returns ``image - wavelet_bg(image, *args, **kwargs)``. See
+    the :py:func:`wavelet_bg` documentation for details.
 
     This is a :py:func:`slicerator.pipeline`, meaning that it can be applied
     to single images or image sequences (as long as they are of type
     :py:class:`slicerator.Slicerator`).
     """
-    return image - estimate_bg_wavelet(image, *args, **kwargs)
+    return image - wavelet_bg(image, *args, **kwargs)
 
 
 @pipeline
-def remove_bg_cg(image, feature_radius, noise_radius=1, nonneg=False):
+def cg(image, feature_radius, noise_radius=1, nonneg=False):
     r"""Remove background using a bandpass filter according to Crocker & Grier
 
     Convolve with kernel
@@ -186,14 +185,14 @@ def remove_bg_cg(image, feature_radius, noise_radius=1, nonneg=False):
 
 
 @pipeline
-def estimate_bg_cg(image, *args, **kwargs):
-    r"""Estimate background using bandpass filter according to Crocker & Grier
+def cg_bg(image, *args, **kwargs):
+    """Estimate background using bandpass filter according to Crocker & Grier
 
-    This returns ``image - remove_bg_cg(image, *args, **kwargs)``. See
-    the :py:func:`remove_bg_cg` documentation for details.
+    This returns ``image - cg(image, *args, **kwargs)``. See
+    the :py:func:`cg` documentation for details.
 
     This is a :py:func:`slicerator.pipeline`, meaning that it can be applied
     to single images or image sequences (as long as they are of type
     :py:class:`slicerator.Slicerator`).
     """
-    return image - remove_bg_cg(image, *args, **kwargs)
+    return image - cg(image, *args, **kwargs)
