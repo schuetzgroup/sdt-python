@@ -30,6 +30,7 @@ Requirements
 - tifffile >= 0.7.0
 - pyyaml
 - lmfit
+- pywavelets >= 0.3.0
 
 
 Recommended packages
