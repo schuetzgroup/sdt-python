@@ -6,6 +6,15 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+9.0
+---
+- Fix infinite loop in `motion.find_immobilizations`
+- Minor fixes in `motion.find_immobilizations`
+- Rename `background` -> `image_filter` since the module may at some point 
+  contain filters other than for background estimation. Also rename the
+  individual filter functions (API break).
+- Add many tests (and/or make sure they are run).
+
 8.0
 ---
 - Create `background` module for estimation and subtraction of background in
