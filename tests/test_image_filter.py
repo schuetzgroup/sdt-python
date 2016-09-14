@@ -2,6 +2,7 @@ import unittest
 import os
 
 import numpy as np
+import slicerator
 
 from sdt import image_filter
 import sdt.sim
@@ -43,9 +44,19 @@ class TestWavelet(unittest.TestCase):
             self.bg+self.img, **self.wavelet_options)
         np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
 
+    def test_estimate_bg_pipeline(self):
+        img = slicerator.Slicerator([self.bg+self.img])
+        bg_est = image_filter.wavelet_bg(img, **self.wavelet_options)[0]
+        np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
+
     def test_remove_bg(self):
         img_est = image_filter.wavelet(
             self.bg+self.img, **self.wavelet_options)
+        np.testing.assert_allclose(img_est, self.img+self.bg-self.orig)
+
+    def test_remove_bg_pipeline(self):
+        img = slicerator.Slicerator([self.bg+self.img])
+        img_est = image_filter.wavelet(img, **self.wavelet_options)[0]
         np.testing.assert_allclose(img_est, self.img+self.bg-self.orig)
 
 
@@ -62,9 +73,19 @@ class TestCG(unittest.TestCase):
             self.img+self.bg, **self.options)
         np.testing.assert_allclose(bp_img, self.orig)
 
+    def test_remove_bg_pipeline(self):
+        img = slicerator.Slicerator([self.bg+self.img])
+        bp_img = image_filter.cg(img, **self.options)[0]
+        np.testing.assert_allclose(bp_img, self.orig)
+
     def test_estimate_bg(self):
         bp_img = image_filter.cg_bg(
             self.img+self.bg, **self.options)
+        np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
+
+    def test_estimate_bg_pipeline(self):
+        img = slicerator.Slicerator([self.bg+self.img])
+        bp_img = image_filter.cg_bg(img, **self.options)[0]
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
 
 if __name__ == "__main__":
