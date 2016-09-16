@@ -12,17 +12,16 @@ in pandas.DataFrames
 """
 
 
-def _from_raw_image_single(data, frames, radius=2, bg_frame=2):
+def _from_raw_image_single(pos, frame, radius=2, bg_frame=2):
     """Determine brightness by counting pixel values for a single particle
 
     This is called using numpy.apply_along_axis on the whole dataset.
 
     Parameters
     ----------
-    data : tuple of numbers
-        First entry is the frame number, other entries are particle
-        coordinates.
-    frames : iterable of numpy.ndarrays
+    pos : tuple of numbers
+        Localization coordinates
+    frame : numpy.ndarray
         Raw image data
     radius : int
         Half width of the box in which pixel values are summed up. E. g.
@@ -43,16 +42,14 @@ def _from_raw_image_single(data, frames, radius=2, bg_frame=2):
     bg_std : float
         Standard deviation of the background
     """
-    frameno = int(data[0])
-    pos = np.round(data[1:]).astype(np.int)  # round to nearest pixel value
+    pos = np.round(pos).astype(np.int)  # round to nearest pixel value
     ndim = len(pos)  # number of dimensions
-    fr = frames[frameno]  # current image
     start = pos - radius - bg_frame
     end = pos + radius + bg_frame + 1
 
     # this gives the pixels of the signal box plus background frame
-    signal_region = fr[[slice(s, e) for s, e in zip(reversed(start),
-                                                    reversed(end))]]
+    signal_region = frame[[slice(s, e) for s, e in zip(reversed(start),
+                                                       reversed(end))]]
 
     if (signal_region.shape != end - start).any():
         # The signal was too close to the egde of the image, we could not read
@@ -115,16 +112,30 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
         Names of the columns describing the x and the y coordinates of the
         features in `positions`.
     """
-    # convert to numpy array for performance reasons
-    t_pos_matrix = positions[["frame"] + pos_columns].as_matrix()
-    brightness = np.apply_along_axis(_from_raw_image_single, 1,
-                                     t_pos_matrix,
-                                     frames, radius, bg_frame)
+    # Convert to numpy array for performance reasons
+    pos_matrix = positions[pos_columns].values
+    fno_matrix = positions["frame"].values.astype(int)
+    # Pre-allocate result array
+    ret = np.empty((len(pos_matrix), 4))
+    # Get sorted order. This is to speed up the loop below especially when
+    # `frames` is a slow Slicerator or pipeline be caching the current frame
+    # until the frame number changes.
+    sorted_idx = np.argsort(fno_matrix)
+    # Initialize with something invalid (smallest frame number - 1) to trigger
+    # loading the frame on first run of the loop
+    old_frame_no = fno_matrix[sorted_idx[0]] - 1
+    for i in sorted_idx:
+        frame_no = fno_matrix[i]
+        if frame_no != old_frame_no:
+            cur_frame = frames[frame_no]
+            old_frame_no = frame_no
+        ret[i] = _from_raw_image_single(pos_matrix[i], cur_frame, radius,
+                                        bg_frame)
 
-    positions["signal"] = brightness[:, 0]
-    positions["mass"] = brightness[:, 1]
-    positions["bg"] = brightness[:, 2]
-    positions["bg_dev"] = brightness[:, 3]
+    positions["signal"] = ret[:, 0]
+    positions["mass"] = ret[:, 1]
+    positions["bg"] = ret[:, 2]
+    positions["bg_dev"] = ret[:, 3]
 
 
 class Distribution(object):

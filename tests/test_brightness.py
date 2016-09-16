@@ -50,7 +50,7 @@ class TestBrightness(unittest.TestCase):
 
     def test_from_raw_image_single(self):
         res = sdt.brightness._from_raw_image_single(
-            [0] + self.pos1, [self.img], self.radius, self.bg_frame)
+            self.pos1, self.img, self.radius, self.bg_frame)
         np.testing.assert_allclose(
             np.array(res),
             np.array([self.signal1, self.mass1, self.bg, self.bg_dev]))
