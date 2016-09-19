@@ -4,7 +4,7 @@ import os
 import numpy as np
 import slicerator
 
-from sdt.image import filters
+from sdt.image import filters, masks
 import sdt.sim
 
 
@@ -89,6 +89,25 @@ class TestCG(unittest.TestCase):
         img = slicerator.Slicerator([self.bg+self.img])
         bp_img = filters.cg_bg(img, **self.options)[0]
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
+
+
+class TestMasks(unittest.TestCase):
+    def test_circle_mask(self):
+        orig = np.array([[False, False,  True, False, False],
+                         [False,  True,  True,  True, False],
+                         [ True,  True,  True,  True,  True],
+                         [False,  True,  True,  True, False],
+                         [False, False,  True, False, False]], dtype=bool)
+        np.testing.assert_equal(masks.CircleMask(2), orig)
+
+    def test_circle_mask_extra(self):
+        orig = np.array([[False,  True,  True,  True, False],
+                         [ True,  True,  True,  True,  True],
+                         [ True,  True,  True,  True,  True],
+                         [ True,  True,  True,  True,  True],
+                         [False,  True,  True,  True, False]], dtype=bool)
+        np.testing.assert_equal(masks.CircleMask(2, 0.5), orig)
+
 
 if __name__ == "__main__":
     unittest.main()
