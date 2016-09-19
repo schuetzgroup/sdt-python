@@ -1,15 +1,20 @@
 """Methods for background estimation and -subtraction in microscopy images"""
+import numbers
+
 import numpy as np
 import scipy.signal
+import scipy.ndimage
 import pywt
 from slicerator import pipeline
 
-from .exceptions import NoConvergence
+from .masks import CircleMask
+from ..exceptions import NoConvergence
 
 
 @pipeline
-def wavelet_bg(image, threshold, wtype="db4", wlevel=2, ext_mode="smooth",
-               max_iterations=20, detail=0, conv_threshold=5e-3):
+def wavelet_bg(image, feat_thresh, feat_mask=None, wtype="db4", wlevel=3,
+               initial={}, ext_mode="smooth", max_iterations=20, detail=0,
+               conv_threshold=5e-3, no_conv="raise"):
     """Estimate the background using wavelets
 
     This is an implementation of the algorithm described in [Galloway2009]_
@@ -32,17 +37,30 @@ def wavelet_bg(image, threshold, wtype="db4", wlevel=2, ext_mode="smooth",
     ----------
     image : Slicerator or numpy.ndarray
         Image data. Either a sequence (Slicerator) or a single image.
-    threshold : float
+    feat_thresh : float
         Consider everything that is brighter than the estimated background by
         at least `threshold` a feature and do not include it in the
         consecutive iteration of the background estimation process.
+    feat_mask : int or numpy.ndarray or None, optional
+        Setting `feat_thresh` rather high will most probably cause unwanted
+        effects around the edges of a feature (since those, although above
+        background, will be treated as background). The can `feat_mask` be used
+        to increase the size of regions considered occupied by a feature by
+        dilation. If `feat_mask` is `None`, don't do that. If it is `int`,
+        create a circular mask with radius `feat_mask`. If it is an array,
+        use it as the mask for dilation. Defaults to `None`.
+    initial : dict
+        Parameters for the wavelet transform of the initial background guess.
+        The dict may contain "wtype", "wlevel", "ext_mode", and "detail" keys.
+        If any of those is not given, use the corresponding parameters from
+        the function call.
     wtype : str or pywt.Wavelet, optional
         Wavelet type. See :py:func`pywt.wavelist` for available wavelet types.
         Defaults to "db4".
     wlevel : int, optional
         Wavelet decomposition level. The maximum level depends on the
         wavelet type. See :py:func:`pywt.dwt_max_level` for details. Defaults
-        to 2.
+        to 3.
     ext_mode : str, optional
         Signal extension mode for wavelet de/recomposition. Refer to the
         `pywavelets` documentation for details. Defaults to "smooth".
@@ -58,6 +76,11 @@ def wavelet_bg(image, threshold, wtype="db4", wlevel=2, ext_mode="smooth",
         it. If this does not happen within `max_iterations`, raise a
         :py:class:`NoConvergence` exception instead (with the last result as
         its `last_result` attribute).
+    no_conv : {"raise", "ignore"} or number, optional
+        What to do if the result does not converge. "raise" will raise a
+        :py:class:`NoConvergence` exception. If a number is passed,
+        construct an array of the same type and shape as the input that is
+        filled with the scalar.
 
     Returns
     -------
@@ -69,31 +92,68 @@ def wavelet_bg(image, threshold, wtype="db4", wlevel=2, ext_mode="smooth",
     Raises
     ------
     NoConvergence
-        when the estimate did not converge within `max_iterations`.
+        when the estimate did not converge within `max_iterations` and
+        ``no_conv="raise"`` was passed.
     """
     img = np.copy(image)
-    bg = np.zeros_like(img)
+
+    if isinstance(feat_mask, int):
+        if feat_mask > 0:
+            # also add 0.5 extra radius to make it "rounder"
+            feat_mask = CircleMask(feat_mask, 0.5)
+        else:
+            feat_mask = None
+
+    if not (feat_mask is None or isinstance(feat_mask, np.ndarray)):
+        raise TypeError("feat_mask has to be None, int, or numpy.ndarray")
+
+    # initial guess
+    bg = _wavelet_bg_single(img, initial.get("wtype", wtype),
+                            initial.get("ext_mode", ext_mode),
+                            initial.get("wlevel", wlevel),
+                            initial.get("detail", detail))
 
     converged = False
     for i in range(max_iterations):
-        d = pywt.wavedec2(img, wtype, ext_mode, wlevel)
-
-        # zero out detail coefficients
-        r = d[:detail+1]  # keep wanted detail (d[0] is approximation)
-        r += [(np.zeros_like(y) for y in x) for x in d[detail+1:]]
+        mask = image > (bg + feat_thresh)
+        if feat_mask is not None:
+            mask = scipy.ndimage.binary_dilation(mask, feat_mask)
+        img[mask] = bg[mask]  # remove features
 
         old_bg = bg
-        bg = pywt.waverec2(r, wtype, ext_mode)
-        bg = bg[:img.shape[0], :img.shape[1]]  # remove padding
+        bg = _wavelet_bg_single(img, wtype, ext_mode, wlevel, detail)
+
         if (np.abs(bg - old_bg).sum()/np.abs(bg).sum() < conv_threshold):
-            # converged
             converged = True
             break
-        feat_mask = img > (bg + threshold)  # here are features
-        img[feat_mask] = bg[feat_mask]  # remove features
 
     if not converged:
-        raise NoConvergence(bg)
+        if isinstance(no_conv, numbers.Number):
+            return np.full_like(image, no_conv)
+        elif no_conv == "raise":
+            raise NoConvergence(bg)
+        elif no_conv == "ignore":
+            pass
+        else:
+            raise ValueError('`no_conv` has to be a number, "raise", or '
+                             '"ignore".')
+
+    return bg
+
+
+def _wavelet_bg_single(img, wtype, ext_mode, wlevel, detail):
+    """Single round of background estimation using wavelet transforms
+
+    For parameter documentation, see :py:func:`wavelet_bg`.
+    """
+    d = pywt.wavedec2(img, wtype, ext_mode, wlevel)
+
+    # zero out detail coefficients
+    r = d[:detail+1]  # keep wanted detail (d[0] is approximation)
+    r += [(np.zeros_like(y) for y in x) for x in d[detail+1:]]
+
+    bg = pywt.waverec2(r, wtype, ext_mode)
+    bg = bg[:img.shape[0], :img.shape[1]]  # remove padding
 
     return bg
 

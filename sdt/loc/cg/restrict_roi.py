@@ -1,7 +1,7 @@
 """Function to restrict peak localization to a ROI"""
 import slicerator
 
-from ... import image_filter
+from ...image import filters
 from ...image_tools import PathROI
 
 
@@ -77,7 +77,7 @@ def restrict_roi(locate_func, buffer=10):
             except IndexError:
                 noise_radius = kwargs.pop("noise_radius", 1)
 
-            data = image_filter.cg(data, radius, noise_radius, nonneg=True)
+            data = filters.cg(data, radius, noise_radius, nonneg=True)
 
         if isinstance(roi, PathROI):
             roi = roi.path

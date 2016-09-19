@@ -3,7 +3,7 @@ import collections
 
 import numpy as np
 
-from ... import image_filter
+from ...image import filters
 from .find import find
 
 
@@ -112,7 +112,7 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
         Peak data. Column order is given by the ``col_nums`` attribute.
     """
     if bandpass:
-        image = image_filter.cg(raw_image, radius, noise_radius, nonneg=True)
+        image = filters.cg(raw_image, radius, noise_radius, nonneg=True)
     else:
         image = raw_image
 

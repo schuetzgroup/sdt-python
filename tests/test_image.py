@@ -4,12 +4,12 @@ import os
 import numpy as np
 import slicerator
 
-from sdt import image_filter
+from sdt.image import filters
 import sdt.sim
 
 
 path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_background")
+data_path = os.path.join(path, "data_image")
 
 
 def mkimg():
@@ -31,32 +31,34 @@ def mkimg():
 class TestWavelet(unittest.TestCase):
     def setUp(self):
         self.img, self.bg = mkimg()
-        self.wavelet_options = dict(threshold=5, wtype="db4", wlevel=2,
-                                    ext_mode="smooth", max_iterations=20,
-                                    detail=0, conv_threshold=5e-3)
+        initial = dict(wtype="db3", wlevel=3)
+        self.wavelet_options = dict(feat_thresh=100, feat_mask=1, wtype="db4",
+                                    wlevel=2, ext_mode="smooth",
+                                    max_iterations=20, detail=0,
+                                    conv_threshold=5e-3, initial=initial)
 
         # created from a test run
         self.orig = np.load(os.path.join(data_path, "wavelet_bg.npz"))
         self.orig = self.orig["bg_est"]
 
     def test_estimate_bg(self):
-        bg_est = image_filter.wavelet_bg(
+        bg_est = filters.wavelet_bg(
             self.bg+self.img, **self.wavelet_options)
         np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
 
     def test_estimate_bg_pipeline(self):
         img = slicerator.Slicerator([self.bg+self.img])
-        bg_est = image_filter.wavelet_bg(img, **self.wavelet_options)[0]
+        bg_est = filters.wavelet_bg(img, **self.wavelet_options)[0]
         np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
 
     def test_remove_bg(self):
-        img_est = image_filter.wavelet(
+        img_est = filters.wavelet(
             self.bg+self.img, **self.wavelet_options)
         np.testing.assert_allclose(img_est, self.img+self.bg-self.orig)
 
     def test_remove_bg_pipeline(self):
         img = slicerator.Slicerator([self.bg+self.img])
-        img_est = image_filter.wavelet(img, **self.wavelet_options)[0]
+        img_est = filters.wavelet(img, **self.wavelet_options)[0]
         np.testing.assert_allclose(img_est, self.img+self.bg-self.orig)
 
 
@@ -69,23 +71,23 @@ class TestCG(unittest.TestCase):
         self.orig = np.load(os.path.join(data_path, "cg.npz"))["bp_img"]
 
     def test_remove_bg(self):
-        bp_img = image_filter.cg(
+        bp_img = filters.cg(
             self.img+self.bg, **self.options)
         np.testing.assert_allclose(bp_img, self.orig)
 
     def test_remove_bg_pipeline(self):
         img = slicerator.Slicerator([self.bg+self.img])
-        bp_img = image_filter.cg(img, **self.options)[0]
+        bp_img = filters.cg(img, **self.options)[0]
         np.testing.assert_allclose(bp_img, self.orig)
 
     def test_estimate_bg(self):
-        bp_img = image_filter.cg_bg(
+        bp_img = filters.cg_bg(
             self.img+self.bg, **self.options)
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
 
     def test_estimate_bg_pipeline(self):
         img = slicerator.Slicerator([self.bg+self.img])
-        bp_img = image_filter.cg_bg(img, **self.options)[0]
+        bp_img = filters.cg_bg(img, **self.options)[0]
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
 
 if __name__ == "__main__":
