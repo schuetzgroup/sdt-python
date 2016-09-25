@@ -1,24 +1,35 @@
 """Tools for finding immobilizations in tracking data"""
 import numpy as np
 
+from .. import numba_helper
 from .msd import _pos_columns
 
 
-def find_immobilizations(tracks, max_dist, min_duration, longest_only=False,
-                         pos_columns=_pos_columns):
+try:
+    import numexpr
+except ImportError:
+    numexpr_usable = False
+else:
+    numexpr_usable = True
+
+
+def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
+                         longest_only=False, rtol=0., atol=0,
+                         engine="numba", pos_columns=_pos_columns):
     """Find immobilizations in particle trajectories
 
     Analyze trajectories and mark parts where all localizations of a particle
-    stay within a circle of radius `max_dist` for at least a certain number
-    (`min_length`) of frames as an immobilization. In other words: If
-    consecutive localizations stay within the intersection of circles of
-    radius `max_dist` and coordinates of the localizations as centers, they
-    are considered immobilized.
+    stay within a circle of radius `max_dist` from their center of mass for at
+    least a certain number (`min_length`) of frames as an immobilization.
 
     The `tracks` DataFrame gets a new column ("immob") appended
     (or overwritten), where every immobilzation is assigned a different number
     greater or equal than 0. Parts of trajectories that are not immobilized
-    are assigned -1.
+    are assigned -1 (if `label_mobile` is `False`) or one negative number
+    per mobile section starting at -2 (if label_mobile is `True`).
+
+    :py:func:`find_immobilizations_int` uses a slightly different criterion
+    for finding immobilizations.
 
     Parameters
     ----------
@@ -32,6 +43,255 @@ def find_immobilizations(tracks, max_dist, min_duration, longest_only=False,
         for a part of a trajectory to be considered immobilized. Duration
         is the difference of the maximum frame number and the minimum frame
         number. E. g. if the frames 1, 2, and 4 would lead to a duration of 3.
+    label_mobile : bool, optional
+        Whether to give each mobile track section a distinct label (a negative
+        number starting at -2). Defaults to True.
+    longest_only : bool, optional
+        If True, search only for the longest immobilzation in each track to
+        speed up the process. Defaults to False.
+    rtol : float, optional
+        The fraction of localizations that may not be within `max_dist` of
+        the center of mass while still recognizing the sub-track as immobile.
+        One also has to set the `a_tol` parameter to something non-zero if
+        using this since a sub-track will not be considered immobile if either
+        `r_tol` or `a_tol` are exceeded. Defaults to 0.
+    atol : int, optional
+        The number of localizations that may not be within `max_dist` of
+        the center of mass while still recognizing the sub-track as immobile.
+        One also has to set the `r_tol` parameter to something non-zero if
+        using this since a sub-track will not be considered immobile if either
+        `r_tol` or `a_tol` are exceeded. Defaults to 0.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Although the `tracks` DataFrame is modified in place, it is also
+        returned for convenience.
+
+    See also
+    --------
+    find_immobilizations_int : Uses a slightly different criterion for finding
+        immobilizations
+
+    Other parameters
+    ----------------
+    engine : {"numba", "python"}, optional
+        If `engine` is "numba" and the `numba` package is installed, use the
+        much faster numba-accelerated alogrithm. Otherwise, fall back to a
+        pure python one. Defaults to "numba"
+    pos_columns : list of str, optional
+        Names of the columns describing the x and the y coordinate of the
+        features.
+    """
+    immob_counter = 0
+    mob_counter = -2
+    # New column for `tracks` that holds the immobilization number
+    immob_column = []
+
+    t_arr = tracks[pos_columns + ["frame", "particle"]].values
+    particles = np.unique(t_arr[:, -1])
+
+    if engine == "numba" and numba_helper.numba_available:
+        count_immob_func = _count_immob_numba
+        label_mob_func = _label_mob_numba
+    else:
+        count_immob_func = _count_immob_python
+        label_mob_func = _label_mob_python
+
+    for p in particles:
+        t = t_arr[t_arr[:, -1] == p]  # get current particle
+        t = t[np.argsort(t[:, -2])]  # sort by frame
+
+        coords = t[:, :-2].T  # coordinates
+        frames = t[:, -2].astype(int)
+        # To be appended to immob_column
+        icol = np.full(len(t), -1, dtype=int)
+
+        # Count how many localizations are within max_dist to sub-track's
+        # center of mass.
+        # This is computationally expensive.
+        count = count_immob_func(coords, max_dist)
+        # Number of localizations in sub-track (only valid for upper triangle)
+        num_locs = (np.arange(1, coords.shape[1]+1)[np.newaxis, :] -
+                    np.arange(coords.shape[1])[:, np.newaxis])
+
+        # Find immobilizations within tolerance limits
+        immob = ((1 - count/num_locs <= rtol) &
+                 (num_locs - count <= atol))
+
+        # Get longest possible immobilizations
+        duration = frames[np.newaxis, :] - frames[:, np.newaxis]
+        duration[~immob] = -1
+
+        while True:
+            mobile_idx = np.nonzero(icol < 0)[0]
+            if not len(mobile_idx):
+                # All localizations are part of immobilizations.
+                # We are done.
+                break
+
+            # Durations stripped of all sub-tracks that overlap with
+            # immobilizations that have already been found
+            cur_dur = duration[mobile_idx[:, np.newaxis],
+                               mobile_idx[np.newaxis, :]]
+            longest = np.argmax(cur_dur)
+            i = longest // cur_dur.shape[1]
+            j = longest % cur_dur.shape[0]
+            if cur_dur[i, j] < min_duration:
+                # The longest duration is already below the threshold.
+                # We are done.
+                break
+            icol[mobile_idx[i:j+1]] = immob_counter
+            immob_counter += 1
+
+            if longest_only:
+                # We are not interested in shorter immobilizations.
+                break
+
+        if label_mobile:
+            mob_counter = label_mob_func(icol, mob_counter)
+
+        immob_column.append(icol)
+
+    tracks["immob"] = np.hstack(immob_column)
+    return tracks
+
+
+def _count_immob_python(coords, max_dist):
+    """Count immobilizations in sub-tracks
+
+    For each sub-track starting at one frame and ending on anther, count
+    how many localizations are within `max_dist` of the sub-track's center of
+    mass
+
+    Parameters
+    ----------
+    coords : numpy.ndarray, shape=(ndim, nloc)
+        Coordinate array. Each column is the set of coordinates for one
+        localization
+    frames : numpy.ndarray, shape=(nloc,)
+        Frame number for each localization. This has to be in ascending order.
+    max_dist : float
+        Maximum distance that a localization may have from the sub-track's
+        center of mass to be counted.
+
+    Returns
+    -------
+    numpy.ndarray, shape=(nloc, nloc)
+        The [i, j]-th entry of the array holds the number of localizations
+        within `max_dist` of the center of mass of the sub-track starting at
+        the i-th localization and ending at the j-th (inclusive). Only
+        localizations between the i-th and the j-th may be counted (e. g. if
+        the (j+1)-th is still close enough to the center of mass, it will be
+        discarded anyways.)
+    """
+    # Calculate centers of mass, i. e. means of coordinates of all
+    # sub-tracks
+    sums = np.cumsum(coords, axis=1)  # sum coordinates
+    sums2 = np.hstack((np.zeros((coords.shape[0], 1)), sums[:, :-1]))
+
+    # cm[i, j, k] will be the cm coordinate i of track starting at index j
+    # and ending at k (provided j <= k)
+    #
+    # For fixed i, subtract from row j (where the k-th entry is the sum of
+    # coordinates  0 to k) subtract the sum of coordinates 0 to j-1,
+    # therefore calculating the sum of coordinates j to k.
+    cm = sums[:, np.newaxis, :] - sums2[:, :, np.newaxis]
+    # Save memory
+    del sums, sums2
+
+    # Divide sum by number of localizations in track to get center of mass
+    num_locs = (np.arange(1, coords.shape[1]+1)[np.newaxis, :] -
+                np.arange(coords.shape[1])[:, np.newaxis])
+    cm /= num_locs[np.newaxis, ...]
+
+    # dist_sq[i, j, k] is the distance of the k-th localization of the
+    # track from center of mass of subtrack from localization i through j
+    cm1 = cm[:, :, :, np.newaxis]
+    co1 = coords[:, np.newaxis, np.newaxis, :]
+    if numexpr_usable:
+        # numexpr is a lot faster in this case
+        dist_sq = numexpr.evaluate("sum((cm1 - co1)**2, axis=0)")
+    else:
+        dist_sq = np.sum((cm1 - co1)**2, axis=0)
+    # Save some memory
+    del cm, cm1, co1
+
+    # Select only relevant (i. e. i <= k <= j) from dist_sq
+    i = np.arange(coords.shape[1])
+    m = ((i[:, np.newaxis, np.newaxis] > i[np.newaxis, np.newaxis, :]) |
+         (i[np.newaxis, np.newaxis, :] > i[np.newaxis, :, np.newaxis]))
+    # Set irrelevant entries to NaN. That way, we can sum over all True
+    # values below to get the number of matches in the relevant range
+    dist_sq[m] = np.nan
+    # count[i, j] gives the number of localizations within max_dist of the
+    # center of mass of the sub-track starting at i and ending at j
+    return np.nansum(dist_sq <= max_dist**2, axis=2)
+
+
+@numba_helper.jit(nopython=True, cache=True)
+def _count_immob_numba(coords, max_dist):
+    """Count immobilizations in sub-tracks - numba-accellerated
+
+    Numba-accellerated implementation of
+    :py:func:`_immob_count_python` functionality. A lot faster and less
+    memory-hungry
+    """
+    max_dist_sq = max_dist**2
+    ndim = coords.shape[0]
+    nloc = coords.shape[1]
+
+    count = np.zeros((nloc, nloc), dtype=np.int64)
+    for j in range(nloc):  # Sub-track start index
+        s = np.zeros(ndim)  # Cum. sum of coordinates
+        for k in range(j, nloc):  # Sub-track end index
+            cm = np.zeros(ndim)  # Center of mass for sub-track [j, k]
+            for i in range(ndim):
+                s[i] += coords[i, k]  # Add to cum. sum
+                cm[i] = s[i] / (k - j + 1)  # Divide by number of locs
+            for l in range(j, k+1):  # for each loc of sub-track [j, k]
+                dist = 0.
+                for i in range(ndim):  # sum up coord dist**2 to center of mass
+                    dist += (cm[i] - coords[i, l])**2
+                if dist <= max_dist_sq:
+                    count[j, k] += 1  # and count if within max_dist
+    return count
+
+
+def find_immobilizations_int(tracks, max_dist, min_duration, label_mobile=True,
+                             longest_only=False, pos_columns=_pos_columns):
+    """Find immobilizations in particle trajectories
+
+    Analyze trajectories and mark parts where all localizations of a particle
+    stay within a circle of radius `max_dist` for at least a certain number
+    (`min_length`) of frames as an immobilization. In other words: If
+    consecutive localizations stay within the intersection of circles of
+    radius `max_dist` and coordinates of the localizations as centers, they
+    are considered immobilized.
+
+    This is different from :py:func:`find_immobilizations`.
+
+    The `tracks` DataFrame gets a new column ("immob") appended
+    (or overwritten), where every immobilzation is assigned a different number
+    greater or equal than 0. Parts of trajectories that are not immobilized
+    are assigned -1 (if `label_mobile` is `False`) or one negative number
+    per mobile section starting at -2 (if label_mobile is `True`).
+
+    Parameters
+    ----------
+    tracks : pandas.DataFrame
+        Tracking data
+    max_dist : float
+        Maximum radius within a particle may move while still being considered
+        immobilized
+    min_duration : int
+        Minimum duration the particle has to stay at the same place
+        for a part of a trajectory to be considered immobilized. Duration
+        is the difference of the maximum frame number and the minimum frame
+        number. E. g. if the frames 1, 2, and 4 would lead to a duration of 3.
+    label_mobile : bool, optional
+        Whether to give each mobile track section a distinct label (a negative
+        number starting at -2). Defaults to True.
     longest_only : bool, optional
         If True, search only for the longest immobilzation in each track to
         speed up the process. Defaults to False.
@@ -49,14 +309,19 @@ def find_immobilizations(tracks, max_dist, min_duration, longest_only=False,
         features.
     """
     max_dist_sq = max_dist**2
-    counter = 0
+    immob_counter = 0
+    mob_counter = -2
     #  new column for `tracks` that holds the immobilization number
     immob_column = []
 
-    for p_no, t in tracks.groupby("particle"):
-        t = t.sort_values("frame")
-        pos = t[pos_columns].values
-        frames = t["frame"].values.astype(int)
+    t_arr = tracks[pos_columns + ["frame", "particle"]].values
+    particles = np.unique(t_arr[:, -1])
+
+    for p in particles:
+        t = t_arr[t_arr[:, -1] == p]
+        t = t[np.argsort(t[:, -2])]
+        pos = t[:, :-2]
+        frames = t[:, -2].astype(int)
         # to be appended to immob_column
         icol = np.full(len(t), -1, dtype=int)
 
@@ -111,12 +376,15 @@ def find_immobilizations(tracks, max_dist, min_duration, longest_only=False,
 
                     continue
 
-                icol[s:e] = counter
-                counter += 1
+                icol[s:e] = immob_counter
+                immob_counter += 1
                 cur_row += 1
                 if longest_only:
                     # break after first iteration
                     break
+
+        if label_mobile:
+            mob_counter = _label_mob_python(icol, mob_counter)
 
         immob_column.append(icol)
 
@@ -185,3 +453,100 @@ def _find_diag_blocks(a):
     is_end = np.hstack((row_diff < 0, [True]))
 
     return is_start.nonzero()[0], is_end.nonzero()[0]
+
+
+def _label_mob_python(immob_col, start):
+    """Give each mobile section of a track a label (unique number)
+
+    Parameters
+    ----------
+    immob_col : numpy.ndarray
+        The immobilization number column for one particle. Elements which are
+        -1 are considered unlabeled mobile localizations and will be assigned
+        a label.
+    start : int
+        Start label. Should be a negative number as this gets decreased for
+        each mobile section.
+
+    Returns
+    -------
+    int
+        The last label decreased by one. This can be used as `start` for the
+        next particle.
+    """
+    mob = (immob_col == -1).astype(int)
+    d = np.diff(mob, 1)
+    begin = np.nonzero(d == 1)[0] + 1
+    end = np.nonzero(d == -1)[0] + 1
+    if mob[0] == 1:
+        begin = np.hstack(([0], begin))
+    if mob[-1] == 1:
+        end = np.hstack((end, [len(mob)]))
+    for b, e in zip(begin, end):
+        immob_col[b:e] = start
+        start -= 1
+    return start
+
+
+@numba_helper.jit(nopython=True, cache=True)
+def _label_mob_numba(immob_col, start):
+    """numba-accelerated version of :py:func:`_label_mob_python`"""
+    if not immob_col.size:
+        return start
+
+    is_mob = False
+    for i in range(len(immob_col)):
+        if immob_col[i] == -1:
+            immob_col[i] = start
+            is_mob = True
+        elif is_mob:
+            # is_mob is True, so last entry was still mobile; decrease label
+            start -= 1
+            is_mob = False
+
+    if is_mob:
+        start -= 1
+
+    return start
+
+
+def label_mobile(data, engine="numba"):
+    """Give each mobile section of a track a label (unique number)
+
+    When calling :py:func:`find_immobilizations` with ``label_mobile=False``,
+    all mobile sections of tracks will have `-1` in their `immob` column.
+    This function assigns a unique (negative) number to each section,
+    starting at `-2`.
+
+    The `data` DataFrame will be modified in place. It has to be sorted
+    according to frame number before calling this function.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Tracking data with an `immob` column where all mobile sections of
+        tracks are assigned `-1`.
+
+    Other parameters
+    ----------------
+    engine : {"numba", "python"}, optional
+        If `engine` is "numba" and the `numba` package is installed, use the
+        much faster numba-accelerated alogrithm. Otherwise, fall back to a
+        pure python one. Defaults to "numba"
+    """
+    d_arr = data[["particle", "immob"]].values
+
+    if engine == "numba" and numba_helper.numba_available:
+        label_mob_func = _label_mob_numba
+    else:
+        label_mob_func = _label_mob_python
+
+    new_immob_col = []
+
+    counter = -2
+    for p in np.unique(d_arr[:, 0]):
+        icol = d_arr[d_arr[:, 0] == p, 1]
+        counter = label_mob_func(icol, counter)
+        new_immob_col.append(icol)
+
+    data["immob"] = np.hstack(new_immob_col)
