@@ -136,7 +136,7 @@ class Corrector(object):
         else:
             @pims.pipeline
             def corr(img):
-                    return img/self.corr_img
+                return img/self.corr_img
             return corr(data)
 
     def get_factors(self, x, y):
