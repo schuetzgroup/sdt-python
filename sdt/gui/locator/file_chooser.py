@@ -3,9 +3,8 @@ import types
 
 import qtpy
 import qtpy.compat
-from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QCoreApplication, QObject,
-                         QAbstractListModel, QModelIndex, pyqtProperty,
-                         QEvent)
+from qtpy.QtCore import (Signal, Slot, Qt, QCoreApplication, QObject,
+                         QAbstractListModel, QModelIndex, QEvent)
 from qtpy.QtGui import QPolygonF, QIcon
 from qtpy import uic
 
@@ -122,8 +121,8 @@ class KbdEventFilter(QObject):
     delPressed
         Delete/backspace was pressed
     """
-    enterPressed = pyqtSignal(QModelIndex)
-    delPressed = pyqtSignal()
+    enterPressed = Signal(QModelIndex)
+    delPressed = Signal()
 
     def eventFilter(self, watched, event):
         """Event filter that handles return, del, etc. key presses
@@ -197,12 +196,8 @@ class FileChooser(fcBase):
     def model(self):
         return self._model
 
-    @pyqtSlot()
+    @Slot()
     def _addFilesSlot(self):
-#        fnames = QFileDialog.getOpenFileNames(
-#            self, self._tr("Open file"), self._lastOpenDir,
-#            self._tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
-#            self._tr("All files (*)"))
         fnames = qtpy.compat.getopenfilenames(
             self, self._tr("Open file"), self._lastOpenDir,
             self._tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
@@ -213,11 +208,11 @@ class FileChooser(fcBase):
         for fname in names:
             self._model.addItem(fname)
 
-    @pyqtSlot()
+    @Slot()
     def removeSelected(self):
         idx = self._ui.fileListView.selectionModel().selectedIndexes()
         while idx:
             self._model.removeRow(idx[0].row())
             idx = self._ui.fileListView.selectionModel().selectedIndexes()
 
-    selected = pyqtSignal(QModelIndex)
+    selected = Signal(QModelIndex)

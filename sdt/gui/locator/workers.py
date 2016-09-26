@@ -14,12 +14,11 @@ import multiprocessing as mp
 
 import pims
 
-from qtpy.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
+from qtpy.QtCore import QObject, Signal, Slot, Property
 from qtpy.QtGui import QPolygonF
 
 from .file_chooser import FileListModel
 from . import algorithms
-from ...image_tools import ROI, PathROI
 
 
 _logger = logging.getLogger(__name__)
@@ -98,10 +97,10 @@ class PreviewWorker(QObject):
         self._enabled = enable
         self.enabledChanged.emit(enable)
 
-    enabledChanged = pyqtSignal(bool)
+    enabledChanged = Signal(bool)
 
-    @pyqtProperty(bool, fset=setEnabled, notify=enabledChanged,
-                  doc="Indicates whether the worker is enabled")
+    @Property(bool, fset=setEnabled, notify=enabledChanged,
+              doc="Indicates whether the worker is enabled")
     def enabled(self):
         return self._enabled
 
@@ -111,15 +110,15 @@ class PreviewWorker(QObject):
         self.busyChanged.emit(isBusy)
         self._busy = isBusy
 
-    busyChanged = pyqtSignal(bool)
+    busyChanged = Signal(bool)
 
-    @pyqtProperty(bool, notify=busyChanged,
-                  doc="Indicates whether the worker is busy")
+    @Property(bool, notify=busyChanged,
+              doc="Indicates whether the worker is busy")
     def busy(self):
         return self._busy
 
-    finished = pyqtSignal(pd.DataFrame)
-    error = pyqtSignal(Exception)
+    finished = Signal(pd.DataFrame)
+    error = Signal(Exception)
 
     def _finishedCallback(self, result):
         """Called by the `multiprocessing.pool.Pool` when task is finished
@@ -130,7 +129,7 @@ class PreviewWorker(QObject):
         """
         self.finished.emit(result)
 
-    @pyqtSlot()
+    @Slot()
     def _finishedSlot(self):
         """Called when a job was finished
 
@@ -205,7 +204,7 @@ class BatchWorker(QObject):
                 (i, fname, frameRange, options, method, roi_list),
                 callback=self._finishedCallback)
 
-    @pyqtSlot()
+    @Slot()
     def stop(self):
         """Terminate the worker
 
@@ -214,8 +213,8 @@ class BatchWorker(QObject):
         self._pool.terminate()
         self._newPool()
 
-    fileFinished = pyqtSignal(int, pd.DataFrame, dict)
-    fileError = pyqtSignal(int, Exception)
+    fileFinished = Signal(int, pd.DataFrame, dict)
+    fileError = Signal(int, Exception)
 
     def _newPool(self):
         """Start a new worker pool"""

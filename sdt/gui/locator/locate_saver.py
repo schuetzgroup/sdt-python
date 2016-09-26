@@ -1,6 +1,6 @@
 import os
 
-from qtpy.QtCore import pyqtSignal, pyqtSlot
+from qtpy.QtCore import Signal, Slot
 from qtpy.QtGui import QIcon
 from qtpy import uic
 
@@ -25,9 +25,9 @@ class SaveWidget(locSaveBase):
         self._ui.saveButton.setIcon(
             QIcon(os.path.join(iconpath, "document-save.svg")))
 
-    locateAndSave = pyqtSignal(str)
+    locateAndSave = Signal(str)
 
-    @pyqtSlot()
+    @Slot()
     def on_saveButton_pressed(self):
         format = self.formatIndexToName[self._ui.formatBox.currentIndex()]
         self.locateAndSave.emit(format)

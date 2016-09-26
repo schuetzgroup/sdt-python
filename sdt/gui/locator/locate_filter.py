@@ -5,9 +5,8 @@ from contextlib import suppress
 import numpy as np
 
 import qtpy
-from qtpy.QtWidgets import QListWidgetItem, QMenu, QAction
-from qtpy.QtCore import (pyqtSignal, pyqtSlot, Qt, QTimer, QCoreApplication,
-                         pyqtProperty)
+from qtpy.QtWidgets import QMenu, QAction
+from qtpy.QtCore import Signal, Slot, Qt, QTimer, QCoreApplication, Property
 from qtpy.QtGui import QCursor
 from qtpy import uic
 
@@ -43,9 +42,9 @@ class FilterWidget(filterBase):
         self._menu = QMenu()
         self._menu.triggered.connect(self._addVariable)
 
-    filterChanged = pyqtSignal()
+    filterChanged = Signal()
 
-    @pyqtSlot(list)
+    @Slot(list)
     def setVariables(self, var):
         self._menu.clear()
         for v in var:
@@ -54,8 +53,7 @@ class FilterWidget(filterBase):
     def setFilterString(self, filt):
         self._ui.filterEdit.setPlainText(filt)
 
-    @pyqtProperty(str, fset=setFilterString,
-                  doc="String describing the filter")
+    @Property(str, fset=setFilterString, doc="String describing the filter")
     def filterString(self):
         return self._ui.filterEdit.toPlainText()
 
@@ -82,12 +80,12 @@ class FilterWidget(filterBase):
 
         return filterFunc
 
-    @pyqtSlot(QAction)
+    @Slot(QAction)
     def _addVariable(self, act):
         self._ui.filterEdit.textCursor().insertText(
             "{{{0}}}".format(act.text()))
 
-    @pyqtSlot(str)
+    @Slot(str)
     def on_showVarLabel_linkActivated(self, link):
         if not self._menu.isEmpty():
             self._menu.exec(QCursor.pos())

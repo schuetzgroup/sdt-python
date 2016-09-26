@@ -7,7 +7,7 @@ import os
 import numbers
 
 import qtpy
-from qtpy.QtCore import pyqtSignal, pyqtSlot, pyqtProperty, QTimer, Qt
+from qtpy.QtCore import Signal, Slot, Property, QTimer, Qt
 from qtpy.QtGui import QIcon
 from qtpy import uic
 
@@ -72,10 +72,10 @@ class Container(contBase):
     def setOptions(self, opts):
         self._ui.stackedWidget.currentWidget().options = opts
 
-    optionsChanged = pyqtSignal()
+    optionsChanged = Signal()
 
-    @pyqtProperty(dict, fset=setOptions, notify=optionsChanged,
-                  doc="Parameters to the currently selected algorithm")
+    @Property(dict, fset=setOptions, notify=optionsChanged,
+              doc="Parameters to the currently selected algorithm")
     def options(self):
         return self._ui.stackedWidget.currentWidget().options
 
@@ -85,12 +85,12 @@ class Container(contBase):
             raise ValueError("Unsupported algorithm")
         self._ui.algorithmBox.setCurrentIndex(idx)
 
-    @pyqtProperty(str, fset=setMethod,
-                  doc="Name of the currently selected algorithm")
+    @Property(str, fset=setMethod,
+              doc="Name of the currently selected algorithm")
     def method(self):
         return self._ui.algorithmBox.currentText()
 
-    @pyqtSlot(int)
+    @Slot(int)
     def on_algorithmBox_currentIndexChanged(self, idx):
         self._ui.stackedWidget.setCurrentIndex(idx)
         self.optionsChanged.emit()
@@ -99,14 +99,14 @@ class Container(contBase):
         self._ui.startFrameBox.setMaximum(n)
         self._ui.endFrameBox.setMaximum(n)
 
-    numFramesChanged = pyqtSignal(int)
+    numFramesChanged = Signal(int)
 
-    @pyqtProperty(int, fset=setNumFrames, notify=numFramesChanged,
-                  doc="Number of frames")
+    @Property(int, fset=setNumFrames, notify=numFramesChanged,
+              doc="Number of frames")
     def numFrames(self):
         return self._ui.endFrameBox.maximum()
 
-    @pyqtProperty(tuple, doc="(startFrame, endFrame) as set in the GUI")
+    @Property(tuple, doc="(startFrame, endFrame) as set in the GUI")
     def frameRange(self):
         start = self._ui.startFrameBox.value()
         start = start - 1 if start > 0 else 0
@@ -114,8 +114,8 @@ class Container(contBase):
         end = end if end > 0 else -1
         return start, end
 
-    save = pyqtSignal()
-    load = pyqtSignal()
+    save = Signal()
+    load = Signal()
 
 
 d3dClass, d3dBase = uic.loadUiType(os.path.join(path, "d3d_options.ui"))
@@ -133,7 +133,7 @@ class Daostorm3DOptions(d3dBase):
         self._ui.thresholdBox.valueChanged.connect(self.optionsChanged)
         self._ui.iterationsBox.valueChanged.connect(self.optionsChanged)
 
-    optionsChanged = pyqtSignal()
+    optionsChanged = Signal()
 
     def setOptions(self, opts):
         v = opts.get("radius")
@@ -161,8 +161,7 @@ class Daostorm3DOptions(d3dBase):
         if changed:
             self.optionsChanged.emit()
 
-    @pyqtProperty(dict, fset=setOptions,
-                  doc="Localization algorithm parameters")
+    @Property(dict, fset=setOptions, doc="Localization algorithm parameters")
     def options(self):
         opt = dict(radius=self._ui.radiusBox.value(),
                    threshold=self._ui.thresholdBox.value(),
@@ -185,7 +184,7 @@ class FastPeakpositionOptions(fpBase):
         self._ui.thresholdBox.valueChanged.connect(self.optionsChanged)
         self._ui.imsizeBox.valueChanged.connect(self.optionsChanged)
 
-    optionsChanged = pyqtSignal()
+    optionsChanged = Signal()
 
     def setOptions(self, opts):
         v = opts.get("radius")
@@ -206,8 +205,7 @@ class FastPeakpositionOptions(fpBase):
         if changed:
             self.optionsChanged.emit()
 
-    @pyqtProperty(dict, fset=setOptions,
-                  doc="Localization algorithm parameters")
+    @Property(dict, fset=setOptions, doc="Localization algorithm parameters")
     def options(self):
         opt = dict(radius=self._ui.radiusBox.value(),
                    threshold=self._ui.thresholdBox.value(),
@@ -229,7 +227,7 @@ class CGOptions(cgBase):
         self._ui.sigThresholdBox.valueChanged.connect(self.optionsChanged)
         self._ui.massThresholdBox.valueChanged.connect(self.optionsChanged)
 
-    optionsChanged = pyqtSignal()
+    optionsChanged = Signal()
 
     def setOptions(self, opts):
         v = opts.get("radius")
@@ -251,7 +249,7 @@ class CGOptions(cgBase):
         if changed:
             self.optionsChanged.emit()
 
-    @pyqtProperty(dict, doc="Localization algorithm parameters")
+    @Property(dict, doc="Localization algorithm parameters")
     def options(self):
         opt = dict(radius=self._ui.radiusBox.value(),
                    signal_thresh=self._ui.sigThresholdBox.value(),
@@ -271,9 +269,9 @@ class FileOptions(fileBase):
 
         self._ui.formatBox.currentIndexChanged.connect(self.optionsChanged)
 
-    optionsChanged = pyqtSignal()
+    optionsChanged = Signal()
 
-    @pyqtProperty(dict, doc="Localization algorithm parameters")
+    @Property(dict, doc="Localization algorithm parameters")
     def options(self):
         fmt = self._ui.formatBox.currentText()
         if fmt == "particle tracker":
