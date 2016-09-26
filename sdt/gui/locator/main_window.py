@@ -177,7 +177,6 @@ class MainWindow(QMainWindow):
         self._currentFile = QPersistentModelIndex()
         self._currentLocData = pd.DataFrame(columns=["x", "y"])
         self._roiPolygon = QPolygonF()
-        self._lastDir = ""
 
         # load settings and restore window geometry
         settings = QSettings("sdt", "locator")
@@ -405,13 +404,12 @@ class MainWindow(QMainWindow):
     def on_locOptionsWidget_save(self):
         # save options
         fname, _ = qtpy.compat.getsavefilename(
-            self, self.tr("Save file"), self._lastDir,
+            self, self.tr("Save file"), "",
             self.tr("YAML data (*.yaml)") + ";;" +
             self.tr("All files (*)"))
         if not fname:
             # cancelled
             return
-        self._lastDir = os.path.dirname(fname)
 
         try:
             self._saveMetadata(fname)
@@ -423,13 +421,12 @@ class MainWindow(QMainWindow):
     def on_locOptionsWidget_load(self):
         # load options
         fname, _ = qtpy.compat.getopenfilename(
-            self, self.tr("Save file"), self._lastDir,
+            self, self.tr("Save file"), "",
             self.tr("YAML data (*.yaml)") + ";;" +
             self.tr("All files (*)"))
         if not fname:
             # cancelled
             return
-        self._lastDir = os.path.dirname(fname)
 
         try:
             with open(fname) as f:

@@ -185,8 +185,6 @@ class FileChooser(fcBase):
         self._ui.removeButton.pressed.connect(self.removeSelected)
         self._ui.fileListView.doubleClicked.connect(self.selected)
 
-        self._lastOpenDir = ""
-
         # install the event filter for handling key presses
         self._kbdEventFilter = KbdEventFilter(self)
         self._kbdEventFilter.enterPressed.connect(self.selected)
@@ -199,7 +197,7 @@ class FileChooser(fcBase):
     @Slot()
     def _addFilesSlot(self):
         fnames = qtpy.compat.getopenfilenames(
-            self, self._tr("Open file"), self._lastOpenDir,
+            self, self._tr("Open file"), "",
             self._tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
             self._tr("All files (*)"))
         self.addFiles(fnames[0])
