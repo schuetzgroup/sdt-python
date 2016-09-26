@@ -37,4 +37,4 @@ Recommended packages
 --------------------
 - numba
 - matplotlib
-- qtpy >= 1.0b1
+- qtpy >= 1.1

@@ -21,6 +21,7 @@ requirements:
         - pyyaml
         - pims >=0.3.0
         - slicerator >=0.9.7
+        - qtpy >=1.1
         - matplotlib
         - lmfit
         - pywavelets >=0.3.0
@@ -36,7 +37,7 @@ requirements:
         - pims >=0.3.0
         - slicerator >=0.9.7
         - numba
-        - qtpy >=1.0b1
+        - qtpy >=1.1
         - matplotlib
         - lmfit
         - pywavelets >=0.3.0
