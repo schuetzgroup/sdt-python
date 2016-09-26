@@ -14,7 +14,7 @@ from qtpy.QtGui import (QImage, QPixmap, QIcon, QTransform, QPen,
 from qtpy.QtWidgets import (QGraphicsPixmapItem, QGraphicsScene,
                             QDoubleSpinBox, QGraphicsEllipseItem,
                             QGraphicsItem, QGraphicsPolygonItem)
-from qtpy import uic
+from .. import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))

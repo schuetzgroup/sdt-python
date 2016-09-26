@@ -2,7 +2,7 @@ import os
 
 from qtpy.QtCore import Signal, Slot
 from qtpy.QtGui import QIcon
-from qtpy import uic
+from .. import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))

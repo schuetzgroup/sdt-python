@@ -9,7 +9,7 @@ import numbers
 import qtpy
 from qtpy.QtCore import Signal, Slot, Property, QTimer, Qt
 from qtpy.QtGui import QIcon
-from qtpy import uic
+from .. import uic
 
 from . import algorithms
 

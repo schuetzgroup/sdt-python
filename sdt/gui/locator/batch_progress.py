@@ -1,6 +1,6 @@
 import os
 
-from qtpy import uic
+from .. import uic
 from qtpy.QtCore import QCoreApplication, Property, Slot, Signal
 from qtpy.QtWidgets import QDialogButtonBox
 

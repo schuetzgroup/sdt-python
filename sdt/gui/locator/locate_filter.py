@@ -8,7 +8,7 @@ import qtpy
 from qtpy.QtWidgets import QMenu, QAction
 from qtpy.QtCore import Signal, Slot, Qt, QTimer, QCoreApplication, Property
 from qtpy.QtGui import QCursor
-from qtpy import uic
+from .. import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))

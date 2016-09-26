@@ -6,7 +6,7 @@ import qtpy.compat
 from qtpy.QtCore import (Signal, Slot, Qt, QCoreApplication, QObject,
                          QAbstractListModel, QModelIndex, QEvent)
 from qtpy.QtGui import QPolygonF, QIcon
-from qtpy import uic
+from .. import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
