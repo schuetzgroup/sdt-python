@@ -6,11 +6,20 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+10.0
+----
+- motion: Implement new `find_immobilizations` algorithm
+- locator: Use same default directory for all file dialogs
+- Port to qtpy 1.1
+- Add `image.masks`
+- Rename `image_filter` -> `image.filters` (API break)
+- brightness: Improve `from_raw_image` performance
+
 9.0
 ---
 - Fix infinite loop in `motion.find_immobilizations`
 - Minor fixes in `motion.find_immobilizations`
-- Rename `background` -> `image_filter` since the module may at some point 
+- Rename `background` -> `image_filter` since the module may at some point
   contain filters other than for background estimation. Also rename the
   individual filter functions (API break).
 - Add many tests (and/or make sure they are run).
