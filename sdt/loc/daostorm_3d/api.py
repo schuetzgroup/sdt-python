@@ -15,6 +15,7 @@ from . import algorithm
 from .. import make_batch
 from .. import restrict_roi
 from .. import z_fit
+from .. import snr_filters
 
 numba_available = False
 try:
@@ -30,8 +31,9 @@ except ImportError as e:
 num_threads = multiprocessing.cpu_count()
 
 
-def locate(raw_image, radius, model, threshold, z_params=None, engine="numba",
-           max_iterations=20):
+def locate(raw_image, radius, model, threshold, z_params=None,
+           pre_filter=snr_filters.Identity(), pre_filter_opts={},
+           engine="numba", max_iterations=20):
     """Locate bright, Gaussian-like features in an image
 
     Use the 3D-DAOSTORM algorithm [1]_.
@@ -116,8 +118,23 @@ def locate(raw_image, radius, model, threshold, z_params=None, engine="numba",
     else:
         raise ValueError("Unknown engine: " + str(engine))
 
+    if isinstance(pre_filter, str):
+        try:
+            filter_class = getattr(snr_filters, pre_filter)
+        except AttributeError:
+            raise ValueError(
+                 "There is no filter named {}.".format(pre_filter))
+        pre_filter = filter_class(**pre_filter_opts)
+    elif (isinstance(pre_filter, type) and
+          issubclass(pre_filter, snr_filters.SnrFilter)):
+        pre_filter = pre_filter(**pre_filter_opts)
+    elif isinstance(pre_filter, snr_filters.SnrFilter):
+        pass
+    else:
+        return ValueError("Invalid pre-filter")
+
     peaks = algorithm.locate(raw_image, radius, threshold, max_iterations,
-                             Finder, Fitter)
+                             pre_filter, Finder, Fitter)
 
     # Create DataFrame
     converged_peaks = peaks[peaks[:, col_nums.stat] == feat_status.conv]

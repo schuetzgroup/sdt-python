@@ -8,6 +8,7 @@ from scipy import ndimage
 
 from .data import Peaks, col_nums, feat_status
 from .. import bg_estimator as _bg_est
+from .. import snr_filters
 
 
 class Finder(object):
@@ -22,6 +23,7 @@ class Finder(object):
     max_peak_count = 2
 
     def __init__(self, image, peak_radius, search_radius=5, margin=10,
+                 pre_filter=snr_filters.Identity(),
                  bg_estimator=_bg_est.GaussianSmooth()):
         """Parameters
         ----------
@@ -45,6 +47,7 @@ class Finder(object):
         self.search_radius = search_radius
         self.radius = peak_radius
         self.peak_count = np.zeros(image.shape, dtype=np.int)
+        self.pre_filter = pre_filter
         self.bg_estimator = bg_estimator
 
     def find(self, image, threshold):
@@ -72,8 +75,7 @@ class Finder(object):
         image = image.astype(np.float, copy=False)
         bg = self.bg_estimator(image)
         image_wo_bg = image - bg
-        coords = self.local_maxima(image_wo_bg, threshold)
-
+        coords = self.local_maxima(self.pre_filter(image_wo_bg), threshold)
         non_excessive_count_mask = (self.peak_count[coords.T.tolist()] <
                                     self.max_peak_count)
         ne_coords = coords[non_excessive_count_mask, :]
@@ -85,7 +87,7 @@ class Finder(object):
         ret[:, [col_nums.y, col_nums.x]] = ne_coords
         ret[:, col_nums.wx] = ret[:, col_nums.wy] = self.radius
         # it would seem more logical to use the residual, like so:
-        ret[:, col_nums.amp] = image_wo_bg[ne_coords_list]
+        # ret[:, col_nums.amp] = image_wo_bg[ne_coords_list]
         # however, this seems (in some quick tests) to produce more
         # spurious localizations than the code below (which is also what the
         # original implementation uses)

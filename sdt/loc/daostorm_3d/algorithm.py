@@ -36,7 +36,7 @@ def make_margin(image, margin):
     return img_with_margin
 
 
-def locate(raw_image, radius, threshold, max_iterations,
+def locate(raw_image, radius, threshold, max_iterations, pre_filter,
            finder_class, fitter_class):
     """Locate bright, Gaussian-like features in an image
 
@@ -82,7 +82,8 @@ def locate(raw_image, radius, threshold, max_iterations,
     neighborhood_radius = 5. * radius
     new_peak_radius = 1.
 
-    finder = finder_class(image, radius, bg_estimator=bg_est)
+    finder = finder_class(image, radius, bg_estimator=bg_est,
+                          pre_filter=pre_filter)
 
     for i in range(max_iterations):
         # remember how many peaks there were before this iteration
