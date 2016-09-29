@@ -72,6 +72,7 @@ class NumberOption(OptionElement):
         sb.setMinimum(self.min)
         sb.setMaximum(self.max)
         sb.setValue(self._value)
+        sb.setFrame(False)
         return sb
 
     def setEditorData(self, editor):
