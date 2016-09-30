@@ -124,6 +124,15 @@ def makeDaostorm3DOptions():
     e = option_model.NumberOption("Max. iterations", "max_iterations",
                                   1, 1000, 20)
     root.addChild(e)
+    e = option_model.ChoiceOptionWithSub(
+        "Pre-filter", "pre_filter", "pre_filter_opts",
+        ["Identity", "Cg", "Gaussian"], "Identity")
+    e.addChild(option_model.NumberOption("Feature size", "feature_radius",
+                                         0, 100, 3),
+               "Cg")
+    e.addChild(option_model.NumberOption("Sigma", "sigma", 0., 100., 1., 2),
+               "Gaussian")
+    root.addChild(e)
     return option_model.OptionModel(root)
 
 

@@ -7,48 +7,52 @@ from qtpy.QtWidgets import (QStyledItemDelegate, QSpinBox, QDoubleSpinBox,
 
 
 class OptionElement:
-    def __init__(self, name, param_name=None):
+    def __init__(self, name, paramName=None):
         self.name = name
         self.children = []
         self.parent = None
-        self.param_name = param_name
+        self.paramName = paramName
         self._value = None
+        self._model = None
+        self._dict = OrderedDict()
 
     def value(self):
         return self._value
 
-    def setValue(self):
+    def setValue(self, v):
         return False
+
+    def setTreeValuesFromDict(self, d):
+        try:
+            v = d[self.paramName]
+        except KeyError:
+            pass
+        else:
+            self.setValue(v)
+
+        for c in self.children:
+            c.setTreeValuesFromDict(d)
 
     def addChild(self, child):
         self.children.append(child)
         child.parent = self
+        child._setDict(self._dict)
 
-    def optionsDict(self, d=None):
-        if d is None:
-            d = OrderedDict()
-        if isinstance(self.param_name, str):
-            d[self.param_name] = self.value()
-        for c in self.children:
-            c.optionsDict(d)
-        return d
+    def _setDict(self, d):
+        self._dict = d
+        if isinstance(self.paramName, str):
+            self._dict[self.paramName] = self._value
 
-    def subtreeFind(self, key, attr="param_name"):
-        a = getattr(self, attr, None)
-        if a == key:
-            return self
-
-        for c in self.children:
-            el = c.subtreeFind(key, attr)
-            if el is not None:
-                return el
-
-        return None
+    def model(self):
+        if self.parent is None:
+            return self._model
+        else:
+            return self.parent.model()
 
 
 class NumberOption(OptionElement):
-    def __init__(self, name, param_name, min, max, default, decimals=2):
-        super().__init__(name, param_name)
+    def __init__(self, name, paramName, min, max, default, decimals=2):
+        super().__init__(name, paramName)
         self.min = min
         self.max = max
         self.decimals = decimals
@@ -56,8 +60,14 @@ class NumberOption(OptionElement):
         self.setValue(default)
 
     def setValue(self, v):
-        if self.min <= v <= self.max:
+        if (self.min <= v <= self.max) and self._value != v:
             self._value = v
+            if isinstance(self.paramName, str):
+                self._dict[self.paramName] = v
+            m = self.model()
+            if isinstance(m, QAbstractItemModel):
+                idx = m.indexForElement(self, column=1)
+                m.dataChanged.emit(idx, idx)
             return True
         else:
             return False
@@ -86,8 +96,8 @@ class NumberOption(OptionElement):
 
 
 class ChoiceOption(OptionElement):
-    def __init__(self, name, param_name, choices, default):
-        super().__init__(name, param_name)
+    def __init__(self, name, paramName, choices, default):
+        super().__init__(name, paramName)
         self.choices = choices
 
         self.setValue(default)
@@ -95,11 +105,13 @@ class ChoiceOption(OptionElement):
     def setValue(self, v):
         try:
             self._index = self.choices.index(v)
-            self._value = v
         except ValueError:
             return False
-        else:
-            return True
+
+        self._value = v
+        if isinstance(self.paramName, str):
+            self._dict[self.paramName] = v
+        return True
 
     def createEditor(self, parent):
         cb = QComboBox(parent)
@@ -116,6 +128,72 @@ class ChoiceOption(OptionElement):
         model.setData(index, self.choices[i])
 
 
+class ChoiceOptionWithSub(ChoiceOption):
+    def __init__(self, name, paramName, subParamName, choices, default):
+        self._allChildren = [[] for i in range(len(choices))]
+        self.subParamName = subParamName
+        self._childDicts = [OrderedDict() for i in range(len(choices))]
+        super().__init__(name, paramName, choices, default)
+
+    def setValue(self, v):
+        try:
+            self._index = self.choices.index(v)
+        except ValueError:
+            return False
+
+        self._value = v
+        m = self.model()
+        newChildren = self._allChildren[self._index]
+        if m is not None:
+            idx = m.indexForElement(self)
+            m.dataChanged.emit(idx, idx)
+
+            m.beginRemoveRows(idx, 0, len(self.children)-1)
+            self.children = []
+            m.endRemoveRows()
+            m.beginInsertRows(idx, 0, len(newChildren)-1)
+
+        self.children = newChildren
+        if isinstance(self.paramName, str):
+            self._dict[self.paramName] = v
+        if isinstance(self.subParamName, str):
+            self._dict[self.subParamName] = self._childDicts[self._index]
+
+        if m is not None:
+            m.endInsertRows()
+
+        return True
+
+    def setTreeValuesFromDict(self, d):
+        try:
+            v = d[self.paramName]
+        except KeyError:
+            pass
+        else:
+            self.setValue(v)
+
+        try:
+            sd = d[self.subParamName]
+        except KeyError:
+            pass
+        else:
+            for c in self.children:
+                c.setTreeValuesFromDict(sd)
+
+    def _setDict(self, d):
+        self._dict = d
+        if isinstance(self.paramName, str):
+            self._dict[self.paramName] = self._value
+        if isinstance(self.subParamName, str):
+            self._dict[self.subParamName] = self._childDicts[self._index]
+
+    def addChild(self, child, choice):
+        i = self.choices.index(choice)
+        self._allChildren[i].append(child)
+        child.parent = self
+        child._setDict(self._childDicts[i])
+
+
 class OptionModel(QAbstractItemModel):
     __clsName = "OptionModel"
 
@@ -126,7 +204,7 @@ class OptionModel(QAbstractItemModel):
     def __init__(self, root, parent=None):
         super().__init__(parent)
         self._root = root
-        self._dict = root.optionsDict()
+        self._root._model = self
         self._headers = [self._tr("Name"), self._tr("Value")]
 
     def rowCount(self, parent=QModelIndex()):
@@ -175,7 +253,7 @@ class OptionModel(QAbstractItemModel):
             if c == 0:
                 return ip.name
             elif c == 1:
-                return ip._value
+                return ip.value()
         elif role == Qt.UserRole:
             return index.internalPointer()
 
@@ -195,37 +273,24 @@ class OptionModel(QAbstractItemModel):
 
         ip = index.internalPointer()
         if ip.setValue(value):
-            if isinstance(ip.param_name, str):
-                self._dict[ip.param_name] = value
-            self.dataChanged.emit(index, index)
             self.optionsChanged.emit()
             return True
         else:
             return False
 
-    def indexForElement(self, element):
-        return self.createIndex(element.parent.children.index(element), 0,
+    def indexForElement(self, element, column=0):
+        return self.createIndex(element.parent.children.index(element), column,
                                 element)
 
     optionsChanged = Signal()
 
     def setOptions(self, opts):
-        changed = False
-        for k, v in opts.items():
-            el = self._root.subtreeFind(k)
-            if el is None or v == el.value():
-                continue
-            el.setValue(v)
-            idx = self.indexForElement(el)
-            self.dataChanged.emit(idx, idx)
-            changed = True
-
-        if changed:
-            self.optionsChanged.emit()
+        self._root.setTreeValuesFromDict(opts)
+        self.optionsChanged.emit()
 
     @Property(dict, fset=setOptions, doc="Localization algorithm parameters")
     def options(self):
-        return self._dict
+        return self._root._dict
 
 
 class OptionDelegate(QStyledItemDelegate):
