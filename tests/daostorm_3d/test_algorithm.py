@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from sdt.loc import z_fit
+from sdt.loc import z_fit, snr_filters
 from sdt.loc.daostorm_3d import algorithm, find, find_numba, fit_numba_impl
 
 
@@ -30,22 +30,23 @@ class TestAlgorithm(unittest.TestCase):
     def test_locate_2dfixed_numba(self):
         orig = np.load(os.path.join(data_path, "beads_2dfixed.npz"))["peaks"]
         frame = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
-        peaks = algorithm.locate(frame, 1., 400., 20, find_numba.Finder,
+        peaks = algorithm.locate(frame, 1., 400., 20, snr_filters.Identity(),
+                                 find_numba.Finder,
                                  fit_numba_impl.Fitter2DFixed)
         np.testing.assert_allclose(peaks, orig)
 
     def test_locate_2d_numba(self):
         orig = np.load(os.path.join(data_path, "beads_2d.npz"))["peaks"]
         frame = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
-        peaks = algorithm.locate(frame, 1., 400., 20, find.Finder,
-                                 fit_numba_impl.Fitter2D)
+        peaks = algorithm.locate(frame, 1., 400., 20, snr_filters.Identity(),
+                                 find.Finder, fit_numba_impl.Fitter2D)
         np.testing.assert_allclose(peaks, orig)
 
     def test_locate_3d_numba(self):
         orig = np.load(os.path.join(data_path, "beads_3d.npz"))["peaks"]
         frame = np.load(os.path.join(img_path, "bead_img.npz"))["img"]
-        peaks = algorithm.locate(frame, 1., 400., 20, find.Finder,
-                                 fit_numba_impl.Fitter3D)
+        peaks = algorithm.locate(frame, 1., 400., 20, snr_filters.Identity(),
+                                 find.Finder, fit_numba_impl.Fitter3D)
         np.testing.assert_allclose(peaks, orig)
 
     def test_locate_z_numba(self):
@@ -53,7 +54,8 @@ class TestAlgorithm(unittest.TestCase):
         frame = np.load(os.path.join(z_path, "z_sim_img.npz"))["img"]
         z_params = z_fit.Parameters.load(
             os.path.join(z_path, "z_params.yaml"))
-        peaks = algorithm.locate(frame, 1., 300., 10, find.Finder,
+        peaks = algorithm.locate(frame, 1., 300., 10, snr_filters.Identity(),
+                                 find.Finder,
                                  fit_numba_impl.fitter_z_factory(z_params))
         np.testing.assert_allclose(peaks, orig, atol=1e-8)
 
