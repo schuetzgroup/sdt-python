@@ -32,8 +32,8 @@ num_threads = multiprocessing.cpu_count()
 
 
 def locate(raw_image, radius, model, threshold, z_params=None,
-           pre_filter=snr_filters.Identity(), pre_filter_opts={},
            engine="numba", max_iterations=20):
+           find_filter=snr_filters.Identity(), find_filter_opts={},
     """Locate bright, Gaussian-like features in an image
 
     Use the 3D-DAOSTORM algorithm [1]_.
@@ -64,6 +64,18 @@ def locate(raw_image, radius, model, threshold, z_params=None,
         instance or a filename to load the parameters from or a
         :py:class:`pandas.DataFrame` with calibration data (`z` vs. `size_x`
         and `size_y`).
+    find_filter : str or :py:class:`snr_filters.SnrFilter`, optional
+        Apply a filter to the raw image data for the feature finding step.
+        Fitting is still done on the original image. `find_filter` can be the
+        name of one of the filters in :py:mod:`snr_filters` (i. e. "Identity",
+        "Cg", or "Gaussian") or an :py:class:`snr_filters.SnrFilter` instance.
+        "Identity" is the identity transform, i. e. does nothing. "Cg" is
+        the Crocker & Grier bandpass filter, see
+        :py:func:`sdt.image.filters.cg`, and "Gaussian" is a Gaussian filter.
+        Defaults to "Identity".
+    find_filter_opts : dict
+        Parameters to be passed to the filter. For "Cg", this is
+        "feature_radius", for "Gaussian", this is "sigma"
 
     Returns
     -------
@@ -118,23 +130,23 @@ def locate(raw_image, radius, model, threshold, z_params=None,
     else:
         raise ValueError("Unknown engine: " + str(engine))
 
-    if isinstance(pre_filter, str):
+    if isinstance(find_filter, str):
         try:
-            filter_class = getattr(snr_filters, pre_filter)
+            filter_class = getattr(snr_filters, find_filter)
         except AttributeError:
             raise ValueError(
-                 "There is no filter named {}.".format(pre_filter))
-        pre_filter = filter_class(**pre_filter_opts)
-    elif (isinstance(pre_filter, type) and
-          issubclass(pre_filter, snr_filters.SnrFilter)):
-        pre_filter = pre_filter(**pre_filter_opts)
-    elif isinstance(pre_filter, snr_filters.SnrFilter):
+                 "There is no filter named {}.".format(find_filter))
+        find_filter = filter_class(**find_filter_opts)
+    elif (isinstance(find_filter, type) and
+          issubclass(find_filter, snr_filters.SnrFilter)):
+        find_filter = find_filter(**find_filter_opts)
+    elif isinstance(find_filter, snr_filters.SnrFilter):
         pass
     else:
-        return ValueError("Invalid pre-filter")
+        return ValueError("Invalid find-filter")
 
     peaks = algorithm.locate(raw_image, radius, threshold, max_iterations,
-                             pre_filter, Finder, Fitter)
+                             find_filter, Finder, Fitter)
 
     # Create DataFrame
     converged_peaks = peaks[peaks[:, col_nums.stat] == feat_status.conv]

@@ -36,8 +36,8 @@ def make_margin(image, margin):
     return img_with_margin
 
 
-def locate(raw_image, radius, threshold, max_iterations, pre_filter,
            finder_class, fitter_class):
+def locate(raw_image, radius, threshold, max_iterations, find_filter,
     """Locate bright, Gaussian-like features in an image
 
     Implements the  3D-DAOSTORM algorithm [1]_. Call finder and fitter in a
@@ -58,6 +58,9 @@ def locate(raw_image, radius, threshold, max_iterations, pre_filter,
         CCD baseline) in the dimmest peak to be detected.
     max_iterations : int, optional
         Maximum number of iterations for successive peak finding and fitting.
+    find_filter : :py:class:`snr_filters.SnrFilter`
+        Apply a filter to the raw image data for the feature finding step.
+        Fitting is still done on the original image.
     finder_class : class
         Implementation of a feature finder. For an example, see :py:mod:`find`.
     fitter_class : class
@@ -83,7 +86,7 @@ def locate(raw_image, radius, threshold, max_iterations, pre_filter,
     new_peak_radius = 1.
 
     finder = finder_class(image, radius, bg_estimator=bg_est,
-                          pre_filter=pre_filter)
+                          find_filter=find_filter)
 
     for i in range(max_iterations):
         # remember how many peaks there were before this iteration
