@@ -36,8 +36,8 @@ def make_margin(image, margin):
     return img_with_margin
 
 
-           finder_class, fitter_class):
 def locate(raw_image, radius, threshold, max_iterations, find_filter,
+           finder_class, fitter_class, min_distance=None):
     """Locate bright, Gaussian-like features in an image
 
     Implements the  3D-DAOSTORM algorithm [1]_. Call finder and fitter in a
@@ -65,6 +65,11 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
         Implementation of a feature finder. For an example, see :py:mod:`find`.
     fitter_class : class
         Implementation of a feature fitter. For an example, see :py:mod:`fit`.
+    min_distance : float or None, optional
+        Minimum distance between two features. This can be used to suppress
+        detection of bright features as multiple overlapping ones if
+        `threshold` is rather low. If `None`, use `radius` (original
+        3D-DAOSTORM behavior). Defaults to None.
 
     Returns
     -------
@@ -84,6 +89,7 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
     bg_est = bg_estimator.GaussianSmooth(background_gauss_size)
     neighborhood_radius = 5. * radius
     new_peak_radius = 1.
+    min_distance = radius if min_distance is None else min_distance
 
     finder = finder_class(image, radius, bg_estimator=bg_est,
                           find_filter=find_filter)
@@ -115,7 +121,7 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
             # get good peaks
             peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
             # remove close peaks
-            peaks = peaks.remove_close(radius, neighborhood_radius)
+            peaks = peaks.remove_close(min_distance, neighborhood_radius)
             # refit
             fitter = fitter_class(image, peaks)
             fitter.fit()
