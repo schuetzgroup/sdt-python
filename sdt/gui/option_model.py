@@ -7,7 +7,7 @@ from qtpy.QtWidgets import (QStyledItemDelegate, QSpinBox, QDoubleSpinBox,
 
 
 class OptionElement:
-    def __init__(self, name, paramName=None):
+    def __init__(self, name, paramName=None, uncheckedValue=None):
         self.name = name
         self.children = []
         self.parent = None
@@ -15,12 +15,45 @@ class OptionElement:
         self._value = None
         self._model = None
         self._dict = OrderedDict()
+        self._checked = None
+        self.uncheckedValue = None
 
     def value(self):
         return self._value
 
     def setValue(self, v):
-        return False
+        if self._value == v:
+            return False
+
+        self._value = v
+        if isinstance(self.paramName, str) and self._checked != Qt.Unchecked:
+            self._dict[self.paramName] = v
+        m = self.model()
+        if isinstance(m, OptionModel):
+            idx = m.indexForElement(self, column=1)
+            m.dataChanged.emit(idx, idx)
+        return True
+
+    def checked(self):
+        return self._checked
+
+    def setChecked(self, c):
+        if self._checked == c:
+            return False
+
+        if isinstance(self.paramName, str):
+            if c == Qt.Unchecked:
+                self._dict[self.paramName] = self.uncheckedValue
+            else:
+                self._dict[self.paramName] = self._value
+        self._checked = c
+
+        m = self.model()
+        if isinstance(m, OptionModel):
+            idx = m.indexForElement(self, column=1)
+            m.dataChanged.emit(idx, idx)
+
+        return True
 
     def setTreeValuesFromDict(self, d):
         try:
@@ -28,7 +61,14 @@ class OptionElement:
         except KeyError:
             pass
         else:
-            self.setValue(v)
+            if self._checked is not None:
+                if v == self.uncheckedValue:
+                    self.setChecked(Qt.Unchecked)
+                else:
+                    self.setChecked(Qt.Checked)
+                    self.setValue(v)
+            else:
+                self.setValue(v)
 
         for c in self.children:
             c.setTreeValuesFromDict(d)
@@ -41,7 +81,10 @@ class OptionElement:
     def _setDict(self, d):
         self._dict = d
         if isinstance(self.paramName, str):
-            self._dict[self.paramName] = self._value
+            if self._checked != Qt.Unchecked:
+                self._dict[self.paramName] = self._value
+            else:
+                self._dict[self.paramName] = self.uncheckedValue
 
     def model(self):
         if self.parent is None:
@@ -51,8 +94,9 @@ class OptionElement:
 
 
 class NumberOption(OptionElement):
-    def __init__(self, name, paramName, min, max, default, decimals=2):
-        super().__init__(name, paramName)
+    def __init__(self, name, paramName, min, max, default, decimals=2,
+                 uncheckedValue=None):
+        super().__init__(name, paramName, uncheckedValue)
         self.min = min
         self.max = max
         self.decimals = decimals
@@ -60,15 +104,8 @@ class NumberOption(OptionElement):
         self.setValue(default)
 
     def setValue(self, v):
-        if (self.min <= v <= self.max) and self._value != v:
-            self._value = v
-            if isinstance(self.paramName, str):
-                self._dict[self.paramName] = v
-            m = self.model()
-            if isinstance(m, QAbstractItemModel):
-                idx = m.indexForElement(self, column=1)
-                m.dataChanged.emit(idx, idx)
-            return True
+        if (self.min <= v <= self.max):
+            return super().setValue(v)
         else:
             return False
 
@@ -96,8 +133,8 @@ class NumberOption(OptionElement):
 
 
 class ChoiceOption(OptionElement):
-    def __init__(self, name, paramName, choices, default):
-        super().__init__(name, paramName)
+    def __init__(self, name, paramName, choices, default, uncheckedValue=None):
+        super().__init__(name, paramName, uncheckedValue)
         self.choices = choices
 
         self.setValue(default)
@@ -107,11 +144,7 @@ class ChoiceOption(OptionElement):
             self._index = self.choices.index(v)
         except ValueError:
             return False
-
-        self._value = v
-        if isinstance(self.paramName, str):
-            self._dict[self.paramName] = v
-        return True
+        return super().setValue(v)
 
     def createEditor(self, parent):
         cb = QComboBox(parent)
@@ -129,11 +162,13 @@ class ChoiceOption(OptionElement):
 
 
 class ChoiceOptionWithSub(ChoiceOption):
-    def __init__(self, name, paramName, subParamName, choices, default):
+    def __init__(self, name, paramName, subParamName, choices, default,
+                 uncheckedValue=None):
         self._allChildren = [[] for i in range(len(choices))]
         self.subParamName = subParamName
         self._childDicts = [OrderedDict() for i in range(len(choices))]
-        super().__init__(name, paramName, choices, default)
+        super().__init__(name, paramName, choices, default,
+                         uncheckedValue=uncheckedValue)
 
     def setValue(self, v):
         try:
@@ -154,7 +189,7 @@ class ChoiceOptionWithSub(ChoiceOption):
             m.beginInsertRows(idx, 0, len(newChildren)-1)
 
         self.children = newChildren
-        if isinstance(self.paramName, str):
+        if (isinstance(self.paramName, str) and self._checked != Qt.Unchecked):
             self._dict[self.paramName] = v
         if isinstance(self.subParamName, str):
             self._dict[self.subParamName] = self._childDicts[self._index]
@@ -170,7 +205,14 @@ class ChoiceOptionWithSub(ChoiceOption):
         except KeyError:
             pass
         else:
-            self.setValue(v)
+            if self._checked is not None:
+                if v == self.uncheckedValue:
+                    self.setChecked(Qt.Unchecked)
+                else:
+                    self.setChecked(Qt.Checked)
+                    self.setValue(v)
+            else:
+                self.setValue(v)
 
         try:
             sd = d[self.subParamName]
@@ -183,7 +225,10 @@ class ChoiceOptionWithSub(ChoiceOption):
     def _setDict(self, d):
         self._dict = d
         if isinstance(self.paramName, str):
-            self._dict[self.paramName] = self._value
+            if self._checked != Qt.Unchecked:
+                self._dict[self.paramName] = self._value
+            else:
+                self._dict[self.paramName] = self.uncheckedValue
         if isinstance(self.subParamName, str):
             self._dict[self.subParamName] = self._childDicts[self._index]
 
@@ -247,8 +292,8 @@ class OptionModel(QAbstractItemModel):
         if not index.isValid():
             return None
 
+        c = index.column()
         if role in (Qt.DisplayRole, Qt.EditRole):
-            c = index.column()
             ip = index.internalPointer()
             if c == 0:
                 return ip.name
@@ -256,6 +301,8 @@ class OptionModel(QAbstractItemModel):
                 return ip.value()
         elif role == Qt.UserRole:
             return index.internalPointer()
+        elif role == Qt.CheckStateRole and c == 0:
+            return index.internalPointer().checked()
 
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
@@ -263,11 +310,22 @@ class OptionModel(QAbstractItemModel):
 
     def flags(self, index):
         if index.column() == 1:
-            return Qt.ItemIsSelectable | Qt.ItemIsEditable | Qt.ItemIsEnabled
+            f = Qt.ItemIsSelectable
+            if index.internalPointer().checked() != Qt.Unchecked:
+                f |= Qt.ItemIsEditable | Qt.ItemIsEnabled
         else:
-            return Qt.ItemIsEnabled
+            f = (Qt.ItemIsEnabled | Qt.ItemIsSelectable |
+                 Qt.ItemIsUserCheckable)
+        return f
 
     def setData(self, index, value, role=Qt.EditRole):
+        c = index.column()
+        if role == Qt.CheckStateRole and c == 0:
+            if index.internalPointer().setChecked(value):
+                self.optionsChanged.emit()
+                return True
+            else:
+                return False
         if role != Qt.EditRole or index.column() != 1:
             return False
 
@@ -295,7 +353,10 @@ class OptionModel(QAbstractItemModel):
 
 class OptionDelegate(QStyledItemDelegate):
     def createEditor(self, parent, option, index):
-        return index.data(Qt.UserRole).createEditor(parent)
+        if index.column() == 1:
+            return index.data(Qt.UserRole).createEditor(parent)
+        else:
+            return super().createEditor(parent, option, index)
 
     def setEditorData(self, editor, index):
         index.data(Qt.UserRole).setEditorData(editor)

@@ -5,7 +5,7 @@ displays the settings widget for the currently selected one.
 """
 import os
 
-from qtpy.QtCore import Signal, Slot, Property
+from qtpy.QtCore import Qt, Signal, Slot, Property
 from qtpy.QtGui import QIcon
 from .. import uic
 from .. import option_model
@@ -132,6 +132,10 @@ def makeDaostorm3DOptions():
                "Cg")
     e.addChild(option_model.NumberOption("Sigma", "sigma", 0., 100., 1., 2),
                "Gaussian")
+    root.addChild(e)
+    e = option_model.NumberOption("Min. distance", "min_distance", 0., 1000.,
+                                  1., 2, uncheckedValue=None)
+    e.setChecked(Qt.Unchecked)
     root.addChild(e)
     return option_model.OptionModel(root)
 
