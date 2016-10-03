@@ -92,7 +92,7 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
     min_distance = radius if min_distance is None else min_distance
 
     finder = finder_class(image, radius, bg_estimator=bg_est,
-                          find_filter=find_filter)
+                          pre_filter=find_filter)
 
     for i in range(max_iterations):
         # remember how many peaks there were before this iteration
