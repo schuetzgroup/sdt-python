@@ -174,7 +174,7 @@ class Peaks(np.ndarray):
         # remove bad peaks
         return np.delete(self, bad_idx, axis=0)
 
-    def remove_bad(self, amp_thresh, size_range):
+    def remove_bad(self, amp_thresh, size_thresh):
         """Filter peaks
 
         Removes peaks that are marked as erraneous or don't fulfill
@@ -184,9 +184,9 @@ class Peaks(np.ndarray):
         ----------
         amp_thresh : float
             Discard everything with an amplitude below amp_thresh
-        size_range : list of float
-            Discard everything with widths (either x or y direction) not
-            between ``size_range[0]`` and ``size_range[1]``.
+        size_thresh : list of float
+            Discard everything with widths (either x or y direction) less or
+            equal to size_thresh.
 
         Returns
         -------
@@ -195,9 +195,46 @@ class Peaks(np.ndarray):
         """
         good_peaks_mask = ((self[:, col_nums.stat] != feat_status.err) &
                            (self[:, col_nums.amp] > amp_thresh) &
-                           (self[:, col_nums.wx] > size_range[0]) &
-                           (self[:, col_nums.wy] > size_range[0]))
-        if size_range[1] is not np.inf:
-            good_peaks_mask &= ((self[:, col_nums.wx] < size_range[1]) &
-                                (self[:, col_nums.wy] < size_range[1]))
+                           (self[:, col_nums.wx] > size_thresh) &
+                           (self[:, col_nums.wy] > size_thresh))
         return self[good_peaks_mask, :]
+
+    def filter_size_range(self, min_size, max_size, neighborhood_radius=None):
+        """Filter peaks according to size
+
+        Remove peaks whose widths are not within the given range. Optionally
+        mark neighboring peaks as running.
+
+        Parameters
+        ----------
+        min_size, max_size : float
+            Lower and upper bound for widths (both x and y).
+        neighborhood_radius : float or None, optional
+            Mark all peaks within `neighborhood_radius` of a peak that does
+            not fulfill the size criterium as running (so it will be refit).
+            If `None`, don't mark any peaks as running. Defaults to None.
+
+        Returns
+        -------
+        Peaks
+            Filtered self (optionally with new "running" peaks)
+        """
+        good_peaks_mask = ((self[:, col_nums.wx] > min_size) &
+                           (self[:, col_nums.wy] > min_size) &
+                           (self[:, col_nums.wx] < max_size) &
+                           (self[:, col_nums.wy] < max_size))
+
+        bad = self[~good_peaks_mask]
+        good = self[good_peaks_mask]
+
+        if neighborhood_radius is None:
+            return good
+
+        # mark good peaks in the neighborhood of the bad peaks as running
+        dx = good[:, np.newaxis, col_nums.x] - bad[np.newaxis, :, col_nums.x]
+        dy = good[:, np.newaxis, col_nums.y] - bad[np.newaxis, :, col_nums.y]
+        dr2 = dx**2 + dy**2  # dr2[i, j] is the dist**2 from good[i] to bad[j]
+
+        have_bad_neighbors = np.any(dr2 < neighborhood_radius**2, axis=1)
+        good[have_bad_neighbors, col_nums.stat] = feat_status.run
+        return good

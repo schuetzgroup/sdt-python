@@ -55,7 +55,19 @@ class TestPeaks(unittest.TestCase):
 
         expected = np.array([[11.0, 14.0, 1.0, 10.0, 1.0, 0.0, 0.0, 1, 0.0]])
 
-        rem = peaks.remove_bad(10., [0.5, np.inf])
+        rem = peaks.remove_bad(10., 0.5)
+        np.testing.assert_allclose(rem, expected)
+
+    def test_filter_size_rangen(self):
+        peaks = np.array([[11.0, 10.0, 3.0, 10.0, 1.0, 0.0, 0.0, 2, 0.0],
+                          [11.0, 11.0, 1.0, 10.0, 1.0, 0.0, 0.0, 1, 0.0],
+                          [11.0, 15.0, 0.1, 10.0, 1.0, 0.0, 0.0, 1, 0.0],
+                          [11.0, 18.0, 1.0, 10.0, 1.0, 0.0, 0.0, 1, 0.0]])
+        peaks = peaks.view(Peaks)
+        expected = peaks.copy()[[1, 3]]
+        expected[0, -2] = 0  # mark running
+
+        rem = peaks.filter_size_range(0.5, 2, 2)
         np.testing.assert_allclose(rem, expected)
 
 
