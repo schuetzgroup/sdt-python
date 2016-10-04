@@ -41,6 +41,8 @@ Detection of immobilizations in trajectories
 --------------------------------------------
 
 .. autofunction:: find_immobilizations
+.. autofunction:: label_mobile
+.. autofunction:: find_immobilizations_int
 
 
 Lower level helper functions
