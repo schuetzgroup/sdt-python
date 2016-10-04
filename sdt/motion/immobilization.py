@@ -98,6 +98,10 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
         count_immob_func = _count_immob_python
         label_mob_func = _label_mob_python
 
+    # We will divide by zero below (in immob = ((1 - count/num_locs ...),
+    # also in _count_immob_python (cm /= num_locs[np.newaxis, ...])
+    old_err = np.seterr(invalid="ignore")
+
     for p in particles:
         t = t_arr[t_arr[:, -1] == p]  # get current particle
         t = t[np.argsort(t[:, -2])]  # sort by frame
@@ -152,6 +156,9 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
             mob_counter = label_mob_func(icol, mob_counter)
 
         immob_column.append(icol)
+
+    # Restore
+    np.seterr(**old_err)
 
     tracks["immob"] = np.hstack(immob_column)
     return tracks

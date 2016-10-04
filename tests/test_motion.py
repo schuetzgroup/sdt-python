@@ -229,7 +229,9 @@ class TestFindImmobilizations(unittest.TestCase):
     def test_count_immob_python(self):
         # Test the _count_immob_python function
         loc = self.tracks.loc[self.tracks["particle"] == 0, ["x", "y"]]
+        old_err = np.seterr(invalid="ignore")
         res = motion.immobilization._count_immob_python(loc.values.T, 1)
+        np.seterr(**old_err)
         np.testing.assert_allclose(res, self.count)
 
     def test_count_immob_numba(self):
