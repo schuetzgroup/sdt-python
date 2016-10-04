@@ -125,7 +125,7 @@ def makeDaostorm3DOptions():
                                   1, 1000, 20)
     root.addChild(e)
     e = option_model.ChoiceOptionWithSub(
-        "Pre-filter", "pre_filter", "pre_filter_opts",
+        "Find-filter", "find_filter", "find_filter_opts",
         ["Identity", "Cg", "Gaussian"], "Identity")
     e.addChild(option_model.NumberOption("Feature size", "feature_radius",
                                          0, 100, 3),
