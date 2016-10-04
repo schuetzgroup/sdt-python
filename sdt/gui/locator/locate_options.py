@@ -134,6 +134,10 @@ def makeDaostorm3DOptions():
                                   1., 2, uncheckedValue=None)
     e.setChecked(Qt.Unchecked)
     root.addChild(e)
+    e = option_model.RangeOption("Size range", "size_range", 0., 100.,
+                                 [0.5, 2.], uncheckedValue=None)
+    e.setChecked(Qt.Unchecked)
+    root.addChild(e)
     return option_model.OptionModel(root)
 
 

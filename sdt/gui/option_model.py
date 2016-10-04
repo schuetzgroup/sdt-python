@@ -3,7 +3,7 @@ from collections import OrderedDict
 from qtpy.QtCore import (Qt, QAbstractItemModel, QModelIndex, QCoreApplication,
                          Signal, Property)
 from qtpy.QtWidgets import (QStyledItemDelegate, QSpinBox, QDoubleSpinBox,
-                            QComboBox, QTreeView)
+                            QComboBox, QTreeView, QWidget, QHBoxLayout, QLabel)
 
 
 class OptionElement:
@@ -33,6 +33,9 @@ class OptionElement:
             idx = m.indexForElement(self, column=1)
             m.dataChanged.emit(idx, idx)
         return True
+
+    def modelRepr(self):
+        return self._value
 
     def checked(self):
         return self._checked
@@ -239,6 +242,65 @@ class ChoiceOptionWithSub(ChoiceOption):
         child._setDict(self._childDicts[i])
 
 
+class RangeOption(OptionElement):
+    def __init__(self, name, paramName, min, max, default, decimals=2,
+                 uncheckedValue=None):
+        super().__init__(name, paramName, uncheckedValue)
+        self.min = min
+        self.max = max
+        self.decimals = decimals
+
+        self.setValue(default)
+
+    def setValue(self, v):
+        if ((self.min <= v[0] <= self.max) and
+                (self.min <= v[1] <= self.max) and
+                (v[0] < v[1])):
+            return super().setValue(v)
+        else:
+            return False
+
+    def createEditor(self, parent):
+        w = QWidget(parent)
+        l = QHBoxLayout()
+        l.setSpacing(0)
+        l.setContentsMargins(0, 0, 0, 0)
+        for v in self._value:
+            if isinstance(v, int):
+                sb = QSpinBox()
+            elif isinstance(v, float):
+                sb = QDoubleSpinBox()
+                sb.setDecimals(self.decimals)
+
+            sb.setMinimum(self.min)
+            sb.setMaximum(self.max)
+            sb.setValue(v)
+            sb.setFrame(False)
+
+            l.addWidget(sb)
+
+        w.setLayout(l)
+        return w
+
+    def setEditorData(self, editor):
+        l = editor.layout()
+        for i in range(2):
+            l.itemAt(i).widget().setValue(self._value[i])
+
+    def setModelData(self, editor, model, index):
+        v = []
+        l = editor.layout()
+        for i in range(2):
+            v.append(l.itemAt(i).widget().value())
+
+        if self._value == v:
+            return
+        model.setData(index, v)
+
+    def modelRepr(self):
+        return str(self._value)
+
+
 class OptionModel(QAbstractItemModel):
     __clsName = "OptionModel"
 
@@ -298,7 +360,7 @@ class OptionModel(QAbstractItemModel):
             if c == 0:
                 return ip.name
             elif c == 1:
-                return ip.value()
+                return ip.modelRepr()
         elif role == Qt.UserRole:
             return index.internalPointer()
         elif role == Qt.CheckStateRole and c == 0:
