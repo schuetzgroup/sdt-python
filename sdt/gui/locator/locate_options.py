@@ -57,9 +57,6 @@ class Container(contBase):
         self._ui.loadButton.setIcon(
             QIcon(os.path.join(iconpath, "document-open.svg")))
 
-        self._optionDelegate = option_model.OptionDelegate()
-        self._ui.optionView.setItemDelegate(self._optionDelegate)
-
         self._ui.saveButton.pressed.connect(self.save)
         self._ui.loadButton.pressed.connect(self.load)
 

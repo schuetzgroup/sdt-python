@@ -3,7 +3,7 @@ from collections import OrderedDict
 from qtpy.QtCore import (Qt, QAbstractItemModel, QModelIndex, QCoreApplication,
                          Signal, Property)
 from qtpy.QtWidgets import (QStyledItemDelegate, QSpinBox, QDoubleSpinBox,
-                            QComboBox)
+                            QComboBox, QTreeView)
 
 
 class OptionElement:
@@ -363,3 +363,25 @@ class OptionDelegate(QStyledItemDelegate):
 
     def setModelData(self, editor, model, index):
         index.data(Qt.UserRole).setModelData(editor, model, index)
+
+
+class OptionTreeView(QTreeView):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._optionDelegate = OptionDelegate()
+        self.setItemDelegate(self._optionDelegate)
+
+        self.stretchFactors = [2/3, 1/3]
+
+    def sizeHintForColumn(self, column):
+        if column < len(self.stretchFactors):
+            return self.viewport().width() * self.stretchFactors[column]
+        else:
+            return -1
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+
+        for column in range(len(self.stretchFactors)):
+            self.resizeColumnToContents(column)
