@@ -12,8 +12,8 @@ from qtpy.QtCore import (QPointF, Qt, Signal, Property,
 from qtpy.QtGui import (QImage, QPixmap, QIcon, QTransform, QPen,
                         QPolygonF, QPainter)
 from qtpy.QtWidgets import (QGraphicsPixmapItem, QGraphicsScene,
-                            QDoubleSpinBox, QGraphicsEllipseItem,
-                            QGraphicsItem, QGraphicsPolygonItem)
+                            QGraphicsEllipseItem, QGraphicsItem,
+                            QGraphicsPolygonItem, QGraphicsView)
 from .. import uic
 
 
@@ -184,6 +184,11 @@ class MicroViewWidget(mvBase):
         self._ui.setupUi(self)
 
         self._ui.view.setScene(self._scene)
+        # Apparently this is necessary with Qt5, as otherwise updating fails
+        # on image change; there are white rectangles on the updated area
+        # until the mouse is moved in or out of the view
+        self._ui.view.setViewportUpdateMode(
+             QGraphicsView.BoundingRectViewportUpdate)
         self._ui.view.setRenderHints(QPainter.Antialiasing)
         self._scene.imageItem.signals.mouseMoved.connect(
             self._updateCurrentPixelInfo)
