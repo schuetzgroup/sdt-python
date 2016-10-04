@@ -95,7 +95,7 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
     neighborhood_radius = 5. * radius
     new_peak_radius = 1.
     min_distance = radius if min_distance is None else min_distance
-    size_range = (0.25*radius, np.inf) if size_range is None else size_range
+    default_size_range = [0.25*radius, np.inf]  # 3D-DAOSTORM defaults
 
     finder = finder_class(image, radius, bg_estimator=bg_est,
                           pre_filter=find_filter)
@@ -125,7 +125,7 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
             fitter.fit()
             peaks = fitter.peaks
             # get good peaks
-            peaks = peaks.remove_bad(0.9*threshold, size_range)
+            peaks = peaks.remove_bad(0.9*threshold, default_size_range)
             # remove close peaks
             peaks = peaks.remove_close(min_distance, neighborhood_radius)
             # refit
@@ -134,11 +134,19 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
             peaks = fitter.peaks
             residual = fitter.residual
             # get good peaks again
-            peaks = peaks.remove_bad(0.9*threshold, size_range)
+            peaks = peaks.remove_bad(0.9*threshold, default_size_range)
 
         if not (found_new_peaks or threshold_updated):
             # no new peaks found, threshold not updated, we are finished
             break
+
+    if size_range is not None:
+        # filter according to size and fit one last time
+        peaks = peaks.remove_bad(0.9*threshold, size_range)
+        fitter = fitter_class(image, peaks)
+        fitter.fit()
+        peaks = fitter.peaks
+        peaks = peaks.remove_bad(0.9*threshold, size_range)
 
     peaks[:, [col_nums.x, col_nums.y]] -= margin
 
