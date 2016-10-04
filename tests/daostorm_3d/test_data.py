@@ -55,7 +55,7 @@ class TestPeaks(unittest.TestCase):
 
         expected = np.array([[11.0, 14.0, 1.0, 10.0, 1.0, 0.0, 0.0, 1, 0.0]])
 
-        rem = peaks.remove_bad(10., 0.5)
+        rem = peaks.remove_bad(10., [0.5, np.inf])
         np.testing.assert_allclose(rem, expected)
 
 

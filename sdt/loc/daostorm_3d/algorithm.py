@@ -37,7 +37,7 @@ def make_margin(image, margin):
 
 
 def locate(raw_image, radius, threshold, max_iterations, find_filter,
-           finder_class, fitter_class, min_distance=None):
+           finder_class, fitter_class, min_distance=None, size_range=None):
     """Locate bright, Gaussian-like features in an image
 
     Implements the  3D-DAOSTORM algorithm [1]_. Call finder and fitter in a
@@ -70,6 +70,11 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
         detection of bright features as multiple overlapping ones if
         `threshold` is rather low. If `None`, use `radius` (original
         3D-DAOSTORM behavior). Defaults to None.
+    size_range : list of float or None, optional
+        [min, max] of the feature sizes both in x and y direction. Features
+        with sizes not in the range will be discarded, neighboring features
+        will be re-fit. If None, use ``[0.25*radius, inf]`` (original
+        3D-DAOSTORM behavior). Defaults to None.
 
     Returns
     -------
@@ -90,6 +95,7 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
     neighborhood_radius = 5. * radius
     new_peak_radius = 1.
     min_distance = radius if min_distance is None else min_distance
+    size_range = (0.25*radius, np.inf) if size_range is None else size_range
 
     finder = finder_class(image, radius, bg_estimator=bg_est,
                           pre_filter=find_filter)
@@ -119,7 +125,7 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
             fitter.fit()
             peaks = fitter.peaks
             # get good peaks
-            peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
+            peaks = peaks.remove_bad(0.9*threshold, size_range)
             # remove close peaks
             peaks = peaks.remove_close(min_distance, neighborhood_radius)
             # refit
@@ -128,7 +134,7 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
             peaks = fitter.peaks
             residual = fitter.residual
             # get good peaks again
-            peaks = peaks.remove_bad(0.9*threshold, 0.25*radius)
+            peaks = peaks.remove_bad(0.9*threshold, size_range)
 
         if not (found_new_peaks or threshold_updated):
             # no new peaks found, threshold not updated, we are finished

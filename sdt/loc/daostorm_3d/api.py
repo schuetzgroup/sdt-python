@@ -33,7 +33,8 @@ num_threads = multiprocessing.cpu_count()
 
 def locate(raw_image, radius, model, threshold, z_params=None,
            find_filter=snr_filters.Identity(), find_filter_opts={},
-           min_distance=None, engine="numba", max_iterations=20):
+           min_distance=None, size_range=None, engine="numba",
+           max_iterations=20):
     """Locate bright, Gaussian-like features in an image
 
     Use the 3D-DAOSTORM algorithm [1]_.
@@ -80,6 +81,11 @@ def locate(raw_image, radius, model, threshold, z_params=None,
         Minimum distance between two features. This can be used to suppress
         detection of bright features as multiple overlapping ones if
         `threshold` is rather low. If `None`, use `radius` (original
+        3D-DAOSTORM behavior). Defaults to None.
+    size_range : list of float or None, optional
+        [min, max] of the feature sizes both in x and y direction. Features
+        with sizes not in the range will be discarded, neighboring features
+        will be re-fit. If None, use ``[0.25*radius, inf]`` (original
         3D-DAOSTORM behavior). Defaults to None.
 
     Returns
@@ -151,7 +157,8 @@ def locate(raw_image, radius, model, threshold, z_params=None,
         return ValueError("Invalid find-filter")
 
     peaks = algorithm.locate(raw_image, radius, threshold, max_iterations,
-                             find_filter, Finder, Fitter, min_distance)
+                             find_filter, Finder, Fitter, min_distance,
+                             size_range)
 
     # Create DataFrame
     converged_peaks = peaks[peaks[:, col_nums.stat] == feat_status.conv]

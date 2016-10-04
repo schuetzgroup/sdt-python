@@ -174,7 +174,7 @@ class Peaks(np.ndarray):
         # remove bad peaks
         return np.delete(self, bad_idx, axis=0)
 
-    def remove_bad(self, amp_thresh, width_thresh):
+    def remove_bad(self, amp_thresh, size_range):
         """Filter peaks
 
         Removes peaks that are marked as erraneous or don't fulfill
@@ -184,9 +184,9 @@ class Peaks(np.ndarray):
         ----------
         amp_thresh : float
             Discard everything with an amplitude below amp_thresh
-        width_thresh : float
-            Discard everything with widths (either x or y direction) below
-            width_thresh
+        size_range : list of float
+            Discard everything with widths (either x or y direction) not
+            between ``size_range[0]`` and ``size_range[1]``.
 
         Returns
         -------
@@ -195,6 +195,9 @@ class Peaks(np.ndarray):
         """
         good_peaks_mask = ((self[:, col_nums.stat] != feat_status.err) &
                            (self[:, col_nums.amp] > amp_thresh) &
-                           (self[:, col_nums.wx] > width_thresh) &
-                           (self[:, col_nums.wy] > width_thresh))
+                           (self[:, col_nums.wx] > size_range[0]) &
+                           (self[:, col_nums.wy] > size_range[0]))
+        if size_range[1] is not np.inf:
+            good_peaks_mask &= ((self[:, col_nums.wx] < size_range[1]) &
+                                (self[:, col_nums.wy] < size_range[1]))
         return self[good_peaks_mask, :]
