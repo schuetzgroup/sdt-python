@@ -6,6 +6,15 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+10.1
+----
+- loc.daostorm_3d: Introduce `size_range` and `min_distance` parameters
+- loc.daostorm_3d: Allow for applying filters to the raw image data to increase
+  the SNR for the feature finding process. Fitting is still done on the
+  unmodified data.
+- locator: Rework the options UI to allow easy addition of new parameters.
+- Minor bug fixes
+
 10.0
 ----
 - motion: Implement new `find_immobilizations` algorithm
