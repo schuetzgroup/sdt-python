@@ -354,14 +354,23 @@ class PathROI(object):
         else:
             @pipeline
             def crop(img):
-                img = img.T
-                img = img[self._top_left[0]:self._bottom_right[0],
-                          self._top_left[1]:self._bottom_right[1]]
+                img = img.copy().T
+
+                tl_shift = np.maximum(np.subtract((0, 0), self._top_left), 0)
+                br_shift = np.minimum(
+                    np.subtract(img.shape, self._bottom_right), 0)
+                tl = self._top_left + tl_shift
+                br = self._bottom_right + br_shift
+
+                img = img[tl[0]:br[0], tl[1]:br[1]]
+                mask = self._img_mask[tl_shift[0] or None:br_shift[0] or None,
+                                      tl_shift[1] or None:br_shift[1] or None]
+
                 if isinstance(fill_value, str):
-                    fv = np.mean(img[self._img_mask])
+                    fv = np.mean(img[mask])
                 else:
                     fv = fill_value
-                img[~self._img_mask] = fv
+                img[~mask] = fv
                 return img.T
             return crop(data)
 
