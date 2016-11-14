@@ -339,6 +339,11 @@ class PathROI(object):
             Data restricted to the ROI represented by this class.
         """
         if isinstance(data, pd.DataFrame):
+            if not len(data):
+                # if empty, return the empty data frame to avoid errors
+                # below
+                return data
+
             roi_mask = self._path.contains_points(data[pos_columns])
             roi_data = data[roi_mask]
             if reset_origin:
