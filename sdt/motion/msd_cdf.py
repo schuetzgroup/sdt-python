@@ -106,8 +106,7 @@ def _fit_cdf_model_lsq(x, y, num_exp, weighted=True, initial_b=None,
     y : numpy.ndarray
         CDF function values corresponding to `x`.
     num_exp : int
-        Number of exponential functions (``p``) in the
-        sum
+        Number of exponential functions (``p``) in the sum
     weighted : bool, optional
         Whether to way the residual according to inverse data point density
         on the abscissa. Usually, there are many data points close to x=0,
@@ -338,7 +337,10 @@ def plot_msd_cdf(emsds, ax=None):
         # plot fit for lag time vs. msd
         D, pa = fit_msd(f, len(f))
         x = np.array([0.] + tlags.tolist())
-        ax[i+1].plot(x, 4*pa**2 + 4*D*x, color="b")
+        ic = 4*pa**2
+        if isinstance(ic, complex):
+            ic = ic.real
+        ax[i+1].plot(x, ic + 4*D*x, color="b")
 
         lt_max = tlags.max()
         all_max_lagtimes.append(lt_max)
@@ -347,7 +349,8 @@ def plot_msd_cdf(emsds, ax=None):
 
         # Write D values
         text = """$D={D:.3f}$ $\\mu$m$^2$/s
-$PA={pa:.0f}$ nm""".format(D=D, pa=pa*1000)
+$PA={pa:.0f}$ nm""".format(
+            D=D, pa=(pa.real if isinstance(pa, complex) else pa)*1000)
         ax[i+1].text(0.03, 0.98, text, transform=ax[i+1].transAxes,
                      ha="left", va="top")
 
