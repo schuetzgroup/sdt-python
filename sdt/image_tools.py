@@ -412,3 +412,72 @@ def polygon_area(vertices):
     """
     x, y = np.vstack((vertices[-1], vertices)).T
     return np.sum((x[1:] + x[:-1]) * (y[1:] - y[:-1]))/2
+
+
+class RectangleROI(PathROI):
+    """Rectangular region of interest in a picture
+
+    This differs from :py:class:`ROI` in that it is derived from
+    :py:class:`PathROI` and thus allows for float coordinates. Also, the
+    :py:attr:`path` can easily be transformed using
+    :py:class:`matplotlib.transforms`.
+
+    Attributes
+    ----------
+    top_left : tuple of float
+        x and y coordinates of the top-left corner.
+    bottom_right : tuple of float
+        x and y coordinates of the bottom-right corner.
+    """
+    def __init__(self, top_left, bottom_right, buffer=0., no_image=False):
+        """Parameters
+        ----------
+        top_left : tuple of float
+            x and y coordinates of the top-left corner.
+        bottom_right : tuple of float
+            x and y coordinates of the bottom-right corner.
+        buffer, no_image
+            see :py:class:`PathROI`.
+        """
+        path = mpl.path.Path.unit_rectangle()
+        trafo = mpl.transforms.Affine2D().scale(bottom_right[0]-top_left[0],
+                                                bottom_right[1]-top_left[1])
+        trafo.translate(*top_left)
+        super().__init__(trafo.transform_path(path), buffer, no_image)
+        self.top_left = top_left
+        self.bottom_right = bottom_right
+
+
+class EllipseROI(PathROI):
+    """Elliptical region of interest in a picture
+
+    Based on :py:class:`PathROI`.
+
+    Attributes
+    ----------
+    center : tuple of float
+        x and y coordinates of the ellipse center.
+    axes : tuple of float
+        Lengths of first and second axis.
+    angle : float, optional
+        Angle of rotation (counterclockwise, in radian). Defaults to 0.
+    """
+    def __init__(self, center, axes, angle=0., buffer=0., no_image=False):
+        """Parameters
+        ----------
+        center : tuple of float
+            x and y coordinates of the ellipse center.
+        axes : tuple of float
+            Lengths of first and second axis.
+        angle : float, optional
+            Angle of rotation (counterclockwise, in radian). Defaults to 0.
+        buffer, no_image
+            see :py:class:`PathROI`.
+        """
+        path = mpl.path.Path.unit_circle()
+        trafo = mpl.transforms.Affine2D().scale(*axes).rotate(angle)
+        trafo.translate(*center)
+        super().__init__(trafo.transform_path(path), buffer, no_image)
+        self.center = center
+        self.axes = axes
+        self.angle = angle
