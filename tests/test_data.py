@@ -1,12 +1,15 @@
-# -*- coding: utf-8 -*-
 import unittest
 import os
 import tempfile
+import io
 
 import pandas as pd
 import numpy as np
+import yaml
 
 import sdt.data
+import sdt.data.yaml as sy
+from sdt import image_tools
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -287,6 +290,62 @@ class TestFilter(unittest.TestCase):
         f = sdt.data.Filter("numpy.sqrt({c1}) <= 2")
         np.testing.assert_allclose(f.boolean_index(self.data),
                                    np.sqrt(self.data["c1"]) <= 2)
+
+
+class TestYaml(unittest.TestCase):
+    def setUp(self):
+        self.io = io.StringIO()
+        self.array = np.array([[1, 2], [3, 4]])
+        self.array_rep = (sy.ArrayDumper.array_tag + "\n" +
+                          np.array2string(self.array, separator=", "))
+
+    def testArrayDumper(self):
+        yaml.dump(self.array, self.io, sy.ArrayDumper)
+        assert(self.io.getvalue().strip() == self.array_rep)
+
+    def testArrayLoader(self):
+        self.io.write(self.array_rep)
+        self.io.seek(0)
+        a = yaml.load(self.io, sy.Loader)
+        np.testing.assert_equal(a, self.array)
+
+    def testRoiDumperLoader(self):
+        roi = image_tools.ROI((10, 20), (30, 40))
+        yaml.dump(roi, self.io, sy.Dumper)
+
+        self.io.seek(0)
+        roi2 = yaml.load(self.io, sy.Loader)
+        np.testing.assert_equal([roi2.top_left, roi2.bottom_right],
+                                [roi.top_left, roi.bottom_right])
+
+    def testPathRoiDumperLoader(self):
+        roi = image_tools.PathROI([[10, 20], [30, 20], [30, 40], [10, 40]])
+        yaml.dump(roi, self.io, sy.Dumper)
+
+        self.io.seek(0)
+        roi2 = yaml.load(self.io, sy.Loader)
+        np.testing.assert_allclose(roi2.path.vertices, roi.path.vertices)
+        np.testing.assert_equal(roi2.path.codes, roi.path.codes)
+        np.testing.assert_allclose(roi2._buffer, roi._buffer)
+
+    def testRectangleRoiDumperLoader(self):
+        roi = image_tools.RectangleROI((10, 20), (30, 40))
+        yaml.dump(roi, self.io, sy.Dumper)
+
+        self.io.seek(0)
+        roi2 = yaml.load(self.io, sy.Loader)
+        np.testing.assert_allclose([roi2.top_left, roi2.bottom_right],
+                                   [roi.top_left, roi.bottom_right])
+
+    def testEllipseRoiDumperLoader(self):
+        roi = image_tools.EllipseROI((10, 20), (30, 40))
+        yaml.dump(roi, self.io, sy.Dumper)
+
+        self.io.seek(0)
+        roi2 = yaml.load(self.io, sy.Loader)
+        np.testing.assert_allclose([roi2.center, roi2.axes],
+                                   [roi.center, roi.axes])
+        np.testing.assert_allclose(roi2.angle, roi.angle)
 
 
 if __name__ == "__main__":

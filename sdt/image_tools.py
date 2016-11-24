@@ -136,10 +136,10 @@ class ROI(object):
 
     Attributes
     ----------
-    top_left : tuple of int
+    top_left : list of int
         x and y coordinates of the top-left corner. Pixels with coordinates
         greater or equal than these are excluded from the ROI.
-    bottom_right : tuple of int
+    bottom_right : list of int
         x and y coordinates of the bottom-right corner. Pixels with coordinates
         greater or equal than these are excluded from the ROI.
 
@@ -155,6 +155,8 @@ class ROI(object):
     >>> f2.shape
     (64, 64)
     """
+    yaml_tag = "!ROI"
+
     def __init__(self, top_left, bottom_right):
         """Parameters
         ----------
@@ -214,6 +216,27 @@ class ROI(object):
                            self.top_left[0]:self.bottom_right[0]]
             return crop(data)
 
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        """Dump as YAML
+
+        Pass this as the `representer` parameter to
+        :py:meth:`yaml.Dumper.add_representer`
+        """
+        m = (("top_left", list(data.top_left)),
+             ("bottom_right", list(data.bottom_right)))
+        return dumper.represent_mapping(cls.yaml_tag, m)
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        """Construct from YAML
+
+        Pass this as the `constructor` parameter to
+        :py:meth:`yaml.Loader.add_constructor`
+        """
+        m = loader.construct_mapping(node)
+        return cls(m["top_left"], m["bottom_right"])
+
 
 class PathROI(object):
     """Region of interest in a picture determined by a path
@@ -238,6 +261,8 @@ class PathROI(object):
     bounding_rect : numpy.ndarray, shape=(2, 2), dtype=int
         Integer bounding rectangle of the path
     """
+    yaml_tag = "!PathROI"
+
     def __init__(self, path, buffer=0., no_image=False):
         """Parameters
         ----------
@@ -256,7 +281,7 @@ class PathROI(object):
             DataFrames. Defaults to False.
         """
         if isinstance(path, mpl.path.Path):
-            self._path = path.cleaned()
+            self._path = mpl.path.Path(path.vertices, path.codes)
         else:
             self._path = mpl.path.Path(path)
 
@@ -374,6 +399,34 @@ class PathROI(object):
                 return img.T
             return crop(data)
 
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        """Dump as YAML
+
+        Pass this as the `representer` parameter to
+        :py:meth:`yaml.Dumper.add_representer`
+        """
+        vert = data._path.vertices.tolist()
+        cod = None if data._path.codes is None else data._path.codes.tolist()
+        m = (("vertices", vert),
+             ("vertex codes", cod),
+             ("buffer", data._buffer))
+        return dumper.represent_mapping(cls.yaml_tag, m)
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        """Construct from YAML
+
+        Pass this as the `constructor` parameter to
+        :py:meth:`yaml.Loader.add_constructor`
+        """
+        m = loader.construct_mapping(node, deep=True)
+        vert = m["vertices"]
+        codes = m.get("vertex codes", None)
+        buf = m.get("buffer", 0)
+        path = mpl.path.Path(vert, codes)
+        return cls(path, buf)
+
 
 def polygon_area(vertices):
     """Calculate the (signed) area of a simple polygon
@@ -429,6 +482,8 @@ class RectangleROI(PathROI):
     bottom_right : tuple of float
         x and y coordinates of the bottom-right corner.
     """
+    yaml_tag = "!RectangleROI"
+
     def __init__(self, top_left, bottom_right, buffer=0., no_image=False):
         """Parameters
         ----------
@@ -447,6 +502,29 @@ class RectangleROI(PathROI):
         self.top_left = top_left
         self.bottom_right = bottom_right
 
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        """Dump as YAML
+
+        Pass this as the `representer` parameter to
+        :py:meth:`yaml.Dumper.add_representer`
+        """
+        m = (("top_left", list(data.top_left)),
+             ("bottom_right", list(data.bottom_right)),
+             ("buffer", data._buffer))
+        return dumper.represent_mapping(cls.yaml_tag, m)
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        """Construct from YAML
+
+        Pass this as the `constructor` parameter to
+        :py:meth:`yaml.Loader.add_constructor`
+        """
+        m = loader.construct_mapping(node, deep=True)
+        buf = m.get("buffer", 0)
+        return cls(m["top_left"], m["bottom_right"], buf)
+
 
 class EllipseROI(PathROI):
     """Elliptical region of interest in a picture
@@ -460,8 +538,10 @@ class EllipseROI(PathROI):
     axes : tuple of float
         Lengths of first and second axis.
     angle : float, optional
-        Angle of rotation (counterclockwise, in radian). Defaults to 0.
+        Angle of rotation (counterclockwise, in radians). Defaults to 0.
     """
+    yaml_tag = "!EllipseROI"
+
     def __init__(self, center, axes, angle=0., buffer=0., no_image=False):
         """Parameters
         ----------
@@ -481,3 +561,28 @@ class EllipseROI(PathROI):
         self.center = center
         self.axes = axes
         self.angle = angle
+
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        """Dump as YAML
+
+        Pass this as the `representer` parameter to
+        :py:meth:`yaml.Dumper.add_representer`
+        """
+        m = (("center", list(data.center)),
+             ("axes", list(data.axes)),
+             ("angle", data.angle),
+             ("buffer", data._buffer))
+        return dumper.represent_mapping(cls.yaml_tag, m)
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        """Construct from YAML
+
+        Pass this as the `constructor` parameter to
+        :py:meth:`yaml.Loader.add_constructor`
+        """
+        m = loader.construct_mapping(node, deep=True)
+        buf = m.get("buffer", 0)
+        angle = m.get("angle", 0)
+        return cls(m["center"], m["axes"], angle, buf)
