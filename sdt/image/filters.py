@@ -29,7 +29,7 @@ def wavelet_bg(image, feat_thresh, feat_mask=None, wtype="db4", wlevel=3,
     to single images or image sequences (as long as they are of type
     :py:class:`slicerator.Slicerator`).
 
-    ..[Galloway2009] Galloway, C. M. et al.: "An iterative algorithm for
+    .. [Galloway2009] Galloway, C. M. et al.: "An iterative algorithm for
         background removal in spectroscopy by wavelet transforms". Appl
         Spectrosc, 2009, 63, 1370-1376
 
@@ -55,7 +55,7 @@ def wavelet_bg(image, feat_thresh, feat_mask=None, wtype="db4", wlevel=3,
         If any of those is not given, use the corresponding parameters from
         the function call.
     wtype : str or pywt.Wavelet, optional
-        Wavelet type. See :py:func`pywt.wavelist` for available wavelet types.
+        Wavelet type. See :py:func:`pywt.wavelist` for available wavelet types.
         Defaults to "db4".
     wlevel : int, optional
         Wavelet decomposition level. The maximum level depends on the
@@ -201,7 +201,7 @@ def cg(image, feature_radius, noise_radius=1, nonneg=False):
     to single images or image sequences (as long as they are of type
     :py:class:`slicerator.Slicerator`).
 
-    ..[Crocker1996] Crocker, J. C. & Grier, D. G.: "Methods of digital video
+    .. [Crocker1996] Crocker, J. C. & Grier, D. G.: "Methods of digital video
         microscopy for colloidal studies", Journal of colloid and interface
         science, Elsevier, 1996, 179, 298-310
 
