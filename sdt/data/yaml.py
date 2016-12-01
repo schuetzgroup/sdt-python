@@ -11,6 +11,8 @@ representers/constructors for many types in the :py:mod:`sdt` package.
 All of them can be used by passing them as the `Dumper`/`Loader` parameters
 to :py:func:`yaml.dump`/:py:func:`yaml.load`.
 """
+import collections
+
 import yaml
 import numpy as np
 
@@ -181,6 +183,29 @@ class SafeLoader(SafeArrayLoader):
     of the :py:mod:`sdt` package, e. g. :py:class:`image_tools.ROI`.
     """
     pass
+
+
+# slice
+def slice_representer(dumper, data):
+    d = (("start", data.start), ("stop", data.stop), ("step", data.step))
+    return dumper.represent_mapping("!slice", d)
+
+
+def slice_constructor(loader, data):
+    val = loader.construct_mapping(data)
+    return slice(val["start"], val["stop"], val["step"])
+
+
+# dict-like
+def dict_representer(dumper, data):
+    return dumper.represent_dict(data)
+
+
+Dumper.add_representer(slice, slice_representer)
+SafeDumper.add_representer(slice, slice_representer)
+SafeDumper.add_representer(collections.OrderedDict, dict_representer)
+Loader.add_constructor("!slice", slice_constructor)
+SafeLoader.add_constructor("!slice", slice_constructor)
 
 
 def _class_representer_factory(cls):
