@@ -170,7 +170,8 @@ class ROI(object):
         self.top_left = top_left
         self.bottom_right = bottom_right
 
-    def __call__(self, data, pos_columns=["x", "y"], reset_origin=True):
+    def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
+                 invert=False):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -190,6 +191,9 @@ class ROI(object):
             If True, the top-left corner coordinates will be subtracted off
             all feature coordinates, i. e. the top-left corner will be the
             new origin. Defaults to True.
+        invert : bool, optional
+            If True, only datapoints outside the ROI are selected. Works only
+            if `data` is a :py:class:`pandas.DataFrame`. Defaults to `False`.
 
         Returns
         -------
@@ -199,10 +203,14 @@ class ROI(object):
         if isinstance(data, pd.DataFrame):
             x = pos_columns[0]
             y = pos_columns[1]
-            roi_data = data[(data[x] > self.top_left[0]) &
-                            (data[x] < self.bottom_right[0]) &
-                            (data[y] > self.top_left[1]) &
-                            (data[y] < self.bottom_right[1])]
+            mask = ((data[x] > self.top_left[0]) &
+                    (data[x] < self.bottom_right[0]) &
+                    (data[y] > self.top_left[1]) &
+                    (data[y] < self.bottom_right[1]))
+            if invert:
+                roi_data = data[~mask]
+            else:
+                roi_data = data[mask]
             if reset_origin:
                 roi_data.loc[:, x] -= self.top_left[0]
                 roi_data.loc[:, y] -= self.top_left[1]
@@ -330,7 +338,7 @@ class PathROI(object):
         return np.array([self._top_left, self._bottom_right])
 
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
-                 fill_value=0):
+                 fill_value=0, invert=False):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -357,6 +365,9 @@ class PathROI(object):
         fill_value : "mean" or number, optional
             Fill value for pixels that are not contained in the path. If
             "mean", use the mean of the array in the ROI. Defaults to 0
+        invert : bool, optional
+            If True, only datapoints outside the ROI are selected. Works only
+            if `data` is a :py:class:`pandas.DataFrame`. Defaults to `False`.
 
         Returns
         -------
@@ -370,7 +381,10 @@ class PathROI(object):
                 return data
 
             roi_mask = self._path.contains_points(data[pos_columns])
-            roi_data = data[roi_mask]
+            if invert:
+                roi_data = data[~roi_mask]
+            else:
+                roi_data = data[roi_mask]
             if reset_origin:
                 roi_data.loc[:, pos_columns[0]] -= self._top_left[0]
                 roi_data.loc[:, pos_columns[1]] -= self._top_left[1]

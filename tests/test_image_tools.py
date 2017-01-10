@@ -82,6 +82,7 @@ class TestRoi(unittest.TestCase):
         self.loc = pd.DataFrame([[3, 3], [30, 30], [100, 80]],
                                 columns=["x", "y"])
         self.loc_roi = self.loc.drop([0, 2])
+        self.loc_roi_inv = self.loc.drop(1)
 
     def setUp(self):
         self._setUp((10, 10), (90, 70))
@@ -103,6 +104,11 @@ class TestRoi(unittest.TestCase):
     def test_dataframe(self):
         np.testing.assert_equal(self.roi(self.loc, reset_origin=False).values,
                                 self.loc_roi)
+
+    def test_dataframe_inv(self):
+        np.testing.assert_equal(self.roi(self.loc, reset_origin=False,
+                                         invert=True).values,
+                                self.loc_roi_inv)
 
     def test_dataframe_reset_origin(self):
         np.testing.assert_equal(self.roi(self.loc, reset_origin=True).values,
@@ -132,6 +138,7 @@ class TestNonOverlappingPathRoi(TestRoi):
         self.loc = pd.DataFrame([[3, 3], [30, 30], [100, 80]],
                                 columns=["x", "y"])
         self.loc_roi = self.loc.drop([1, 2])
+        self.loc_roi_inv = self.loc.drop(0)
 
 
 class TestRectangleRoi(TestRoi):
