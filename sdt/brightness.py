@@ -46,7 +46,6 @@ def _from_raw_image_single(pos, frame, radius=2, bg_frame=2):
     ndim = len(pos)  # number of dimensions
     start = pos - radius - bg_frame
     end = pos + radius + bg_frame + 1
-
     # this gives the pixels of the signal box plus background frame
     signal_region = frame[[slice(s, e) for s, e in zip(reversed(start),
                                                        reversed(end))]]
@@ -72,8 +71,9 @@ def _from_raw_image_single(pos, frame, radius=2, bg_frame=2):
         uncorr_signal = foreground_pixels.max()
 
         # background correction: Only take frame pixels
-        signal_region[signal_slice] = 0
-        background_pixels = signal_region[signal_region.nonzero()]
+        signal_mask = np.ones(signal_region.shape, dtype=bool)
+        signal_mask[signal_slice] = False
+        background_pixels = signal_region[signal_mask]
         background_intensity = np.mean(background_pixels)
         background_std = np.std(background_pixels)
         mass = uncorr_intensity - background_intensity * (2*radius + 1)**ndim
