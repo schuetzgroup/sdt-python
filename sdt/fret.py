@@ -337,6 +337,85 @@ class SmFretData:
             a_ax.text(0, 0.5, "acceptor", va="center", ha="left")
             a_ax.axis("off")
 
+    def plot_track(self, track_no, data="tracks", x="frame", y1="mass",
+                   y2="fret_eff", show_legend=True, ax=None):
+        """Plot data for a FRET track
+
+        The lines are labeled "donor <y>" and "acceptor <y>" by default, where
+        <y> is the `y1`/`y2`.
+        If data is the same for donor and acceptor, only draw one line and
+        label it "<y>".
+
+        Parameters
+        ----------
+        track_no : int
+            Track/particle number
+        data : str, optional
+            Which class attribute to get the tracking data from. Defaults to
+            "tracks".
+        x : str, optional
+            Column to use for x axis data. Defaults to "frame".
+        y1 : str, optional
+            Column to use for first y axis data. Defaults to "mass".
+        y2 : str or None, optional
+            Column to use for first y axis data. If `None`, don't create a
+            seconda y axis. Defaults to "fret_eff".
+        show_legend : bool, optional
+            Whether to show the legend in the plot. Defaults to True.
+        ax : matplotlib.axes.Axes or tuple of Axes or None, optional
+            If this is an Axes object, use that for plotting `y1` data. If
+            `y2` is not `None`, plot `y2` data on ``ax.twinx()``. If this is a
+            tuple of Axes objects, draw `y1` data on the first and `y2` data
+            on the second. If None, use the result of `matplotlib.pyplot.gca`
+            for `y1` and ``twinx()`` for `y2`.
+        """
+        if not mpl_available:
+            raise RuntimeError("`matplotlib` package required but not "
+                               "installed.")
+        if ax is None:
+            ax = plt.gca()
+            if y2 is not None:
+                axt = ax.twinx()
+        else:
+            if len(ax) > 1:
+                ax, axt = ax
+            elif y2 is not None:
+                axt = ax.twinx()
+
+        tracks = getattr(self, data)[["donor", "acceptor"]]
+        arr = tracks[:, :, [x, y1, "particle"]].values
+        arr = arr[:, arr[0, :, -1] == track_no, :]  # select track `track_no`
+
+        x_val = arr[0, :, 0]
+        y1_d_val, y1_a_val = arr[:, :, 1]
+        if np.allclose(y1_d_val, y1_a_val):
+            ax.plot(x_val, y1_d_val, "g", label=y1)
+        else:
+            ax.plot(x_val, y1_d_val, "g", label="donor " + y1)
+            ax.plot(x_val, y1_a_val, "r", label="acceptor " + y1)
+        ax.set_xlabel(x)
+        ax.set_ylabel(y1)
+
+        if y2 is not None:
+            y2_d_val, y2_a_val = tracks[:, :, y2].values.T
+            if np.allclose(y2_d_val, y2_a_val):
+                axt.plot(x_val, y2_d_val, "b", label=y2)
+            else:
+                axt.plot(x_val, y2_d_val, "b", label="donor " + y2)
+                axt.plot(x_val, y2_a_val, "c", label="acceptor " + y2)
+            axt.set_ylabel(y2)
+
+        if show_legend:
+            lines, labels = ax.get_legend_handles_labels()
+            if y2 is not None:
+                lines2, labels2 = axt.get_legend_handles_labels()
+                lines += lines2
+                labels += labels2
+            if y2 is None:
+                ax.legend(lines, labels, loc=0)
+            else:
+                axt.legend(lines, labels, loc=0)
+
     def _make_empty_panel(self):
         """Return an Panel with empty "donor" and "acceptor" DataFrames"""
         e = np.empty((0, 0))
