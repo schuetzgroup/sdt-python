@@ -112,6 +112,9 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
         Names of the columns describing the x and the y coordinates of the
         features in `positions`.
     """
+    if not len(positions):
+        return
+
     # Convert to numpy array for performance reasons
     pos_matrix = positions[pos_columns].values
     fno_matrix = positions["frame"].values.astype(int)
