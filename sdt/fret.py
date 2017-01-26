@@ -583,14 +583,13 @@ class SmFretAnalyzer:
                     (remove_single and len(selected_frames) <= 1)):
                 all_masks[cur_acc_track_mask] = mask
 
-        all_masks = np.concatenate(all_masks)
         return tracks.loc[:, all_masks]
 
-    def rm_acc_excitation(self, tracks):
-        """Remove direct acceptor excitation
+    def get_excitation_type(self, tracks, type="d"):
+        """Get only donor or acceptor excitation frames
 
-        This removes any localizations that come from direct acceptor
-        excitation.
+        This returns, depending on the `type` parameter, either only frames
+        with direct acceptor excitation or with donor excitation.
 
         Parameters
         ----------
@@ -598,6 +597,9 @@ class SmFretAnalyzer:
             FRET tracking data as e. g. produced by
             :py:meth:`SmFretData.track`. For details, see the
             :py:attr:`SmFretData.tracks` attribute documentation.
+        type : {"d", "a"}, optional
+            Whether to return donor ("d") excitation frames or acceptor ("a")
+            excitation frames.
 
         Returns
         -------
@@ -605,7 +607,13 @@ class SmFretAnalyzer:
             Tracking data where only donor excitation ist left
         """
         frames = tracks["acceptor", :, "frame"]
-        return tracks[:, (frames % len(self._desc)).isin(self._don)]
+        is_don = (frames % len(self.desc)).isin(self.don)
+        if type == "d":
+            return tracks[:, is_don]
+        if type == "a":
+            return tracks[:, ~is_don]
+        else:
+            raise ValueError('`type` parameter must be one of ("d", "a").')
 
     def efficiency(self, tracks):
         """Calculate (apparent) FRET efficiencies

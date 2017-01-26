@@ -99,12 +99,12 @@ class TestSmFretData(unittest.TestCase):
         acc = self.acc_loc.copy()
         acc["particle"] = 0
         self.fret_data = fret.SmFretData(
-            self.don_img, self.acc_img,
+            "d", self.don_img, self.acc_img,
             pd.Panel(OrderedDict(donor=don, acceptor=acc)))
 
     def test_track(self):
         fret_data = fret.SmFretData.track(
-            self.don_img, self.acc_img,
+            "d", self.don_img, self.acc_img,
             self.don_loc.drop([2, 3, 5]), self.acc_loc.drop(5),
             self.corr, 1, 1, 5, self.feat_radius, interpolate=False)
 
@@ -129,7 +129,7 @@ class TestSmFretData(unittest.TestCase):
 
     def test_track_interpolate(self):
         fret_data = fret.SmFretData.track(
-            self.don_img, self.acc_img,
+            "d", self.don_img, self.acc_img,
             self.don_loc.drop([2, 3, 5]), self.acc_loc.drop(5),
             self.corr, 1, 1, 5, self.feat_radius, interpolate=True)
 
@@ -255,15 +255,20 @@ class TestSmFretAnalyzer(unittest.TestCase):
                                       acc_end=True, remove_single=True)
         np.testing.assert_allclose(r, loc_p.iloc[:, :0])
 
-    def test_rm_acc_excitation(self):
+    def test_get_excitation_type(self):
         loc = pd.DataFrame(np.arange(len(self.desc)*2), columns=["frame"])
         loc["particle"] = 0
         p = pd.Panel(dict(donor=loc, acceptor=loc))
-        r = self.analyzer.rm_acc_excitation(p)
+        p2 = p.copy()
+        r = self.analyzer.get_excitation_type(p, "d")
+        r2 = self.analyzer.get_excitation_type(p, "a")
 
-        e = p.drop(self.acc + [a + len(self.desc) for a in self.acc], axis=1)
+        d = p.drop(self.acc + [_a + len(self.desc) for _a in self.acc], axis=1)
+        a = p2.drop(self.don + [_d + len(self.desc) for _d in self.don],
+                    axis=1)
 
-        np.testing.assert_allclose(r, e)
+        np.testing.assert_allclose(r, d)
+        np.testing.assert_allclose(r2, a)
 
     def test_efficiency(self):
         don_mass = np.array([1, 1, 1])
