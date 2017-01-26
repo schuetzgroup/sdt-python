@@ -111,7 +111,7 @@ class SmFretData:
         "acceptor" entries. Each item is a DataFrame containing tracking data
         (coordinates, brightness, frame numbers, particle numbers, ...).
     """
-    def __init__(self, donor_img, acceptor_img, tracks):
+    def __init__(self, analyzer, donor_img, acceptor_img, tracks):
         """Parameters
         ----------
         donor_img, acceptor_img : list of numpy.ndarray
@@ -127,13 +127,17 @@ class SmFretData:
         self.donor_img = donor_img
         self.acceptor_img = acceptor_img
 
+        if not isinstance(analyzer, SmFretAnalyzer):
+            analyzer = SmFretAnalyzer(analyzer)
+        self.analyzer = analyzer
+
         if tracks is None:
             self.tracks = self._make_empty_panel()
         else:
             self.tracks = tracks
 
     @classmethod
-    def track(cls, donor_img, acceptor_img, donor_loc, acceptor_loc,
+    def track(cls, analyzer, donor_img, acceptor_img, donor_loc, acceptor_loc,
               chromatic_corr, link_radius, link_mem, min_length,
               feat_radius, bg_frame=2, interpolate=True, acceptor_channel=2,
               link_options={}, link_quiet=True, pos_columns=_pos_columns):
@@ -209,6 +213,9 @@ class SmFretData:
 
         if link_quiet:
             trackpy.quiet()
+
+        if not isinstance(analyzer, SmFretAnalyzer):
+            analyzer = SmFretAnalyzer(analyzer)
 
         donor_channel = 1 if acceptor_channel == 2 else 2
         acceptor_loc_corr = chromatic_corr(acceptor_loc,
