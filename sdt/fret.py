@@ -382,14 +382,16 @@ class SmFretData:
             ax = plt.gca()
             if y2 is not None:
                 axt = ax.twinx()
-        else:
-            if len(ax) > 1:
-                ax, axt = ax
-            elif y2 is not None:
-                axt = ax.twinx()
+        elif isinstance(ax, (list, tuple, np.ndarray)):
+            ax, axt = ax
+        elif y2 is not None:
+            axt = ax.twinx()
 
         tracks = getattr(self, data)[["donor", "acceptor"]]
-        arr = tracks[:, :, [x, y1, "particle"]].values
+        if y2 is None:
+            arr = tracks[:, :, [x, y1, "particle"]].values
+        else:
+            arr = tracks[:, :, [x, y1, y2, "particle"]].values
         arr = arr[:, arr[0, :, -1] == track_no, :]  # select track `track_no`
 
         x_val = arr[0, :, 0]
@@ -403,7 +405,7 @@ class SmFretData:
         ax.set_ylabel(y1)
 
         if y2 is not None:
-            y2_d_val, y2_a_val = tracks[:, :, y2].values.T
+            y2_d_val, y2_a_val = arr[:, :, 2]
             if np.allclose(y2_d_val, y2_a_val):
                 axt.plot(x_val, y2_d_val, "b", label=y2)
             else:
