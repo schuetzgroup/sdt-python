@@ -454,9 +454,9 @@ class SmFretAnalyzer:
             One needs only specify the shortest sequence that is repeated,
             i. e. "ddddaddddadddda" is the same as "dddda".
         """
-        self._desc = np.array(list(desc))
-        self._acc = np.nonzero(self._desc == "a")[0]
-        self._don = np.nonzero(self._desc == "d")[0]
+        self.desc = np.array(list(desc))
+        self.acc = np.nonzero(self.desc == "a")[0]
+        self.don = np.nonzero(self.desc == "d")[0]
 
     def with_acceptor(self, tracks, filter=None):
         """Filter out tracks that have no acceptor
@@ -486,7 +486,7 @@ class SmFretAnalyzer:
         acc_tracks = tracks["acceptor"]  # acceptor tracking data
         # direct acceptor excitation
         acc_direct = acc_tracks[(acc_tracks["frame"] %
-                                len(self._desc)).isin(self._acc)]
+                                len(self.desc)).isin(self.acc)]
         if filter:
             acc_direct = acc_direct.query(filter)
 
@@ -545,7 +545,7 @@ class SmFretAnalyzer:
         """
         acc_tracks = tracks["acceptor"]  # acceptor tracking data
         acc_direct = acc_tracks[(acc_tracks["frame"] %
-                                len(self._desc)).isin(self._acc)]
+                                len(self.desc)).isin(self.acc)]
         if filter:
             acc_direct = acc_direct.query(filter)
 
@@ -555,13 +555,12 @@ class SmFretAnalyzer:
         # get particles with acceptor
         pno_with_acc = acc_direct["particle"].unique()
 
-        # for each particle, this list will hold a boolean array to select
-        # only those rows where an acceptor is present
-        all_masks = []
+        # the loop below will set the appropriate elements to True
+        all_masks = np.zeros(len(acc_tracks), dtype=bool)
         for p in pno_with_acc:
             # frame numbers for current track
-            frames = tracks.loc["acceptor", acc_tracks["particle"] == p,
-                                "frame"]
+            cur_acc_track_mask = (acc_tracks["particle"] == p).values
+            frames = tracks.loc["acceptor", cur_acc_track_mask, "frame"]
             mask = np.ones(frames.shape, dtype=bool)
             a_d_frames = acc_direct.loc[acc_direct["particle"] == p, "frame"]
 
@@ -577,14 +576,12 @@ class SmFretAnalyzer:
             all_frames = np.arange(selected_frames.min(),
                                    selected_frames.max()+1)
             # all frames with direct acceptor excitation
-            all_direct = np.sum(np.in1d(all_frames % len(self._desc),
-                                        self._acc))
+            all_direct = np.sum(np.in1d(all_frames % len(self.desc),
+                                        self.acc))
 
-            if (len(a_d_frames)/all_direct < acc_fraction or
+            if not (len(a_d_frames)/all_direct < acc_fraction or
                     (remove_single and len(selected_frames) <= 1)):
-                all_masks.append(np.zeros(frames.shape, dtype=bool))
-            else:
-                all_masks.append(mask)
+                all_masks[cur_acc_track_mask] = mask
 
         all_masks = np.concatenate(all_masks)
         return tracks.loc[:, all_masks]
@@ -673,9 +670,12 @@ class SmFretAnalyzer:
             d = don[p_mask]
             a = acc[p_mask]
             # direct acceptor excitation
-            a_direct_mask = np.in1d(a[:, 1] % len(self._desc), self._acc)
+            a_direct_mask = np.in1d(a[:, 1] % len(self.desc), self.acc)
             a_direct = a[a_direct_mask]
-            if len(a_direct) < 2:
+            if len(a_direct) == 0:
+                sto[p_mask] = np.NaN
+                continue
+            elif len(a_direct) == 1:
                 def a_mass_func(x):
                     return a_direct[0, 0]
             else:

@@ -171,8 +171,8 @@ class TestSmFretAnalyzer(unittest.TestCase):
         self.analyzer = fret.SmFretAnalyzer(self.desc)
 
     def test_init(self):
-        np.testing.assert_equal(self.analyzer._don, self.don)
-        np.testing.assert_equal(self.analyzer._acc, self.acc)
+        np.testing.assert_equal(self.analyzer.don, self.don)
+        np.testing.assert_equal(self.analyzer.acc, self.acc)
 
     def test_with_acceptor(self):
         loc = np.column_stack([np.arange(10), np.full(10, 0, dtype=int)])
