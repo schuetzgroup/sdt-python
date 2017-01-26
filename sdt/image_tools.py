@@ -190,7 +190,7 @@ class ROI(object):
         reset_origin : bool, optional
             If True, the top-left corner coordinates will be subtracted off
             all feature coordinates, i. e. the top-left corner will be the
-            new origin. Defaults to True.
+            new origin. Only valid if `invert` is False. Defaults to True.
         invert : bool, optional
             If True, only datapoints outside the ROI are selected. Works only
             if `data` is a :py:class:`pandas.DataFrame`. Defaults to `False`.
@@ -211,7 +211,7 @@ class ROI(object):
                 roi_data = data[~mask]
             else:
                 roi_data = data[mask]
-            if reset_origin:
+            if reset_origin and not invert:
                 roi_data.loc[:, x] -= self.top_left[0]
                 roi_data.loc[:, y] -= self.top_left[1]
 
@@ -361,7 +361,8 @@ class PathROI(object):
         reset_origin : bool, optional
             If True, the top-left corner coordinates of the path's bounding
             rectangle will be subtracted off all feature coordinates, i. e.
-            the top-left corner will be the new origin. Defaults to True.
+            the top-left corner will be the new origin. Only valid if `invert`
+            is False. Defaults to True.
         fill_value : "mean" or number, optional
             Fill value for pixels that are not contained in the path. If
             "mean", use the mean of the array in the ROI. Defaults to 0
@@ -385,7 +386,7 @@ class PathROI(object):
                 roi_data = data[~roi_mask]
             else:
                 roi_data = data[roi_mask]
-            if reset_origin:
+            if reset_origin and not invert:
                 roi_data.loc[:, pos_columns[0]] -= self._top_left[0]
                 roi_data.loc[:, pos_columns[1]] -= self._top_left[1]
             return roi_data
