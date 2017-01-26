@@ -70,6 +70,12 @@ def interpolate_coords(tracks, pos_columns=_pos_columns):
         missing_coords.append(np.column_stack(coords))
         missing_pno.append(np.full(len(miss), p, dtype=np.int))
         missing_fno.append(miss)
+
+    if not missing_coords:
+        tracks["interp"] = 0
+        ret = tracks.sort_values(["particle", "frame"])
+        return tracks.reset_index(drop=True)
+
     missing_coords = np.concatenate(missing_coords)
     missing_fno = np.concatenate(missing_fno)
     missing_pno = np.concatenate(missing_pno)
