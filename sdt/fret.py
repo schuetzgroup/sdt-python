@@ -266,6 +266,55 @@ class SmFretData:
 
         return cls(analyzer, donor_img, acceptor_img, tracks)
 
+    def analyze_fret(self, acc_filter=None, acc_start=False, acc_end=True,
+                     acc_fraction=0.75):
+        """Analyze FRET tracking data
+
+        Calculate FRET efficiencies and stoichiometries. Filter out tracks
+        that actually show up upon direct acceptor excitation (these will be
+        saved as the :py:attr:`has_acc` attribute) and select only those parts
+        of tracks which have both donor and acceptor present (saved as the
+        :py:attr:`fret` attribute). Additionally, :py:attr:`has_acc_wo_acc` and
+        :py:attr:`fret_wo_acc` attributes will be written which are versions
+        of :py:attr:`has_acc` and :py:attr:`fret` where the direct acceptor
+        excitation frame data was removed.
+
+        Parameters
+        ----------
+        acc_filter : str or None, optional
+            Only consider acceptor localizations that (upon direct excitation)
+            pass this filter. If `filter` is a string, pass it to
+            :py:meth:`pandas.DataFrame.query`.  A typical example for this
+            would be "mass > 1000" to remove any features that have a total
+            intensity less than 1000. If `None`, don't filter. Defaults to
+            `None`.
+        acc_start : bool, optional
+            If True, the selected part of a track will start with at a direct
+            acceptor excitation. E. g., if every fifth frame is direct
+            acceptor excitation and the acceptor appears from frame 0 to 20,
+            frames 0 to 3 will be discarded. Defaults to False.
+        acc_end : bool, optional
+            If True, the selected part of a track will end with at a direct
+            acceptor excitation. E. g., if every fifth frame is direct
+            acceptor excitation and the acceptor appears from frame 0 to 18,
+            frames 15 to 18 will be discarded. Defaults to True.
+        acc_fraction : float, optional
+            Minimum for the number of times an acceptor is visible upon
+            direct excitations divided by the number direct excitations
+            (between the first and the last appearance of the acceptor).
+            Defaults to 0.75.
+        """
+        self.analyzer.efficiency(self.tracks)
+        self.analyzer.stoichiometry(self.tracks)
+
+        self.has_acc = self.analyzer.with_acceptor(self.tracks, acc_filter)
+        self.has_acc_wo_acc = self.analyzer.get_excitation_type(self.has_acc,
+                                                                "d")
+        self.fret = self.analyzer.select_fret(
+                self.tracks, acc_filter, acc_start, acc_end, acc_fraction,
+                remove_single=True)
+        self.fret_wo_acc = self.analyzer.get_excitation_type(self.fret, "d")
+
     def get_track_pixels(self, track_no, img_size, data="tracks"):
         """For a track, get raw image data
 
