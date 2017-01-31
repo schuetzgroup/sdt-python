@@ -12,7 +12,8 @@ in pandas.DataFrames
 """
 
 
-def _from_raw_image_single(pos, frame, radius=2, bg_frame=2):
+def _from_raw_image_single(pos, frame, radius=2, bg_frame=2,
+                           bg_estimator=np.mean):
     """Determine brightness by counting pixel values for a single particle
 
     This is called using numpy.apply_along_axis on the whole dataset.
@@ -30,6 +31,10 @@ def _from_raw_image_single(pos, frame, radius=2, bg_frame=2):
     bg_frame : int, optional
         Width of frame (in pixels) around the box used for brightness
         determination for background determination. Defaults to 2.
+    bg_estimator : numpy ufunc, optional
+        How to determine the background from the background pixels. If a
+        function is given (which takes the pixel data as arguments and returns
+        a scalar), apply this to the pixels. Defaults to :py:func:`numpy.mean`.
 
     Returns
     -------
@@ -74,7 +79,7 @@ def _from_raw_image_single(pos, frame, radius=2, bg_frame=2):
         signal_mask = np.ones(signal_region.shape, dtype=bool)
         signal_mask[signal_slice] = False
         background_pixels = signal_region[signal_mask]
-        background_intensity = np.mean(background_pixels)
+        background_intensity = bg_estimator(background_pixels)
         background_std = np.std(background_pixels)
         mass = uncorr_intensity - background_intensity * (2*radius + 1)**ndim
         signal = uncorr_signal - background_intensity
@@ -82,7 +87,7 @@ def _from_raw_image_single(pos, frame, radius=2, bg_frame=2):
     return [signal, mass, background_intensity, background_std]
 
 
-def from_raw_image(positions, frames, radius, bg_frame=2,
+def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
                    pos_columns=pos_columns):
     """Determine particle brightness by counting pixel values
 
@@ -105,6 +110,12 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
     bg_frame : int, optional
         Width of frame (in pixels) around a feature for background
         determination. Defaults to 2.
+    bg_estimator : {"mean", "median"} or numpy ufunc, optional
+        How to determine the background from the background pixels. "mean"
+        will use :py:func:`numpy.mean` and "median" will use
+        :py:func:`numpy.median`. If a function is given (which takes the
+        pixel data as arguments and returns a scalar), apply this to the
+        pixels. Defaults to "mean".
 
     Other parameters
     ----------------
@@ -114,6 +125,14 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
     """
     if not len(positions):
         return
+
+    if isinstance(bg_estimator, str):
+        if bg_estimator == "mean":
+            bg_estimator = np.mean
+        elif bg_estimator == "median":
+            bg_estimator = np.median
+        else:
+            raise ValueError(" Invalid `bg_estimator` argument.")
 
     # Convert to numpy array for performance reasons
     pos_matrix = positions[pos_columns].values
@@ -133,7 +152,7 @@ def from_raw_image(positions, frames, radius, bg_frame=2,
             cur_frame = frames[frame_no]
             old_frame_no = frame_no
         ret[i] = _from_raw_image_single(pos_matrix[i], cur_frame, radius,
-                                        bg_frame)
+                                        bg_frame, bg_estimator)
 
     positions["signal"] = ret[:, 0]
     positions["mass"] = ret[:, 1]

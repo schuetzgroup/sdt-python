@@ -23,30 +23,44 @@ class TestBrightness(unittest.TestCase):
         self.pos1 = [30, 20]
         self.pos2 = [15, 10]
 
-        sig1 = np.full((2*self.radius + 1,)*2, 10.)
-        sig2 = np.full((2*self.radius + 1,)*2, 15.)
-
         bg_radius = self.radius + self.bg_frame
-        bg = np.full((2*bg_radius + 1,)*2, 3.)
-        bg[:bg_radius, :bg_radius] = 4.
-        bg[bg_radius:, bg_radius:] = 4.
-        self.bg = 3.5
-        self.bg_dev = 0.5
+        self.feat1_img = np.full((2*bg_radius+1,)*2, 3.)
+        self.feat2_img = np.full((2*bg_radius+1,)*2, 3.)
+        idx = np.indices(self.feat1_img.shape)
+        self.feat_mask = ((idx[0] >= self.bg_frame) &
+                          (idx[0] <= 2*self.radius + self.bg_frame) &
+                          (idx[1] >= self.bg_frame) &
+                          (idx[1] <= 2*self.radius + self.bg_frame))
 
-        self.mass1 = sig1.sum() - self.bg*(2*self.radius + 1)**2
-        self.mass2 = sig2.sum() - self.bg*(2*self.radius + 1)**2
-        self.signal1 = sig1.max() - self.bg
-        self.signal2 = sig2.max() - self.bg
+        self.feat1_img[:bg_radius, :bg_radius] = 4.
+        self.feat2_img[:bg_radius, :bg_radius] = 4.
+        self.feat1_img[self.feat_mask] = 10
+        self.feat1_img[self.feat_mask] = 15
+
+        self.bg = np.mean(self.feat1_img[~self.feat_mask])
+        self.bg_median = np.median(self.feat1_img[~self.feat_mask])
+        self.bg_dev = np.std(self.feat1_img[~self.feat_mask])
+
+        self.mass1 = (np.sum(self.feat1_img[self.feat_mask]) -
+                      self.bg*(2*self.radius + 1)**2)
+        self.mass2 = (np.sum(self.feat2_img[self.feat_mask]) -
+                      self.bg*(2*self.radius + 1)**2)
+        self.mass1_median = (np.sum(self.feat1_img[self.feat_mask]) -
+                             self.bg_median*(2*self.radius + 1)**2)
+
+        self.signal1 = np.max(self.feat1_img[self.feat_mask]) - self.bg
+        self.signal2 = np.max(self.feat2_img[self.feat_mask]) - self.bg
+
+        self.signal1_median = (np.max(self.feat1_img[self.feat_mask]) -
+                               self.bg_median)
 
         self.img = np.zeros((50, 50))
         self.img[self.pos1[1]-bg_radius:self.pos1[1]+bg_radius+1,
-                 self.pos1[0]-bg_radius:self.pos1[0]+bg_radius+1] = bg
+                 self.pos1[0]-bg_radius:self.pos1[0]+bg_radius+1] = \
+            self.feat1_img
         self.img[self.pos2[1]-bg_radius:self.pos2[1]+bg_radius+1,
-                 self.pos2[0]-bg_radius:self.pos2[0]+bg_radius+1] = bg
-        self.img[self.pos1[1]-self.radius:self.pos1[1]+self.radius+1,
-                 self.pos1[0]-self.radius:self.pos1[0]+self.radius+1] = sig1
-        self.img[self.pos2[1]-self.radius:self.pos2[1]+self.radius+1,
-                 self.pos2[0]-self.radius:self.pos2[0]+self.radius+1] = sig2
+                 self.pos2[0]-bg_radius:self.pos2[0]+bg_radius+1] = \
+            self.feat2_img
 
     def test_from_raw_image_single(self):
         res = sdt.brightness._from_raw_image_single(
@@ -54,6 +68,14 @@ class TestBrightness(unittest.TestCase):
         np.testing.assert_allclose(
             np.array(res),
             np.array([self.signal1, self.mass1, self.bg, self.bg_dev]))
+
+    def test_from_raw_image_single_median(self):
+        res = sdt.brightness._from_raw_image_single(
+            self.pos1, self.img, self.radius, self.bg_frame, np.median)
+        np.testing.assert_allclose(
+            np.array(res),
+            np.array([self.signal1_median, self.mass1_median, self.bg_median,
+                      self.bg_dev]))
 
     def test_from_raw_image(self):
         data = np.array([self.pos1, self.pos2])
