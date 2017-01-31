@@ -139,8 +139,9 @@ class SmFretData:
     @classmethod
     def track(cls, analyzer, donor_img, acceptor_img, donor_loc, acceptor_loc,
               chromatic_corr, link_radius, link_mem, min_length,
-              feat_radius, bg_frame=2, interpolate=True, acceptor_channel=2,
-              link_options={}, link_quiet=True, pos_columns=_pos_columns):
+              feat_radius, bg_frame=2, bg_estimator="median", interpolate=True,
+              acceptor_channel=2, link_options={}, link_quiet=True,
+              pos_columns=_pos_columns):
         """Create a class instance by tracking
 
         Localization data for both the donor and the acceptor channel is
@@ -184,6 +185,12 @@ class SmFretData:
             Width of frame (in pixels) around a feature for background
             determination. `bg_frame` parameter of
             :py:func:`brightness.from_raw_image`. Defaults to 2.
+        bg_estimator : {"mean", "median"} or numpy ufunc, optional
+            How to determine the background from the background pixels. "mean"
+            will use :py:func:`numpy.mean` and "median" will use
+            :py:func:`numpy.median`. If a function is given (which takes the
+            pixel data as arguments and returns a scalar), apply this to the
+            pixels. Defaults to "median".
         interpolate : bool, optional
             Whether to interpolate coordinates of features that have been
             missed by the localization algorithm. Defaults to True.
@@ -230,24 +237,34 @@ class SmFretData:
         track_merged = trackpy.link_df(merged, **lopts)
         track_merged = trackpy.filter_stubs(track_merged, min_length)
 
-        if interpolate:
-            # interpolate coordinates where no features were localized
-            track_merged = interpolate_coords(track_merged, pos_columns)
+        if len(track_merged):
+            if interpolate:
+                # interpolate coordinates where no features were localized
+                track_merged = interpolate_coords(track_merged, pos_columns)
+                # remove interpolated acceptor excitation frames
+                i_mask = ((track_merged["interp"] != 0) &
+                          (track_merged["frame"] % len(analyzer.desc)).isin(
+                               analyzer.acc))
+                track_merged = track_merged[~i_mask]
 
-        # transform back to first channel
-        track_merged_acc = chromatic_corr(track_merged,
-                                          channel=donor_channel)
+            # transform back to first channel
+            track_merged_acc = chromatic_corr(track_merged,
+                                              channel=donor_channel)
 
-        # get feature brightness from raw image data
-        brightness.from_raw_image(track_merged, donor_img, feat_radius,
-                                  bg_frame=bg_frame)
-        brightness.from_raw_image(track_merged_acc, acceptor_img,
-                                  feat_radius, bg_frame=bg_frame)
+            # get feature brightness from raw image data
+            brightness.from_raw_image(track_merged, donor_img, feat_radius,
+                                      bg_frame=bg_frame,
+                                      bg_estimator=bg_estimator)
+            brightness.from_raw_image(track_merged_acc, acceptor_img,
+                                      feat_radius, bg_frame=bg_frame,
+                                      bg_estimator=bg_estimator)
+        else:
+            track_merged_acc = track_merged
 
         tracks = pd.Panel(
             OrderedDict(donor=track_merged, acceptor=track_merged_acc))
 
-        return cls(donor_img, acceptor_img, tracks)
+        return cls(analyzer, donor_img, acceptor_img, tracks)
 
     def get_track_pixels(self, track_no, img_size, data="tracks"):
         """For a track, get raw image data
