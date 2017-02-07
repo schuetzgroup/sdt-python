@@ -27,14 +27,14 @@ setup(
     author_email="lukas.schrangl@tuwien.ac.at",
     # url =
     # license =
-    install_requires=["numpy",
+    install_requires=["numpy>=1.10",
                       "scipy",
                       "pandas",
                       "tables",
-                      "tifffile",
+                      "tifffile>=0.7.0",
                       "pyyaml",
                       "pims>=0.3.0",
-                      "slicerator>=0.9.7",
+                      "slicerator>=0.9.8",
                       "lmfit",
                       "matplotlib",
                       "pywavelets>=0.3.0"],
