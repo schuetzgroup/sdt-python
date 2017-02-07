@@ -54,12 +54,12 @@ class TestWavelet(unittest.TestCase):
     def test_remove_bg(self):
         img_est = filters.wavelet(
             self.bg+self.img, **self.wavelet_options)
-        np.testing.assert_allclose(img_est, self.img+self.bg-self.orig)
+        np.testing.assert_allclose(img_est, self.img+self.bg-self.orig, rtol=1e-6)
 
     def test_remove_bg_pipeline(self):
         img = slicerator.Slicerator([self.bg+self.img])
         img_est = filters.wavelet(img, **self.wavelet_options)[0]
-        np.testing.assert_allclose(img_est, self.img+self.bg-self.orig)
+        np.testing.assert_allclose(img_est, self.img+self.bg-self.orig, rtol=1e-6)
 
 
 class TestCG(unittest.TestCase):
