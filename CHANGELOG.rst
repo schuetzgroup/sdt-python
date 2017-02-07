@@ -6,6 +6,16 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+10.2
+----
+- Add classes for elliptical and rectangular path-based ROIs
+- Add an `invert` option to path-based ROIs
+- Implement YAML loaders and dumpers for various structures
+- Add `fret` module for analyzing single molecule FRET data
+- Make it possible to choose how to estimate the background in
+  `brightness.from_raw_image`
+- Bug fixes
+
 10.1
 ----
 - loc.daostorm_3d: Introduce `size_range` and `min_distance` parameters
