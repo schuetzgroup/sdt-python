@@ -7,6 +7,7 @@ source:
 
 build:
     number: 0
+    script: python setup.py install
 
 requirements:
     build:
@@ -46,6 +47,12 @@ test:
     requires:
         - nomkl  # [unix]
         - nose
+
+    commands:
+        - nosetests -v
+
+    source_files:
+        - tests
 
 about:
     summary: "Tools related to fluorescence microscopy"
