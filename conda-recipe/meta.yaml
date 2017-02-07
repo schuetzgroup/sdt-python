@@ -47,6 +47,7 @@ test:
     requires:
         - nomkl  # [unix]
         - nose
+        - trackpy
 
     commands:
         - nosetests -v
