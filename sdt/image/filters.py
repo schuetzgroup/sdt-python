@@ -11,7 +11,7 @@ from .masks import CircleMask
 from ..exceptions import NoConvergence
 
 
-@pipeline
+@pipeline(retain_doc=True)
 def wavelet_bg(image, feat_thresh, feat_mask=None, wtype="db4", wlevel=3,
                initial={}, ext_mode="smooth", max_iterations=20, detail=0,
                conv_threshold=5e-3, no_conv="raise"):
@@ -158,7 +158,7 @@ def _wavelet_bg_single(img, wtype, ext_mode, wlevel, detail):
     return bg
 
 
-@pipeline
+@pipeline(retain_doc=True)
 def wavelet(image, *args, **kwargs):
     """Remove the background using wavelets
 
@@ -172,7 +172,7 @@ def wavelet(image, *args, **kwargs):
     return image - wavelet_bg(image, *args, **kwargs)
 
 
-@pipeline
+@pipeline(retain_doc=True)
 def cg(image, feature_radius, noise_radius=1, nonneg=False):
     r"""Remove background using a bandpass filter according to Crocker & Grier
 
@@ -244,7 +244,7 @@ def cg(image, feature_radius, noise_radius=1, nonneg=False):
     return ret
 
 
-@pipeline
+@pipeline(retain_doc=True)
 def cg_bg(image, *args, **kwargs):
     """Estimate background using bandpass filter according to Crocker & Grier
 

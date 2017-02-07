@@ -34,8 +34,8 @@ Overview
 - The :py:mod:`sdt.image_tools` module allows for saving an image
   series including all its metadata as a TIFF file as well as defining ROIs
   (regions of interest) in image and localization data.
-- With help of the :py:mod:`sdt.background` module it is possible to
-  analyze and subtract the background in fluorescence microscopy images.
+- With help of the :py:mod:`sdt.image` module it is possible to
+  do image processing, e. g. background subtraction from images.
 - Using the :py:mod:`sdt.beam_shape` module, flat field correction of image
   and localization data can be achieved.
 - With help of the :py:mod:`sdt.sim` module, fluorescence microscopy images
@@ -78,7 +78,7 @@ Table of contents
   data_file
   data_filter
   image_tools
-  background
+  image_processing
   beam_shape
   sim
   pims
