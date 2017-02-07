@@ -338,8 +338,8 @@ def plot_msd_cdf(emsds, ax=None):
         D, pa = fit_msd(f, len(f))
         x = np.array([0.] + tlags.tolist())
         ic = 4*pa**2
-        if isinstance(ic, complex):
-            ic = ic.real
+        if pa < 0:
+            ic *= -1
         ax[i+1].plot(x, ic + 4*D*x, color="b")
 
         lt_max = tlags.max()

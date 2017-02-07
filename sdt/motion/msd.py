@@ -374,7 +374,9 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
 def fit_msd(emsd, max_lagtime=2, exposure_time=0):
     """Get the diffusion coefficient and positional accuracy from MSDs
 
-    Fit a linear function to the tlag-vs.-MSD graph
+    Fit a linear function :math:`msd(t) = 4*D*t + 4*pa**2` to the tlag-vs.-MSD
+    graph, where :math:`D` is the diffusion coefficient and :math:`pa` is the
+    positional accuracy (uncertainty).
 
     Parameters
     ----------
@@ -391,7 +393,8 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0):
     D : float
         Diffusion coefficient
     pa : float
-        Positional accuracy
+        Positional accuracy. If this is negative, the fitted graph's
+        intercept was negative (i. e. not meaningful).
     """
     if max_lagtime == 2:
         k = ((emsd["msd"].iloc[1] - emsd["msd"].iloc[0]) /
@@ -402,8 +405,8 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0):
                           emsd["msd"].iloc[0:max_lagtime], 1)
 
     D = k/4
-    d = complex(d) if d < 0. else d
-    pa = np.sqrt(d)/2.
+    pa = np.sqrt(complex(d))/2.
+    pa = pa.real if d > 0 else -pa.imag
 
     # TODO: resample to get the error of D
     # msdplot.m:403
@@ -453,18 +456,14 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
 
     k = 4*d
     ic = 4*pa**2
-    if isinstance(ic, complex):
-        icr = ic.real
-    else:
-        icr = ic
+    if pa < 0:
+        ic *= -1
     x = np.linspace(0, emsd["lagt"].max(), num=2)
-    y = k*(x - exposure_time/3.) + icr
+    y = k*(x - exposure_time/3.) + ic
     ax.plot(x, y)
 
     if show_legend:
         # This can be improved
-        if isinstance(pa, complex):
-            pa = pa.real
         fake_artist = mpl.lines.Line2D([0], [0], linestyle="none")
         ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$/s".format(float(d)),
                                     "PA: {:.0f} nm".format(float(pa*1000))],
