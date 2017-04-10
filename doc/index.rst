@@ -40,6 +40,7 @@ Overview
   and localization data can be achieved.
 - With help of the :py:mod:`sdt.sim` module, fluorescence microscopy images
   can be simulated.
+- There are helpers for plotting data in :py:mod:`sdt.plot`.
 - :py:mod:`sdt.pims` is an extension to the
   `pims <https://github.com/soft-matter/pims>`_ package for reading image data
   created by the *SDT-control* software and TIFF files created using
@@ -81,6 +82,7 @@ Table of contents
   image_processing
   beam_shape
   sim
+  plot
   pims
   exp_fit
   gaussian_fit

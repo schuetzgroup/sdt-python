@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'sdt-python'
-copyright = '2015—2016, Lukas Schrangl'
+copyright = '2015—2017, Lukas Schrangl'
 author = 'Lukas Schrangl'
 
 

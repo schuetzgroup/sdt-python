@@ -124,7 +124,7 @@ IPython.notebook.kernel.execute(py_code, py_callbacks, {silent: false});
         """Register data source for updates
 
         Use this method to enable updates for a certain source. After this
-        call, the source's ``selected["1d"]["indices"] will be updated
+        call, the source's ``selected["1d"]["indices"]`` will be updated
         with the selection the plot.
 
         This sets the source's `callback` attribute.
@@ -143,7 +143,7 @@ IPython.notebook.kernel.execute(py_code, py_callbacks, {silent: false});
     def unregister(self, source):
         """Unregister data source
 
-        After this call, the source's ``selected["1d"]["indices"] will not
+        After this call, the source's ``selected["1d"]["indices"]`` will not
         be updated any longer.
 
         Parameters
