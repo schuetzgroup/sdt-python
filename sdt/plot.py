@@ -10,9 +10,15 @@ try:
     import bokeh
     import bokeh.plotting
     import bokeh.models
+
     bokeh_available = True
+    from bokeh.models import ColumnDataSource as BokehColumnDataSource
 except ImportError:
     bokeh_available = False
+
+    class BokehColumnDataSource:
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("bokeh is not available.")
 
 
 def density_scatter(x, y, ax=None, cmap="viridis", **kwargs):
@@ -61,7 +67,7 @@ def density_scatter(x, y, ax=None, cmap="viridis", **kwargs):
     ax.scatter(x, y, **kwargs)
 
 
-class BokehSelectionHelper:
+class _BokehSelectionHelper:
     """Make selection work in bokeh plots for jupyter notebooks
 
     Update a :py:attr:`bokeh.models.ColumnDataSource.selected` attribute
@@ -155,7 +161,7 @@ IPython.notebook.kernel.execute(py_code, py_callbacks, {silent: false});
         self._idmap.pop(id(source), None)
 
 
-bokeh_select = BokehSelectionHelper("bokeh_select", "sdt.plot")
+_bokeh_select = _BokehSelectionHelper("bokeh_select", "sdt.plot")
 """Global instance of a :py:class:`BokehSelectionHelper`.
 
 Use its :py:meth:`BokehSelectionHelper.register` method to update the
@@ -164,20 +170,21 @@ Use its :py:meth:`BokehSelectionHelper.register` method to update the
 """
 
 
-if bokeh_available:
-    class NbColumnDataSource(bokeh.models.ColumnDataSource):
-        """ColumnDataSource subclass with selection support for notebooks
+class NbColumnDataSource(BokehColumnDataSource):
+    """Bokeh `ColumnDataSource` subclass with selection support for notebooks
 
-        **Unfortunately, this does not work yet**
+    With :py:class:`bokeh.models.ColumnDataSource`, its :py:attr:`selected`
+    attribute does not get updated in jupyter notebooks. Using this class, its
+    "1d" component will be updated if a selection is made in a plot.
 
-        :py:attr:`bokeh.models.ColumnDataSource.selected` does not get
-        update in jupyter notebooks. Using this class, its "1d" component
-        will be updated if a selection is made in a plot.
-        """
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            bokeh_select.register(self)
-else:
-    class NbColumnDataSource:
-        def __init__(self, *args, **kwargs):
-            raise RuntimeError("bokeh is not available.")
+    Starting with `bokeh` version 0.12.5, it is possible to embed `bokeh`
+    apps in notebooks (see the
+    `example <https://github.com/bokeh/bokeh/blob/master/examples/howto/server_embed/notebook_embed.ipynb>`_),
+    which makes this quite obsolete.
+    """
+    __subtype__ = "NbColumnDataSource"
+    __view_model__ = "ColumnDataSource"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _bokeh_select.register(self)

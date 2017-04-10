@@ -2,4 +2,5 @@ Plotting utilities
 ==================
 
 .. automodule:: sdt.plot
-    :members:
+.. autofunction:: density_scatter
+.. autoclass:: NbColumnDataSource
