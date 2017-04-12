@@ -6,6 +6,18 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+10.3
+----
+- Add the `plot` module. It contains
+  - the `density_scatter` function. It produces scatter plots (supporting both
+    matplotlib and bokeh) where data points are colored according to their
+    density.
+  - The `NbColumnDataSource`, which is a subclass of bokeh's `ColumnDataSource`,
+    but its `selected["1d"]` attribute is update even in jupyter notebooks.
+    Starting with bokeh 0.12.5, this is obsolete however since bokeh now 
+    supports embedding bokeh apps in notebooks (via the function handler).
+- Remove unused and incomplete `plots_viewer` and `sm_fret_viewer`
+
 10.2
 ----
 - Add classes for elliptical and rectangular path-based ROIs
