@@ -17,7 +17,7 @@ Examples
 
 References
 ----------
-.. [1] http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions
+.. [1] https://web.archive.org/web/20160813110706/http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions
 .. [2] M. R. Osborne, G. K. Smyth: A Modified Prony Algorithm for Fitting
     Functions Defined by Difference Equations. SIAM J. on Sci. and Statist.
     Comp., Vol 12 (1991), pages 362–382.
