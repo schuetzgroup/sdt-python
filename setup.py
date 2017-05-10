@@ -28,7 +28,7 @@ setup(
     # url =
     # license =
     install_requires=["numpy>=1.10",
-                      "scipy",
+                      "scipy>0.18",
                       "pandas",
                       "tables",
                       "tifffile>=0.7.0",

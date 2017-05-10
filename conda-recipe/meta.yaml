@@ -17,7 +17,7 @@ requirements:
         - numpy >=1.10
         - pandas
         - pytables
-        - scipy
+        - scipy >0.18
         - tifffile >=0.7.0
         - pyyaml
         - pims >=0.3.0
@@ -32,7 +32,7 @@ requirements:
         - numpy >=1.10
         - pandas
         - pytables
-        - scipy
+        - scipy >0.18
         - tifffile
         - pyyaml
         - pims >=0.3.0
