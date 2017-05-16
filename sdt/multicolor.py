@@ -167,6 +167,10 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
         f2_idx = np.nonzero(f2_mat[:, -1] == frame_no)[0]
 
         if not (f1_idx.size and f2_idx.size):
+            # One channel does not have any features in this frame
+            a = np.array([], dtype=int)
+            coloc_idx_1.append(a)
+            coloc_idx_2.append(a)
             continue
 
         # current frame positions with the frame column excluded

@@ -62,7 +62,7 @@ class TestMulticolor(unittest.TestCase):
         np.testing.assert_allclose(pairs.channel2, self.pos2.iloc[[0]])
 
     def test_merge_channels(self):
-        """multicolor: Test the `merge_channels` function"""
+        """multicolor.merge_channels: Simple test"""
         merged = sdt.multicolor.merge_channels(self.pos1, self.pos2, 2.)
         merged = merged.sort_values(["frame", "x", "y"])
 
@@ -72,7 +72,7 @@ class TestMulticolor(unittest.TestCase):
         np.testing.assert_allclose(merged, expected)
 
     def test_merge_channels_mean_pos(self):
-        """multicolor: Test the `merge_channels` function (mean_pos=True)"""
+        """multicolor.merge_channels: mean_pos=True"""
         merged = sdt.multicolor.merge_channels(self.pos1, self.pos2, 2.,
                                                mean_pos=True)
         merged = merged.sort_values(["frame", "x", "y"])
@@ -80,6 +80,30 @@ class TestMulticolor(unittest.TestCase):
         expected = pd.concat((self.pos1, self.pos2.drop([0, 3])))
         expected = expected.sort_values(["frame", "x", "y"])
         expected.iloc[0, 1] = 20.5
+
+        np.testing.assert_allclose(merged, expected)
+
+    def test_merge_channels_no_coloc(self):
+        """multicolor.merge_channels: No colocalizations"""
+        p2 = self.pos2.drop([0, 3])
+        merged = sdt.multicolor.merge_channels(self.pos1, p2, 2.)
+        merged = merged.sort_values(["frame", "x", "y"])
+
+        expected = pd.concat((self.pos1, p2))
+        expected = expected.sort_values(["frame", "x", "y"])
+
+        np.testing.assert_allclose(merged, expected)
+
+    def test_merge_channels_alt_frames(self):
+        """multicolor.merge_channels: All features in different frames"""
+        self.pos1["frame"] = 0
+        self.pos2["frame"] = 1
+
+        merged = sdt.multicolor.merge_channels(self.pos1, self.pos2, 2.)
+        merged = merged.sort_values(["frame", "x", "y"])
+
+        expected = pd.concat((self.pos1, self.pos2))
+        expected = expected.sort_values(["frame", "x", "y"])
 
         np.testing.assert_allclose(merged, expected)
 
