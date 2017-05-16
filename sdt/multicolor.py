@@ -6,11 +6,65 @@ import collections
 
 import pandas as pd
 import numpy as np
+from scipy.spatial import cKDTree
 
 
 # Default values. If changed, also change doc strings
 _pos_columns = ["x", "y"]
 _channel_names = ["channel1", "channel2"]
+
+
+def find_closest_pairs(coords1, coords2, max_dist):
+    """Find best matches between coordinates
+
+    Given two coordinate arrays (`coords1` and `coords2`), find pairs of points
+    with the minimum distance between them. Each point will be in at most one
+    pair (in contrast to `usual` KD-tree queries).
+
+    Parameters
+    ----------
+    coords1, coords2 : array-like, shape(n, m)
+        Arrays of m-dimensional coordinate tuples. The dimension (m) has to be
+        the same in both arrays while the number of points (n) can differ.
+    max_dist : float
+        Maximum distance for two points to be considered a pair
+
+    Returns
+    -------
+    numpy.ndarray, shape(n, 2), dtype(int)
+        Each row describes one match. The first entry is the index of a point
+        in `coords1`. The second entry is the index of its match in `coords2`.
+    """
+    # Use cKDTrees to efficiently compute distances
+    t1 = cKDTree(coords1)
+    t2 = cKDTree(coords2)
+    d = t1.sparse_distance_matrix(t2, max_dist, output_type="ndarray")
+
+    # convert structured array to normal arrays for speed
+    v = d["v"]
+    i1 = d["i"]
+    i2 = d["j"]
+
+    # Sort w.r.t. distance between partners so that pairs with smallest
+    # distances will be found first
+    sort_idx = np.argsort(v)
+    i1 = d["i"][sort_idx]
+    i2 = d["j"][sort_idx]
+
+    # Keep track of points that are already in pairs
+    taken1 = np.zeros(len(coords1), dtype=bool)
+    taken2 = np.zeros(len(coords2), dtype=bool)
+
+    # Record pairs starting with those that have the smallest distance
+    # between partners
+    pairs = []
+    for ii1, ii2 in zip(i1, i2):
+        if not (taken1[ii1] or taken2[ii2]):
+            # Only if both partners are not already in another pair
+            pairs.append((ii1, ii2))
+            taken1[ii1] = True
+            taken2[ii2] = True
+    return np.array(pairs, dtype=int).reshape((-1, 2))
 
 
 def find_colocalizations(features1, features2, max_dist=2.,
@@ -46,7 +100,6 @@ def find_colocalizations(features1, features2, max_dist=2.,
     p1_mat = features1[pos_columns + ["frame"]].values
     p2_mat = features2[pos_columns + ["frame"]].values
 
-    max_dist_sq = max_dist**2
     pairs1 = []
     pairs2 = []
     for frame_no in np.unique(p1_mat[:, -1]):
@@ -60,28 +113,10 @@ def find_colocalizations(features1, features2, max_dist=2.,
         if not (p1_f.size and p2_f.size):
             continue
 
-        # d[i, j, k] is the difference of the k-th coordinate of
-        # loc `i` in pos1 and loc `j` in pos2
-        d = p1_f[:, np.newaxis, :] - p2_f[np.newaxis, :, :]
-        # euclidian distance squared
-        d = np.sum(d**2, axis=2)
+        pair_idx = find_closest_pairs(p1_f, p2_f, max_dist)
 
-        # for each in p1_f, find those with the minimum distance to some
-        # feature referenced by an p2_f entry
-        closest = [np.arange(d.shape[0]), np.argmin(d, axis=1)]
-        # select those where minimum distance is less than `max_dist`
-        # (boolean array for the `closest` array)
-        close_enough = (d[closest] <= max_dist_sq)
-        # select those where minimum distance is less than `max_dist`
-        # (indices of the p1_idx, p2_idx arrays)
-        close_idx_of_idx = [c[close_enough] for c in closest]
-        # select those where minimum distance is less than `max_dist`
-        # (indices of the features1, features2 DataFrames)
-        close_idx = [p1_idx[close_idx_of_idx[0]],
-                     p2_idx[close_idx_of_idx[1]]]
-
-        pairs1.append(features1.iloc[close_idx[0]])
-        pairs2.append(features2.iloc[close_idx[1]])
+        pairs1.append(features1.iloc[p1_idx[pair_idx[:, 0]]])
+        pairs2.append(features2.iloc[p2_idx[pair_idx[:, 1]]])
 
     df_dict = collections.OrderedDict(
         ((channel_names[0], pd.concat(pairs1, ignore_index=True)),
@@ -89,7 +124,7 @@ def find_colocalizations(features1, features2, max_dist=2.,
     return pd.Panel(df_dict)
 
 
-def merge_channels(features1, features2, max_dist=2.,
+def merge_channels(features1, features2, max_dist=2., mean_pos=False,
                    pos_columns=_pos_columns):
     """Merge features of `features1` and `features2`
 
@@ -103,6 +138,12 @@ def merge_channels(features1, features2, max_dist=2.,
     max_dist : float, optional
         Maximum distance between features to still be considered colocalizing.
         Defaults to 2.
+    mean_pos : bool, optional
+        When entries are merged (i. e., if an entry in `features1` is close
+        enough to one in `features2`), calculate the center of mass of the
+        two channel's entries. If `False`, use the position in `features1`.
+        All other (non-coordinate) columns are taken from `features1` in any
+        case. Defaults to `False`.
 
     Returns
     -------
@@ -118,35 +159,44 @@ def merge_channels(features1, features2, max_dist=2.,
     f1_mat = features1[pos_columns + ["frame"]].values
     f2_mat = features2[pos_columns + ["frame"]].values
 
-    max_dist_sq = max_dist**2
-    f2_non_coloc = []
+    coloc_idx_1 = []
+    coloc_idx_2 = []
     for frame_no in np.union1d(f1_mat[:, -1], f2_mat[:, -1]):
         # indices of features in current frame
         f1_idx = np.nonzero(f1_mat[:, -1] == frame_no)[0]
         f2_idx = np.nonzero(f2_mat[:, -1] == frame_no)[0]
+
+        if not (f1_idx.size and f2_idx.size):
+            continue
+
         # current frame positions with the frame column excluded
         f1_f = f1_mat[f1_idx, :-1]
         f2_f = f2_mat[f2_idx, :-1]
 
-        # d[i, j, k] is the difference of the k-th coordinate of
-        # loc `i` in pos1 and loc `j` in pos2
-        d = f1_f[:, np.newaxis, :] - f2_f[np.newaxis, :, :]
-        # euclidian distance squared
-        d = np.sum(d**2, axis=2)
-        # features in `features2` that colocalize with something
-        coloc_mask = np.any(d <= max_dist_sq, axis=0)
-        # append to list of indices in features2 that don't colocalize
-        non_coloc_idx = f2_idx[~coloc_mask]
-        non_coloc_idx.size and f2_non_coloc.append(non_coloc_idx)
+        pair_idx = find_closest_pairs(f1_f, f2_f, max_dist)
+        coloc_idx_1.append(f1_idx[pair_idx[:, 0]])
+        coloc_idx_2.append(f2_idx[pair_idx[:, 1]])
 
-    if f2_non_coloc:
-        f2_non_coloc = np.hstack(f2_non_coloc)
-        # combine `features1` and features from `features2` that don't
-        # colocalize
-        return pd.concat((features1, features2.iloc[f2_non_coloc]),
-                         ignore_index=True)
+    coloc_idx_1 = np.concatenate(coloc_idx_1)
+    coloc_idx_2 = np.concatenate(coloc_idx_2)
+
+    ret = features1.copy()
+    if mean_pos:
+        p1 = f1_mat[coloc_idx_1, :-1]
+        p2 = f2_mat[coloc_idx_2, :-1]
+
+        ret.loc[ret.index[coloc_idx_1], pos_columns] = (p1 + p2) / 2
+
+    if coloc_idx_2.size == f2_mat.shape[0]:
+        # All features of channel 2 were merged
+        return ret
     else:
-        return features1
+        # Append non-merged features of channel 2 to `ret`
+        f2_non_coloc = np.ones(len(f2_mat), dtype=bool)
+        f2_non_coloc[coloc_idx_2] = False
+
+        return pd.concat((ret, features2.iloc[f2_non_coloc]),
+                         ignore_index=True)
 
 
 def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
