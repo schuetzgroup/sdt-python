@@ -6,6 +6,7 @@ import pandas as pd
 from scipy.interpolate import interp1d
 
 from . import multicolor, brightness
+from .data.filter import has_near_neighbor
 
 try:
     import trackpy
@@ -22,6 +23,7 @@ except ImportError:
 
 
 _pos_columns = ["x", "y"]
+_SQRT_2 = np.sqrt(2.)
 
 
 def interpolate_coords(tracks, pos_columns=_pos_columns):
@@ -139,9 +141,9 @@ class SmFretData:
     @classmethod
     def track(cls, analyzer, donor_img, acceptor_img, donor_loc, acceptor_loc,
               chromatic_corr, link_radius, link_mem, min_length,
-              feat_radius, bg_frame=2, bg_estimator="median", interpolate=True,
-              acceptor_channel=2, link_options={}, link_quiet=True,
-              pos_columns=_pos_columns):
+              feat_radius, bg_frame=2, bg_estimator="median",
+              neighbor_radius="auto", interpolate=True,  acceptor_channel=2,
+              link_options={}, link_quiet=True, pos_columns=_pos_columns):
         """Create a class instance by tracking
 
         Localization data for both the donor and the acceptor channel is
@@ -191,6 +193,16 @@ class SmFretData:
             :py:func:`numpy.median`. If a function is given (which takes the
             pixel data as arguments and returns a scalar), apply this to the
             pixels. Defaults to "median".
+        neighbor_radius : float or "auto", optional
+            Use :py:func:`filter.has_near_neighbor` to determine which
+            features have near neighbors. This will append a "has_neighbor"
+            column to DataFrames, where entries are 0 for features without
+            other features within `neighbor_radius` and 1 otherwise. Set
+            neighbor_radius to 0 to turn this off (no "has_neighbor" column
+            will be created). If "auto", use
+            ``(2 * feat_radius + bg_frame) * sqrt(2)`` such that background
+            estimation is not influenced by neighboring features. Defaults
+            to "auto".
         interpolate : bool, optional
             Whether to interpolate coordinates of features that have been
             missed by the localization algorithm. Defaults to True.
@@ -235,6 +247,15 @@ class SmFretData:
         lopts["memory"] = link_mem
         lopts["copy_features"] = True
         track_merged = trackpy.link_df(merged, **lopts)
+
+        # Flag localizations that are too close together
+        if isinstance(neighbor_radius, str):
+            # auto radius
+            neighbor_radius = (2 * feat_radius + bg_frame) * _SQRT_2
+        if neighbor_radius:
+            has_near_neighbor(track_merged, neighbor_radius, pos_columns)
+
+        # Filter short tracks
         track_merged = trackpy.filter_stubs(track_merged, min_length)
 
         if len(track_merged):
