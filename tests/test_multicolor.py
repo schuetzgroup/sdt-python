@@ -39,27 +39,31 @@ class TestMulticolor(unittest.TestCase):
         np.testing.assert_equal(pairs, np.array([[0, 1], [1, 0]]))
 
     def test_find_colocalizations_channel_names(self):
-        """multicolor: Test `find_colocalizations` channel names"""
+        """multicolor.find_colocalizations: Channel names"""
         ch_names = ["ch1", "ch2"]
         pairs = sdt.multicolor.find_colocalizations(
             self.pos1, self.pos2, channel_names=ch_names)
-        assert(pairs.items.tolist() == ch_names)
+        np.testing.assert_equal(pairs.columns.levels[0].tolist(), ch_names)
 
     def test_find_colocalizations_pairs(self):
-        """multicolor: Test `find_colocalizations` pair finding for 2D data"""
+        """multicolor.find_colocalizations: 2D data"""
         pairs = sdt.multicolor.find_colocalizations(
             self.pos1, self.pos2, 2)
 
-        np.testing.assert_allclose(pairs.channel1, self.pos1.iloc[[1, 3]])
-        np.testing.assert_allclose(pairs.channel2, self.pos2.iloc[[0, 3]])
+        exp = pd.concat([self.pos1.iloc[[1, 3]].reset_index(drop=True),
+                         self.pos2.iloc[[0, 3]].reset_index(drop=True)],
+                        keys=["channel1", "channel2"], axis=1)
+        np.testing.assert_allclose(pairs, exp)
 
     def test_find_colocalizations_pairs_3d(self):
-        """multicolor: Test `find_colocalizations` pair finding for 3D data"""
+        """multicolor.find_colocalizations: 3D data"""
         pairs = sdt.multicolor.find_colocalizations(
             self.pos1, self.pos2, 2, pos_columns=["x", "y", "z"])
 
-        np.testing.assert_allclose(pairs.channel1, self.pos1.iloc[[1]])
-        np.testing.assert_allclose(pairs.channel2, self.pos2.iloc[[0]])
+        exp = pd.concat([self.pos1.iloc[[1]].reset_index(drop=True),
+                         self.pos2.iloc[[0]].reset_index(drop=True)],
+                        keys=["channel1", "channel2"], axis=1)
+        np.testing.assert_allclose(pairs, exp)
 
     def test_merge_channels(self):
         """multicolor.merge_channels: Simple test"""

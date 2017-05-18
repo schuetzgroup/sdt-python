@@ -88,8 +88,10 @@ def find_colocalizations(features1, features2, max_dist=2.,
 
     Returns
     -------
-    pandas.Panel
-        The panel has items named according to `channel_names`.
+    pandas.DataFrame
+        The DataFrame has a multi-index for columns with the top level
+        given by the `channel_names` parameter. Each line of DataFrame
+        corresponds to one pair of colocalizing particles.
 
     Other parameters
     ----------------
@@ -118,10 +120,9 @@ def find_colocalizations(features1, features2, max_dist=2.,
         pairs1.append(features1.iloc[p1_idx[pair_idx[:, 0]]])
         pairs2.append(features2.iloc[p2_idx[pair_idx[:, 1]]])
 
-    df_dict = collections.OrderedDict(
-        ((channel_names[0], pd.concat(pairs1, ignore_index=True)),
-         (channel_names[1], pd.concat(pairs2, ignore_index=True))))
-    return pd.Panel(df_dict)
+    pairs1 = pd.concat(pairs1, ignore_index=True)
+    pairs2 = pd.concat(pairs2, ignore_index=True)
+    return pd.concat([pairs1, pairs2], keys=channel_names, axis=1)
 
 
 def merge_channels(features1, features2, max_dist=2., mean_pos=False,
