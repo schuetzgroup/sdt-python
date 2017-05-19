@@ -297,7 +297,7 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         t1 = t1[(int(start) <= t1["frame"]) & (t1["frame"] <= int(end))]
         t2 = tracks2[tracks2["particle"] == pn2]
         t2 = t2[(int(start) <= t2["frame"]) & (t2["frame"] <= int(end))]
-        # use frame as the index (=axis for merging when creating the Panel)
+        # use frame as the index (=axis for merging when creating DataFrame)
         t1 = t1.set_index("frame", drop=False)  # copy so that the original
         t2 = t2.set_index("frame", drop=False)  # is not overridden here
 
