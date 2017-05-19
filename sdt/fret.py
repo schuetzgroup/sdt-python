@@ -84,8 +84,7 @@ def interpolate_coords(tracks, pos_columns=_pos_columns):
     missing_df = pd.DataFrame(missing_coords, columns=pos_columns)
     missing_df["particle"] = missing_pno
     missing_df["frame"] = missing_fno
-    # don't use bool below. Otherwise, when using the `values` attribute of
-    # a pandas Panel (even for a slice not containing the "interp" column)
+    # Don't use bool below. Otherwise, the `values` attribute of the DataFrame
     # will have "object" dtype.
     missing_df["interp"] = 1
     tracks["interp"] = 0
@@ -108,23 +107,28 @@ class SmFretData:
 
     Attributes
     ----------
-    tracks : pandas.Panel
-        Tracking data. Typically, the item axis contains "donor" and
-        "acceptor" entries. Each item is a DataFrame containing tracking data
-        (coordinates, brightness, frame numbers, particle numbers, ...).
+    tracks : pandas.DataFrame
+        Tracking data. Typically, the columns have a MultiIndex containing
+        "donor" and "acceptor" at the top level. Each item contains tracking
+        data (coordinates, brightness, frame numbers, particle numbers, ...).
     """
     def __init__(self, analyzer, donor_img, acceptor_img, tracks):
         """Parameters
         ----------
+        analyzer : SmFretAnalyzer or str
+            :py:class:`SmFretAnalyzer` instance to use for data analysis. If
+            a string, use that to construct the :py:class:`SmFretAnalyzer`
+            instance.
         donor_img, acceptor_img : list of numpy.ndarray
             Raw image frames for donor and acceptor channel. This need to be
             of type `list`, but anything that returns image data when indexed
             with a frame number will do.
-        tracks : pandas.Panel
-            Tracking data as e. g. created by :py:meth:`track`. There have to
-            be "donor" and "acceptor" entries in the item axis. Depending on
-            the analysis to be done, the items need to contain localization
-            data and/or brightness data and/or tracking data.
+        tracks : pandas.DataFrame or None
+            Tracking data as e. g. created by :py:meth:`track`. Columns have to
+            have a MultiIndex with "donor" and "acceptor" entries in the top
+            level. Depending on the analysis to be done, the items need to
+            contain localization data and/or brightness data and/or tracking
+            data. If `None`, create a valid but empty DataFrame.
         """
         self.donor_img = donor_img
         self.acceptor_img = acceptor_img
@@ -134,7 +138,7 @@ class SmFretData:
         self.analyzer = analyzer
 
         if tracks is None:
-            self.tracks = self._make_empty_panel()
+            self.tracks = self._make_empty_dataframe()
         else:
             self.tracks = tracks
 
@@ -154,11 +158,17 @@ class SmFretData:
         Additionally, the feature brightness is determined for both donor
         and acceptor for raw image data using
         :py:func:`brightness.from_raw_image`. These data are written into a
-        a :py:class:`pandas.Panel`'s "donor" and "acceptor" items which is used
-        to construct a :py:class:`SmFretData` instance.
+        a :py:class:`pandas.DataFrame` whose columns have a MultiIndex
+        containing the "donor" and "acceptor" items in the top level.
+        This DataFrame is used to construct a :py:class:`SmFretData` instance;
+        it is passed as the `tracks` parameter to the constructor.
 
         Parameters
         ----------
+        analyzer : SmFretAnalyzer or str
+            :py:class:`SmFretAnalyzer` instance to use for data analysis. If
+            a string, use that to construct the :py:class:`SmFretAnalyzer`
+            instance.
         donor_img, acceptor_img : list of numpy.ndarray
             Raw image frames for donor and acceptor channel. This need to be
             of type `list`, but anything that returns image data when indexed
@@ -282,8 +292,10 @@ class SmFretData:
         else:
             track_merged_acc = track_merged
 
-        tracks = pd.Panel(
-            OrderedDict(donor=track_merged, acceptor=track_merged_acc))
+        track_merged.reset_index(drop=True, inplace=True)
+        track_merged_acc.reset_index(drop=True, inplace=True)
+        tracks = pd.concat([track_merged, track_merged_acc],
+                           keys=["donor", "acceptor"], axis=1)
 
         return cls(analyzer, donor_img, acceptor_img, tracks)
 
@@ -518,13 +530,10 @@ class SmFretData:
             else:
                 axt.legend(lines, labels, loc=0)
 
-    def _make_empty_panel(self):
-        """Return an Panel with empty "donor" and "acceptor" DataFrames"""
-        e = np.empty((0, 0))
-        p = pd.Panel()
-        p["donor"] = e
-        p["acceptor"] = e
-        return p
+    def _make_empty_dataframe(self):
+        """Return a DataFrame with empty "donor" and "acceptor" entries"""
+        mi = pd.MultiIndex.from_product([["donor", "acceptor"], []])
+        return pd.DataFrame(columns=mi)
 
 
 class SmFretAnalyzer:
@@ -561,7 +570,7 @@ class SmFretAnalyzer:
 
         Parameters
         ----------
-        tracks : pandas.Panel
+        tracks : pandas.DataFrame
             FRET tracking data as e. g. produced by
             :py:meth:`SmFretData.track`. For details, see the
             :py:attr:`SmFretData.tracks` attribute documentation.
@@ -574,7 +583,7 @@ class SmFretAnalyzer:
 
         Returns
         -------
-        pandas.Panel
+        pandas.DataFrame
             Input tracking data without tracks that don't have an acceptor.
         """
         acc_tracks = tracks["acceptor"]  # acceptor tracking data
@@ -585,14 +594,14 @@ class SmFretAnalyzer:
             acc_direct = acc_direct.query(filter)
 
         if not len(acc_direct):
-            return tracks.iloc[:, :0, :].copy()  # return empty
+            return tracks.iloc[:0].copy()  # return empty
 
         # list of particle numbers that can be seen with direct acceptor
         # excitation
         p = acc_direct["particle"].unique()
         # only those tracks are valid whose particle number appears in the
         # list of particles with acceptors
-        return tracks.loc[:, acc_tracks["particle"].isin(p), :]
+        return tracks[acc_tracks["particle"].isin(p)]
 
     def select_fret(self, tracks, filter=None, acc_start=False,
                     acc_end=True, acc_fraction=0.75, remove_single=True):
@@ -602,7 +611,7 @@ class SmFretAnalyzer:
 
         Parameters
         ----------
-        tracks : pandas.Panel
+        tracks : pandas.DataFrame
             FRET tracking data as e. g. produced by
             :py:meth:`SmFretData.track`. For details, see the
             :py:attr:`SmFretData.tracks` attribute documentation.
@@ -634,7 +643,7 @@ class SmFretAnalyzer:
 
         Returns
         -------
-        pandas.Panel
+        pandas.DataFrame
             Tracking data where only FRETting parts of the tracks are left.
         """
         acc_tracks = tracks["acceptor"]  # acceptor tracking data
@@ -644,7 +653,7 @@ class SmFretAnalyzer:
             acc_direct = acc_direct.query(filter)
 
         if not len(acc_direct):
-            return tracks.iloc[:, :0, :].copy()  # return empty
+            return tracks.iloc[:0].copy()  # return empty
 
         # get particles with acceptor
         pno_with_acc = acc_direct["particle"].unique()
@@ -654,7 +663,7 @@ class SmFretAnalyzer:
         for p in pno_with_acc:
             # frame numbers for current track
             cur_acc_track_mask = (acc_tracks["particle"] == p).values
-            frames = tracks.loc["acceptor", cur_acc_track_mask, "frame"]
+            frames = tracks.loc[cur_acc_track_mask, ("acceptor", "frame")]
             mask = np.ones(frames.shape, dtype=bool)
             a_d_frames = acc_direct.loc[acc_direct["particle"] == p, "frame"]
 
@@ -677,7 +686,7 @@ class SmFretAnalyzer:
                     (remove_single and len(selected_frames) <= 1)):
                 all_masks[cur_acc_track_mask] = mask
 
-        return tracks.loc[:, all_masks]
+        return tracks.loc[all_masks]
 
     def get_excitation_type(self, tracks, type="d"):
         """Get only donor or acceptor excitation frames
@@ -687,7 +696,7 @@ class SmFretAnalyzer:
 
         Parameters
         ----------
-        tracks : pandas.Panel
+        tracks : pandas.DataFrame
             FRET tracking data as e. g. produced by
             :py:meth:`SmFretData.track`. For details, see the
             :py:attr:`SmFretData.tracks` attribute documentation.
@@ -697,15 +706,15 @@ class SmFretAnalyzer:
 
         Returns
         -------
-        pd.Panel
+        pd.DataFrame
             Tracking data where only donor excitation ist left
         """
-        frames = tracks["acceptor", :, "frame"]
+        frames = tracks["acceptor", "frame"]
         is_don = (frames % len(self.desc)).isin(self.don)
         if type == "d":
-            return tracks[:, is_don]
+            return tracks[is_don]
         if type == "a":
-            return tracks[:, ~is_don]
+            return tracks[~is_don]
         else:
             raise ValueError('`type` parameter must be one of ("d", "a").')
 
@@ -715,21 +724,21 @@ class SmFretAnalyzer:
         For each localization in `tracks`, calculate the apparent FRET
         efficiency (acceptor brightness (mass) divided by sum of
         donor and acceptor brightnesses). This is added as a "fret_eff"
-        column to the `tracks` panel.
+        column to the `tracks` DataFrame.
 
         Parameters
         ----------
-        tracks : pandas.Panel
+        tracks : pandas.DataFrame
             FRET tracking data as e. g. produced by
             :py:meth:`SmFretData.track`.  For details, see the
             :py:attr:`SmFretData.tracks` attribute documentation. This methods
             appends a "fret_eff" column with the FRET efficiencies.
         """
-        a_mass = tracks.loc["acceptor", :, "mass"]
-        d_mass = tracks.loc["donor", :, "mass"]
+        a_mass = tracks["acceptor", "mass"]
+        d_mass = tracks["donor", "mass"]
         eff = a_mass / (d_mass + a_mass)
-        tracks.loc["donor", :, "fret_eff"] = eff
-        tracks.loc["acceptor", :, "fret_eff"] = eff
+        tracks.loc[:, ("donor", "fret_eff")] = eff
+        tracks.loc[:, ("acceptor", "fret_eff")] = eff
 
     def stoichiometry(self, tracks, interp="linear"):
         """Calculate a measure of the stoichiometry
@@ -754,7 +763,7 @@ class SmFretAnalyzer:
 
         Parameters
         ----------
-        tracks : pandas.Panel
+        tracks : pandas.DataFrame
             FRET tracking data as e. g. produced by
             :py:meth:`SmFretData.track`.  For details, see the
             :py:attr:`SmFretData.tracks` attribute documentation. This methods
@@ -763,8 +772,8 @@ class SmFretAnalyzer:
             What kind of interpolation to use for calculating acceptor
             brightness upon direct excitation. Defaults to "linear".
         """
-        don = tracks.loc["donor", :, ["mass", "frame", "particle"]].values
-        acc = tracks.loc["acceptor", :, ["mass", "frame", "particle"]].values
+        don = tracks["donor"][["mass", "frame", "particle"]].values
+        acc = tracks["acceptor"][["mass", "frame", "particle"]].values
         particles = np.unique(don[:, 2])  # particle numbers
         sto = np.empty(len(don))  # pre-allocate
         for p in particles:
@@ -789,5 +798,6 @@ class SmFretAnalyzer:
             s = total_mass / (total_mass + a_mass)
             s[a_direct_mask] = np.NaN  # direct acceptor excitation is NaN
             sto[p_mask] = s
-        tracks.loc["donor", :, "fret_stoi"] = sto
-        tracks.loc["acceptor", :, "fret_stoi"] = sto
+        tracks["donor", "fret_stoi"] = sto
+        tracks["acceptor", "fret_stoi"] = sto
+        tracks.reindex(columns=tracks.columns.sortlevel(0)[0])

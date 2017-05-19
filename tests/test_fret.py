@@ -19,46 +19,48 @@ class TestInterpolateCoords(unittest.TestCase):
         self.trc = pd.DataFrame(xy, columns=["x", "y"])
         self.trc["frame"] = np.arange(2, 12)
         self.trc["particle"] = 0
-        self.trc["interp"] = False
-        self.trc.loc[[1, 4, 5], "interp"] = True
+        self.trc["interp"] = 0
+        self.trc.loc[[1, 4, 5], "interp"] = 1
 
     def test_simple(self):
-        trc_miss = self.trc[~self.trc["interp"]]
+        """fret.interpolate_coords: Simple test"""
+        trc_miss = self.trc[~self.trc["interp"].astype(bool)]
         trc_interp = fret.interpolate_coords(trc_miss)
-        np.testing.assert_allclose(trc_interp.values.astype(np.float),
-                                   self.trc.values.astype(np.float))
+
+        pd.testing.assert_frame_equal(trc_interp, self.trc)
 
     def test_multi_particle(self):
+        """fret.interpolate_coords: Multiple particles"""
         trc2 = self.trc.copy()
         trc2["particle"] = 1
         trc_all = pd.concat([self.trc, trc2], ignore_index=True)
 
-        trc_miss = trc_all[~trc_all["interp"]]
+        trc_miss = trc_all[~trc_all["interp"].astype(bool)]
         trc_interp = fret.interpolate_coords(trc_miss)
 
-        np.testing.assert_allclose(trc_interp.values.astype(np.float),
-                                   trc_all.values.astype(np.float))
+        pd.testing.assert_frame_equal(trc_interp, trc_all)
 
     def test_extra_column(self):
+        """fret.interpolate_coords: Extra column in DataFrame"""
         self.trc["extra"] = 1
-        trc_miss = self.trc[~self.trc["interp"]]
+        trc_miss = self.trc[~self.trc["interp"].astype(bool)]
 
         trc_interp = fret.interpolate_coords(trc_miss)
-        self.trc.loc[self.trc["interp"], "extra"] = np.NaN
+        self.trc.loc[self.trc["interp"].astype(bool), "extra"] = np.NaN
 
-        np.testing.assert_allclose(trc_interp.values.astype(np.float),
-                                   self.trc.values.astype(np.float))
+        pd.testing.assert_frame_equal(trc_interp, self.trc)
 
     def test_shuffle(self):
+        """fret.interpolate_coords: Shuffled data"""
         trc_shuffle = self.trc.iloc[np.random.permutation(len(self.trc))]
-        trc_miss = trc_shuffle[~trc_shuffle["interp"]]
+        trc_miss = trc_shuffle[~trc_shuffle["interp"].astype(bool)]
         trc_interp = fret.interpolate_coords(trc_miss)
 
-        np.testing.assert_allclose(trc_interp.values.astype(np.float),
-                                   self.trc.values.astype(np.float))
+        pd.testing.assert_frame_equal(trc_interp, self.trc)
 
     def test_values_dtype(self):
-        trc_miss = self.trc[~self.trc["interp"]]
+        """fret.interpolate_coords: dtype of DataFrame's `values`"""
+        trc_miss = self.trc[~self.trc["interp"].astype(bool)]
         trc_interp = fret.interpolate_coords(trc_miss)
         v = trc_interp[["x", "y", "frame", "particle"]].values
         assert(v.dtype == np.dtype(np.float64))
@@ -103,6 +105,7 @@ class TestSmFretData(unittest.TestCase):
             pd.Panel(OrderedDict(donor=don, acceptor=acc)))
 
     def test_track(self):
+        """fret.SmFretData: Construct via tracking"""
         fret_data = fret.SmFretData.track(
             "d", self.don_img, self.acc_img,
             self.don_loc.drop([2, 3, 5]), self.acc_loc.drop(5),
@@ -119,15 +122,20 @@ class TestSmFretData(unittest.TestCase):
             l["particle"] = 0.
             l["frame"] = np.arange(self.num_frames)
 
-        exp = pd.Panel(OrderedDict(donor=self.don_loc.drop(5),
-                                   acceptor=self.acc_loc.drop(5)))
+        exp = pd.concat([self.don_loc.drop(5).reset_index(drop=True),
+                         self.acc_loc.drop(5).reset_index(drop=True)],
+                        keys=["donor", "acceptor"], axis=1)
         cols = ["x", "y", "frame", "particle", "signal", "mass", "bg",
                 "bg_dev"]
-        np.testing.assert_allclose(
-            fret_data.tracks.loc[["donor", "acceptor"], :, cols],
-            exp.loc[["donor", "acceptor"], :, cols])
+
+        for l0 in ("donor", "acceptor"):
+            with self.subTest(channel=l0):
+                pd.testing.assert_frame_equal(
+                    fret_data.tracks[l0][cols], exp[l0][cols],
+                    check_dtype=False)
 
     def test_track_interpolate(self):
+        """fret.SmFretData: Construct via tracking (with interpolation)"""
         fret_data = fret.SmFretData.track(
             "d", self.don_img, self.acc_img,
             self.don_loc.drop([2, 3, 5]), self.acc_loc.drop(5),
@@ -143,14 +151,20 @@ class TestSmFretData(unittest.TestCase):
             l["interp"] = 0.
             l.loc[5, "interp"] = 1.
 
-        exp = pd.Panel(OrderedDict(donor=self.don_loc, acceptor=self.acc_loc))
+        exp = pd.concat([self.don_loc.reset_index(drop=True),
+                         self.acc_loc.reset_index(drop=True)],
+                        keys=["donor", "acceptor"], axis=1)
         cols = ["x", "y", "frame", "particle", "signal", "mass", "bg",
                 "bg_dev", "interp"]
-        np.testing.assert_allclose(
-            fret_data.tracks.loc[["donor", "acceptor"], :, cols],
-            exp.loc[["donor", "acceptor"], :, cols])
+
+        for l0 in ("donor", "acceptor"):
+            with self.subTest(channel=l0):
+                pd.testing.assert_frame_equal(
+                    fret_data.tracks[l0][cols], exp[l0][cols],
+                    check_dtype=False)
 
     def test_get_track_pixels(self):
+        """fret.SmFretData: `get_track_pixels` method"""
         sz = 4
         x, y = self.don_loc.loc[0, ["x", "y"]]
         px_d = self.don_img[0][y-sz:y+sz+1, x-sz:x+sz+1]
@@ -171,22 +185,39 @@ class TestSmFretAnalyzer(unittest.TestCase):
         self.analyzer = fret.SmFretAnalyzer(self.desc)
 
     def test_init(self):
+        """fret.SmFretAnalyzer: Simple init"""
         np.testing.assert_equal(self.analyzer.don, self.don)
         np.testing.assert_equal(self.analyzer.acc, self.acc)
 
     def test_with_acceptor(self):
+        """fret.SmFretAnalyzer: `with_acceptor` method"""
         loc = np.column_stack([np.arange(10), np.full(10, 0, dtype=int)])
         df = pd.DataFrame(loc, columns=["frame", "particle"])
         df2 = df.copy()
         df2 = df2[~(df2["frame"] % len(self.desc)).isin(self.acc)]
         df2["particle"] = 1
         tracks = pd.concat((df, df2))
-        tracks = pd.Panel(OrderedDict(donor=tracks, acceptor=tracks))
+        tracks = pd.concat([tracks, tracks], keys=["donor", "acceptor"],
+                           axis=1)
+
         result = self.analyzer.with_acceptor(tracks)
-        expected = pd.Panel(OrderedDict(donor=df, acceptor=df))
-        np.testing.assert_allclose(result, expected)
+
+        expected = pd.concat([df, df], keys=["donor", "acceptor"], axis=1)
+        pd.testing.assert_frame_equal(result, expected)
+
+    def test_with_acceptor_empty(self):
+        """fret.SmFretAnalyzer: `with_acceptor` method (no acceptor)"""
+        loc = np.column_stack([np.arange(10), np.full(10, 0, dtype=int)])
+        df2 = pd.DataFrame(loc, columns=["frame", "particle"])
+        df2 = df2[~(df2["frame"] % len(self.desc)).isin(self.acc)]
+        tracks = pd.concat([df2, df2], keys=["donor", "acceptor"], axis=1)
+
+        result = self.analyzer.with_acceptor(tracks)
+
+        pd.testing.assert_frame_equal(result, tracks.iloc[:0])
 
     def test_with_acceptor_filter(self):
+        """fret.SmFretAnalyzer: `with_acceptor` method, filter enabled"""
         loc = np.column_stack([np.arange(10), np.full(10, 0, dtype=int)])
         df = pd.DataFrame(loc, columns=["frame", "particle"])
         df["mass"] = 1000
@@ -194,101 +225,124 @@ class TestSmFretAnalyzer(unittest.TestCase):
         df2["mass"] = 900
         df2["particle"] = 1
         tracks = pd.concat((df, df2))
-        tracks = pd.Panel(OrderedDict(donor=tracks, acceptor=tracks))
+        tracks = pd.concat([tracks, tracks], keys=["donor", "acceptor"],
+                           axis=1)
+
         result = self.analyzer.with_acceptor(tracks, "mass > 950")
-        expected = pd.Panel(OrderedDict(donor=df, acceptor=df))
-        np.testing.assert_allclose(result, expected)
+
+        expected = pd.concat([df, df], keys=["donor", "acceptor"], axis=1)
+        pd.testing.assert_frame_equal(result, expected)
 
     def test_select_fret(self):
-        # test select_fret with acc_start and acc_end parameters
+        """fret.SmFretAnalyzer: `select_fret` method"""
         loc = pd.DataFrame(np.arange(20), columns=["frame"])
         loc["particle"] = 0
         a = np.nonzero((loc["frame"] % len(self.desc)).isin(self.acc))[0]
         ld = loc.drop(a[-1])
-        r = self.analyzer.select_fret(pd.Panel(dict(donor=ld, acceptor=ld)),
-                                      filter=None, acc_start=True,
+        tracks = pd.concat([ld, ld], keys=["donor", "acceptor"], axis=1)
+
+        r = self.analyzer.select_fret(tracks, filter=None, acc_start=True,
                                       acc_end=True)
+
         le = loc[(loc["frame"] >= a[0]) & (loc["frame"] <= a[-2])]
-        e = pd.Panel(dict(donor=le, acceptor=le))
-        np.testing.assert_allclose(r, e)
+        e = pd.concat([le, le], keys=["donor", "acceptor"], axis=1)
+        pd.testing.assert_frame_equal(r, e)
+
+    def test_select_fret_empty(self):
+        """fret.SmFretAnalyzer: `select_fret` method (no acceptor)"""
+        loc = pd.DataFrame(np.arange(20), columns=["frame"])
+        loc["particle"] = 0
+        a = np.nonzero((loc["frame"] % len(self.desc)).isin(self.acc))[0]
+        ld = loc.drop(a)
+        tracks = pd.concat([ld, ld], keys=["donor", "acceptor"], axis=1)
+
+        r = self.analyzer.select_fret(tracks, filter=None, acc_start=True,
+                                      acc_end=True)
+
+        pd.testing.assert_frame_equal(r, tracks.iloc[:0])
 
     def test_select_fret_filter(self):
-        # test select_fret's filter parameter
+        """fret.SmFretAnalyzer: `select_fret` method, filter enabled"""
         loc = pd.DataFrame(np.arange(20), columns=["frame"])
         loc["particle"] = 0
         loc["mass"] = 1000
         a = np.nonzero((loc["frame"] % len(self.desc)).isin(self.acc))[0]
         loc.loc[a[-1], "mass"] = 800
-        r = self.analyzer.select_fret(pd.Panel(dict(donor=loc, acceptor=loc)),
-                                      filter="mass > 900", acc_start=False,
-                                      acc_end=True)
+        tracks = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
+
+        r = self.analyzer.select_fret(tracks, filter="mass > 900",
+                                      acc_start=False, acc_end=True)
+
         le = loc[loc["frame"] <= a[-2]]
-        e = pd.Panel(dict(donor=le, acceptor=le))
-        np.testing.assert_allclose(r, e)
+        e = pd.concat([le, le], keys=["donor", "acceptor"], axis=1)
+        pd.testing.assert_frame_equal(r, e)
 
     def test_select_fret_fraction(self):
-        # test select_fret's acc_fraction parameter
+        """fret.SmFretAnalyzer: `select_fret` method, `acc_fraction` param"""
         loc = pd.DataFrame(np.arange(20), columns=["frame"])
         loc["particle"] = 0
         a = np.nonzero((loc["frame"] % len(self.desc)).isin(self.acc))[0]
         loc2 = loc.drop(a[-2])
         loc2["particle"] = 1
         loc_all = pd.concat((loc, loc2))
-        r = self.analyzer.select_fret(
-             pd.Panel(dict(donor=loc_all, acceptor=loc_all)), filter=None,
-             acc_start=False, acc_end=False, acc_fraction=1.)
-        e = pd.Panel(dict(donor=loc, acceptor=loc))
-        np.testing.assert_allclose(r, e)
+        tracks = pd.concat([loc_all, loc_all], keys=["donor", "acceptor"],
+                           axis=1)
+
+        r = self.analyzer.select_fret(tracks, filter=None, acc_start=False,
+                                      acc_end=False, acc_fraction=1.)
+
+        e = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
+        pd.testing.assert_frame_equal(r, e)
 
     def test_select_fret_remove_single(self):
-        # test select_fret's remove_single parameter
+        """fret.SmFretAnalyzer: `select_fret` method, `remove_single` param"""
         a = self.acc[0]
         loc = pd.DataFrame(np.arange(a+1), columns=["frame"])
         loc["particle"] = 0
-        loc_p = pd.Panel(dict(donor=loc, acceptor=loc))
+        loc_p = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
 
         r = self.analyzer.select_fret(loc_p, filter=None, acc_start=True,
                                       acc_end=True, remove_single=False)
-        np.testing.assert_allclose(r, loc_p.loc[:, [a]])
+        pd.testing.assert_frame_equal(r, loc_p.loc[[a]])
 
         r = self.analyzer.select_fret(loc_p, filter=None, acc_start=True,
                                       acc_end=True, remove_single=True)
-        np.testing.assert_allclose(r, loc_p.iloc[:, :0])
+        pd.testing.assert_frame_equal(r, loc_p.iloc[:0])
 
     def test_get_excitation_type(self):
+        """fret.SmFretAnalyzer: `get_excitation_type` method"""
         loc = pd.DataFrame(np.arange(len(self.desc)*2), columns=["frame"])
         loc["particle"] = 0
-        p = pd.Panel(dict(donor=loc, acceptor=loc))
+        p = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
         p2 = p.copy()
         r = self.analyzer.get_excitation_type(p, "d")
         r2 = self.analyzer.get_excitation_type(p, "a")
 
-        d = p.drop(self.acc + [_a + len(self.desc) for _a in self.acc], axis=1)
-        a = p2.drop(self.don + [_d + len(self.desc) for _d in self.don],
-                    axis=1)
+        d = p.drop(self.acc + [_a + len(self.desc) for _a in self.acc])
+        a = p2.drop(self.don + [_d + len(self.desc) for _d in self.don])
 
-        np.testing.assert_allclose(r, d)
-        np.testing.assert_allclose(r2, a)
+        pd.testing.assert_frame_equal(r, d)
+        pd.testing.assert_frame_equal(r2, a)
 
     def test_efficiency(self):
+        """fret.SmFretAnalyzer: `efficiency` method"""
         don_mass = np.array([1, 1, 1])
         acc_mass = np.array([1, 2, 3])
         don = pd.DataFrame(don_mass, columns=["mass"])
         acc = pd.DataFrame(acc_mass, columns=["mass"])
 
-        p = pd.Panel(OrderedDict(donor=don, acceptor=acc))
+        p = pd.concat([don, acc], keys=["donor", "acceptor"], axis=1)
 
         a = fret.SmFretAnalyzer("da")
         a.efficiency(p)
         eff = acc_mass / (don_mass + acc_mass)
 
-        assert("fret_eff" in p.minor_axis)
-        np.testing.assert_allclose(p.loc["donor", :, "fret_eff"], eff)
-        np.testing.assert_allclose(p.loc["acceptor", :, "fret_eff"], eff)
+        assert("fret_eff" in p.columns.levels[1])
+        np.testing.assert_allclose(p["donor", "fret_eff"], eff)
+        np.testing.assert_allclose(p["acceptor", "fret_eff"], eff)
 
     def test_stoichiometry_linear(self):
-        # test stoichiometry with multiple direct acceptor excitations
-        # and linear interpolation
+        """fret.SmFretAnalyzer: `stoichiometry` method, linear interp."""
         loc = pd.DataFrame(np.arange(len(self.desc)*2), columns=["frame"])
         loc["particle"] = 0
         loc["mass"] = 100
@@ -297,20 +351,19 @@ class TestSmFretAnalyzer(unittest.TestCase):
 
         a_direct = self.acc + [a + len(self.desc) for a in self.acc]
         loc.loc[a_direct, "mass"] = linear_mass[a_direct]
-        p = pd.Panel(dict(donor=loc, acceptor=loc))
+        p = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
 
         eloc = loc.copy()
         eloc["fret_stoi"] = 200/(200+linear_mass)
         eloc.loc[a_direct, "fret_stoi"] = np.NaN
-        e = pd.Panel(dict(donor=eloc, acceptor=eloc))
+        e = pd.concat([eloc, eloc], keys=["donor", "acceptor"], axis=1)
 
         self.analyzer.stoichiometry(p, interp="linear")
 
-        np.testing.assert_allclose(p, e)
+        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]], e)
 
     def test_stoichiometry_nearest(self):
-        # test stoichiometry with multiple direct acceptor excitations
-        # and nearest interpolation
+        """fret.SmFretAnalyzer: `stoichiometry` method, nearest interp."""
         loc = pd.DataFrame(np.arange(len(self.desc)*2), columns=["frame"])
         loc["particle"] = 0
         loc["mass"] = 100
@@ -321,7 +374,7 @@ class TestSmFretAnalyzer(unittest.TestCase):
         mass2 = 200
         a_direct2 = [a + len(self.desc) for a in self.acc]
         loc.loc[a_direct2, "mass"] = mass2
-        p = pd.Panel(dict(donor=loc, acceptor=loc))
+        p = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
 
         eloc = loc.copy()
         eloc["fret_stoi"] = 200/(200+mass1)
@@ -332,29 +385,29 @@ class TestSmFretAnalyzer(unittest.TestCase):
         near2 = np.abs(loc["frame"] - last1) > np.abs(loc["frame"] - first2)
         eloc.loc[near2, "fret_stoi"] = 200/(200+mass2)
         eloc.loc[a_direct2, "fret_stoi"] = np.NaN
-        e = pd.Panel(dict(donor=eloc, acceptor=eloc))
+        e = pd.concat([eloc, eloc], keys=["donor", "acceptor"], axis=1)
 
         self.analyzer.stoichiometry(p, interp="nearest")
 
-        np.testing.assert_allclose(p, e)
+        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]], e)
 
     def test_stoichiometry_single(self):
-        # test stoichiometry with one single direct acceptor excitation
+        """fret.SmFretAnalyzer: `stoichiometry` method, single acceptor"""
         a = self.acc[0]
         loc = pd.DataFrame(np.arange(a+1), columns=["frame"])
         loc["particle"] = 0
         loc["mass"] = 100
         loc.loc[a, "mass"] = 150
-        p = pd.Panel(dict(donor=loc, acceptor=loc))
+        p = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
 
         eloc = loc.copy()
         eloc["fret_stoi"] = 200/(200+150)
         eloc.loc[a, "fret_stoi"] = np.NaN
-        e = pd.Panel(dict(donor=eloc, acceptor=eloc))
+        e = pd.concat([eloc, eloc], keys=["donor", "acceptor"], axis=1)
 
         self.analyzer.stoichiometry(p)
 
-        np.testing.assert_allclose(p, e)
+        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]], e)
 
 
 if __name__ == "__main__":
