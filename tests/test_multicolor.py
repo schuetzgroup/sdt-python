@@ -27,10 +27,6 @@ class TestMulticolor(unittest.TestCase):
                       [20, 30, 40, 3]], dtype=float)
         self.pos2 = pd.DataFrame(b, columns=["x", "y", "z", "frame"])
 
-        c = np.repeat([[10, 10, 1, 1]], 10, axis=0)
-        c[:, -1] = np.arange(10)
-        self.track = pd.DataFrame(c, columns=["x", "y", "particle", "frame"])
-
     def test_find_closest_pairs(self):
         """multicolor: Test `find_closest_pairs` function"""
         c1 = np.array([[10, 20], [11, 20], [20, 30]])
@@ -111,6 +107,13 @@ class TestMulticolor(unittest.TestCase):
 
         np.testing.assert_allclose(merged, expected)
 
+
+class TestFindCodiffusion(unittest.TestCase):
+    def setUp(self):
+        c = np.repeat([[10, 10, 1, 1]], 10, axis=0)
+        c[:, -1] = np.arange(10)
+        self.track = pd.DataFrame(c, columns=["x", "y", "particle", "frame"])
+
     def test_find_codiffusion_numbers(self):
         """multicolor.find_codiffusion: Test returning the particle numbers"""
         codiff = sdt.multicolor.find_codiffusion(self.track, self.track,
@@ -124,10 +127,11 @@ class TestMulticolor(unittest.TestCase):
         orig1 = self.track.copy()
         orig1["particle"] = 0
 
-        np.testing.assert_allclose(codiff["channel1"], orig1)
+        exp = pd.concat([orig1, orig1], keys=["channel1", "channel2"], axis=1)
+        pd.testing.assert_frame_equal(codiff, exp)
 
     def test_find_codiffusion_data_merge(self):
-        """multicolor.find_codiffusion: Test merging into panel"""
+        """multicolor.find_codiffusion: Test merging into DataFrame"""
         track2 = self.track.copy()
         track2["particle"] = 3
         track2.drop(4, inplace=True)
@@ -138,8 +142,8 @@ class TestMulticolor(unittest.TestCase):
         orig2 = orig1.copy()
         orig2.loc[4, ["x", "y"]] = np.NaN
 
-        np.testing.assert_allclose(codiff["channel1"], orig1)
-        np.testing.assert_allclose(codiff["channel2"], orig2)
+        exp = pd.concat([orig1, orig2], keys=["channel1", "channel2"], axis=1)
+        pd.testing.assert_frame_equal(codiff, exp)
 
     def test_find_codiffusion_long_channel1(self):
         """multicolor.find_codiffusion: Match one long to two short tracks"""
@@ -156,8 +160,10 @@ class TestMulticolor(unittest.TestCase):
         orig = self.track.drop([3, 4, 5, 6])
         orig.loc[:3, "particle"] = 0
         orig.loc[3:, "particle"] = 1
-        np.testing.assert_allclose(data["channel1"], orig)
-        np.testing.assert_allclose(data["channel2"], orig)
+        orig.reset_index(drop=True, inplace=True)
+
+        exp = pd.concat([orig, orig], keys=["channel1", "channel2"], axis=1)
+        pd.testing.assert_frame_equal(data, exp)
 
     def test_find_codiffusion_long_channel2(self):
         """multicolor.find_codiffusion: Match two short tracks to one long"""
@@ -174,8 +180,10 @@ class TestMulticolor(unittest.TestCase):
         orig = self.track.drop([3, 4, 5, 6])
         orig.loc[:3, "particle"] = 0
         orig.loc[3:, "particle"] = 1
-        np.testing.assert_allclose(data["channel1"], orig)
-        np.testing.assert_allclose(data["channel2"], orig)
+        orig.reset_index(drop=True, inplace=True)
+
+        exp = pd.concat([orig, orig], keys=["channel1", "channel2"], axis=1)
+        pd.testing.assert_frame_equal(data, exp)
 
     def test_find_codiffusion_abs_thresh(self):
         """multicolor.find_codiffusion: Test the `abs_threshold` parameter"""

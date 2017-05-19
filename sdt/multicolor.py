@@ -228,7 +228,7 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
     return_data : {"data", "numbers", "both"}, optional
         Whether to return the full data of the codiffusing particles, only
         their particle numbers, or both. Defaults to "data".
-    feature_pairs : pandas.Panel or None, optional
+    feature_pairs : pandas.DataFrame or None, optional
         If :py:func:`find_colocalizations` has already been called on the
         data, the result can be passed to save re-computation. If `None`,
         :py:func:`find_colocalizations` is called in this function. Defaults
@@ -241,11 +241,12 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
 
     Returns
     -------
-    data : pandas.Panel
+    data : pandas.DataFrame
         Full data (from `tracks1` and `tracks2`) of the codiffusing particles.
-        For each item of the panel, entries with the same index (i. e. lines
-        in the DataFrame) correspond to matching localizations. Returned if
-        `return_data` is "data" or "both".
+        The DataFrame has a multi-index for columns with the top level
+        being the two channels.  Each line of DataFrame corresponds to one pair
+        of colocalizing particles. Returned if `return_data` is "data" or
+        "both".
     match_numbers : numpy.ndarray, shape=(n, 4)
         Each row's first entry is a particle number in the first channel and
         its second entry is the matching particle number in the second channel.
@@ -289,7 +290,7 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         return matches
 
     data = []
-    # construct the Panel
+    # construct the DataFrame to be returned
     for new_pn, (pn1, pn2, start, end) in enumerate(matches):
         # get tracks between start frame and end frame
         t1 = tracks1[tracks1["particle"] == pn1]
@@ -300,19 +301,17 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         t1 = t1.set_index("frame", drop=False)  # copy so that the original
         t2 = t2.set_index("frame", drop=False)  # is not overridden here
 
-        p = pd.Panel({channel_names[0]: t1, channel_names[1]: t2})
+        p = pd.concat([t1, t2], keys=channel_names, axis=1)
         # assign new particle number
-        p.loc[:, :, "particle"] = new_pn
+        p.loc[:, (slice(None), "particle")] = new_pn
         # assign frame number even to localizations that are missing in one
-        # channel (instead of a NaN). Thanks to set_index above, axes[1] is
+        # channel (instead of a NaN). Thanks to set_index above, axes[0] is
         # the list of frame numbers
-        # Unfortunately, p.loc[:, :, "frame"] = p.axes[1] does not work
-        # as of pandas 0.18.1 if the frame columns have different dtypes
-        for label in p:
-            p.loc[label, :, "frame"] = p.axes[1]
+        p.loc[:, (slice(None), "frame")] = \
+            np.broadcast_to(p.axes[0][:, np.newaxis], (len(p), 2))
         data.append(p)
 
-    data = (pd.concat(data, axis=1, ignore_index=True))
+    data = pd.concat(data, ignore_index=True)
 
     if return_data == "data":
         return data
