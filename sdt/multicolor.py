@@ -380,14 +380,16 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
     ax.set_aspect(1.)
 
     col = getattr(data, "columns", None)
-    if isinstance(col, pd.MultiIndex):
-        if channel_names is None:
+    if channel_names is None:
+        if isinstance(col, pd.MultiIndex):
             channel_names = col.levels[0][:2]
-        d_iter = (data.loc[data[c, "particle"] == particle, c]
-                  for c in col.levels[0][:2])
-    else:
-        if channel_names is None:
+        else:
             channel_names = _channel_names
+
+    if isinstance(data, pd.DataFrame):
+        d_iter = (data.loc[data[c, "particle"] == particle, c]
+                  for c in channel_names)
+    else:
         if not isinstance(particle, collections.Iterable):
             particle = (particle,) * len(data)
         d_iter = (d[d["particle"] == p] for d, p in zip(data, particle))
