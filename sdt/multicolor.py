@@ -333,12 +333,12 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
 
     Parameters
     ----------
-    data : pandas.Panel or tuple of pandas.DataFrames
+    data : pandas.DataFrame or tuple of pandas.DataFrames
         Tracking data of codiffusing particles. This can be a
-        :py:class:`pandas.Panel` as e. g. returned by
-        :py:func:`find_codiffusion` (i. e. matching indices in the DataFrames
-        correspond to matching localizations) or a tuple of DataFrames, one
-        for each channel.
+        :py:class:`pandas.DataFrame` with a MultiIndex for columns as e. g.
+        returned by :py:func:`find_codiffusion` (i. e. matching indices in the
+        DataFrames correspond to matching localizations) or a tuple of
+        DataFrames, one for each channel.
     particle : int or tuple of int
         Specify particle ID. In case `data` is a list of DataFrames and the
         particles have different IDs, one can pass the tuple of IDs.
@@ -357,8 +357,10 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
         Names of the columns describing the x and the y coordinate of the
         features in pandas.DataFrames.
     channel_names : list of str or None, optional
-        Names of the channels. If None, use the item names of `data` if it is
-        a panel, otherwise use ["channel1", "channel2"]. Defaults to None.
+        Names of the channels. If None, use the first two entries of teh top
+        level of `data`'s MultiIndex if it has one (i. e. if it is a DataFrame
+        as created by :py:func:`find_codiffusion`), otherwise use
+        ["channel1", "channel2"]. Defaults to None.
 
     Other parameters
     ----------------
@@ -377,10 +379,12 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
 
     ax.set_aspect(1.)
 
-    if isinstance(data, pd.Panel):
+    col = getattr(data, "columns", None)
+    if isinstance(col, pd.MultiIndex):
         if channel_names is None:
-            channel_names = data.items
-        d_iter = (d[d["particle"] == particle] for n, d in data.iteritems())
+            channel_names = col.levels[0][:2]
+        d_iter = (data.loc[data[c, "particle"] == particle, c]
+                  for c in col.levels[0][:2])
     else:
         if channel_names is None:
             channel_names = _channel_names

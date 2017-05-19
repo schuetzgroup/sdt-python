@@ -5,6 +5,14 @@ import os
 import numpy as np
 import pandas as pd
 
+try:
+    import matplotlib as mpl
+    mpl.use("Agg")
+    import matplotlib.pyplot as plt
+    mpl_available = True
+except ImportError:
+    mpl_available = False
+
 import sdt.multicolor
 
 
@@ -210,6 +218,48 @@ class TestFindCodiffusion(unittest.TestCase):
             rel_threshold=0.8, return_data="numbers")
 
         np.testing.assert_allclose(numbers, [[1, 2, 4, 9]])
+
+
+class TestPlotCodiffusion(unittest.TestCase):
+    def setUp(self):
+        pos = np.array([np.arange(10), np.arange(10),
+                        np.arange(10), np.zeros(10)]).T
+        self.track1 = pd.DataFrame(pos,
+                                   columns=["x", "y", "frame", "particle"])
+        self.track2 = self.track1.copy()
+        self.track2["x"] += 0.5
+
+    @unittest.skipUnless(mpl_available, "matplotlib not available")
+    def test_plot_codiffusion_single(self):
+        """multicolor.plot_codiffusion: Basic test (single DataFrame)"""
+        df = pd.concat((self.track1, self.track2),
+                       keys=["channel1", "channel2"], axis=1)
+
+        fig, ax = plt.subplots(1, 1)
+        sdt.multicolor.plot_codiffusion(df, 0, ax=ax)
+
+        lc = ax.findobj(mpl.collections.LineCollection)
+        for i, t in enumerate([self.track1, self.track2]):
+            # Check if both line segments are correct
+            t = t[["x", "y"]].values
+            exp = [t[i:i+2] for i in range(len(t)-1)]
+            with self.subTest(i=i):
+                np.testing.assert_allclose(lc[i].get_segments(), exp)
+
+    @unittest.skipUnless(mpl_available, "matplotlib not available")
+    def test_plot_codiffusion_dual(self):
+        """multicolor.plot_codiffusion: Basic test (two DataFrames)"""
+        fig, ax = plt.subplots(1, 1)
+        sdt.multicolor.plot_codiffusion([self.track1, self.track2], [0, 0],
+                                        ax=ax)
+
+        lc = ax.findobj(mpl.collections.LineCollection)
+        for i, t in enumerate([self.track1, self.track2]):
+            # Check if both line segments are correct
+            t = t[["x", "y"]].values
+            exp = [t[i:i+2] for i in range(len(t)-1)]
+            with self.subTest(i=i):
+                np.testing.assert_allclose(lc[i].get_segments(), exp)
 
 
 if __name__ == "__main__":
