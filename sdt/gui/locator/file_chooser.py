@@ -198,7 +198,7 @@ class FileChooser(fcBase):
     def _addFilesSlot(self):
         fnames = qtpy.compat.getopenfilenames(
             self, self._tr("Open file"), "",
-            self._tr("Image sequence (*.spe *.tif *.tiff)") + ";;" +
+            self._tr("Image sequence (*.spe *.tif *.tiff *.stk)") + ";;" +
             self._tr("All files (*)"))
         self.addFiles(fnames[0])
 
