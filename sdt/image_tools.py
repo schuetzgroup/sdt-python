@@ -129,9 +129,9 @@ class ROI(object):
                     (data[y] > self.top_left[1]) &
                     (data[y] < self.bottom_right[1]))
             if invert:
-                roi_data = data[~mask]
+                roi_data = data[~mask].copy()
             else:
-                roi_data = data[mask]
+                roi_data = data[mask].copy()
             if reset_origin and not invert:
                 roi_data.loc[:, x] -= self.top_left[0]
                 roi_data.loc[:, y] -= self.top_left[1]
@@ -304,9 +304,9 @@ class PathROI(object):
 
             roi_mask = self._path.contains_points(data[pos_columns])
             if invert:
-                roi_data = data[~roi_mask]
+                roi_data = data[~roi_mask].copy()
             else:
-                roi_data = data[roi_mask]
+                roi_data = data[roi_mask].copy()
             if reset_origin and not invert:
                 roi_data.loc[:, pos_columns[0]] -= self._top_left[0]
                 roi_data.loc[:, pos_columns[1]] -= self._top_left[1]
