@@ -1,6 +1,5 @@
 import unittest
 import os
-import collections
 import tempfile
 
 import numpy as np
@@ -17,34 +16,6 @@ data_path = os.path.join(path, "data_image_tools")
 
 
 class TestImageTools(unittest.TestCase):
-    def setUp(self):
-        self.rois = [
-            collections.OrderedDict((("top_left", [0, 0]),
-                                     ("bottom_right", [100, 100]),
-                                     ("bin", [1, 1]))),
-            collections.OrderedDict((("top_left", [10, 10]),
-                                     ("bottom_right", [100, 130]),
-                                     ("bin", [1, 2])))]
-        a = [(d["top_left"][0], d["bottom_right"][0], d["bin"][0],
-              d["top_left"][1], d["bottom_right"][1], d["bin"][1])
-             for d in self.rois]
-        dt = [("startx", "<u2"), ("endx", "<u2"), ("groupx", "<u2"),
-              ("starty", "<u2"), ("endy", "<u2"), ("groupy", "<u2")]
-        self.rois_array = np.array(a, dtype=dt)
-
-    def test_roi_array_to_odict(self):
-        res = image_tools.roi_array_to_odict(self.rois_array)
-        assert(res == self.rois)
-
-    def test_metadata_to_yaml(self):
-        c = np.array([" "*10]*5, dtype="<U10")
-        md = dict(ROIs=self.rois_array, comments=c, subpics=10)
-        y = image_tools.metadata_to_yaml(md)
-        res = yaml.load(y)
-
-        expected = dict(ROIs=self.rois, comments=c.tolist(), subpics=10)
-        assert(res == expected)
-
     def test_save_as_tiff(self):
         img1 = np.zeros((5, 5)).view(pims.Frame)
         img1[2, 2] = 1

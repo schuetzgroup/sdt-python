@@ -1,7 +1,5 @@
 """Various simple tools for dealing with microscopy images"""
 import logging
-from contextlib import suppress
-from collections import OrderedDict
 
 import yaml
 import numpy as np
@@ -12,85 +10,7 @@ import tifffile
 from slicerator import pipeline
 
 
-pd.options.mode.chained_assignment = None  # Get rid of the warning
-
 _logger = logging.getLogger(__name__)
-
-
-# Save tuples and OrderedDicts to YAML
-class _MetadataDumper(yaml.SafeDumper):
-    pass
-
-
-def _yaml_dict_representer(dumper, data):
-    return dumper.represent_dict(data.items())
-
-
-def _yaml_list_representer(dumper, data):
-    return dumper.represent_list(data)
-
-
-_MetadataDumper.add_representer(OrderedDict, _yaml_dict_representer)
-_MetadataDumper.add_representer(tuple, _yaml_list_representer)
-
-
-def roi_array_to_odict(a):
-    """Convert the `ROIs` structured arrays to :py:class:`OrderedDict`
-
-    :py:class:`pims.SpeStack` reads the ROI data into a structured numpy array.
-    This converts the array into a list of :py:class:`OrderedDict`.
-
-    Parameters
-    ----------
-    a : numpy.ndarray
-        Structured array containing ROI data as in the ``metadata["ROIs"]``
-        fields of a :py:class:`pims.SpeStack`. Required dtype names are
-        "startx", "starty", "endx", "endy", "groupx", and "groupy".
-
-    Returns
-    -------
-    list of OrderedDict
-        One dict per ROI. Keys are "top_left", "bottom_right", and "bin",
-        values are tuples whose first element is the x axis value and the
-        second element is the y axis value.
-    """
-    # This cannot be put into pims.py since then importing this function
-    # would also make the classes in pims.py known and pims.open() would
-    # use them.
-    l = []
-    a = a[["startx", "starty", "endx", "endy", "groupx", "groupy"]]
-    for sx, sy, ex, ey, gx, gy in a:
-        d = OrderedDict((("top_left", [int(sx), int(sy)]),
-                         ("bottom_right", [int(ex), int(ey)]),
-                         ("bin", [int(gx), int(gy)])))
-        l.append(d)
-    return l
-
-
-def metadata_to_yaml(metadata):
-    """Serialize a metadata dict to a YAML string
-
-    Parameters
-    ----------
-    metadata : dict
-        Metadata as created by :py:func:`pims.open`'ing an SPE file
-
-    Returns
-    -------
-    str
-        YAML string
-    """
-    md = metadata.copy()
-    with suppress(Exception):
-        rs = md["ROIs"]
-        if isinstance(rs, np.ndarray):
-            md["ROIs"] = roi_array_to_odict(rs)
-    with suppress(Exception):
-        md["comments"] = md["comments"].tolist()
-    with suppress(Exception):
-        md.pop("DateTime")
-
-    return yaml.dump(md, Dumper=_MetadataDumper)
 
 
 def save_as_tiff(frames, filename):
@@ -108,20 +28,21 @@ def save_as_tiff(frames, filename):
     filename : str
         Name of the output file
     """
+    from .data import yaml as syaml  # Avoid circular dependency
+
     with tifffile.TiffWriter(filename, software="sdt.image_tools") as tw:
         for f in frames:
             desc = None
             dt = None
             if hasattr(f, "metadata") and isinstance(f.metadata, dict):
+                md = f.metadata.copy()
+                dt = md.pop("DateTime", None)
                 try:
-                    desc = metadata_to_yaml(f.metadata)
+                    desc = yaml.dump(md, Dumper=syaml.SafeDumper)
                 except Exception:
                     _logger.error(
-                        "{}: Failed to serialize metadata to YAML ".format(
+                        "{}: Failed to serialize metadata to YAML".format(
                             filename))
-
-                with suppress(Exception):
-                    dt = f.metadata["DateTime"]
 
             tw.save(f, description=desc, datetime=dt)
 
