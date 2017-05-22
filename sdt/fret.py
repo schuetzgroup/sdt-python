@@ -737,8 +737,7 @@ class SmFretAnalyzer:
         a_mass = tracks["acceptor", "mass"]
         d_mass = tracks["donor", "mass"]
         eff = a_mass / (d_mass + a_mass)
-        tracks.loc[:, ("donor", "fret_eff")] = eff
-        tracks.loc[:, ("acceptor", "fret_eff")] = eff
+        tracks["fret", "eff"] = eff
 
     def stoichiometry(self, tracks, interp="linear"):
         """Calculate a measure of the stoichiometry
@@ -798,6 +797,5 @@ class SmFretAnalyzer:
             s = total_mass / (total_mass + a_mass)
             s[a_direct_mask] = np.NaN  # direct acceptor excitation is NaN
             sto[p_mask] = s
-        tracks["donor", "fret_stoi"] = sto
-        tracks["acceptor", "fret_stoi"] = sto
+        tracks["fret", "stoi"] = sto
         tracks.reindex(columns=tracks.columns.sortlevel(0)[0])

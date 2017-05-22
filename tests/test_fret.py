@@ -337,15 +337,16 @@ class TestSmFretAnalyzer(unittest.TestCase):
         a.efficiency(p)
         eff = acc_mass / (don_mass + acc_mass)
 
-        assert("fret_eff" in p.columns.levels[1])
-        np.testing.assert_allclose(p["donor", "fret_eff"], eff)
-        np.testing.assert_allclose(p["acceptor", "fret_eff"], eff)
+        assert("fret" in p.columns.levels[0])
+        assert("eff" in p.columns.levels[1])
+        np.testing.assert_allclose(p["fret", "eff"], eff)
 
     def test_stoichiometry_linear(self):
         """fret.SmFretAnalyzer: `stoichiometry` method, linear interp."""
+        mass = 100
         loc = pd.DataFrame(np.arange(len(self.desc)*2), columns=["frame"])
         loc["particle"] = 0
-        loc["mass"] = 100
+        loc["mass"] = mass
 
         linear_mass = loc["frame"] * 10
 
@@ -353,61 +354,65 @@ class TestSmFretAnalyzer(unittest.TestCase):
         loc.loc[a_direct, "mass"] = linear_mass[a_direct]
         p = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
 
-        eloc = loc.copy()
-        eloc["fret_stoi"] = 200/(200+linear_mass)
-        eloc.loc[a_direct, "fret_stoi"] = np.NaN
-        e = pd.concat([eloc, eloc], keys=["donor", "acceptor"], axis=1)
+        eloc = p.copy()
+        eloc["fret", "stoi"] = (mass + mass) / (mass + mass + linear_mass)
+        eloc.loc[a_direct, ("fret", "stoi")] = np.NaN
 
         self.analyzer.stoichiometry(p, interp="linear")
 
-        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]], e)
+        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]],
+                                      eloc)
 
     def test_stoichiometry_nearest(self):
         """fret.SmFretAnalyzer: `stoichiometry` method, nearest interp."""
+        mass = 100
         loc = pd.DataFrame(np.arange(len(self.desc)*2), columns=["frame"])
         loc["particle"] = 0
-        loc["mass"] = 100
+        loc["mass"] = mass
 
-        mass1 = 150
+        mass_acc1 = 150
         a_direct1 = self.acc
-        loc.loc[a_direct1, "mass"] = mass1
-        mass2 = 200
+        loc.loc[a_direct1, "mass"] = mass_acc1
+        mass_acc2 = 200
         a_direct2 = [a + len(self.desc) for a in self.acc]
-        loc.loc[a_direct2, "mass"] = mass2
+        loc.loc[a_direct2, "mass"] = mass_acc2
         p = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
 
-        eloc = loc.copy()
-        eloc["fret_stoi"] = 200/(200+mass1)
-        eloc.loc[a_direct1, "fret_stoi"] = np.NaN
+        eloc = p.copy()
+        eloc["fret", "stoi"] = (mass + mass) / (mass + mass + mass_acc1)
+        eloc.loc[a_direct1, ("fret", "stoi")] = np.NaN
 
         last1 = self.acc[-1]
         first2 = self.acc[0] + len(self.desc)
         near2 = np.abs(loc["frame"] - last1) > np.abs(loc["frame"] - first2)
-        eloc.loc[near2, "fret_stoi"] = 200/(200+mass2)
-        eloc.loc[a_direct2, "fret_stoi"] = np.NaN
-        e = pd.concat([eloc, eloc], keys=["donor", "acceptor"], axis=1)
+        eloc.loc[near2, ("fret", "stoi")] = \
+            (mass + mass) / (mass + mass + mass_acc2)
+        eloc.loc[a_direct2, ("fret", "stoi")] = np.NaN
 
         self.analyzer.stoichiometry(p, interp="nearest")
 
-        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]], e)
+        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]],
+                                      eloc)
 
     def test_stoichiometry_single(self):
         """fret.SmFretAnalyzer: `stoichiometry` method, single acceptor"""
+        mass = 100
+        mass_acc = 150
         a = self.acc[0]
         loc = pd.DataFrame(np.arange(a+1), columns=["frame"])
         loc["particle"] = 0
-        loc["mass"] = 100
-        loc.loc[a, "mass"] = 150
+        loc["mass"] = mass
+        loc.loc[a, "mass"] = mass_acc
         p = pd.concat([loc, loc], keys=["donor", "acceptor"], axis=1)
 
-        eloc = loc.copy()
-        eloc["fret_stoi"] = 200/(200+150)
-        eloc.loc[a, "fret_stoi"] = np.NaN
-        e = pd.concat([eloc, eloc], keys=["donor", "acceptor"], axis=1)
+        eloc = p.copy()
+        eloc["fret", "stoi"] = (mass + mass) / (mass + mass + mass_acc)
+        eloc.loc[a, ("fret", "stoi")] = np.NaN
 
         self.analyzer.stoichiometry(p)
 
-        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]], e)
+        pd.testing.assert_frame_equal(p.iloc[:, p.columns.sortlevel(0)[1]],
+                                      eloc)
 
 
 if __name__ == "__main__":
