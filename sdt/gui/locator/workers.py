@@ -13,6 +13,7 @@ import logging
 import multiprocessing as mp
 
 import pims
+import micro_helpers.pims
 
 from qtpy.QtCore import QObject, Signal, Slot, Property
 from qtpy.QtGui import QPolygonF

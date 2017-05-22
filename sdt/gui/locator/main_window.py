@@ -10,6 +10,7 @@ import yaml
 import numpy as np
 import pandas as pd
 import pims
+import micro_helpers.pims
 
 import qtpy
 from qtpy.QtGui import QPolygonF, QCursor
