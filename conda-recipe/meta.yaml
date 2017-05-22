@@ -26,6 +26,7 @@ requirements:
         - matplotlib
         - lmfit
         - pywavelets >=0.3.0
+        - micro-helpers >=0.7
 
     run:
         - python
@@ -42,6 +43,7 @@ requirements:
         - matplotlib
         - lmfit
         - pywavelets >=0.3.0
+        - micro-helpers >=0.7
 
 test:
     requires:
