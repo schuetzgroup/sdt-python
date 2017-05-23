@@ -115,6 +115,13 @@ class TestMulticolor(unittest.TestCase):
 
         np.testing.assert_allclose(merged, expected)
 
+    def test_merge_channels_index(self):
+        """multicolor.merge_channels: Return index"""
+        merged = sdt.multicolor.merge_channels(self.pos1, self.pos2, 2.,
+                                               return_data="index")
+
+        np.testing.assert_allclose(merged, [1, 2, 4, 5])
+
 
 class TestFindCodiffusion(unittest.TestCase):
     def setUp(self):

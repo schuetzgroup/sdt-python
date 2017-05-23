@@ -126,7 +126,7 @@ def find_colocalizations(features1, features2, max_dist=2.,
 
 
 def merge_channels(features1, features2, max_dist=2., mean_pos=False,
-                   pos_columns=_pos_columns):
+                   return_data="data", pos_columns=_pos_columns):
     """Merge features of `features1` and `features2`
 
     Concatenate all of `features1` and those entries of `features2` that do
@@ -145,11 +145,23 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
         two channel's entries. If `False`, use the position in `features1`.
         All other (non-coordinate) columns are taken from `features1` in any
         case. Defaults to `False`.
+    return_data : {"data", "index", "both"}, optional
+        Whether to return the full data of merged features, only indices
+        (that is, the DatatFrame's indices) of features in `features2` that
+        have no counterpart in `features1`, or both. Defaults to "data".
 
     Returns
     -------
-    pandas.DataFrame
-        DataFrame of merged features.
+    data : pandas.DataFrame
+        DataFrame of merged features. Returned if `return_data` is "data" or
+        "both".
+    feat2_index : pandas.Index
+        Indices of features out of `features2` that have no counterpart in
+        `features1`. One can construct the DataFrame (as returned if
+        `return_data` is "data" or "both") by
+        ``pandas.concat([features1, features2.loc[feat2_index]],
+        keys=channel_names, ignore_index=True)``. Returned if `return_data`
+        is "index" or "both".
 
     Other parameters
     ----------------
@@ -185,6 +197,15 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
     coloc_idx_1 = np.concatenate(coloc_idx_1)
     coloc_idx_2 = np.concatenate(coloc_idx_2)
 
+    # Indices of features of `features2` that don't colocalize with anything
+    # in `features1`
+    f2_non_coloc = np.ones(len(f2_mat), dtype=bool)
+    f2_non_coloc[coloc_idx_2] = False
+    f2_non_coloc_idx = features2.index[f2_non_coloc]
+
+    if return_data == "index":
+        return f2_non_coloc_idx
+
     ret = features1.copy()
     if mean_pos:
         p1 = f1_mat[coloc_idx_1, :-1]
@@ -192,16 +213,21 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
 
         ret.loc[ret.index[coloc_idx_1], pos_columns] = (p1 + p2) / 2
 
-    if coloc_idx_2.size == f2_mat.shape[0]:
-        # All features of channel 2 were merged
-        return ret
-    else:
+    if coloc_idx_2.size != f2_mat.shape[0]:
         # Append non-merged features of channel 2 to `ret`
         f2_non_coloc = np.ones(len(f2_mat), dtype=bool)
         f2_non_coloc[coloc_idx_2] = False
 
-        return pd.concat((ret, features2.iloc[f2_non_coloc]),
-                         ignore_index=True)
+        ret = pd.concat((ret, features2.loc[f2_non_coloc_idx]),
+                        ignore_index=True)
+
+    if return_data == "data":
+        return ret
+    elif return_data == "both":
+        return ret, f2_non_coloc_idx
+    else:
+        raise ValueError("`return_data` has to be one of 'data', 'index', "
+                         "or 'both'.")
 
 
 def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
