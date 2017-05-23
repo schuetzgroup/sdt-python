@@ -251,7 +251,8 @@ class SmFretData:
                                            channel=acceptor_channel)
 
         # create FRET tracks (in the donor channel)
-        merged = multicolor.merge_channels(donor_loc, acceptor_loc_corr)
+        merged, merged_idx = multicolor.merge_channels(
+                donor_loc, acceptor_loc_corr, return_data="both")
         lopts = link_options.copy()
         lopts["search_range"] = link_radius
         lopts["memory"] = link_mem

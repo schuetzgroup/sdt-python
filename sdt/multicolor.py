@@ -68,7 +68,7 @@ def find_closest_pairs(coords1, coords2, max_dist):
 
 
 def find_colocalizations(features1, features2, max_dist=2.,
-                         channel_names=_channel_names,
+                         keep_non_coloc=False, channel_names=_channel_names,
                          pos_columns=_pos_columns):
     """Match localizations in one channel to localizations in another
 
@@ -83,6 +83,10 @@ def find_colocalizations(features1, features2, max_dist=2.,
     max_dist : float, optional
         Maximum distance between features to still be considered colocalizing.
         Defaults to 2.
+    keep_non_coloc : bool, optional
+        If True, also keep non-colocalized features in the result DataFrame.
+        Non-colocalized features have NaNs in the columns of the channel they
+        don't appear in. Defaults to False.
     channel_names : list of str, optional
         Names of the two channels.
 
@@ -102,8 +106,8 @@ def find_colocalizations(features1, features2, max_dist=2.,
     p1_mat = features1[pos_columns + ["frame"]].values
     p2_mat = features2[pos_columns + ["frame"]].values
 
-    pairs1 = []
-    pairs2 = []
+    pairs1_idx = []
+    pairs2_idx = []
     for frame_no in np.unique(p1_mat[:, -1]):
         # indices of features in current frame
         p1_idx = np.nonzero(p1_mat[:, -1] == frame_no)[0]
@@ -117,11 +121,32 @@ def find_colocalizations(features1, features2, max_dist=2.,
 
         pair_idx = find_closest_pairs(p1_f, p2_f, max_dist)
 
-        pairs1.append(features1.iloc[p1_idx[pair_idx[:, 0]]])
-        pairs2.append(features2.iloc[p2_idx[pair_idx[:, 1]]])
+        pairs1_idx.append(p1_idx[pair_idx[:, 0]])
+        pairs2_idx.append(p2_idx[pair_idx[:, 1]])
 
-    pairs1 = pd.concat(pairs1, ignore_index=True)
-    pairs2 = pd.concat(pairs2, ignore_index=True)
+    pairs1_idx = np.concatenate(pairs1_idx)
+    pairs2_idx = np.concatenate(pairs2_idx)
+    pairs1 = features1.iloc[pairs1_idx].reset_index(drop=True)
+    pairs2 = features2.iloc[pairs2_idx].reset_index(drop=True)
+
+    if keep_non_coloc:
+        start_idx = pairs1.index.max() + 1 if len(pairs1) else 0
+        if len(pairs1) != len(features1):
+            non_coloc_mask1 = np.ones(len(features1), dtype=bool)
+            non_coloc_mask1[pairs1_idx] = False
+            non_coloc1 = features1[non_coloc_mask1].copy()
+            non_coloc1.index = pd.RangeIndex(start_idx,
+                                             start_idx+len(non_coloc1))
+            pairs1 = pd.concat([pairs1, non_coloc1])
+            start_idx += len(non_coloc1) + 1
+        if len(pairs2) != len(features2):
+            non_coloc_mask2 = np.ones(len(features2), dtype=bool)
+            non_coloc_mask2[pairs2_idx] = False
+            non_coloc2 = features2[non_coloc_mask2].copy()
+            non_coloc2.index = pd.RangeIndex(start_idx,
+                                             start_idx+len(non_coloc2))
+            pairs2 = pd.concat([pairs2, non_coloc2])
+
     return pd.concat([pairs1, pairs2], keys=channel_names, axis=1)
 
 
@@ -286,8 +311,9 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
     """
     if feature_pairs is None:
-        feature_pairs = find_colocalizations(tracks1, tracks2, max_dist,
-                                             channel_names, pos_columns)
+        feature_pairs = find_colocalizations(
+                tracks1, tracks2, max_dist, channel_names=channel_names,
+                pos_columns=pos_columns)
 
     ch1_pairs = feature_pairs[channel_names[0]]
     ch2_pairs = feature_pairs[channel_names[1]]
