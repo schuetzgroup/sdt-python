@@ -1,5 +1,6 @@
 """Functionality for evaluation of FRET data"""
 from collections import OrderedDict
+import itertools
 
 import numpy as np
 import pandas as pd
@@ -186,7 +187,7 @@ class SmFretData:
         link_mem : int
             `memory` parameter for :py:func:`trackpy.link_df`. The maximum
             number of consecutive frames a particle may not be detected.
-        min_len : int
+        min_length : int
             Parameter for :py:func:`trackpy.filter_stubs`. Minimum length of
             a track.
         feat_radius : int
@@ -246,18 +247,54 @@ class SmFretData:
         if not isinstance(analyzer, SmFretAnalyzer):
             analyzer = SmFretAnalyzer(analyzer)
 
+        # Names of brightness-related columns
+        br_cols = ["signal", "mass", "bg", "bg_dev"]
+        # Position and frame columns
+        posf_cols = pos_columns + ["frame"]
+
+        # Don't modify originals
+        donor_loc = donor_loc.copy()
+        acceptor_loc = acceptor_loc.copy()
+        for df in (donor_loc, acceptor_loc):
+            for c in br_cols:
+                # Make sure those columns exist
+                df[c] = 0.
+
         donor_channel = 1 if acceptor_channel == 2 else 2
         acceptor_loc_corr = chromatic_corr(acceptor_loc,
                                            channel=acceptor_channel)
 
-        # create FRET tracks (in the donor channel)
-        merged, merged_idx = multicolor.merge_channels(
-                donor_loc, acceptor_loc_corr, return_data="both")
+        # Create FRET tracks (in the donor channel)
+        coloc = multicolor.find_colocalizations(
+                donor_loc, acceptor_loc_corr,
+                channel_names=["donor", "acceptor"], keep_non_coloc=True)
+        coloc_pos_f = coloc.loc[:, (slice(None), pos_columns + ["frame"])]
+        coloc_pos_f = coloc_pos_f.values.reshape((len(coloc), 2,
+                                                  len(pos_columns) + 1))
+        # Use the mean of positions as the new position
+        merged = np.nanmean([coloc["donor"][posf_cols].values,
+                             coloc["acceptor"][posf_cols].values], axis=0)
+        merged = pd.DataFrame(merged, columns=posf_cols)
+        merged["__trc_idx__"] = coloc.index
+
         lopts = link_options.copy()
         lopts["search_range"] = link_radius
         lopts["memory"] = link_mem
-        lopts["copy_features"] = True
+        lopts["copy_features"] = False
+        lopts["pos_columns"] = pos_columns
         track_merged = trackpy.link_df(merged, **lopts)
+
+        if interpolate:
+            # Interpolate coordinates where no features were localized
+            track_merged = interpolate_coords(track_merged, pos_columns)
+            # Remove interpolated acceptor excitation frames
+            i_mask = ((track_merged["interp"] != 0) &
+                      (track_merged["frame"] % len(analyzer.desc)).isin(
+                           analyzer.acc))
+            track_merged = track_merged[~i_mask]
+        else:
+            # Mark all as not interpolated
+            track_merged["interp"] = 0
 
         # Flag localizations that are too close together
         if isinstance(neighbor_radius, str):
@@ -266,39 +303,64 @@ class SmFretData:
         if neighbor_radius:
             has_near_neighbor(track_merged, neighbor_radius, pos_columns)
 
-        # Filter short tracks
-        track_merged = trackpy.filter_stubs(track_merged, min_length)
+        # Filter short tracks (only count non-interpolated localizations)
+        u, c = np.unique(
+            track_merged.loc[track_merged["interp"] == 0, "particle"],
+            return_counts=True)
+        valid = u[c >= min_length]
+        track_merged = track_merged[track_merged["particle"].isin(valid)]
 
-        if len(track_merged):
-            if interpolate:
-                # interpolate coordinates where no features were localized
-                track_merged = interpolate_coords(track_merged, pos_columns)
-                # remove interpolated acceptor excitation frames
-                i_mask = ((track_merged["interp"] != 0) &
-                          (track_merged["frame"] % len(analyzer.desc)).isin(
-                               analyzer.acc))
-                track_merged = track_merged[~i_mask]
+        # Get non-interpolated colocalized features
+        non_interp_mask = track_merged["interp"] == 0
+        non_interp_idx = track_merged.loc[non_interp_mask, "__trc_idx__"]
+        ret = coloc.loc[non_interp_idx]
+        ret["fret", "particle"] = \
+            track_merged.loc[non_interp_mask, "particle"].values
 
-            # transform back to first channel
-            track_merged_acc = chromatic_corr(track_merged,
-                                              channel=donor_channel)
+        # Append interpolated features (which "appear" only in the donor
+        # channel)
+        cols = pos_columns + ["frame"]
+        interp_mask = ~non_interp_mask
+        interp = track_merged.loc[interp_mask, cols]
+        interp.columns = pd.MultiIndex.from_product([["donor"], cols])
+        interp["fret", "particle"] = \
+            track_merged.loc[interp_mask, "particle"].values
+        ret = ret.append(interp)
 
-            # get feature brightness from raw image data
-            brightness.from_raw_image(track_merged, donor_img, feat_radius,
-                                      bg_frame=bg_frame,
-                                      bg_estimator=bg_estimator)
-            brightness.from_raw_image(track_merged_acc, acceptor_img,
-                                      feat_radius, bg_frame=bg_frame,
-                                      bg_estimator=bg_estimator)
-        else:
-            track_merged_acc = track_merged
+        # Add interp and has_neighbor column
+        cols = ["interp"]
+        if "has_neighbor" in track_merged.columns:
+            cols.append("has_neighbor")
+        ic = pd.concat([track_merged.loc[non_interp_mask, cols],
+                        track_merged.loc[interp_mask, cols]])
+        for c in cols:
+            ret["fret", c] = ic[c].values
 
-        track_merged.reset_index(drop=True, inplace=True)
-        track_merged_acc.reset_index(drop=True, inplace=True)
-        tracks = pd.concat([track_merged, track_merged_acc],
-                           keys=["donor", "acceptor"], axis=1)
+        # If coordinates or frame columns are NaN in any channel (which means
+        # that it didn't have a colocalized partner), use the position and
+        # frame number from the other channel.
+        for c1, c2 in itertools.permutations(("donor", "acceptor")):
+            mask = np.any(~np.isfinite(ret.loc[:, (c1, posf_cols)]), axis=1)
+            d = ret.loc[mask, (c2, posf_cols)]
+            ret.loc[mask, (c1, posf_cols)] = d.values
 
-        return cls(analyzer, donor_img, acceptor_img, tracks)
+        # get feature brightness from raw image data
+        ret_d = ret["donor"].copy()
+        ret_a = chromatic_corr(ret["acceptor"], channel=donor_channel)
+        brightness.from_raw_image(ret_d, donor_img, feat_radius,
+                                  bg_frame=bg_frame,
+                                  bg_estimator=bg_estimator)
+        brightness.from_raw_image(ret_a, acceptor_img,
+                                  feat_radius, bg_frame=bg_frame,
+                                  bg_estimator=bg_estimator)
+        ret["donor"] = ret_d
+        ret["acceptor"] = ret_a
+
+        ret.sort_values([("fret", "particle"), ("donor", "frame")],
+                        inplace=True)
+        ret.reset_index(drop=True, inplace=True)
+
+        return cls(analyzer, donor_img, acceptor_img, ret)
 
     def analyze_fret(self, acc_filter=None, acc_start=False, acc_end=True,
                      acc_fraction=0.75):
