@@ -68,16 +68,19 @@ class TestInterpolateCoords(unittest.TestCase):
 
 class TestSmFretData(unittest.TestCase):
     def setUp(self):
-        self.img_size = 100
+        self.img_size = 150
         self.feat_radius = 2
         self.signal = 10
         self.bg = 5
         self.x_shift = 40
         self.num_frames = 10
 
-        loc = [[20, 30]]*self.num_frames
+        loc = ([[20, 30]] * self.num_frames +
+               [[27, 30]] * (self.num_frames // 2) +
+               [[29, 30]] * (self.num_frames // 2))
         self.don_loc = pd.DataFrame(np.array(loc), columns=["x", "y"])
-        self.don_loc["frame"] = np.arange(self.num_frames, dtype=np.int)
+        self.don_loc["frame"] = np.concatenate(
+                [np.arange(self.num_frames, dtype=np.int)]*2)
         self.acc_loc = self.don_loc.copy()
         self.acc_loc["x"] += self.x_shift
 
@@ -96,73 +99,60 @@ class TestSmFretData(unittest.TestCase):
         self.corr.parameters1[0, -1] = self.x_shift
         self.corr.parameters2[0, -1] = -self.x_shift
 
-        don = self.don_loc.copy()
-        don["particle"] = 0
-        acc = self.acc_loc.copy()
-        acc["particle"] = 0
-        self.fret_data = fret.SmFretData(
-            "d", self.don_img, self.acc_img,
-            pd.Panel(OrderedDict(donor=don, acceptor=acc)))
+        for l in (self.don_loc, self.acc_loc):
+            s = [self.signal] * self.num_frames + [0] * self.num_frames
+            l["signal"] = s
+            m = (2*self.feat_radius + 1)**2 * self.signal
+            l["mass"] = [m] * self.num_frames + [0] * self.num_frames
+            l["bg"] = self.bg
+            l["bg_dev"] = 0.
+
+        f = pd.DataFrame(np.empty((len(self.don_loc), 0)))
+        f["particle"] = [0] * self.num_frames + [1] * self.num_frames
+        f["interp"] = 0
+        f["has_neighbor"] = ([1] * (self.num_frames // 2) +
+                             [0] * (self.num_frames // 2)) * 2
+
+        df = pd.concat([self.don_loc, self.acc_loc, f],
+                       keys=["donor", "acceptor", "fret"], axis=1)
+
+        self.fret_data = fret.SmFretData("d", self.don_img, self.acc_img, df)
 
     def test_track(self):
         """fret.SmFretData: Construct via tracking"""
+        # Remove brightness-related cols to see if they get added
+        dl = self.don_loc[["x", "y", "frame"]]
+        # Write bogus values to see whether they get overwritten
+        self.acc_loc["mass"] = -1
+
         fret_data = fret.SmFretData.track(
             "d", self.don_img, self.acc_img,
-            self.don_loc.drop([2, 3, 5]), self.acc_loc.drop(5),
-            self.corr, 1, 1, 5, self.feat_radius, interpolate=False)
+            dl.drop([2, 3, 5]), self.acc_loc.drop(5),
+            self.corr, 4, 1, 5, self.feat_radius, interpolate=False)
 
         np.testing.assert_equal(fret_data.donor_img, self.don_img)
         np.testing.assert_equal(fret_data.acceptor_img, self.acc_img)
 
-        for l in (self.don_loc, self.acc_loc):
-            l["signal"] = self.signal
-            l["mass"] = (2*self.feat_radius + 1)**2 * self.signal
-            l["bg"] = self.bg
-            l["bg_dev"] = 0.
-            l["frame"] = np.arange(self.num_frames)
-
-        dl = self.don_loc.drop(5).reset_index(drop=True)
-        al = self.acc_loc.drop(5).reset_index(drop=True)
-
-        f = pd.DataFrame(np.empty((len(dl), 0)))
-        f["particle"] = 0.
-        f["interp"] = 0
-        f["has_neighbor"] = 0
-
-        exp = pd.concat([dl, al, f], keys=["donor", "acceptor", "fret"],
-                        axis=1)
-
-        pd.testing.assert_frame_equal(fret_data.tracks, exp, check_dtype=False,
-                                      check_like=True)
+        exp = self.fret_data.tracks.drop(5).reset_index(drop=True)
+        pd.testing.assert_frame_equal(fret_data.tracks, exp,
+                                      check_dtype=False, check_like=True)
 
     def test_track_interpolate(self):
         """fret.SmFretData: Construct via tracking (with interpolation)"""
+        # Remove brightness-related cols to see if they get added
+        dl = self.don_loc[["x", "y", "frame"]]
+        # Write bogus values to see whether they get overwritten
+        self.acc_loc["mass"] = -1
+
         fret_data = fret.SmFretData.track(
             "d", self.don_img, self.acc_img,
-            self.don_loc.drop([2, 3, 5]), self.acc_loc.drop(5),
-            self.corr, 1, 1, 5, self.feat_radius, interpolate=True)
+            dl.drop([2, 3, 5]), self.acc_loc.drop(5),
+            self.corr, 4, 1, 5, self.feat_radius, interpolate=True)
 
-        for l in (self.don_loc, self.acc_loc):
-            l["signal"] = self.signal
-            l["mass"] = (2*self.feat_radius + 1)**2 * self.signal
-            l["bg"] = self.bg
-            l["bg_dev"] = 0.
-            l["frame"] = np.arange(self.num_frames)
+        self.fret_data.tracks.loc[5, ("fret", "interp")] = 1
 
-        dl = self.don_loc.reset_index(drop=True)
-        al = self.acc_loc.reset_index(drop=True)
-
-        f = pd.DataFrame(np.empty((len(dl), 0)))
-        f["particle"] = 0.
-        f["interp"] = 0
-        f["has_neighbor"] = 0
-        f.loc[5, "interp"] = 1
-
-        exp = pd.concat([dl, al, f], keys=["donor", "acceptor", "fret"],
-                        axis=1)
-
-        pd.testing.assert_frame_equal(fret_data.tracks, exp, check_dtype=False,
-                                      check_like=True)
+        pd.testing.assert_frame_equal(fret_data.tracks, self.fret_data.tracks,
+                                      check_dtype=False, check_like=True)
 
     def test_get_track_pixels(self):
         """fret.SmFretData: `get_track_pixels` method"""
