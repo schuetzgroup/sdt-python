@@ -434,14 +434,16 @@ class SmFretData:
             are the values. The first array is the image data for the donor,
             the second is for the acceptor.
         """
-        arr = getattr(self, data).loc[["donor", "acceptor"], :,
-                                      ["x", "y", "particle", "frame"]].values
-        arr = arr[:, arr[0, :, 2] == track_no, :]  # select track `track_no`
+        df = getattr(self, data)
+        df = df[df["fret", "particle"] == track_no]
+
+        cols = ["x", "y", "frame"]
+        don_arr = df["donor"][cols].values.astype(int)
+        acc_arr = df["acceptor"][cols].values.astype(int)
 
         img_size = int(np.round(img_size/2))
-        arr_r = np.round(arr).astype(np.int)  # need integers as array indices
         ret = OrderedDict()
-        for (x_d, y_d, _, f), (x_a, y_a, _, _) in zip(arr_r[0], arr_r[1]):
+        for (x_d, y_d, f), (x_a, y_a, _) in zip(don_arr, acc_arr):
             # select pixels around feature position
             px_d = self.donor_img[f][y_d-img_size:y_d+img_size+1,
                                      x_d-img_size:x_d+img_size+1]

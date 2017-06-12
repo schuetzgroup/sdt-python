@@ -157,13 +157,17 @@ class TestSmFretData(unittest.TestCase):
     def test_get_track_pixels(self):
         """fret.SmFretData: `get_track_pixels` method"""
         sz = 4
-        x, y = self.don_loc.loc[0, ["x", "y"]]
+        x, y = self.don_loc.loc[0, ["x", "y"]].astype(int)
         px_d = self.don_img[0][y-sz:y+sz+1, x-sz:x+sz+1]
-        x, y = self.acc_loc.loc[0, ["x", "y"]]
+        x, y = self.acc_loc.loc[0, ["x", "y"]].astype(int)
         px_a = self.acc_img[0][y-sz:y+sz+1, x-sz:x+sz+1]
 
-        exp = OrderedDict([(i, (px_d, px_a)) for i in self.don_loc["frame"]])
+        p0_mask = self.fret_data.tracks["fret", "particle"] == 0.
+        exp = OrderedDict([(i, (px_d, px_a))
+                           for i in self.don_loc.loc[p0_mask, "frame"]])
         px = self.fret_data.get_track_pixels(0, 2*sz+1)
+
+        print(list(exp.keys()))
 
         np.testing.assert_equal(px, exp)
 
