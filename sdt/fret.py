@@ -275,7 +275,7 @@ class SmFretData:
         merged = np.nanmean([coloc["donor"][posf_cols].values,
                              coloc["acceptor"][posf_cols].values], axis=0)
         merged = pd.DataFrame(merged, columns=posf_cols)
-        merged["__trc_idx__"] = coloc.index
+        merged["__trc_idx__"] = coloc.index  # works as long as index is unique
 
         lopts = link_options.copy()
         lopts["search_range"] = link_radius
@@ -653,20 +653,20 @@ class SmFretAnalyzer:
         """
         acc_tracks = tracks["acceptor"]  # acceptor tracking data
         # direct acceptor excitation
-        acc_direct = acc_tracks[(acc_tracks["frame"] %
-                                len(self.desc)).isin(self.acc)]
+        mask = (acc_tracks["frame"] % len(self.desc)).isin(self.acc)
         if filter:
-            acc_direct = acc_direct.query(filter)
+            mask &= acc_tracks.eval(filter)
 
-        if not len(acc_direct):
+        if not mask.any():
             return tracks.iloc[:0].copy()  # return empty
 
         # list of particle numbers that can be seen with direct acceptor
         # excitation
-        p = acc_direct["particle"].unique()
+        p = tracks.loc[mask, ("fret", "particle")].unique()
+
         # only those tracks are valid whose particle number appears in the
         # list of particles with acceptors
-        return tracks[acc_tracks["particle"].isin(p)]
+        return tracks[tracks["fret", "particle"].isin(p)]
 
     def select_fret(self, tracks, filter=None, acc_start=False,
                     acc_end=True, acc_fraction=0.75, remove_single=True):
@@ -712,34 +712,37 @@ class SmFretAnalyzer:
             Tracking data where only FRETting parts of the tracks are left.
         """
         acc_tracks = tracks["acceptor"]  # acceptor tracking data
-        acc_direct = acc_tracks[(acc_tracks["frame"] %
-                                len(self.desc)).isin(self.acc)]
+        # Direct acceptor excitation only
+        acc_mask = (acc_tracks["frame"] % len(self.desc)).isin(self.acc)
         if filter:
-            acc_direct = acc_direct.query(filter)
+            acc_mask &= acc_tracks.eval(filter)
 
-        if not len(acc_direct):
+        if not acc_mask.any():
             return tracks.iloc[:0].copy()  # return empty
 
         # get particles with acceptor
-        pno_with_acc = acc_direct["particle"].unique()
+        pno_with_acc = tracks.loc[acc_mask, ("fret", "particle")].unique()
 
         # the loop below will set the appropriate elements to True
         all_masks = np.zeros(len(acc_tracks), dtype=bool)
         for p in pno_with_acc:
             # frame numbers for current track
-            cur_acc_track_mask = (acc_tracks["particle"] == p).values
+            cur_acc_track_mask = (tracks["fret", "particle"] == p).values
             frames = tracks.loc[cur_acc_track_mask, ("acceptor", "frame")]
-            mask = np.ones(frames.shape, dtype=bool)
-            a_d_frames = acc_direct.loc[acc_direct["particle"] == p, "frame"]
+            # This will be a mask to select only "good" frames for current
+            # particle
+            fr_mask = np.ones(frames.shape, dtype=bool)
+            # Direct acceptor excitation frames of current particle
+            ad_frames = frames[acc_mask[cur_acc_track_mask]]
 
             if acc_start:
-                start_frame = a_d_frames.min()
-                mask &= frames >= start_frame
+                start_frame = ad_frames.min()
+                fr_mask &= frames >= start_frame
             if acc_end:
-                end_frame = a_d_frames.max()
-                mask &= frames <= end_frame
+                end_frame = ad_frames.max()
+                fr_mask &= frames <= end_frame
 
-            selected_frames = frames[mask]
+            selected_frames = frames[fr_mask]
             # all frames between the first and the last selected
             all_frames = np.arange(selected_frames.min(),
                                    selected_frames.max()+1)
@@ -747,9 +750,9 @@ class SmFretAnalyzer:
             all_direct = np.sum(np.in1d(all_frames % len(self.desc),
                                         self.acc))
 
-            if not (len(a_d_frames)/all_direct < acc_fraction or
+            if not (len(ad_frames)/all_direct < acc_fraction or
                     (remove_single and len(selected_frames) <= 1)):
-                all_masks[cur_acc_track_mask] = mask
+                all_masks[cur_acc_track_mask] = fr_mask
 
         return tracks.loc[all_masks]
 
@@ -803,6 +806,7 @@ class SmFretAnalyzer:
         d_mass = tracks["donor", "mass"]
         eff = a_mass / (d_mass + a_mass)
         tracks["fret", "eff"] = eff
+        tracks.reindex(columns=tracks.columns.sortlevel(0)[0])
 
     def stoichiometry(self, tracks, interp="linear"):
         """Calculate a measure of the stoichiometry
@@ -836,12 +840,12 @@ class SmFretAnalyzer:
             What kind of interpolation to use for calculating acceptor
             brightness upon direct excitation. Defaults to "linear".
         """
-        don = tracks["donor"][["mass", "frame", "particle"]].values
-        acc = tracks["acceptor"][["mass", "frame", "particle"]].values
-        particles = np.unique(don[:, 2])  # particle numbers
+        don = tracks["donor"][["mass", "frame"]].values
+        acc = tracks["acceptor"][["mass", "frame"]].values
+        particles = tracks["fret", "particle"].values  # particle numbers
         sto = np.empty(len(don))  # pre-allocate
         for p in particles:
-            p_mask = don[:, 2] == p  # boolean array for current particle
+            p_mask = particles == p  # boolean array for current particle
             d = don[p_mask]
             a = acc[p_mask]
             # direct acceptor excitation
