@@ -355,12 +355,15 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
 
         p = pd.concat([t1, t2], keys=channel_names, axis=1)
         # assign new particle number
-        p.loc[:, (slice(None), "particle")] = new_pn
+        p["codiff", "particle"] = new_pn
         # assign frame number even to localizations that are missing in one
         # channel (instead of a NaN). Thanks to set_index above, axes[0] is
         # the list of frame numbers
-        p.loc[:, (slice(None), "frame")] = \
+        p.loc[:, (channel_names, "frame")] = \
             np.broadcast_to(p.axes[0][:, np.newaxis], (len(p), 2))
+        # re-assign particle numbers to overwrite NaNs
+        p[channel_names[0], "particle"] = pn1
+        p[channel_names[1], "particle"] = pn2
         data.append(p)
 
     data = pd.concat(data, ignore_index=True)

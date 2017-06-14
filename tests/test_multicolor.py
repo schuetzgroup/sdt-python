@@ -175,65 +175,71 @@ class TestFindCodiffusion(unittest.TestCase):
         """multicolor.find_codiffusion: Test returning a pandas Panel"""
         codiff = sdt.multicolor.find_codiffusion(self.track, self.track)
 
-        orig1 = self.track.copy()
-        orig1["particle"] = 0
-
-        exp = pd.concat([orig1, orig1], keys=["channel1", "channel2"], axis=1)
+        exp = pd.concat([self.track]*2, keys=["channel1", "channel2"], axis=1)
+        exp["codiff", "particle"] = 0
         pd.testing.assert_frame_equal(codiff, exp)
 
     def test_find_codiffusion_data_merge(self):
         """multicolor.find_codiffusion: Test merging into DataFrame"""
+        t2_particle = 3
         track2 = self.track.copy()
-        track2["particle"] = 3
+        track2["particle"] = t2_particle
         track2.drop(4, inplace=True)
         codiff = sdt.multicolor.find_codiffusion(self.track, track2)
 
-        orig1 = self.track.copy()
-        orig1["particle"] = 0
-        orig2 = orig1.copy()
-        orig2.loc[4, ["x", "y"]] = np.NaN
+        track2_exp = self.track.copy()
+        track2_exp["particle"] = t2_particle
+        track2_exp.loc[4, ["x", "y"]] = np.NaN
 
-        exp = pd.concat([orig1, orig2], keys=["channel1", "channel2"], axis=1)
+        exp = pd.concat([self.track, track2_exp],
+                        keys=["channel1", "channel2"], axis=1)
+        exp["codiff", "particle"] = 0
         pd.testing.assert_frame_equal(codiff, exp)
 
     def test_find_codiffusion_long_channel1(self):
         """multicolor.find_codiffusion: Match one long to two short tracks"""
+        track2_p1 = 1
+        track2_p2 = 2
         track2_1 = self.track.iloc[:3].copy()
         track2_2 = self.track.iloc[-3:].copy()
-        track2_1["particle"] = 1
-        track2_2["particle"] = 2
+        drop_idx = [3, 4, 5, 6]
+        track2_1["particle"] = track2_p1
+        track2_2["particle"] = track2_p2
+        track2 = pd.concat((track2_1, track2_2)).reset_index(drop=True)
 
         data, numbers = sdt.multicolor.find_codiffusion(
-            self.track, pd.concat((track2_1, track2_2)), return_data="both")
+            self.track, track2, return_data="both")
 
         np.testing.assert_allclose(numbers, [[1, 1, 0, 2], [1, 2, 7, 9]])
 
-        orig = self.track.drop([3, 4, 5, 6])
-        orig.loc[:3, "particle"] = 0
-        orig.loc[3:, "particle"] = 1
-        orig.reset_index(drop=True, inplace=True)
+        track1 = self.track.drop(drop_idx).reset_index(drop=True)
 
-        exp = pd.concat([orig, orig], keys=["channel1", "channel2"], axis=1)
+        exp = pd.concat([track1, track2], keys=["channel1", "channel2"],
+                        axis=1)
+        exp["codiff", "particle"] = [0]*3 + [1]*3
         pd.testing.assert_frame_equal(data, exp)
 
     def test_find_codiffusion_long_channel2(self):
         """multicolor.find_codiffusion: Match two short tracks to one long"""
+        track2_p1 = 1
+        track2_p2 = 2
         track2_1 = self.track.iloc[:3].copy()
         track2_2 = self.track.iloc[-3:].copy()
-        track2_1["particle"] = 1
-        track2_2["particle"] = 2
+        drop_idx = [3, 4, 5, 6]
+        track2_1["particle"] = track2_p1
+        track2_2["particle"] = track2_p2
+        track2 = pd.concat((track2_1, track2_2)).reset_index(drop=True)
 
         data, numbers = sdt.multicolor.find_codiffusion(
-            pd.concat((track2_1, track2_2)), self.track, return_data="both")
+            track2, self.track, return_data="both")
 
         np.testing.assert_allclose(numbers, [[1, 1, 0, 2], [2, 1, 7, 9]])
 
-        orig = self.track.drop([3, 4, 5, 6])
-        orig.loc[:3, "particle"] = 0
-        orig.loc[3:, "particle"] = 1
-        orig.reset_index(drop=True, inplace=True)
+        track1 = self.track.drop(drop_idx).reset_index(drop=True)
 
-        exp = pd.concat([orig, orig], keys=["channel1", "channel2"], axis=1)
+        exp = pd.concat([track2, track1], keys=["channel1", "channel2"],
+                        axis=1)
+        exp["codiff", "particle"] = [0]*3 + [1]*3
         pd.testing.assert_frame_equal(data, exp)
 
     def test_find_codiffusion_abs_thresh(self):
