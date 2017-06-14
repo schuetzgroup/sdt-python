@@ -7,8 +7,8 @@ import pandas as pd
 
 try:
     import matplotlib as mpl
-    mpl.use("Agg")
     import matplotlib.pyplot as plt
+    plt.switch_backend("Agg")
     mpl_available = True
 except ImportError:
     mpl_available = False
