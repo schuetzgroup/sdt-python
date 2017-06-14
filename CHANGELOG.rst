@@ -1,3 +1,4 @@
+.. py:module:: sdt
 .. _CHANGELOG:
 
 Change log
@@ -6,16 +7,39 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+
+11.0
+----
+- Ability to tag features with near neighbors in localization data
+- For smFRET tracking, (optionally) use above feature to select only
+  localizations that don't have any near neighbors, otherwise the brightness
+  determination will yield bogus results.
+- Stop using :py:class:`pandas.Panel`. It has been deprecated in version 0.20.
+  Use :py:class:`pandas.Panel` s with multi-indices for columns instead. This
+  affects much of the :py:mod:`multicolor` and :py:mod:`fret` modules.
+  This was used as an opportunity for more drastic redesigns of the data
+  structures. (API break)
+- Move SDT-control specific stuff from :py:mod:`image_tools` as well as
+  :py:mod:`pims` to the external `micro_helpers` package. Since
+  `locator` depends on this, the whole `sdt` package depends on `micro_helpers`
+  now. (API break)
+- Support .stk files in `locator`
+- Add ability to only return indices in :py:func:`multicolor.merge_channels`.
+- Allow for not dropping non-colocalized data in
+  :py:func:`multicolor.find_colocalizations`.
+
 10.3
 ----
 - Add the `plot` module. It contains
+
   - the `density_scatter` function. It produces scatter plots (supporting both
     matplotlib and bokeh) where data points are colored according to their
     density.
   - The `NbColumnDataSource`, which is a subclass of bokeh's `ColumnDataSource`,
     but its `selected["1d"]` attribute is update even in jupyter notebooks.
-    Starting with bokeh 0.12.5, this is obsolete however since bokeh now 
+    Starting with bokeh 0.12.5, this is obsolete however since bokeh now
     supports embedding bokeh apps in notebooks (via the function handler).
+
 - Remove unused and incomplete `plots_viewer` and `sm_fret_viewer`
 
 10.2

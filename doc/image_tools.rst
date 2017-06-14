@@ -23,5 +23,4 @@ sequences to TIFF files that include all metadata.
 
 
 .. autofunction:: save_as_tiff
-.. autofunction:: metadata_to_yaml
 .. autofunction:: polygon_area
