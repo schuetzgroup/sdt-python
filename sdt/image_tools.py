@@ -223,6 +223,7 @@ class PathROI(object):
         self._bottom_right = np.ceil(self._bottom_right).astype(np.int)
 
         if no_image:
+            self._img_mask = None
             return
 
         # if the path is clockwise, the `radius` argument to
@@ -313,6 +314,10 @@ class PathROI(object):
             return roi_data
 
         else:
+            if self._img_mask is None:
+                raise ValueError("Cannot crop image since no image mask "
+                                 "was created during construction.")
+
             @pipeline
             def crop(img):
                 img = img.copy().T
