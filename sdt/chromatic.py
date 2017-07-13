@@ -12,8 +12,12 @@ import pandas as pd
 import scipy.io
 import scipy.stats
 import scipy.ndimage
+import matplotlib as mpl
 
 import slicerator
+
+from . import image_tools
+
 
 pos_columns = ["x", "y"]
 """Names of the columns describing the coordinates of the features in
@@ -239,6 +243,12 @@ class Corrector(object):
             if not inplace:
                 # copied previously, now return
                 return data
+        if isinstance(data, image_tools.PathROI):
+            t = mpl.transforms.Affine2D(
+                getattr(self, "parameters{}".format(channel)))
+            return image_tools.PathROI(t.transform_path(data.path),
+                                       buffer=data.buffer,
+                                       no_image=(data.image_mask is None))
         else:
             if channel == 1:
                 parms = np.linalg.inv(self.parameters1)
