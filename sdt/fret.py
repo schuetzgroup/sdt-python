@@ -353,9 +353,11 @@ class SmFretData:
         brightness.from_raw_image(ret_a, acceptor_img,
                                   feat_radius, bg_frame=bg_frame,
                                   bg_estimator=bg_estimator)
-        ret["donor"] = ret_d
-        ret["acceptor"] = ret_a
-
+        ret_d.columns = pd.MultiIndex.from_product((["donor"], ret_d.columns))
+        ret_a.columns = pd.MultiIndex.from_product((["acceptor"],
+                                                    ret_a.columns))
+        ret.drop(["donor", "acceptor"], axis=1, inplace=True)
+        ret = pd.concat([ret_d, ret_a, ret], axis=1)
         ret.sort_values([("fret", "particle"), ("donor", "frame")],
                         inplace=True)
         ret.reset_index(drop=True, inplace=True)
