@@ -124,8 +124,10 @@ def find_colocalizations(features1, features2, max_dist=2.,
         pairs1_idx.append(p1_idx[pair_idx[:, 0]])
         pairs2_idx.append(p2_idx[pair_idx[:, 1]])
 
-    pairs1_idx = np.concatenate(pairs1_idx)
-    pairs2_idx = np.concatenate(pairs2_idx)
+    pairs1_idx = (np.concatenate(pairs1_idx) if pairs1_idx else
+                  np.empty(0, dtype=int))
+    pairs2_idx = (np.concatenate(pairs2_idx) if pairs2_idx else
+                  np.empty(0, dtype=int))
     pairs1 = features1.iloc[pairs1_idx].reset_index(drop=True)
     pairs2 = features2.iloc[pairs2_idx].reset_index(drop=True)
 
