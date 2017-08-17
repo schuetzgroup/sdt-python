@@ -8,6 +8,15 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+11.1
+----
+- Implement transforming PathROIs using `chromatic.Corrector`
+- Bug fixes
+  - PathROI construction with ``no_noimage=True``
+  - Empty DataFrames in `fret.SmFretData.track`
+  - Empty arrays in `multicolor.find_colocalizations`
+
+
 11.0
 ----
 - Ability to tag features with near neighbors in localization data
