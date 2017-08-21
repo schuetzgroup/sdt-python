@@ -12,6 +12,7 @@ so watch out for those!
 ----
 - Implement transforming PathROIs using `chromatic.Corrector`
 - Bug fixes
+
   - PathROI construction with ``no_noimage=True``
   - Empty DataFrames in `fret.SmFretData.track`
   - Empty arrays in `multicolor.find_colocalizations`
@@ -45,7 +46,7 @@ so watch out for those!
     matplotlib and bokeh) where data points are colored according to their
     density.
   - The `NbColumnDataSource`, which is a subclass of bokeh's `ColumnDataSource`,
-    but its `selected["1d"]` attribute is update even in jupyter notebooks.
+    but its `selected["1d"]` attribute is updated even in jupyter notebooks.
     Starting with bokeh 0.12.5, this is obsolete however since bokeh now
     supports embedding bokeh apps in notebooks (via the function handler).
 
