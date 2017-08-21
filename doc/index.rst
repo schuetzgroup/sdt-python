@@ -28,6 +28,8 @@ Overview
   :py:mod:`sdt.chromatic` module.
 - Functions for dealing with multi-color data (colocalization, codiffusion, …)
   are featured in the :py:mod:`sdt.multicolor` module.
+- Single molecule FRET tracking and data analysis can by accomplished using
+  the :py:mod:`sdt.fret` module.
 - The :py:mod:`sdt.data` module includes support for :ref:`reading and
   writing data <data_read_write>` from and to files in various formats and
   also for :ref:`filtering <data_filter>` of the data.
@@ -41,11 +43,6 @@ Overview
 - With help of the :py:mod:`sdt.sim` module, fluorescence microscopy images
   can be simulated.
 - There are helpers for plotting data in :py:mod:`sdt.plot`.
-- :py:mod:`sdt.pims` is an extension to the
-  `pims <https://github.com/soft-matter/pims>`_ package for reading image data
-  created by the *SDT-control* software and TIFF files created using
-  :py:func:`sdt.image_tools.save_as_tiff`. Particularly, it reads all the
-  metadata from the files.
 
 
 There are also some helper modules that contain helpful functions and that
@@ -75,6 +72,7 @@ Table of contents
   motion
   brightness
   chromatic
+  fret
   multicolor
   data_file
   data_filter
@@ -83,7 +81,6 @@ Table of contents
   beam_shape
   sim
   plot
-  pims
   exp_fit
   gaussian_fit
   CHANGELOG

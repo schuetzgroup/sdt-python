@@ -1,4 +1,38 @@
-"""Functionality for evaluation of FRET data"""
+r"""Functionality for evaluation of single molecule FRET data
+
+The high level :py:class:`SmFretData` class provides an easy-to-use
+interface. The lower level :py:class:`SmFretAnalyzer` class gives more
+fine-grained control over how to analyze the data.
+
+Examples
+--------
+
+>>> # Construct SmFretData instance
+>>> d = fret.SmFretData.track(desc, don_roi(img), acc_roi(img),
+...                           don_loc, acc_loc, cc,
+...                           link_radius=1, link_mem=0, min_length=2,
+...                           feat_radius=3)
+>>> # Run common analysis tasks
+>>> d.analyze_fret(acc_filter)
+>>> # Show some data of the `fret` data table
+>>> d.fret.head(2)
+  donor                                                                     \
+     bg bg_dev ecc frame        mass     signal size          x          y
+0   0.0    0.0 NaN   0.0  508.254021  74.798504  NaN  83.629404  42.281041
+1   0.0    0.0 NaN   1.0   47.322922  14.215433  NaN  83.590401  42.338935
+<BLANKLINE>
+  acceptor   ...                                                              \
+        bg   ...            mass      signal      size          x          y
+0      0.0   ...     4968.212737  632.361678  1.240861  78.044916  41.872106
+1      0.0   ...     5951.871334  672.792664  1.249809  78.006177  41.929870
+<BLANKLINE>
+      fret
+  particle interp has_neighbor       eff     stoi
+0      7.0      0            1  0.907193  0.42237
+1      7.0      0            1  0.992112      NaN
+<BLANKLINE>
+[2 rows x 23 columns]
+"""
 from collections import OrderedDict
 import itertools
 
@@ -112,6 +146,19 @@ class SmFretData:
         Tracking data. Typically, the columns have a MultiIndex containing
         "donor" and "acceptor" at the top level. Each item contains tracking
         data (coordinates, brightness, frame numbers, particle numbers, ...).
+    has_acc : pandas.DataFrame
+        Tracks where the acceptor shows up upon direct acceptor excitation.
+    has_acc_wo_acc : pandas.DataFrame
+        Same as :py:attr:`has_acc`, but with localizations coming from
+        direct acceptor excitation removed.
+    fret : pandas.DataFrame
+        Only those parts of the tracks where both donor and acceptor are
+        present (i.e., where there is a signal in either channel during
+        donor excitation and a signal in the acceptor channel during acceptor
+        excitation.)
+    fret_wo_acc : pandas.DataFrame
+        Same as :py:attr:`fret`, but with localizations coming from
+        direct acceptor excitation removed.
     """
     def __init__(self, analyzer, donor_img, acceptor_img, tracks):
         """Parameters
@@ -142,6 +189,11 @@ class SmFretData:
             self.tracks = self._make_empty_dataframe()
         else:
             self.tracks = tracks
+
+        self.has_acc = None
+        self.has_acc_wo_acc = None
+        self.fret = None
+        self.fret_wo_acc = None
 
     @classmethod
     def track(cls, analyzer, donor_img, acceptor_img, donor_loc, acceptor_loc,
@@ -432,7 +484,7 @@ class SmFretData:
         Returns
         -------
         OrderedDict
-            Frame numbers are keys, tuples of two :py:class:`numpy.ndarray`s
+            Frame numbers are keys, tuples of two :py:class:`numpy.ndarray`
             are the values. The first array is the image data for the donor,
             the second is for the acceptor.
         """
@@ -793,8 +845,8 @@ class SmFretAnalyzer:
 
         For each localization in `tracks`, calculate the apparent FRET
         efficiency (acceptor brightness (mass) divided by sum of
-        donor and acceptor brightnesses). This is added as a "fret_eff"
-        column to the `tracks` DataFrame.
+        donor and acceptor brightnesses). This is added as a
+        ``("fret", "eff")`` column to the `tracks` DataFrame.
 
         Parameters
         ----------
@@ -811,7 +863,7 @@ class SmFretAnalyzer:
         tracks.reindex(columns=tracks.columns.sortlevel(0)[0])
 
     def stoichiometry(self, tracks, interp="linear"):
-        """Calculate a measure of the stoichiometry
+        r"""Calculate a measure of the stoichiometry
 
         The stoichiometry value :math:`S` is given as
 
@@ -823,8 +875,8 @@ class SmFretAnalyzer:
         acceptor excitation. The latter is calculated by interpolation for
         frames with donor excitation.
 
-        The stoichiometry value is added in the "fret_stoi" column for all
-        frames with donor excitation and is NaN for frames with acceptor
+        The stoichiometry value is added in the ``("fret, stoi")`` column for
+        all frames with donor excitation and is NaN for frames with acceptor
         excitation.
 
         .. [Uphoff2010] Uphoff, S. et al.: "Monitoring multiple distances
