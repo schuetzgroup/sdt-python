@@ -40,6 +40,13 @@ def density_scatter(x, y, ax=None, cmap="viridis", **kwargs):
     **kwargs
         Additional keyword arguments to be passed to `ax`'s `scatter` method.
     """
+    if ax is None:
+        ax = plt.gca()
+
+    if not (len(x) and len(y)):
+        # empty dataset
+        return
+
     kernel = scipy.stats.gaussian_kde([x, y])
     dens = kernel(kernel.dataset)
 
@@ -48,9 +55,6 @@ def density_scatter(x, y, ax=None, cmap="viridis", **kwargs):
     dens = dens[sort_idx]
     x = x[sort_idx]
     y = y[sort_idx]
-
-    if ax is None:
-        ax = plt.gca()
 
     if isinstance(ax, plt.Axes):
         kwargs["c"] = dens
