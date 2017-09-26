@@ -325,6 +325,15 @@ class TestHasNearNeighbor(unittest.TestCase):
         sf.has_near_neighbor(df, self.r)
         np.testing.assert_allclose(df, exp)
 
+    def test_empty_data(self):
+        """data.filter: Test `has_near_neighbor` function (empty data)"""
+        df = pd.DataFrame(columns=["x", "y"], dtype=float)
+        sf.has_near_neighbor(df, self.r)
+
+        pd.testing.assert_frame_equal(
+            df, pd.DataFrame(columns=["x", "y", "has_neighbor"], dtype=float),
+            check_index_type=False)
+
 
 class TestYaml(unittest.TestCase):
     def setUp(self):
