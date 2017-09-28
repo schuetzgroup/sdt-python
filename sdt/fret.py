@@ -35,6 +35,7 @@ Examples
 """
 from collections import OrderedDict
 import itertools
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -950,6 +951,8 @@ class SmFretAnalyzer:
     def efficiency(self, tracks):
         """Calculate (apparent) FRET efficiencies
 
+        **Deprecated.** Use :py:meth:`quantify_fret` instead.
+
         For each localization in `tracks`, calculate the apparent FRET
         efficiency (acceptor brightness (mass) divided by sum of
         donor and acceptor brightnesses). This is added as a
@@ -963,6 +966,10 @@ class SmFretAnalyzer:
             :py:attr:`SmFretData.tracks` attribute documentation. This methods
             appends a "fret_eff" column with the FRET efficiencies.
         """
+        warnings.warn(
+            "`efficiency` is deprecated. Use `quantify_fret` instead.",
+            np.VisibleDeprecationWarning)
+
         a_mass = tracks["acceptor", "mass"]
         d_mass = tracks["donor", "mass"]
         eff = a_mass / (d_mass + a_mass)
@@ -971,6 +978,8 @@ class SmFretAnalyzer:
 
     def stoichiometry(self, tracks, interp="linear"):
         r"""Calculate a measure of the stoichiometry
+
+        **Deprecated.** Use :py:meth:`quantify_fret` instead.
 
         The stoichiometry value :math:`S` is given as
 
@@ -1001,6 +1010,10 @@ class SmFretAnalyzer:
             What kind of interpolation to use for calculating acceptor
             brightness upon direct excitation. Defaults to "linear".
         """
+        warnings.warn(
+            "`stoichiometry` is deprecated. Use `quantify_fret` instead.",
+            np.VisibleDeprecationWarning)
+
         don = tracks["donor"][["mass", "frame"]].values
         acc = tracks["acceptor"][["mass", "frame"]].values
         particles = tracks["fret", "particle"].values  # particle numbers

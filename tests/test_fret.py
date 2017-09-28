@@ -1,6 +1,7 @@
 import unittest
 import os
 from collections import OrderedDict
+import warnings
 
 import pandas as pd
 import numpy as np
@@ -405,7 +406,8 @@ class TestSmFretAnalyzer(unittest.TestCase):
         self.tracks["acceptor", "mass"] = acc_mass
 
         a = fret.SmFretAnalyzer("da")
-        a.efficiency(self.tracks)
+        with np.testing.assert_warns(np.VisibleDeprecationWarning):
+            a.efficiency(self.tracks)
         eff = acc_mass / (don_mass + acc_mass)
 
         assert(("fret", "eff") in self.tracks.columns)
@@ -423,7 +425,8 @@ class TestSmFretAnalyzer(unittest.TestCase):
         stoi = (mass + mass) / (mass + mass + linear_mass)
         stoi[self.is_direct_acc] = np.NaN
 
-        self.analyzer.stoichiometry(self.tracks, interp="linear")
+        with np.testing.assert_warns(np.VisibleDeprecationWarning):
+            self.analyzer.stoichiometry(self.tracks, interp="linear")
 
         assert(("fret", "stoi") in self.tracks.columns)
         np.testing.assert_allclose(self.tracks["fret", "stoi"], stoi)
@@ -453,7 +456,8 @@ class TestSmFretAnalyzer(unittest.TestCase):
         stoi[near2] = (mass + mass) / (mass + mass + mass_acc2)
         stoi[a_direct2] = np.NaN
 
-        self.analyzer.stoichiometry(trc, interp="nearest")
+        with np.testing.assert_warns(np.VisibleDeprecationWarning):
+            self.analyzer.stoichiometry(trc, interp="nearest")
 
         assert(("fret", "stoi") in trc.columns)
         np.testing.assert_allclose(trc["fret", "stoi"], stoi)
@@ -471,7 +475,8 @@ class TestSmFretAnalyzer(unittest.TestCase):
         stoi = np.full(len(trc), stoi)
         stoi[a] = np.NaN
 
-        self.analyzer.stoichiometry(trc)
+        with np.testing.assert_warns(np.VisibleDeprecationWarning):
+            self.analyzer.stoichiometry(trc)
 
         assert(("fret", "stoi") in trc.columns)
         np.testing.assert_allclose(trc["fret", "stoi"], stoi)
