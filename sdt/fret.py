@@ -841,7 +841,7 @@ class SmFretAnalyzer:
             raise ValueError('`type` parameter must be one of ("d", "a").')
 
     def quantify_fret(self, tracks, aa_interp="linear", direct_nan=True):
-        """Calculate FRET-related values
+        r"""Calculate FRET-related values
 
         This includes apparent FRET efficiencies, FRET stoichiometries,
         the total brightness (mass) upon donor excitation, and the acceptor
