@@ -840,6 +840,114 @@ class SmFretAnalyzer:
         else:
             raise ValueError('`type` parameter must be one of ("d", "a").')
 
+    def quantify_fret(self, tracks, aa_interp="linear", direct_nan=True):
+        """Calculate FRET-related values
+
+        This includes apparent FRET efficiencies, FRET stoichiometries,
+        the total brightness (mass) upon donor excitation, and the acceptor
+        brightness (mass) upon direct excitation, which is interpolated for
+        donor excitation datapoints in order to allow for calculation of
+        stoichiometries.
+
+        For each localization in `tracks`, the total brightness upon donor
+        excitation is calculated by taking the sum of ``("donor", "mass")``
+        and ``("acceptor", "mass")`` values. It is added as a
+        ``("fret", "d_mass")`` column to the `tracks` DataFrame. The
+        apparent FRET efficiency (acceptor brightness (mass) divided by sum of
+        donor and acceptor brightnesses) is added as a
+        ``("fret", "eff")`` column to the `tracks` DataFrame.
+
+        The stoichiometry value :math:`S` is given as
+
+        .. math:: S = \frac{F_{DD} + F_{DA}}{F_{DD} + F_{DA} + F_{AA}}
+
+        as in [Uphoff2010]_. :math:`F_{DD}` is the donor brightness upon donor
+        excitation, :math:`F_{DA}` is the acceptor brightness upon donor
+        excitation, and :math:`F_{AA}` is the acceptor brightness upon
+        acceptor excitation. The latter is calculated by interpolation for
+        frames with donor excitation.
+
+        :math:`F_{AA}` is append as a ``("fret", "a_mass")`` column.
+        The stoichiometry value is added in the ``("fret", "stoi")`` column.
+
+        .. [Uphoff2010] Uphoff, S. et al.: "Monitoring multiple distances
+            within a single molecule using switchable FRET".
+            Nat Meth, 2010, 7, 831–836
+
+        Parameters
+        ----------
+        tracks : pandas.DataFrame
+            FRET tracking data as e. g. produced by
+            :py:meth:`SmFretData.track`.  For details, see the
+            :py:attr:`SmFretData.tracks` attribute documentation. This methods
+            appends the resulting columns.
+        aa_interp : {"nearest", "linear"}, optional
+            What kind of interpolation to use for calculating acceptor
+            brightness upon direct excitation. Defaults to "linear".
+        direct_nan : bool, optional
+            If True, all "d_mass", "eff", and "stoi" values for direct
+            acceptor excitation frames are set to NaN, since the values don't
+            make sense. Defaults to True.
+        """
+        don = tracks["donor"][["mass", "frame"]].values
+        acc = tracks["acceptor"][["mass", "frame"]].values
+        particles = tracks["fret", "particle"].values  # particle numbers
+
+        # Direct acceptor excitation
+        a_dir_mask = np.in1d(acc[:, 1] % len(self.desc), self.acc)
+
+        # Total mass upon donor excitation
+        d_mass = np.asanyarray(don[:, 0] + acc[:, 0], dtype=float)
+        # FRET efficiency
+        eff = acc[:, 0] / d_mass
+
+        sto = np.empty(len(don))  # pre-allocate
+        a_mass = np.empty(len(don))
+        for p in particles:
+            p_mask = particles == p  # boolean array for current particle
+            d = don[p_mask]
+            a = acc[p_mask]
+
+            # Direct acceptor excitation of current particle
+            ad_mask = a_dir_mask[p_mask]
+            a_direct = a[ad_mask]
+
+            if len(a_direct) == 0:
+                # No direct acceptor excitation, cannot do anything
+                sto[p_mask] = np.NaN
+                a_mass[p_mask] = np.NaN
+                continue
+            elif len(a_direct) == 1:
+                # Only one direct acceptor excitation; use this value for
+                # all data points of this particle
+                def a_mass_func(x):
+                    return a_direct[0, 0]
+            else:
+                # Enough direct acceptor excitations for interpolation
+                a_mass_func = interp1d(a_direct[:, 1], a_direct[:, 0],
+                                       aa_interp, copy=False,
+                                       fill_value="extrapolate")
+            # Calculate (interpolated) mass upon direct acceptor excitation
+            am = a_mass_func(d[:, 1])
+            # calculate stoichiometry
+            dm = d[:, 0] + a[:, 0]
+            s = dm / (dm + am)
+
+            sto[p_mask] = s
+            a_mass[p_mask] = am
+        if direct_nan:
+            # For direct acceptor excitation, FRET efficiency and stoichiometry
+            # are not sensible
+            eff[a_dir_mask] = np.NaN
+            sto[a_dir_mask] = np.NaN
+            d_mass[a_dir_mask] = np.NaN
+
+        tracks["fret", "eff"] = eff
+        tracks["fret", "stoi"] = sto
+        tracks["fret", "d_mass"] = d_mass
+        tracks["fret", "a_mass"] = a_mass
+        tracks.reindex(columns=tracks.columns.sortlevel(0)[0])
+
     def efficiency(self, tracks):
         """Calculate (apparent) FRET efficiencies
 
