@@ -454,8 +454,7 @@ class SmFretData:
             (between the first and the last appearance of the acceptor).
             Defaults to 0.75.
         """
-        self.analyzer.efficiency(self.tracks)
-        self.analyzer.stoichiometry(self.tracks)
+        self.analyzer.quantify_fret(self.tracks)
 
         self.has_acc = self.analyzer.with_acceptor(self.tracks, acc_filter)
         self.has_acc_wo_acc = self.analyzer.get_excitation_type(self.has_acc,
