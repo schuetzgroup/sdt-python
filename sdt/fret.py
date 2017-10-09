@@ -200,8 +200,9 @@ class SmFretData:
     def track(cls, analyzer, donor_img, acceptor_img, donor_loc, acceptor_loc,
               chromatic_corr, link_radius, link_mem, min_length,
               feat_radius, bg_frame=2, bg_estimator="median",
-              neighbor_radius="auto", interpolate=True,  acceptor_channel=2,
-              link_options={}, link_quiet=True, pos_columns=_pos_columns):
+              neighbor_radius="auto", interpolate=True, coloc_dist=2.,
+              acceptor_channel=2, link_options={}, link_quiet=True,
+              pos_columns=_pos_columns):
         """Create a class instance by tracking
 
         Localization data for both the donor and the acceptor channel is
@@ -270,6 +271,10 @@ class SmFretData:
         interpolate : bool, optional
             Whether to interpolate coordinates of features that have been
             missed by the localization algorithm. Defaults to True.
+        coloc_dist : float, optional
+            When overlaying donor and acceptor channel features, this gives
+            the maximum distance up to which donor and acceptor signal are
+            considered to come from the same molecule. Defaults to 2.
         acceptor_channel : {1, 2}, optional
             Whether the acceptor channel is number 1 or 2 in `chromatic_corr`.
             Defaults to 2.
@@ -319,7 +324,7 @@ class SmFretData:
 
         # Create FRET tracks (in the donor channel)
         coloc = multicolor.find_colocalizations(
-                donor_loc, acceptor_loc_corr,
+                donor_loc, acceptor_loc_corr, max_dist=coloc_dist,
                 channel_names=["donor", "acceptor"], keep_non_coloc=True)
         coloc_pos_f = coloc.loc[:, (slice(None), pos_columns + ["frame"])]
         coloc_pos_f = coloc_pos_f.values.reshape((len(coloc), 2,
