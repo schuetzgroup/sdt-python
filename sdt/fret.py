@@ -900,6 +900,12 @@ class SmFretAnalyzer:
 
         # Direct acceptor excitation
         a_dir_mask = np.in1d(acc[:, 1] % len(self.desc), self.acc)
+        # Localizations with near neighbors bias brightness measurements
+        try:
+            no_neigh_mask = tracks["fret", "has_neighbor"] == 0
+        except KeyError:
+            # No such column
+            no_neigh_mask = np.ones(len(tracks), dtype=bool)
 
         # Total mass upon donor excitation
         d_mass = np.asanyarray(don[:, 0] + acc[:, 0], dtype=float)
@@ -914,8 +920,11 @@ class SmFretAnalyzer:
             a = acc[p_mask]
 
             # Direct acceptor excitation of current particle
-            ad_mask = a_dir_mask[p_mask]
-            a_direct = a[ad_mask]
+            ad_p_mask = a_dir_mask[p_mask]
+            # Locs without neighbors of current particle
+            nn_p_mask = no_neigh_mask[p_mask]
+            # Only use locs with direct accept ex and no neighbors
+            a_direct = a[ad_p_mask & nn_p_mask]
 
             if len(a_direct) == 0:
                 # No direct acceptor excitation, cannot do anything
