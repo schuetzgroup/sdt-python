@@ -938,9 +938,14 @@ class SmFretAnalyzer:
                     return a_direct[0, 0]
             else:
                 # Enough direct acceptor excitations for interpolation
-                a_mass_func = interp1d(a_direct[:, 1], a_direct[:, 0],
-                                       aa_interp, copy=False,
-                                       fill_value="extrapolate")
+                # Sort for easy determination of the first and last values,
+                # which are used as fill_value; values have to be sorted
+                # for interp1d anyways.
+                srt = np.argsort(a_direct[:, 1])
+                y, x = a_direct[srt].T
+                a_mass_func = interp1d(x, y, aa_interp, copy=False,
+                                       fill_value=(y[0], y[-1]),
+                                       assume_sorted=True, bounds_error=False)
             # Calculate (interpolated) mass upon direct acceptor excitation
             am = a_mass_func(d[:, 1])
             # calculate stoichiometry
