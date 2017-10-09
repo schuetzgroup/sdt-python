@@ -319,12 +319,14 @@ class SmFretData:
                 df[c] = 0.
 
         donor_channel = 1 if acceptor_channel == 2 else 2
-        acceptor_loc_corr = chromatic_corr(acceptor_loc,
-                                           channel=acceptor_channel)
+        donor_loc_corr = chromatic_corr(donor_loc, channel=donor_channel)
 
-        # Create FRET tracks (in the donor channel)
+        # Create FRET tracks (in the acceptor channel)
+        # Acceptor channel is used because in ALEX there are frames without
+        # any donor locs, therefore minimizing the error by transforming
+        # back and forth.
         coloc = multicolor.find_colocalizations(
-                donor_loc, acceptor_loc_corr, max_dist=coloc_dist,
+                donor_loc_corr, acceptor_loc, max_dist=coloc_dist,
                 channel_names=["donor", "acceptor"], keep_non_coloc=True)
         coloc_pos_f = coloc.loc[:, (slice(None), pos_columns + ["frame"])]
         coloc_pos_f = coloc_pos_f.values.reshape((len(coloc), 2,
@@ -370,12 +372,12 @@ class SmFretData:
         ret["fret", "particle"] = \
             track_merged.loc[non_interp_mask, "particle"].values
 
-        # Append interpolated features (which "appear" only in the donor
+        # Append interpolated features (which "appear" only in the acceptor
         # channel)
         cols = pos_columns + ["frame"]
         interp_mask = ~non_interp_mask
         interp = track_merged.loc[interp_mask, cols]
-        interp.columns = pd.MultiIndex.from_product([["donor"], cols])
+        interp.columns = pd.MultiIndex.from_product([["acceptor"], cols])
         interp["fret", "particle"] = \
             track_merged.loc[interp_mask, "particle"].values
         ret = ret.append(interp)
@@ -398,8 +400,8 @@ class SmFretData:
             ret.loc[mask, (c1, posf_cols)] = d.values
 
         # get feature brightness from raw image data
-        ret_d = ret["donor"].copy()
-        ret_a = chromatic_corr(ret["acceptor"], channel=donor_channel)
+        ret_d = chromatic_corr(ret["donor"], channel=acceptor_channel)
+        ret_a = ret["acceptor"].copy()
         brightness.from_raw_image(ret_d, donor_img, feat_radius,
                                   bg_frame=bg_frame,
                                   bg_estimator=bg_estimator)
