@@ -902,7 +902,7 @@ class SmFretAnalyzer:
         a_dir_mask = np.in1d(acc[:, 1] % len(self.desc), self.acc)
         # Localizations with near neighbors bias brightness measurements
         try:
-            no_neigh_mask = tracks["fret", "has_neighbor"] == 0
+            no_neigh_mask = (tracks["fret", "has_neighbor"] == 0).values
         except KeyError:
             # No such column
             no_neigh_mask = np.ones(len(tracks), dtype=bool)
