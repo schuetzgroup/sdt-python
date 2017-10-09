@@ -198,7 +198,8 @@ def slice_constructor(loader, data):
 
 # dict-like
 def dict_representer(dumper, data):
-    return dumper.represent_dict(data)
+    return dumper.represent_mapping(yaml.resolver.Resolver.DEFAULT_MAPPING_TAG,
+                                    ((k, v) for k, v in data.items()))
 
 
 Dumper.add_representer(slice, slice_representer)
@@ -251,6 +252,46 @@ def _class_constructor_factory(cls):
         return loader.construct_yaml_object(node, cls)
 
     return cons
+
+
+def dump(data, stream=None, Dumper=Dumper, **kwds):
+    """Wrapper around :py:func:`yaml.dump` using :py:class:`Dumper`"""
+    return yaml.dump(data, stream, Dumper, **kwds)
+
+
+def safe_dump(data, stream=None, **kwds):
+    """Wrapper around :py:func:`yaml.dump` using :py:class:`SafeDumper`"""
+    return yaml.dump(data, stream, SafeDumper, **kwds)
+
+
+def dump_all(documents, stream=None, Dumper=Dumper, **kwds):
+    """Wrapper around :py:func:`yaml.dump_all` using :py:class:`Dumper`"""
+    return yaml.dump_all(documents, stream, Dumper, **kwds)
+
+
+def safe_dump_all(documents, stream=None, **kwds):
+    """Wrapper around :py:func:`yaml.dump_all` using :py:class:`SafeDumper`"""
+    return yaml.dump_all(documents, stream, SafeDumper, **kwds)
+
+
+def load(stream, Loader=Loader):
+    """Wrapper around :py:func:`yaml.load` using :py:class:`Loader`"""
+    return yaml.load(stream, Loader)
+
+
+def safe_load(stream):
+    """Wrapper around :py:func:`yaml.load` using :py:class:`SafeLoader`"""
+    return yaml.load(stream, SafeLoader)
+
+
+def load_all(stream, Loader=Loader):
+    """Wrapper around :py:func:`yaml.load_all` using :py:class:`Loader`"""
+    return yaml.load_all(stream, Loader)
+
+
+def safe_load_all(stream):
+    """Wrapper around :py:func:`yaml.load_all` using :py:class:`SafeLoader`"""
+    return yaml.load_all(stream, SafeLoader)
 
 
 _yaml_classes = [image_tools.ROI, image_tools.PathROI, image_tools.EllipseROI,
