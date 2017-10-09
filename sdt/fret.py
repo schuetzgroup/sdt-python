@@ -423,7 +423,7 @@ class SmFretData:
         return cls(analyzer, donor_img, acceptor_img, ret)
 
     def analyze_fret(self, acc_filter=None, acc_start=False, acc_end=True,
-                     acc_fraction=0.75):
+                     acc_fraction=0.75, aa_interp="linear"):
         """Analyze FRET tracking data
 
         Calculate FRET efficiencies and stoichiometries. Filter out tracks
@@ -459,8 +459,11 @@ class SmFretData:
             direct excitations divided by the number direct excitations
             (between the first and the last appearance of the acceptor).
             Defaults to 0.75.
+        aa_interp : {"nearest", "linear"}, optional
+            What kind of interpolation to use for calculating acceptor
+            brightness upon direct excitation. Defaults to "linear".
         """
-        self.analyzer.quantify_fret(self.tracks)
+        self.analyzer.quantify_fret(self.tracks, aa_interp=aa_interp)
 
         self.has_acc = self.analyzer.with_acceptor(self.tracks, acc_filter)
         self.has_acc_wo_acc = self.analyzer.get_excitation_type(self.has_acc,
