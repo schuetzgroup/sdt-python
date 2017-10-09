@@ -345,11 +345,6 @@ class SmFretData:
         if interpolate:
             # Interpolate coordinates where no features were localized
             track_merged = interpolate_coords(track_merged, pos_columns)
-            # Remove interpolated acceptor excitation frames
-            i_mask = ((track_merged["interp"] != 0) &
-                      (track_merged["frame"] % len(analyzer.desc)).isin(
-                           analyzer.acc))
-            track_merged = track_merged[~i_mask]
         else:
             # Mark all as not interpolated
             track_merged["interp"] = 0
