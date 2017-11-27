@@ -15,26 +15,7 @@ path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_image_tools")
 
 
-class TestImageTools(unittest.TestCase):
-    def test_save_as_tiff(self):
-        img1 = np.zeros((5, 5)).view(pims.Frame)
-        img1[2, 2] = 1
-        img1.metadata = dict(entry="test")
-        img2 = img1.copy()
-        img2[2, 2] = 3
-        frames = [img1, img2]
-
-        with tempfile.TemporaryDirectory() as td:
-            fn = os.path.join(td, "test.tiff")
-            image_tools.save_as_tiff(frames, fn)
-
-            res = pims.TiffStack(fn)
-
-            np.testing.assert_allclose(res, frames)
-
-            md = yaml.load(res[0].metadata["ImageDescription"])
-            assert(md == img1.metadata)
-
+class TestPolygonArea(unittest.TestCase):
     def test_polygon_area(self):
         vert = [[0, 0], [1, 2], [2, 0]]
         assert(image_tools.polygon_area(vert) == -2)

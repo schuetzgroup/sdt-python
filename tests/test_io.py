@@ -5,6 +5,7 @@ import io
 
 import pandas as pd
 import numpy as np
+import pims
 import yaml
 
 import sdt.io
@@ -387,6 +388,27 @@ class TestYaml(unittest.TestCase):
         np.testing.assert_allclose([roi2.center, roi2.axes],
                                    [roi.center, roi.axes])
         np.testing.assert_allclose(roi2.angle, roi.angle)
+
+
+class TestTiff(unittest.TestCase):
+    def test_save_as_tiff(self):
+        img1 = np.zeros((5, 5)).view(pims.Frame)
+        img1[2, 2] = 1
+        img1.metadata = dict(entry="test")
+        img2 = img1.copy()
+        img2[2, 2] = 3
+        frames = [img1, img2]
+
+        with tempfile.TemporaryDirectory() as td:
+            fn = os.path.join(td, "test.tiff")
+            sdt.io.save_as_tiff(frames, fn)
+
+            res = pims.TiffStack(fn)
+
+            np.testing.assert_allclose(res, frames)
+
+            md = yaml.load(res[0].metadata["ImageDescription"])
+            assert(md == img1.metadata)
 
 
 if __name__ == "__main__":
