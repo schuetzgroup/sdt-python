@@ -1,7 +1,7 @@
 """Simulate fluorescent images with Gaussian PSFs"""
 import numpy as np
 
-from .numba_helper import jit
+from .helper.numba import jit
 
 
 def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5.,

@@ -11,7 +11,7 @@ import numpy as np
 import yaml
 from scipy.optimize import curve_fit
 
-from ..numba_helper import jit
+from ..helper.numba import jit
 
 
 # Save arrays and OrderedDicts to YAML

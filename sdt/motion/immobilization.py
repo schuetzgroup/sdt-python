@@ -1,7 +1,7 @@
 """Tools for finding immobilizations in tracking data"""
 import numpy as np
 
-from .. import numba_helper
+from ..helper import numba
 from .msd import _pos_columns
 
 
@@ -91,7 +91,7 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
     t_arr = tracks[pos_columns + ["frame", "particle"]].values
     particles = np.unique(t_arr[:, -1])
 
-    if engine == "numba" and numba_helper.numba_available:
+    if engine == "numba" and numba.numba_available:
         count_immob_func = _count_immob_numba
         label_mob_func = _label_mob_numba
     else:
@@ -236,7 +236,7 @@ def _count_immob_python(coords, max_dist):
     return np.nansum(dist_sq <= max_dist**2, axis=2)
 
 
-@numba_helper.jit(nopython=True, cache=True)
+@numba.jit(nopython=True, cache=True)
 def _count_immob_numba(coords, max_dist):
     """Count immobilizations in sub-tracks - numba-accellerated
 
@@ -495,7 +495,7 @@ def _label_mob_python(immob_col, start):
     return start
 
 
-@numba_helper.jit(nopython=True, cache=True)
+@numba.jit(nopython=True, cache=True)
 def _label_mob_numba(immob_col, start):
     """numba-accelerated version of :py:func:`_label_mob_python`"""
     if not immob_col.size:
@@ -543,7 +543,7 @@ def label_mobile(data, engine="numba"):
     """
     d_arr = data[["particle", "immob"]].values
 
-    if engine == "numba" and numba_helper.numba_available:
+    if engine == "numba" and numba.numba_available:
         label_mob_func = _label_mob_numba
     else:
         label_mob_func = _label_mob_python
