@@ -43,32 +43,29 @@ def density_scatter(x, y, ax=None, cmap="viridis", **kwargs):
     if ax is None:
         ax = plt.gca()
 
-    if not (len(x) and len(y)):
-        # empty dataset
-        return
+    if len(x) and len(y):
+        kernel = scipy.stats.gaussian_kde([x, y])
+        dens = kernel(kernel.dataset)
 
-    kernel = scipy.stats.gaussian_kde([x, y])
-    dens = kernel(kernel.dataset)
+        # sort so that highest densities are the last (makes nicer plots)
+        sort_idx = np.argsort(dens)
+        dens = dens[sort_idx]
+        x = x[sort_idx]
+        y = y[sort_idx]
 
-    # sort so that highest densities are the last (makes nicer plots)
-    sort_idx = np.argsort(dens)
-    dens = dens[sort_idx]
-    x = x[sort_idx]
-    y = y[sort_idx]
+        if isinstance(ax, plt.Axes):
+            kwargs["c"] = dens
+            kwargs["cmap"] = cmap
+        elif bokeh_available and isinstance(ax, bokeh.plotting.Figure):
+            cmap = mpl.cm.get_cmap(cmap)
+            cols = cmap((dens - dens.min())/dens.max()) * 255
+            kwargs["color"] = [bokeh.colors.RGB(*c) for c in cols.astype(int)]
+        else:
+            raise ValueError("Unsupported type for `ax`. Can be `None`, a "
+                             "`matplotlib.axes.Axes` instance, or "
+                             "a `bokeh.plotting.Figure` instance.")
 
-    if isinstance(ax, plt.Axes):
-        kwargs["c"] = dens
-        kwargs["cmap"] = cmap
-    elif bokeh_available and isinstance(ax, bokeh.plotting.Figure):
-        cmap = mpl.cm.get_cmap(cmap)
-        cols = cmap((dens - dens.min())/dens.max()) * 255
-        kwargs["color"] = [bokeh.colors.RGB(*c) for c in cols.astype(int)]
-    else:
-        raise ValueError("Unsupported type for `ax`. Can be `None`, a "
-                         "`matplotlib.axes.Axes` instance, or "
-                         "a `bokeh.plotting.Figure` instance.")
-
-    ax.scatter(x, y, **kwargs)
+    return ax.scatter(x, y, **kwargs)
 
 
 class _BokehSelectionHelper:
