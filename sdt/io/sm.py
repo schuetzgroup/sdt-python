@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-"""Load data files
+"""Load single molecule data from files
 
 This module allows for reading data files produced by various MATLAB and
 python tools. So far it can read data from

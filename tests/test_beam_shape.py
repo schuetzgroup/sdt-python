@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 
 import sdt.beam_shape
-import sdt.data
 
 
 path, f = os.path.split(os.path.abspath(__file__))

@@ -7,14 +7,12 @@ import pandas as pd
 import numpy as np
 import yaml
 
-import sdt.data
-import sdt.data.yaml as sy
-import sdt.data.filter as sf
+import sdt.io
 from sdt import image_tools
 
 
 path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_data")
+data_path = os.path.join(path, "data_io")
 
 
 class TestFile(unittest.TestCase):
@@ -24,28 +22,28 @@ class TestFile(unittest.TestCase):
     def test_load_hdf5_features(self):
         h5name = os.path.join(data_path, "orig_pt2d.h5")
         orig = pd.read_hdf(h5name, "features")
-        new = sdt.data.load(h5name, "features")
+        new = sdt.io.load(h5name, "features")
 
         np.testing.assert_allclose(new, orig)
 
     def test_load_auto_hdf5_racks(self):
         h5name = os.path.join(data_path, "orig_pt2d.h5")
         orig = pd.read_hdf(h5name, "tracks")
-        new = sdt.data.load(h5name)
+        new = sdt.io.load(h5name)
 
         np.testing.assert_allclose(new, orig)
 
     def test_load_auto_hdf5_features(self):
         h5name = os.path.join(data_path, "orig_pkc.h5")
         orig = pd.read_hdf(h5name, "features")
-        new = sdt.data.load(h5name)
+        new = sdt.io.load(h5name)
 
         np.testing.assert_allclose(new, orig)
 
     def test_load_pt2d_features(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
                            "features")
-        new = sdt.data.load_pt2d(
+        new = sdt.io.load_pt2d(
             os.path.join(data_path, self.fname + "_positions.mat"),
             "features", False)
 
@@ -54,7 +52,7 @@ class TestFile(unittest.TestCase):
     def test_load_pt2d_features_with_protocol(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
                            "features")
-        new = sdt.data.load_pt2d(
+        new = sdt.io.load_pt2d(
             os.path.join(data_path, self.fname + "_positions.mat"),
             "features", True)
 
@@ -63,7 +61,7 @@ class TestFile(unittest.TestCase):
     def test_load_auto_pt2d_eatures(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
                            "features")
-        new = sdt.data.load(
+        new = sdt.io.load(
             os.path.join(data_path, self.fname + "_positions.mat"))
 
         np.testing.assert_allclose(new, orig)
@@ -71,7 +69,7 @@ class TestFile(unittest.TestCase):
     def test_oad_pt2d_tracks(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
                            "tracks")
-        new = sdt.data.load_pt2d(
+        new = sdt.io.load_pt2d(
             os.path.join(data_path, self.fname + "_tracks.mat"),
             "tracks", False)
 
@@ -80,7 +78,7 @@ class TestFile(unittest.TestCase):
     def test_load_pt2d_tracks_wth_protocol(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
                            "tracks")
-        new = sdt.data.load_pt2d(
+        new = sdt.io.load_pt2d(
             os.path.join(data_path, self.fname + "_tracks.mat"),
             "tracks", True)
 
@@ -89,7 +87,7 @@ class TestFile(unittest.TestCase):
     def test_load_auto_pt2d_tracks(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
                            "tracks")
-        new = sdt.data.load(
+        new = sdt.io.load(
             os.path.join(data_path, self.fname + "_tracks.mat"))
 
         np.testing.assert_allclose(new, orig)
@@ -97,7 +95,7 @@ class TestFile(unittest.TestCase):
     def test_load_trc(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_trc.h5"),
                            "tracks")
-        new = sdt.data.load_trc(
+        new = sdt.io.load_trc(
             os.path.join(data_path, self.fname + "_tracks.trc"))
 
         np.testing.assert_allclose(new, orig)
@@ -105,7 +103,7 @@ class TestFile(unittest.TestCase):
     def test_load_auto_trc(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_trc.h5"),
                            "tracks")
-        new = sdt.data.load(
+        new = sdt.io.load(
             os.path.join(data_path, self.fname + "_tracks.trc"))
 
         np.testing.assert_allclose(new, orig)
@@ -113,7 +111,7 @@ class TestFile(unittest.TestCase):
     def test_load_pkmatrix(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pkc.h5"),
                            "features")
-        new = sdt.data.load_pkmatrix(
+        new = sdt.io.load_pkmatrix(
             os.path.join(data_path, self.fname + ".pkc"))
 
         np.testing.assert_allclose(new, orig)
@@ -121,14 +119,14 @@ class TestFile(unittest.TestCase):
     def test_load_auto_pkmatrix(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pkc.h5"),
                            "features")
-        new = sdt.data.load(os.path.join(data_path, self.fname + ".pkc"))
+        new = sdt.io.load(os.path.join(data_path, self.fname + ".pkc"))
 
         np.testing.assert_allclose(new, orig)
 
     def test_load_pks(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pks.h5"),
                            "features")
-        new = sdt.data.load_pks(
+        new = sdt.io.load_pks(
             os.path.join(data_path, self.fname + ".pks"))
 
         np.testing.assert_allclose(new, orig)
@@ -136,7 +134,7 @@ class TestFile(unittest.TestCase):
     def test_load_auto_pks(self):
         orig = pd.read_hdf(os.path.join(data_path, "orig_pks.h5"),
                            "features")
-        new = sdt.data.load(
+        new = sdt.io.load(
             os.path.join(data_path, self.fname + ".pks"))
 
         np.testing.assert_allclose(new, orig)
@@ -148,7 +146,7 @@ class TestFile(unittest.TestCase):
         stderr = 0.30840731838193297
         data = pd.read_hdf(os.path.join(data_path, "msdplot.h5"), "msd_data")
 
-        msd = sdt.data.load_msdplot(
+        msd = sdt.io.load_msdplot(
             os.path.join(data_path, self.fname + "_ch1.mat"))
 
         np.testing.assert_allclose(d, msd["d"])
@@ -162,8 +160,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "features")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out.h5")
-            sdt.data.save(tmp_out, orig, "features", "hdf5")
-            read_back = sdt.data.load(tmp_out, "features")
+            sdt.io.save(tmp_out, orig, "features", "hdf5")
+            read_back = sdt.io.load(tmp_out, "features")
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -172,8 +170,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "features")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out.h5")
-            sdt.data.save(tmp_out, orig)
-            read_back = sdt.data.load(tmp_out, "features")
+            sdt.io.save(tmp_out, orig)
+            read_back = sdt.io.load(tmp_out, "features")
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -182,8 +180,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "tracks")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out.h5")
-            sdt.data.save(tmp_out, orig, "tracks", "hdf5")
-            read_back = sdt.data.load(tmp_out, "tracks")
+            sdt.io.save(tmp_out, orig, "tracks", "hdf5")
+            read_back = sdt.io.load(tmp_out, "tracks")
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -192,8 +190,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "tracks")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out.h5")
-            sdt.data.save(tmp_out, orig)
-            read_back = sdt.data.load(tmp_out, "tracks")
+            sdt.io.save(tmp_out, orig)
+            read_back = sdt.io.load(tmp_out, "tracks")
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -202,8 +200,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "features")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out_positions.mat")
-            sdt.data.save(tmp_out, orig, "features", "particle_tracker")
-            read_back = sdt.data.load(tmp_out, "features")
+            sdt.io.save(tmp_out, orig, "features", "particle_tracker")
+            read_back = sdt.io.load(tmp_out, "features")
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -212,8 +210,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "features")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out_positions.mat")
-            sdt.data.save(tmp_out, orig)
-            read_back = sdt.data.load(tmp_out, "features")
+            sdt.io.save(tmp_out, orig)
+            read_back = sdt.io.load(tmp_out, "features")
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -222,8 +220,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "tracks")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out_tracks.mat")
-            sdt.data.save(tmp_out, orig, "tracks", "particle_tracker")
-            read_back = sdt.data.load(tmp_out, "tracks")
+            sdt.io.save(tmp_out, orig, "tracks", "particle_tracker")
+            read_back = sdt.io.load(tmp_out, "tracks")
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -232,8 +230,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "tracks")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out_tracks.mat")
-            sdt.data.save(tmp_out, orig)
-            read_back = sdt.data.load(tmp_out, "tracks")
+            sdt.io.save(tmp_out, orig)
+            read_back = sdt.io.load(tmp_out, "tracks")
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -242,8 +240,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "tracks")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out.trc")
-            sdt.data.save(tmp_out, orig, fmt="trc")
-            read_back = sdt.data.load(tmp_out)
+            sdt.io.save(tmp_out, orig, fmt="trc")
+            read_back = sdt.io.load(tmp_out)
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -252,8 +250,8 @@ class TestFile(unittest.TestCase):
         orig = pd.read_hdf(h5name, "tracks")
         with tempfile.TemporaryDirectory() as td:
             tmp_out = os.path.join(td, "out.trc")
-            sdt.data.save(tmp_out, orig)
-            read_back = sdt.data.load(tmp_out)
+            sdt.io.save(tmp_out, orig)
+            read_back = sdt.io.load(tmp_out)
 
             np.testing.assert_allclose(read_back, orig)
 
@@ -264,31 +262,31 @@ class TestFilter(unittest.TestCase):
                                  columns=["c1", "c2"])
 
     def testCall(self):
-        f = sdt.data.Filter("{c1} < 5")
+        f = sdt.io.Filter("{c1} < 5")
         np.testing.assert_allclose(f(self.data),
                                    self.data[self.data["c1"] < 5])
 
     def testBooleanIndex(self):
-        f = sdt.data.Filter("{c1} < 5")
+        f = sdt.io.Filter("{c1} < 5")
         np.testing.assert_allclose(f.boolean_index(self.data),
                                    self.data["c1"] < 5)
 
     def testAddCondition(self):
-        f = sdt.data.Filter("{c1} < 5")
+        f = sdt.io.Filter("{c1} < 5")
         f.add_condition("{c2} > 1")
         np.testing.assert_allclose(f.boolean_index(self.data),
                                    ((self.data["c1"] < 5) &
                                     (self.data["c2"] > 1)))
 
     def testAddConditionMultiline(self):
-        f = sdt.data.Filter()
+        f = sdt.io.Filter()
         f.add_condition("{c1} < 5\n{c2} > 1")
         np.testing.assert_allclose(f.boolean_index(self.data),
                                    ((self.data["c1"] < 5) &
                                     (self.data["c2"] > 1)))
 
     def testAddConditionNumpy(self):
-        f = sdt.data.Filter("numpy.sqrt({c1}) <= 2")
+        f = sdt.io.Filter("numpy.sqrt({c1}) <= 2")
         np.testing.assert_allclose(f.boolean_index(self.data),
                                    np.sqrt(self.data["c1"]) <= 2)
 
@@ -303,14 +301,14 @@ class TestHasNearNeighbor(unittest.TestCase):
 
     def test_has_near_neighbor_impl(self):
         """data.filter: Test `_has_near_neighbor_impl` function"""
-        nn = sf._has_near_neighbor_impl(self.xy, self.r)
+        nn = sdt.io.filter._has_near_neighbor_impl(self.xy, self.r)
         np.testing.assert_allclose(nn, self.nn)
 
     def test_has_near_neighbor_noframe(self):
         """data.filter: Test `has_near_neighbor` function (no "frame" col)"""
         exp = self.df.copy()
         exp["has_neighbor"] = self.nn
-        sf.has_near_neighbor(self.df, self.r)
+        sdt.io.has_near_neighbor(self.df, self.r)
         np.testing.assert_allclose(self.df, exp)
 
     def test_has_near_neighbor_frame(self):
@@ -322,13 +320,13 @@ class TestHasNearNeighbor(unittest.TestCase):
         exp = df.copy()
         exp["has_neighbor"] = nn
 
-        sf.has_near_neighbor(df, self.r)
+        sdt.io.has_near_neighbor(df, self.r)
         np.testing.assert_allclose(df, exp)
 
     def test_empty_data(self):
         """data.filter: Test `has_near_neighbor` function (empty data)"""
         df = pd.DataFrame(columns=["x", "y"], dtype=float)
-        sf.has_near_neighbor(df, self.r)
+        sdt.io.has_near_neighbor(df, self.r)
 
         pd.testing.assert_frame_equal(
             df, pd.DataFrame(columns=["x", "y", "has_neighbor"], dtype=float),
@@ -339,53 +337,53 @@ class TestYaml(unittest.TestCase):
     def setUp(self):
         self.io = io.StringIO()
         self.array = np.array([[1, 2], [3, 4]])
-        self.array_rep = (sy.ArrayDumper.array_tag + "\n" +
+        self.array_rep = (sdt.io.yaml.ArrayDumper.array_tag + "\n" +
                           np.array2string(self.array, separator=", "))
 
     def testArrayDumper(self):
-        yaml.dump(self.array, self.io, sy.ArrayDumper)
+        yaml.dump(self.array, self.io, sdt.io.yaml.ArrayDumper)
         assert(self.io.getvalue().strip() == self.array_rep)
 
     def testArrayLoader(self):
         self.io.write(self.array_rep)
         self.io.seek(0)
-        a = yaml.load(self.io, sy.Loader)
+        a = yaml.load(self.io, sdt.io.yaml.Loader)
         np.testing.assert_equal(a, self.array)
 
     def testRoiDumperLoader(self):
         roi = image_tools.ROI((10, 20), (30, 40))
-        yaml.dump(roi, self.io, sy.Dumper)
+        yaml.dump(roi, self.io, sdt.io.yaml.Dumper)
 
         self.io.seek(0)
-        roi2 = yaml.load(self.io, sy.Loader)
+        roi2 = yaml.load(self.io, sdt.io.yaml.Loader)
         np.testing.assert_equal([roi2.top_left, roi2.bottom_right],
                                 [roi.top_left, roi.bottom_right])
 
     def testPathRoiDumperLoader(self):
         roi = image_tools.PathROI([[10, 20], [30, 20], [30, 40], [10, 40]])
-        yaml.dump(roi, self.io, sy.Dumper)
+        yaml.dump(roi, self.io, sdt.io.yaml.Dumper)
 
         self.io.seek(0)
-        roi2 = yaml.load(self.io, sy.Loader)
+        roi2 = yaml.load(self.io, sdt.io.yaml.Loader)
         np.testing.assert_allclose(roi2.path.vertices, roi.path.vertices)
         np.testing.assert_equal(roi2.path.codes, roi.path.codes)
         np.testing.assert_allclose(roi2._buffer, roi._buffer)
 
     def testRectangleRoiDumperLoader(self):
         roi = image_tools.RectangleROI((10, 20), (30, 40))
-        yaml.dump(roi, self.io, sy.Dumper)
+        yaml.dump(roi, self.io, sdt.io.yaml.Dumper)
 
         self.io.seek(0)
-        roi2 = yaml.load(self.io, sy.Loader)
+        roi2 = yaml.load(self.io, sdt.io.yaml.Loader)
         np.testing.assert_allclose([roi2.top_left, roi2.bottom_right],
                                    [roi.top_left, roi.bottom_right])
 
     def testEllipseRoiDumperLoader(self):
         roi = image_tools.EllipseROI((10, 20), (30, 40))
-        yaml.dump(roi, self.io, sy.Dumper)
+        yaml.dump(roi, self.io, sdt.io.yaml.Dumper)
 
         self.io.seek(0)
-        roi2 = yaml.load(self.io, sy.Loader)
+        roi2 = yaml.load(self.io, sdt.io.yaml.Loader)
         np.testing.assert_allclose([roi2.center, roi2.axes],
                                    [roi.center, roi.axes])
         np.testing.assert_allclose(roi2.angle, roi.angle)

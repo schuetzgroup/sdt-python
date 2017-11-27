@@ -6,7 +6,7 @@ import numpy as np
 
 from sdt.image_tools import ROI
 from sdt.chromatic import Corrector
-from sdt.data import load
+from sdt.io import load
 
 
 path, f = os.path.split(os.path.abspath(__file__))

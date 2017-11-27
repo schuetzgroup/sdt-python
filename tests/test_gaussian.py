@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 
 import sdt.gaussian_fit
-import sdt.data
 
 
 path, f = os.path.split(os.path.abspath(__file__))

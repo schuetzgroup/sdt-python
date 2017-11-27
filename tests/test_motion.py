@@ -6,7 +6,7 @@ import pickle
 import pandas as pd
 import numpy as np
 
-from sdt import motion, data
+from sdt import motion, io
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -15,8 +15,8 @@ data_path = os.path.join(path, "data_motion")
 
 class TestMotion(unittest.TestCase):
     def setUp(self):
-        self.traj1 = data.load(os.path.join(data_path, "B-1_000__tracks.mat"))
-        self.traj2 = data.load(os.path.join(data_path, "B-1_001__tracks.mat"))
+        self.traj1 = io.load(os.path.join(data_path, "B-1_000__tracks.mat"))
+        self.traj2 = io.load(os.path.join(data_path, "B-1_001__tracks.mat"))
 
     def test_all_displacements(self):
         # orig columns: 0: lagt, 1: dx, 2: dy, 3: traj number

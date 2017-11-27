@@ -28,7 +28,7 @@ def save_as_tiff(frames, filename):
     filename : str
         Name of the output file
     """
-    from .data import yaml as syaml  # Avoid circular dependency
+    from .io import yaml as syaml  # Avoid circular dependency
 
     with tifffile.TiffWriter(filename, software="sdt.image_tools") as tw:
         for f in frames:

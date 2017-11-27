@@ -42,7 +42,7 @@ import pandas as pd
 from scipy.interpolate import interp1d
 
 from . import multicolor, brightness
-from .data.filter import has_near_neighbor
+from .io.filter import has_near_neighbor
 
 try:
     import trackpy
@@ -727,6 +727,29 @@ class SmFretAnalyzer:
         # list of particles with acceptors
         return tracks[tracks["fret", "particle"].isin(p)]
 
+    def has_fluorophores(self, tracks, don_count=1, acc_count=1,
+                         don_filter=None, acc_filter=None):
+        don_fr_mask = np.in1d(tracks["donor", "frame"] % len(self.desc),
+                              self.don)
+        acc_fr_mask = ~don_fr_mask
+
+        old_columns = tracks.columns
+        tracks.columns = flatten_multiindex(tracks.columns)
+
+        good = []
+        zipped = zip((don_fr_mask, acc_fr_mask), (don_count, acc_count),
+                     (don_filter, acc_filter))
+        for mask, cnt, filt in zipped:
+            if filt and isinstance(filt, str):
+                mask &= tracks.eval(filt)
+            u, c = np.unique(tracks.loc[mask, "fret_particle"],
+                             return_counts=True)
+            good.append(u[c >= cnt])
+        good = np.intersect1d(*good, assume_unique=True)
+
+        tracks.columns = old_columns
+        return tracks[tracks["fret", "particle"].isin(good)]
+
     def select_fret(self, tracks, filter=None, acc_start=False,
                     acc_end=True, acc_fraction=0.75, remove_single=True):
         """Select parts of tracks where FRET can happen
@@ -836,6 +859,9 @@ class SmFretAnalyzer:
         pd.DataFrame
             Tracking data where only donor excitation ist left
         """
+        if not len(tracks):
+            return tracks
+
         frames = tracks["acceptor", "frame"]
         is_don = (frames % len(self.desc)).isin(self.don)
         if type == "d":

@@ -1,4 +1,4 @@
-from .file import *
+from .sm import *
 from .filter import Filter, has_near_neighbor
 
 try:
