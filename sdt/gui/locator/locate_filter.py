@@ -22,6 +22,8 @@ class FilterWidget(filterBase):
     __clsName = "LocFilter"
     filterChangeDelay = 200
 
+    varNameRex = re.compile(r"\{(\w*)\}")
+
     def tr(self, string):
         return QCoreApplication.translate(self.__clsName, string)
 
@@ -55,35 +57,25 @@ class FilterWidget(filterBase):
 
     @Property(str, fset=setFilterString, doc="String describing the filter")
     def filterString(self):
-        return self._ui.filterEdit.toPlainText()
+        s = self._ui.filterEdit.toPlainText()
+        return self.varNameRex.subn("\\1", s)[0]
 
     def getFilter(self):
-        filterStr = self._ui.filterEdit.toPlainText()
+        filterStr = self.filterString
         filterStrList = filterStr.split("\n")
-
-        varNameRex = re.compile(r"\{(\w*)\}")
-        goodLines = []
-        for fstr in filterStrList:
-            fstr, cnt = varNameRex.subn(r'data["\1"]', fstr)
-            if not cnt:
-                # no variable was replaced; consider this an invalid line
-                continue
-            with suppress(SyntaxError):
-                goodLines.append(compile(fstr, "filterFunc", "eval"))
 
         def filterFunc(data):
             filter = np.ones(len(data), dtype=bool)
-            for l in goodLines:
+            for f in filterStrList:
                 with suppress(Exception):
-                    filter &= eval(l, {}, {"data": data, "numpy": np})
+                    filter &= data.eval(f, local_dict={}, global_dict={})
             return filter
 
         return filterFunc
 
     @Slot(QAction)
     def _addVariable(self, act):
-        self._ui.filterEdit.textCursor().insertText(
-            "{{{0}}}".format(act.text()))
+        self._ui.filterEdit.textCursor().insertText(act.text())
 
     @Slot(str)
     def on_showVarLabel_linkActivated(self, link):
