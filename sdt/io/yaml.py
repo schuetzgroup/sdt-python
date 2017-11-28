@@ -258,48 +258,67 @@ def dump(data, stream=None, Dumper=Dumper, **kwds):
 
 
 def safe_dump(data, stream=None, **kwds):
-    """Wrapper around :py:func:`yaml.dump` using :py:class:`SafeDumper`"""
+    """Wrap PyYAML's :py:func:`yaml.dump` using :py:class:`SafeDumper`"""
     return yaml.dump(data, stream, SafeDumper, **kwds)
 
 
 def dump_all(documents, stream=None, Dumper=Dumper, **kwds):
-    """Wrapper around :py:func:`yaml.dump_all` using :py:class:`Dumper`"""
+    """Wrap PyYAML's :py:func:`yaml.dump_all` using :py:class:`Dumper`"""
     return yaml.dump_all(documents, stream, Dumper, **kwds)
 
 
 def safe_dump_all(documents, stream=None, **kwds):
-    """Wrapper around :py:func:`yaml.dump_all` using :py:class:`SafeDumper`"""
+    """Wrap PyYAML's :py:func:`yaml.dump_all` using :py:class:`SafeDumper`"""
     return yaml.dump_all(documents, stream, SafeDumper, **kwds)
 
 
 def load(stream, Loader=Loader):
-    """Wrapper around :py:func:`yaml.load` using :py:class:`Loader`"""
+    """Wrap PyYAML's :py:func:`yaml.load` using :py:class:`Loader`"""
     return yaml.load(stream, Loader)
 
 
 def safe_load(stream):
-    """Wrapper around :py:func:`yaml.load` using :py:class:`SafeLoader`"""
+    """Wrap PyYAML's :py:func:`yaml.load` using :py:class:`SafeLoader`"""
     return yaml.load(stream, SafeLoader)
 
 
 def load_all(stream, Loader=Loader):
-    """Wrapper around :py:func:`yaml.load_all` using :py:class:`Loader`"""
+    """Wrap PyYAML's :py:func:`yaml.load_all` using :py:class:`Loader`"""
     return yaml.load_all(stream, Loader)
 
 
 def safe_load_all(stream):
-    """Wrapper around :py:func:`yaml.load_all` using :py:class:`SafeLoader`"""
+    """Wrap PyYAML's :py:func:`yaml.load_all` using :py:class:`SafeLoader`"""
     return yaml.load_all(stream, SafeLoader)
 
 
 def register_yaml_class(cls):
-    # Add representers to `Dumper` and `SafeDumper`
+    """Add support for representing and loading a class
+
+    A representer is be added to :py:class:`Dumper` and
+    :py:class:`SafeDumper`. A loader is added to :py:class:`Loader` and
+    :py:class:`SafeLoader`.
+
+    The class should have a `yaml_tag` attribute and may have a
+    `yaml_flow_style` attribute.
+
+    If `to_yaml` or `from_yaml` class methods exist, they will be used for
+    representing or constructing class instances (see PyYAML's
+    :py:func:`yaml.Dumper.add_representer` and
+    :py:func:`yaml.Loader.add_constructor` details). Otherwise, the default
+    :py:func:`Dumper.represent_yaml_object` and
+    :py:func:`Loader.construct_yaml_object` are used.
+
+    Parameters
+    ----------
+    cls : type
+        Class to add support for
+    """
     rep = getattr(cls, "to_yaml", None)
     rep = rep if callable(rep) else _class_representer_factory(cls)
     Dumper.add_representer(cls, rep)
     SafeDumper.add_representer(cls, rep)
 
-    # Add constructors to `Loader` and `SafeLoader`
     cons = getattr(cls, "from_yaml", None)
     cons = cons if callable(cons) else _class_representer_factory(cls)
     Loader.add_constructor(cls.yaml_tag, cons)

@@ -30,12 +30,14 @@ Overview
   are featured in the :py:mod:`sdt.multicolor` module.
 - Single molecule FRET tracking and data analysis can by accomplished using
   the :py:mod:`sdt.fret` module.
-- The :py:mod:`sdt.data` module includes support for :ref:`reading and
-  writing data <data_read_write>` from and to files in various formats and
-  also for :ref:`filtering <data_filter>` of the data.
-- The :py:mod:`sdt.image_tools` module allows for saving an image
-  series including all its metadata as a TIFF file as well as defining ROIs
-  (regions of interest) in image and localization data.
+- The :py:mod:`sdt.io` module includes support for reading and writing data
+  from and to files in various formats.
+- The :py:mod:`sdt.spatial` module allows for saving dealing with spatial
+  aspects of data such as determining whether there are near neighbors,
+  interpolating missing features in tracking data and calculating the area of a
+  polygon.
+- Handling of regions of interest (ROIs) is possible by means of the
+  :py:mod:`sdt.roi` module.
 - With help of the :py:mod:`sdt.image` module it is possible to
   do image processing, e. g. background subtraction from images.
 - Using the :py:mod:`sdt.beam_shape` module, flat field correction of image
@@ -74,9 +76,9 @@ Table of contents
   chromatic
   fret
   multicolor
-  data_file
-  data_filter
-  image_tools
+  io
+  spatial
+  roi
   image_processing
   beam_shape
   sim

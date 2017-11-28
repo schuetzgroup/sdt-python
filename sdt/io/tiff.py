@@ -44,7 +44,7 @@ try:
     import pims
 
     class SdtTiffStack(pims.TiffStack_tifffile):
-        """Version of pims.TiffStack extended for SDT needs
+        """Version of :py:class:`pims.TiffStack` extended for SDT needs
 
         This tries to read metadata that has been serialized as YAML using
         :py:func:`save_as_tiff`.
