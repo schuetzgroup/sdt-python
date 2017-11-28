@@ -19,7 +19,7 @@ import pandas as pd
 import numpy as np
 import scipy.interpolate as sp_int
 
-import pims
+import slicerator
 
 from . import gaussian_fit as gfit
 
@@ -107,8 +107,7 @@ class Corrector(object):
         data : pandas.DataFrame or pims.FramesSequence or array-like
             data to be processed. If a pandas.Dataframe, correct the "mass"
             column according to the particle position in the laser beam.
-            Otherwise, `pims.pipeline` is used to correct raw image data. This
-            requires pims version > 0.2.2.
+            Otherwise, `slicerator.pipeline` is used to correct raw image data.
         inplace : bool, optional
             Only has an effect if `data` is a DataFrame. If True, the
             feature intensities will be corrected in place. Defaults to False.
@@ -134,7 +133,7 @@ class Corrector(object):
                 # copied previously, now return
                 return data
         else:
-            @pims.pipeline
+            @slicerator.pipeline
             def corr(img):
                 return img/self.corr_img
             return corr(data)

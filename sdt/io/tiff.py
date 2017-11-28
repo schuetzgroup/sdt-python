@@ -50,7 +50,7 @@ try:
         :py:func:`save_as_tiff`.
 
         The :py:attr:`class_priority` is set to 20, so that importing
-        :py:mod:`sdt.pims` should be enough to make :py:func:`pims.open`
+        :py:mod:`sdt.io` should be enough to make :py:func:`pims.open`
         automatically select this class for reading TIFF files.
         """
         class_priority = 20  # >10, so use instead of any builtin TIFF reader
