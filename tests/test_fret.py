@@ -13,60 +13,6 @@ path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_data")
 
 
-class TestInterpolateCoords(unittest.TestCase):
-    def setUp(self):
-        x = np.arange(10, dtype=np.float)
-        xy = np.column_stack([x, x + 10])
-        self.trc = pd.DataFrame(xy, columns=["x", "y"])
-        self.trc["frame"] = np.arange(2, 12)
-        self.trc["particle"] = 0
-        self.trc["interp"] = 0
-        self.trc.loc[[1, 4, 5], "interp"] = 1
-
-    def test_simple(self):
-        """fret.interpolate_coords: Simple test"""
-        trc_miss = self.trc[~self.trc["interp"].astype(bool)]
-        trc_interp = fret.interpolate_coords(trc_miss)
-
-        pd.testing.assert_frame_equal(trc_interp, self.trc)
-
-    def test_multi_particle(self):
-        """fret.interpolate_coords: Multiple particles"""
-        trc2 = self.trc.copy()
-        trc2["particle"] = 1
-        trc_all = pd.concat([self.trc, trc2], ignore_index=True)
-
-        trc_miss = trc_all[~trc_all["interp"].astype(bool)]
-        trc_interp = fret.interpolate_coords(trc_miss)
-
-        pd.testing.assert_frame_equal(trc_interp, trc_all)
-
-    def test_extra_column(self):
-        """fret.interpolate_coords: Extra column in DataFrame"""
-        self.trc["extra"] = 1
-        trc_miss = self.trc[~self.trc["interp"].astype(bool)]
-
-        trc_interp = fret.interpolate_coords(trc_miss)
-        self.trc.loc[self.trc["interp"].astype(bool), "extra"] = np.NaN
-
-        pd.testing.assert_frame_equal(trc_interp, self.trc)
-
-    def test_shuffle(self):
-        """fret.interpolate_coords: Shuffled data"""
-        trc_shuffle = self.trc.iloc[np.random.permutation(len(self.trc))]
-        trc_miss = trc_shuffle[~trc_shuffle["interp"].astype(bool)]
-        trc_interp = fret.interpolate_coords(trc_miss)
-
-        pd.testing.assert_frame_equal(trc_interp, self.trc)
-
-    def test_values_dtype(self):
-        """fret.interpolate_coords: dtype of DataFrame's `values`"""
-        trc_miss = self.trc[~self.trc["interp"].astype(bool)]
-        trc_interp = fret.interpolate_coords(trc_miss)
-        v = trc_interp[["x", "y", "frame", "particle"]].values
-        assert(v.dtype == np.dtype(np.float64))
-
-
 class TestSmFretData(unittest.TestCase):
     def setUp(self):
         self.img_size = 150

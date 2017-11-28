@@ -292,48 +292,6 @@ class TestFilter(unittest.TestCase):
                                    np.sqrt(self.data["c1"]) <= 2)
 
 
-class TestHasNearNeighbor(unittest.TestCase):
-    def setUp(self):
-        self.xy = np.zeros((10, 2))
-        self.xy[:, 0] = [0, 0.5, 2, 4, 4.5, 6, 8, 10, 12, 14]
-        self.nn = [1, 1, 0, 1, 1, 0, 0, 0, 0, 0]
-        self.r = 1
-        self.df = pd.DataFrame(self.xy, columns=["x", "y"])
-
-    def test_has_near_neighbor_impl(self):
-        """data.filter: Test `_has_near_neighbor_impl` function"""
-        nn = sdt.io.filter._has_near_neighbor_impl(self.xy, self.r)
-        np.testing.assert_allclose(nn, self.nn)
-
-    def test_has_near_neighbor_noframe(self):
-        """data.filter: Test `has_near_neighbor` function (no "frame" col)"""
-        exp = self.df.copy()
-        exp["has_neighbor"] = self.nn
-        sdt.io.has_near_neighbor(self.df, self.r)
-        np.testing.assert_allclose(self.df, exp)
-
-    def test_has_near_neighbor_frame(self):
-        """data.filter: Test `has_near_neighbor` function ("frame" col)"""
-        df = pd.concat([self.df] * 2)
-        df["frame"] = [0] * len(self.df) + [1] * len(self.df)
-        nn = self.nn * 2
-
-        exp = df.copy()
-        exp["has_neighbor"] = nn
-
-        sdt.io.has_near_neighbor(df, self.r)
-        np.testing.assert_allclose(df, exp)
-
-    def test_empty_data(self):
-        """data.filter: Test `has_near_neighbor` function (empty data)"""
-        df = pd.DataFrame(columns=["x", "y"], dtype=float)
-        sdt.io.has_near_neighbor(df, self.r)
-
-        pd.testing.assert_frame_equal(
-            df, pd.DataFrame(columns=["x", "y", "has_neighbor"], dtype=float),
-            check_index_type=False)
-
-
 class TestYaml(unittest.TestCase):
     def setUp(self):
         self.io = io.StringIO()

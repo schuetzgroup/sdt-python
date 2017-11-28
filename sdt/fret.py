@@ -42,7 +42,7 @@ import pandas as pd
 from scipy.interpolate import interp1d
 
 from . import multicolor, brightness
-from .io.filter import has_near_neighbor
+from .spatial import has_near_neighbor, interpolate_coords
 
 try:
     import trackpy
@@ -60,74 +60,6 @@ except ImportError:
 
 _pos_columns = ["x", "y"]
 _SQRT_2 = np.sqrt(2.)
-
-
-def interpolate_coords(tracks, pos_columns=_pos_columns):
-    """Interpolate coordinates for missing localizations
-
-    For each particle in `tracks`, interpolate coordinates for frames
-    where no localization was detected.
-
-    Parameters
-    ----------
-    tracks : pandas.DataFrame
-        Tracking data
-
-    Returns
-    -------
-    pandas.DataFrame
-        Tracking data with missing frames interpolated. An "interp" column
-        is added. If False, the localization was detected previously. If
-        True, it was added via interpolation by this method.
-
-    Other parameters
-    ----------------
-    pos_colums : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
-    """
-    tracks = tracks.copy()
-    arr = tracks[pos_columns + ["particle", "frame"]].values
-    particles = np.unique(arr[:, -2])
-    missing_coords = []
-    missing_fno = []
-    missing_pno = []
-    for p in particles:
-        a = arr[arr[:, -2] == p]  # get particle p
-        a = a[np.argsort(a[:, -1])]  # sort according to frame number
-        frames = a[:, -1].astype(np.int)  # frame numbers
-        # get missing frame numbers
-        miss = list(set(range(frames[0], frames[-1]+1)) - set(frames))
-        miss = np.array(miss, dtype=np.int)
-
-        coords = []
-        for c in a[:, :-2].T:
-            # for missing frames interpolate each coordinate
-            x = np.interp(miss, frames, c)
-            coords.append(x)
-        missing_coords.append(np.column_stack(coords))
-        missing_pno.append(np.full(len(miss), p, dtype=np.int))
-        missing_fno.append(miss)
-
-    if not missing_coords:
-        tracks["interp"] = 0
-        ret = tracks.sort_values(["particle", "frame"])
-        return tracks.reset_index(drop=True)
-
-    missing_coords = np.concatenate(missing_coords)
-    missing_fno = np.concatenate(missing_fno)
-    missing_pno = np.concatenate(missing_pno)
-    missing_df = pd.DataFrame(missing_coords, columns=pos_columns)
-    missing_df["particle"] = missing_pno
-    missing_df["frame"] = missing_fno
-    # Don't use bool below. Otherwise, the `values` attribute of the DataFrame
-    # will have "object" dtype.
-    missing_df["interp"] = 1
-    tracks["interp"] = 0
-
-    ret = pd.merge(tracks, missing_df, "outer")
-    ret.sort_values(["particle", "frame"], inplace=True)
-    return ret.reset_index(drop=True)
 
 
 class SmFretData:
