@@ -260,6 +260,8 @@ class TestSmFretAnalyzer(unittest.TestCase):
         """fret.SmFretAnalyzer.quantify_fret: Stoichiometry, linear interp."""
         mass = 1000
         linear_mass = self.tracks["acceptor", "frame"] * 100
+        # Extrapolate constant value
+        linear_mass[:len(self.don)] = linear_mass[len(self.don)]
 
         self.tracks.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
         self.tracks.loc[self.is_direct_acc, ("acceptor", "mass")] = \
