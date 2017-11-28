@@ -1,4 +1,6 @@
 """Various simple tools for dealing with microscopy images"""
+from contextlib import suppress
+
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
@@ -486,3 +488,11 @@ class EllipseROI(PathROI):
         buf = m.get("buffer", 0)
         angle = m.get("angle", 0)
         return cls(m["center"], m["axes"], angle, buf)
+
+
+with suppress(ImportError):
+    from .io import yaml
+    yaml.register_yaml_class(ROI)
+    yaml.register_yaml_class(PathROI)
+    yaml.register_yaml_class(RectangleROI)
+    yaml.register_yaml_class(EllipseROI)

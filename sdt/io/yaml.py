@@ -16,8 +16,6 @@ import collections
 import yaml
 import numpy as np
 
-from .. import image_tools
-
 
 class ArrayNode(yaml.Node):
     """YAML node for numpy arrays"""
@@ -294,18 +292,15 @@ def safe_load_all(stream):
     return yaml.load_all(stream, SafeLoader)
 
 
-_yaml_classes = [image_tools.ROI, image_tools.PathROI, image_tools.EllipseROI,
-                 image_tools.RectangleROI]
-for c in _yaml_classes:
+def register_yaml_class(cls):
     # Add representers to `Dumper` and `SafeDumper`
-    flow_style = getattr(c, "yaml_flow_style", None)
-    rep = getattr(c, "to_yaml", None)
-    rep = rep if callable(rep) else _class_representer_factory(c)
-    Dumper.add_representer(c, rep)
-    SafeDumper.add_representer(c, rep)
+    rep = getattr(cls, "to_yaml", None)
+    rep = rep if callable(rep) else _class_representer_factory(cls)
+    Dumper.add_representer(cls, rep)
+    SafeDumper.add_representer(cls, rep)
 
     # Add constructors to `Loader` and `SafeLoader`
-    cons = getattr(c, "from_yaml", None)
-    cons = cons if callable(cons) else _class_representer_factory(c)
-    Loader.add_constructor(c.yaml_tag, cons)
-    SafeLoader.add_constructor(c.yaml_tag, cons)
+    cons = getattr(cls, "from_yaml", None)
+    cons = cons if callable(cons) else _class_representer_factory(cls)
+    Loader.add_constructor(cls.yaml_tag, cons)
+    SafeLoader.add_constructor(cls.yaml_tag, cons)
