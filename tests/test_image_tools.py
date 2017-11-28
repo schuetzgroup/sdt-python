@@ -1,6 +1,7 @@
 import unittest
 import os
 import tempfile
+import io
 
 import numpy as np
 import pandas as pd
@@ -9,6 +10,7 @@ import pims
 import slicerator
 
 from sdt import image_tools
+from sdt.io import yaml
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -66,6 +68,17 @@ class TestRoi(unittest.TestCase):
         np.testing.assert_equal(self.roi(self.loc, reset_origin=True).values,
                                 self.loc_roi - self.top_left)
 
+    def assert_roi_equal(self, actual, desired):
+        np.testing.assert_equal([actual.top_left, actual.bottom_right],
+                                [desired.top_left, desired.bottom_right])
+
+    def test_yaml(self):
+        buf = io.StringIO()
+        yaml.safe_dump(self.roi, buf)
+        buf.seek(0)
+        roi2 = yaml.safe_load(buf)
+        self.assert_roi_equal(roi2, self.roi)
+
 
 class TestPathRoi(TestRoi):
     def setUp(self):
@@ -73,15 +86,20 @@ class TestPathRoi(TestRoi):
         self.roi = image_tools.PathROI([[10, 10], [90, 10], [90, 70],
                                         [10, 70]])
 
+    def assert_roi_equal(self, actual, desired):
+        np.testing.assert_allclose(actual.path.vertices, desired.path.vertices)
+        np.testing.assert_equal(actual.path.codes, desired.path.codes)
+        np.testing.assert_allclose(actual._buffer, desired._buffer)
 
-class TestBufferdPathRoi(TestRoi):
+
+class TestBufferdPathRoi(TestPathRoi):
     def setUp(self):
         super()._setUp((20, 20), (80, 60))
         self.roi = image_tools.PathROI([[20, 20], [80, 20], [80, 60],
                                         [20, 60]], buffer=10)
 
 
-class TestNonOverlappingPathRoi(TestRoi):
+class TestNonOverlappingPathRoi(TestPathRoi):
     def setUp(self):
         super()._setUp((-30, -30), (20, 20))
         self.roi = image_tools.PathROI([[-30, -30], [-30, 20], [20, 20],
@@ -109,6 +127,11 @@ class TestEllipseRoi(TestRoi):
         self.roi = image_tools.EllipseROI((x_c, y_c), (a, b))
         # bottom ten rows get chopped off due to small self.img size
         self.cropped_img = self.roi._img_mask.astype(np.float).T[:70, :]
+
+    def assert_roi_equal(self, desired, actual):
+        np.testing.assert_allclose([actual.center, actual.axes],
+                                   [desired.center, desired.axes])
+        np.testing.assert_allclose(actual.angle, desired.angle)
 
 
 if __name__ == "__main__":

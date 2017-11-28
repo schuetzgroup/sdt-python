@@ -9,7 +9,6 @@ import pims
 import yaml
 
 import sdt.io
-from sdt import image_tools
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -308,44 +307,6 @@ class TestYaml(unittest.TestCase):
         self.io.seek(0)
         a = yaml.load(self.io, sdt.io.yaml.Loader)
         np.testing.assert_equal(a, self.array)
-
-    def testRoiDumperLoader(self):
-        roi = image_tools.ROI((10, 20), (30, 40))
-        yaml.dump(roi, self.io, sdt.io.yaml.SafeDumper)
-
-        self.io.seek(0)
-        roi2 = yaml.load(self.io, sdt.io.yaml.SafeLoader)
-        np.testing.assert_equal([roi2.top_left, roi2.bottom_right],
-                                [roi.top_left, roi.bottom_right])
-
-    def testPathRoiDumperLoader(self):
-        roi = image_tools.PathROI([[10, 20], [30, 20], [30, 40], [10, 40]])
-        yaml.dump(roi, self.io, sdt.io.yaml.SafeDumper)
-
-        self.io.seek(0)
-        roi2 = yaml.load(self.io, sdt.io.yaml.SafeLoader)
-        np.testing.assert_allclose(roi2.path.vertices, roi.path.vertices)
-        np.testing.assert_equal(roi2.path.codes, roi.path.codes)
-        np.testing.assert_allclose(roi2._buffer, roi._buffer)
-
-    def testRectangleRoiDumperLoader(self):
-        roi = image_tools.RectangleROI((10, 20), (30, 40))
-        yaml.dump(roi, self.io, sdt.io.yaml.SafeDumper)
-
-        self.io.seek(0)
-        roi2 = yaml.load(self.io, sdt.io.yaml.SafeLoader)
-        np.testing.assert_allclose([roi2.top_left, roi2.bottom_right],
-                                   [roi.top_left, roi.bottom_right])
-
-    def testEllipseRoiDumperLoader(self):
-        roi = image_tools.EllipseROI((10, 20), (30, 40))
-        yaml.dump(roi, self.io, sdt.io.yaml.SafeDumper)
-
-        self.io.seek(0)
-        roi2 = yaml.load(self.io, sdt.io.yaml.SafeLoader)
-        np.testing.assert_allclose([roi2.center, roi2.axes],
-                                   [roi.center, roi.axes])
-        np.testing.assert_allclose(roi2.angle, roi.angle)
 
 
 class TestTiff(unittest.TestCase):
