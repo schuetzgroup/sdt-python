@@ -16,7 +16,7 @@ import matplotlib as mpl
 
 import slicerator
 
-from . import image_tools
+from . import roi
 
 
 pos_columns = ["x", "y"]
@@ -243,12 +243,12 @@ class Corrector(object):
             if not inplace:
                 # copied previously, now return
                 return data
-        if isinstance(data, image_tools.PathROI):
+        if isinstance(data, roi.PathROI):
             t = mpl.transforms.Affine2D(
                 getattr(self, "parameters{}".format(channel)))
-            return image_tools.PathROI(t.transform_path(data.path),
-                                       buffer=data.buffer,
-                                       no_image=(data.image_mask is None))
+            return roi.PathROI(t.transform_path(data.path),
+                               buffer=data.buffer,
+                               no_image=(data.image_mask is None))
         else:
             if channel == 1:
                 parms = np.linalg.inv(self.parameters1)

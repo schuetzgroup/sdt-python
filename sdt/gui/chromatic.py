@@ -19,7 +19,7 @@ else:
 import matplotlib.pyplot as plt
 
 from .. import data
-from .. import image_tools
+from .. import roi
 from .. import chromatic
 
 
@@ -101,10 +101,10 @@ class ChromaticDialog(guiBase):
         tabi = self._ui.inputTabWidget.currentIndex()
         if tabi == 0:
             # split one-color
-            roi_left = image_tools.ROI(
+            roi_left = roi.ROI(
                 (self._ui.leftRoiTlX.value(), self._ui.leftRoiTlY.value()),
                 (self._ui.leftRoiBrX.value(), self._ui.leftRoiBrY.value()))
-            roi_right = image_tools.ROI(
+            roi_right = roi.ROI(
                 (self._ui.rightRoiTlX.value(), self._ui.rightRoiTlY.value()),
                 (self._ui.rightRoiBrX.value(), self._ui.rightRoiBrY.value()))
             feat2 = roi_right(feat1)

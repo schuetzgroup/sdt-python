@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import numpy as np
 
-from sdt.image_tools import ROI
+from sdt.roi import ROI
 from sdt.chromatic import Corrector
 from sdt.io import load
 

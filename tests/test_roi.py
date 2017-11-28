@@ -9,25 +9,24 @@ import yaml
 import pims
 import slicerator
 
-from sdt import image_tools
+from sdt import roi
 from sdt.io import yaml
 
 
 path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_image_tools")
 
 
 class TestPolygonArea(unittest.TestCase):
     def test_polygon_area(self):
         vert = [[0, 0], [1, 2], [2, 0]]
-        assert(image_tools.polygon_area(vert) == -2)
+        assert(roi.polygon_area(vert) == -2)
 
 
 class TestRoi(unittest.TestCase):
     def _setUp(self, top_left, bottom_right):
         self.top_left = top_left
         self.bottom_right = bottom_right
-        self.roi = image_tools.ROI(self.top_left, self.bottom_right)
+        self.roi = roi.ROI(self.top_left, self.bottom_right)
         self.img = np.zeros((80, 100))
         self.img[self.top_left[1]:self.bottom_right[1],
                  self.top_left[0]:self.bottom_right[0]] = 1
@@ -83,8 +82,8 @@ class TestRoi(unittest.TestCase):
 class TestPathRoi(TestRoi):
     def setUp(self):
         super().setUp()
-        self.roi = image_tools.PathROI([[10, 10], [90, 10], [90, 70],
-                                        [10, 70]])
+        self.roi = roi.PathROI([[10, 10], [90, 10], [90, 70],
+                                [10, 70]])
 
     def assert_roi_equal(self, actual, desired):
         np.testing.assert_allclose(actual.path.vertices, desired.path.vertices)
@@ -95,15 +94,15 @@ class TestPathRoi(TestRoi):
 class TestBufferdPathRoi(TestPathRoi):
     def setUp(self):
         super()._setUp((20, 20), (80, 60))
-        self.roi = image_tools.PathROI([[20, 20], [80, 20], [80, 60],
-                                        [20, 60]], buffer=10)
+        self.roi = roi.PathROI([[20, 20], [80, 20], [80, 60],
+                                [20, 60]], buffer=10)
 
 
 class TestNonOverlappingPathRoi(TestPathRoi):
     def setUp(self):
         super()._setUp((-30, -30), (20, 20))
-        self.roi = image_tools.PathROI([[-30, -30], [-30, 20], [20, 20],
-                                        [20, -30]])
+        self.roi = roi.PathROI([[-30, -30], [-30, 20], [20, 20],
+                                [20, -30]])
         self.cropped_img = self.img[:20, :20]
         self.loc = pd.DataFrame([[3, 3], [30, 30], [100, 80]],
                                 columns=["x", "y"])
@@ -114,7 +113,7 @@ class TestNonOverlappingPathRoi(TestPathRoi):
 class TestRectangleRoi(TestRoi):
     def setUp(self):
         super().setUp()
-        self.roi = image_tools.RectangleROI((10, 10), (90, 70))
+        self.roi = roi.RectangleROI((10, 10), (90, 70))
 
 
 class TestEllipseRoi(TestRoi):
@@ -124,7 +123,7 @@ class TestEllipseRoi(TestRoi):
         a = 30
         b = 40
         super()._setUp((x_c - a, y_c - b), (x_c + a, y_c + b))
-        self.roi = image_tools.EllipseROI((x_c, y_c), (a, b))
+        self.roi = roi.EllipseROI((x_c, y_c), (a, b))
         # bottom ten rows get chopped off due to small self.img size
         self.cropped_img = self.roi._img_mask.astype(np.float).T[:70, :]
 

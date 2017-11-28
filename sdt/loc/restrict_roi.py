@@ -1,7 +1,7 @@
 """Function to restrict peak localization to a ROI"""
 import slicerator
 
-from ..image_tools import PathROI
+from ..roi import PathROI
 
 
 def restrict_roi(locate_func, buffer=10):
@@ -9,7 +9,7 @@ def restrict_roi(locate_func, buffer=10):
 
     Create a function that takes a path describing a ROI as an additional
     parameter and applies ``locate`` or ``batch`` (or whatever takes something
-    that :py:class:`sdt.image_tools.PathROI` can deal with as its first
+    that :py:class:`sdt.roi.PathROI` can deal with as its first
     argument) to the ROI only.
 
     Parameters
@@ -36,7 +36,7 @@ def restrict_roi(locate_func, buffer=10):
         ----------
         data : image data
             Passed to :py:func:`{fname}` as the first argument.
-        roi : image_tools.PathROI or path
+        roi : roi.PathROI or path
             If this isn't already a py:class:`PathROI`, use it to construct
             one, i. e. it is passed as the first parameter to the
             :py:class:`PathROI` constructor.

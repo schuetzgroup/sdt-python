@@ -154,7 +154,7 @@ SafeArrayLoader.add_constructor(ArrayDumperBase.array_tag,
 class Dumper(ArrayDumper):
     """A :py:class:`ArrayDumper` with support for many more types
 
-    of the :py:mod:`sdt` package, e. g. :py:class:`image_tools.ROI`.
+    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.
     """
     pass
 
@@ -162,7 +162,7 @@ class Dumper(ArrayDumper):
 class SafeDumper(SafeArrayDumper):
     """A :py:class:`SafeArrayDumper` with support for many more types
 
-    of the :py:mod:`sdt` package, e. g. :py:class:`image_tools.ROI`.
+    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.
     """
     pass
 
@@ -170,7 +170,7 @@ class SafeDumper(SafeArrayDumper):
 class Loader(ArrayLoader):
     """A :py:class:`ArrayLoader` with support for many more types
 
-    of the :py:mod:`sdt` package, e. g. :py:class:`image_tools.ROI`.
+    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.
     """
     pass
 
@@ -178,7 +178,7 @@ class Loader(ArrayLoader):
 class SafeLoader(SafeArrayLoader):
     """A :py:class:`SafeArrayLoader` with support for many more types
 
-    of the :py:mod:`sdt` package, e. g. :py:class:`image_tools.ROI`.
+    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.
     """
     pass
 

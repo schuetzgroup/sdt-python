@@ -2,7 +2,7 @@
 import slicerator
 
 from ...image import filters
-from ...image_tools import PathROI
+from ...roi import PathROI
 
 
 def restrict_roi(locate_func, buffer=10):
@@ -37,7 +37,7 @@ def restrict_roi(locate_func, buffer=10):
         data : image data
             Passed to :py:func:`{fname}` as the first argument.
         roi : path
-            This is used by the :py:class:`sdt.image_tools.PathROI` constructor
+            This is used by the :py:class:`sdt.roi.PathROI` constructor
             to create the ROI
         reset_origin : bool, optional
             If True, the top-left corner coordinates of the path's bounding

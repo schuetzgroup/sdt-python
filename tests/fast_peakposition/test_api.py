@@ -7,7 +7,7 @@ import matplotlib as mpl
 import yaml
 
 from sdt.loc.fast_peakposition import locate, locate_roi, batch, batch_roi
-from sdt import image_tools
+from sdt import roi
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -43,32 +43,32 @@ class TestLocate(unittest.TestCase):
         # The ROI is chosen so that nothing goes on at its boundaries since
         # there differences between locate_roi and locate + applying a ROI
         # later arise
-        roi = image_tools.PathROI(self.roi_vertices, no_image=True)
+        r = roi.PathROI(self.roi_vertices, no_image=True)
         peaks = locate_roi(self.frame, self.roi_vertices, engine="numba",
                            reset_origin=False, **self.options)
 
-        orig = roi(self.orig, reset_origin=False)
+        orig = r(self.orig, reset_origin=False)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
                                    rtol=1e-6)
 
     def test_locate_roi_path(self):
         # Test locate_roi specifying the ROI as a matplotlib.path.Path
-        roi = image_tools.PathROI(self.roi_vertices, no_image=True)
+        r = roi.PathROI(self.roi_vertices, no_image=True)
         roi_path = mpl.path.Path(self.roi_vertices)
         peaks = locate_roi(self.frame, roi_path, engine="numba",
                            reset_origin=False, **self.options)
 
-        orig = roi(self.orig, reset_origin=False)
+        orig = r(self.orig, reset_origin=False)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
                                    rtol=1e-6)
 
     def test_locate_roi_pathroi(self):
         # Test locate_roi specifying the ROI as a PathROI
-        roi = image_tools.PathROI(self.roi_vertices, no_image=True)
-        peaks = locate_roi(self.frame, roi, engine="numba",
+        r = roi.PathROI(self.roi_vertices, no_image=True)
+        peaks = locate_roi(self.frame, r, engine="numba",
                            reset_origin=False, **self.options)
 
-        orig = roi(self.orig, reset_origin=False)
+        orig = r(self.orig, reset_origin=False)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
                                    rtol=1e-6)
 
@@ -84,8 +84,8 @@ class TestLocate(unittest.TestCase):
         peaks = batch_roi([self.frame]*2, self.roi_vertices,
                           reset_origin=False, engine="numba", **self.options)
 
-        roi = image_tools.PathROI(self.roi_vertices, no_image=True)
-        orig = roi(self.batch_orig, reset_origin=False)
+        r = roi.PathROI(self.roi_vertices, no_image=True)
+        orig = r(self.batch_orig, reset_origin=False)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
                                    rtol=1e-3)
 
