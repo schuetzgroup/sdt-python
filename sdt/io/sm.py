@@ -446,6 +446,6 @@ def save_trc(filename, data):
         if c in df.columns:
             df[c] += 1
 
-    df["_trc_index"] = idx
+    df["__trc_idx__"] = idx
     df.to_csv(filename, sep=" ", header=False, index=False,
-              columns=["particle", "frame", "x", "y", "mass", "_trc_idx"])
+              columns=["particle", "frame", "x", "y", "mass", "__trc_idx__"])
