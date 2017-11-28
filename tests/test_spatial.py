@@ -100,3 +100,9 @@ class TestInterpolateCoords(unittest.TestCase):
         trc_interp = sdt.spatial.interpolate_coords(trc_miss)
         v = trc_interp[["x", "y", "frame", "particle"]].values
         assert(v.dtype == np.dtype(np.float64))
+
+
+class TestPolygonArea(unittest.TestCase):
+    def test_polygon_area(self):
+        vert = [[0, 0], [1, 2], [2, 0]]
+        self.assertEqual(sdt.spatial.polygon_area(vert), -2)

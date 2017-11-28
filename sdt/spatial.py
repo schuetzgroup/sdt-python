@@ -154,3 +154,42 @@ def interpolate_coords(tracks, pos_columns=_pos_columns):
     ret = pd.merge(tracks, missing_df, "outer")
     ret.sort_values(["particle", "frame"], inplace=True)
     return ret.reset_index(drop=True)
+
+
+def polygon_area(vertices):
+    """Calculate the (signed) area of a simple polygon
+
+    The polygon may not self-intersect.
+
+    This is based on JavaScript code from
+    http://www.mathopenref.com/coordpolygonarea2.html.
+
+    .. code-block:: javascript
+
+        function polygonArea(X, Y, numPoints)
+        {
+            area = 0;           // Accumulates area in the loop
+            j = numPoints - 1;  // The last vertex is the 'previous' one to the
+                                // first
+
+            for (i=0; i<numPoints; i++)
+            {
+                area = area +  (X[j]+X[i]) * (Y[j]-Y[i]);
+                j = i;  // j is previous vertex to i
+            }
+            return area/2;
+        }
+
+    Parameters
+    ----------
+    vertices : list of 2-tuples or numpy.ndarray, shape=(n, 2)
+        Coordinates of the poligon vertices.
+
+    Returns
+    -------
+    float
+        Signed area of the polygon. Area is > 0 if vertices are given
+        counterclockwise.
+    """
+    x, y = np.vstack((vertices[-1], vertices)).T
+    return np.sum((x[1:] + x[:-1]) * (y[1:] - y[:-1]))/2

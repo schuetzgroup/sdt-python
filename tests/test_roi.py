@@ -16,12 +16,6 @@ from sdt.io import yaml
 path, f = os.path.split(os.path.abspath(__file__))
 
 
-class TestPolygonArea(unittest.TestCase):
-    def test_polygon_area(self):
-        vert = [[0, 0], [1, 2], [2, 0]]
-        assert(roi.polygon_area(vert) == -2)
-
-
 class TestRoi(unittest.TestCase):
     def _setUp(self, top_left, bottom_right):
         self.top_left = top_left
