@@ -174,7 +174,8 @@ class TestDistribution(unittest.TestCase):
         absc = 5000
         smth = 2
         cam_eff = 1
-        x, y = brightness.distribution(self.masses, absc, smth)
+        with np.testing.assert_warns(np.VisibleDeprecationWarning):
+            x, y = brightness.distribution(self.masses, absc, smth)
         d = brightness.Distribution(self.masses, absc, smth, cam_eff)
         np.testing.assert_allclose([x, y], d.graph)
 

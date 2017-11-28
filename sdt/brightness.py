@@ -327,7 +327,7 @@ def distribution(data, abscissa, smooth=2.):
         y axis values
     """
     warnings.warn("Deprecated. Use the `Distribution` class instead.",
-                  FutureWarning)
+                  np.VisibleDeprecationWarning)
 
     if isinstance(data, pd.DataFrame):
         data = data["mass"]
