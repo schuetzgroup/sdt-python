@@ -391,25 +391,41 @@ class TestYaml(unittest.TestCase):
 
 
 class TestTiff(unittest.TestCase):
-    def test_save_as_tiff(self):
+    def setUp(self):
         img1 = np.zeros((5, 5)).view(pims.Frame)
         img1[2, 2] = 1
-        img1.metadata = dict(entry="test")
+        img1.metadata = dict(entry="test", entry2=3)
         img2 = img1.copy()
         img2[2, 2] = 3
-        frames = [img1, img2]
+        self.frames = [img1, img2]
 
+    def test_save_as_tiff(self):
+        """io.save_as_tiff"""
         with tempfile.TemporaryDirectory() as td:
             fn = os.path.join(td, "test.tiff")
-            sdt.io.save_as_tiff(frames, fn)
+            sdt.io.save_as_tiff(self.frames, fn)
 
-            res = pims.TiffStack(fn)
+            with pims.TiffStack(fn) as res:
+                np.testing.assert_allclose(res, self.frames)
+                md = yaml.load(res[0].metadata["ImageDescription"])
+                assert(md == self.frames[0].metadata)
 
-            np.testing.assert_allclose(res, frames)
+    def test_sdt_tiff_stack(self):
+        """io.SdtTiffStack"""
+        with tempfile.TemporaryDirectory() as td:
+            fn = os.path.join(td, "test.tiff")
+            sdt.io.save_as_tiff(self.frames, fn)
 
-            md = yaml.load(res[0].metadata["ImageDescription"])
-            assert(md == img1.metadata)
-
+            with sdt.io.SdtTiffStack(fn) as res:
+                np.testing.assert_allclose(res, self.frames)
+                md = res.metadata
+                md.pop("Software")
+                md.pop("DateTime")
+                np.testing.assert_equal(md, self.frames[0].metadata)
+                md = res[0].metadata
+                md.pop("Software")
+                md.pop("DateTime")
+                np.testing.assert_equal(md, self.frames[0].metadata)
 
 if __name__ == "__main__":
     unittest.main()
