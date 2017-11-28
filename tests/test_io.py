@@ -256,41 +256,6 @@ class TestFile(unittest.TestCase):
             np.testing.assert_allclose(read_back, orig)
 
 
-class TestFilter(unittest.TestCase):
-    def setUp(self):
-        self.data = pd.DataFrame(np.repeat(np.arange(10)[:, np.newaxis], 2, 1),
-                                 columns=["c1", "c2"])
-
-    def testCall(self):
-        f = sdt.io.Filter("{c1} < 5")
-        np.testing.assert_allclose(f(self.data),
-                                   self.data[self.data["c1"] < 5])
-
-    def testBooleanIndex(self):
-        f = sdt.io.Filter("{c1} < 5")
-        np.testing.assert_allclose(f.boolean_index(self.data),
-                                   self.data["c1"] < 5)
-
-    def testAddCondition(self):
-        f = sdt.io.Filter("{c1} < 5")
-        f.add_condition("{c2} > 1")
-        np.testing.assert_allclose(f.boolean_index(self.data),
-                                   ((self.data["c1"] < 5) &
-                                    (self.data["c2"] > 1)))
-
-    def testAddConditionMultiline(self):
-        f = sdt.io.Filter()
-        f.add_condition("{c1} < 5\n{c2} > 1")
-        np.testing.assert_allclose(f.boolean_index(self.data),
-                                   ((self.data["c1"] < 5) &
-                                    (self.data["c2"] > 1)))
-
-    def testAddConditionNumpy(self):
-        f = sdt.io.Filter("numpy.sqrt({c1}) <= 2")
-        np.testing.assert_allclose(f.boolean_index(self.data),
-                                   np.sqrt(self.data["c1"]) <= 2)
-
-
 class TestYaml(unittest.TestCase):
     def setUp(self):
         self.io = io.StringIO()
