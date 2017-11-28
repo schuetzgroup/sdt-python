@@ -24,9 +24,6 @@ import slicerator
 from . import gaussian_fit as gfit
 
 
-pd.options.mode.chained_assignment = None  # Get rid of the warning
-
-
 pos_columns = ["x", "y"]
 
 
