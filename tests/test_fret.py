@@ -229,6 +229,53 @@ class TestSmFretAnalyzer(unittest.TestCase):
                                       acc_end=True, remove_single=True)
         pd.testing.assert_frame_equal(r, self.tracks.iloc[:0])
 
+    def test_has_fluorophores_donor(self):
+        """fret.SmFretAnalyzer: `has_fluorophores` method"""
+        tracks = self.tracks.copy()
+        don_frames = (tracks["donor", "frame"] % len(self.desc)).isin(self.don)
+        don_frames_list = tracks.loc[don_frames, ("donor", "frame")].values
+        acc_frames = ~don_frames
+        acc_frames_list = tracks.loc[acc_frames, ("donor", "frame")].values
+
+        tracks2 = tracks.copy()
+        tracks3 = tracks.copy()
+
+        tracks["donor", "mass"] = 1200
+        tracks["acceptor", "mass"] = 1200
+
+        tracks2.loc[tracks2["donor", "frame"] == don_frames_list[0],
+                    ("donor", "mass")] = 1200
+        tracks2["fret", "particle"] = 1
+
+        tracks3.loc[tracks3["acceptor", "frame"] == acc_frames_list[0],
+                    ("acceptor", "mass")] = 1200
+        tracks3["fret", "particle"] = 2
+
+        trc = pd.concat([tracks, tracks2, tracks3], ignore_index=True)
+
+        res = self.analyzer.has_fluorophores(trc, 1, 1,
+                                             "donor_mass > 1100",
+                                             "acceptor_mass > 1100")
+        pd.testing.assert_frame_equal(res, tracks)
+
+        res = self.analyzer.has_fluorophores(trc, 1, 1,
+                                             "donor_mass > 1100", "")
+        pd.testing.assert_frame_equal(
+            res, trc[trc["fret", "particle"].isin([0, 1])])
+
+        res = self.analyzer.has_fluorophores(trc, 2, 1,
+                                             "donor_mass > 1100", "")
+        pd.testing.assert_frame_equal(res, tracks)
+
+        res = self.analyzer.has_fluorophores(trc, 1, 1,
+                                             "", "acceptor_mass > 1100")
+        pd.testing.assert_frame_equal(
+            res, trc[trc["fret", "particle"].isin([0, 2])])
+
+        res = self.analyzer.has_fluorophores(trc, 1, 2,
+                                             "", "acceptor_mass > 1100")
+        pd.testing.assert_frame_equal(res, tracks)
+
     def test_get_excitation_type(self):
         """fret.SmFretAnalyzer: `get_excitation_type` method"""
         r = self.analyzer.get_excitation_type(self.tracks, "d")

@@ -43,6 +43,7 @@ from scipy.interpolate import interp1d
 
 from . import multicolor, brightness
 from .spatial import has_near_neighbor, interpolate_coords
+from .helper import flatten_multiindex
 
 try:
     import trackpy
@@ -661,6 +662,33 @@ class SmFretAnalyzer:
 
     def has_fluorophores(self, tracks, don_count=1, acc_count=1,
                          don_filter=None, acc_filter=None):
+        """Check if fluorophores are present in FRET tracks
+
+        Given a DataFrame of FRET tracks, filter out any tracks where donor
+        (acceptor) localizations don't pass don_filter (acc_filter) at
+        least don_count (acc_count) times.
+
+        Parameters
+        ----------
+        tracks : pandas.DataFrame
+            FRET tracking data as e. g. produced by
+            :py:meth:`SmFretData.track`. For details, see the
+            :py:attr:`SmFretData.tracks` attribute documentation.
+        don_count, acc_count : int, optional
+            Minimum number of times donor (acceptor) has to be present for a
+            track to be returned. Defaults to 1.
+        don_filter, acc_filter : str or None
+            Only count localizations that pass this filter. The string is
+            passed to :py:meth:`pandas.DataFrame.eval`. Multiindex columns
+            are flattened, where different levels are separated by "_"; e.g.
+            the ``("fret", "eff")`` column becomes ``"fret_eff"``.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Only tracks that have a sufficient number of donor and acceptor
+            localizations.
+        """
         don_fr_mask = np.in1d(tracks["donor", "frame"] % len(self.desc),
                               self.don)
         acc_fr_mask = ~don_fr_mask
