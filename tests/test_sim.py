@@ -23,23 +23,35 @@ class TestData(unittest.TestCase):
         self.roi_size = 10
 
     def test_gauss_psf_full(self):
+        """sim.gauss_psf_full"""
         res = sdt.sim.gauss_psf_full(self.shape, self.coords, self.amps,
                                      self.sigmas)
         np.testing.assert_allclose(res, self.orig)
 
     def test_gauss_psf(self):
+        """sim.gauss_psf"""
         res = sdt.sim.gauss_psf(self.shape, self.coords, self.amps,
                                 self.sigmas, self.roi_size)
         np.testing.assert_allclose(res, self.orig, atol=1e-7)
 
     def test_gauss_psf_numba(self):
+        """sim.gauss_psf_numba"""
         res = sdt.sim.gauss_psf_numba(self.shape, self.coords, self.amps,
                                       self.sigmas, self.roi_size)
         np.testing.assert_allclose(res, self.orig, atol=1e-7)
 
     def test_simulate_gauss(self):
+        """sim.simulate_gauss"""
         res = sdt.sim.simulate_gauss(self.shape, self.coords, self.amps,
                                      self.sigmas, self.roi_size,
+                                     engine="python")
+        np.testing.assert_allclose(res, self.orig, atol=1e-7)
+
+    def test_simulate_gauss_mass(self):
+        """sim.simulate_gauss with mass=True"""
+        amps = 2 * np.pi * self.amps * self.sigmas[:, 0] * self.sigmas[:, 1]
+        res = sdt.sim.simulate_gauss(self.shape, self.coords, amps,
+                                     self.sigmas, self.roi_size, mass=True,
                                      engine="python")
         np.testing.assert_allclose(res, self.orig, atol=1e-7)
 

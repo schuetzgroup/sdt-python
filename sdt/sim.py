@@ -4,7 +4,7 @@ import numpy as np
 from .helper.numba import jit
 
 
-def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5.,
+def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5., mass=False,
                    engine="numba"):
     """Simulate an image from multiple Gaussian PSFs
 
@@ -22,7 +22,8 @@ def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5.,
         Coordinates of the PSF centers
     amplitudes : array_like
         Amplitudes of the PSFs. Either a scalar that is used for all Gaussians
-        or an 1D array specifying sigma for each Gaussian.
+        or an 1D array specifying the amplitude for each Gaussian. See also
+        the `mass` parameter.
     sigmas : array_like
         If it is one number, this will be used as sigma for all Gaussians. An
         array of two numbers will be interpreted as sigmas in x and y
@@ -33,6 +34,9 @@ def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5.,
         Each Gaussian is only calculated in a box `cutoff` times sigma pixels
         around the center. Does not apply if `engine` is "python_full".
         Defaults to 5.
+    mass : bool, optional
+        If True, the value(s) given by `amplitude` are the integrated
+        Gaussians. If False, they are amplitudes. Defaults to False.
     engine : {"numba", "python", "python_full"}, optional
         "numba" is a :py:mod:`numba`-optimized version, which is by far the
         fastest. "python" is written in pure python. "python_full" is also
@@ -47,6 +51,9 @@ def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5.,
     """
     amplitudes = np.broadcast_to(amplitudes, len(centers))
     sigmas = np.broadcast_to(sigmas, centers.shape)
+
+    if mass:
+        amplitudes = amplitudes / (2 * np.pi * np.product(sigmas, axis=1))
 
     if engine == "numba":
         return gauss_psf_numba(np.array(shape, copy=False), centers,
