@@ -95,6 +95,8 @@ class Corrector(object):
         else:
             self.fit_result = None
             self.corr_img = self.avg_img
+            self.interp = sp_int.RegularGridInterpolator(
+                [np.arange(i) for i in self.corr_img.shape], self.corr_img)
 
     def __call__(self, data, inplace=False):
         """Do brightness correction on `features` intensities
@@ -158,6 +160,4 @@ class Corrector(object):
             norm = gparm["amplitude"] + gparm["offset"]
             return 1. / (self.fit_result.eval(x=y, y=x)/norm)
         else:
-            return 1. / sp_int.interpn(
-                [np.arange(i) for i in self.corr_img.shape],
-                self.corr_img, np.array([y, x]).T)
+            return 1. / self.interp(np.array([y, x]).T)
