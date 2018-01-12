@@ -220,8 +220,10 @@ class Corrector(object):
             How to fill points outside of the uncorrected image boundaries.
             Possibilities are "constant", "nearest", "reflect" or "wrap".
             Defaults to "constant".
-        cval : scalar, optional
-            What value to use for `mode="constant"`. Defaults to 0.0
+        cval : scalar or callable, optional
+            What value to use for `mode="constant"`. If this is callable, it
+            should take a single argument (the uncorrected image) and return a
+            scalar, which will be used as the fill value. Defaults to 0.0.
         """
         if channel not in (1, 2):
             raise ValueError("channel has to be either 1 or 2")
@@ -261,11 +263,16 @@ class Corrector(object):
                 # coordinate axes
                 img_t = img.T
 
+                if callable(cval):
+                    cv = cval(img)
+                else:
+                    cv = cval
+
                 # this way, the original subclass of np.ndarray is preserved
                 ret = np.empty_like(img_t)
                 scipy.ndimage.affine_transform(
                     img_t, parms[:-1, :-1], parms[:-1, -1], output=ret,
-                    mode=mode, cval=cval)
+                    mode=mode, cval=cv)
 
                 return ret.T  # transpose back
             return corr(data)

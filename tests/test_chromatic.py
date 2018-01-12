@@ -86,6 +86,15 @@ class TestChromaticCorrector(unittest.TestCase):
         orig = np.load(os.path.join(data_path, "img_corrected.npy"))
         np.testing.assert_allclose(img_corr, orig)
 
+    def test_call_img_callable_cval(self):
+        """chromatic.Corrector: Test __call__ on img data with callable cval"""
+        self.corrector.determine_parameters()
+        img = np.arange(100)[:, np.newaxis] + np.arange(100)[np.newaxis, :]
+
+        img_corr = self.corrector(img, channel=1, cval=lambda x: 0)
+        orig = np.load(os.path.join(data_path, "img_corrected.npy"))
+        np.testing.assert_allclose(img_corr, orig)
+
 
 if __name__ == "__main__":
     unittest.main()
