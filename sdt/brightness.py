@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import scipy.stats
 
+from .helper import numba
+
 
 pos_columns = ["x", "y"]
 """Names of the columns describing the x and the y coordinate of the features
@@ -12,83 +14,175 @@ in pandas.DataFrames
 """
 
 
-def _from_raw_image_single(pos, frame, radius=2, bg_frame=2,
-                           bg_estimator=np.mean):
-    """Determine brightness by counting pixel values for a single particle
+def _from_raw_image_python(pos, frame, radius, bg_frame, bg_estimator):
+    """Get brightness by counting pixel values (single frame, python impl.)
 
-    This is called using numpy.apply_along_axis on the whole dataset.
+    This is called for each frame by :py:func:`from_raw_image`
 
     Parameters
     ----------
-    pos : tuple of numbers
-        Localization coordinates
+    pos : array-like, shape(n, m)
+        Localization coordinates (n features in an m-dimensional space)
     frame : numpy.ndarray
         Raw image data
     radius : int
         Half width of the box in which pixel values are summed up. E. g.
         using ``radius=3`` leads to the summation of pixels in a square of
         2*3 + 1 = 7 pixels width.
-    bg_frame : int, optional
+    bg_frame : int
         Width of frame (in pixels) around the box used for brightness
-        determination for background determination. Defaults to 2.
-    bg_estimator : numpy ufunc, optional
-        How to determine the background from the background pixels. If a
-        function is given (which takes the pixel data as arguments and returns
-        a scalar), apply this to the pixels. Defaults to :py:func:`numpy.mean`.
+        determination for background determination.
+    bg_estimator : numpy ufunc
+        How to determine the background from the background pixels. A typical
+        example would be :py:func:`np.mean`.
 
     Returns
     -------
-    signal : float
-        Maximum intensity value (minus background)
-    mass : float
-        Total brightness (minus background)
-    bg : float
-        Background intensity per pixel
-    bg_std : float
-        Standard deviation of the background
+    numpy.ndarray, shape(n, 4)
+        Each line represents one feature. Columns are "signal", "mass",
+        "bg", "bg_std".
     """
-    pos = np.round(pos).astype(np.int)  # round to nearest pixel value
-    ndim = len(pos)  # number of dimensions
-    start = pos - radius - bg_frame
-    end = pos + radius + bg_frame + 1
-    # this gives the pixels of the signal box plus background frame
-    signal_region = frame[[slice(s, e) for s, e in zip(reversed(start),
-                                                       reversed(end))]]
+    ret = np.empty((len(pos), 4))
+    int_pos = np.round(pos).astype(np.int)  # round to nearest pixel value
+    for i, p in enumerate(int_pos):
+        ndim = len(p)  # number of dimensions
+        start = p - radius - bg_frame
+        end = p + radius + bg_frame + 1
+        # this gives the pixels of the signal box plus background frame
+        signal_region = frame[[slice(s, e) for s, e in zip(reversed(start),
+                                                           reversed(end))]]
 
-    if (signal_region.shape != end - start).any():
-        # The signal was too close to the egde of the image, we could not read
-        # all the pixels we wanted
-        mass = np.NaN
-        signal = np.NaN
-        background_intensity = np.NaN
-        background_std = np.NaN
-    elif bg_frame == 0 or bg_frame is None:
-        # no background correction
-        mass = signal_region.sum()
-        signal = signal_region.max()
-        background_intensity = 0
-        background_std = 0
-    else:
-        # signal region without background frame (i. e. only the actual signal)
-        signal_slice = [slice(bg_frame, -bg_frame)]*ndim
-        foreground_pixels = signal_region[signal_slice]
-        uncorr_intensity = foreground_pixels.sum()
-        uncorr_signal = foreground_pixels.max()
+        if (signal_region.shape != end - start).any():
+            # The signal was too close to the egde of the image, we could not read
+            # all the pixels we wanted
+            ret[i, :] = np.NaN
+            continue
+        elif bg_frame == 0 or bg_frame is None:
+            # no background correction
+            mass = signal_region.sum()
+            signal = signal_region.max()
+            background_intensity = 0
+            background_std = 0
+        else:
+            # signal region without background frame (i. e. only the actual signal)
+            signal_slice = [slice(bg_frame, -bg_frame)]*ndim
+            foreground_pixels = signal_region[signal_slice]
+            uncorr_intensity = foreground_pixels.sum()
+            uncorr_signal = foreground_pixels.max()
 
-        # background correction: Only take frame pixels
-        signal_mask = np.ones(signal_region.shape, dtype=bool)
-        signal_mask[signal_slice] = False
-        background_pixels = signal_region[signal_mask]
-        background_intensity = bg_estimator(background_pixels)
+            # background correction: Only take frame pixels
+            signal_mask = np.ones(signal_region.shape, dtype=bool)
+            signal_mask[signal_slice] = False
+            background_pixels = signal_region[signal_mask]
+            background_intensity = bg_estimator(background_pixels)
+            background_std = np.std(background_pixels)
+            mass = uncorr_intensity - background_intensity * (2*radius + 1)**ndim
+            signal = uncorr_signal - background_intensity
+
+        ret[i, 0] = uncorr_signal - background_intensity
+        ret[i, 1] = (uncorr_intensity - background_intensity *
+                     (2*radius + 1)**2)
+        ret[i, 2] = background_intensity
+        ret[i, 3] = background_std
+
+    return ret
+
+
+@numba.jit(nopython=True, cache=True, nogil=True)
+def _from_raw_image_numba(pos, frame, radius, bg_frame, bg_estimator):
+    """Get brightness by counting pixel values (single frame, numba impl.)
+
+    This is called for each frame by :py:func:`from_raw_image`
+
+    Parameters
+    ----------
+    pos : array-like, shape(n, 2)
+        Localization coordinates (n features in an 2-dimensional space). Only
+        2D data is supported.
+    frame : numpy.ndarray
+        Raw image data
+    radius : int
+        Half width of the box in which pixel values are summed up. E. g.
+        using ``radius=3`` leads to the summation of pixels in a square of
+        2*3 + 1 = 7 pixels width.
+    bg_frame : int
+        Width of frame (in pixels) around the box used for brightness
+        determination for background determination.
+    bg_estimator : int
+        How to determine the background from the background pixels. If 0,
+        use the mean, if 1 use the median.
+
+    Returns
+    -------
+    numpy.ndarray, shape(n, 4)
+        Each line represents one feature. Columns are "signal", "mass",
+        "bg", "bg_std".
+    """
+    ret = np.empty((len(pos), 4))
+    for i in numba.prange(len(pos)):
+        x, y = pos[i]
+        x = int(x)
+        y = int(y)
+
+        if (x - radius - bg_frame < 0 or
+                x + radius + bg_frame > frame.shape[1] or
+                y - radius - bg_frame < 0 or
+                y + radius + bg_frame > frame.shape[0]):
+            # The signal was too close to the egde of the image, we could not
+            # read all the pixels we wanted
+            ret[i, :] = np.nan
+            continue
+
+        uncorr_intensity = 0
+        uncorr_signal = -np.inf
+        # Measure signal
+        for m in range(x - radius, x + radius + 1):
+            for n in range(y - radius, y + radius + 1):
+                f = frame[n, m]
+                uncorr_intensity += f
+                uncorr_signal = max(uncorr_signal, f)
+
+        background_pixels = np.empty((2 * (radius + bg_frame) + 1)**2 -
+                                     (2 * radius + 1)**2)
+        # Measure background
+        bg_idx = 0
+        # Top
+        for m in range(x - radius - bg_frame, x + radius + bg_frame + 1):
+            for n in range(y - radius - bg_frame, y - radius):
+                background_pixels[bg_idx] = frame[n, m]
+                bg_idx += 1
+        # Bottom
+        for m in range(x - radius - bg_frame, x + radius + bg_frame + 1):
+            for n in range(y + radius + 1, y + radius + bg_frame + 1):
+                background_pixels[bg_idx] = frame[n, m]
+                bg_idx += 1
+        # Left
+        for m in range(x - radius - bg_frame, x - radius):
+            for n in range(y - radius, y + radius + 1):
+                background_pixels[bg_idx] = frame[n, m]
+                bg_idx += 1
+        # Right
+        for m in range(x + radius + 1, x + radius + bg_frame + 1):
+            for n in range(y - radius, y + radius + 1):
+                background_pixels[bg_idx] = frame[n, m]
+                bg_idx += 1
+
+        if bg_estimator == 0:
+            background_intensity = np.mean(background_pixels)
+        else:
+            background_intensity = np.median(background_pixels)
         background_std = np.std(background_pixels)
-        mass = uncorr_intensity - background_intensity * (2*radius + 1)**ndim
-        signal = uncorr_signal - background_intensity
 
-    return [signal, mass, background_intensity, background_std]
+        ret[i, 0] = uncorr_signal - background_intensity
+        ret[i, 1] = (uncorr_intensity - background_intensity *
+                     (2*radius + 1)**2)
+        ret[i, 2] = background_intensity
+        ret[i, 3] = background_std
+    return ret
 
 
 def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
-                   pos_columns=pos_columns):
+                   pos_columns=pos_columns, engine="numba"):
     """Determine particle brightness by counting pixel values
 
     Around each localization, all brightness values in a  2*`radius` + 1 times
@@ -122,37 +216,54 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     pos_columns : list of str, optional
         Names of the columns describing the x and the y coordinates of the
         features in `positions`.
+    engine : {"numba", "python"}, optional
+        Numba is faster, but only supports 2D data and mean or median
+        bg_estimator. If numba cannot be used, automatically fall back to
+        pure python, which support arbitray dimensions and bg_estimator
+        functions. Defaults to "numba".
     """
     if not len(positions):
         return
 
     if isinstance(bg_estimator, str):
-        if bg_estimator == "mean":
-            bg_estimator = np.mean
-        elif bg_estimator == "median":
-            bg_estimator = np.median
+        bg_estimator = getattr(np, bg_estimator)
+
+    if engine == "numba":
+        if len(pos_columns) != 2:
+            warnings.warn("numba engine supports only 2D data. Falling back "
+                          "to python backend.")
+            engine = "python"
+        if bg_estimator is np.mean:
+            bg_estimator = 0
+        elif bg_estimator is np.median:
+            bg_estimator = 1
         else:
-            raise ValueError(" Invalid `bg_estimator` argument.")
+            warnings.warn("numba engine supports only mean and median as "
+                          "bg_estimators. Falling back to python backend.")
+            engine = "python"
 
     # Convert to numpy array for performance reasons
-    pos_matrix = positions[pos_columns].values
+    # This is faster than pos_matrix = positions[pos_columns].values
+    pos_matrix = []
+    for p in pos_columns:
+        pos_matrix.append(positions[p].values)
+    pos_matrix = np.array(pos_matrix).T
     fno_matrix = positions["frame"].values.astype(int)
     # Pre-allocate result array
     ret = np.empty((len(pos_matrix), 4))
-    # Get sorted order. This is to speed up the loop below especially when
-    # `frames` is a slow Slicerator or pipeline be caching the current frame
-    # until the frame number changes.
-    sorted_idx = np.argsort(fno_matrix)
-    # Initialize with something invalid (smallest frame number - 1) to trigger
-    # loading the frame on first run of the loop
-    old_frame_no = fno_matrix[sorted_idx[0]] - 1
-    for i in sorted_idx:
-        frame_no = fno_matrix[i]
-        if frame_no != old_frame_no:
-            cur_frame = frames[frame_no]
-            old_frame_no = frame_no
-        ret[i] = _from_raw_image_single(pos_matrix[i], cur_frame, radius,
-                                        bg_frame, bg_estimator)
+
+    if engine == "numba":
+        worker = _from_raw_image_numba
+    elif engine == "python":
+        worker = _from_raw_image_python
+    else:
+        raise ValueError("Unknown engine \"{}\".".format(engine))
+
+    fnos = np.unique(fno_matrix)
+    for f in fnos:
+        current = (fno_matrix == f)
+        ret[current] = worker(pos_matrix[current], frames[f], radius, bg_frame,
+                              bg_estimator)
 
     positions["signal"] = ret[:, 0]
     positions["mass"] = ret[:, 1]

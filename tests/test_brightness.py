@@ -62,22 +62,55 @@ class TestBrightness(unittest.TestCase):
                  self.pos2[0]-bg_radius:self.pos2[0]+bg_radius+1] = \
             self.feat2_img
 
-    def test_from_raw_image_single(self):
-        res = sdt.brightness._from_raw_image_single(
-            self.pos1, self.img, self.radius, self.bg_frame)
+    def test_from_raw_image_helper_python(self):
+        """brightness._from_raw_image_python (mean bg_estimator)"""
+        res = sdt.brightness._from_raw_image_python(
+            [self.pos1], self.img, self.radius, self.bg_frame, np.mean)
+        np.testing.assert_allclose(
+            res,
+            np.array([[self.signal1, self.mass1, self.bg, self.bg_dev]]))
+
+    def test_from_raw_image_helper_numba(self):
+        """brightness._from_raw_image_numba (mean bg_estimator)"""
+        res = sdt.brightness._from_raw_image_numba(
+            np.array([self.pos1]), self.img, self.radius, self.bg_frame, 0)
+        np.testing.assert_allclose(
+            res,
+            np.array([[self.signal1, self.mass1, self.bg, self.bg_dev]]))
+
+    def test_from_raw_image_helper_python_median(self):
+        """brightness._from_raw_image_python (mean bg_estimator)"""
+        res = sdt.brightness._from_raw_image_python(
+            [self.pos1], self.img, self.radius, self.bg_frame, np.median)
         np.testing.assert_allclose(
             np.array(res),
-            np.array([self.signal1, self.mass1, self.bg, self.bg_dev]))
+            np.array([[self.signal1_median, self.mass1_median, self.bg_median,
+                       self.bg_dev]]))
 
-    def test_from_raw_image_single_median(self):
-        res = sdt.brightness._from_raw_image_single(
-            self.pos1, self.img, self.radius, self.bg_frame, np.median)
+    def test_from_raw_image_helper_numba_median(self):
+        """brightness._from_raw_image_numba (median bg_estimator)"""
+        res = sdt.brightness._from_raw_image_numba(
+            np.array([self.pos1]), self.img, self.radius, self.bg_frame, 1)
         np.testing.assert_allclose(
-            np.array(res),
-            np.array([self.signal1_median, self.mass1_median, self.bg_median,
-                      self.bg_dev]))
+            res,
+            np.array([[self.signal1_median, self.mass1_median, self.bg_median,
+                       self.bg_dev]]))
 
-    def test_from_raw_image(self):
+    def test_from_raw_image_helper_python_nan(self):
+        """brightness._from_raw_image_python (feature close to edge)"""
+        res = sdt.brightness._from_raw_image_python(
+            np.array([[1, 1]]), self.img, self.radius, self.bg_frame,
+            np.mean)
+        np.testing.assert_equal(res, [[np.nan]*4])
+
+    def test_from_raw_image_helper_numba_nan(self):
+        """brightness._from_raw_image_numba (feature close to edge)"""
+        res = sdt.brightness._from_raw_image_numba(
+            np.array([[1, 1]]), self.img, self.radius, self.bg_frame, 0)
+        np.testing.assert_equal(res, [[np.nan]*4])
+
+    def test_from_raw_image_python(self):
+        """brightness.from_raw_image (python engine)"""
         data = np.array([self.pos1, self.pos2])
         data = pd.DataFrame(data, columns=["x", "y"])
         data["frame"] = 0
@@ -87,7 +120,21 @@ class TestBrightness(unittest.TestCase):
         expected["bg"] = self.bg
         expected["bg_dev"] = self.bg_dev
         sdt.brightness.from_raw_image(data, [self.img], self.radius,
-                                      self.bg_frame)
+                                      self.bg_frame, engine="python")
+        np.testing.assert_allclose(data, expected)
+
+    def test_from_raw_image_numba(self):
+        """brightness.from_raw_image (numba engine)"""
+        data = np.array([self.pos1, self.pos2])
+        data = pd.DataFrame(data, columns=["x", "y"])
+        data["frame"] = 0
+        expected = data.copy()
+        expected["signal"] = np.array([self.signal1, self.signal2])
+        expected["mass"] = np.array([self.mass1, self.mass2])
+        expected["bg"] = self.bg
+        expected["bg_dev"] = self.bg_dev
+        sdt.brightness.from_raw_image(data, [self.img], self.radius,
+                                      self.bg_frame, engine="numba")
         np.testing.assert_allclose(data, expected)
 
 
