@@ -237,17 +237,6 @@ class TestDistribution(unittest.TestCase):
         d = brightness.Distribution(self.masses, absc)
         np.testing.assert_allclose(d.most_probable(), self.most_probable)
 
-    def test_distribution_func(self):
-        """brightness.distribution"""
-        absc = 5000
-        smth = 2
-        cam_eff = 1
-        with np.testing.assert_warns(np.VisibleDeprecationWarning):
-            x, y = brightness.distribution(self.masses, absc, smth)
-        d = brightness.Distribution(self.masses, absc, smth, cam_eff,
-                                    kern_width=np.inf, engine="numba")
-        np.testing.assert_allclose([x, y], d.graph)
-
 
 class TestDistributionNumba(TestDistribution):
     def setUp(self):
@@ -293,10 +282,6 @@ class TestDistributionNumba(TestDistribution):
     def test_most_probable(self):
         """brightness.Distribution.most_probable: Numba"""
         super().test_most_probable()
-
-    @unittest.skip
-    def test_distribution_func(self):
-        pass
 
 
 if __name__ == "__main__":
