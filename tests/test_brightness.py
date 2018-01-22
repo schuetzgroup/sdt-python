@@ -63,7 +63,7 @@ class TestBrightness(unittest.TestCase):
             self.feat2_img
 
     def test_from_raw_image_helper_python(self):
-        """brightness._from_raw_image_python (mean bg_estimator)"""
+        """brightness._from_raw_image_python: mean bg_estimator"""
         res = sdt.brightness._from_raw_image_python(
             [self.pos1], self.img, self.radius, self.bg_frame, np.mean)
         np.testing.assert_allclose(
@@ -71,7 +71,7 @@ class TestBrightness(unittest.TestCase):
             np.array([[self.signal1, self.mass1, self.bg, self.bg_dev]]))
 
     def test_from_raw_image_helper_numba(self):
-        """brightness._from_raw_image_numba (mean bg_estimator)"""
+        """brightness._from_raw_image_numba: (mean bg_estimator"""
         res = sdt.brightness._from_raw_image_numba(
             np.array([self.pos1]), self.img, self.radius, self.bg_frame, 0)
         np.testing.assert_allclose(
@@ -79,7 +79,7 @@ class TestBrightness(unittest.TestCase):
             np.array([[self.signal1, self.mass1, self.bg, self.bg_dev]]))
 
     def test_from_raw_image_helper_python_median(self):
-        """brightness._from_raw_image_python (mean bg_estimator)"""
+        """brightness._from_raw_image_python: median bg_estimator"""
         res = sdt.brightness._from_raw_image_python(
             [self.pos1], self.img, self.radius, self.bg_frame, np.median)
         np.testing.assert_allclose(
@@ -88,7 +88,7 @@ class TestBrightness(unittest.TestCase):
                        self.bg_dev]]))
 
     def test_from_raw_image_helper_numba_median(self):
-        """brightness._from_raw_image_numba (median bg_estimator)"""
+        """brightness._from_raw_image_numba: median bg_estimator"""
         res = sdt.brightness._from_raw_image_numba(
             np.array([self.pos1]), self.img, self.radius, self.bg_frame, 1)
         np.testing.assert_allclose(
@@ -97,20 +97,20 @@ class TestBrightness(unittest.TestCase):
                        self.bg_dev]]))
 
     def test_from_raw_image_helper_python_nan(self):
-        """brightness._from_raw_image_python (feature close to edge)"""
+        """brightness._from_raw_image_python: feature close to edge"""
         res = sdt.brightness._from_raw_image_python(
             np.array([[1, 1]]), self.img, self.radius, self.bg_frame,
             np.mean)
         np.testing.assert_equal(res, [[np.nan]*4])
 
     def test_from_raw_image_helper_numba_nan(self):
-        """brightness._from_raw_image_numba (feature close to edge)"""
+        """brightness._from_raw_image_numba: feature close to edge"""
         res = sdt.brightness._from_raw_image_numba(
             np.array([[1, 1]]), self.img, self.radius, self.bg_frame, 0)
         np.testing.assert_equal(res, [[np.nan]*4])
 
     def test_from_raw_image_python(self):
-        """brightness.from_raw_image (python engine)"""
+        """brightness.from_raw_image: python engine"""
         data = np.array([self.pos1, self.pos2])
         data = pd.DataFrame(data, columns=["x", "y"])
         data["frame"] = 0
@@ -124,7 +124,7 @@ class TestBrightness(unittest.TestCase):
         np.testing.assert_allclose(data, expected)
 
     def test_from_raw_image_numba(self):
-        """brightness.from_raw_image (numba engine)"""
+        """brightness.from_raw_image: numba engine"""
         data = np.array([self.pos1, self.pos2])
         data = pd.DataFrame(data, columns=["x", "y"])
         data["frame"] = 0
