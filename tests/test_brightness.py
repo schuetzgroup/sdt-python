@@ -144,6 +144,7 @@ class TestDistribution(unittest.TestCase):
         self.most_probable = 1000
         self.peak_data = pd.DataFrame([[10, 10]]*3, columns=["x", "y"])
         self.peak_data["mass"] = self.masses
+        self.engine = "python"
 
     def _calc_graph(self, smooth):
         absc = 5000
@@ -158,73 +159,144 @@ class TestDistribution(unittest.TestCase):
         return x, y / y.sum()
 
     def test_init_array(self):
-        # Test if it works when using a ndarray as data source
+        """brightness.Distribution.__init__: Python, full kernel, ndarray"""
         smth = 1
         x, y = self._calc_graph(smth)
-        d = brightness.Distribution(self.masses, x, smooth=smth, cam_eff=1)
+        d = brightness.Distribution(self.masses, x, bw=smth, cam_eff=1,
+                                    kern_width=np.inf, engine=self.engine)
         np.testing.assert_allclose([x, y], d.graph)
 
+    def test_init_kern_width(self):
+        """brightness.Distribution.__init__: Python, truncated kernel"""
+        smth = 1
+        x, y = self._calc_graph(smth)
+        d = brightness.Distribution(self.masses, x, bw=smth, cam_eff=1,
+                                    kern_width=5, engine=self.engine)
+        np.testing.assert_allclose([x, y], d.graph, atol=1e-6)
+
     def test_init_df(self):
-        # Test if it works when using a DataFrame as data source
-        # This assumes that the array version works
+        """brightness.Distribution.__init__: Python, DataFrame"""
+        # This assumes that the numba array version works
         absc = 5000
-        np.testing.assert_allclose(
-            brightness.Distribution(self.peak_data, absc).graph,
-            brightness.Distribution(self.masses, absc).graph)
+        bd1 = brightness.Distribution(self.peak_data, absc, engine=self.engine)
+        bd2 = brightness.Distribution(self.masses, absc, engine="numba")
+        np.testing.assert_allclose(bd1.graph, bd2.graph)
 
     def test_init_list(self):
-        # Test if it works when using a list of DataFrames as data source
+        """brightness.Distribution.__init__: Python, list of DataFrames"""
         # This assumes that the array version works
         l = [self.peak_data.loc[[0, 1]], self.peak_data.loc[[2]]]
         absc = 5000
         np.testing.assert_allclose(
-            brightness.Distribution(l, absc).graph,
-            brightness.Distribution(self.masses, absc).graph)
+            brightness.Distribution(l, absc, engine=self.engine).graph,
+            brightness.Distribution(self.masses, absc, engine="numba").graph)
 
-    def test_init_abscissa(self):
-        # Test if passing an abscissa as scalar produces the same result as
-        # passing it as an array
-        d1 = brightness.Distribution(self.masses, 5000)
-        d2 = brightness.Distribution(self.masses, np.arange(100, 5001))
+    def test_init_abscissa_float(self):
+        """brightness.Distribution.__init__: Python, float abscissa"""
+        d1 = brightness.Distribution(self.masses, 5000, engine=self.engine)
+        d2 = brightness.Distribution(self.masses, np.arange(100, 5001),
+                                     engine="numba")
         np.testing.assert_allclose(d1.graph[:, 100:], d2.graph)
 
+    def test_init_abscissa_none(self):
+        """brightness.Distribution.__init__: Python, `None` abscissa"""
+        smth = 1
+        d1 = brightness.Distribution(self.masses, None, bw=smth,
+                                     engine=self.engine)
+        a = np.max(self.masses) + 2 * smth * np.sqrt(np.max(self.masses)) - 1
+        d2 = brightness.Distribution(self.masses, a, bw=smth, engine="numba")
+        np.testing.assert_allclose(d1.graph, d2.graph)
+
     def test_init_cam_eff(self):
-        # Test the cam_eff parameter in __init__
+        """brightness.Distribution.__init__: Python, cam_eff"""
         eff = 20
         absc = 5000
-        d1 = brightness.Distribution(self.masses, absc, cam_eff=eff)
-        d2 = brightness.Distribution(self.masses/eff, absc, cam_eff=1)
+        d1 = brightness.Distribution(self.masses, absc, cam_eff=eff,
+                                     engine=self.engine)
+        d2 = brightness.Distribution(self.masses/eff, absc, cam_eff=1,
+                                     engine="numba")
         np.testing.assert_allclose(d1. graph, d2.graph)
 
     def test_mean(self):
-        # Test calculation of mean
+        """brightness.Distribution.mean: Python"""
         absc = 5000
-        d = brightness.Distribution(self.masses, absc)
+        d = brightness.Distribution(self.masses, absc, engine=self.engine)
         mean = np.sum(d.graph[0]*d.graph[1])
         np.testing.assert_allclose(d.mean(), mean)
 
     def test_std(self):
-        # Test calculation of standard deviation
+        """brightness.Distribution.std: Python"""
         absc = 5000
-        d = brightness.Distribution(self.masses, absc)
+        d = brightness.Distribution(self.masses, absc, engine=self.engine)
         var = np.sum((d.graph[0] - d.mean())**2 * d.graph[1])
         np.testing.assert_allclose(d.std(), np.sqrt(var))
 
     def test_most_probable(self):
-        # Test calculation of most probable value
+        """brightness.Distribution.most_probable: Python"""
         absc = 5000
         d = brightness.Distribution(self.masses, absc)
         np.testing.assert_allclose(d.most_probable(), self.most_probable)
 
     def test_distribution_func(self):
-        # Test the (deprecated) distribution function
+        """brightness.distribution"""
         absc = 5000
         smth = 2
         cam_eff = 1
         with np.testing.assert_warns(np.VisibleDeprecationWarning):
             x, y = brightness.distribution(self.masses, absc, smth)
-        d = brightness.Distribution(self.masses, absc, smth, cam_eff)
+        d = brightness.Distribution(self.masses, absc, smth, cam_eff,
+                                    kern_width=np.inf, engine="numba")
         np.testing.assert_allclose([x, y], d.graph)
+
+
+class TestDistributionNumba(TestDistribution):
+    def setUp(self):
+        super().setUp()
+        self.engine = "numba"
+
+    def test_init_array(self):
+        """brightness.Distribution.__init__: Numba, full kernel, ndarray"""
+        super().test_init_array()
+
+    def test_init_kern_width(self):
+        """brightness.Distribution.__init__: Numba, truncated kernel"""
+        super().test_init_kern_width()
+
+    def test_init_df(self):
+        """brightness.Distribution.__init__: Numba, DataFrame"""
+        super().test_init_df()
+
+    def test_init_list(self):
+        """brightness.Distribution.__init__: Numba, list of DataFrames"""
+        super().test_init_list()
+
+    def test_init_abscissa_float(self):
+        """brightness.Distribution.__init__: Numba, float abscissa"""
+        super().test_init_abscissa_float()
+
+    def test_init_abscissa_none(self):
+        """brightness.Distribution.__init__: Numba, `None` abscissa"""
+        super().test_init_abscissa_none()
+
+    def test_init_cam_eff(self):
+        """brightness.Distribution.__init__: Numba, cam_eff"""
+        super().test_init_cam_eff()
+
+    def test_mean(self):
+        """brightness.Distribution.mean: Numba"""
+        super().test_mean()
+
+    def test_std(self):
+        """brightness.Distribution.std: Numba"""
+        super().test_std()
+
+    def test_most_probable(self):
+        """brightness.Distribution.most_probable: Numba"""
+        super().test_most_probable()
+
+    @unittest.skip
+    def test_distribution_func(self):
+        pass
 
 
 if __name__ == "__main__":

@@ -271,16 +271,47 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     positions["bg_dev"] = ret[:, 3]
 
 
+def _norm_pdf_python(x, m, s):
+    return 1 / np.sqrt(2 * np.pi * s**2) * np.exp(-(x-m)**2/(2*s**2))
+
+
+def _calc_dist_python(x, mean, sigma, gauss_width):
+    y = np.zeros_like(x, dtype=np.float)
+
+    for m, s in zip(mean, sigma):
+        x_mask = (x >= m - s * gauss_width) & (x <= m + s * gauss_width)
+        y[x_mask] += _norm_pdf_python(x[x_mask], m, s)
+
+    return y
+
+
+_norm_pdf_numba = numba.jit(_norm_pdf_python, nopython=True, cache=True,
+                            nogil=True)
+
+
+@numba.jit(nopython=True, cache=True, nogil=True)
+def _calc_dist_numba(x, mean, sigma, gauss_width):
+    y = np.zeros_like(x, dtype=np.float64)
+    for i in numba.prange(len(mean)):
+        m = mean[i]
+        s = sigma[i]
+
+        for j in range(len(x)):
+            xj = x[j]
+            if (xj < m - s * gauss_width) or (xj > m + s * gauss_width):
+                continue
+            y[j] += _norm_pdf_numba(xj, m, s)
+    return y
+
+
 class Distribution(object):
     """Brightness distribution of fluorescent signals
 
     Given a list of peak masses (integrated intensities), calculate the
-    masses' distribution as a function of the masses.
+    masses' probability density function.
 
-    This works by considering each data point (`mass`) the result of a
-    photon counting experiment. Thus, it is distributed with mean
-    `mass` and sigma `sqrt(mass)`. The total distribution is the
-    normalized sum of the normal distribution PDFs of all data points.
+    This is a Gaussian KDE with variable bandwith. See the `bw` parameter
+    documentation for details.
 
     Attributes
     ----------
@@ -291,42 +322,59 @@ class Distribution(object):
         Number of data points (single molecules) used to create the
         distribution
     """
-    def __init__(self, data, abscissa, smooth=2., cam_eff=1.):
+    def __init__(self, data, abscissa=None, bw=2., cam_eff=1., kern_width=5.,
+                 engine="numba"):
         """Parameters
         ----------
         data : list of pandas.DataFrame or pandas.DataFrame or numpy.ndarray
             If a DataFrame is given, extract the masses from the "mass" column.
             A list of DataFrames will be concatenated. Brightness values can
             also be passed as an one-dimensional ndarray.
-        abscissa : numpy.ndarray or float
+        abscissa : None or numpy.ndarray or float
             The abscissa (x axis) values for the calculated distribution.
             Providing a float is equivalent to ``numpy.arange(abscissa + 1)``.
-        smooth : float, optional
-            Smoothing factor. The sigma of each individual normal PDF is
-            multiplied by this factor to achieve some smoothing. Defaults to 2.
+            If `None`, automatically choose something appropriate based on the
+            values of `data` and the bandwidth.
+        bw : float, optional
+            Bandwidth factor. The bandwidth for each data point ``d`` is
+            calculated as ``bw * np.sqrt(d)``. Defaults to 2.
+        kern_width : float, optional
+            Calculate kernels only in the range of +/- `kern_width` times the
+            bandwidth to save computation time. Defaults to 5.
         cam_eff : float, optional
             Camera efficiency, i. e. how many photons correspond to one
             camera count. The brightness data will be divided by this number.
             Defaults to 1.
+
+        Other parameters
+        ----------------
+        engine : {"numba", "python"}, optional
+            Whether to use the faster numba-based implementation or the slower
+            pure python one. Defaults to "numba".
         """
         if isinstance(data, pd.DataFrame):
-            data = data["mass"]
+            data = data["mass"].values
         elif not isinstance(data, np.ndarray):
             # assume it is an iterable of DataFrames
-            data = pd.concat((d["mass"] for d in data))
+            data = np.concatenate([d["mass"].values for d in data])
 
         data = data / cam_eff  # don't change original data by using /=
+        sigma = bw * np.sqrt(data)
 
-        if isinstance(abscissa, np.ndarray):
+        if abscissa is None:
+            am = np.argmax(data)
+            x = np.arange(data[am] + 2 * sigma[am])
+        elif isinstance(abscissa, np.ndarray):
             x = abscissa
         else:
             x = np.arange(float(abscissa + 1))
 
-        y = np.zeros_like(x, dtype=np.float)
-        sigma = smooth * np.sqrt(data)
-
-        for m, s in zip(data, sigma):
-            y += scipy.stats.norm.pdf(x, m, s)
+        if engine == "numba":
+            y = _calc_dist_numba(x, data, sigma, kern_width)
+        elif engine == "python":
+            y = _calc_dist_python(x, data, sigma, kern_width)
+        else:
+            raise ValueError("Unknown engine \"{}\"".format(engine))
 
         self.norm_factor = np.trapz(y, x)
 
