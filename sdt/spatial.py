@@ -54,7 +54,7 @@ def has_near_neighbor(data, r, pos_columns=_pos_columns):
     ----------------
     pos_colums : list of str, optional
         Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrame`s. Defaults to ["x", "y"].
+        features in :py:class:`pandas.DataFrame` s. Defaults to ["x", "y"].
     """
     if not len(data):
         data["has_neighbor"] = []
