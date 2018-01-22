@@ -8,6 +8,39 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+12.0
+----
+- Major reorganization (API break)
+
+  - Move :py:mod:`data` -> :py:mod:`io`.
+  - Add :py:class:`SdtSpeStack` to :py:mod:`io`.
+  - Move :py:func:`image_tools.save_as_tiff` -> :py:mod:`io`.
+  - Move YAML stuff to :py:mod:`io`.
+  - Create :py:mod:`spacial` module for functions dealing with spacial aspects
+    of single molecule data.
+  - Move ROI handling into new top-level :py:mod:`roi` module.
+
+- Improve :py:class:`brightness.Distribution` class
+
+  - Create fast numba implementation
+  - Automatic abscissa
+  - Calculate kernels only where sensible (+/- 5 sigma by default)
+  - Update docs
+  - Rename some parameters (API break)
+
+- :py:class:`chromatic.Corrector`: Allow callable `cval` in `__call__`
+- Add numba implementation for :py:class:`brightness.from_raw_image`
+- :py:meth:`fret.SmFretAnalyzer.quantify_fret` superseeds
+  :py:meth:`fret.SmFretAnalyzer.efficincy` and
+  :py:meth:`fret.SmFretAnalyzer.stoichiometry`.
+- :py:meth:`fret.SmFretData.track`: Various improvements.
+- yaml: Add `save`, `dump`, and friends so that one does not need to import
+  both upstream yaml and sdt's yaml in most cases.
+- :py:func:`plot.density_scatter` now returns plotted data.
+- Handle empty datasets in :py:func:`plot.density_scatter`.
+- Add :py:meth:`SmFretAnalyzer.has_fluorophores`.
+
+
 11.1
 ----
 - Implement transforming PathROIs using `chromatic.Corrector`
