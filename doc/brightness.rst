@@ -5,4 +5,3 @@ Brightness analysis
 .. autofunction:: from_raw_image
 .. autoclass:: Distribution
   :members:
-.. autofunction:: distribution
