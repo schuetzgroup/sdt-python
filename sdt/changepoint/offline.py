@@ -1,16 +1,7 @@
 import numpy as np
 from scipy.special import gammaln, multigammaln
-from scipy.misc import comb
+from scipy.misc import comb, logsumexp
 from decorator import decorator
-
-
-try:
-    from sselogsumexp import logsumexp
-except ImportError:
-    from scipy.misc import logsumexp
-    print("Use scipy logsumexp().")
-else:
-    print("Use SSE accelerated logsumexp().")
 
 
 def _dynamic_programming(f, *args, **kwargs):
