@@ -1,15 +1,7 @@
-from __future__ import division
 import numpy as np
 from scipy.special import gammaln, multigammaln
 from scipy.misc import comb
 from decorator import decorator
-
-# This makes the code compatible with Python 3
-# without causing performance hits on Python 2
-try:
-    xrange
-except NameError:
-    xrange = range
 
 
 try:
