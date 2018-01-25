@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -13,14 +15,13 @@ except ImportError:
             return stub2
         return stub
 
+    vectorize = jit
+
     numba_available = False
 
 
 @jit(nopython=True, nogil=True, cache=True)
 def logsumexp(a):
     a = a.flatten()
-    m = np.max(a)
-    r = 0
-    for i in prange(a.size):
-        r += np.exp(a[i] - m)  # Subtract maximum as done in scipy
-    return np.log(r) + m  # Add maximum again
+    m = np.max(a)  # Trick from scipy.special.logsumexp to avoid overflows
+    return np.log(np.sum(np.exp(a - m))) + m
