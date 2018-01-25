@@ -106,6 +106,7 @@ class TestOfflineDetection(unittest.TestCase):
         self.data2 = np.concatenate([self.rand_state.normal(40, 10, 30),
                                      self.rand_state.normal(200, 5, 40),
                                      self.rand_state.normal(80, 20, 20)])
+        self.engine = "python"
 
     def test_offline_changepoint_gauss_univ(self):
         """changepoint.offline.offline_changepoint_detection: Gauss, univariate
@@ -117,11 +118,11 @@ class TestOfflineDetection(unittest.TestCase):
             self.data,
             lambda t: offline.const_prior(t, len(self.data)+1),
             offline.gaussian_obs_log_likelihood,
-            truncate=-20)
+            truncate=-20, engine=self.engine)
         orig = np.load(os.path.join(data_path, "offline_gauss_univ.npz"))
         np.testing.assert_allclose(Q, orig["Q"])
         np.testing.assert_allclose(P, orig["P"])
-        np.testing.assert_allclose(Pcp, orig["Pcp"])
+        np.testing.assert_allclose(Pcp, orig["Pcp"], rtol=1e-6)
 
     def test_offline_changepoint_full_multiv(self):
         """changepoint.offline.offline_changepoint_detection: full cov., multiv
@@ -133,11 +134,33 @@ class TestOfflineDetection(unittest.TestCase):
             np.column_stack([self.data, self.data2]),
             lambda t: offline.const_prior(t, len(self.data)+1),
             offline.fullcov_obs_log_likelihood,
-            truncate=-20)
+            truncate=-20, engine=self.engine)
         orig = np.load(os.path.join(data_path, "offline_full_multiv.npz"))
         np.testing.assert_allclose(Q, orig["Q"])
         np.testing.assert_allclose(P, orig["P"])
-        np.testing.assert_allclose(Pcp, orig["Pcp"])
+        np.testing.assert_allclose(Pcp, orig["Pcp"], rtol=1e-6)
+
+
+class TestOfflineDetectionNumba(TestOfflineDetection):
+    def setUp(self):
+        super().setUp()
+        self.engine = "numba"
+
+    def test_offline_changepoint_gauss_univ(self):
+        """changepoint.offline.offline_changepoint_detection: Gauss, numba
+
+        This is a regression test against the output of the original
+        implementation.
+        """
+        super().test_offline_changepoint_gauss_univ()
+
+    def test_offline_changepoint_full_multiv(self):
+        """changepoint.offline.offline_changepoint_detection: full cov., numba
+
+        This is a regression test against the output of the original
+        implementation.
+        """
+        super().test_offline_changepoint_full_multiv()
 
 
 class TestOnline(unittest.TestCase):

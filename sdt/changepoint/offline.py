@@ -1,7 +1,10 @@
 import numpy as np
 from scipy.special import gammaln, multigammaln
-from scipy.misc import comb, logsumexp
+from scipy.special import logsumexp as logsumexp_scipy
+from scipy.misc import comb
 from decorator import decorator
+
+from ..helper import numba
 
 
 def _dynamic_programming(f, *args, **kwargs):
@@ -26,7 +29,8 @@ def dynamic_programming(f):
 
 def offline_changepoint_detection(data, prior_func,
                                   observation_log_likelihood_function,
-                                  truncate=-np.inf):
+                                  truncate=-np.inf,
+                                  engine="numba"):
     """Compute the likelihood of changepoints on data.
 
     Keyword arguments:
@@ -44,6 +48,13 @@ def offline_changepoint_detection(data, prior_func,
     g = np.zeros((n,))
     G = np.zeros((n,))
     P = np.ones((n, n)) * -np.inf
+
+    if engine == "numba":
+        logsumexp = numba.logsumexp
+    elif engine == "python":
+        logsumexp = logsumexp_scipy
+    else:
+        raise ValueError("Unknown engine \"{}\".".format(engine))
 
     # save everything in log representation
     for t in range(n):
@@ -89,7 +100,7 @@ def offline_changepoint_detection(data, prior_func,
     for j in range(1, n-1):
         for t in range(j, n-1):
             tmp_cond = Pcp[j-1, j-1:t] + P[j:t+1, t] + Q[t + 1] + g[0:t-j+1] - Q[j:t+1]
-            Pcp[j, t] = logsumexp(tmp_cond.astype(np.float32))
+            Pcp[j, t] = logsumexp(tmp_cond.astype(np.float64))
             if np.isnan(Pcp[j, t]):
                 Pcp[j, t] = -np.inf
 
@@ -113,6 +124,26 @@ def gaussian_obs_log_likelihood(data, t, s):
     lgA = gammaln((nuT + 1) / 2) - np.log(np.sqrt(np.pi * nuT * scale)) - gammaln(nuT/2)
 
     return np.sum(n * lgA - (nuT + 1)/2 * prob)
+
+#@numba.jit(nopython=True, nogil=True, cache=True)
+def gaussian_obs_log_likelihood_numba(data, t, s):
+    s += 1
+    n = s - t
+    mean = data[t:s].sum(0) / n
+
+    muT = (n * mean) / (1 + n)
+    nuT = 1 + n
+    alphaT = 1 + n / 2
+    betaT = 1 + 0.5 * ((data[t:s] - mean) ** 2).sum(0) + ((n)/(1 + n)) * (mean**2 / 2)
+    scale = (betaT*(nuT + 1))/(alphaT * nuT)
+
+    # splitting the PDF of the student distribution up is /much/ faster.
+    # (~ factor 20) using sum over for loop is even more worthwhile
+    prob = np.sum(np.log(1 + (data[t:s] - muT)**2/(nuT * scale)))
+    lgA = gammaln((nuT + 1) / 2) - np.log(np.sqrt(np.pi * nuT * scale)) - gammaln(nuT/2)
+
+    return np.sum(n * lgA - (nuT + 1)/2 * prob)
+
 
 def ifm_obs_log_likelihood(data, t, s):
     '''Independent Features model from xuan et al'''

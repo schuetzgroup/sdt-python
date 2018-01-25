@@ -1,7 +1,8 @@
 import unittest
 import numpy as np
 import pandas as pd
-from sdt.helper import Singleton, ThreadSafeSingleton, flatten_multiindex
+from sdt.helper import (Singleton, ThreadSafeSingleton, flatten_multiindex,
+                        numba)
 
 
 class TestSingleton(unittest.TestCase):
@@ -54,6 +55,16 @@ class TestFlattenMultiindex(unittest.TestCase):
         mi = pd.MultiIndex.from_product([["A", "B"], ["a", "b"]])
         res = flatten_multiindex(mi, sep=".")
         np.testing.assert_equal(res, ["A.a", "A.b", "B.a", "B.b"])
+
+
+class TestNumba(unittest.TestCase):
+    def test_logsumexp_numba(self):
+        """helper.numba.logsumexp"""
+        from scipy.special import logsumexp
+        a = np.arange(100).reshape((2, -1))
+        self.assertAlmostEqual(numba.logsumexp(a), logsumexp(a))
+        self.assertAlmostEqual(numba.logsumexp(np.zeros(1)),
+                               logsumexp(np.zeros(1)))
 
 
 if __name__ == "__main__":
