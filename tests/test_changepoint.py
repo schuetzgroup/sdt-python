@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 import scipy
+import scipy.stats
 
 from sdt.changepoint import offline, online
 
@@ -177,23 +178,26 @@ class TestOfflineDetectionNumba(TestOfflineDetection):
         super().test_offline_changepoint_full_multiv()
 
 
-class TestOnline(unittest.TestCase):
+class TestOnlineHazard(unittest.TestCase):
+    def test_constant_hazard(self):
+        """changepoint.online.constant_hazard"""
+        lam = 2
+        a = np.arange(10).reshape((2, -1))
+        h = online.constant_hazard(a, np.array([lam]))
+        np.testing.assert_allclose(h, 1/lam * np.ones_like(a))
+
+
+class TestOnlineStudentTPython(unittest.TestCase):
     def setUp(self):
         self.rand_state = np.random.RandomState(0)
         self.data = np.concatenate([self.rand_state.normal(100, 10, 30),
                                     self.rand_state.normal(30, 5, 40),
                                     self.rand_state.normal(50, 20, 20)])
-        self.t = online.StudentT(0.1, 0.01, 1, 0)
+        self.t_params = 0.1, 0.01, 1, 0
+        self.t = online.StudentTPython(*self.t_params)
 
-    def test_constant_hazard(self):
-        """changepoint.online.constant_hazard"""
-        lam = 2
-        a = np.arange(10).reshape((2, -1))
-        h = online.constant_hazard(lam, a)
-        np.testing.assert_allclose(h, 1/lam * np.ones_like(a))
-
-    def test_stundentt_updatetheta(self):
-        """changepoint.online.StudentT.update_theta
+    def test_updatetheta(self):
+        """changepoint.online.StudentTPython.update_theta
 
         This is a regression test against the output of the original
         implementation.
@@ -205,26 +209,135 @@ class TestOnline(unittest.TestCase):
         np.testing.assert_allclose(self.t.kappa, [1., 2.])
         np.testing.assert_allclose(self.t.mu, [0., 58.82026173])
 
-    def test_stundentt_pdf(self):
-        """changepoint.online.StudentT.pdf
+    def test_pdf(self):
+        """changepoint.online.StudentTPython.pdf
 
         This is a regression test against the output of the original
         implementation.
         """
+        self.t.update_theta(self.data[0])
         r = self.t.pdf(self.data[0])
-        np.testing.assert_allclose(r, [0.0002096872696608132])
+        np.testing.assert_allclose(r, [0.0002096872696608132,
+                                       0.0025780687692425132])
 
-    def test_online_changepoint(self):
-        """changepoint.online.online_changepoint_detection
+    def test_reset(self):
+        """changepoint.online.StudentTPython.reset"""
+        self.t.update_theta(self.data[0])
+        self.t.update_theta(self.data[1])
+        self.t.reset()
+
+        np.testing.assert_equal(self.t.alpha, [self.t.alpha0])
+        np.testing.assert_equal(self.t.beta, [self.t.beta0])
+        np.testing.assert_equal(self.t.kappa, [self.t.kappa0])
+        np.testing.assert_equal(self.t.mu, [self.t.mu0])
+
+
+class TestOnlineStudentTNumba(TestOnlineStudentTPython):
+    def setUp(self):
+        super().setUp()
+        self.t = online.StudentTNumba(*self.t_params)
+
+    def test_t_pdf(self):
+        """changepoint.online.t_pdf"""
+        t_params = dict(x=10, df=2, loc=3, scale=2)
+        self.assertAlmostEqual(online.t_pdf(**t_params),
+                               scipy.stats.t.pdf(**t_params))
+
+    def test_updatetheta(self):
+        """changepoint.online.StudentTNumba.update_theta
 
         This is a regression test against the output of the original
         implementation.
         """
-        R, maxes = online.online_changepoint_detection(
-            self.data, lambda t: online.constant_hazard(250, t), self.t)
-        orig = np.load(os.path.join(data_path, "online.npz"))
-        np.testing.assert_allclose(R, orig["R"])
-        np.testing.assert_allclose(maxes, orig["maxes"])
+        super().test_updatetheta()
+
+    def test_pdf(self):
+        """changepoint.online.StudentTNumba.pdf
+
+        This is a regression test against the output of the original
+        implementation.
+        """
+        super().test_pdf()
+
+    def test_reset(self):
+        """changepoint.online.StudentTNumba.reset"""
+        super().test_reset()
+
+
+class TestOnlineFinderPython(unittest.TestCase):
+    def setUp(self):
+        self.rand_state = np.random.RandomState(0)
+        self.data = np.concatenate([self.rand_state.normal(100, 10, 30),
+                                    self.rand_state.normal(30, 5, 40),
+                                    self.rand_state.normal(50, 20, 20)])
+        self.h_params = np.array([250])
+        self.t_params = np.array([0.1, 0.01, 1, 0])
+        self.finder = online.OnlineFinderPython("const", "student_t",
+                                                self.h_params, self.t_params)
+
+        self.orig = np.load(os.path.join(data_path, "online.npz"))["R"]
+
+    def test_reset(self):
+        """changepoint.online.OnlineFinderPython.reset"""
+        self.finder.update(self.data[0])
+        self.finder.update(self.data[1])
+        self.finder.reset()
+
+        np.testing.assert_equal(self.finder.probabilities, [np.array([1])])
+
+    def test_update(self):
+        """changepoint.online.OnlineFinderPython.update
+
+        This is a regression test against the output of the original
+        implementation.
+        """
+        self.finder.update(self.data[0])
+        self.finder.update(self.data[1])
+
+        np.testing.assert_allclose(self.finder.probabilities[0], [1])
+        np.testing.assert_allclose(self.finder.probabilities[1],
+                                   self.orig[:2, 1])
+        np.testing.assert_allclose(self.finder.probabilities[2],
+                                   self.orig[:3, 2])
+
+    def test_find_changepoints(self):
+        """changepoint.online.OnlineFinderPython.find_changepoints
+
+        This is a regression test against the output of the original
+        implementation.
+        """
+        self.finder.find_changepoints(self.data)
+        R = np.zeros((len(self.data) + 1,) * 2)
+        for i, p in enumerate(self.finder.probabilities):
+            R[:i+1, i] = p
+        np.testing.assert_allclose(R, self.orig)
+
+
+class TestOnlineFinderNumba(TestOnlineFinderPython):
+    def setUp(self):
+        super().setUp()
+        self.finder = online.OnlineFinderNumba("const", "student_t",
+                                               self.h_params, self.t_params)
+
+    def test_reset(self):
+        """changepoint.online.OnlineFinderNumba.reset"""
+        super().test_reset()
+
+    def test_update(self):
+        """changepoint.online.OnlineFinderNumba.update
+
+        This is a regression test against the output of the original
+        implementation.
+        """
+        super().test_update()
+
+    def test_find_changepoints(self):
+        """changepoint.online.OnlineFinderNumba.find_changepoints
+
+        This is a regression test against the output of the original
+        implementation.
+        """
+        super().test_find_changepoints()
 
 
 if __name__ == "__main__":
