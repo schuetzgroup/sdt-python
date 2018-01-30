@@ -17,6 +17,14 @@ except ImportError:
 
     vectorize = jit
 
+    def jitclass(*args, **kwargs):
+        def stub(*sargs, **skwargs):
+            class Stub2:
+                def __init__(self, *args, **kwargs):
+                    raise RuntimeError("Could not import numba.")
+            return Stub2
+        return stub
+
     numba_available = False
 
 
