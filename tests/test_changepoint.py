@@ -123,7 +123,7 @@ class TestOfflineDetection(unittest.TestCase):
         self.data2 = np.concatenate([self.rand_state.normal(40, 10, 30),
                                      self.rand_state.normal(200, 5, 40),
                                      self.rand_state.normal(80, 20, 20)])
-        self.Finder = offline.OfflineFinder
+        self.Finder = offline.OfflineFinderPython
 
     def test_offline_changepoint_gauss_univ(self):
         """changepoint.offline.offline_changepoint_detection: Gauss, univariate

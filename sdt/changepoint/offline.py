@@ -93,7 +93,7 @@ def fullcov_obs_likelihood(data, t, s):
     N0 = dim  # weakest prior we can use to retain proper prior
     V0 = np.var(x) * np.eye(dim)
 
-    Vn = V0 + np.einsum('ij,ik->jk', x, x)
+    Vn = V0 + np.einsum("ij, ik -> jk", x, x)
 
     # section 3.2 from Xuan paper:
     return (-(dim * n / 2) * _log_pi + N0 / 2 * np.linalg.slogdet(V0)[1] -
@@ -102,7 +102,7 @@ def fullcov_obs_likelihood(data, t, s):
             (N0 + n) / 2 * np.linalg.slogdet(Vn)[1])
 
 
-class OfflineFinder:
+class OfflineFinderPython:
     prior_map = dict(const=const_prior,
                      geometric=geometric_prior,
                      neg_binominal=neg_binominal_prior)
@@ -227,7 +227,7 @@ def fullcov_obs_likelihood_numba(data, t, s):
             (N0 + n) / 2 * np.linalg.slogdet(Vn)[1])
 
 
-class OfflineFinderNumba(OfflineFinder):
+class OfflineFinderNumba(OfflineFinderPython):
     prior_map = dict(const=_jit(const_prior),
                      geometric=_jit(geometric_prior))
 
@@ -238,6 +238,12 @@ class OfflineFinderNumba(OfflineFinder):
     def __init__(self, prior, obs_likelihood, prior_params=np.empty(0)):
         super().__init__(prior, obs_likelihood, prior_params, True)
         self.finder_func = _jit(self.finder_func)
+
+
+if numba.numba_available:
+    OfflineFinder = OfflineFinderNumba
+else:
+    OfflineFinder = OfflineFinderPython
 
 
 # Imported from https://github.com/hildensia/bayesian_changepoint_detection
