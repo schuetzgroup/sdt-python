@@ -589,8 +589,11 @@ class SmFretData:
 
     def _make_empty_dataframe(self):
         """Return a DataFrame with empty "donor" and "acceptor" entries"""
-        mi = pd.MultiIndex.from_product([["donor", "acceptor"], []])
-        return pd.DataFrame(columns=mi)
+        mi = pd.MultiIndex.from_product([["donor", "acceptor"],
+                                         ["x", "y", "frame", "mass"]])
+        mi2 = pd.MultiIndex.from_product([["fret"],
+                                          ["eff", "particle", "stoi"]])
+        return pd.DataFrame(columns=mi.append(mi2))
 
 
 class SmFretAnalyzer:
