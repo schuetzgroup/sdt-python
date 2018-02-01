@@ -246,7 +246,8 @@ else:
     OfflineFinder = OfflineFinderPython
 
 
-# Imported from https://github.com/hildensia/bayesian_changepoint_detection
+# Based on https://github.com/hildensia/bayesian_changepoint_detection
+# Original copyright and license information:
 #
 # The MIT License (MIT)
 #
