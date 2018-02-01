@@ -96,6 +96,26 @@ class TestBrightness(unittest.TestCase):
             np.array([[self.signal1_median, self.mass1_median, self.bg_median,
                        self.bg_dev]]))
 
+    def test_from_raw_image_helper_python_nobg(self):
+        """brightness._from_raw_image_python: zero bg_frame"""
+        res = sdt.brightness._from_raw_image_python(
+            np.array([self.pos1]), self.img, self.radius, 0, np.mean)
+        np.testing.assert_allclose(
+            res,
+            np.array([[self.signal1 + self.bg,
+                       self.mass1 + self.bg * (2 * self.radius + 1)**2,
+                       np.NaN, np.NaN]]))
+
+    def test_from_raw_image_helper_numba_nobg(self):
+        """brightness._from_raw_image_numba: zero bg_frame"""
+        res = sdt.brightness._from_raw_image_numba(
+            np.array([self.pos1]), self.img, self.radius, 0, 0)
+        np.testing.assert_allclose(
+            res,
+            np.array([[self.signal1 + self.bg,
+                       self.mass1 + self.bg * (2 * self.radius + 1)**2,
+                       np.NaN, np.NaN]]))
+
     def test_from_raw_image_helper_python_nan(self):
         """brightness._from_raw_image_python: feature close to edge"""
         res = sdt.brightness._from_raw_image_python(

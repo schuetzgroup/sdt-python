@@ -61,8 +61,8 @@ def _from_raw_image_python(pos, frame, radius, bg_frame, bg_estimator):
             # no background correction
             mass = signal_region.sum()
             signal = signal_region.max()
-            background_intensity = 0
-            background_std = 0
+            background_intensity = np.NaN
+            background_std = np.NaN
         else:
             # signal region without background frame (i. e. only the actual signal)
             signal_slice = [slice(bg_frame, -bg_frame)]*ndim
@@ -76,12 +76,12 @@ def _from_raw_image_python(pos, frame, radius, bg_frame, bg_estimator):
             background_pixels = signal_region[signal_mask]
             background_intensity = bg_estimator(background_pixels)
             background_std = np.std(background_pixels)
-            mass = uncorr_intensity - background_intensity * (2*radius + 1)**ndim
+            mass = (uncorr_intensity -
+                    background_intensity * (2*radius + 1)**ndim)
             signal = uncorr_signal - background_intensity
 
-        ret[i, 0] = uncorr_signal - background_intensity
-        ret[i, 1] = (uncorr_intensity - background_intensity *
-                     (2*radius + 1)**2)
+        ret[i, 0] = signal
+        ret[i, 1] = mass
         ret[i, 2] = background_intensity
         ret[i, 3] = background_std
 
@@ -142,40 +142,48 @@ def _from_raw_image_numba(pos, frame, radius, bg_frame, bg_estimator):
                 uncorr_intensity += f
                 uncorr_signal = max(uncorr_signal, f)
 
-        background_pixels = np.empty((2 * (radius + bg_frame) + 1)**2 -
-                                     (2 * radius + 1)**2)
-        # Measure background
-        bg_idx = 0
-        # Top
-        for m in range(x - radius - bg_frame, x + radius + bg_frame + 1):
-            for n in range(y - radius - bg_frame, y - radius):
-                background_pixels[bg_idx] = frame[n, m]
-                bg_idx += 1
-        # Bottom
-        for m in range(x - radius - bg_frame, x + radius + bg_frame + 1):
-            for n in range(y + radius + 1, y + radius + bg_frame + 1):
-                background_pixels[bg_idx] = frame[n, m]
-                bg_idx += 1
-        # Left
-        for m in range(x - radius - bg_frame, x - radius):
-            for n in range(y - radius, y + radius + 1):
-                background_pixels[bg_idx] = frame[n, m]
-                bg_idx += 1
-        # Right
-        for m in range(x + radius + 1, x + radius + bg_frame + 1):
-            for n in range(y - radius, y + radius + 1):
-                background_pixels[bg_idx] = frame[n, m]
-                bg_idx += 1
+        if bg_frame > 0:
+            # Measure background
+            background_pixels = np.empty((2 * (radius + bg_frame) + 1)**2 -
+                                        (2 * radius + 1)**2)
+            bg_idx = 0
+            # Top
+            for m in range(x - radius - bg_frame, x + radius + bg_frame + 1):
+                for n in range(y - radius - bg_frame, y - radius):
+                    background_pixels[bg_idx] = frame[n, m]
+                    bg_idx += 1
+            # Bottom
+            for m in range(x - radius - bg_frame, x + radius + bg_frame + 1):
+                for n in range(y + radius + 1, y + radius + bg_frame + 1):
+                    background_pixels[bg_idx] = frame[n, m]
+                    bg_idx += 1
+            # Left
+            for m in range(x - radius - bg_frame, x - radius):
+                for n in range(y - radius, y + radius + 1):
+                    background_pixels[bg_idx] = frame[n, m]
+                    bg_idx += 1
+            # Right
+            for m in range(x + radius + 1, x + radius + bg_frame + 1):
+                for n in range(y - radius, y + radius + 1):
+                    background_pixels[bg_idx] = frame[n, m]
+                    bg_idx += 1
 
-        if bg_estimator == 0:
-            background_intensity = np.mean(background_pixels)
+            if bg_estimator == 0:
+                background_intensity = np.mean(background_pixels)
+            else:
+                background_intensity = np.median(background_pixels)
+            background_std = np.std(background_pixels)
+            signal = uncorr_signal - background_intensity
+            mass = (uncorr_intensity - background_intensity *
+                    (2*radius + 1)**2)
         else:
-            background_intensity = np.median(background_pixels)
-        background_std = np.std(background_pixels)
+            signal = uncorr_signal
+            mass = uncorr_intensity
+            background_intensity = np.NaN
+            background_std = np.NaN
 
-        ret[i, 0] = uncorr_signal - background_intensity
-        ret[i, 1] = (uncorr_intensity - background_intensity *
-                     (2*radius + 1)**2)
+        ret[i, 0] = signal
+        ret[i, 1] = mass
         ret[i, 2] = background_intensity
         ret[i, 3] = background_std
     return ret
