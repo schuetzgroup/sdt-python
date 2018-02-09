@@ -5,7 +5,8 @@ import numpy as np
 import scipy
 import scipy.stats
 
-from sdt.changepoint import offline, online
+from sdt.changepoint import bayes_offline as offline
+from sdt.changepoint import bayes_online as online
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -124,7 +125,7 @@ class TestOfflineDetection(unittest.TestCase):
         self.data2 = np.concatenate([self.rand_state.normal(40, 10, 30),
                                      self.rand_state.normal(200, 5, 40),
                                      self.rand_state.normal(80, 20, 20)])
-        self.Finder = offline.OfflineFinderPython
+        self.Finder = offline.BayesOfflinePython
 
     def test_offline_changepoint_gauss_univ(self):
         """changepoint.offline.offline_changepoint_detection: Gauss, univariate
@@ -159,7 +160,7 @@ class TestOfflineDetection(unittest.TestCase):
 class TestOfflineDetectionNumba(TestOfflineDetection):
     def setUp(self):
         super().setUp()
-        self.Finder = offline.OfflineFinderNumba
+        self.Finder = offline.BayesOfflineNumba
 
     def test_offline_changepoint_gauss_univ(self):
         """changepoint.offline.offline_changepoint_detection: Gauss, numba
@@ -272,8 +273,8 @@ class TestOnlineFinderPython(unittest.TestCase):
                                     self.rand_state.normal(50, 20, 20)])
         self.h_params = np.array([250])
         self.t_params = np.array([0.1, 0.01, 1, 0])
-        self.finder = online.OnlineFinderPython("const", "student_t",
-                                                self.h_params, self.t_params)
+        self.finder = online.BayesOnlinePython("const", "student_t",
+                                               self.h_params, self.t_params)
 
         self.orig = np.load(os.path.join(data_path, "online.npz"))["R"]
 
@@ -316,8 +317,8 @@ class TestOnlineFinderPython(unittest.TestCase):
 class TestOnlineFinderNumba(TestOnlineFinderPython):
     def setUp(self):
         super().setUp()
-        self.finder = online.OnlineFinderNumba("const", "student_t",
-                                               self.h_params, self.t_params)
+        self.finder = online.BayesOnlineNumba("const", "student_t",
+                                              self.h_params, self.t_params)
 
     def test_reset(self):
         """changepoint.online.OnlineFinderNumba.reset"""

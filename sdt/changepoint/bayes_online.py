@@ -57,7 +57,7 @@ class StudentTPython:
         self.beta = betaT0
 
 
-class OnlineFinderPython:
+class BayesOnlinePython:
     hazard_map = dict(const=constant_hazard)
     likelihood_map = dict(student_t=StudentTPython)
 
@@ -146,7 +146,7 @@ class StudentTNumba(StudentTPython):
         return ret
 
 
-class OnlineFinderNumba(OnlineFinderPython):
+class BayesOnlineNumba(BayesOnlinePython):
     hazard_map = dict(const=_jit(constant_hazard))
     likelihood_map = dict(student_t=StudentTNumba)
 
@@ -175,14 +175,6 @@ class OnlineFinderNumba(OnlineFinderPython):
         self.probabilities = []
         for i, p in enumerate(prob):
             self.probabilities.append(p[:i+1])
-
-
-if numba.numba_available:
-    OnlineFinder = OnlineFinderNumba
-    StudentT = StudentTNumba
-else:
-    OnlineFinder = OnlineFinderPython
-    StudentT = StudentTPython
 
 
 # Based on https://github.com/hildensia/bayesian_changepoint_detection
