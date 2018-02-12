@@ -1,3 +1,4 @@
+"""Tools for performing offline Bayesian changepoint detection"""
 import math
 
 import numpy as np
@@ -34,21 +35,90 @@ def dynamic_programming(f):
 
 
 def const_prior(t, data, params=np.empty(0)):
+    """Function implementing a constant prior
+
+    :math:`P(t) = 1 / (\\text{len}(data) + 1)`
+
+    Parameters
+    ----------
+    t : int
+        Current time point
+    data : array-like
+        Data in which to find changepoints
+    params : array-like
+        Parameters to the prior. This is ignored for the constant prior.
+
+    Returns
+    -------
+    float
+        Prior probability for time point `t`
+    """
     return 1 / (len(data) + 1)
 
 
 def geometric_prior(t, data, params):
+    """Function implementing a geometrically distributed prior
+
+    :math:`P(t) =  p (1 - p)^{t - 1}`
+
+    Parameters
+    ----------
+    t : int
+        Current time point
+    data : array-like
+        Data in which to find changepoints
+    params : array-like
+        Parameters to the prior. ``params[0]`` is `p` in the formula above.
+
+    Returns
+    -------
+    float
+        Prior probability for time point `t`
+    """
     p = params[0]
     return p * (1 - p)**(t - 1)
 
 
-def neg_binominal_prior(t, data, params):
+def neg_binomial_prior(t, data, params):
+    """Function implementing a neg-binomially distributed prior
+
+    :math:`P(t) =  {{t - k}\choose{k - 1}} p^k (1 - p)^{t - k}`
+
+    Parameters
+    ----------
+    t : int
+        Current time point
+    data : array-like
+        Data in which to find changepoints
+    params : array-like
+        Parameters to the prior. ``params[0]`` is `k` and ``params[1]`` is
+        `p` in the formula above.
+
+    Returns
+    -------
+    float
+        Prior probability for time point `t`
+    """
     k = params[0]
     p = params[1]
     return scipy.special.comb(t - k, k - 1) * p**k * (1 - p)**(t - k)
 
 
 def gaussian_obs_likelihood(data, t, s):
+    """Gaussian observation likelihood
+
+    Parameters
+    ----------
+    data : array-like
+        Data in which to find changepoints
+    t, s : int
+        First and last time point to consider
+
+    Returns
+    -------
+    float
+        Likelihood
+    """
     s += 1
     n = s - t
     mean = data[t:s].sum(0) / n
@@ -68,7 +138,23 @@ def gaussian_obs_likelihood(data, t, s):
 
 
 def ifm_obs_likelihood(data, t, s):
-    '''Independent Features model from xuan et al'''
+    """Independent features model from Xuan et al.
+
+    See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure in
+    Multivariate Time Series", ICML (2007), pp. 1055--1062*.
+
+    Parameters
+    ----------
+    data : array-like
+        Data in which to find changepoints
+    t, s : int
+        First and last time point to consider
+
+    Returns
+    -------
+    float
+        Likelihood
+    """
     s += 1
     n = s - t
     x = data[t:s]
@@ -85,7 +171,23 @@ def ifm_obs_likelihood(data, t, s):
 
 
 def fullcov_obs_likelihood(data, t, s):
-    '''Full Covariance model from xuan et al'''
+    """Full covariance model from Xuan et al.
+
+    See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure in
+    Multivariate Time Series", ICML (2007), pp. 1055--1062*.
+
+    Parameters
+    ----------
+    data : array-like
+        Data in which to find changepoints
+    t, s : int
+        First and last time point to consider
+
+    Returns
+    -------
+    float
+        Likelihood
+    """
     s += 1
     n = s - t
     x = data[t:s]
@@ -104,9 +206,15 @@ def fullcov_obs_likelihood(data, t, s):
 
 
 class BayesOfflinePython:
+    """Bayesian offline changepoint detector
+
+    This is an implementation of *Fearnhead, Paul: "Exact and efficient
+    Bayesian inference for multiple changepoint problems", Statistics and
+    computing 16.2 (2006), pp. 203--213*.
+    """
     prior_map = dict(const=const_prior,
                      geometric=geometric_prior,
-                     neg_binominal=neg_binominal_prior)
+                     neg_binomial=neg_binomial_prior)
 
     likelihood_map = dict(gauss=dynamic_programming(gaussian_obs_likelihood),
                           ifm=dynamic_programming(ifm_obs_likelihood),
@@ -114,6 +222,31 @@ class BayesOfflinePython:
 
     def __init__(self, prior, obs_likelihood, prior_params=np.empty(0),
                  numba_logsumexp=True):
+        """Parameters
+        ----------
+        prior : {"const", "geometric", "neg_binomial"} or callable
+            Prior probabiltiy function. This has to take three parameters, the
+            first being the timepoint, the second the data array, and the third
+            an array of parameters. See the `prior_params` parameter for
+            details. It has to return the prior corresponding to the timepoint.
+            If "const", use :py:func:`constant_prior`. If "geometric", use
+            :py:func:`geometric_prior`. If "neg_binomial", use
+            :py:func:`neg_binomial_prior`.
+        obs_likelihood : {"gauss", "ifm", "full_cov"} or callable
+            Observation likelihood function. This has to take three parameters:
+            the data array, the start and the end timepoints. If "gauss", use
+            :py:func:`gaussian_obs_likelihood`. If "ifm", use
+            :py:func:`ifm_obs_likelihood`. If "full_cov", use
+            :py:func:`fullcov_obs_likelihood`.
+        prior_params : np.ndarray
+            Parameters to pass as last argument to the prior function.
+
+        Other parameters
+        ----------------
+        numba_logsumexp : bool, optional
+            If True, use numba-accelerated :py:func:`logsumexp`, otherwise
+            use :py:func:`scipy.special.logsumexp`. Defaults to True.
+        """
         prior = self.prior_map.get(prior, prior)
         obs_likelihood = self.likelihood_map.get(obs_likelihood,
                                                  obs_likelihood)
@@ -185,6 +318,39 @@ class BayesOfflinePython:
         self.finder_func = finder
 
     def find_changepoints(self, data, truncate=-np.inf, full_output=False):
+        """Find changepoints in datasets
+
+        Parameters
+        ----------
+        data : array-like
+            Data array
+        truncate : float, optional
+            Speed up calculations by truncating a sum if the summands provide
+            negligible contributions. This parameter is the exponent of the
+            threshold. A sensible value would be e.g. -20. Defaults to -inf,
+            i.e. no truncation.
+        full_output : bool, optional
+            Whether to return only the probabilities for a changepoint as a
+            function of time or the full information. Defaults to False, i.e.
+            only probabilities.
+
+        Returns
+        -------
+        prob : numpy.ndarray
+            Probabilities for a changepoint as a function of time
+        Q : numpy.ndarray
+            ``Q[t]`` is the log-likelihood of data ``[t, n]``. Only returned
+            if ``full_output=True``.
+        P : numpy.ndarray
+            ``P[t, s]`` is the log-likelihood of a datasequence ``[t, s]``,
+            given there is no changepoint between ``t`` and ``s``. Only
+            returned if ``full_output=True``.
+        Pcp : numpy.ndarray
+            ``Pcp[i, t]`` is the log-likelihood that the ``i``-th changepoint
+            is at time step ``t``. To actually get the probility of a
+            changepoint at time step ``t``, sum the probabilities (which is
+            `prob`). Only returned if ``full_output=True``.
+        """
         Q, P, Pcp = self.finder_func(data, truncate)
         prob = np.exp(Pcp).sum(axis=0)
         if full_output:
@@ -198,14 +364,34 @@ _jit = numba.jit(nopython=True, nogil=True, cache=True)
 
 @_jit
 def multigammaln(a, d):
+    """Numba implementation of :py:func:`scipy.special.multigammaln`
+
+    This is only for scalars.
+    """
     res = 0
     for j in range(1, d+1):
         res += math.lgamma(a - (j - 1.)/2)
     return res
 
 
+@_jit
 def fullcov_obs_likelihood_numba(data, t, s):
-    '''Full Covariance model from xuan et al'''
+    """Full covariance model from Xuan et al.
+
+    Numba implementation
+
+    Parameters
+    ----------
+    data : array-like
+        Data in which to find changepoints
+    t, s : int
+        First and last time point to consider
+
+    Returns
+    -------
+    float
+        Likelihood
+    """
     s += 1
     n = s - t
     x = data[t:s]
@@ -229,14 +415,38 @@ def fullcov_obs_likelihood_numba(data, t, s):
 
 
 class BayesOfflineNumba(BayesOfflinePython):
+    """Bayesian offline changepoint detector (numba-accelerated)
+
+    This is an implementation of *Fearnhead, Paul: "Exact and efficient
+    Bayesian inference for multiple changepoint problems", Statistics and
+    computing 16.2 (2006), pp. 203--213*.
+    """
     prior_map = dict(const=_jit(const_prior),
                      geometric=_jit(geometric_prior))
 
     likelihood_map = dict(gauss=_jit(gaussian_obs_likelihood),
                           ifm=_jit(ifm_obs_likelihood),
-                          full_cov=_jit(fullcov_obs_likelihood_numba))
+                          full_cov=fullcov_obs_likelihood_numba)
 
     def __init__(self, prior, obs_likelihood, prior_params=np.empty(0)):
+        """Parameters
+        ----------
+        prior : {"const", "geometric"} or numba jitted function
+            Prior probabiltiy function. This has to take three parameters, the
+            first being the timepoint, the second the data array, and the third
+            an array of parameters. See the `prior_params` parameter for
+            details. It has to return the prior corresponding to the timepoint.
+            If "const", use :py:func:`constant_prior`. If "geometric", use
+            :py:func:`geometric_prior`.
+        obs_likelihood : {"gauss", "ifm", "full_cov"} or numba jitted function
+            Observation likelihood function. This has to take three parameters:
+            the data array, the start and the end timepoints. If "gauss", use
+            :py:func:`gaussian_obs_likelihood`. If "ifm", use
+            :py:func:`ifm_obs_likelihood`. If "full_cov", use
+            :py:func:`fullcov_obs_likelihood`.
+        prior_params : np.ndarray
+            Parameters to pass as last argument to the prior function.
+        """
         super().__init__(prior, obs_likelihood, prior_params, True)
         self.finder_func = _jit(self.finder_func)
 

@@ -45,6 +45,8 @@ Overview
 - With help of the :py:mod:`sdt.sim` module, fluorescence microscopy images
   can be simulated.
 - There are helpers for plotting data in :py:mod:`sdt.plot`.
+- Changepoint detection may be performed using the :py:mod:`sdt.changepoint`
+  module.
 
 
 There are also some helper modules that contain helpful functions and that
@@ -83,6 +85,7 @@ Table of contents
   beam_shape
   sim
   plot
+  changepoint
   exp_fit
   gaussian_fit
   CHANGELOG

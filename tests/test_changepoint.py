@@ -111,7 +111,7 @@ class TestOfflinePriors(unittest.TestCase):
         t = 4
         k = 100
         p = 0.1
-        self.assertAlmostEqual(offline.neg_binominal_prior(t, [], [k, p]),
+        self.assertAlmostEqual(offline.neg_binomial_prior(t, [], [k, p]),
                                (scipy.misc.comb(t - k, k - 1) * p**k *
                                 (1 - p)**(t - k)))
 

@@ -1,3 +1,4 @@
+"""Tools for performing online Bayesian changepoint detection"""
 import math
 
 import numpy as np
@@ -7,11 +8,31 @@ from ..helper import numba
 
 
 def constant_hazard(r, params):
+    """Constant hazard function
+
+    Parameters
+    ----------
+    r : np.ndarray
+        Run lengths
+    params : array-like
+        ``params[0]`` is the timescale
+
+    Returns
+    -------
+    np.ndarray
+        Hazards for run lengths
+    """
     return 1 / params[0] * np.ones(r.shape)
 
 
 class StudentTPython:
+    """Student T observation likelihood"""
     def __init__(self, alpha, beta, kappa, mu):
+        """Parameters
+        ----------
+        alpha, beta, kappa, mu : float
+            Distribution parameters
+        """
         self.alpha0 = np.float64(alpha)
         self.beta0 = np.float64(beta)
         self.kappa0 = np.float64(kappa)
@@ -20,12 +41,20 @@ class StudentTPython:
         self.reset()
 
     def reset(self):
+        """Reset state"""
         self.alpha = np.full(1, self.alpha0)
         self.beta = np.full(1, self.beta0)
         self.kappa = np.full(1, self.kappa0)
         self.mu = np.full(1, self.mu0)
 
     def pdf(self, data):
+        """Calculate probability density function (PDF)
+
+        Parameters
+        ----------
+        data : array-like
+            Data points for which to calculate the PDF
+        """
         df = 2 * self.alpha
         loc = self.mu
         scale = np.sqrt(self.beta * (self.kappa + 1) /
@@ -34,6 +63,13 @@ class StudentTPython:
         return stats.t.pdf(data, df, loc, scale)
 
     def update_theta(self, data):
+        """Update parameters for every possible run length
+
+        Parameters
+        ----------
+        data : array-like
+            Data points to use for update
+        """
         muT0 = np.empty(len(self.mu) + 1)
         muT0[0] = self.mu0
         muT0[1:] = (self.kappa * self.mu + data) / (self.kappa + 1)
@@ -58,17 +94,43 @@ class StudentTPython:
 
 
 class BayesOnlinePython:
+    """Bayesian online changepoint detector
+
+    This is an implementation of *Adams and McKay: "Bayesian Online Changepoint
+    Detection",* `arXiv:0710.3742 <https://arxiv.org/abs/0710.3742>`_.
+
+    Since this is an online detector, it keeps state. One can call
+    :py:meth:`update` for each datapoint and then extract the changepoint
+    probabilities from :py:attr:`probabilities`.
+    """
     hazard_map = dict(const=constant_hazard)
     likelihood_map = dict(student_t=StudentTPython)
 
-    def __init__(self, hazard_func, observation_likelihood,
+    def __init__(self, hazard_func, obs_likelihood,
                  hazard_params=np.empty(0), obs_params=[]):
+        """Parameters
+        ----------
+        hazard_func : "const" or callable
+            Hazard function. This has to take two parameters, the first
+            being an array of runlengths, the second an array of parameters.
+            See the `hazard_params` parameter for details. It has to return
+            the hazards corresponding to the runlengths.
+            If "const", use :py:func:`constant_hazard`.
+        obs_likelihood : "student_t" or type
+            Class implementing the observation likelihood. See
+            :py:class:`StudentTPython` for an example. If "student_t", use
+            :py:class:`StudentTPython`.
+        hazard_params : np.ndarray
+            Parameters to pass as second argument to the hazard function.
+        obs_params : list
+            Parameters to pass to the `observation_likelihood` constructor.
+        """
         hazard_func = self.hazard_map.get(hazard_func, hazard_func)
-        observation_likelihood = self.likelihood_map.get(
-            observation_likelihood, observation_likelihood)
+        obs_likelihood = self.likelihood_map.get(
+            obs_likelihood, obs_likelihood)
 
-        if isinstance(observation_likelihood, type):
-            observation_likelihood = observation_likelihood(*obs_params)
+        if isinstance(obs_likelihood, type):
+            obs_likelihood = obs_likelihood(*obs_params)
 
         def finder_single(x, old_p, obs_ll):
             # Evaluate the predictive distribution for the new datum under each
@@ -80,7 +142,7 @@ class BayesOnlinePython:
             H = hazard_func(np.arange(len(old_p)), hazard_params)
 
             # Evaluate the growth probabilities - shift the probabilities down
-            # and to # the right, scaled by the hazard function and the
+            # and to the right, scaled by the hazard function and the
             # predictive probabilities.
             new_p = np.empty(len(old_p) + 1)
             new_p[1:] = old_p * predprobs * (1 - H)
@@ -99,19 +161,41 @@ class BayesOnlinePython:
             return new_p
 
         self.finder_single = finder_single
-        self.observation_likelihood = observation_likelihood
+        self.observation_likelihood = obs_likelihood
         self.reset()
 
     def reset(self):
+        """Reset the detector
+
+        All previous data will be forgotten. Useful if one wants to start
+        on a new dataset.
+        """
         self.probabilities = [np.array([1])]
         self.observation_likelihood.reset()
 
     def update(self, x):
+        """Add data point an calculate changepoint probabilities
+
+        Parameters
+        ----------
+        x : number
+            New data point
+        """
         old_p = self.probabilities[-1]
         new_p = self.finder_single(x, old_p, self.observation_likelihood)
         self.probabilities.append(new_p)
 
     def find_changepoints(self, data):
+        """Analyze dataset
+
+        This resets the detector and calls :py:meth:`update` on all data
+        points.
+
+        Parameters
+        ----------
+        data : array-like
+            Dataset
+        """
         self.reset()
         for x in data:
             self.update(x)
@@ -122,6 +206,10 @@ _jit = numba.jit(nopython=True, nogil=True, cache=True)
 
 @_jit
 def t_pdf(x, df, loc=0, scale=1):
+    """Numba-based implementation of :py:func:`scipy.stats.t.pdf`
+
+    This is for scalars only.
+    """
     y = (x - loc) / scale
     ret = math.exp(math.lgamma((df + 1) / 2) - math.lgamma(df / 2))
     ret /= (math.sqrt(math.pi * df) * (1 + y**2 / df)**((df + 1) / 2))
@@ -133,7 +221,15 @@ def t_pdf(x, df, loc=0, scale=1):
                  ("alpha", numba.float64[:]), ("beta", numba.float64[:]),
                  ("kappa", numba.float64[:]), ("mu", numba.float64[:])])
 class StudentTNumba(StudentTPython):
+    """Student T observation likelihood (numba-accelerated)"""
     def pdf(self, data):
+        """Calculate probability density function (PDF)
+
+        Parameters
+        ----------
+        data : array-like
+            Data points for which to calculate the PDF
+        """
         df = 2 * self.alpha
         loc = self.mu
         scale = np.sqrt(self.beta * (self.kappa + 1) /
@@ -147,11 +243,37 @@ class StudentTNumba(StudentTPython):
 
 
 class BayesOnlineNumba(BayesOnlinePython):
+    """Bayesian online changepoint detector (numba implementation)
+
+    This is an implementation of *Adams and McKay: "Bayesian Online Changepoint
+    Detection",* `arXiv:0710.3742 <https://arxiv.org/abs/0710.3742>`_.
+
+    Since this is an online detector, it keeps state. One can call
+    :py:meth:`update` for each datapoint and then extract the changepoint
+    probabilities from :py:attr:`probabilities`.
+    """
     hazard_map = dict(const=_jit(constant_hazard))
     likelihood_map = dict(student_t=StudentTNumba)
 
     def __init__(self, hazard_func, observation_likelihood,
                  hazard_params=np.empty(0), obs_params=[]):
+        """Parameters
+        ----------
+        hazard_func : "const" or numba jitted function
+            Hazard function. This has to take two parameters, the first
+            being an array of runlengths, the second an array of parameters.
+            See the `hazard_params` parameter for details. It has to return
+            the hazards corresponding to the runlengths.
+            If "const", use :py:func:`constant_hazard`.
+        observation_likelihood : "student_t" or jitted class
+            Class implementing the observation likelihood. See
+            :py:class:`StudentTNumba` for an example. If "student_t", use
+            :py:class:`StudentTNumba`.
+        hazard_params : np.ndarray
+            Parameters to pass as second argument to the hazard function.
+        obs_params : list
+            Parameters to pass to the `observation_likelihood` constructor.
+        """
         super().__init__(hazard_func, observation_likelihood, hazard_params,
                          obs_params)
         finder_single = _jit(self.finder_single)
@@ -170,6 +292,16 @@ class BayesOnlineNumba(BayesOnlinePython):
         self.finder_all = finder_all
 
     def find_changepoints(self, x):
+        """Analyze dataset
+
+        This resets the detector and calls :py:meth:`update` on all data
+        points.
+
+        Parameters
+        ----------
+        data : array-like
+            Dataset
+        """
         self.reset()
         prob = self.finder_all(x, self.observation_likelihood)
         self.probabilities = []
