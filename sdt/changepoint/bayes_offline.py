@@ -3,7 +3,7 @@ import math
 import numpy as np
 import scipy.special
 import scipy.misc
-from decorator import decorator
+import functools
 
 from ..helper import numba
 
@@ -11,25 +11,26 @@ from ..helper import numba
 _log_pi = math.log(np.pi)
 
 
-def _dynamic_programming(f, *args, **kwargs):
-    if f.data is None:
-        f.data = args[0]
-
-    if not np.array_equal(f.data, args[0]):
-        f.cache = {}
-        f.data = args[0]
-
-    try:
-        f.cache[args[1:]]
-    except KeyError:
-        f.cache[args[1:]] = f(*args, **kwargs)
-    return f.cache[args[1:]]
-
-
 def dynamic_programming(f):
     f.cache = {}
     f.data = None
-    return decorator(_dynamic_programming, f)
+
+    @functools.wraps(f)
+    def _dyn_p(*args, **kwargs):
+        if f.data is None:
+            f.data = args[0]
+
+        if not np.array_equal(f.data, args[0]):
+            f.cache = {}
+            f.data = args[0]
+
+        try:
+            f.cache[args[1:]]
+        except KeyError:
+            f.cache[args[1:]] = f(*args, **kwargs)
+        return f.cache[args[1:]]
+
+    return _dyn_p
 
 
 def const_prior(t, data, params=np.empty(0)):
