@@ -200,6 +200,31 @@ class BayesOnlinePython:
         for x in data:
             self.update(x)
 
+    def get_probabilities(self, past):
+        """Get changepoint probabilities
+
+        To calculate the probabilities, look a number of data points (as
+        given by the `past` parameter) into the past to increase robustness.
+
+        There is always 100% probability that there was a changepoint at the
+        start of the signal; one should filter that out if necessary.
+
+        Parameters
+        ----------
+        past : int
+            How many datapoints into the past to look. Larger values will
+            increase robustness, but also latency, meaning that if `past`
+            equals some number `x`, a changepoint within the last `x` data
+            points cannot be detected.
+
+        Returns
+        -------
+        numpy.ndarray
+            Changepoint probabilities as a function of time. The length of
+            the array equals the number of datapoints - `past`.
+        """
+        return np.array([p[past] for p in self.probabilities[past:-1]])
+
 
 _jit = numba.jit(nopython=True, nogil=True, cache=True)
 

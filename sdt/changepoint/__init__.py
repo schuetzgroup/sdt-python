@@ -29,6 +29,9 @@ Online changepoint detection can be used on data as it arrives.
 >>> while True:
 >>>     x = wait_for_data()
 >>>     cpd.update(x)
+>>>     if np.any(cpd.get_probabilities(5)[1:] > 0.8):
+>>>         # there is an 80% chance that there was changepoint
+>>>         break
 
 Of course, it can be used also on a whole dataset similarly to offline
 detection.
@@ -36,6 +39,7 @@ detection.
 >>> cpd = changepoint.BayesOnline("const", "student_t", numpy.array([250]),
 ...                               numpy.array([0.1, 0.01, 1, 0]))
 >>> cpd.find_changepoints(data)
+>>> p = cpd.get_probabilities(5)
 """
 
 from ..helper import numba

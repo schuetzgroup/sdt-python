@@ -313,6 +313,12 @@ class TestOnlineFinderPython(unittest.TestCase):
             R[:i+1, i] = p
         np.testing.assert_allclose(R, self.orig)
 
+    def test_get_probabilities(self):
+        """changepoint.online.OnlineFinderPython.get_probabilities"""
+        self.finder.find_changepoints(self.data)
+        np.testing.assert_allclose(self.finder.get_probabilities(10),
+                                   self.orig[10, 10:-1])
+
 
 class TestOnlineFinderNumba(TestOnlineFinderPython):
     def setUp(self):
@@ -339,6 +345,10 @@ class TestOnlineFinderNumba(TestOnlineFinderPython):
         implementation.
         """
         super().test_find_changepoints()
+
+    def test_get_probabilites(self):
+        """changepoint.online.OnlineFinderNumba.get_probabilities"""
+        super().test_get_probabilities()
 
 
 if __name__ == "__main__":
