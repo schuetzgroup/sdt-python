@@ -56,8 +56,9 @@ def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5., mass=False,
         amplitudes = amplitudes / (2 * np.pi * np.product(sigmas, axis=1))
 
     if engine == "numba":
-        return gauss_psf_numba(np.array(shape, copy=False), centers,
-                               amplitudes, sigmas, cutoff)
+        return gauss_psf_numba(np.asarray(shape), np.asarray(centers),
+                               np.asarray(amplitudes), np.asarray(sigmas),
+                               cutoff)
     if engine == "python":
         return gauss_psf(shape, centers, amplitudes, sigmas, cutoff)
     if engine == "python_full":
@@ -153,7 +154,7 @@ def gauss_psf(shape, centers, amplitudes, sigmas, cutoff):
     return result
 
 
-@jit(nopython=True, nogil=True)
+@jit(nopython=True, nogil=True, cache=True)
 def gauss_psf_numba(shape, centers, amplitudes, sigmas, cutoff):
     """Simulate an image from multiple Gaussian PSFs
 
