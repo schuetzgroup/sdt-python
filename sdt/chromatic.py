@@ -181,14 +181,16 @@ class Corrector(object):
         affine_embedding_footer[-1, -1] = 1  # last column is translation
 
         # first transform
-        coeff = np.hstack((self.pairs[ch1_name][pos_columns], one_padding))
-        rhs = self.pairs[ch2_name][pos_columns].as_matrix()
+        coeff = np.hstack((self.pairs[ch1_name][self.pos_columns],
+                           one_padding))
+        rhs = self.pairs[ch2_name][self.pos_columns].as_matrix()
         params = np.linalg.lstsq(coeff, rhs)[0].T
         self.parameters1 = np.vstack((params, affine_embedding_footer))
 
         # second transform
-        coeff = np.hstack((self.pairs[ch2_name][pos_columns], one_padding))
-        rhs = self.pairs[ch1_name][pos_columns].as_matrix()
+        coeff = np.hstack((self.pairs[ch2_name][self.pos_columns],
+                           one_padding))
+        rhs = self.pairs[ch1_name][self.pos_columns].as_matrix()
         params = np.linalg.lstsq(coeff, rhs)[0].T
         self.parameters2 = np.vstack((params, affine_embedding_footer))
 
@@ -240,7 +242,7 @@ class Corrector(object):
                                      self.parameters2[:-1, :-1].T)
                 corr_coords += self.parameters2[:-1, -1]
 
-            data[pos_columns] = corr_coords
+            data[self.pos_columns] = corr_coords
 
             if not inplace:
                 # copied previously, now return
@@ -541,8 +543,8 @@ class Corrector(object):
         indices = indices[:, cutoff_mask]
 
         pair_matrix = np.hstack((
-            feat1.iloc[indices[0]][pos_columns],
-            feat2.iloc[indices[1]][pos_columns]))
+            feat1.iloc[indices[0]][self.pos_columns],
+            feat2.iloc[indices[1]][self.pos_columns]))
 
         mi = pd.MultiIndex.from_product([self.channel_names, self.pos_columns])
         return pd.DataFrame(pair_matrix, columns=mi)
