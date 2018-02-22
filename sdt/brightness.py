@@ -284,9 +284,8 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     frames : iterable of numpy.ndarrays
         Raw image data
     radius : int
-        Half width of the box in which pixel values are summed up. E. g.
-        using ``radius=3`` leads to the summation of pixels in a square of
-        2*3 + 1 = 7 pixels width.
+        Half width of the box in which pixel values are summed up. See `mask`
+        parameter for details.
     bg_frame : int, optional
         Width of frame (in pixels) around a feature for background
         determination. Defaults to 2.
