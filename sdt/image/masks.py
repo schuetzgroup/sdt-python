@@ -27,7 +27,7 @@ class CircleMask(np.ndarray):
            [ True,  True,  True,  True,  True],
            [False,  True,  True,  True, False]], dtype=bool)
     """
-    def __new__(cls, radius, extra=0.):
+    def __new__(cls, radius, extra=0., shape=None):
         """Parameters
         ----------
         radius : int
@@ -36,7 +36,23 @@ class CircleMask(np.ndarray):
         extra : float, optional
             Add `extra` to the radius before determining which coordinates are
             inside the circle. Defaults to 0.
+        shape : tuple of int, optional
+            Shape of the resulting array. If this is larger than the mask, it
+            will be centered in the array. By default, the smallest possible
+            size is chosen.
         """
         obj = np.arange(-radius, radius+1)**2
         obj = (obj[np.newaxis, :] + obj[:, np.newaxis]) <= (radius + extra)**2
+
+        if shape is not None:
+            ret = np.zeros(shape)
+
+            m_slices = []
+            for s, e in zip(shape, obj.shape):
+                margin = max(0, (s - e) // 2)
+                m_slices.append(slice(margin, margin + e))
+
+            ret[m_slices] = obj
+            obj = ret
+
         return obj

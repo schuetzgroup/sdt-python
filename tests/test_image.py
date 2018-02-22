@@ -93,6 +93,7 @@ class TestCG(unittest.TestCase):
 
 class TestMasks(unittest.TestCase):
     def test_circle_mask(self):
+        """image.CircleMask"""
         orig = np.array([[False, False,  True, False, False],
                          [False,  True,  True,  True, False],
                          [ True,  True,  True,  True,  True],
@@ -101,12 +102,27 @@ class TestMasks(unittest.TestCase):
         np.testing.assert_equal(masks.CircleMask(2), orig)
 
     def test_circle_mask_extra(self):
+        """image.CircleMask: `extra` param"""
         orig = np.array([[False,  True,  True,  True, False],
                          [ True,  True,  True,  True,  True],
                          [ True,  True,  True,  True,  True],
                          [ True,  True,  True,  True,  True],
                          [False,  True,  True,  True, False]], dtype=bool)
         np.testing.assert_equal(masks.CircleMask(2, 0.5), orig)
+
+    def test_circle_mask_shape(self):
+        """image.CircleMask: `shape` param"""
+        orig = np.array([[False, False, False, False, False, False, False],
+                         [False, False, False, False, False, False, False],
+                         [False, False, False,  True, False, False, False],
+                         [False, False,  True,  True,  True, False, False],
+                         [False,  True,  True,  True,  True,  True, False],
+                         [False, False,  True,  True,  True, False, False],
+                         [False, False, False,  True, False, False, False],
+                         [False, False, False, False, False, False, False],
+                         [False, False, False, False, False, False, False]],
+                        dtype=bool)
+        np.testing.assert_equal(masks.CircleMask(2, shape=(9, 7)), orig)
 
 
 if __name__ == "__main__":
