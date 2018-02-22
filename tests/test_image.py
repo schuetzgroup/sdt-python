@@ -124,6 +124,16 @@ class TestMasks(unittest.TestCase):
                         dtype=bool)
         np.testing.assert_equal(masks.CircleMask(2, shape=(9, 7)), orig)
 
+    def test_rect_mask(self):
+        """image.RectMask"""
+        np.testing.assert_equal(masks.RectMask((5, 7)), np.ones((5, 7)))
+
+    def test_rect_mask_shape(self):
+        """image.RectMask: `shape` param"""
+        e = np.zeros((11, 9), dtype=bool)
+        e[3:-3, 1:-1] = True
+        np.testing.assert_equal(masks.RectMask((5, 7), shape=(11, 9)), e)
+
 
 if __name__ == "__main__":
     unittest.main()

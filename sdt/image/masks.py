@@ -2,6 +2,32 @@
 import numpy as np
 
 
+class RectMask(np.ndarray):
+    """Boolean array representing a rectangular mask"""
+    def __new__(cls, ext, shape=None):
+        """Parameters
+        ----------
+        ext : tuple of int
+            Extension (shape) of the masked rectangle
+        shape : tuple of int, optional
+            Shape of the resulting array. If this is larger than `ext`, the
+            mask will be centered in the array. By default, the smallest
+            possible size is chosen.
+        """
+        if shape is None:
+            shape = ext
+        obj = np.zeros(shape, dtype=bool)
+
+        m_slices = []
+        for s, e in zip(shape, ext):
+            margin = max(0, (s - e) // 2)
+            m_slices.append(slice(margin, margin + e))
+
+        obj[m_slices] = 1
+
+        return obj
+
+
 class CircleMask(np.ndarray):
     """Boolean array representing a circular mask
 
