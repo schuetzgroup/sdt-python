@@ -1,13 +1,13 @@
-# -*- coding: utf-8 -*-
 import unittest
 import os
+import math
 
 import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
 import sdt.brightness
-from sdt import brightness
+from sdt import brightness, image
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -15,11 +15,14 @@ data_path = os.path.join(path, "data_brightness")
 loc_path = os.path.join(path, "data_data")
 
 
-class TestBrightness(unittest.TestCase):
+class TestFromRawImage(unittest.TestCase):
     def setUp(self):
         # for raw image tests
         self.radius = 2
         self.bg_frame = 1
+        self.fg_mask = image.RectMask((2 * self.radius + 1,) * 2)
+        self.bg_mask = image.RectMask(
+            (2 * (self.radius + self.bg_frame) + 1,) * 2)
         self.pos1 = [30, 20]
         self.pos2 = [15, 10]
 
@@ -35,7 +38,7 @@ class TestBrightness(unittest.TestCase):
         self.feat1_img[:bg_radius, :bg_radius] = 4.
         self.feat2_img[:bg_radius, :bg_radius] = 4.
         self.feat1_img[self.feat_mask] = 10
-        self.feat1_img[self.feat_mask] = 15
+        self.feat2_img[self.feat_mask] = 15
 
         self.bg = np.mean(self.feat1_img[~self.feat_mask])
         self.bg_median = np.median(self.feat1_img[~self.feat_mask])
@@ -54,7 +57,8 @@ class TestBrightness(unittest.TestCase):
         self.signal1_median = (np.max(self.feat1_img[self.feat_mask]) -
                                self.bg_median)
 
-        self.img = np.zeros((50, 50))
+        self.bg_fill = 2
+        self.img = np.full((40, 50), self.bg_fill)
         self.img[self.pos1[1]-bg_radius:self.pos1[1]+bg_radius+1,
                  self.pos1[0]-bg_radius:self.pos1[0]+bg_radius+1] = \
             self.feat1_img
@@ -62,74 +66,112 @@ class TestBrightness(unittest.TestCase):
                  self.pos2[0]-bg_radius:self.pos2[0]+bg_radius+1] = \
             self.feat2_img
 
-    def test_from_raw_image_helper_python(self):
+    def test_make_mask_image(self):
+        """brightness._make_mask_image"""
+        idx = np.array([self.pos1, self.pos2])[:, ::-1]
+        e = np.ones(self.img.shape, dtype=bool)
+        for i, j in idx:
+            e[i-self.radius:i+self.radius+1,
+              j-self.radius:j+self.radius+1] = False
+        r = brightness._make_mask_image(idx, self.fg_mask, e.shape)
+        np.testing.assert_equal(r, e)
+
+    def test_make_mask_image_edge(self):
+        """brightness._make_mask_image: Feature near the edge"""
+        idx = np.array([[1, 2], np.subtract(self.img.shape, (1, 2))])
+        e = np.ones(self.img.shape, dtype=bool)
+        i, j = idx[0]
+        e[:i+self.radius+1, :j+self.radius+1] = False
+        i, j = idx[1]
+        e[i-self.radius:, j-self.radius:] = False
+        r = brightness._make_mask_image(idx, self.fg_mask, e.shape)
+        np.testing.assert_equal(r, e)
+
+    def test_make_mask_image_even_shape(self):
+        """brightness._make_mask_image: Partly evenly shaped mask"""
+        idx = np.array([self.pos1, self.pos2])[:, ::-1]
+        mask = np.ones((2 * self.radius, 2 * self.radius + 1), dtype=bool)
+        e = np.ones(self.img.shape, dtype=bool)
+        for i, j in idx:
+            e[i-self.radius:i+self.radius,
+              j-self.radius:j+self.radius+1] = False
+        r = brightness._make_mask_image(idx, mask, e.shape)
+        np.testing.assert_equal(r, e)
+
+    def test_make_mask_image_zeros(self):
+        """brightness._make_mask_image: Partly unfilled mask"""
+        idx = np.array([self.pos1, self.pos2])[:, ::-1]
+        mask = np.zeros(np.add(self.fg_mask.shape, 2), dtype=bool)
+        mask[1:-1, 1:-1] = self.fg_mask
+        e = np.ones(self.img.shape, dtype=bool)
+        for i, j in idx:
+            e[i-self.radius:i+self.radius+1,
+              j-self.radius:j+self.radius+1] = False
+        r = brightness._make_mask_image(idx, mask, e.shape)
+        np.testing.assert_equal(r, e)
+
+    def test_get_mask_boundaries(self):
+        """brightness._get_mask_boundaries"""
+        pos = np.array([[10, 15], [1, 2], [38, 49]])
+        i_s, i_e, m_s, m_e = brightness._get_mask_boundaries(pos,
+                                                             (5, 6), (40, 50))
+        np.testing.assert_equal(i_s, [[8, 12], [0, 0], [36, 46]])
+        np.testing.assert_equal(i_e, [[13, 18], [4, 5], [40, 50]])
+        np.testing.assert_equal(m_s, [[0, 0], [1, 1], [0, 0]])
+        np.testing.assert_equal(m_e, [[5, 6], [5, 6], [4, 4]])
+
+    def test_from_raw_image_helper(self):
         """brightness._from_raw_image_python: mean bg_estimator"""
         res = sdt.brightness._from_raw_image_python(
-            [self.pos1], self.img, self.radius, self.bg_frame, np.mean)
+            np.array([self.pos1]), self.img, self.fg_mask, self.bg_mask,
+            np.mean)
         np.testing.assert_allclose(
             res,
             np.array([[self.signal1, self.mass1, self.bg, self.bg_dev]]))
 
-    def test_from_raw_image_helper_numba(self):
-        """brightness._from_raw_image_numba: (mean bg_estimator"""
-        res = sdt.brightness._from_raw_image_numba(
-            np.array([self.pos1]), self.img, self.radius, self.bg_frame, 0)
-        np.testing.assert_allclose(
-            res,
-            np.array([[self.signal1, self.mass1, self.bg, self.bg_dev]]))
-
-    def test_from_raw_image_helper_python_median(self):
+    def test_from_raw_image_helper_median(self):
         """brightness._from_raw_image_python: median bg_estimator"""
         res = sdt.brightness._from_raw_image_python(
-            [self.pos1], self.img, self.radius, self.bg_frame, np.median)
+            np.array([self.pos1]), self.img, self.fg_mask, self.bg_mask,
+            np.median)
         np.testing.assert_allclose(
             np.array(res),
             np.array([[self.signal1_median, self.mass1_median, self.bg_median,
                        self.bg_dev]]))
 
-    def test_from_raw_image_helper_numba_median(self):
-        """brightness._from_raw_image_numba: median bg_estimator"""
-        res = sdt.brightness._from_raw_image_numba(
-            np.array([self.pos1]), self.img, self.radius, self.bg_frame, 1)
-        np.testing.assert_allclose(
-            res,
-            np.array([[self.signal1_median, self.mass1_median, self.bg_median,
-                       self.bg_dev]]))
-
-    def test_from_raw_image_helper_python_nobg(self):
+    def test_from_raw_image_helper_nobg(self):
         """brightness._from_raw_image_python: zero bg_frame"""
         res = sdt.brightness._from_raw_image_python(
-            np.array([self.pos1]), self.img, self.radius, 0, np.mean)
+            np.array([self.pos1]), self.img, self.fg_mask,
+            np.zeros_like(self.fg_mask), np.mean)
         np.testing.assert_allclose(
             res,
             np.array([[self.signal1 + self.bg,
                        self.mass1 + self.bg * (2 * self.radius + 1)**2,
                        np.NaN, np.NaN]]))
 
-    def test_from_raw_image_helper_numba_nobg(self):
-        """brightness._from_raw_image_numba: zero bg_frame"""
-        res = sdt.brightness._from_raw_image_numba(
-            np.array([self.pos1]), self.img, self.radius, 0, 0)
-        np.testing.assert_allclose(
-            res,
-            np.array([[self.signal1 + self.bg,
-                       self.mass1 + self.bg * (2 * self.radius + 1)**2,
-                       np.NaN, np.NaN]]))
-
-    def test_from_raw_image_helper_python_nan(self):
+    def test_from_raw_image_helper_nan(self):
         """brightness._from_raw_image_python: feature close to edge"""
         res = sdt.brightness._from_raw_image_python(
-            np.array([[1, 1]]), self.img, self.radius, self.bg_frame,
+            np.array([[1, 1]]), self.img, self.fg_mask, self.bg_mask,
             np.mean)
         np.testing.assert_equal(res, [[np.nan]*4])
 
-    def test_from_raw_image_helper_numba_nan(self):
-        """brightness._from_raw_image_numba: feature close to edge"""
-        res = sdt.brightness._from_raw_image_numba(
-            np.array([[1, 1]]), self.img, self.radius, self.bg_frame, 0)
-        np.testing.assert_equal(res, [[np.nan]*4])
+    def test_from_raw_image_helper_bg_exclude(self):
+        """brightness._from_raw_image_python: Exclude other features for bg
 
-    def test_from_raw_image_python(self):
+        See if the other features are correctly excluded from the background
+        mask. This implicitly also tests whether using large background masks
+        (which go beyond the image) also works.
+        """
+        fg_mask = np.ones_like(self.bg_mask)
+        bg_mask = np.ones((500, 500), dtype=bool)
+        res = sdt.brightness._from_raw_image_python(
+            np.array([self.pos1, self.pos2]), self.img, fg_mask,
+            bg_mask, np.mean)
+        np.testing.assert_equal(res[0, [2, 3]], [self.bg_fill, 0])
+
+    def test_from_raw_image(self):
         """brightness.from_raw_image: python engine"""
         data = np.array([self.pos1, self.pos2])
         data = pd.DataFrame(data, columns=["x", "y"])
@@ -143,19 +185,6 @@ class TestBrightness(unittest.TestCase):
                                       self.bg_frame, engine="python")
         np.testing.assert_allclose(data, expected)
 
-    def test_from_raw_image_numba(self):
-        """brightness.from_raw_image: numba engine"""
-        data = np.array([self.pos1, self.pos2])
-        data = pd.DataFrame(data, columns=["x", "y"])
-        data["frame"] = 0
-        expected = data.copy()
-        expected["signal"] = np.array([self.signal1, self.signal2])
-        expected["mass"] = np.array([self.mass1, self.mass2])
-        expected["bg"] = self.bg
-        expected["bg_dev"] = self.bg_dev
-        sdt.brightness.from_raw_image(data, [self.img], self.radius,
-                                      self.bg_frame, engine="numba")
-        np.testing.assert_allclose(data, expected)
 
 
 class TestDistribution(unittest.TestCase):
