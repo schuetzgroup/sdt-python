@@ -47,6 +47,51 @@ def _make_mask_image(feat_idx, mask, shape):
     return ret[(slice(1, -1),) * len(shape)]
 
 
+@numba.jit(nopython=True, cache=True, nogil=True)
+def _make_mask_image_numba(i_start, i_end, m_start, m_end, mask, shape):
+    """Make a boolean mask with all `True` except for `mask` around features
+
+    numba-accelerated implementation. This is called differently than
+    :py:func:`_make_mask_image`. **Works only for 2D data.**
+
+    Parameters
+    ----------
+    i_start : array-like, shape(n, 2), dtype(int)
+        Indices of start pixels in the image of the feature mask for each
+        feature. This is typically the `img_start` array returned by
+        :py:func:`_get_mask_boundaries`.
+    i_end : array-like, shape(n, 2), dtype(int)
+        Indices of end pixels in the image of the feature mask for each
+        feature. This is typically the `img_end` array returned by
+        :py:func:`_get_mask_boundaries`.
+    m_start : array-like, shape(n, 2), dtype(int)
+        Indices of start pixels in the feature mask for each
+        feature. This is typically the `mask_start` array returned by
+        :py:func:`_get_mask_boundaries`.
+    m_end : array-like, shape(n, 2), dtype(int)
+        Indices of end pixels in the feature mask for each
+        feature. This is typically the `mask_start` array returned by
+        :py:func:`_get_mask_boundaries`.
+    mask : array-like, dtype(bool)
+        Feature mask
+    shape : tuple of int
+        Desired shape of the resulting image
+
+    Returns
+    -------
+    numpy.ndarray, dtype(bool)
+        Boolean mask of the desired shape
+    """
+    ret = np.ones(shape, dtype=np.bool_)
+    mask_inv = ~mask
+    for j in range(len(i_start)):
+        # TODO: This is 2D only until someone comes up with a solution
+        mask_part = mask_inv[m_start[j, 0]:m_end[j, 0],
+                             m_start[j, 1]:m_end[j, 1]]
+        ret[i_start[j, 0]:i_end[j, 0], i_start[j, 1]:i_end[j, 1]] &= mask_part
+    return ret
+
+
 def _get_mask_boundaries(feat_idx, mask_shape, shape):
     """Get boundaries for masks around features
 
@@ -81,6 +126,49 @@ def _get_mask_boundaries(feat_idx, mask_shape, shape):
     mask_end = np.clip(shape - start, 0, mask_shape)
 
     return img_start, img_end, mask_start, mask_end
+
+
+@numba.jit(nopython=True, cache=True, nogil=True)
+def _get_mask_boundaries_numba(feat_idx, mask_shape, shape):
+    """Get boundaries for masks around features (numba-accelerated)
+
+    For each feature, this calculates where in the image a mask has to begin
+    and to end to be centered around the feature. It takes the image size into
+    account such that masks are clipped at the edges.
+
+    Parameters
+    ----------
+    feat_idx : array-like, shape(n, m), dtype(int)
+        Rounded indices (coordinates reversed) of features in the image.
+    mask_shape : tuple of int
+        Shape of the mask
+    shape : tuple of int
+        Shape of the image
+
+    Returns
+    -------
+    img_start, img_end : numpy.ndarray, dtype(int), shape(m, n)
+        Where in the image the mask starts and ends
+    mask_start, mask_end : numpy.ndarray, dtype(int), shape(m, n)
+        Which part of the mask to apply. This is important if the mask gets
+        clipped near the edges of the image
+    """
+    n, ndim = feat_idx.shape
+    ret = np.empty((4, n, ndim))
+    for j in range(ndim):
+        s = shape[j]
+        ms = mask_shape[j]
+        r = ms // 2
+
+        for i in range(n):
+            start = feat_idx[i, j] - r
+            end = start + ms
+            ret[0, i, j] = max(0, min(start, s))
+            ret[1, i, j] = max(0, min(end, s))
+            ret[2, i, j] = max(0, min(-start, ms))
+            ret[3, i, j] = max(0, min(s - start, ms))
+
+    return ret
 
 
 def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
@@ -164,105 +252,97 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
     return ret
 
 
-#@numba.jit(nopython=True, cache=True, nogil=True)
-#def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
-    #"""Get brightness by counting pixel values (single frame, numba impl.)
+@numba.jit(nopython=True, cache=True, nogil=True)
+def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
+    """Get brightness by counting pixel values (single frame, numba impl.)
 
-    #This is called for each frame by :py:func:`from_raw_image`
+    This is called for each frame by :py:func:`from_raw_image` with numba
+    engine. It works for 2D data only.
 
-    #Parameters
-    #----------
-    #pos : array-like, shape(n, 2)
-        #Localization coordinates (n features in an 2-dimensional space). Only
-        #2D data is supported.
-    #frame : numpy.ndarray
-        #Raw image data
-    #radius : int
-        #Half width of the box in which pixel values are summed up. E. g.
-        #using ``radius=3`` leads to the summation of pixels in a square of
-        #2*3 + 1 = 7 pixels width.
-    #bg_frame : int
-        #Width of frame (in pixels) around the box used for brightness
-        #determination for background determination.
-    #bg_estimator : int
-        #How to determine the background from the background pixels. If 0,
-        #use the mean, if 1 use the median.
+    Parameters
+    ----------
+    pos : array-like, shape(n, m)
+        Localization coordinates (n features in an m-dimensional space)
+    frame : numpy.ndarray
+        Raw image data
+    feat_mask : array-like, dtype(bool)
+        Mask around each localization to determine which pixel belong to the
+        feature
+    bg_mask : array-like, dtype(bool)
+        Mask around each localization to determine which pixel belong to the
+        background
+    bg_estimator : numpy ufunc
+        How to determine the background from the background pixels. A typical
+        example would be :py:func:`np.mean`.
 
-    #Returns
-    #-------
-    #numpy.ndarray, shape(n, 4)
-        #Each line represents one feature. Columns are "signal", "mass",
-        #"bg", "bg_std".
-    #"""
-    #mask_shape = np.array(bg_mask.shape)
+    Returns
+    -------
+    numpy.ndarray, shape(n, 4)
+        Each line represents one feature. Columns are "signal", "mass",
+        "bg", "bg_std".
+    """
+    feat_mask_ones = feat_mask.sum()  # Number of pixels selected by the mask
 
-    #ret = np.empty((len(pos), 4))
-    #for i in numba.prange(len(pos)):
-        #int_p = np.round(pos[i]).astype(int)
-        #start = int_p[::-1] - mask_shape // 2
-        #end = start + mask_shape
+    feat_idx = np.empty_like(pos, dtype=np.int64)
+    np.around(pos[:, ::-1], 0, feat_idx)
 
-        #if (x - bg_mask_r[1] < 0 or x + bg_mask_r[1] > frame.shape[1] or
-                #y - bg_mask_r[0] < 0 or y + bg_mask_r[0] > frame.shape[0]):
-            ## The signal was too close to the egde of the image, we could not
-            ## read all the pixels we wanted
-            #ret[i, :] = np.nan
-            #continue
+    feat_bd = _get_mask_boundaries_numba(feat_idx, feat_mask.shape,
+                                         frame.shape)
+    bg_bd = _get_mask_boundaries_numba(feat_idx, bg_mask.shape, frame.shape)
 
-        #uncorr_intensity = 0
-        #uncorr_signal = -np.inf
-        ## Measure signal
-        #for m in range(x - radius, x + radius + 1):
-            #for n in range(y - radius, y + radius + 1):
-                #f = frame[n, m]
-                #uncorr_intensity += f
-                #uncorr_signal = max(uncorr_signal, f)
+    # Make a mask for the whole image where everything is True except for the
+    # feat_mask around features
+    mask_img = _make_mask_image_numba(feat_bd[0], feat_bd[1], feat_bd[2],
+                                      feat_bd[3], feat_mask, frame.shape)
 
-        #if bg_frame > 0:
-            ## Measure background
-            #background_pixels = np.empty((2 * (radius + bg_frame) + 1)**2 -
-                                         #(2 * radius + 1)**2)
-            #bg_idx = 0
-            ## Top
-            #for m in range(x - radius - bg_frame, x + radius + bg_frame + 1):
-                #for n in range(y - radius - bg_frame, y - radius):
-                    #background_pixels[bg_idx] = frame[n, m]
-                    #bg_idx += 1
-            ## Bottom
-            #for m in range(x - radius - bg_frame, x + radius + bg_frame + 1):
-                #for n in range(y + radius + 1, y + radius + bg_frame + 1):
-                    #background_pixels[bg_idx] = frame[n, m]
-                    #bg_idx += 1
-            ## Left
-            #for m in range(x - radius - bg_frame, x - radius):
-                #for n in range(y - radius, y + radius + 1):
-                    #background_pixels[bg_idx] = frame[n, m]
-                    #bg_idx += 1
-            ## Right
-            #for m in range(x + radius + 1, x + radius + bg_frame + 1):
-                #for n in range(y - radius, y + radius + 1):
-                    #background_pixels[bg_idx] = frame[n, m]
-                    #bg_idx += 1
+    ret = np.empty((len(pos), 4))
+    for i in numba.prange(len(pos)):
+        feat_pixels = frame[feat_bd[0, i, 0]:feat_bd[1, i, 0],
+                            feat_bd[0, i, 1]:feat_bd[1, i, 1]].flatten()
+        if feat_pixels.size != feat_mask.size:
+            print("size mismatch", feat_pixels.size, feat_mask.shape)
+            # The signal was too close to the egde of the image, we could not
+            # read all the pixels we wanted
+            ret[i, :] = np.NaN
+            continue
 
-            #if bg_estimator == 0:
-                #background_intensity = np.mean(background_pixels)
-            #else:
-                #background_intensity = np.median(background_pixels)
-            #background_std = np.std(background_pixels)
-            #signal = uncorr_signal - background_intensity
-            #mass = (uncorr_intensity - background_intensity *
-                    #(2*radius + 1)**2)
-        #else:
-            #signal = uncorr_signal
-            #mass = uncorr_intensity
-            #background_intensity = np.NaN
-            #background_std = np.NaN
+        f_mask_pixels = feat_mask[feat_bd[2, i, 0]:feat_bd[3, i, 0],
+                                  feat_bd[2, i, 1]:feat_bd[3, i, 1]].flatten()
 
-        #ret[i, 0] = signal
-        #ret[i, 1] = mass
-        #ret[i, 2] = background_intensity
-        #ret[i, 3] = background_std
-    #return ret
+        feat_pixels_masked = feat_pixels[f_mask_pixels]
+        mass_uncorr = np.sum(feat_pixels_masked)
+        signal_uncorr = np.max(feat_pixels_masked)
+
+        bg_pixels = frame[bg_bd[0, i, 0]:bg_bd[1, i, 0],
+                          bg_bd[0, i, 1]:bg_bd[1, i, 1]].flatten()
+        bg_mask_with_feat = (bg_mask[bg_bd[2, i, 0]:bg_bd[3, i, 0],
+                                     bg_bd[2, i, 1]:bg_bd[3, i, 1]] &
+                             mask_img[bg_bd[0, i, 0]:bg_bd[1, i, 0],
+                                      bg_bd[0, i, 1]:bg_bd[1, i, 1]]).flatten()
+
+        bg_pixels_masked = bg_pixels[bg_mask_with_feat]
+
+        if not bg_pixels_masked.size:
+            # Background mask is empty
+            mass = mass_uncorr
+            signal = signal_uncorr
+            bg = np.NaN
+            bg_std = np.NaN
+        else:
+            if bg_estimator == 1:
+                bg = np.median(bg_pixels_masked)
+            else:
+                bg = np.mean(bg_pixels_masked)
+            bg_std = np.std(bg_pixels_masked)
+            mass = mass_uncorr - feat_mask_ones * bg
+            signal = signal_uncorr - bg
+
+        ret[i, 0] = signal
+        ret[i, 1] = mass
+        ret[i, 2] = bg
+        ret[i, 3] = bg_std
+
+    return ret
 
 
 def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
@@ -272,7 +352,7 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     Around each localization, pixel values are summed up (see the `mask`
     parameter) to determine the brightness (mass). Additionally, local
     background is determined by calculating the brightness (see `bg_estimator`
-    parameter in a frame (again, see `mask` parameter`) around this box,
+    parameter in a frame (again, see `mask` parameter) around this box,
     where all pixels belonging to any localization are excluded. This
     background is subtracted from the signal brightness.
 
@@ -305,8 +385,8 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
         localization and get the background from an annulus of width
         ``bg_frame``. One can also pass a tuple ``(feat_mask, bg_mask)`` of
         boolean arrays for brightness and background detection. In this case,
-        `radius` and `bg_frame` are ignored. In all cases, all pixels blonging
-        to any signal are automatically excluded in the background detection.
+        `radius` and `bg_frame` are ignored. In all cases, all pixels belonging
+        to any signal are automatically excluded from the background detection.
         Defaults to "square".
 
     Other parameters

@@ -16,6 +16,16 @@ loc_path = os.path.join(path, "data_data")
 
 
 class TestFromRawImage(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.make_mask_image = brightness._make_mask_image
+        self.get_mask_boundaries = brightness._get_mask_boundaries
+        self.from_raw_image = brightness._from_raw_image_python
+        self.mean_arg = np.mean
+        self.median_arg = np.median
+        self.engine = "python"
+
     def setUp(self):
         # for raw image tests
         self.radius = 2
@@ -73,7 +83,7 @@ class TestFromRawImage(unittest.TestCase):
         for i, j in idx:
             e[i-self.radius:i+self.radius+1,
               j-self.radius:j+self.radius+1] = False
-        r = brightness._make_mask_image(idx, self.fg_mask, e.shape)
+        r = self.make_mask_image(idx, self.fg_mask, e.shape)
         np.testing.assert_equal(r, e)
 
     def test_make_mask_image_edge(self):
@@ -84,7 +94,7 @@ class TestFromRawImage(unittest.TestCase):
         e[:i+self.radius+1, :j+self.radius+1] = False
         i, j = idx[1]
         e[i-self.radius:, j-self.radius:] = False
-        r = brightness._make_mask_image(idx, self.fg_mask, e.shape)
+        r = self.make_mask_image(idx, self.fg_mask, e.shape)
         np.testing.assert_equal(r, e)
 
     def test_make_mask_image_even_shape(self):
@@ -95,7 +105,7 @@ class TestFromRawImage(unittest.TestCase):
         for i, j in idx:
             e[i-self.radius:i+self.radius,
               j-self.radius:j+self.radius+1] = False
-        r = brightness._make_mask_image(idx, mask, e.shape)
+        r = self.make_mask_image(idx, mask, e.shape)
         np.testing.assert_equal(r, e)
 
     def test_make_mask_image_zeros(self):
@@ -107,14 +117,13 @@ class TestFromRawImage(unittest.TestCase):
         for i, j in idx:
             e[i-self.radius:i+self.radius+1,
               j-self.radius:j+self.radius+1] = False
-        r = brightness._make_mask_image(idx, mask, e.shape)
+        r = self.make_mask_image(idx, mask, e.shape)
         np.testing.assert_equal(r, e)
 
     def test_get_mask_boundaries(self):
         """brightness._get_mask_boundaries"""
         pos = np.array([[10, 15], [1, 2], [38, 49]])
-        i_s, i_e, m_s, m_e = brightness._get_mask_boundaries(pos,
-                                                             (5, 6), (40, 50))
+        i_s, i_e, m_s, m_e = self.get_mask_boundaries(pos, (5, 6), (40, 50))
         np.testing.assert_equal(i_s, [[8, 12], [0, 0], [36, 46]])
         np.testing.assert_equal(i_e, [[13, 18], [4, 5], [40, 50]])
         np.testing.assert_equal(m_s, [[0, 0], [1, 1], [0, 0]])
@@ -122,18 +131,18 @@ class TestFromRawImage(unittest.TestCase):
 
     def test_from_raw_image_helper(self):
         """brightness._from_raw_image_python: mean bg_estimator"""
-        res = sdt.brightness._from_raw_image_python(
+        res = self.from_raw_image(
             np.array([self.pos1]), self.img, self.fg_mask, self.bg_mask,
-            np.mean)
+            self.mean_arg)
         np.testing.assert_allclose(
             res,
             np.array([[self.signal1, self.mass1, self.bg, self.bg_dev]]))
 
     def test_from_raw_image_helper_median(self):
         """brightness._from_raw_image_python: median bg_estimator"""
-        res = sdt.brightness._from_raw_image_python(
+        res = self.from_raw_image(
             np.array([self.pos1]), self.img, self.fg_mask, self.bg_mask,
-            np.median)
+            self.median_arg)
         np.testing.assert_allclose(
             np.array(res),
             np.array([[self.signal1_median, self.mass1_median, self.bg_median,
@@ -141,9 +150,9 @@ class TestFromRawImage(unittest.TestCase):
 
     def test_from_raw_image_helper_nobg(self):
         """brightness._from_raw_image_python: zero bg_frame"""
-        res = sdt.brightness._from_raw_image_python(
+        res = self.from_raw_image(
             np.array([self.pos1]), self.img, self.fg_mask,
-            np.zeros_like(self.fg_mask), np.mean)
+            np.zeros_like(self.fg_mask), self.mean_arg)
         np.testing.assert_allclose(
             res,
             np.array([[self.signal1 + self.bg,
@@ -152,9 +161,9 @@ class TestFromRawImage(unittest.TestCase):
 
     def test_from_raw_image_helper_nan(self):
         """brightness._from_raw_image_python: feature close to edge"""
-        res = sdt.brightness._from_raw_image_python(
+        res = self.from_raw_image(
             np.array([[1, 1]]), self.img, self.fg_mask, self.bg_mask,
-            np.mean)
+            self.mean_arg)
         np.testing.assert_equal(res, [[np.nan]*4])
 
     def test_from_raw_image_helper_bg_exclude(self):
@@ -166,9 +175,9 @@ class TestFromRawImage(unittest.TestCase):
         """
         fg_mask = np.ones_like(self.bg_mask)
         bg_mask = np.ones((500, 500), dtype=bool)
-        res = sdt.brightness._from_raw_image_python(
+        res = self.from_raw_image(
             np.array([self.pos1, self.pos2]), self.img, fg_mask,
-            bg_mask, np.mean)
+            bg_mask, self.mean_arg)
         np.testing.assert_equal(res[0, [2, 3]], [self.bg_fill, 0])
 
     def test_from_raw_image(self):
@@ -182,9 +191,75 @@ class TestFromRawImage(unittest.TestCase):
         expected["bg"] = self.bg
         expected["bg_dev"] = self.bg_dev
         sdt.brightness.from_raw_image(data, [self.img], self.radius,
-                                      self.bg_frame, engine="python")
+                                      self.bg_frame, engine=self.engine)
         np.testing.assert_allclose(data, expected)
 
+
+class TestFromRawImageNumba(TestFromRawImage):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        def make_mask_image(idx, mask, shape):
+            i_s, i_e, m_s, m_e = brightness._get_mask_boundaries(
+                idx, mask.shape, shape)
+            return brightness._make_mask_image_numba(
+                i_s, i_e, m_s, m_e, mask, shape)
+
+        self.make_mask_image = make_mask_image
+        self.get_mask_boundaries = brightness._get_mask_boundaries_numba
+        self.from_raw_image = brightness._from_raw_image_numba
+        self.mean_arg = 0
+        self.median_arg = 1
+        self.engine = "numba"
+
+    def test_make_mask_image(self):
+        """brightness._make_mask_image_numba"""
+        super().test_make_mask_image()
+
+    def test_make_mask_image_edge(self):
+        """brightness._make_mask_image_numba: Feature near the edge"""
+        super().test_make_mask_image_edge()
+
+    def test_make_mask_image_even_shape(self):
+        """brightness._make_mask_image_numba: Partly evenly shaped mask"""
+        super().test_make_mask_image_even_shape()
+
+    def test_make_mask_image_zeros(self):
+        """brightness._make_mask_image_numba: Partly unfilled mask"""
+        super().test_make_mask_image_zeros()
+
+    def test_get_mask_boundaries(self):
+        """brightness._get_mask_boundaries_numba"""
+        super().test_get_mask_boundaries()
+
+    def test_from_raw_image_helper(self):
+        """brightness._from_raw_image_numba: mean bg_estimator"""
+        super().test_from_raw_image_helper()
+
+    def test_from_raw_image_helper_median(self):
+        """brightness._from_raw_image_numba: median bg_estimator"""
+        super().test_from_raw_image_helper_median()
+
+    def test_from_raw_image_helper_nobg(self):
+        """brightness._from_raw_image_numba: zero bg_frame"""
+        super().test_from_raw_image_helper_nobg()
+
+    def test_from_raw_image_helper_nan(self):
+        """brightness._from_raw_image_numba: feature close to edge"""
+        super().test_from_raw_image_helper_nan()
+
+    def test_from_raw_image_helper_bg_exclude(self):
+        """brightness._from_raw_image_numba: Exclude other features for bg
+
+        See if the other features are correctly excluded from the background
+        mask. This implicitly also tests whether using large background masks
+        (which go beyond the image) also works.
+        """
+        super().test_from_raw_image_helper_bg_exclude()
+
+    def test_from_raw_image(self):
+        """brightness.from_raw_image: numba engine"""
+        super().test_from_raw_image()
 
 
 class TestDistribution(unittest.TestCase):
