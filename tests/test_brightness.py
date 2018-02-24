@@ -180,6 +180,15 @@ class TestFromRawImage(unittest.TestCase):
             bg_mask, self.mean_arg)
         np.testing.assert_equal(res[0, [2, 3]], [self.bg_fill, 0])
 
+    def test_from_raw_image_helper_no_bg_mask(self):
+        """brightness._from_raw_image_python: bg_mask is `None`"""
+        # Use self.bg_mask as feat_mask so that background is calculated
+        # only from fill value
+        res = self.from_raw_image(
+            np.array([self.pos1, self.pos2]), self.img, self.bg_mask,
+            None, self.mean_arg)
+        np.testing.assert_equal(res[:, [2, 3]], [[self.bg_fill, 0]] * 2)
+
     def test_from_raw_image(self):
         """brightness.from_raw_image: python engine"""
         data = np.array([self.pos1, self.pos2])
@@ -256,6 +265,9 @@ class TestFromRawImageNumba(TestFromRawImage):
         (which go beyond the image) also works.
         """
         super().test_from_raw_image_helper_bg_exclude()
+
+    def test_from_raw_image_helper_no_bg_mask(self):
+        """brightness._from_raw_image_numba: bg_mask is `None`"""
 
     def test_from_raw_image(self):
         """brightness.from_raw_image: numba engine"""

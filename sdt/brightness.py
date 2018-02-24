@@ -185,9 +185,10 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
     feat_mask : array-like, dtype(bool)
         Mask around each localization to determine which pixel belong to the
         feature
-    bg_mask : array-like, dtype(bool)
+    bg_mask : array-like, dtype(bool) or None
         Mask around each localization to determine which pixel belong to the
-        background
+        background. If None, calculate background globally from all pixels that
+        are not part of any feature.
     bg_estimator : numpy ufunc
         How to determine the background from the background pixels. A typical
         example would be :py:func:`np.mean`.
@@ -208,8 +209,14 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
 
     feat_start, feat_end, feat_mask_start, feat_mask_end = \
         _get_mask_boundaries(feat_idx, feat_mask.shape, frame.shape)
-    bg_start, bg_end, bg_mask_start, bg_mask_end = \
-        _get_mask_boundaries(feat_idx, bg_mask.shape, frame.shape)
+
+    if bg_mask is None:
+        bg_pixels = frame[mask_img]
+        bg = bg_estimator(bg_pixels)
+        bg_std = np.std(bg_pixels)
+    else:
+        bg_start, bg_end, bg_mask_start, bg_mask_end = \
+            _get_mask_boundaries(feat_idx, bg_mask.shape, frame.shape)
 
     ret = np.empty((len(pos), 4))
     for i in range(len(ret)):
@@ -224,25 +231,28 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
 
         feat_pixels = feat_region[feat_mask]
 
-        bg_slice = [slice(s, e) for s, e in zip(bg_start[i], bg_end[i])]
-        bg_mask_slice = [slice(s, e) for s, e in zip(bg_mask_start[i],
-                                                     bg_mask_end[i])]
-        bg_mask_with_feat = bg_mask[bg_mask_slice] & mask_img[bg_slice]
-        bg_pixels = frame[bg_slice][bg_mask_with_feat]
+        if bg_mask is not None:
+            bg_slice = [slice(s, e) for s, e in zip(bg_start[i], bg_end[i])]
+            bg_mask_slice = [slice(s, e) for s, e in zip(bg_mask_start[i],
+                                                         bg_mask_end[i])]
+            bg_mask_with_feat = bg_mask[bg_mask_slice] & mask_img[bg_slice]
+            bg_pixels = frame[bg_slice][bg_mask_with_feat]
+
+            if bg_pixels.size:
+                bg = bg_estimator(bg_pixels)
+                bg_std = np.std(bg_pixels)
+            else:
+                bg = np.NaN
+                bg_std = np.NaN
 
         mass_uncorr = feat_pixels.sum()
         signal_uncorr = feat_pixels.max()
-        if not bg_pixels.size:
-            # Background mask is empty
-            mass = mass_uncorr
-            signal = signal_uncorr
-            bg = np.NaN
-            bg_std = np.NaN
-        else:
-            bg = bg_estimator(bg_pixels)
-            bg_std = np.std(bg_pixels)
+        if math.isfinite(bg):
             mass = mass_uncorr - feat_mask_ones * bg
             signal = signal_uncorr - bg
+        else:
+            mass = mass_uncorr
+            signal = signal_uncorr
 
         ret[i, 0] = signal
         ret[i, 1] = mass
@@ -268,9 +278,10 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
     feat_mask : array-like, dtype(bool)
         Mask around each localization to determine which pixel belong to the
         feature
-    bg_mask : array-like, dtype(bool)
+    bg_mask : array-like, dtype(bool) or None
         Mask around each localization to determine which pixel belong to the
-        background
+        background. If None, calculate background globally from all pixels that
+        are not part of any feature.
     bg_estimator : numpy ufunc
         How to determine the background from the background pixels. A typical
         example would be :py:func:`np.mean`.
@@ -288,19 +299,27 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
 
     feat_bd = _get_mask_boundaries_numba(feat_idx, feat_mask.shape,
                                          frame.shape)
-    bg_bd = _get_mask_boundaries_numba(feat_idx, bg_mask.shape, frame.shape)
-
     # Make a mask for the whole image where everything is True except for the
     # feat_mask around features
     mask_img = _make_mask_image_numba(feat_bd[0], feat_bd[1], feat_bd[2],
                                       feat_bd[3], feat_mask, frame.shape)
+
+    if bg_mask is None:
+        bg_pixels = frame.flatten()[mask_img.flatten()]
+        if bg_estimator == 1:
+            bg = np.median(bg_pixels)
+        else:
+            bg = np.mean(bg_pixels)
+        bg_std = np.std(bg_pixels)
+    else:
+        bg_bd = _get_mask_boundaries_numba(feat_idx, bg_mask.shape,
+                                           frame.shape)
 
     ret = np.empty((len(pos), 4))
     for i in numba.prange(len(pos)):
         feat_pixels = frame[feat_bd[0, i, 0]:feat_bd[1, i, 0],
                             feat_bd[0, i, 1]:feat_bd[1, i, 1]].flatten()
         if feat_pixels.size != feat_mask.size:
-            print("size mismatch", feat_pixels.size, feat_mask.shape)
             # The signal was too close to the egde of the image, we could not
             # read all the pixels we wanted
             ret[i, :] = np.NaN
@@ -313,29 +332,33 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
         mass_uncorr = np.sum(feat_pixels_masked)
         signal_uncorr = np.max(feat_pixels_masked)
 
-        bg_pixels = frame[bg_bd[0, i, 0]:bg_bd[1, i, 0],
-                          bg_bd[0, i, 1]:bg_bd[1, i, 1]].flatten()
-        bg_mask_with_feat = (bg_mask[bg_bd[2, i, 0]:bg_bd[3, i, 0],
-                                     bg_bd[2, i, 1]:bg_bd[3, i, 1]] &
-                             mask_img[bg_bd[0, i, 0]:bg_bd[1, i, 0],
-                                      bg_bd[0, i, 1]:bg_bd[1, i, 1]]).flatten()
+        if bg_mask is not None:
+            bg_pixels = np.ravel(frame[bg_bd[0, i, 0]:bg_bd[1, i, 0],
+                                       bg_bd[0, i, 1]:bg_bd[1, i, 1]])
+            bg_mask_with_feat = np.ravel(
+                bg_mask[bg_bd[2, i, 0]:bg_bd[3, i, 0],
+                        bg_bd[2, i, 1]:bg_bd[3, i, 1]] &
+                mask_img[bg_bd[0, i, 0]:bg_bd[1, i, 0],
+                         bg_bd[0, i, 1]:bg_bd[1, i, 1]])
 
-        bg_pixels_masked = bg_pixels[bg_mask_with_feat]
+            bg_pixels_masked = bg_pixels[bg_mask_with_feat]
 
-        if not bg_pixels_masked.size:
-            # Background mask is empty
-            mass = mass_uncorr
-            signal = signal_uncorr
-            bg = np.NaN
-            bg_std = np.NaN
-        else:
-            if bg_estimator == 1:
-                bg = np.median(bg_pixels_masked)
+            if bg_pixels_masked.size:
+                if bg_estimator == 1:
+                    bg = np.median(bg_pixels_masked)
+                else:
+                    bg = np.mean(bg_pixels_masked)
+                bg_std = np.std(bg_pixels_masked)
             else:
-                bg = np.mean(bg_pixels_masked)
-            bg_std = np.std(bg_pixels_masked)
+                bg = np.NaN
+                bg_std = np.NaN
+
+        if math.isfinite(bg):
             mass = mass_uncorr - feat_mask_ones * bg
             signal = signal_uncorr - bg
+        else:
+            mass = mass_uncorr
+            signal = signal_uncorr
 
         ret[i, 0] = signal
         ret[i, 1] = mass
@@ -366,9 +389,10 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     radius : int
         Half width of the box in which pixel values are summed up. See `mask`
         parameter for details.
-    bg_frame : int, optional
+    bg_frame : int or infinity, optional
         Width of frame (in pixels) around a feature for background
-        determination. Defaults to 2.
+        determination. If infinity, background is calculated globally from all
+        pixels that are not part of any feature. Defaults to 2.
     bg_estimator : {"mean", "median"} or numpy ufunc, optional
         How to determine the background from the background pixels. "mean"
         will use :py:func:`numpy.mean` and "median" will use
@@ -385,7 +409,9 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
         localization and get the background from an annulus of width
         ``bg_frame``. One can also pass a tuple ``(feat_mask, bg_mask)`` of
         boolean arrays for brightness and background detection. In this case,
-        `radius` and `bg_frame` are ignored. In all cases, all pixels belonging
+        `radius` and `bg_frame` are ignored. If `bg_mask is None, calculate
+        background globally (per frame) from all pixels that are not
+        part of any feature. In all cases, all pixels belonging
         to any signal are automatically excluded from the background detection.
         Defaults to "square".
 
@@ -427,10 +453,16 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     if isinstance(mask, str):
         if mask == "square":
             feat_mask = RectMask((2 * radius + 1,) * ndim)
-            bg_mask = RectMask((2 * (radius + bg_frame) + 1,) * ndim)
+            if math.isfinite(bg_frame):
+                bg_mask = RectMask((2 * (radius + bg_frame) + 1,) * ndim)
+            else:
+                bg_mask = None
         elif mask == "circle":
             feat_mask = CircleMask(radius, 0.5)
-            bg_mask = CircleMask(radius + bg_frame, 0.5)
+            if math.isfinite(bg_frame):
+                bg_mask = CircleMask(radius + bg_frame, 0.5)
+            else:
+                bg_mask = None
         else:
             raise ValueError('"{}" does not describe a mask'.format(mask))
     else:
