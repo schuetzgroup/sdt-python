@@ -154,7 +154,7 @@ def _get_mask_boundaries_numba(feat_idx, mask_shape, shape):
         clipped near the edges of the image
     """
     n, ndim = feat_idx.shape
-    ret = np.empty((4, n, ndim))
+    ret = np.empty((4, n, ndim), dtype=np.int64)
     for j in range(ndim):
         s = shape[j]
         ms = mask_shape[j]
@@ -171,7 +171,8 @@ def _get_mask_boundaries_numba(feat_idx, mask_shape, shape):
     return ret
 
 
-def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
+def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator,
+                           global_bg=False):
     """Get brightness by counting pixel values (single frame, python impl.)
 
     This is called for each frame by :py:func:`from_raw_image`
@@ -185,13 +186,16 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
     feat_mask : array-like, dtype(bool)
         Mask around each localization to determine which pixel belong to the
         feature
-    bg_mask : array-like, dtype(bool) or None
+    bg_mask : array-like, dtype(bool)
         Mask around each localization to determine which pixel belong to the
-        background. If None, calculate background globally from all pixels that
-        are not part of any feature.
+        background.
     bg_estimator : numpy ufunc
         How to determine the background from the background pixels. A typical
         example would be :py:func:`np.mean`.
+    global_bg : bool, optional
+        If True, calculate background globally from all pixels that are not
+        part of any feature. `bg_mask` is ignored in this case. Defaults to
+        False.
 
     Returns
     -------
@@ -210,7 +214,7 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
     feat_start, feat_end, feat_mask_start, feat_mask_end = \
         _get_mask_boundaries(feat_idx, feat_mask.shape, frame.shape)
 
-    if bg_mask is None:
+    if global_bg:
         bg_pixels = frame[mask_img]
         bg = bg_estimator(bg_pixels)
         bg_std = np.std(bg_pixels)
@@ -231,7 +235,7 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
 
         feat_pixels = feat_region[feat_mask]
 
-        if bg_mask is not None:
+        if not global_bg:
             bg_slice = [slice(s, e) for s, e in zip(bg_start[i], bg_end[i])]
             bg_mask_slice = [slice(s, e) for s, e in zip(bg_mask_start[i],
                                                          bg_mask_end[i])]
@@ -263,7 +267,8 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator):
 
 
 @numba.jit(nopython=True, cache=True, nogil=True)
-def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
+def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator,
+                          global_bg=False):
     """Get brightness by counting pixel values (single frame, numba impl.)
 
     This is called for each frame by :py:func:`from_raw_image` with numba
@@ -278,13 +283,16 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
     feat_mask : array-like, dtype(bool)
         Mask around each localization to determine which pixel belong to the
         feature
-    bg_mask : array-like, dtype(bool) or None
+    bg_mask : array-like, dtype(bool)
         Mask around each localization to determine which pixel belong to the
-        background. If None, calculate background globally from all pixels that
-        are not part of any feature.
+        background.
     bg_estimator : numpy ufunc
         How to determine the background from the background pixels. A typical
         example would be :py:func:`np.mean`.
+    global_bg : bool, optional
+        If True, calculate background globally from all pixels that are not
+        part of any feature. `bg_mask` is ignored in this case. Defaults to
+        False.
 
     Returns
     -------
@@ -296,6 +304,7 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
 
     feat_idx = np.empty_like(pos, dtype=np.int64)
     np.around(pos[:, ::-1], 0, feat_idx)
+    #feat_idx = np.around(pos[:, ::-1]).astype(int)
 
     feat_bd = _get_mask_boundaries_numba(feat_idx, feat_mask.shape,
                                          frame.shape)
@@ -304,7 +313,7 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
     mask_img = _make_mask_image_numba(feat_bd[0], feat_bd[1], feat_bd[2],
                                       feat_bd[3], feat_mask, frame.shape)
 
-    if bg_mask is None:
+    if global_bg:
         bg_pixels = frame.flatten()[mask_img.flatten()]
         if bg_estimator == 1:
             bg = np.median(bg_pixels)
@@ -332,7 +341,7 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator):
         mass_uncorr = np.sum(feat_pixels_masked)
         signal_uncorr = np.max(feat_pixels_masked)
 
-        if bg_mask is not None:
+        if not global_bg:
             bg_pixels = np.ravel(frame[bg_bd[0, i, 0]:bg_bd[1, i, 0],
                                        bg_bd[0, i, 1]:bg_bd[1, i, 1]])
             bg_mask_with_feat = np.ravel(
@@ -486,11 +495,17 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     else:
         raise ValueError("Unknown engine \"{}\".".format(engine))
 
+    if bg_mask is None:
+        bg_mask = np.emtpy((0,)*ndim, dtype=bool)
+        global_bg = True
+    else:
+        global_bg = False
+
     fnos = np.unique(fno_matrix)
     for f in fnos:
         current = (fno_matrix == f)
         ret[current] = worker(pos_matrix[current], frames[f], feat_mask,
-                              bg_mask, bg_estimator)
+                              bg_mask, bg_estimator, global_bg)
 
     positions["signal"] = ret[:, 0]
     positions["mass"] = ret[:, 1]
