@@ -287,16 +287,9 @@ class SmFretData:
         # Flag localizations that are too close together
         if isinstance(neighbor_radius, str):
             # auto radius
-            neighbor_radius = (2 * feat_radius + bg_frame) * _SQRT_2
+            neighbor_radius = 2 * feat_radius + 1
         if neighbor_radius:
             has_near_neighbor(track_merged, neighbor_radius, pos_columns)
-
-        # Filter short tracks (only count non-interpolated localizations)
-        u, c = np.unique(
-            track_merged.loc[track_merged["interp"] == 0, "particle"],
-            return_counts=True)
-        valid = u[c >= min_length]
-        track_merged = track_merged[track_merged["particle"].isin(valid)]
 
         # Get non-interpolated colocalized features
         non_interp_mask = track_merged["interp"] == 0
@@ -337,10 +330,10 @@ class SmFretData:
         ret_a = ret["acceptor"].copy()
         brightness.from_raw_image(ret_d, donor_img, feat_radius,
                                   bg_frame=bg_frame,
-                                  bg_estimator=bg_estimator)
+                                  bg_estimator=bg_estimator, mask="circle")
         brightness.from_raw_image(ret_a, acceptor_img,
                                   feat_radius, bg_frame=bg_frame,
-                                  bg_estimator=bg_estimator)
+                                  bg_estimator=bg_estimator, mask="circle")
         ret_d.columns = pd.MultiIndex.from_product((["donor"], ret_d.columns))
         ret_a.columns = pd.MultiIndex.from_product((["acceptor"],
                                                     ret_a.columns))
@@ -348,6 +341,14 @@ class SmFretData:
         ret = pd.concat([ret_d, ret_a, ret], axis=1)
         ret.sort_values([("fret", "particle"), ("donor", "frame")],
                         inplace=True)
+
+        # Filter short tracks (only count non-interpolated localizations)
+        u, c = np.unique(
+            ret.loc[ret["fret", "interp"] == 0, ("fret", "particle")],
+            return_counts=True)
+        valid = u[c >= min_length]
+        ret = ret[ret["fret", "particle"].isin(valid)]
+
         ret.reset_index(drop=True, inplace=True)
 
         return cls(analyzer, donor_img, acceptor_img, ret)

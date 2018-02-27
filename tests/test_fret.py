@@ -6,7 +6,7 @@ import warnings
 import pandas as pd
 import numpy as np
 
-from sdt import fret, chromatic
+from sdt import fret, chromatic, image
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -31,15 +31,16 @@ class TestSmFretData(unittest.TestCase):
         self.acc_loc = self.don_loc.copy()
         self.acc_loc["x"] += self.x_shift
 
+        cmask = image.CircleMask(self.feat_radius, 0.5)
         img = np.full((self.img_size, self.img_size), self.bg, dtype=np.int)
         x, y, _ = self.don_loc.iloc[0]
         img[y-self.feat_radius:y+self.feat_radius+1,
-            x-self.feat_radius:x+self.feat_radius+1] += self.signal
+            x-self.feat_radius:x+self.feat_radius+1][cmask] += self.signal
         self.don_img = [img] * self.num_frames
         img = np.full((self.img_size, self.img_size), self.bg, dtype=np.int)
         x, y, _ = self.acc_loc.iloc[0]
         img[y-self.feat_radius:y+self.feat_radius+1,
-            x-self.feat_radius:x+self.feat_radius+1] += self.signal
+            x-self.feat_radius:x+self.feat_radius+1][cmask] += self.signal
         self.acc_img = [img] * self.num_frames
 
         self.corr = chromatic.Corrector(None, None)
@@ -49,7 +50,7 @@ class TestSmFretData(unittest.TestCase):
         for l in (self.don_loc, self.acc_loc):
             s = [self.signal] * self.num_frames + [0] * self.num_frames
             l["signal"] = s
-            m = (2*self.feat_radius + 1)**2 * self.signal
+            m = cmask.sum() * self.signal
             l["mass"] = [m] * self.num_frames + [0] * self.num_frames
             l["bg"] = self.bg
             l["bg_dev"] = 0.
@@ -75,7 +76,8 @@ class TestSmFretData(unittest.TestCase):
         fret_data = fret.SmFretData.track(
             "d", self.don_img, self.acc_img,
             dl.drop([2, 3, 5]), self.acc_loc.drop(5),
-            self.corr, 4, 1, 5, self.feat_radius, interpolate=False)
+            self.corr, 4, 1, 5, self.feat_radius, interpolate=False,
+            neighbor_radius=7.5)
 
         np.testing.assert_equal(fret_data.donor_img, self.don_img)
         np.testing.assert_equal(fret_data.acceptor_img, self.acc_img)
@@ -94,7 +96,8 @@ class TestSmFretData(unittest.TestCase):
         fret_data = fret.SmFretData.track(
             "d", self.don_img, self.acc_img,
             dl.drop([2, 3, 5]), self.acc_loc.drop(5),
-            self.corr, 4, 1, 5, self.feat_radius, interpolate=True)
+            self.corr, 4, 1, 5, self.feat_radius, interpolate=True,
+            neighbor_radius=7.5)
 
         self.fret_data.tracks.loc[5, ("fret", "interp")] = 1
 
