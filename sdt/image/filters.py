@@ -256,3 +256,6 @@ def cg_bg(image, *args, **kwargs):
     :py:class:`slicerator.Slicerator`).
     """
     return image - cg(image, *args, **kwargs)
+
+
+gaussian_filter = pipeline(retain_doc=True)(scipy.ndimage.gaussian_filter)

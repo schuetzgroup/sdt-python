@@ -1,5 +1,5 @@
 from . import filters
 from . import masks
 
-from .filters import wavelet, cg, wavelet_bg, cg_bg
+from .filters import *
 from .masks import *
