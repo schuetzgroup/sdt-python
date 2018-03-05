@@ -280,12 +280,55 @@ class TestSmFretAnalyzer(unittest.TestCase):
         pd.testing.assert_frame_equal(res, tracks)
 
     def test_get_excitation_type(self):
-        """fret.SmFretAnalyzer: `get_excitation_type` method"""
+        """fret.SmFretAnalyzer.get_excitation_type: DataFrame arg"""
         r = self.analyzer.get_excitation_type(self.tracks, "d")
         r2 = self.analyzer.get_excitation_type(self.tracks, "a")
 
         pd.testing.assert_frame_equal(r, self.tracks[~self.is_direct_acc])
         pd.testing.assert_frame_equal(r2, self.tracks[self.is_direct_acc])
+
+    def test_get_excitation_type_array(self):
+        """fret.SmFretAnalyzer.get_excitation_type: array arg
+
+        Arrays support advanced indexing. Therefore, the return type should be
+        an array again.
+        """
+        ar = np.arange(12)
+        r = self.analyzer.get_excitation_type(ar, "d")
+        r2 = self.analyzer.get_excitation_type(ar, "a")
+
+        np.testing.assert_equal(r, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
+        np.testing.assert_equal(r2, [4, 9])
+        self.assertIsInstance(r, type(ar))
+
+    def test_get_excitation_type_list(self):
+        """fret.SmFretAnalyzer.get_excitation_type: list arg
+
+        Lists do not support advanced indexing. Therefore, the return type
+        should be a Slicerator.
+        """
+        try:
+            from slicerator import Slicerator
+        except ImportError:
+            raise unittest.SkipTest("slicerator package not found.")
+
+        ar = list(range(12))
+        r = self.analyzer.get_excitation_type(ar, "d")
+        r2 = self.analyzer.get_excitation_type(ar, "a")
+
+        np.testing.assert_equal(list(r), [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
+        np.testing.assert_equal(list(r2), [4, 9])
+        self.assertIsInstance(r, Slicerator)
+
+    def test_get_excitation_type_array(self):
+        """fret.SmFretAnalyzer.get_excitation_type: Array arg"""
+        ar = np.arange(12)
+        r = self.analyzer.get_excitation_type(ar, "d")
+        r2 = self.analyzer.get_excitation_type(ar, "a")
+
+        np.testing.assert_equal(r, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
+        np.testing.assert_equal(r2, [4, 9])
+        self.assertIsInstance(r, type(ar))
 
     def test_quantify_fret_eff(self):
         """fret.SmFretAnalyzer.quantify_fret: FRET efficiency"""

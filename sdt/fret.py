@@ -802,7 +802,7 @@ class SmFretAnalyzer:
 
         return tracks.loc[all_masks]
 
-    def get_excitation_type(self, tracks, type="d"):
+    def get_excitation_type(self, data, type="d"):
         """Get only donor or acceptor excitation frames
 
         This returns, depending on the `type` parameter, either only frames
@@ -810,30 +810,53 @@ class SmFretAnalyzer:
 
         Parameters
         ----------
-        tracks : pandas.DataFrame
-            FRET tracking data as e. g. produced by
-            :py:meth:`SmFretData.track`. For details, see the
-            :py:attr:`SmFretData.tracks` attribute documentation.
+        data : pandas.DataFrame or list-like
+            If this is a DataFrame, it has to be FRET tracking data as e. g.
+            produced by :py:meth:`SmFretData.track`. For details, see the
+            :py:attr:`SmFretData.tracks` attribute documentation. This can
+            also be something list-like, like a series of image arrays. In
+            this case, only list entries correspending to `type` are returned.
         type : {"d", "a"}, optional
             Whether to return donor ("d") excitation frames or acceptor ("a")
             excitation frames.
 
         Returns
         -------
-        pd.DataFrame
-            Tracking data where only donor excitation ist left
+        pd.DataFrame or list-like
+            Tracking data where only donor excitation ist left. If `data` was
+            list-like and it is not possible to select entries using a list
+            of indices (e.g. if it is a list), a
+            :py:class:`slicerator.Slicerator` is returned.
         """
-        if not len(tracks):
-            return tracks
+        if not len(data):
+            return data
 
-        frames = tracks["acceptor", "frame"]
-        is_don = (frames % len(self.desc)).isin(self.don)
-        if type == "d":
-            return tracks[is_don]
-        if type == "a":
-            return tracks[~is_don]
-        else:
+        if type not in ("a", "d"):
             raise ValueError('`type` parameter must be one of ("d", "a").')
+
+        if isinstance(data, pd.DataFrame):
+            frames = data["acceptor", "frame"]
+            is_don = (frames % len(self.desc)).isin(self.don)
+            if type == "d":
+                return data[is_don]
+            if type == "a":
+                return data[~is_don]
+        else:
+            # Assume this is a list of frames or something
+            idx = np.arange(len(data))
+            idx_is_don = np.isin(idx % len(self.desc), self.don)
+            if type == "d":
+                sel_idx = idx[idx_is_don]
+            else:
+                sel_idx = idx[~idx_is_don]
+
+            try:
+                return data[sel_idx]
+            except TypeError:
+                # This can happen if e.g. data is a list
+                from slicerator import Slicerator
+                s = Slicerator(data)
+                return s[sel_idx]
 
     def quantify_fret(self, tracks, aa_interp="linear", direct_nan=True):
         r"""Calculate FRET-related values
