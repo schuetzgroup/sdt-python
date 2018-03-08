@@ -24,16 +24,19 @@ class TestGaussianFit(unittest.TestCase):
         self.x_2d = np.indices((100, 200))
 
     def test_gaussian_1d(self):
+        """gaussian_fit.gaussian_1d"""
         orig = np.load(os.path.join(data_path, "gaussian_1d.npy"))
         gauss = sdt.gaussian_fit.gaussian_1d(self.x_1d, **self.params_1d)
         np.testing.assert_allclose(gauss, orig)
 
     def test_gaussian_2d(self):
+        """gaussian_fit.gaussian_2d"""
         orig = np.load(os.path.join(data_path, "gaussian_2d.npy"))
         gauss = sdt.gaussian_fit.gaussian_2d(*self.x_2d, **self.params_2d)
         np.testing.assert_allclose(gauss, orig)
 
     def test_guess_1d(self):
+        """gaussian_fit.guess_parameters: 1D case"""
         data = np.load(os.path.join(data_path, "gaussian_1d.npy"))
         guess = sdt.gaussian_fit.guess_parameters(data, self.x_1d)
 
@@ -41,10 +44,7 @@ class TestGaussianFit(unittest.TestCase):
             # if the guess is within 10% of the actual values, this is good
             np.testing.assert_allclose(v, self.params_1d[k], rtol=0.1)
 
-    def test_guess_2d(self):
-        data = np.load(os.path.join(data_path, "gaussian_2d.npy"))
-        guess = sdt.gaussian_fit.guess_parameters(data, *self.x_2d)
-
+    def _check_guess_result_2d(self, guess):
         for k, v in guess.items():
             if k == "rotation":
                 # this can be way off
@@ -67,7 +67,21 @@ class TestGaussianFit(unittest.TestCase):
             else:
                 np.testing.assert_allclose(v, self.params_2d[k], rtol=0.2)
 
+    def test_guess_2d(self):
+        """gaussian_fit.guess_parameters: 2D case (data point 2D array)"""
+        data = np.load(os.path.join(data_path, "gaussian_2d.npy"))
+        guess = sdt.gaussian_fit.guess_parameters(data, *self.x_2d)
+        self._check_guess_result_2d(guess)
+
+    def test_guess_2d_list(self):
+        """gaussian_fit.guess_parameters: 2D case (data point 1D list)"""
+        data = np.load(os.path.join(data_path, "gaussian_2d.npy"))
+        guess = sdt.gaussian_fit.guess_parameters(
+            data.flatten(), *[x.flatten() for x in self.x_2d])
+        self._check_guess_result_2d(guess)
+
     def test_lmfit_1d(self):
+        """gaussian_fit.Gaussian1DModel.fit"""
         data = np.load(os.path.join(data_path, "gaussian_1d.npy"))
         m = sdt.gaussian_fit.Gaussian1DModel()
         g = m.guess(data, x=self.x_1d)
@@ -77,6 +91,7 @@ class TestGaussianFit(unittest.TestCase):
             np.testing.assert_allclose(v, self.params_1d[k], rtol=1e-5)
 
     def test_lmfit_2d(self):
+        """gaussian_fit.Gaussian2DModel.fit"""
         data = np.load(os.path.join(data_path, "gaussian_2d.npy"))
         m = sdt.gaussian_fit.Gaussian2DModel()
         g = m.guess(data, *self.x_2d)

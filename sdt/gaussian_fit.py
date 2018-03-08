@@ -49,11 +49,20 @@ def guess_parameters(data, *indep_vars):
         The keys match the arguments of `gaussian` so that the dict can be
         passed directly to the function.
     """
-    # median of the edges as an estimate for the background
-    interior_slice = slice(1, -1)
-    edge_mask = np.ones(data.shape, dtype=np.bool)
-    edge_mask[[interior_slice]*data.ndim] = False
-    bg = np.median(data[edge_mask])
+    data = np.asarray(data)
+    ndim = len(indep_vars)
+
+    if ndim > 1 and data.ndim == 1:
+        # Parameters look like a list of values. Use the min as a background
+        # estimate
+        bg = np.min(data)
+    else:
+        # median of the edges as an estimate for the background
+        # FIXME: This works only for sorted data
+        interior_slice = slice(1, -1)
+        edge_mask = np.ones(data.shape, dtype=np.bool)
+        edge_mask[[interior_slice]*data.ndim] = False
+        bg = np.median(data[edge_mask])
 
     # subtract background for calculation of moments, mask negative values
     data_bg = np.ma.masked_less(data - bg, 0)
@@ -67,8 +76,8 @@ def guess_parameters(data, *indep_vars):
                          dtype=np.float)
 
     # Estimate the covariance matrix to determine sigma and the rotation
-    m = np.empty([len(indep_vars)]*2)
-    for i in range(len(indep_vars)):
+    m = np.empty((ndim, ndim))
+    for i in range(ndim):
         for j in range(i+1):
             m[i, j] = (np.sum(data_bg * (indep_vars[i]-center[i]) *
                               (indep_vars[j]-center[j])) / data_bg_sum)
@@ -76,13 +85,10 @@ def guess_parameters(data, *indep_vars):
                 m[j, i] = m[i, j]
     sigma = np.sqrt(m.diagonal())
 
-    angle = None
-    if data.ndim == 2:
-        angle = 0.5 * np.arctan(2*m[0, 1] / (m[0, 0] - m[1, 1]))
-
     ret = dict(amplitude=amp, center=center, sigma=sigma, offset=bg)
-    if angle is not None:
-        ret["rotation"] = angle
+    if ndim == 2:
+        ret["rotation"] = 0.5 * np.arctan(2*m[0, 1] / (m[0, 0] - m[1, 1]))
+
     return ret
 
 
