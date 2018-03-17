@@ -7,6 +7,7 @@ import scipy.stats
 
 from sdt.changepoint import bayes_offline as offline
 from sdt.changepoint import bayes_online as online
+from sdt.changepoint import pelt
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -349,6 +350,43 @@ class TestOnlineFinderNumba(TestOnlineFinderPython):
     def test_get_probabilites(self):
         """changepoint.online.OnlineFinderNumba.get_probabilities"""
         super().test_get_probabilities()
+
+
+class TestPeltCosts(unittest.TestCase):
+    def setUp(self):
+        self.l1 = pelt.CostL1()
+        self.l2 = pelt.CostL2()
+        self.data = np.array([[1, 1, 1, 1, 3, 1, 1, -2, 1, 1],
+                              [0, 0, 0, 2, 2, -1, 0, 0, 0, 0]], dtype=float).T
+
+    def test_l1(self):
+        """changepoint.pelt.CostL1"""
+        self.l1.initialize(self.data)
+        self.assertAlmostEqual(self.l1.cost(1, 9), 10)
+
+    def test_l2(self):
+        """changepoint.pelt.CostL2"""
+        self.l2.initialize(self.data)
+        self.assertAlmostEqual(self.l2.cost(1, 9), 20.75)
+
+
+class TestPeltCostsNumba(TestPeltCosts):
+    def setUp(self):
+        super().setUp()
+        self.l1 = pelt.CostL1Numba()
+        self.l2 = pelt.CostL2Numba()
+
+    def test_l1(self):
+        """changepoint.pelt.CostL1Numba"""
+        super().test_l1()
+
+    def test_l2(self):
+        """changepoint.pelt.CostL2Numba"""
+        super().test_l2()
+
+
+class TestPeltFinder(unittest.TestCase):
+    pass
 
 
 if __name__ == "__main__":

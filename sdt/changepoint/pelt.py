@@ -19,9 +19,9 @@ class CostL1:
 
         sub = self.data[t:s]
         # Cannot use axis=0 argument in numba
-        med = np.empty(sub.shape[0])
-        for i, s in enumerate(sub):
-            med[i] = np.median(sub)
+        med = np.empty(sub.shape[1])
+        for i in range(sub.shape[1]):
+            med[i] = np.median(sub[:, i])
         return np.abs(sub - med).sum()
 
 
@@ -33,16 +33,21 @@ CostL1Numba = numba.jitclass(
 class CostL2:
     def __init__(self):
         self.min_size = 2
-        self.data = None
+        self.data = np.empty((0, 0))
 
     def initialize(self, data):
-        self.data = np.empty((0, 0))
+        self.data = data
 
     def cost(self, t, s):
         if s - t < self.min_size:
             raise ValueError("t - s less than min_size")
 
-        return self.data[t:s].var(axis=0).sum() * (s - t)
+        sub = self.data[t:s]
+        # Cannot use axis=0 argument in numba
+        var = np.empty(sub.shape[1])
+        for i in range(sub.shape[1]):
+            var[i] = np.var(sub[:, i])
+        return var.sum() * (s - t)
 
 
 CostL2Numba = numba.jitclass(
