@@ -7,6 +7,9 @@ from scipy import stats
 from ..helper import numba
 
 
+_jit = numba.jit(nopython=True, nogil=True, cache=True)
+
+
 def constant_hazard(r, params):
     """Constant hazard function
 
@@ -25,7 +28,10 @@ def constant_hazard(r, params):
     return 1 / params[0] * np.ones(r.shape)
 
 
-class StudentTPython:
+constant_hazard_numba = _jit(constant_hazard)
+
+
+class StudentT:
     """Student T observation likelihood"""
     def __init__(self, alpha, beta, kappa, mu):
         """Parameters
@@ -93,7 +99,45 @@ class StudentTPython:
         self.beta = betaT0
 
 
-class BayesOnlinePython:
+@_jit
+def t_pdf(x, df, loc=0, scale=1):
+    """Numba-based implementation of :py:func:`scipy.stats.t.pdf`
+
+    This is for scalars only.
+    """
+    y = (x - loc) / scale
+    ret = math.exp(math.lgamma((df + 1) / 2) - math.lgamma(df / 2))
+    ret /= (math.sqrt(math.pi * df) * (1 + y**2 / df)**((df + 1) / 2))
+    return ret / scale
+
+
+@numba.jitclass([("alpha0", numba.float64), ("beta0", numba.float64),
+                 ("kappa0", numba.float64), ("mu0", numba.float64),
+                 ("alpha", numba.float64[:]), ("beta", numba.float64[:]),
+                 ("kappa", numba.float64[:]), ("mu", numba.float64[:])])
+class StudentTNumba(StudentT):
+    """Student T observation likelihood (numba-accelerated)"""
+    def pdf(self, data):
+        """Calculate probability density function (PDF)
+
+        Parameters
+        ----------
+        data : array-like
+            Data points for which to calculate the PDF
+        """
+        df = 2 * self.alpha
+        loc = self.mu
+        scale = np.sqrt(self.beta * (self.kappa + 1) /
+                        (self.alpha * self.kappa))
+
+        ret = np.empty(len(df))
+        for i in range(len(ret)):
+            ret[i] = t_pdf(data, df[i], loc[i], scale[i])
+
+        return ret
+
+
+class BayesOnline:
     """Bayesian online changepoint detector
 
     This is an implementation of *Adams and McKay: "Bayesian Online Changepoint
@@ -103,11 +147,11 @@ class BayesOnlinePython:
     :py:meth:`update` for each datapoint and then extract the changepoint
     probabilities from :py:attr:`probabilities`.
     """
-    hazard_map = dict(const=constant_hazard)
-    likelihood_map = dict(student_t=StudentTPython)
+    hazard_map = dict(const=(constant_hazard, constant_hazard_numba))
+    likelihood_map = dict(student_t=(StudentT, StudentTNumba))
 
     def __init__(self, hazard_func, obs_likelihood,
-                 hazard_params=np.empty(0), obs_params=[]):
+                 hazard_params=np.empty(0), obs_params=[], engine="numba"):
         """Parameters
         ----------
         hazard_func : "const" or callable
@@ -125,10 +169,13 @@ class BayesOnlinePython:
         obs_params : list
             Parameters to pass to the `observation_likelihood` constructor.
         """
-        hazard_func = self.hazard_map.get(hazard_func, hazard_func)
-        obs_likelihood = self.likelihood_map.get(
-            obs_likelihood, obs_likelihood)
+        self.use_numba = (engine == "numba") and numba.numba_available
 
+        if isinstance(hazard_func, str):
+            hazard_func = self.hazard_map[hazard_func][int(self.use_numba)]
+        if isinstance(obs_likelihood, str):
+            obs_likelihood = self.likelihood_map[obs_likelihood]
+            obs_likelihood = obs_likelihood[int(self.use_numba)]
         if isinstance(obs_likelihood, type):
             obs_likelihood = obs_likelihood(*obs_params)
 
@@ -160,7 +207,24 @@ class BayesOnlinePython:
 
             return new_p
 
-        self.finder_single = finder_single
+        if self.use_numba:
+            finder_single_numba = _jit(finder_single)
+            self.finder_single = finder_single_numba
+
+            @_jit
+            def finder_all(data, obs_ll):
+                ret = np.zeros((len(data) + 1, len(data) + 1))
+                ret[0, 0] = 1
+                for i in range(len(data)):
+                    old_p = ret[i, :i+1]
+                    new_p = finder_single_numba(data[i], old_p, obs_ll)
+                    ret[i+1, :i+2] = new_p
+                return ret
+
+            self.finder_all = finder_all
+        else:
+            self.finder_single = finder_single
+
         self.observation_likelihood = obs_likelihood
         self.reset()
 
@@ -197,8 +261,15 @@ class BayesOnlinePython:
             Dataset
         """
         self.reset()
-        for x in data:
-            self.update(x)
+
+        if self.use_numba:
+            prob = self.finder_all(data, self.observation_likelihood)
+            self.probabilities = []
+            for i, p in enumerate(prob):
+                self.probabilities.append(p[:i+1])
+        else:
+            for x in data:
+                self.update(x)
 
     def get_probabilities(self, past):
         """Get changepoint probabilities
@@ -224,114 +295,6 @@ class BayesOnlinePython:
             the array equals the number of datapoints - `past`.
         """
         return np.array([p[past] for p in self.probabilities[past:-1]])
-
-
-_jit = numba.jit(nopython=True, nogil=True, cache=True)
-
-
-@_jit
-def t_pdf(x, df, loc=0, scale=1):
-    """Numba-based implementation of :py:func:`scipy.stats.t.pdf`
-
-    This is for scalars only.
-    """
-    y = (x - loc) / scale
-    ret = math.exp(math.lgamma((df + 1) / 2) - math.lgamma(df / 2))
-    ret /= (math.sqrt(math.pi * df) * (1 + y**2 / df)**((df + 1) / 2))
-    return ret / scale
-
-
-@numba.jitclass([("alpha0", numba.float64), ("beta0", numba.float64),
-                 ("kappa0", numba.float64), ("mu0", numba.float64),
-                 ("alpha", numba.float64[:]), ("beta", numba.float64[:]),
-                 ("kappa", numba.float64[:]), ("mu", numba.float64[:])])
-class StudentTNumba(StudentTPython):
-    """Student T observation likelihood (numba-accelerated)"""
-    def pdf(self, data):
-        """Calculate probability density function (PDF)
-
-        Parameters
-        ----------
-        data : array-like
-            Data points for which to calculate the PDF
-        """
-        df = 2 * self.alpha
-        loc = self.mu
-        scale = np.sqrt(self.beta * (self.kappa + 1) /
-                        (self.alpha * self.kappa))
-
-        ret = np.empty(len(df))
-        for i in range(len(ret)):
-            ret[i] = t_pdf(data, df[i], loc[i], scale[i])
-
-        return ret
-
-
-class BayesOnlineNumba(BayesOnlinePython):
-    """Bayesian online changepoint detector (numba implementation)
-
-    This is an implementation of *Adams and McKay: "Bayesian Online Changepoint
-    Detection",* `arXiv:0710.3742 <https://arxiv.org/abs/0710.3742>`_.
-
-    Since this is an online detector, it keeps state. One can call
-    :py:meth:`update` for each datapoint and then extract the changepoint
-    probabilities from :py:attr:`probabilities`.
-    """
-    hazard_map = dict(const=_jit(constant_hazard))
-    likelihood_map = dict(student_t=StudentTNumba)
-
-    def __init__(self, hazard_func, observation_likelihood,
-                 hazard_params=np.empty(0), obs_params=[]):
-        """Parameters
-        ----------
-        hazard_func : "const" or numba jitted function
-            Hazard function. This has to take two parameters, the first
-            being an array of runlengths, the second an array of parameters.
-            See the `hazard_params` parameter for details. It has to return
-            the hazards corresponding to the runlengths.
-            If "const", use :py:func:`constant_hazard`.
-        observation_likelihood : "student_t" or jitted class
-            Class implementing the observation likelihood. See
-            :py:class:`StudentTNumba` for an example. If "student_t", use
-            :py:class:`StudentTNumba`.
-        hazard_params : np.ndarray
-            Parameters to pass as second argument to the hazard function.
-        obs_params : list
-            Parameters to pass to the `observation_likelihood` constructor.
-        """
-        super().__init__(hazard_func, observation_likelihood, hazard_params,
-                         obs_params)
-        finder_single = _jit(self.finder_single)
-        self.finder_single = finder_single
-
-        @_jit
-        def finder_all(data, obs_ll):
-            ret = np.zeros((len(data) + 1, len(data) + 1))
-            ret[0, 0] = 1
-            for i in range(len(data)):
-                old_p = ret[i, :i+1]
-                new_p = finder_single(data[i], old_p, obs_ll)
-                ret[i+1, :i+2] = new_p
-            return ret
-
-        self.finder_all = finder_all
-
-    def find_changepoints(self, x):
-        """Analyze dataset
-
-        This resets the detector and calls :py:meth:`update` on all data
-        points.
-
-        Parameters
-        ----------
-        data : array-like
-            Dataset
-        """
-        self.reset()
-        prob = self.finder_all(x, self.observation_likelihood)
-        self.probabilities = []
-        for i, p in enumerate(prob):
-            self.probabilities.append(p[:i+1])
 
 
 # Based on https://github.com/hildensia/bayesian_changepoint_detection

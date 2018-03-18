@@ -196,24 +196,24 @@ class TestBayesOfflineNumba(TestBayesOffline):
 
 class TestOnlineHazard(unittest.TestCase):
     def test_constant_hazard(self):
-        """changepoint.online.constant_hazard"""
+        """changepoint.bayes_online.constant_hazard"""
         lam = 2
         a = np.arange(10).reshape((2, -1))
         h = online.constant_hazard(a, np.array([lam]))
         np.testing.assert_allclose(h, 1/lam * np.ones_like(a))
 
 
-class TestOnlineStudentTPython(unittest.TestCase):
+class TestOnlineStudentT(unittest.TestCase):
     def setUp(self):
         self.rand_state = np.random.RandomState(0)
         self.data = np.concatenate([self.rand_state.normal(100, 10, 30),
                                     self.rand_state.normal(30, 5, 40),
                                     self.rand_state.normal(50, 20, 20)])
         self.t_params = 0.1, 0.01, 1, 0
-        self.t = online.StudentTPython(*self.t_params)
+        self.t = online.StudentT(*self.t_params)
 
     def test_updatetheta(self):
-        """changepoint.online.StudentTPython.update_theta
+        """changepoint.bayes_online.StudentT.update_theta
 
         This is a regression test against the output of the original
         implementation.
@@ -226,7 +226,7 @@ class TestOnlineStudentTPython(unittest.TestCase):
         np.testing.assert_allclose(self.t.mu, [0., 58.82026173])
 
     def test_pdf(self):
-        """changepoint.online.StudentTPython.pdf
+        """changepoint.bayes_online.StudentT.pdf
 
         This is a regression test against the output of the original
         implementation.
@@ -237,7 +237,7 @@ class TestOnlineStudentTPython(unittest.TestCase):
                                        0.0025780687692425132])
 
     def test_reset(self):
-        """changepoint.online.StudentTPython.reset"""
+        """changepoint.bayes_online.StudentT.reset"""
         self.t.update_theta(self.data[0])
         self.t.update_theta(self.data[1])
         self.t.reset()
@@ -248,19 +248,19 @@ class TestOnlineStudentTPython(unittest.TestCase):
         np.testing.assert_equal(self.t.mu, [self.t.mu0])
 
 
-class TestOnlineStudentTNumba(TestOnlineStudentTPython):
+class TestOnlineStudentTNumba(TestOnlineStudentT):
     def setUp(self):
         super().setUp()
         self.t = online.StudentTNumba(*self.t_params)
 
     def test_t_pdf(self):
-        """changepoint.online.t_pdf"""
+        """changepoint.bayes_online.t_pdf"""
         t_params = dict(x=10, df=2, loc=3, scale=2)
         self.assertAlmostEqual(online.t_pdf(**t_params),
                                scipy.stats.t.pdf(**t_params))
 
     def test_updatetheta(self):
-        """changepoint.online.StudentTNumba.update_theta
+        """changepoint.bayes_online.StudentTNumba.update_theta
 
         This is a regression test against the output of the original
         implementation.
@@ -268,7 +268,7 @@ class TestOnlineStudentTNumba(TestOnlineStudentTPython):
         super().test_updatetheta()
 
     def test_pdf(self):
-        """changepoint.online.StudentTNumba.pdf
+        """changepoint.bayes_online.StudentTNumba.pdf
 
         This is a regression test against the output of the original
         implementation.
@@ -276,7 +276,7 @@ class TestOnlineStudentTNumba(TestOnlineStudentTPython):
         super().test_pdf()
 
     def test_reset(self):
-        """changepoint.online.StudentTNumba.reset"""
+        """changepoint.bayes_online.StudentTNumba.reset"""
         super().test_reset()
 
 
@@ -288,13 +288,18 @@ class TestOnlineFinderPython(unittest.TestCase):
                                     self.rand_state.normal(50, 20, 20)])
         self.h_params = np.array([250])
         self.t_params = np.array([0.1, 0.01, 1, 0])
-        self.finder = online.BayesOnlinePython("const", "student_t",
-                                               self.h_params, self.t_params)
+        self.finder = online.BayesOnline("const", "student_t",
+                                         self.h_params, self.t_params,
+                                         engine="python")
 
         self.orig = np.load(os.path.join(data_path, "online.npz"))["R"]
 
+    def test_engine(self):
+        """changepoint.bayes_online.BayesOnline: set python engine"""
+        self.assertIsInstance(self.finder.finder_single, types.FunctionType)
+
     def test_reset(self):
-        """changepoint.online.OnlineFinderPython.reset"""
+        """changepoint.bayes_online.BayesOnline.reset"""
         self.finder.update(self.data[0])
         self.finder.update(self.data[1])
         self.finder.reset()
@@ -302,7 +307,7 @@ class TestOnlineFinderPython(unittest.TestCase):
         np.testing.assert_equal(self.finder.probabilities, [np.array([1])])
 
     def test_update(self):
-        """changepoint.online.OnlineFinderPython.update
+        """changepoint.bayes_online.BayesOnline.update
 
         This is a regression test against the output of the original
         implementation.
@@ -317,7 +322,7 @@ class TestOnlineFinderPython(unittest.TestCase):
                                    self.orig[:3, 2])
 
     def test_find_changepoints(self):
-        """changepoint.online.OnlineFinderPython.find_changepoints
+        """changepoint.bayes_online.BayesOnline.find_changepoints
 
         This is a regression test against the output of the original
         implementation.
@@ -329,7 +334,7 @@ class TestOnlineFinderPython(unittest.TestCase):
         np.testing.assert_allclose(R, self.orig)
 
     def test_get_probabilities(self):
-        """changepoint.online.OnlineFinderPython.get_probabilities"""
+        """changepoint.bayes_online.BayesOnline.get_probabilities"""
         self.finder.find_changepoints(self.data)
         np.testing.assert_allclose(self.finder.get_probabilities(10),
                                    self.orig[10, 10:-1])
@@ -338,15 +343,21 @@ class TestOnlineFinderPython(unittest.TestCase):
 class TestOnlineFinderNumba(TestOnlineFinderPython):
     def setUp(self):
         super().setUp()
-        self.finder = online.BayesOnlineNumba("const", "student_t",
-                                              self.h_params, self.t_params)
+        self.finder = online.BayesOnline("const", "student_t",
+                                         self.h_params, self.t_params,
+                                         engine="numba")
+
+    def test_engine(self):
+        """changepoint.bayes_online.BayesOnline: set numba engine"""
+        from numba.dispatcher import Dispatcher
+        self.assertIsInstance(self.finder.finder_single, Dispatcher)
 
     def test_reset(self):
-        """changepoint.online.OnlineFinderNumba.reset"""
+        """changepoint.bayes_online.BayesOnline.reset (numba)"""
         super().test_reset()
 
     def test_update(self):
-        """changepoint.online.OnlineFinderNumba.update
+        """changepoint.bayes_online.BayesOnline.update (numba)
 
         This is a regression test against the output of the original
         implementation.
@@ -354,7 +365,7 @@ class TestOnlineFinderNumba(TestOnlineFinderPython):
         super().test_update()
 
     def test_find_changepoints(self):
-        """changepoint.online.OnlineFinderNumba.find_changepoints
+        """changepoint.bayes_online.BayesOnline.find_changepoints (numba)
 
         This is a regression test against the output of the original
         implementation.
@@ -362,7 +373,7 @@ class TestOnlineFinderNumba(TestOnlineFinderPython):
         super().test_find_changepoints()
 
     def test_get_probabilites(self):
-        """changepoint.online.OnlineFinderNumba.get_probabilities"""
+        """changepoint.bayes_online.BayesOnline.get_probabilities (numba)"""
         super().test_get_probabilities()
 
 

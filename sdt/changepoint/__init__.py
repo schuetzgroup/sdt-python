@@ -41,15 +41,6 @@ detection.
 >>> cpd.find_changepoints(data)
 >>> p = cpd.get_probabilities(5)
 """
-
-from ..helper import numba
-
 from .bayes_offline import BayesOffline
-from .bayes_online import BayesOnlinePython, BayesOnlineNumba
+from .bayes_online import BayesOnline
 from .pelt import Pelt
-
-
-if numba.numba_available:
-    BayesOnline = BayesOnlineNumba
-else:
-    BayesOnline = BayesOnlinePython
