@@ -248,6 +248,7 @@ class TestOnlineStudentT(unittest.TestCase):
         np.testing.assert_equal(self.t.mu, [self.t.mu0])
 
 
+@unittest.skipIf(not numba.numba_available, "Numba not available")
 class TestOnlineStudentTNumba(TestOnlineStudentT):
     def setUp(self):
         super().setUp()
@@ -340,6 +341,7 @@ class TestOnlineFinderPython(unittest.TestCase):
                                    self.orig[10, 10:-1])
 
 
+@unittest.skipIf(not numba.numba_available, "Numba not available")
 class TestOnlineFinderNumba(TestOnlineFinderPython):
     def setUp(self):
         super().setUp()
@@ -395,6 +397,7 @@ class TestPeltCosts(unittest.TestCase):
         self.assertAlmostEqual(self.l2.cost(1, 9), 20.75)
 
 
+@unittest.skipIf(not numba.numba_available, "Numba not available")
 class TestPeltCostsNumba(TestPeltCosts):
     def setUp(self):
         super().setUp()
@@ -473,6 +476,7 @@ class TestPelt(unittest.TestCase):
         np.testing.assert_equal(cp, self.cp)
 
 
+@unittest.skipIf(not numba.numba_available, "Numba not available")
 class TestPeltNumba(TestPelt):
     def setUp(self):
         super().setUp()
