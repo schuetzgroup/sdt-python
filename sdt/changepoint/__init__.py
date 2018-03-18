@@ -44,13 +44,12 @@ detection.
 
 from ..helper import numba
 
-from .bayes_offline import BayesOfflinePython, BayesOfflineNumba
+from .bayes_offline import BayesOffline
 from .bayes_online import BayesOnlinePython, BayesOnlineNumba
+from .pelt import Pelt
 
 
 if numba.numba_available:
-    BayesOffline = BayesOfflineNumba
     BayesOnline = BayesOnlineNumba
 else:
-    BayesOffline = BayesOfflinePython
     BayesOnline = BayesOnlinePython

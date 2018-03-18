@@ -1,10 +1,12 @@
 import unittest
 import os
+import types
 
 import numpy as np
 import scipy
 import scipy.stats
 
+from sdt.helper import numba
 from sdt.changepoint import bayes_offline as offline
 from sdt.changepoint import bayes_online as online
 from sdt.changepoint import pelt
@@ -26,7 +28,7 @@ class TestOfflineObs(unittest.TestCase):
         self.assertAlmostEqual(r, res)
 
     def test_gaussian_obs_univ(self):
-        """changepoint.offline.gaussian_obs_likelihood, univariate
+        """changepoint.bayes_offline.gaussian_obs_likelihood, univariate
 
         This is a regression test against the output of the original
         implementation.
@@ -35,7 +37,7 @@ class TestOfflineObs(unittest.TestCase):
                         -7011.825860906335)
 
     def test_gaussian_obs_multiv(self):
-        """changepoint.offline.gaussian_obs_likelihood, multivariate
+        """changepoint.bayes_offline.gaussian_obs_likelihood, multivariate
 
         This is a regression test against the output of the original
         implementation.
@@ -44,7 +46,7 @@ class TestOfflineObs(unittest.TestCase):
                           -16386.465097707242)
 
     def test_ifm_obs_univ(self):
-        """changepoint.offline.ifm_obs_likelihood, univariate
+        """changepoint.bayes_offline.ifm_obs_likelihood, univariate
 
         This is a regression test against the output of the original
         implementation.
@@ -53,7 +55,7 @@ class TestOfflineObs(unittest.TestCase):
                         -7716.5452917994835)
 
     def test_ifm_obs_multiv(self):
-        """changepoint.offline.ifm_obs_likelihood, multivariate
+        """changepoint.bayes_offline.ifm_obs_likelihood, multivariate
 
         This is a regression test against the output of the original
         implementation.
@@ -62,7 +64,7 @@ class TestOfflineObs(unittest.TestCase):
                           -16808.615307987133)
 
     def test_fullcov_obs_univ(self):
-        """changepoint.offline.fullconv_obs_likelihood, univariate
+        """changepoint.bayes_offline.fullconv_obs_likelihood, univariate
 
         This is a regression test against the output of the original
         implementation.
@@ -71,7 +73,7 @@ class TestOfflineObs(unittest.TestCase):
                         -7716.5452917994835)
 
     def test_fullcov_obs_multiv(self):
-        """changepoint.offline.fullconv_obs_likelihood, multivariate
+        """changepoint.bayes_offline.fullconv_obs_likelihood, multivariate
 
         This is a regression test against the output of the original
         implementation.
@@ -79,7 +81,7 @@ class TestOfflineObs(unittest.TestCase):
         self._test_multiv(offline.fullcov_obs_likelihood,
                           -13028.349084233618)
     def test_fullcov_obs_univ_numba(self):
-        """changepoint.offline.fullconv_obs_likelihood, univariate, numba
+        """changepoint.bayes_offline.fullconv_obs_likelihood, univariate, numba
 
         This is a regression test against the output of the original
         implementation.
@@ -88,7 +90,7 @@ class TestOfflineObs(unittest.TestCase):
                         -7716.5452917994835)
 
     def test_fullcov_obs_multiv_numba(self):
-        """changepoint.offline.fullconv_obs_likelihood, multivariate, numba
+        """changepoint.bayes_offline.fullconv_obs_likelihood, multivar., numba
 
         This is a regression test against the output of the original
         implementation.
@@ -99,16 +101,16 @@ class TestOfflineObs(unittest.TestCase):
 
 class TestOfflinePriors(unittest.TestCase):
     def test_const_prior(self):
-        """changepoint.offline.const_prior"""
+        """changepoint.bayes_offline.const_prior"""
         self.assertAlmostEqual(offline.const_prior(4, np.empty(99), []), 0.01)
 
     def test_geometric_prior(self):
-        """changepoint.offline.geometric_prior"""
+        """changepoint.bayes_offline.geometric_prior"""
         self.assertAlmostEqual(offline.geometric_prior(4, [], [0.1]),
                                0.9**3 * 0.1)
 
     def test_neg_binomial_prior(self):
-        """changepoint.offline.neg_binomial_prior"""
+        """changepoint.bayes_offline.neg_binomial_prior"""
         t = 4
         k = 100
         p = 0.1
@@ -117,7 +119,7 @@ class TestOfflinePriors(unittest.TestCase):
                                 (1 - p)**(t - k)))
 
 
-class TestOfflineDetection(unittest.TestCase):
+class TestBayesOffline(unittest.TestCase):
     def setUp(self):
         self.rand_state = np.random.RandomState(0)
         self.data = np.concatenate([self.rand_state.normal(100, 10, 30),
@@ -126,15 +128,20 @@ class TestOfflineDetection(unittest.TestCase):
         self.data2 = np.concatenate([self.rand_state.normal(40, 10, 30),
                                      self.rand_state.normal(200, 5, 40),
                                      self.rand_state.normal(80, 20, 20)])
-        self.Finder = offline.BayesOfflinePython
+        self.engine = "python"
+
+    def test_engine(self):
+        """changepoint.bayes_offline.BayesOffline: set python engine"""
+        f = offline.BayesOffline("const", "gauss", engine=self.engine)
+        self.assertIsInstance(f.finder_func, types.FunctionType)
 
     def test_offline_changepoint_gauss_univ(self):
-        """changepoint.offline.offline_changepoint_detection: Gauss, univariate
+        """changepoint.bayes_offline.BayesOffline: Gauss, univariate
 
         This is a regression test against the output of the original
         implementation.
         """
-        f = self.Finder("const", "gauss")
+        f = offline.BayesOffline("const", "gauss", engine=self.engine)
         prob, Q, P, Pcp = f.find_changepoints(
             self.data, truncate=-20, full_output=True)
         orig = np.load(os.path.join(data_path, "offline_gauss_univ.npz"))
@@ -143,12 +150,12 @@ class TestOfflineDetection(unittest.TestCase):
         np.testing.assert_allclose(Pcp, orig["Pcp"], rtol=1e-6)
 
     def test_offline_changepoint_full_multiv(self):
-        """changepoint.offline.offline_changepoint_detection: full cov., multiv
+        """changepoint.bayes_offline.BayesOffline: full cov., multiv
 
         This is a regression test against the output of the original
         implementation.
         """
-        f = self.Finder("const", "full_cov")
+        f = offline.BayesOffline("const", "full_cov", engine=self.engine)
         prob, Q, P, Pcp = f.find_changepoints(
             np.array([self.data, self.data2]), truncate=-20,
             full_output=True)
@@ -158,13 +165,20 @@ class TestOfflineDetection(unittest.TestCase):
         np.testing.assert_allclose(Pcp, orig["Pcp"], rtol=1e-6)
 
 
-class TestOfflineDetectionNumba(TestOfflineDetection):
+@unittest.skipIf(not numba.numba_available, "Numba not available")
+class TestBayesOfflineNumba(TestBayesOffline):
     def setUp(self):
         super().setUp()
-        self.Finder = offline.BayesOfflineNumba
+        self.engine = "numba"
+
+    def test_engine(self):
+        """changepoint.bayes_offline.BayesOffline: set numba engine"""
+        f = offline.BayesOffline("const", "gauss", engine=self.engine)
+        from numba.dispatcher import Dispatcher
+        self.assertIsInstance(f.finder_func, Dispatcher)
 
     def test_offline_changepoint_gauss_univ(self):
-        """changepoint.offline.offline_changepoint_detection: Gauss, numba
+        """changepoint.bayes_offline.BayesOffline: Gauss, numba
 
         This is a regression test against the output of the original
         implementation.
@@ -172,7 +186,7 @@ class TestOfflineDetectionNumba(TestOfflineDetection):
         super().test_offline_changepoint_gauss_univ()
 
     def test_offline_changepoint_full_multiv(self):
-        """changepoint.offline.offline_changepoint_detection: full cov., numba
+        """changepoint.bayes_offline.BayesOffline: full cov., numba
 
         This is a regression test against the output of the original
         implementation.
