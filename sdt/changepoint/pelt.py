@@ -55,7 +55,7 @@ CostL2Numba = numba.jitclass(
         CostL2)
 
 
-def segmentation(cost, min_size, jump, penalty, max_exp_cp=10):
+def segmentation(cost, min_size, jump, penalty, max_exp_cp):
     n_samples = len(cost.data)
     times = np.arange(0, n_samples + jump, jump)
     times[-1] = n_samples
@@ -80,18 +80,18 @@ def segmentation(cost, min_size, jump, penalty, max_exp_cp=10):
         best_real_idx = start_idx[best_idx]
 
         if best_real_idx == 0:
-            best_part = np.array([0])
+            best_part = np.empty(0, dtype=np.int64)
         else:
             best_part_start = partition_starts[best_real_idx]
             best_part_end = partition_starts[best_real_idx+1]
             best_part = partitions[best_part_start:best_part_end]
 
+        if end_idx == len(times) - 1:
+            return times[best_part]
+
         new_partition = np.empty(len(best_part)+1, dtype=np.int64)
         new_partition[:-1] = best_part
         new_partition[-1] = end_idx
-
-        if end_idx == len(times) - 1:
-            return times[new_partition]
 
         new_part_start = partition_starts[end_idx]
         new_part_end = new_part_start + len(new_partition)
@@ -112,18 +112,17 @@ def segmentation(cost, min_size, jump, penalty, max_exp_cp=10):
         start_idx[-1] = new_start + 1
 
 
-segmentation_numba = numba.jit(nopython=True, cache=True, nogil=True)(
-    segmentation)
+segmentation_numba = numba.jit(nopython=True, nogil=True)(segmentation)
 
 
 class Pelt:
     cost_map = dict(l1=(CostL1, CostL1Numba), l2=(CostL2, CostL2Numba))
 
     def __init__(self, cost="l2", min_size=2, jump=5, engine="numba"):
-        self.use_numba = (engine == "numba")
+        self.use_numba = (engine == "numba") and numba.numba_available
 
         if isinstance(cost, str):
-            c = self.cost_map(cost)[int(self.use_numba)]
+            c = self.cost_map[cost][int(self.use_numba)]
             self.cost = c()
         else:
             self.cost = cost

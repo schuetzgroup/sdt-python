@@ -385,8 +385,106 @@ class TestPeltCostsNumba(TestPeltCosts):
         super().test_l2()
 
 
-class TestPeltFinder(unittest.TestCase):
-    pass
+class TestPelt(unittest.TestCase):
+    def setUp(self):
+        self.rand_state = np.random.RandomState(0)
+        self.data = np.concatenate([self.rand_state.normal(100, 10, 30),
+                                    self.rand_state.normal(30, 5, 40),
+                                    self.rand_state.normal(50, 20, 20)])
+        self.data = self.data.reshape((-1, 1))
+        self.cp = np.array([30, 70])
+        self.penalty = 5e3
+
+        self.cost = pelt.CostL2()
+        self.seg_func = pelt.segmentation
+        self.engine = "python"
+
+    def test_segmentation(self):
+        """changepoint.pelt.segmentation"""
+        self.cost.initialize(self.data)
+        cp = self.seg_func(self.cost, 2, 1, self.penalty, 10)
+        np.testing.assert_equal(cp, self.cp)
+
+    def test_segmentation_nocp(self):
+        """changepoint.pelt.segmentation: no changepoints"""
+        self.cost.initialize(self.data)
+        cp = self.seg_func(self.cost, 2, 1, self.penalty * 100, 10)
+        np.testing.assert_equal(cp, [])
+
+    def test_segmentation_jump(self):
+        """changepoint.pelt.segmentation: `jump` parameter"""
+        self.cost.initialize(self.data)
+        jump = 8
+        cp = self.seg_func(self.cost, 2, jump, self.penalty, 10)
+        expected = np.asarray(np.ceil(self.cp / jump) * jump, dtype=int)
+        np.testing.assert_equal(cp, expected)
+
+    def test_segmentation_minsize(self):
+        """changepoint.pelt.segmentation: `min_size` parameter"""
+        self.cost.initialize(self.data)
+        cp = self.seg_func(self.cost, 35, 1, self.penalty, 10)
+        np.testing.assert_equal(cp, [35])
+
+    def test_segmentation_realloc(self):
+        """changepoint.pelt.segmentation: Allocate additional memory
+
+        This happens when `max_exp_cp` is too low.
+        """
+        self.cost.initialize(self.data)
+        cp = self.seg_func(self.cost, 2, 1, self.penalty, 1)
+        np.testing.assert_equal(cp, self.cp)
+
+    def test_init(self):
+        """changepoint.pelt.Pelt.__init__"""
+        c = pelt.Pelt("l2", 1, 1, self.engine)
+        self.assertIsInstance(c.cost, type(self.cost))
+        self.assertEqual(c.min_size, self.cost.min_size)
+        self.assertEqual(c.use_numba, self.engine == "numba")
+
+    def test_find_changepoints(self):
+        """changepoint.pelt.Pelt.find_changepoints"""
+        c = pelt.Pelt("l2", 1, 1, self.engine)
+        cp = c.find_changepoints(self.data, self.penalty)
+        np.testing.assert_equal(cp, self.cp)
+
+
+class TestPeltNumba(TestPelt):
+    def setUp(self):
+        super().setUp()
+        self.cost = pelt.CostL2Numba()
+        self.seg_func = pelt.segmentation_numba
+        self.engine = "numba"
+
+    def test_segmentation(self):
+        """changepoint.pelt.segmentation_numba"""
+        super().test_segmentation()
+
+    def test_segmentation_nocp(self):
+        """changepoint.pelt.segmentation_numba: no changepoints"""
+        super().test_segmentation_nocp()
+
+    def test_segmentation_jump(self):
+        """changepoint.pelt.segmentation_numba: `jump` parameter"""
+        super().test_segmentation_jump()
+
+    def test_segmentation_minsize(self):
+        """changepoint.pelt.segmentation_numba: `min_size` parameter"""
+        super().test_segmentation_minsize()
+
+    def test_segmentation_realloc(self):
+        """changepoint.pelt.segmentation_numba: Allocate additional memory
+
+        This happens when `max_exp_cp` is too low.
+        """
+        super().test_segmentation_realloc()
+
+    def test_init(self):
+        """changepoint.pelt.Pelt.__init__ (numba)"""
+        super().test_init()
+
+    def test_find_changepoints(self):
+        """changepoint.pelt.Pelt.find_changepoints (numba)"""
+        super().test_find_changepoints()
 
 
 if __name__ == "__main__":
