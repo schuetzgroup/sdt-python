@@ -44,3 +44,4 @@ detection.
 from .bayes_offline import BayesOffline
 from .bayes_online import BayesOnline
 from .pelt import Pelt
+from .plot import plot_changepoints
