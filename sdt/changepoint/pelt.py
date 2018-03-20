@@ -61,6 +61,9 @@ def segmentation(cost, min_size, jump, penalty, max_exp_cp):
     times[-1] = n_samples
     min_idx_diff = math.ceil(min_size/jump)
 
+    if len(times) <= min_idx_diff:
+        return np.empty(0, dtype=np.int64)
+
     costs = np.full(len(times), np.inf)
     costs[0] = 0
 
