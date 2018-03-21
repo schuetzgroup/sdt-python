@@ -858,6 +858,26 @@ class SmFretAnalyzer:
                 s = Slicerator(data)
                 return s[sel_idx]
 
+    def flag_excitation_type(self, tracks):
+        """Add a column indicating excitation type (donor/acceptor)
+
+        Add  ("fret", "exc_type") column. Entries are 0 for donor and 1 for
+        acceptor excitation.
+
+        Parameters
+        ----------
+        tracks : pandas.DataFrame
+            FRET tracking data as e. g. produced by
+            :py:meth:`SmFretData.track`.  For details, see the
+            :py:attr:`SmFretData.tracks` attribute documentation. This methods
+            appends the resulting column.
+        """
+        exc_type = np.zeros(len(tracks), dtype=int)
+        frames = tracks["acceptor", "frame"]
+        is_acc = (frames % len(self.desc)).isin(self.acc)
+        exc_type[is_acc] = 1
+        tracks["fret", "exc_type"] = exc_type
+
     def quantify_fret(self, tracks, aa_interp="linear", direct_nan=True):
         r"""Calculate FRET-related values
 
@@ -866,6 +886,11 @@ class SmFretAnalyzer:
         brightness (mass) upon direct excitation, which is interpolated for
         donor excitation datapoints in order to allow for calculation of
         stoichiometries.
+
+        A column specifying whether the entry originates from donor or
+        acceptor excitation is also added: ("fret", "exc_type"). It is 0
+        for donor and 1 for acceptor excitation; see the
+        :py:meth:`flag_excitation_type` method.
 
         For each localization in `tracks`, the total brightness upon donor
         excitation is calculated by taking the sum of ``("donor", "mass")``
@@ -980,6 +1005,7 @@ class SmFretAnalyzer:
         tracks["fret", "stoi"] = sto
         tracks["fret", "d_mass"] = d_mass
         tracks["fret", "a_mass"] = a_mass
+        self.flag_excitation_type(tracks)
         tracks.reindex(columns=tracks.columns.sortlevel(0)[0])
 
     def efficiency(self, tracks):

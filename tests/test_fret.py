@@ -345,9 +345,12 @@ class TestSmFretAnalyzer(unittest.TestCase):
         eff[::2] = np.NaN
         d_mass[::2] = np.NaN
 
-        assert(("fret", "eff") in self.tracks.columns)
         np.testing.assert_allclose(self.tracks["fret", "eff"], eff)
         np.testing.assert_allclose(self.tracks["fret", "d_mass"], d_mass)
+
+        p = len(a.desc)
+        exc = self.tracks["donor", "frame"] % p == p - 1
+        np.testing.assert_equal(self.tracks["fret", "exc_type"].values, exc)
 
     def test_quantify_fret_stoi_linear(self):
         """fret.SmFretAnalyzer.quantify_fret: Stoichiometry, linear interp."""
@@ -369,6 +372,7 @@ class TestSmFretAnalyzer(unittest.TestCase):
         assert(("fret", "stoi") in self.tracks.columns)
         np.testing.assert_allclose(self.tracks["fret", "stoi"], stoi)
         np.testing.assert_allclose(self.tracks["fret", "a_mass"], linear_mass)
+
 
     def test_quantify_fret_nearest(self):
         """fret.SmFretAnalyzer.quantify_fret: Stoichiometry, nearest interp."""
@@ -438,6 +442,14 @@ class TestSmFretAnalyzer(unittest.TestCase):
                                 np.ones(len(self.tracks), dtype=bool))
         np.testing.assert_equal(np.isfinite(self.tracks["fret", "d_mass"]),
                                 np.ones(len(self.tracks), dtype=bool))
+
+    def test_flag_excitation_type(self):
+        self.analyzer.flag_excitation_type(self.tracks)
+        p = len(self.desc)
+        expected = self.tracks["donor", "frame"] % p == p - 1
+
+        np.testing.assert_equal(self.tracks["fret", "exc_type"].values,
+                                expected)
 
     def test_efficiency(self):
         """fret.SmFretAnalyzer: `efficiency` method"""
