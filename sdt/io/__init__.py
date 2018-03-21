@@ -1,6 +1,7 @@
 from contextlib import suppress
 
 from .sm import *
+from .fs import *
 from .tiff import save_as_tiff
 with suppress(ImportError):
     from .tiff import SdtTiffStack

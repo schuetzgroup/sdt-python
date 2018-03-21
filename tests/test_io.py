@@ -2,6 +2,7 @@ import unittest
 import os
 import tempfile
 import io
+import pathlib
 
 import pandas as pd
 import numpy as np
@@ -15,7 +16,7 @@ path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_io")
 
 
-class TestFile(unittest.TestCase):
+class TestSm(unittest.TestCase):
     def setUp(self):
         self.fname = "pMHC_AF647_200k_000_"
 
@@ -310,6 +311,86 @@ class TestTiff(unittest.TestCase):
                 md.pop("Software")
                 md.pop("DateTime")
                 np.testing.assert_equal(md, self.frames[0].metadata)
+
+
+class TestFiles(unittest.TestCase):
+    def setUp(self):
+        self.subdirs = ["dir1", "dir2"]
+        self.keys0 = 0.1
+        self.keys2 = list(zip((10, 12, 14), ("py", "dat", "doc")))
+        self.files = (["00_another_{:1.1f}_bla.ext".format(self.keys0)] +
+                      [os.path.join(self.subdirs[0], "file_{}.txt".format(i))
+                       for i in range(1, 6)] +
+                      [os.path.join(self.subdirs[1], "bla_{}.{}".format(i, e))
+                       for i, e in self.keys2])
+        self.files = sorted(self.files)
+
+    def _make_files(self, d):
+        top = pathlib.Path(d)
+        for s in self.subdirs:
+            (top / s).mkdir()
+        for f in self.files:
+            (top / f).touch()
+
+    def test_chdir(self):
+        """io.chdir"""
+        cwd = os.getcwd()
+        with tempfile.TemporaryDirectory() as d:
+            with sdt.io.chdir(d):
+                self.assertEqual(os.getcwd(), d)
+            self.assertEqual(os.getcwd(), cwd)
+
+    def test_get_files(self):
+        """io.get_files"""
+        with tempfile.TemporaryDirectory() as d:
+            self._make_files(d)
+            with sdt.io.chdir(d):
+                f, _ = sdt.io.get_files(".*")
+        self.assertEqual(f, self.files)
+
+    def test_get_files_subdir(self):
+        """io.get_files: restrict to subdir"""
+        with tempfile.TemporaryDirectory() as d:
+            self._make_files(d)
+            s = self.subdirs[0]
+            with sdt.io.chdir(d):
+                f, _ = sdt.io.get_files(".*", s)
+        expected = []
+        for g in self.files:
+            sp = pathlib.Path(g).parts
+            if sp[0] == s:
+                expected.append(os.path.join(*sp[1:]))
+        self.assertEqual(f, expected)
+
+    def test_get_files_abs_subdir(self):
+        """io.get_files: absolute subdir"""
+        with tempfile.TemporaryDirectory() as d:
+            self._make_files(d)
+            f, _ = sdt.io.get_files(".*", d)
+        self.assertEqual(f, self.files)
+
+    def test_get_files_int_str_groups(self):
+        """io.get_files: int and str groups"""
+        with tempfile.TemporaryDirectory() as d:
+            self._make_files(d)
+            s = self.subdirs[1]
+            f, i = sdt.io.get_files("bla_(\d+)\.(\w+)", os.path.join(d, s))
+        expected_f = []
+        for g in self.files:
+            sp = pathlib.Path(g).parts
+            if sp[0] == s:
+                expected_f.append(os.path.join(*sp[1:]))
+        self.assertEqual(f, expected_f)
+        self.assertEqual(i, self.keys2)
+
+    def test_get_files_float_groups(self):
+        """io.get_files: float groups"""
+        with tempfile.TemporaryDirectory() as d:
+            self._make_files(d)
+            s = self.subdirs[1]
+            f, i = sdt.io.get_files("^00_another_(\d+\.\d+)_bla\.ext$", d)
+        self.assertEqual(f, [self.files[0]])
+        self.assertEqual(i, [(self.keys0,)])
 
 if __name__ == "__main__":
     unittest.main()
