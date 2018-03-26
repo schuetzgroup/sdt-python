@@ -59,9 +59,12 @@ def get_files(pattern, subdir=os.curdir):
             ids = []
             for i in m.groups():
                 try:
-                    ids.append(ast.literal_eval(i))
+                    ids.append(int(i))
                 except ValueError:
-                    ids.append(i)
+                    try:
+                        ids.append(float(i))
+                    except ValueError:
+                        ids.append(i)
             idlist.append(ids)
     slist = sorted(zip(flist, idlist), key=lambda x: x[0])
     return [s[0] for s in slist], [tuple(s[1]) for s in slist]
