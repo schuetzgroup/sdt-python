@@ -3,6 +3,7 @@ import os
 import tempfile
 import io
 import pathlib
+import collections
 
 import pandas as pd
 import numpy as np
@@ -264,15 +265,27 @@ class TestYaml(unittest.TestCase):
         self.array_rep = (sdt.io.yaml.ArrayDumper.array_tag + "\n" +
                           np.array2string(self.array, separator=", "))
 
-    def testArrayDumper(self):
+    def test_array_dumper(self):
+        """io.yaml.ArrayDumper"""
         yaml.dump(self.array, self.io, sdt.io.yaml.ArrayDumper)
         assert(self.io.getvalue().strip() == self.array_rep)
 
-    def testArrayLoader(self):
+    def test_array_loader(self):
+        """io.yaml.ArrayLoader"""
         self.io.write(self.array_rep)
         self.io.seek(0)
         a = yaml.load(self.io, sdt.io.yaml.Loader)
         np.testing.assert_equal(a, self.array)
+
+    def test_load_odict(self):
+        """io.yaml: Load mappings as ordered dicts"""
+        yaml.dump(dict(a=1, b=2), self.io, sdt.io.yaml.ArrayDumper)
+        self.io.seek(0)
+        d = yaml.load(self.io, sdt.io.yaml.Loader)
+        self.assertIsInstance(d, collections.OrderedDict)
+        self.io.seek(0)
+        d = yaml.load(self.io, sdt.io.yaml.SafeLoader)
+        self.assertIsInstance(d, collections.OrderedDict)
 
 
 class TestTiff(unittest.TestCase):

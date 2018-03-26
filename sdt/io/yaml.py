@@ -200,11 +200,20 @@ def dict_representer(dumper, data):
                                     ((k, v) for k, v in data.items()))
 
 
+# Load mappings as ordered dicts
+def odict_constructor(loader, data):
+    return collections.OrderedDict(loader.construct_pairs(data))
+
+
 Dumper.add_representer(slice, slice_representer)
 SafeDumper.add_representer(slice, slice_representer)
 SafeDumper.add_representer(collections.OrderedDict, dict_representer)
 Loader.add_constructor("!slice", slice_constructor)
 SafeLoader.add_constructor("!slice", slice_constructor)
+Loader.add_constructor(yaml.resolver.Resolver.DEFAULT_MAPPING_TAG,
+                       odict_constructor)
+SafeLoader.add_constructor(yaml.resolver.Resolver.DEFAULT_MAPPING_TAG,
+                           odict_constructor)
 
 
 def _class_representer_factory(cls):
