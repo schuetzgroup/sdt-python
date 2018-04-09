@@ -1,6 +1,7 @@
 """Helper functions related to `pandas` data structures"""
 import itertools
 
+import pandas as pd
 import numpy as np
 
 
@@ -30,7 +31,10 @@ def flatten_multiindex(idx, sep="_"):
     list of str
         Flattened index entries
     """
-    return [sep.join(tuple(map(str, i))).rstrip(sep) for i in idx.values]
+    if isinstance(idx, pd.MultiIndex):
+        return [sep.join(tuple(map(str, i))).rstrip(sep) for i in idx.values]
+    else:
+        return idx
 
 
 def split_dataframe(df, split_column, columns=None, sort=True, type="array"):

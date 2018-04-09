@@ -52,11 +52,18 @@ class TestThreadSafeSingleton(unittest.TestCase):
 
 
 class TestFlattenMultiindex(unittest.TestCase):
-    def test_call(self):
-        """helper.flatten_multiindex"""
+    def test_mi(self):
+        """helper.flatten_multiindex: MultiIndex arg"""
         mi = pd.MultiIndex.from_product([["A", "B"], ["a", "b"]])
         res = flatten_multiindex(mi, sep=".")
         np.testing.assert_equal(res, ["A.a", "A.b", "B.a", "B.b"])
+
+    def test_index(self):
+        """helper.flatten_multiindex: Index arg"""
+        idx = pd.Index(["a", "b", "c"])
+        res = flatten_multiindex(idx, sep=".")
+        print(res, idx)
+        pd.testing.assert_index_equal(res, idx)
 
 
 class TestNumba(unittest.TestCase):
