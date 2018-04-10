@@ -5,7 +5,7 @@ import numbers
 import numpy as np
 import pandas as pd
 
-from .sm_tracker import excitation_type_nums
+from .sm_track import excitation_type_nums
 from .. import helper, changepoint
 
 
