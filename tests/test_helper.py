@@ -139,7 +139,7 @@ class TestSplitDataframe(unittest.TestCase):
             pd.testing.assert_frame_equal(d1, d2)
 
     def test_array_ambiguous_index(self):
-        """helpers.pandas.split_dataframe: shuffled index, array output"""
+        """helpers.pandas.split_dataframe: ambiguous index, array output"""
         self.data.index = np.full(len(self.data), 1)
         s = split_dataframe(self.data, "split", type="array")
         expected = list(self.data.groupby("split"))
@@ -172,6 +172,27 @@ class TestSplitDataframe(unittest.TestCase):
             self.assertEqual(i1, i2)
             self.assertIsInstance(d1, np.ndarray)
             np.testing.assert_equal(d1, d2[[("y", "B"), ("x", "A")]].values)
+
+    def test_dataframe_keep_index(self):
+        """helpers.pandas.split_dataframe: keep_index=True, DataFrame output
+
+        This should give the same result as ``keep_index=False``
+        """
+        self.data.index = np.arange(len(self.data))[::-1]
+        self.test_dataframe()
+
+    def test_array_keep_index(self):
+        """helpers.pandas.split_dataframe: keep_index=True, array output"""
+        s = split_dataframe(self.data, "split", type="array", keep_index=True)
+        expected = list(self.data.groupby("split"))
+        self.assertEqual(len(s), len(expected))
+
+        for i, e in expected:
+            e.insert(0, "index", e.index)
+        for (i1, d1), (i2, d2) in zip(s, expected):
+            self.assertEqual(i1, i2)
+            self.assertIsInstance(d1, np.ndarray)
+            np.testing.assert_equal(d1, d2.values)
 
 
 if __name__ == "__main__":

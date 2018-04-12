@@ -37,7 +37,8 @@ def flatten_multiindex(idx, sep="_"):
         return idx
 
 
-def split_dataframe(df, split_column, columns=None, sort=True, type="array"):
+def split_dataframe(df, split_column, columns=None, sort=True, type="array",
+                    keep_index=False):
     """Split a DataFrame according to the values of a column
 
     This is somewhat like :py:meth:`pandas.DataFrame.groupby`, but (optionally)
@@ -60,10 +61,14 @@ def split_dataframe(df, split_column, columns=None, sort=True, type="array"):
     type : {"array", "DataFrame"}, optional
         If "array", return split data as :py:class:`numpy.ndarray` (fast) or
         as :py:class:`pandas.DataFrame` (slow). Defaults to "array".
+    keep_index : bool, optional
+        If `True`, the index of the DataFrame `df` will is prependend to the
+        columns of the split array. Only applicable if ``type="array"``.
+        Defaults to `False`.
 
     Returns
     -------
-    list of (scalar, array)
+    list of tuple(scalar, array)
         Split DataFrame. The first entry of each tuple is the corresponding
         `split_column` entry, the second is the data, whose type depends on
         the `type` parameter.
@@ -78,7 +83,11 @@ def split_dataframe(df, split_column, columns=None, sort=True, type="array"):
         if columns is not None:
             df = df[columns]
 
-        ret = np.array_split(df.values, split_idx)
+        if keep_index:
+            vals = df.reset_index().values
+        else:
+            vals = df.values
+        ret = np.array_split(vals, split_idx)
         return [(split_column_data[i], r)
                 for i, r in zip(itertools.chain([0], split_idx), ret)]
     else:
