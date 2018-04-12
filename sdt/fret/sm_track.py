@@ -31,7 +31,6 @@ class SmFretTracker:
         self.link_options = link_options.copy()
         self.link_options["search_range"] = link_radius
         self.link_options["memory"] = link_mem
-        self.link_options["copy_features"] = False
         self.min_length = min_length
 
         self.brightness_options = dict(
