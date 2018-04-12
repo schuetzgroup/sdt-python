@@ -5,8 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 
-from .. import multicolor, spatial, brightness
-from ..config import pos_columns
+from .. import multicolor, spatial, brightness, config
 
 try:
     import trackpy
@@ -21,11 +20,12 @@ excitation_type_nums = defaultdict(lambda: -1, dict(d=0, a=1))
 class SmFretTracker:
     yaml_tag = "!SmFretTracker"
 
+    @config.use_defaults
     def __init__(self, exc_scheme, chromatic_corr, link_radius, link_mem,
                  min_length, feat_radius, bg_frame=2, bg_estimator="mean",
                  neighbor_radius="auto", interpolate=True, coloc_dist=2.,
                  acceptor_channel=2, link_options={}, link_quiet=True,
-                 pos_columns=pos_columns):
+                 pos_columns=None):
         self.chromatic_corr = chromatic_corr
 
         self.link_options = link_options.copy()
@@ -177,16 +177,16 @@ class SmFretTracker:
         coloc = multicolor.find_colocalizations(
                 donor_loc_corr, acceptor_loc, max_dist=self.coloc_dist,
                 channel_names=["donor", "acceptor"], keep_non_coloc=True)
-        coloc_pos_f = coloc.loc[:, (slice(None), pos_columns + ["frame"])]
+        coloc_pos_f = coloc.loc[:, (slice(None), self.pos_columns + ["frame"])]
         coloc_pos_f = coloc_pos_f.values.reshape((len(coloc), 2,
-                                                  len(pos_columns) + 1))
+                                                  len(self.pos_columns) + 1))
         # Use the mean of positions as the new position
         merged = np.nanmean([coloc["donor"][posf_cols].values,
                              coloc["acceptor"][posf_cols].values], axis=0)
         merged = pd.DataFrame(merged, columns=posf_cols)
         merged["__trc_idx__"] = coloc.index  # works as long as index is unique
 
-        self.link_options["pos_columns"] = pos_columns
+        self.link_options["pos_columns"] = self.pos_columns
         track_merged = trackpy.link_df(merged, **self.link_options)
 
         if self.interpolate:
@@ -211,7 +211,7 @@ class SmFretTracker:
 
         # Append interpolated features (which "appear" only in the acceptor
         # channel)
-        cols = pos_columns + ["frame"]
+        cols = self.pos_columns + ["frame"]
         interp_mask = ~non_interp_mask
         interp = track_merged.loc[interp_mask, cols]
         interp.columns = pd.MultiIndex.from_product([["acceptor"], cols])
