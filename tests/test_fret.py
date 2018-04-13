@@ -13,8 +13,9 @@ path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_data")
 
 
-class TestSmFretData(unittest.TestCase):
+class TestSmFretTracker(unittest.TestCase):
     def setUp(self):
+        # Data to check tracking functionality
         self.img_size = 150
         self.feat_radius = 2
         self.signal = 10
@@ -61,63 +62,203 @@ class TestSmFretData(unittest.TestCase):
         f["has_neighbor"] = ([1] * (self.num_frames // 2) +
                              [0] * (self.num_frames // 2)) * 2
 
-        df = pd.concat([self.don_loc, self.acc_loc, f],
-                       keys=["donor", "acceptor", "fret"], axis=1)
+        self.fret_data = pd.concat([self.don_loc, self.acc_loc, f],
+                                   keys=["donor", "acceptor", "fret"], axis=1)
 
-        self.fret_data = fret.SmFretData("d", self.don_img, self.acc_img, df)
+        self.tracker = fret.SmFretTracker(
+            "d", self.corr, link_radius=4, link_mem=1, min_length=5,
+            feat_radius=self.feat_radius, neighbor_radius=7.5)
+
+        # Data to check analysis functionality
+        self.tracker2 = fret.SmFretTracker("dddda", None, 0, 0, 0, 0)
+        num_frames = 20
+        seq_len = len(self.tracker2.excitation_seq)
+        mass = 1000
+
+        loc = np.column_stack([np.arange(seq_len, seq_len+num_frames),
+                               np.full(num_frames, mass)])
+        df = pd.DataFrame(loc, columns=["frame", "mass"])
+        self.fret_data2 = pd.concat([df]*2, keys=["donor", "acceptor"], axis=1)
+        self.fret_data2["fret", "particle"] = 0
+        self.is_direct_acc2 = (df["frame"] % seq_len).isin(
+            self.tracker2.excitation_frames["a"])
+
+    def test_init(self):
+        """fret.SmFretTracker.__init__"""
+        tr = fret.SmFretTracker("odddda", None, 0, 0, 0, 0)
+        np.testing.assert_equal(tr.excitation_seq,
+                                np.array(["o", "d", "d", "d", "d", "a"]))
+        f = tr.excitation_frames
+        self.assertEqual(set(f.keys()), {"o", "d", "a"})
+        np.testing.assert_equal(f["o"], [0])
+        np.testing.assert_equal(f["d"], [1, 2, 3, 4])
+        np.testing.assert_equal(f["a"], [5])
 
     def test_track(self):
-        """fret.SmFretData: Construct via tracking"""
+        """fret.SmFretTracker.track: no interpolation"""
         # Remove brightness-related cols to see if they get added
         dl = self.don_loc[["x", "y", "frame"]]
         # Write bogus values to see whether they get overwritten
         self.acc_loc["mass"] = -1
 
-        fret_data = fret.SmFretData.track(
-            "d", self.don_img, self.acc_img,
-            dl.drop([2, 3, 5]), self.acc_loc.drop(5),
-            self.corr, 4, 1, 5, self.feat_radius, interpolate=False,
-            neighbor_radius=7.5)
+        self.tracker.interpolate = False
+        fret_data = self.tracker.track(
+            self.don_img, self.acc_img, dl.drop([2, 3, 5]),
+            self.acc_loc.drop(5))
 
-        np.testing.assert_equal(fret_data.donor_img, self.don_img)
-        np.testing.assert_equal(fret_data.acceptor_img, self.acc_img)
-
-        exp = self.fret_data.tracks.drop(5).reset_index(drop=True)
-        pd.testing.assert_frame_equal(fret_data.tracks, exp,
+        exp = self.fret_data.drop(5).reset_index(drop=True)
+        pd.testing.assert_frame_equal(fret_data, exp,
                                       check_dtype=False, check_like=True)
 
     def test_track_interpolate(self):
-        """fret.SmFretData: Construct via tracking (with interpolation)"""
+        """fret.SmFretTracker.track: interpolation"""
         # Remove brightness-related cols to see if they get added
         dl = self.don_loc[["x", "y", "frame"]]
         # Write bogus values to see whether they get overwritten
         self.acc_loc["mass"] = -1
 
-        fret_data = fret.SmFretData.track(
-            "d", self.don_img, self.acc_img,
-            dl.drop([2, 3, 5]), self.acc_loc.drop(5),
-            self.corr, 4, 1, 5, self.feat_radius, interpolate=True,
-            neighbor_radius=7.5)
+        self.tracker.interpolate = True
+        fret_data = self.tracker.track(
+            self.don_img, self.acc_img, dl.drop([2, 3, 5]),
+            self.acc_loc.drop(5))
 
-        self.fret_data.tracks.loc[5, ("fret", "interp")] = 1
+        self.fret_data.loc[5, ("fret", "interp")] = 1
 
-        pd.testing.assert_frame_equal(fret_data.tracks, self.fret_data.tracks,
+        pd.testing.assert_frame_equal(fret_data, self.fret_data,
                                       check_dtype=False, check_like=True)
 
-    def test_get_track_pixels(self):
-        """fret.SmFretData: `get_track_pixels` method"""
-        sz = 4
-        x, y = self.don_loc.loc[0, ["x", "y"]].astype(int)
-        px_d = self.don_img[0][y-sz:y+sz+1, x-sz:x+sz+1]
-        x, y = self.acc_loc.loc[0, ["x", "y"]].astype(int)
-        px_a = self.acc_img[0][y-sz:y+sz+1, x-sz:x+sz+1]
+    def test_analyze_fret_eff(self):
+        """fret.SmFretTracker.analyze: FRET efficiency"""
+        don_mass = np.ones(len(self.fret_data2)) * 1000
+        acc_mass = (np.arange(len(self.fret_data2), dtype=float) + 1) * 1000
+        self.fret_data2["donor", "mass"] = don_mass
+        self.fret_data2["acceptor", "mass"] = acc_mass
 
-        p0_mask = self.fret_data.tracks["fret", "particle"] == 0.
-        exp = OrderedDict([(i, (px_d, px_a))
-                           for i in self.don_loc.loc[p0_mask, "frame"]])
-        px = self.fret_data.get_track_pixels(0, 2*sz+1)
+        tracker = fret.SmFretTracker("da", None, 0, 0, 0, 0)
+        tracker.analyze(self.fret_data2)
+        d_mass = don_mass + acc_mass
+        eff = acc_mass / d_mass
+        # direct acceptor ex
+        acc_dir = self.fret_data2["donor", "frame"] % 2 == 1
+        eff[acc_dir] = np.NaN
+        d_mass[acc_dir] = np.NaN
 
-        np.testing.assert_equal(px, exp)
+        np.testing.assert_allclose(self.fret_data2["fret", "eff"], eff)
+        np.testing.assert_allclose(self.fret_data2["fret", "d_mass"], d_mass)
+
+    def test_analyze_exc_type(self):
+        """fret.SmFretTracker.analyze: excitation type"""
+        tracker = fret.SmFretTracker("da", None, 0, 0, 0, 0)
+        tracker.analyze(self.fret_data)
+        p = len(tracker.excitation_seq)
+        exc = self.fret_data["donor", "frame"] % p == p - 1
+        np.testing.assert_equal(self.fret_data["fret", "exc_type"].values,
+                                exc)
+
+    def test_analyze_stoi_linear(self):
+        """fret.SmFretTracker.analyze: stoichiometry, linear interp."""
+        mass = 1000
+        linear_mass = self.fret_data2["acceptor", "frame"] * 100
+        # Extrapolate constant value
+        ld = len(self.tracker2.excitation_frames["d"])
+        linear_mass[:ld] = linear_mass[ld]
+
+        self.fret_data2.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = \
+            mass
+        self.fret_data2.loc[self.is_direct_acc2, ("acceptor", "mass")] = \
+            linear_mass[self.is_direct_acc2]
+
+        stoi = (mass + mass) / (mass + mass + linear_mass)
+        stoi[self.is_direct_acc2] = np.NaN
+
+        self.tracker2.analyze(self.fret_data2, aa_interp="linear",
+                              direct_nan=True)
+
+        assert(("fret", "stoi") in self.fret_data2.columns)
+        np.testing.assert_allclose(self.fret_data2["fret", "stoi"], stoi)
+        np.testing.assert_allclose(self.fret_data2["fret", "a_mass"],
+                                   linear_mass)
+
+    def test_analyze_stoi_nearest(self):
+        """fret.SmFretTracker.analyze: stoichiometry, nearest interp."""
+        seq_len = len(self.tracker2.excitation_seq)
+        trc = self.fret_data2.iloc[:2*seq_len].copy()  # Assume sorted
+        mass = 1000
+        trc.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
+
+        mass_acc1 = 1500
+        a_direct1 = self.tracker2.excitation_frames["a"]
+        trc.loc[a_direct1, ("acceptor", "mass")] = mass_acc1
+        mass_acc2 = 2000
+        a_direct2 = a_direct1 + len(self.tracker2.excitation_seq)
+        trc.loc[a_direct2, ("acceptor", "mass")] = mass_acc2
+        near_mass = np.full(len(trc), mass_acc1)
+
+        stoi = (mass + mass) / (mass + mass + mass_acc1)
+        stoi = np.full(len(trc), stoi)
+        stoi[a_direct1] = np.NaN
+
+        first_fr = self.fret_data2["acceptor", "frame"].min()
+        last1 = first_fr + a_direct1[-1]
+        first2 = first_fr + a_direct1[0] + seq_len
+        near2 = (np.abs(trc["acceptor", "frame"] - last1) >
+                 np.abs(trc["acceptor", "frame"] - first2))
+        stoi[near2] = (mass + mass) / (mass + mass + mass_acc2)
+        stoi[a_direct2] = np.NaN
+        near_mass[near2] = mass_acc2
+
+        self.tracker2.analyze(trc, aa_interp="nearest")
+
+        assert(("fret", "stoi") in trc.columns)
+        np.testing.assert_allclose(trc["fret", "stoi"], stoi)
+        np.testing.assert_allclose(trc["fret", "a_mass"], near_mass)
+
+    def test_analyze_stoi_single(self):
+        """fret.SmFretTracker.analyze: stoichiometry, single acc."""
+        a = np.nonzero(self.is_direct_acc2)[0][0]  # Assume sorted
+        trc = self.fret_data2.iloc[:a+1].copy()
+        mass = 1000
+        mass_acc = 2000
+        trc.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
+        trc.loc[a, ("acceptor", "mass")] = mass_acc
+
+        stoi = (mass + mass) / (mass + mass + mass_acc)
+        stoi = np.full(len(trc), stoi)
+        stoi[a] = np.NaN
+
+        single_mass = np.full(len(trc), mass_acc)
+
+        self.tracker2.analyze(trc)
+
+        assert(("fret", "stoi") in trc.columns)
+        np.testing.assert_allclose(trc["fret", "stoi"], stoi)
+        np.testing.assert_allclose(trc["fret", "a_mass"], single_mass)
+
+    def test_analyze_direct_nan(self):
+        """fret.SmFretTracker.analyze: direct_nan=False"""
+        don_mass = np.ones(len(self.fret_data2)) * 1000
+        acc_mass = (np.arange(len(self.fret_data2), dtype=float) + 1) * 1000
+        self.fret_data2["donor", "mass"] = don_mass
+        self.fret_data2["acceptor", "mass"] = acc_mass
+
+        self.tracker2.analyze(self.fret_data2, direct_nan=False)
+        np.testing.assert_equal(np.isfinite(self.fret_data2["fret", "eff"]),
+                                np.ones(len(self.fret_data2), dtype=bool))
+        np.testing.assert_equal(np.isfinite(self.fret_data2["fret", "stoi"]),
+                                np.ones(len(self.fret_data2), dtype=bool))
+        np.testing.assert_equal(np.isfinite(self.fret_data2["fret", "d_mass"]),
+                                np.ones(len(self.fret_data2), dtype=bool))
+
+    def test_flag_excitation_type(self):
+        """fret.SmFretTracker.flag_excitation_type"""
+        tracker = fret.SmFretTracker("odddda", None, 0, 0, 0, 0)
+        tracker.analyze(self.fret_data)
+        p = len(tracker.excitation_seq)
+        exc = np.zeros(len(self.fret_data), dtype=int)
+        exc[self.fret_data["donor", "frame"] % p == 0] = -1
+        exc[self.fret_data["donor", "frame"] % p == p - 1] = 1
+        np.testing.assert_equal(self.fret_data["fret", "exc_type"].values,
+                                exc)
 
 
 class TestSmFretAnalyzer(unittest.TestCase):
@@ -329,210 +470,6 @@ class TestSmFretAnalyzer(unittest.TestCase):
         np.testing.assert_equal(r, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
         np.testing.assert_equal(r2, [4, 9])
         self.assertIsInstance(r, type(ar))
-
-    def test_quantify_fret_eff(self):
-        """fret.SmFretAnalyzer.quantify_fret: FRET efficiency"""
-        don_mass = np.ones(len(self.tracks)) * 1000
-        acc_mass = (np.arange(len(self.tracks), dtype=float) + 1) * 1000
-        self.tracks["donor", "mass"] = don_mass
-        self.tracks["acceptor", "mass"] = acc_mass
-
-        a = fret.SmFretAnalyzer("da")
-        a.quantify_fret(self.tracks)
-        d_mass = don_mass + acc_mass
-        eff = acc_mass / d_mass
-        # direct acceptor ex; self.tracks starts at an odd frame number
-        eff[::2] = np.NaN
-        d_mass[::2] = np.NaN
-
-        np.testing.assert_allclose(self.tracks["fret", "eff"], eff)
-        np.testing.assert_allclose(self.tracks["fret", "d_mass"], d_mass)
-
-        p = len(a.desc)
-        exc = self.tracks["donor", "frame"] % p == p - 1
-        np.testing.assert_equal(self.tracks["fret", "exc_type"].values, exc)
-
-    def test_quantify_fret_stoi_linear(self):
-        """fret.SmFretAnalyzer.quantify_fret: Stoichiometry, linear interp."""
-        mass = 1000
-        linear_mass = self.tracks["acceptor", "frame"] * 100
-        # Extrapolate constant value
-        linear_mass[:len(self.don)] = linear_mass[len(self.don)]
-
-        self.tracks.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
-        self.tracks.loc[self.is_direct_acc, ("acceptor", "mass")] = \
-            linear_mass[self.is_direct_acc]
-
-        stoi = (mass + mass) / (mass + mass + linear_mass)
-        stoi[self.is_direct_acc] = np.NaN
-
-        self.analyzer.quantify_fret(self.tracks, aa_interp="linear",
-                                    direct_nan=True)
-
-        assert(("fret", "stoi") in self.tracks.columns)
-        np.testing.assert_allclose(self.tracks["fret", "stoi"], stoi)
-        np.testing.assert_allclose(self.tracks["fret", "a_mass"], linear_mass)
-
-
-    def test_quantify_fret_nearest(self):
-        """fret.SmFretAnalyzer.quantify_fret: Stoichiometry, nearest interp."""
-        trc = self.tracks.iloc[:2*len(self.desc)].copy()  # Assume sorted
-        mass = 1000
-        trc.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
-
-        mass_acc1 = 1500
-        a_direct1 = self.acc
-        trc.loc[a_direct1, ("acceptor", "mass")] = mass_acc1
-        mass_acc2 = 2000
-        a_direct2 = [a + len(self.desc) for a in self.acc]
-        trc.loc[a_direct2, ("acceptor", "mass")] = mass_acc2
-        near_mass = np.full(len(trc), mass_acc1)
-
-        stoi = (mass + mass) / (mass + mass + mass_acc1)
-        stoi = np.full(len(trc), stoi)
-        stoi[a_direct1] = np.NaN
-
-        first_fr = self.tracks["acceptor", "frame"].min()
-        last1 = first_fr + self.acc[-1]
-        first2 = first_fr + self.acc[0] + len(self.desc)
-        near2 = (np.abs(trc["acceptor", "frame"] - last1) >
-                 np.abs(trc["acceptor", "frame"] - first2))
-        stoi[near2] = (mass + mass) / (mass + mass + mass_acc2)
-        stoi[a_direct2] = np.NaN
-        near_mass[near2] = mass_acc2
-
-        self.analyzer.quantify_fret(trc, aa_interp="nearest")
-
-        assert(("fret", "stoi") in trc.columns)
-        np.testing.assert_allclose(trc["fret", "stoi"], stoi)
-        np.testing.assert_allclose(trc["fret", "a_mass"], near_mass)
-
-    def test_quantify_fret_single(self):
-        """fret.SmFretAnalyzer.quantify_fret: Stoichiometry, single acc."""
-        a = np.nonzero(self.is_direct_acc)[0][0]  # Assume sorted
-        trc = self.tracks.iloc[:a+1].copy()
-        mass = 1000
-        mass_acc = 2000
-        trc.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
-        trc.loc[a, ("acceptor", "mass")] = mass_acc
-
-        stoi = (mass + mass) / (mass + mass + mass_acc)
-        stoi = np.full(len(trc), stoi)
-        stoi[a] = np.NaN
-
-        single_mass = np.full(len(trc), mass_acc)
-
-        self.analyzer.quantify_fret(trc)
-
-        assert(("fret", "stoi") in trc.columns)
-        np.testing.assert_allclose(trc["fret", "stoi"], stoi)
-        np.testing.assert_allclose(trc["fret", "a_mass"], single_mass)
-
-    def test_quantify_fret_direct_nan(self):
-        """fret.SmFretAnalyzer.quantify_fret: `direct_nan` parameter"""
-        don_mass = np.ones(len(self.tracks)) * 1000
-        acc_mass = (np.arange(len(self.tracks), dtype=float) + 1) * 1000
-        self.tracks["donor", "mass"] = don_mass
-        self.tracks["acceptor", "mass"] = acc_mass
-
-        self.analyzer.quantify_fret(self.tracks, direct_nan=False)
-        np.testing.assert_equal(np.isfinite(self.tracks["fret", "eff"]),
-                                np.ones(len(self.tracks), dtype=bool))
-        np.testing.assert_equal(np.isfinite(self.tracks["fret", "stoi"]),
-                                np.ones(len(self.tracks), dtype=bool))
-        np.testing.assert_equal(np.isfinite(self.tracks["fret", "d_mass"]),
-                                np.ones(len(self.tracks), dtype=bool))
-
-    def test_flag_excitation_type(self):
-        self.analyzer.flag_excitation_type(self.tracks)
-        p = len(self.desc)
-        expected = self.tracks["donor", "frame"] % p == p - 1
-
-        np.testing.assert_equal(self.tracks["fret", "exc_type"].values,
-                                expected)
-
-    def test_efficiency(self):
-        """fret.SmFretAnalyzer: `efficiency` method"""
-        don_mass = np.ones(len(self.tracks)) * 1000
-        acc_mass = (np.arange(len(self.tracks), dtype=float) + 1) * 1000
-        self.tracks["donor", "mass"] = don_mass
-        self.tracks["acceptor", "mass"] = acc_mass
-
-        a = fret.SmFretAnalyzer("da")
-        with np.testing.assert_warns(np.VisibleDeprecationWarning):
-            a.efficiency(self.tracks)
-        eff = acc_mass / (don_mass + acc_mass)
-
-        assert(("fret", "eff") in self.tracks.columns)
-        np.testing.assert_allclose(self.tracks["fret", "eff"], eff)
-
-    def test_stoichiometry_linear(self):
-        """fret.SmFretAnalyzer: `stoichiometry` method, linear interp."""
-        mass = 1000
-        linear_mass = self.tracks["acceptor", "frame"] * 100
-
-        self.tracks.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
-        self.tracks.loc[self.is_direct_acc, ("acceptor", "mass")] = \
-            linear_mass[self.is_direct_acc]
-
-        stoi = (mass + mass) / (mass + mass + linear_mass)
-        stoi[self.is_direct_acc] = np.NaN
-
-        with np.testing.assert_warns(np.VisibleDeprecationWarning):
-            self.analyzer.stoichiometry(self.tracks, interp="linear")
-
-        assert(("fret", "stoi") in self.tracks.columns)
-        np.testing.assert_allclose(self.tracks["fret", "stoi"], stoi)
-
-    def test_stoichiometry_nearest(self):
-        """fret.SmFretAnalyzer: `stoichiometry` method, nearest interp."""
-        trc = self.tracks.iloc[:2*len(self.desc)].copy()  # Assume sorted
-        mass = 1000
-        trc.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
-
-        mass_acc1 = 1500
-        a_direct1 = self.acc
-        trc.loc[a_direct1, ("acceptor", "mass")] = mass_acc1
-        mass_acc2 = 2000
-        a_direct2 = [a + len(self.desc) for a in self.acc]
-        trc.loc[a_direct2, ("acceptor", "mass")] = mass_acc2
-
-        stoi = (mass + mass) / (mass + mass + mass_acc1)
-        stoi = np.full(len(trc), stoi)
-        stoi[a_direct1] = np.NaN
-
-        first_fr = self.tracks["acceptor", "frame"].min()
-        last1 = first_fr + self.acc[-1]
-        first2 = first_fr + self.acc[0] + len(self.desc)
-        near2 = (np.abs(trc["acceptor", "frame"] - last1) >
-                 np.abs(trc["acceptor", "frame"] - first2))
-        stoi[near2] = (mass + mass) / (mass + mass + mass_acc2)
-        stoi[a_direct2] = np.NaN
-
-        with np.testing.assert_warns(np.VisibleDeprecationWarning):
-            self.analyzer.stoichiometry(trc, interp="nearest")
-
-        assert(("fret", "stoi") in trc.columns)
-        np.testing.assert_allclose(trc["fret", "stoi"], stoi)
-
-    def test_stoichiometry_single(self):
-        """fret.SmFretAnalyzer: `stoichiometry` method, single acceptor"""
-        a = np.nonzero(self.is_direct_acc)[0][0]  # Assume sorted
-        trc = self.tracks.iloc[:a+1].copy()
-        mass = 1000
-        mass_acc = 2000
-        trc.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
-        trc.loc[a, ("acceptor", "mass")] = mass_acc
-
-        stoi = (mass + mass) / (mass + mass + mass_acc)
-        stoi = np.full(len(trc), stoi)
-        stoi[a] = np.NaN
-
-        with np.testing.assert_warns(np.VisibleDeprecationWarning):
-            self.analyzer.stoichiometry(trc)
-
-        assert(("fret", "stoi") in trc.columns)
-        np.testing.assert_allclose(trc["fret", "stoi"], stoi)
 
 
 if __name__ == "__main__":
