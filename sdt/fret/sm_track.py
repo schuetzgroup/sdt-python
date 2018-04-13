@@ -1,3 +1,18 @@
+"""Module containing a class for tracking smFRET data
+
+Attributes
+----------
+excitation_type_nums : dict
+    Map of excitation types to integers as written into the ``(fret,
+    exc_type)`` column of tracking DataFrames by
+    :py:func:`flag_excitation_type` and :py:meth:`SmFretTracker.analyze`.
+
+    Values are
+
+    - "d" -> 0
+    - "a" -> 1
+    - others -> -1
+"""
 import itertools
 from collections import defaultdict
 
@@ -18,6 +33,45 @@ excitation_type_nums = defaultdict(lambda: -1, dict(d=0, a=1))
 
 
 class SmFretTracker:
+    """Class for tracking of smFRET data
+
+    Attributes
+    ----------
+    excitation_seq : numpy.ndarray, dtype("<U1")
+        Excitation sequence. "d" stands for donor, "a" for acceptor, anything
+        else describes other kinds of frames which are to be ignored.
+    excitation_frames : dict
+        Maps the excitation types in :py:attr:`excitation_seq` to the frame
+        corresponding frame numbers (modulo the length of
+        :py:attr:`excitation_seq`).
+    chromatic_corr : chromatic.Corrector
+        Corrector used to overlay channels
+    link_options : dict
+        Options passed to :py:func:`trackpy.link_df`
+    min_length : int
+        Minimum length of tracks
+    brightness_options : dict
+        Options passed to :py:func:`brightness.from_raw_image`. Make sure to
+        adjust :py:attr:`neighbor_radius` if you change either the `mask` or
+        the `radius` option!
+    interpolate : bool
+        Whether to interpolate coordinates of features that have been missed by
+        the localization algorithm.
+    coloc_dist : float
+        After overlaying donor and acceptor channel features, this gives the
+        maximum distance up to which donor and acceptor signal are considered
+        to come from the same molecule.
+    acceptor_channel : {1, 2}
+        Whether the acceptor channel is number 1 or 2 in `chromatic_corr`.
+    neighbor_radius : float
+        How far two features may be apart while still being considered close
+        enough so that one influences the brightness measurement of the other.
+        This is related to the `radius` option of
+        :py:func:`brightness.from_raw_image`.
+    pos_colums : list of str
+        Names of the columns describing the coordinates of the features in
+        :py:class:`pandas.DataFrames`.
+    """
     yaml_tag = "!SmFretTracker"
 
     @config.use_defaults
@@ -26,6 +80,59 @@ class SmFretTracker:
                  neighbor_radius="auto", interpolate=True, coloc_dist=2.,
                  acceptor_channel=2, link_options={}, link_quiet=True,
                  pos_columns=None):
+        """Parameters
+        ----------
+        excitation_seq : str or list-like of characters
+            Excitation sequence. "d" stands for donor, "a" for acceptor,
+            anything else describes other kinds of frames which are to be
+            ignored.
+        chromatic_corr : chromatic.Corrector
+            Corrector used to overlay channels
+        link_radius : float
+            Maximum movement of features between frames. See `search_range`
+            option of :py:func:`trackpy.link_df`.
+        link_mem : int
+            Maximum number of frames for which a feature may not be detected.
+            See `memory` option of :py:func:`trackpy.link_df`.
+        min_length : int
+            Minimum length of tracks
+        feat_radius : int
+            Radius of circle that is a little larger than features. See
+            `radius` option of :py:func:`brightness.from_raw_image`.
+        bg_frame : int, optional
+            Size of frame around features for background determination. See
+            `bg_frame` option of :py:func:`brightness.from_raw_image`.
+            Defaults to 2.
+        bg_estimator : {"mean", "median"}, optional
+            Statistic to estimate background. See `bg_estimator` option of
+            :py:func:`brightness.from_raw_image`. Defaults to "mean".
+        neighbor_radius : float or "auto"
+            How far two features may be apart while still being considered
+            close enough so that one influences the brightness measurement of
+            the other. This is related to the `radius` option of
+            :py:func:`brightness.from_raw_image`. If "auto", use the smallest
+            value that avoids overlaps. Defaults to "auto".
+        interpolate : bool, optional
+            Whether to interpolate coordinates of features that have been
+            missed by the localization algorithm. Defaults to `True`.
+        coloc_dist : float
+            After overlaying donor and acceptor channel features, this gives
+            the maximum distance up to which donor and acceptor signal are
+            considered to come from the same molecule. Defaults to 2.
+        acceptor_channel : {1, 2}, optional
+            Whether the acceptor channel is number 1 or 2 in `chromatic_corr`.
+            Defaults to 2
+        link_options : dict, optional
+            Specify additional options to :py:func:`trackpy.link_df`.
+            "search_range" and "memory" will be overwritten by the
+            `link_radius` and `link_mem` parameters. Defaults to {}.
+        link_quiet : bool, optional
+            If `True, call :py:func:`trackpy.quiet`. Defaults to `True`.
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
+        """
         self.chromatic_corr = chromatic_corr
 
         self.link_options = link_options.copy()
@@ -70,7 +177,7 @@ class SmFretTracker:
                                         for k in np.unique(self._exc_seq)})
 
     def track(self, donor_img, acceptor_img, donor_loc, acceptor_loc):
-        """Create a class instance by tracking
+        """Track smFRET data
 
         Localization data for both the donor and the acceptor channel is
         merged (since a FRET construct has to be visible in at least one
@@ -82,86 +189,27 @@ class SmFretTracker:
         :py:func:`brightness.from_raw_image`. These data are written into a
         a :py:class:`pandas.DataFrame` whose columns have a MultiIndex
         containing the "donor" and "acceptor" items in the top level.
-        This DataFrame is used to construct a :py:class:`SmFretData` instance;
-        it is passed as the `tracks` parameter to the constructor.
 
         Parameters
         ----------
-        analyzer : SmFretAnalyzer or str
-            :py:class:`SmFretAnalyzer` instance to use for data analysis. If
-            a string, use that to construct the :py:class:`SmFretAnalyzer`
-            instance.
         donor_img, acceptor_img : list of numpy.ndarray
             Raw image frames for donor and acceptor channel. This need to be
             of type `list`, but anything that returns image data when indexed
             with a frame number will do.
         donor_loc, acceptor_loc : pandas.DataFrame
             Localization data for donor and acceptor channel
-        chromatic_corr : chromatic.Corrector
-            :py:class:`chromatic.Corrector` instance for overlaying donor and
-            acceptor channel. By default, the donor is the first and the
-            acceptor is the second channel. See also the `acceptor_channel`
-            parameter.
-        link_radius : float
-            `search_radius` parameter for :py:func:`trackpy.link_df`. The
-            maximum distance a particle moves from one frame to the next.
-        link_mem : int
-            `memory` parameter for :py:func:`trackpy.link_df`. The maximum
-            number of consecutive frames a particle may not be detected.
-        min_length : int
-            Parameter for :py:func:`trackpy.filter_stubs`. Minimum length of
-            a track.
-        feat_radius : int
-            `radius` parameter of :py:func:`brightness.from_raw_image`. This
-            has to be large enough so that features fit into a box of
-            2*`feat_radius` + 1 width.
-        bg_frame : int, optional
-            Width of frame (in pixels) around a feature for background
-            determination. `bg_frame` parameter of
-            :py:func:`brightness.from_raw_image`. Defaults to 2.
-        bg_estimator : {"mean", "median"} or numpy ufunc, optional
-            How to determine the background from the background pixels. "mean"
-            will use :py:func:`numpy.mean` and "median" will use
-            :py:func:`numpy.median`. If a function is given (which takes the
-            pixel data as arguments and returns a scalar), apply this to the
-            pixels. Defaults to "median".
-        neighbor_radius : float or "auto", optional
-            Use :py:func:`filter.has_near_neighbor` to determine which
-            features have near neighbors. This will append a "has_neighbor"
-            column to DataFrames, where entries are 0 for features without
-            other features within `neighbor_radius` and 1 otherwise. Set
-            neighbor_radius to 0 to turn this off (no "has_neighbor" column
-            will be created). If "auto", use
-            ``(2 * feat_radius + bg_frame) * sqrt(2)`` such that background
-            estimation is not influenced by neighboring features. Defaults
-            to "auto".
-        interpolate : bool, optional
-            Whether to interpolate coordinates of features that have been
-            missed by the localization algorithm. Defaults to True.
-        coloc_dist : float, optional
-            When overlaying donor and acceptor channel features, this gives
-            the maximum distance up to which donor and acceptor signal are
-            considered to come from the same molecule. Defaults to 2.
-        acceptor_channel : {1, 2}, optional
-            Whether the acceptor channel is number 1 or 2 in `chromatic_corr`.
-            Defaults to 2.
 
         Returns
         -------
-        SmFretData
-            Class instance which has the :py:attr:`donor_img`,
-            :py:attr:`acceptor_img`, and :py:attr:`tracks` attributes set.
-
-        Other parameters
-        ----------------
-        link_options : dict, optional
-            Additional options to pass to :py:func:`trackpy.link_df`.
-            Defaults to {}.
-        link_quiet : bool, optional
-            If True, call :py:func:`trackpy.quiet`. Defaults to True.
-        pos_colums : list of str, optional
-            Names of the columns describing the x and the y coordinate of the
-            features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
+        pandas.DataFrame
+            The columns are indexed with a :py:class:`pandas.MultiIndex`.
+            The top index level consists of "donor" (tracking data for the
+            donor channel), "acceptor" (tracking data for the acceptor
+            channel), and "fret". The latter contains a column with the
+            particle number ("particle"), an indicator (0 / 1) whether there
+            is a near neighbor ("has_neighbor"), and an indicator whether the
+            data point was interpolated ("interp") because it was not in the
+            localization data in either channel.
         """
         if not trackpy_available:
             raise RuntimeError("`trackpy` package required but not installed.")
@@ -284,7 +332,8 @@ class SmFretTracker:
         A column specifying whether the entry originates from donor or
         acceptor excitation is also added: ("fret", "exc_type"). It is 0
         for donor and 1 for acceptor excitation; see the
-        :py:meth:`flag_excitation_type` method.
+        :py:meth:`flag_excitation_type` method and
+        :py:attr:`excitation_type_nums`.
 
         For each localization in `tracks`, the total brightness upon donor
         excitation is calculated by taking the sum of ``("donor", "mass")``
@@ -314,10 +363,8 @@ class SmFretTracker:
         Parameters
         ----------
         tracks : pandas.DataFrame
-            FRET tracking data as e. g. produced by
-            :py:meth:`SmFretData.track`.  For details, see the
-            :py:attr:`SmFretData.tracks` attribute documentation. This methods
-            appends the resulting columns.
+            FRET tracking data as e. g. produced by :py:meth:`track`. This
+            method appends the resulting columns.
         aa_interp : {"nearest", "linear"}, optional
             What kind of interpolation to use for calculating acceptor
             brightness upon direct excitation. Defaults to "linear".
@@ -407,15 +454,13 @@ class SmFretTracker:
         """Add a column indicating excitation type (donor/acceptor)
 
         Add  ("fret", "exc_type") column. Entries are 0 for donor and 1 for
-        acceptor excitation.
+        acceptor excitation. See also :py:attr:`excitation_type_nums`.
 
         Parameters
         ----------
         tracks : pandas.DataFrame
-            FRET tracking data as e. g. produced by
-            :py:meth:`SmFretData.track`.  For details, see the
-            :py:attr:`SmFretData.tracks` attribute documentation. This methods
-            appends the resulting column.
+            FRET tracking data as e. g. produced by :py:meth:`track`. This
+            method appends the resulting column.
         """
         exc_type = np.full(len(tracks), -1)
         frames = tracks["acceptor", "frame"]
