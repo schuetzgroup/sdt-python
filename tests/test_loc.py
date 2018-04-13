@@ -1,11 +1,13 @@
 import unittest
 import os
 import tempfile
+from collections import OrderedDict
 
 import pandas as pd
 import numpy as np
 
-from sdt.loc import z_fit
+from sdt import image
+from sdt.loc import z_fit, raw_features
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -114,6 +116,44 @@ class TestFitter(unittest.TestCase):
                          columns=["size_x", "size_y"])
         self.fitter.fit(d)
         np.testing.assert_allclose(d["z"], zs)
+
+
+class TestGetRawFeatures(unittest.TestCase):
+    def setUp(self):
+        self.img_size = 150
+        self.feat_radius = 2
+        self.signal = 10
+        self.bg = 5
+        self.x_shift = 40
+        self.num_frames = 10
+
+        loc = ([[20, 30]] * self.num_frames +
+               [[27, 30]] * (self.num_frames // 2) +
+               [[29, 30]] * (self.num_frames // 2))
+        self.loc = pd.DataFrame(np.array(loc), columns=["x", "y"])
+        self.loc["frame"] = np.concatenate(
+                [np.arange(self.num_frames, dtype=np.int)]*2)
+        self.loc["particle"] = [0] * self.num_frames + [1] * self.num_frames
+
+        cmask = image.CircleMask(self.feat_radius, 0.5)
+        img = np.full((self.img_size, self.img_size), self.bg, dtype=np.int)
+        x, y, _, _ = self.loc.iloc[0]
+        img[y-self.feat_radius:y+self.feat_radius+1,
+            x-self.feat_radius:x+self.feat_radius+1][cmask] += self.signal
+        self.img = [img] * self.num_frames
+
+    def test_get_track_pixels(self):
+        """loc.raw_features.get_raw_features"""
+        sz = 4
+        x, y = self.loc.loc[0, ["x", "y"]].astype(int)
+        px_ex = self.img[0][y-sz:y+sz+1, x-sz:x+sz+1]
+
+        p0_loc = self.loc[self.loc["particle"] == 0]
+        p0_loc.index = np.arange(10, 10+len(p0_loc))
+        exp = OrderedDict([(i, px_ex) for i in p0_loc.index])
+        px = raw_features.get_raw_features(p0_loc, self.img, sz)
+
+        np.testing.assert_equal(px, exp)
 
 
 if __name__ == "__main__":
