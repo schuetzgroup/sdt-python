@@ -12,58 +12,8 @@ from .. import helper, changepoint
 default_cp_detector = changepoint.Pelt("l2", min_size=1, jump=1)
 
 
-def has_fluorophores(tracks, don_count=1, acc_count=1, don_filter=None,
-                     acc_filter=None):
-    """Check if fluorophores are present in FRET tracks
 
-    Given a DataFrame of FRET tracks, filter out any tracks where donor
-    (acceptor) localizations don't pass don_filter (acc_filter) at
-    least don_count (acc_count) times.
-
-    Parameters
-    ----------
-    tracks : pandas.DataFrame
-        FRET tracking data as e. g. produced by
-        :py:meth:`SmFretData.track`. For details, see the
-        :py:attr:`SmFretData.tracks` attribute documentation.
-    don_count, acc_count : int, optional
-        Minimum number of times donor (acceptor) has to be present for a
-        track to be returned. Defaults to 1.
-    don_filter, acc_filter : str or None
-        Only count localizations that pass this filter. The string is
-        passed to :py:meth:`pandas.DataFrame.eval`. Multiindex columns
-        are flattened, where different levels are separated by "_"; e.g.
-        the ``("fret", "eff")`` column becomes ``"fret_eff"``.
-
-    Returns
-    -------
-    pandas.DataFrame
-        Only tracks that have a sufficient number of donor and acceptor
-        localizations.
     """
-    don_fr_mask = (tracks["fret", "exc_type"] ==
-                   SmFretTracker.exc_type_nums["d"])
-    acc_fr_mask = (tracks["fret", "exc_type"] ==
-                   SmFretTracker.exc_type_nums["a"])
-
-    old_columns = tracks.columns
-    tracks.columns = helper.flatten_multiindex(tracks.columns)
-
-    good = []
-    zipped = zip((don_fr_mask, acc_fr_mask), (don_count, acc_count),
-                 (don_filter, acc_filter))
-    for mask, cnt, filt in zipped:
-        if filt and isinstance(filt, str):
-            mask &= tracks.eval(filt)
-        u, c = np.unique(tracks.loc[mask, "fret_particle"],
-                         return_counts=True)
-        good.append(u[c >= cnt])
-    good = np.intersect1d(*good, assume_unique=True)
-
-    tracks.columns = old_columns
-    return tracks[tracks["fret", "particle"].isin(good)]
-
-
 def find_acceptor_bleach(tracks, cp_penalty, brightness_thresh, truncate=True,
                          cp_detector=None):
     if cp_detector is None:
@@ -161,10 +111,6 @@ class SmFretFilter:
         self.tracks = tracks.copy()
         self.tracks_orig = tracks.copy()
 
-    def has_fluorophores(self, don_count=1, acc_count=1, don_filter=None,
-                         acc_filter=None):
-        self.tracks = has_fluorophores(self.tracks, don_count, acc_count,
-                                       don_filter, acc_filter)
 
     def find_acceptor_bleach(self, cp_penalty, brightness_thresh,
                              truncate=True):
