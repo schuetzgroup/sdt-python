@@ -1,4 +1,4 @@
-"""Useful helplers for plotting data"""
+"""Useful helpers for plotting data"""
 import weakref
 
 import matplotlib as mpl
