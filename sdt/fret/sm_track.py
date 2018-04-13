@@ -21,7 +21,7 @@ class SmFretTracker:
     yaml_tag = "!SmFretTracker"
 
     @config.use_defaults
-    def __init__(self, exc_scheme, chromatic_corr, link_radius, link_mem,
+    def __init__(self, excitation_seq, chromatic_corr, link_radius, link_mem,
                  min_length, feat_radius, bg_frame=2, bg_estimator="mean",
                  neighbor_radius="auto", interpolate=True, coloc_dist=2.,
                  acceptor_channel=2, link_options={}, link_quiet=True,
@@ -46,15 +46,28 @@ class SmFretTracker:
 
         if isinstance(neighbor_radius, str):
             # auto radius
-           neighbor_radius = 2 * feat_radius + 1
+            neighbor_radius = 2 * feat_radius + 1
         self.neighbor_radius = neighbor_radius
 
         if link_quiet and trackpy_available:
             trackpy.quiet()
 
-        self.desc = np.array(list(exc_scheme))
-        self.frames = defaultdict(list, {k: np.nonzero(self.desc == k)[0]
-                                         for k in np.unique(self.desc)})
+        self.excitation_seq = np.array(list(excitation_seq))
+
+    @property
+    def excitation_seq(self):
+        return self._exc_seq
+
+    @property
+    def excitation_frames(self):
+        return self._exc_frames
+
+    @excitation_seq.setter
+    def excitation_seq(self, v):
+        self._exc_seq = np.array(list(v))
+        self._exc_frames = defaultdict(list,
+                                       {k: np.nonzero(self._exc_seq == k)[0]
+                                        for k in np.unique(self._exc_seq)})
 
     def track(self, donor_img, acceptor_img, donor_loc, acceptor_loc):
         """Create a class instance by tracking
@@ -318,7 +331,8 @@ class SmFretTracker:
         particles = tracks["fret", "particle"].values  # particle numbers
 
         # Direct acceptor excitation
-        a_dir_mask = np.in1d(acc[:, 1] % len(self.desc), self.frames["a"])
+        a_dir_mask = np.in1d(acc[:, 1] % len(self.excitation_seq),
+                             self.excitation_frames["a"])
         # Localizations with near neighbors bias brightness measurements
         try:
             no_neigh_mask = (tracks["fret", "has_neighbor"] == 0).values
@@ -406,6 +420,7 @@ class SmFretTracker:
         exc_type = np.full(len(tracks), -1)
         frames = tracks["acceptor", "frame"]
         for t in excitation_type_nums:
-            mask = (frames % len(self.desc)).isin(self.frames[t])
+            mask = (frames % len(self.excitation_seq)).isin(
+                self.excitation_frames[t])
             exc_type[mask] = excitation_type_nums[t]
         tracks["fret", "exc_type"] = exc_type
