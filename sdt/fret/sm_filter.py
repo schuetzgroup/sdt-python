@@ -5,7 +5,7 @@ import numbers
 import numpy as np
 import pandas as pd
 
-from .sm_track import excitation_type_nums
+from .sm_track import SmFretTracker
 from .. import helper, changepoint
 
 
@@ -41,8 +41,10 @@ def has_fluorophores(tracks, don_count=1, acc_count=1, don_filter=None,
         Only tracks that have a sufficient number of donor and acceptor
         localizations.
     """
-    don_fr_mask = (tracks["fret", "exc_type"] == excitation_type_nums["d"])
-    acc_fr_mask = (tracks["fret", "exc_type"] == excitation_type_nums["a"])
+    don_fr_mask = (tracks["fret", "exc_type"] ==
+                   SmFretTracker.exc_type_nums["d"])
+    acc_fr_mask = (tracks["fret", "exc_type"] ==
+                   SmFretTracker.exc_type_nums["a"])
 
     old_columns = tracks.columns
     tracks.columns = helper.flatten_multiindex(tracks.columns)
@@ -79,7 +81,7 @@ def find_acceptor_bleach(tracks, cp_penalty, brightness_thresh, truncate=True,
         good_slice = slice(good_pos, good_pos + len(trc_p))
         good_pos += len(trc_p)
 
-        acc_mask = trc_p[:, 2] == excitation_type_nums["a"]
+        acc_mask = trc_p[:, 2] == SmFretTracker.exc_type_nums["a"]
         m_a = trc_p[acc_mask, 0]
         f_a = trc_p[acc_mask, 1]
 

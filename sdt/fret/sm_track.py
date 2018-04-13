@@ -1,18 +1,4 @@
-"""Module containing a class for tracking smFRET data
-
-Attributes
-----------
-excitation_type_nums : dict
-    Map of excitation types to integers as written into the ``(fret,
-    exc_type)`` column of tracking DataFrames by
-    :py:func:`flag_excitation_type` and :py:meth:`SmFretTracker.analyze`.
-
-    Values are
-
-    - "d" -> 0
-    - "a" -> 1
-    - others -> -1
-"""
+"""Module containing a class for tracking smFRET data """
 import itertools
 from collections import defaultdict
 
@@ -27,9 +13,6 @@ try:
     trackpy_available = True
 except ImportError:
     trackpy_available = False
-
-
-excitation_type_nums = defaultdict(lambda: -1, dict(d=0, a=1))
 
 
 class SmFretTracker:
@@ -68,11 +51,23 @@ class SmFretTracker:
         enough so that one influences the brightness measurement of the other.
         This is related to the `radius` option of
         :py:func:`brightness.from_raw_image`.
+    excitation_type_nums : dict
+        Map of excitation types to integers as written into the ``(fret,
+        exc_type)`` column of tracking DataFrames by
+        :py:func:`flag_excitation_type` and :py:meth:`SmFretTracker.analyze`.
+
+        Values are
+
+        - "d" -> 0
+        - "a" -> 1
+        - others -> -1
     pos_colums : list of str
         Names of the columns describing the coordinates of the features in
         :py:class:`pandas.DataFrames`.
     """
     yaml_tag = "!SmFretTracker"
+
+    exc_type_nums = defaultdict(lambda: -1, dict(d=0, a=1))
 
     @config.use_defaults
     def __init__(self, excitation_seq, chromatic_corr, link_radius, link_mem,
@@ -333,7 +328,7 @@ class SmFretTracker:
         acceptor excitation is also added: ("fret", "exc_type"). It is 0
         for donor and 1 for acceptor excitation; see the
         :py:meth:`flag_excitation_type` method and
-        :py:attr:`excitation_type_nums`.
+        :py:attr:`exc_type_nums`.
 
         For each localization in `tracks`, the total brightness upon donor
         excitation is calculated by taking the sum of ``("donor", "mass")``
@@ -454,7 +449,7 @@ class SmFretTracker:
         """Add a column indicating excitation type (donor/acceptor)
 
         Add  ("fret", "exc_type") column. Entries are 0 for donor and 1 for
-        acceptor excitation. See also :py:attr:`excitation_type_nums`.
+        acceptor excitation. See also :py:attr:`exc_type_nums`.
 
         Parameters
         ----------
@@ -464,8 +459,8 @@ class SmFretTracker:
         """
         exc_type = np.full(len(tracks), -1)
         frames = tracks["acceptor", "frame"]
-        for t in excitation_type_nums:
+        for t in self.exc_type_nums:
             mask = (frames % len(self.excitation_seq)).isin(
                 self.excitation_frames[t])
-            exc_type[mask] = excitation_type_nums[t]
+            exc_type[mask] = self.exc_type_nums[t]
         tracks["fret", "exc_type"] = exc_type
