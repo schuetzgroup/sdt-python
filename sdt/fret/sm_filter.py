@@ -137,7 +137,7 @@ class SmFretFilter:
 
             if truncate:
                 # Add data before bleach step
-                good[good_slice] = trc_p[:, 1] < f_a[max(0, cp[0] - 1)]
+                good[good_slice] = trc_p[:, 1] <= f_a[max(0, cp[0] - 1)]
             else:
                 good[good_slice] = True
 
