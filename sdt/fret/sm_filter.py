@@ -77,7 +77,7 @@ class SmFretFilter:
         self.tracks = tracks.copy()
         self.tracks_orig = tracks.copy()
 
-    def find_acceptor_bleach(self, brightness_thresh, truncate=True, **kwargs):
+    def acceptor_bleach_step(self, brightness_thresh, truncate=True, **kwargs):
         """Find tracks where the acceptor bleaches in a single step
 
         Changepoint detection is run on the acceptor brightness time trace.
@@ -101,7 +101,7 @@ class SmFretFilter:
         500 counts bleached; pass ``penalty=1e6`` to the changepoint
         detector's ``find_changepoints`` method.
 
-        >>> filt.find_acceptor_bleach(500, penalty=1e6)
+        >>> filt.acceptor_bleach_step(500, penalty=1e6)
         """
         trc = self.tracks.sort_values([("fret", "particle"),
                                        ("donor", "frame")])
