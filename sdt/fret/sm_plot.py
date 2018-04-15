@@ -12,6 +12,43 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
                    frame=None, columns=2, size=5, xlim=(None, None),
                    ylim=(None, None), xlabel=None, ylabel=None,
                    scatter_args={}, grid=True):
+    """Make scatter plots of multiple smFRET datasets
+
+    Parameters
+    ----------
+    track_data : dict of str: pandas.DataFrame
+        dict keys are used to identify the smFRET datasets (dict values).
+        The DataFrames have to have the same format as e.g. produced by
+        :py:class:`SmFretTracker`.
+    x_data, y_data : tuple of str, optional
+        Column indices of data to plot on the x (y) axis. Defaults to
+        ``("fret", "eff")`` for `x_data` and ``("fret", "stoi")`` for
+        `y_data`.
+    frame : int or None, optional
+        If given, only plot data from a certain frame. Defaults to None.
+    columns : int, optional
+        In how many columns to lay out plots. Defaults to 2.
+    size : int, optional
+        Size per plot. Defaults to 5.
+    xlim, ylim : tuple of float, optional
+        Set x (y) axis limits. Defaults to ``(None, None)``, i.e. automatic
+        determination.
+    xlabel, ylabel : str or None, optional
+        Label for x (y) axis. If `None`, use `x_data` (`y_data`). Defaults to
+        `None`.
+    scatter_args : dict, optional
+        Further arguments to pass as keyword arguments to the scatter function.
+        Defaults to {}.
+    grid : bool, optional
+        Whether to draw a grid in the plots. Defaults to True.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        figure object used for plotting
+    ax : numpy.ndarray of mpl.axes.Axes
+        axes objects of the plots
+    """
     rows = math.ceil(len(track_data) / columns)
     fig, ax = plt.subplots(rows, columns, sharex=True, sharey=True,
                            squeeze=False, figsize=(columns*size, rows*size))
@@ -54,6 +91,39 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
 def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
                 size=5, xlim=(None, None), xlabel=None, ylabel=None,
                 hist_args={}):
+    """Make histogram plots of multiple smFRET datasets
+
+    Parameters
+    ----------
+    track_data : dict of str: pandas.DataFrame
+        dict keys are used to identify the smFRET datasets (dict values).
+        The DataFrames have to have the same format as e.g. produced by
+        :py:class:`SmFretTracker`.
+    data, y_data : tuple of str, optional
+        Column indices of data. Defaults to ``("fret", "eff")``.
+    frame : int or None, optional
+        If given, only plot data from a certain frame. Defaults to None.
+    columns : int, optional
+        In how many columns to lay out plots. Defaults to 2.
+    size : int, optional
+        Size per plot. Defaults to 5.
+    xlim: tuple of float, optional
+        Set x axis limits. Defaults to ``(None, None)``, i.e. automatic
+        determination.
+    xlabel, ylabel : str or None, optional
+        Label for x (y) axis. If `None`, use `data` for the x axis and
+        ``"# events"`` on the y axis. Defaults to `None`.
+    hist_args : dict, optional
+        Further arguments to pass as keyword arguments to the histogram
+        plotting function. Defaults to {}.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        figure object used for plotting
+    ax : numpy.ndarray of mpl.axes.Axes
+        axes objects of the plots
+    """
     rows = math.ceil(len(track_data) / columns)
     fig, ax = plt.subplots(rows, columns, squeeze=False, sharex=True,
                            figsize=(columns*size, rows*size))
