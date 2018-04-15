@@ -6,7 +6,8 @@ import warnings
 import pandas as pd
 import numpy as np
 
-from sdt import fret, chromatic, image
+from sdt import fret, chromatic, image, changepoint
+from sdt.fret.sm_filter import _image_mask_single
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -261,189 +262,211 @@ class TestSmFretTracker(unittest.TestCase):
                                 exc)
 
 
-class TestSmFretAnalyzer(unittest.TestCase):
+class TestSmFretFilter(unittest.TestCase):
+    def setUp(self):
+        loc1 = pd.DataFrame(
+            np.array([np.full(10, 50), np.full(10, 70), np.arange(10)],
+                     dtype=float).T,
+            columns=["x", "y", "frame"])
+        fret1 = pd.DataFrame(
+            np.array([[3000] * 3 + [1500] * 3 + [100] * 4,
+                      [0] * 10, [1] * 10], dtype=float).T,
+            columns=["a_mass", "particle", "exc_type"])
+        self.data1 = pd.concat([loc1, loc1, fret1], axis=1,
+                               keys=["donor", "acceptor", "fret"])
+        loc2 = loc1.copy()
+        loc2[["x", "y"]] = [20, 10]
+        fret2 = fret1.copy()
+        fret2["a_mass"] = [1600] * 5 + [150] * 5
+        fret2["particle"] = 1
+        self.data2 = pd.concat([loc2, loc2, fret2], axis=1,
+                               keys=["donor", "acceptor", "fret"])
+        loc3 = loc1.copy()
+        loc3[["x", "y"]] = [120, 30]
+        fret3 = fret2.copy()
+        fret3["a_mass"] = [3500] * 5 + [1500] * 5
+        fret3["particle"] = 2
+        self.data3 = pd.concat([loc3, loc3, fret3], axis=1,
+                               keys=["donor", "acceptor", "fret"])
+
+        self.data = pd.concat([self.data1, self.data2, self.data3],
+                              ignore_index=True)
+
+        self.filt = fret.SmFretFilter(
+            self.data,
+            changepoint.Pelt("l2", min_size=1, jump=1, engine="python"))
+
+    def test_acceptor_bleach_step(self):
+        """fret.SmFretFilter.acceptor_bleach_step: truncate=False"""
+        self.filt.acceptor_bleach_step(500, truncate=False, penalty=1e6)
+        pd.testing.assert_frame_equal(
+            self.filt.tracks, self.data[self.data["fret", "particle"] == 1])
+
+    def test_acceptor_bleach_step_trunc(self):
+        """fret.SmFretFilter.acceptor_bleach_step: truncate=True"""
+        self.filt.acceptor_bleach_step(500, truncate=True, penalty=1e6)
+        exp = self.data[(self.data["fret", "particle"] == 1) &
+                        (self.data["fret", "a_mass"] > 500)]
+        print(self.filt.tracks)
+        pd.testing.assert_frame_equal(self.filt.tracks, exp)
+
+    def test_acceptor_bleach_step_alex(self):
+        """fret.SmFretFilter.acceptor_bleach_step: alternating excitation"""
+        data = pd.DataFrame(np.repeat(self.data.values, 2, axis=0),
+                            columns=self.data.columns)
+        data["donor", "frame"] = data["acceptor", "frame"] = \
+            list(range(len(data) // 3)) * 3
+        data.loc[::2, ("fret", "exc_type")] = 0
+        # NaNs cause bogus changepoints using Pelt; if acceptor_bleach_step
+        # does not ignore donor frames, we should see that.
+        data.loc[::2, ("fret", "a_mass")] = np.NaN
+        filt = fret.SmFretFilter(data, self.filt.cp_detector)
+        filt.acceptor_bleach_step(500, truncate=True, penalty=1e6)
+        exp = data[(data["fret", "particle"] == 1) &
+                   (data["donor", "frame"] < 10)]
+        pd.testing.assert_frame_equal(filt.tracks, exp)
+
+    def test_eval(self):
+        """fret.SmFretFilter.eval"""
+        d = self.data.copy()
+        res = self.filt.eval("(fret_particle == 1 or acceptor_x == 120) and "
+                             "donor_frame > 3")
+        exp = (((d["fret", "particle"] == 1) | (d["acceptor", "x"] == 120)) &
+               (d["donor", "frame"] > 3))
+        np.testing.assert_array_equal(res, exp)
+        # Make sure that data is not changed
+        pd.testing.assert_frame_equal(self.filt.tracks, d)
+
+    def test_eval_error(self):
+        """fret.SmFretFilter.eval: expr with error"""
+        d = self.data.copy()
+        with self.assertRaises(Exception):
+            self.filt.eval("fret_bla == 0")
+        # Make sure that data is not changed
+        pd.testing.assert_frame_equal(self.filt.tracks, d)
+
+    def test_eval_mi_sep(self):
+        """fret.SmFretFilter.eval: mi_sep argument"""
+        d = self.data.copy()
+        res = self.filt.eval("(fret__particle == 1 or acceptor__x == 120) and "
+                             "donor__frame > 3", mi_sep="__")
+        exp = (((d["fret", "particle"] == 1) | (d["acceptor", "x"] == 120)) &
+               (d["donor", "frame"] > 3))
+        np.testing.assert_array_equal(res, exp)
+        # Make sure that data is not changed
+        pd.testing.assert_frame_equal(self.filt.tracks, d)
+
+    def test_query(self):
+        """fret.SmFretFilter.query"""
+        d = self.data.copy()
+        self.filt.query("(fret_particle == 1 or acceptor_x == 120) and "
+                        "donor_frame > 3")
+        exp = d[((d["fret", "particle"] == 1) | (d["acceptor", "x"] == 120)) &
+                (d["donor", "frame"] > 3)]
+        pd.testing.assert_frame_equal(self.filt.tracks, exp)
+
+    def test_query_error(self):
+        """fret.SmFretFilter.query: expr with error"""
+        d = self.data.copy()
+        with self.assertRaises(Exception):
+            self.filt.query("fret_bla == 0")
+        # Make sure that data is not changed
+        pd.testing.assert_frame_equal(self.filt.tracks, d)
+
+    def test_filter_particles(self):
+        """fret.SmFretFilter.filter_particles"""
+        self.data1.loc[3, ("fret", "a_mass")] = -1
+        self.data2.loc[[4, 7], ("fret", "a_mass")] = -1
+        data = pd.concat([self.data1, self.data2, self.data3],
+                         ignore_index=True)
+        self.filt.tracks = data.copy()
+        self.filt.filter_particles("fret_a_mass < 0", 2)
+        pd.testing.assert_frame_equal(self.filt.tracks,
+                                      data[data["fret", "particle"] == 1])
+
+    def test_image_mask_single(self):
+        """fret.sm_filter._image_mask_single"""
+        mask = np.zeros((200, 200), dtype=bool)
+        mask[50:100, 30:60] = True
+        t = _image_mask_single(self.data, mask, "donor", ["x", "y"])
+        pd.testing.assert_frame_equal(
+            t, self.data[self.data["fret", "particle"] == 0])
+
+    def test_image_mask(self):
+        """fret.SmFretFilter.image_mask: single mask"""
+        mask = np.zeros((200, 200), dtype=bool)
+        mask[50:100, 30:60] = True
+        self.filt.image_mask(mask, "donor")
+        d = self.filt.tracks_orig
+        pd.testing.assert_frame_equal(self.filt.tracks,
+                                      d[d["fret", "particle"] == 0])
+
+    def test_image_mask_list(self):
+        """fret.SmFretFilter.image_mask: list of masks"""
+        mask = np.zeros((200, 200), dtype=bool)
+        mask[50:100, 30:60] = True
+        mask_list = [("f1", mask), ("f2", np.zeros_like(mask)),
+                     ("f3", np.ones_like(mask))]
+        self.data.loc[self.data["fret", "particle"] == 0,
+                      [("acceptor", "x"), ("acceptor", "y")]] = [20, 10]
+        self.data.loc[self.data["fret", "particle"] == 1,
+                      [("acceptor", "x"), ("acceptor", "y")]] = [50, 70]
+
+        d = pd.concat([self.data]*3, keys=["f1", "f2", "f3"])
+        self.filt.tracks = d.copy()
+        self.filt.image_mask(mask_list, "donor")
+
+        exp = pd.concat([self.data[self.data["fret", "particle"] == 0],
+                         self.data.iloc[:0], self.data],
+                        keys=["f1", "f2", "f3"])
+        pd.testing.assert_frame_equal(self.filt.tracks, exp)
+
+        self.filt.tracks = d.copy()
+        self.filt.image_mask(mask_list, "acceptor")
+
+        exp = pd.concat([self.data[self.data["fret", "particle"] == 1],
+                         self.data.iloc[:0], self.data],
+                        keys=["f1", "f2", "f3"])
+        pd.testing.assert_frame_equal(self.filt.tracks, exp)
+
+    def test_reset(self):
+        """fret.SmFretFilter.reset"""
+        d = self.filt.tracks_orig.copy()
+        self.filt.tracks = pd.DataFrame()
+        self.filt.reset()
+        pd.testing.assert_frame_equal(self.filt.tracks, d)
+
+
+class TestFretImageSelector(unittest.TestCase):
     def setUp(self):
         self.desc = "dddda"
         self.don = [0, 1, 2, 3]
         self.acc = [4]
-        self.analyzer = fret.SmFretAnalyzer(self.desc)
+        self.selector = fret.FretImageSelector(self.desc)
 
         num_frames = 20
-        start_frame = len(self.desc)
-        mass = 1000
-
-        loc = np.column_stack([np.arange(start_frame, start_frame+num_frames),
-                               np.full(num_frames, mass)])
-        df = pd.DataFrame(loc, columns=["frame", "mass"])
-        self.tracks = pd.concat([df]*2, keys=["donor", "acceptor"], axis=1)
-        self.tracks["fret", "particle"] = 0
-        self.is_direct_acc = (df["frame"] % len(self.desc)).isin(self.acc)
 
     def test_init(self):
-        """fret.SmFretAnalyzer: Simple init"""
-        np.testing.assert_equal(self.analyzer.don, self.don)
-        np.testing.assert_equal(self.analyzer.acc, self.acc)
+        """fret.FretImageSelector.__init__"""
+        np.testing.assert_equal(self.selector.excitation_frames["d"], self.don)
+        np.testing.assert_equal(self.selector.excitation_frames["a"], self.acc)
 
-    def test_with_acceptor(self):
-        """fret.SmFretAnalyzer: `with_acceptor` method"""
-        tracks2 = self.tracks[~self.is_direct_acc].copy()
-        tracks2["fret", "particle"] = 1
-
-        trc = pd.concat([self.tracks, tracks2])
-        result = self.analyzer.with_acceptor(trc)
-
-        pd.testing.assert_frame_equal(result, self.tracks)
-
-    def test_with_acceptor_noop(self):
-        """fret.SmFretAnalyzer: `with_acceptor` method, everything passes"""
-        tracks2 = self.tracks.copy()
-        tracks2["fret", "particle"] = 1
-
-        trc = pd.concat([self.tracks, tracks2])
-        result = self.analyzer.with_acceptor(trc)
-
-        pd.testing.assert_frame_equal(result, trc)
-
-    def test_with_acceptor_empty(self):
-        """fret.SmFretAnalyzer: `with_acceptor` method (no acceptor)"""
-        result = self.analyzer.with_acceptor(self.tracks[~self.is_direct_acc])
-        pd.testing.assert_frame_equal(result, self.tracks.iloc[:0])
-
-    def test_with_acceptor_filter(self):
-        """fret.SmFretAnalyzer: `with_acceptor` method, filter enabled"""
-        tracks2 = self.tracks.copy()
-        tracks2["acceptor", "mass"] = 800
-        tracks2["fret", "particle"] = 1
-        trc = pd.concat([self.tracks, tracks2])
-
-        result = self.analyzer.with_acceptor(trc, "mass > 900")
-        pd.testing.assert_frame_equal(result, self.tracks)
-
-    def test_select_fret(self):
-        """fret.SmFretAnalyzer: `select_fret` method"""
-        a = np.nonzero(self.is_direct_acc)[0]
-        trc = self.tracks.drop(a[-1])
-
-        r = self.analyzer.select_fret(trc, filter=None, acc_start=True,
-                                      acc_end=True)
-
-        e = self.tracks[(self.tracks.index >= a[0]) &
-                        (self.tracks.index <= a[-2])]
-        pd.testing.assert_frame_equal(r, e)
-
-    def test_select_fret_empty(self):
-        """fret.SmFretAnalyzer: `select_fret` method (no acceptor)"""
-        trc = self.tracks[~self.is_direct_acc]
-        r = self.analyzer.select_fret(trc, filter=None, acc_start=True,
-                                      acc_end=True)
-        pd.testing.assert_frame_equal(r, self.tracks.iloc[:0])
-
-    def test_select_fret_filter(self):
-        """fret.SmFretAnalyzer: `select_fret` method, filter enabled"""
-        a = np.nonzero(self.is_direct_acc)[0]
-        self.tracks.loc[a[-1], ("acceptor", "mass")] = 800
-
-        r = self.analyzer.select_fret(self.tracks, filter="mass > 900",
-                                      acc_start=False, acc_end=True)
-
-        e = self.tracks[self.tracks.index <= a[-2]]
-        pd.testing.assert_frame_equal(r, e)
-
-    def test_select_fret_fraction(self):
-        """fret.SmFretAnalyzer: `select_fret` method, `acc_fraction` param"""
-        a = np.nonzero(self.is_direct_acc)[0]
-        tracks2 = self.tracks.drop(a[-2]).copy()
-        tracks2["fret", "particle"] = 1
-        trc = pd.concat([self.tracks, tracks2])
-
-        r = self.analyzer.select_fret(trc, filter=None, acc_start=False,
-                                      acc_end=False, acc_fraction=1.)
-        pd.testing.assert_frame_equal(r, self.tracks)
-
-    def test_select_fret_remove_single(self):
-        """fret.SmFretAnalyzer: `select_fret` method, `remove_single` param"""
-        a = np.nonzero(self.is_direct_acc)[0][0]
-        trc = self.tracks.iloc[:a+1]
-
-        r = self.analyzer.select_fret(trc, filter=None, acc_start=True,
-                                      acc_end=True, remove_single=False)
-        pd.testing.assert_frame_equal(r, self.tracks.iloc[[a]])
-
-        r = self.analyzer.select_fret(trc, filter=None, acc_start=True,
-                                      acc_end=True, remove_single=True)
-        pd.testing.assert_frame_equal(r, self.tracks.iloc[:0])
-
-    def test_has_fluorophores_donor(self):
-        """fret.SmFretAnalyzer: `has_fluorophores` method"""
-        tracks = self.tracks.copy()
-        don_frames = (tracks["donor", "frame"] % len(self.desc)).isin(self.don)
-        don_frames_list = tracks.loc[don_frames, ("donor", "frame")].values
-        acc_frames = ~don_frames
-        acc_frames_list = tracks.loc[acc_frames, ("donor", "frame")].values
-
-        tracks2 = tracks.copy()
-        tracks3 = tracks.copy()
-
-        tracks["donor", "mass"] = 1200
-        tracks["acceptor", "mass"] = 1200
-
-        tracks2.loc[tracks2["donor", "frame"] == don_frames_list[0],
-                    ("donor", "mass")] = 1200
-        tracks2["fret", "particle"] = 1
-
-        tracks3.loc[tracks3["acceptor", "frame"] == acc_frames_list[0],
-                    ("acceptor", "mass")] = 1200
-        tracks3["fret", "particle"] = 2
-
-        trc = pd.concat([tracks, tracks2, tracks3], ignore_index=True)
-
-        res = self.analyzer.has_fluorophores(trc, 1, 1,
-                                             "donor_mass > 1100",
-                                             "acceptor_mass > 1100")
-        pd.testing.assert_frame_equal(res, tracks)
-
-        res = self.analyzer.has_fluorophores(trc, 1, 1,
-                                             "donor_mass > 1100", "")
-        pd.testing.assert_frame_equal(
-            res, trc[trc["fret", "particle"].isin([0, 1])])
-
-        res = self.analyzer.has_fluorophores(trc, 2, 1,
-                                             "donor_mass > 1100", "")
-        pd.testing.assert_frame_equal(res, tracks)
-
-        res = self.analyzer.has_fluorophores(trc, 1, 1,
-                                             "", "acceptor_mass > 1100")
-        pd.testing.assert_frame_equal(
-            res, trc[trc["fret", "particle"].isin([0, 2])])
-
-        res = self.analyzer.has_fluorophores(trc, 1, 2,
-                                             "", "acceptor_mass > 1100")
-        pd.testing.assert_frame_equal(res, tracks)
-
-    def test_get_excitation_type(self):
-        """fret.SmFretAnalyzer.get_excitation_type: DataFrame arg"""
-        r = self.analyzer.get_excitation_type(self.tracks, "d")
-        r2 = self.analyzer.get_excitation_type(self.tracks, "a")
-
-        pd.testing.assert_frame_equal(r, self.tracks[~self.is_direct_acc])
-        pd.testing.assert_frame_equal(r2, self.tracks[self.is_direct_acc])
-
-    def test_get_excitation_type_array(self):
-        """fret.SmFretAnalyzer.get_excitation_type: array arg
+    def test_call_array(self):
+        """fret.FretImageSelector.__call__: array arg
 
         Arrays support advanced indexing. Therefore, the return type should be
         an array again.
         """
         ar = np.arange(12)
-        r = self.analyzer.get_excitation_type(ar, "d")
-        r2 = self.analyzer.get_excitation_type(ar, "a")
+        r = self.selector(ar, "d")
+        r2 = self.selector(ar, "a")
 
         np.testing.assert_equal(r, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
         np.testing.assert_equal(r2, [4, 9])
         self.assertIsInstance(r, type(ar))
 
-    def test_get_excitation_type_list(self):
-        """fret.SmFretAnalyzer.get_excitation_type: list arg
+    def test_call_list(self):
+        """fret.FretImageSelector.__call__: list arg
 
         Lists do not support advanced indexing. Therefore, the return type
         should be a Slicerator.
@@ -454,22 +477,12 @@ class TestSmFretAnalyzer(unittest.TestCase):
             raise unittest.SkipTest("slicerator package not found.")
 
         ar = list(range(12))
-        r = self.analyzer.get_excitation_type(ar, "d")
-        r2 = self.analyzer.get_excitation_type(ar, "a")
+        r = self.selector(ar, "d")
+        r2 = self.selector(ar, "a")
 
         np.testing.assert_equal(list(r), [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
         np.testing.assert_equal(list(r2), [4, 9])
         self.assertIsInstance(r, Slicerator)
-
-    def test_get_excitation_type_array(self):
-        """fret.SmFretAnalyzer.get_excitation_type: Array arg"""
-        ar = np.arange(12)
-        r = self.analyzer.get_excitation_type(ar, "d")
-        r2 = self.analyzer.get_excitation_type(ar, "a")
-
-        np.testing.assert_equal(r, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
-        np.testing.assert_equal(r2, [4, 9])
-        self.assertIsInstance(r, type(ar))
 
 
 if __name__ == "__main__":
