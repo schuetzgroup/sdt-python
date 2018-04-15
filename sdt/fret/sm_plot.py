@@ -74,9 +74,12 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
     for a in ax.T.flatten()[len(track_data):]:
         a.axis("off")
 
+    xlabel = xlabel if xlabel is not None else " ".join(data)
+    ylabel = ylabel if ylabel is not None else "# events"
+
     for a in ax.flatten():
-        a.set_xlabel("FRET eff")
-        a.set_ylabel("# events")
+        a.set_xlabel(xlabel)
+        a.set_ylabel(ylabel)
         a.grid()
         a.set_xlim(*xlim)
 
