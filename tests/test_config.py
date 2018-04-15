@@ -5,8 +5,7 @@ from sdt import config
 
 class TestUseDefaults(unittest.TestCase):
     def setUp(self):
-        self.pos_columns = ["x", "y"]
-        config.rc["pos_columns"] = self.pos_columns
+        self.pos_columns = config.rc["pos_columns"].copy()
 
     def test_function_decorator(self):
         """config.use_defaults: function decorator"""
@@ -17,8 +16,14 @@ class TestUseDefaults(unittest.TestCase):
         self.assertEqual(f(), self.pos_columns)
         self.assertEqual(f(None), self.pos_columns)
         self.assertEqual(f(["z"]), ["z"])
-        config.rc["pos_columns"] = ["x", "y", "z"]
-        self.assertEqual(f(), ["x", "y", "z"])
+        try:
+            config.rc["pos_columns"] = ["x", "y", "z"]
+            res = f()
+        except:
+            raise
+        finally:
+            config.rc["pos_columns"] = self.pos_columns.copy()
+        self.assertEqual(res, ["x", "y", "z"])
 
     def test_method_decorator(self):
         """config.use_defaults: method decorator"""
@@ -29,5 +34,11 @@ class TestUseDefaults(unittest.TestCase):
         self.assertEqual(A().pos_columns, self.pos_columns)
         self.assertEqual(A(None).pos_columns, self.pos_columns)
         self.assertEqual(A(["z"]).pos_columns, ["z"])
-        config.rc["pos_columns"] = ["x", "y", "z"]
-        self.assertEqual(A().pos_columns, ["x", "y", "z"])
+        try:
+            config.rc["pos_columns"] = ["x", "y", "z"]
+            res = A()
+        except:
+            raise
+        finally:
+            config.rc["pos_columns"] = self.pos_columns.copy()
+        self.assertEqual(res.pos_columns, ["x", "y", "z"])
