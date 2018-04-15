@@ -1,4 +1,4 @@
-"""Module containing a class for filtering smFRET data """
+"""Module containing a class for filtering smFRET data"""
 from collections import defaultdict
 import functools
 import numbers
@@ -37,12 +37,12 @@ def _image_mask_single(tracks, mask, channel, pos_columns):
     pos = tracks.loc[:, cols].values
     pos = np.round(pos).astype(int)
 
-    in_bounds = np.ones(len(pos))
+    in_bounds = np.ones(len(pos), dtype=bool)
     for p, bd in zip(pos.T, mask.shape[::-1]):
         in_bounds &= p >= 0
         in_bounds &= p < bd
 
-    return tracks[mask[tuple(p for p in pos[in_bounds].T)]]
+    return tracks[mask[tuple(p for p in pos[in_bounds, ::-1].T)]]
 
 
 class SmFretFilter:
@@ -296,15 +296,15 @@ class SmFretFilter:
             :py:class:`pandas.DataFrames`. If `None`, use the defaults from
             :py:mod:`config`. Defaults to `None`.
         """
-        if isinstance(mask, dict):
-            ret = [(k, _image_mask_single(self.tracks.loc[k], v, channel,
-                                          pos_columns))
-                   for k, v in mask.items()]
-            self.tracks = pd.concat([r[1] for r in ret],
-                                    keys=[r[0] for r in ret])
-        else:
+        if isinstance(mask, np.ndarray):
             self.tracks = _image_mask_single(self.tracks, mask, channel,
                                              pos_columns)
+        else:
+            ret = [(k, _image_mask_single(self.tracks.loc[k], v, channel,
+                                          pos_columns))
+                   for k, v in mask]
+            self.tracks = pd.concat([r[1] for r in ret],
+                                    keys=[r[0] for r in ret])
 
     def reset(self):
         """Undo any filtering
