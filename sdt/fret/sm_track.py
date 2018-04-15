@@ -385,7 +385,8 @@ class SmFretTracker:
         # Total mass upon donor excitation
         d_mass = np.asanyarray(don[:, 0] + acc[:, 0], dtype=float)
         # FRET efficiency
-        with np.errstate(divide="ignore"):
+        with np.errstate(divide="ignore", invalid="ignore"):
+            # ignore divide by zero and 0 / 0
             eff = acc[:, 0] / d_mass
 
         sto = np.empty(len(don))  # pre-allocate
@@ -426,7 +427,8 @@ class SmFretTracker:
             am = a_mass_func(d[:, 1])
             # calculate stoichiometry
             dm = d[:, 0] + a[:, 0]
-            with np.errstate(divide="ignore"):
+            with np.errstate(divide="ignore", invalid="ignore"):
+                # ignore divide by zero and 0 / 0
                 s = dm / (dm + am)
 
             sto[p_mask] = s
