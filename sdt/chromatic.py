@@ -16,13 +16,9 @@ import matplotlib as mpl
 
 import slicerator
 
-from . import roi
+from . import roi, config
 
 
-pos_columns = ["x", "y"]
-"""Names of the columns describing the coordinates of the features in
-    pandas.DataFrames.
-"""
 channel_names = ["channel1", "channel2"]
 """Names of the two channels."""
 
@@ -52,15 +48,18 @@ class Corrector(object):
         of channel 1 and channel 2 respectively, embedded in a vector space of
         higher dimension.
     """
-    def __init__(self, feat1, feat2, pos_columns=pos_columns,
+    @config.use_defaults
+    def __init__(self, feat1, feat2, pos_columns=None,
                  channel_names=channel_names):
         """Parameters
         ----------
         feat1, feat2 : list of pandas.DataFrame or pandas.DataFrame
             Set the `feat1` and `feat2` attribute (turning it into a list
             if it is a single DataFrame)
-        pos_columns : list of str, optional
-            Set the `pos_columns` attribute.
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
         channel_names : list of str, optional
             Set the `channel_names` attribute.
         """
@@ -362,8 +361,9 @@ class Corrector(object):
             raise ValueError("Unknown format: {}".format(fmt))
 
     @staticmethod
+    @config.use_defaults
     def load(file, fmt="npz", key=("chromatic_param1", "chromatic_param2"),
-             pos_columns=pos_columns):
+             pos_columns=None):
         """Read paramaters from a file and construct a `Corrector`
 
         Parameters
@@ -382,12 +382,13 @@ class Corrector(object):
 
         Other parameters
         ----------------
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
         key : tuple of str, optional
             Name of the variables in the saved file (does not apply to "wrp").
             Defaults to ("chromatic_param1", "chromatic_param2").
-        pos_columns : list of str, optional
-            Sets the `pos_columns` attribute. Defaults to the `pos_columns`
-            attribute of the module.
         """
         corr = Corrector(None, None, pos_columns=pos_columns)
         if fmt == "npz":
