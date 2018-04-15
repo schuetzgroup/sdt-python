@@ -23,6 +23,9 @@ class SmFretTracker:
     excitation_seq : numpy.ndarray, dtype("<U1")
         Excitation sequence. "d" stands for donor, "a" for acceptor, anything
         else describes other kinds of frames which are to be ignored.
+
+        One needs only specify the shortest sequence that is repeated,
+        i. e. "ddddaddddadddda" is the same as "dddda".
     excitation_frames : dict
         Maps the excitation types in :py:attr:`excitation_seq` to the frame
         corresponding frame numbers (modulo the length of
@@ -81,6 +84,9 @@ class SmFretTracker:
             Excitation sequence. "d" stands for donor, "a" for acceptor,
             anything else describes other kinds of frames which are to be
             ignored.
+
+            One needs only specify the shortest sequence that is repeated,
+            i. e. "ddddaddddadddda" is the same as "dddda".
         chromatic_corr : chromatic.Corrector
             Corrector used to overlay channels
         link_radius : float
