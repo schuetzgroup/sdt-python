@@ -4,30 +4,47 @@ import os
 import pandas as pd
 import numpy as np
 
-from sdt.roi import ROI
-from sdt.chromatic import Corrector
-from sdt.io import load
+from sdt import roi, chromatic, io
 
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_chromatic")
 
 
+class TestAffineTrafo(unittest.TestCase):
+    def setUp(self):
+        self.params = np.array([[2, 0, 1], [0, 3, 2], [0, 0, 1]])
+        self.loc = np.array([[1, 2], [3, 4], [5, 6]])
+        self.result = np.array([[3, 8], [7, 14], [11, 20]])
+
+    def test_affine_trafo_square(self):
+        """chromatic._affine_trafo: (n + 1, n + 1) params"""
+        t = chromatic._affine_trafo(self.params, self.loc)
+        np.testing.assert_allclose(t, self.result)
+
+    def test_affine_trafo_rect(self):
+        """chromatic._affine_trafo: (n, n + 1) params"""
+        t = chromatic._affine_trafo(self.params[:-1, :], self.loc)
+        np.testing.assert_allclose(t, self.result)
+
+
 class TestChromaticCorrector(unittest.TestCase):
     def setUp(self):
-        self.roi_left = ROI((0, 0), (231, 121))
-        self.roi_right = ROI((230, 0), (461, 121))
-        self.loc_data = load(os.path.join(data_path, "beads1.h5"))
-        self.corrector = Corrector(self.roi_left(self.loc_data),
-                                   self.roi_right(self.loc_data))
+        self.roi_left = roi.ROI((0, 0), (231, 121))
+        self.roi_right = roi.ROI((230, 0), (461, 121))
+        self.loc_data = io.load(os.path.join(data_path, "beads1.h5"))
+        self.corrector = chromatic.Corrector(self.roi_left(self.loc_data),
+                                             self.roi_right(self.loc_data))
 
     def test_vectors_cartesian(self):
+        """chromatic.Corrector._vectors_cartesian"""
         dx_orig, dy_orig = np.load(os.path.join(data_path, "vectors.npy"))
         dx, dy = self.corrector._vectors_cartesian(self.corrector.feat1[0])
         np.testing.assert_allclose(dx, dx_orig)
         np.testing.assert_allclose(dy, dy_orig)
 
     def test_all_scores_cartesian(self):
+        """chromatic.Corrector._all_scores_cartesian"""
         v1 = self.corrector._vectors_cartesian(self.corrector.feat1[0])
         v2 = self.corrector._vectors_cartesian(self.corrector.feat2[0])
         s = self.corrector._all_scores_cartesian(v1, v2, 0.05, 0.)
@@ -35,6 +52,7 @@ class TestChromaticCorrector(unittest.TestCase):
         np.testing.assert_allclose(s, s_orig)
 
     def test_pairs_from_score(self):
+        """chromatic.Corrector._pairs_from_score"""
         score = np.load(os.path.join(data_path, "scores.npy"))
         p = self.corrector._pairs_from_score(self.corrector.feat1[0],
                                              self.corrector.feat2[0],
@@ -43,34 +61,38 @@ class TestChromaticCorrector(unittest.TestCase):
         np.testing.assert_allclose(p, p_orig)
 
     def test_pairs_no_frame(self):
+        """chromatic.Corrector.determine_parameters: no "frame" column"""
         loc_data2 = self.loc_data.copy()
         loc_data2.drop("frame", 1, inplace=True)
-        corrector2 = Corrector(self.roi_left(loc_data2),
-                               self.roi_right(loc_data2))
+        corrector2 = chromatic.Corrector(self.roi_left(loc_data2),
+                                         self.roi_right(loc_data2))
         corrector2.determine_parameters()
         self.corrector.determine_parameters()
         np.testing.assert_allclose(corrector2.pairs, self.corrector.pairs)
 
     def test_pairs_multi_file(self):
-        corrector2 = Corrector((self.roi_left(self.loc_data),)*2,
-                               (self.roi_right(self.loc_data),)*2)
+        """chromatic.Corrector.determine_parameters: list of input features"""
+        corrector2 = chromatic.Corrector((self.roi_left(self.loc_data),)*2,
+                                         (self.roi_right(self.loc_data),)*2)
         corrector2.determine_parameters()
         self.corrector.determine_parameters()
         np.testing.assert_allclose(corrector2.pairs,
                                    pd.concat((self.corrector.pairs,)*2))
 
     def test_pairs_multi_frame(self):
+        """chromatic.Corrector.determine_parameters: multiple frames"""
         loc_data2 = self.loc_data.copy()
         loc_data2["frame"] += 1
         loc_data_concat = pd.concat([self.loc_data, loc_data2])
-        corrector2 = Corrector(self.roi_left(loc_data_concat),
-                               self.roi_right(loc_data_concat))
+        corrector2 = chromatic.Corrector(self.roi_left(loc_data_concat),
+                                         self.roi_right(loc_data_concat))
         corrector2.determine_parameters()
         self.corrector.determine_parameters()
         np.testing.assert_allclose(corrector2.pairs,
                                    pd.concat((self.corrector.pairs,)*2))
 
     def test_call_dataframe(self):
+        """chromatic.Corrector.__call__: DataFrame arg"""
         self.corrector.determine_parameters()
         data = self.roi_left(self.loc_data)
 
@@ -79,6 +101,7 @@ class TestChromaticCorrector(unittest.TestCase):
         np.testing.assert_allclose(data.as_matrix(), orig)
 
     def test_call_img(self):
+        """chromatic.Corrector.__call__: image arg"""
         self.corrector.determine_parameters()
         img = np.arange(100)[:, np.newaxis] + np.arange(100)[np.newaxis, :]
 
@@ -87,7 +110,7 @@ class TestChromaticCorrector(unittest.TestCase):
         np.testing.assert_allclose(img_corr, orig)
 
     def test_call_img_callable_cval(self):
-        """chromatic.Corrector: Test __call__ on img data with callable cval"""
+        """chromatic.Corrector.__call__: image arg with callable `cval`"""
         self.corrector.determine_parameters()
         img = np.arange(100)[:, np.newaxis] + np.arange(100)[np.newaxis, :]
 

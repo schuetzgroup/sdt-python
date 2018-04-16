@@ -19,8 +19,25 @@ import slicerator
 from . import roi, config
 
 
-channel_names = ["channel1", "channel2"]
-"""Names of the two channels."""
+def _affine_trafo(params, loc):
+    """Do an affine transformation
+
+    Parameters
+    ----------
+    params : numpy.ndarray, shape(n, n+1) or shape(n+1, n+1)
+        Transformation matrix. The top-left (n, n) block is used as the
+        linear part of the transformation while the top-right column of n
+        entries specifies the shift.
+    loc : numpy.ndarray, shape(m, n)
+        Array of m n-dimensional coordinate tuples to be transformed.
+
+    Returns
+    -------
+    numpy.ndarray, shape(m, n)
+        Transformed coordinate tuples
+    """
+    ndim = params.shape[1] - 1
+    return loc @ params[:ndim, :ndim].T + params[:ndim, ndim]
 
 
 class Corrector(object):
@@ -49,19 +66,22 @@ class Corrector(object):
         higher dimension.
     """
     @config.use_defaults
-    def __init__(self, feat1, feat2, pos_columns=None,
-                 channel_names=channel_names):
+    def __init__(self, feat1=None, feat2=None, pos_columns=None,
+                 channel_names=["channel1", "channel2"]):
         """Parameters
         ----------
-        feat1, feat2 : list of pandas.DataFrame or pandas.DataFrame
+        feat1, feat2 : list of pandas.DataFrame or pandas.DataFrame or None, optional
             Set the `feat1` and `feat2` attribute (turning it into a list
-            if it is a single DataFrame)
+            if it is a single DataFrame). Can also be `None`, but in this case
+            :py:meth:`find_pairs` and :py:meth:`determine_parameters` will
+            not work. Defaults to `None`.
         pos_columns : list of str or None, optional
             Names of the columns describing the coordinates of the features in
             :py:class:`pandas.DataFrames`. If `None`, use the defaults from
             :py:mod:`config`. Defaults to `None`.
         channel_names : list of str, optional
-            Set the `channel_names` attribute.
+            Set the `channel_names` attribute. Defaults to ``["channel1",
+            "channel2"]``.
         """
         self.feat1 = [feat1] if isinstance(feat1, pd.DataFrame) else feat1
         self.feat2 = [feat2] if isinstance(feat2, pd.DataFrame) else feat2
@@ -136,8 +156,7 @@ class Corrector(object):
         """
         p = []
         for f1, f2 in zip(self.feat1, self.feat2):
-            if ("frame" in f1.columns and
-                    "frame" in f2.columns):
+            if "frame" in f1.columns and "frame" in f2.columns:
                 # If there is a "frame" column, split data according to
                 # frame number since pairs can only be in the same frame
                 data = ((f1[f1["frame"] == i], f2[f2["frame"] == i])
@@ -162,36 +181,32 @@ class Corrector(object):
         """Determine parameters for the affine transformation
 
         An affine transformation is used to map x and y coordinates of `feat1`
-        to to those of `feat2`. This requires :py:meth:`find_pairs` to be run
-        first or the :py:attr:`pairs` attribute to be set manually.
+        to to those of `feat2`. This requires :py:attr:`pairs` to be set, e.g.
+        by running :py:meth:`find_pairs`.
         The result is saved as :py:attr:`parameters1` (transform of channel 1
         coordinates to channel 2) and :py:attr:`parameters2` (transform of
-        channel 2  coordinates to channel 1) attributes. In an ideal world,
-        these would be inverse, but the world is hardly ever ideal.
+        channel 2  coordinates to channel 1) attributes.
 
-        The transformations are calculated by a linear least squares fit
-        of the embedding of the affine space into a higher dimensional vector
-        space.
+        :py:attr:`parameters1` is calculated by determining the affine
+        transformation between the :py:attr:`pairs` entries using a linear
+        least squares fit. :py:attr:`parameters2` is its inverse. Therefore,
+        results may be slightly different depending on what is channel1 and
+        what is channel2.
         """
-        one_padding = np.ones((len(self.pairs), 1))
         ch1_name = self.channel_names[0]
         ch2_name = self.channel_names[1]
-        affine_embedding_footer = np.zeros((1, len(self.pos_columns) + 1))
-        affine_embedding_footer[-1, -1] = 1  # last column is translation
 
-        # first transform
-        coeff = np.hstack((self.pairs[ch1_name][self.pos_columns],
-                           one_padding))
-        rhs = self.pairs[ch2_name][self.pos_columns].as_matrix()
-        params = np.linalg.lstsq(coeff, rhs)[0].T
-        self.parameters1 = np.vstack((params, affine_embedding_footer))
+        loc1 = self.pairs[ch1_name][self.pos_columns].values
+        loc2 = self.pairs[ch2_name][self.pos_columns].values
+        ndim = loc1.shape[1]
 
-        # second transform
-        coeff = np.hstack((self.pairs[ch2_name][self.pos_columns],
-                           one_padding))
-        rhs = self.pairs[ch1_name][self.pos_columns].as_matrix()
-        params = np.linalg.lstsq(coeff, rhs)[0].T
-        self.parameters2 = np.vstack((params, affine_embedding_footer))
+        self.parameters1 = np.empty((ndim + 1,) * 2)
+        loc1_embedded = np.hstack([loc1, np.ones((len(loc1), 1))])
+        self.parameters1[:ndim, :] = np.linalg.lstsq(loc1_embedded, loc2)[0].T
+        self.parameters1[ndim, :ndim] = 0.
+        self.parameters1[ndim, ndim] = 1.
+
+        self.parameters2 = np.linalg.inv(self.parameters1)
 
     def __call__(self, data, channel=2, inplace=False, mode="constant",
                  cval=0.0):
@@ -232,31 +247,22 @@ class Corrector(object):
         if isinstance(data, pd.DataFrame):
             if not inplace:
                 data = data.copy()
-            if channel == 1:
-                corr_coords = np.dot(data[self.pos_columns].as_matrix(),
-                                     self.parameters1[:-1, :-1].T)
-                corr_coords += self.parameters1[:-1, -1]
-            if channel == 2:
-                corr_coords = np.dot(data[self.pos_columns].as_matrix(),
-                                     self.parameters2[:-1, :-1].T)
-                corr_coords += self.parameters2[:-1, -1]
-
-            data[self.pos_columns] = corr_coords
+            loc = data[self.pos_columns].values
+            par = getattr(self, "parameters{}".format(channel))
+            data[self.pos_columns] = _affine_trafo(par, loc)
 
             if not inplace:
                 # copied previously, now return
                 return data
-        if isinstance(data, roi.PathROI):
+        elif isinstance(data, roi.PathROI):
             t = mpl.transforms.Affine2D(
                 getattr(self, "parameters{}".format(channel)))
             return roi.PathROI(t.transform_path(data.path),
                                buffer=data.buffer,
                                no_image=(data.image_mask is None))
         else:
-            if channel == 1:
-                parms = np.linalg.inv(self.parameters1)
-            if channel == 2:
-                parms = np.linalg.inv(self.parameters2)
+            parms = getattr(
+                self, "parameters{}".format(2 if channel == 1 else 1))
 
             @slicerator.pipeline
             def corr(img):
