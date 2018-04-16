@@ -1,3 +1,4 @@
+"""PELT changepoint detection"""
 import math
 
 import numpy as np
@@ -6,14 +7,42 @@ from ..helper import numba
 
 
 class CostL1:
+    """L1 norm cost
+
+    Attributes
+    ----------
+    min_size : int
+        Minimum size of a segment that works with this cost function
+    data : numpy.ndarray, shape(n, m)
+        m datasets of n data points
+    """
     def __init__(self):
         self.min_size = 2
         self.data = np.empty((0, 0))
 
     def initialize(self, data):
+        """Initialze cost function
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+        m datasets of n data points
+        """
         self.data = data
 
     def cost(self, t, s):
+        """Calculate cost from time `t` to time `s`
+
+        Parameters
+        ----------
+        t, s : int
+            Start and end point
+
+        Returns
+        -------
+        float
+            Cost
+        """
         if s - t < self.min_size:
             raise ValueError("t - s less than min_size")
 
@@ -31,14 +60,42 @@ CostL1Numba = numba.jitclass(
 
 
 class CostL2:
+    """L2 norm cost
+
+    Attributes
+    ----------
+    min_size : int
+        Minimum size of a segment that works with this cost function
+    data : numpy.ndarray, shape(n, m)
+        m datasets of n data points
+    """
     def __init__(self):
         self.min_size = 2
         self.data = np.empty((0, 0))
 
     def initialize(self, data):
+        """Initialze cost function
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+        m datasets of n data points
+        """
         self.data = data
 
     def cost(self, t, s):
+        """Calculate cost from time `t` to time `s`
+
+        Parameters
+        ----------
+        t, s : int
+            Start and end point
+
+        Returns
+        -------
+        float
+            Cost
+        """
         if s - t < self.min_size:
             raise ValueError("t - s less than min_size")
 
@@ -56,6 +113,42 @@ CostL2Numba = numba.jitclass(
 
 
 def segmentation(cost, min_size, jump, penalty, max_exp_cp):
+    """PELT changepoint detection
+
+    Implementation of the PELT algorithm [1]_. It is compatible with the
+    implementation from `ruptures <https://github.com/deepcharles/ruptures>`_.
+
+    Usually, this function will not be used directly. Users may find the
+    :py:class:`Pelt` class more convenient.
+
+    Parameters
+    ----------
+    cost : cost class instance
+        This needs a `data` attribute with the data to find changepoints in
+        and a `cost` function that computes the cost of a data segment.
+        See :py:class:`CostL1` and :py:class:`CostL2` for details.
+    min_size : int
+        Minimum length of segments between change points
+    jump : int
+        Consider only every `jump`-th data point to speed up calculation.
+    penalty : float
+        Penalty of creating a new changepoint
+    max_exp_cp : int
+        Expected maximum number of changepoints. Memory for at least this many
+        changepoints will be pre-allocated. If there are more, a larger array
+        will be allocated, but this incurs some overhead.
+
+    Returns
+    -------
+    numpy.ndarray, shape(n)
+        Array of changepoints
+
+    References
+    ----------
+    .. [1] Killick et al.: "Optimal Detection of Changepoints With a Linear
+        Computational Cost", Journal of the American Statistical Association,
+        Informa UK Limited, 2012, 107, 1590–1598
+    """
     n_samples = len(cost.data)
     times = np.arange(0, n_samples + jump, jump)
     times[-1] = n_samples
@@ -119,9 +212,45 @@ segmentation_numba = numba.jit(nopython=True, nogil=True)(segmentation)
 
 
 class Pelt:
+    """PELT changepoint detection
+
+    Implementation of the PELT algorithm [1]_. It is compatible with the
+    implementation from `ruptures <https://github.com/deepcharles/ruptures>`_.
+
+    Examples
+    --------
+    >>> det = Pelt(cost="l2", min_size=1, jump=1)
+    >>> # Make some data with a changepoint at t = 10
+    >>> data = np.concatenate([np.ones(10), np.zeros(10)])
+    >>> det.find_changepoints(data, 1)
+    array([10])
+
+    References
+    ----------
+    .. [1] Killick et al.: "Optimal Detection of Changepoints With a Linear
+        Computational Cost", Journal of the American Statistical Association,
+        Informa UK Limited, 2012, 107, 1590–1598
+    """
     cost_map = dict(l1=(CostL1, CostL1Numba), l2=(CostL2, CostL2Numba))
 
     def __init__(self, cost="l2", min_size=2, jump=5, engine="numba"):
+        """Parameters
+        ----------
+        cost : cost class or str, optional
+            If "l1", use :py:class:`CostL1`, "l2", use :py:class:`CostL2`.
+            A cost class instance can be passed directly; this needs a `data`
+            attribute with the data to find changepoints in
+            and a `cost` function that computes the cost of a data segment.
+            See :py:class:`CostL1` and :py:class:`CostL2` for details.
+        min_size : int, optional
+            Minimum length of segments between change points. Defaults to 2.
+        jump : int, optional
+            Consider only every `jump`-th data point to speed up calculation.
+            Defaults to 5.
+        engine : {"python", "numba"}, optional
+            If "numba", use the numba-accelerated implementation. Defaults to
+            "numba".
+        """
         self.use_numba = (engine == "numba") and numba.numba_available
 
         if isinstance(cost, str):
@@ -134,6 +263,25 @@ class Pelt:
         self.jump = jump
 
     def find_changepoints(self, data, penalty, max_exp_cp=10):
+        """Do the changpoint detection on `data`
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+            m datasets of n data points
+        penalty : float
+            Penalty of creating a new changepoint
+        max_exp_cp : int, optional
+            Expected maximum number of changepoints. Memory for at least this
+            many changepoints will be pre-allocated. If there are more, a
+            larger array will be allocated, but this incurs some overhead.
+            Defaults to 10.
+
+        Returns
+        -------
+        numpy.ndarray, shape(n)
+            Array of changepoints
+        """
         if data.ndim == 1:
             data = data.reshape((-1, 1))
         self.cost.initialize(data)
