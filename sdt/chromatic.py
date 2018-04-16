@@ -88,8 +88,8 @@ class Corrector(object):
         self.pos_columns = pos_columns
         self.channel_names = channel_names
         self.pairs = None
-        self.parameters1 = np.eye(3)
-        self.parameters2 = np.eye(3)
+        self.parameters1 = np.eye(len(pos_columns) + 1)
+        self.parameters2 = np.eye(len(pos_columns) + 1)
 
     def determine_parameters(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
                              ambiguity_factor=0.8):
