@@ -315,21 +315,11 @@ class Corrector(object):
         diff1 = np.sqrt(np.sum(diff1**2, axis=1))
 
         c2 = self.pairs[self.channel_names[1]]
-        c2_corr = self(c2, channel=2)
-        diff2 = (c2_corr[self.pos_columns] -
-                 self.pairs[self.channel_names[0]][self.pos_columns])
-        diff2 = np.sqrt(np.sum(diff2**2, axis=1))
 
-        ax[0].scatter(np.zeros(len(diff1)), diff1, marker="x", color="blue")
-        ax[0].scatter(np.ones(len(diff2)), diff2, marker="+", color="green")
-        ax[0].set_xticks([0, 1])
-        if not safe_labels:
-            ax[0].set_xticklabels([r"$1\rightarrow 2$", r"$2\rightarrow 1$"])
-        else:
-            ax[0].set_xticklabels(["1 > 2", "2 > 1"])
-        ax[0].set_xlim(-0.5, 1.5)
-        ax[0].set_ylim(0)
+        ax[0].hist(diff1, bins=20)
         ax[0].set_title("Error")
+        ax[0].set_xlabel("distance")
+        ax[0].set_ylabel("# data points")
 
         ax[1].scatter(c1_corr[self.pos_columns[0]],
                       c1_corr[self.pos_columns[1]], marker="x", color="blue")
@@ -337,7 +327,10 @@ class Corrector(object):
                       c2[self.pos_columns[1]], marker="+", color="red")
         ax[1].set_aspect(1, adjustable="datalim")
         ax[1].set_title("Overlay")
+        ax[1].set_xlabel("x")
+        ax[1].set_ylabel("y")
 
+        ax[0].figure.tight_layout()
         ax[0].figure.tight_layout()
 
     def save(self, file, fmt="npz", key=("chromatic_param1",
