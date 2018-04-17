@@ -4,6 +4,7 @@ import math
 import numpy as np
 import scipy.special
 import scipy.misc
+import scipy.signal
 import functools
 
 from ..helper import numba
@@ -399,7 +400,8 @@ class BayesOffline:
         else:
             self.finder_func = finder
 
-    def find_changepoints(self, data, truncate=-np.inf, full_output=False):
+    def find_changepoints(self, data, truncate=-np.inf, prob_threshold=None,
+                          full_output=False):
         """Find changepoints in datasets
 
         Parameters
@@ -411,6 +413,11 @@ class BayesOffline:
             negligible contributions. This parameter is the exponent of the
             threshold. A sensible value would be e.g. -20. Defaults to -inf,
             i.e. no truncation.
+        prob_threshold : float or None, optional
+            If this is a float, local maxima in the changepoint probabilities
+            are considered changepoints, if they are above the threshold. In
+            that case, an array of changepoints is returned. If `None`,
+            an array of probabilities is returned. Defaults to `None`.
         full_output : bool, optional
             Whether to return only the probabilities for a changepoint as a
             function of time or the full information. Defaults to False, i.e.
@@ -418,24 +425,30 @@ class BayesOffline:
 
         Returns
         -------
-        prob : numpy.ndarray
-            Probabilities for a changepoint as a function of time
+        cp_or_prob : numpy.ndarray
+            Probabilities for a changepoint as a function of time (if
+            ``prob_threshold=None``) or the enumeration of changepoints (if
+            `prob_threshold` is not `None`).
         Q : numpy.ndarray
             ``Q[t]`` is the log-likelihood of data ``[t, n]``. Only returned
-            if ``full_output=True``.
+            if ``full_output=True`` and ``prob_threshold=None``.
         P : numpy.ndarray
             ``P[t, s]`` is the log-likelihood of a datasequence ``[t, s]``,
             given there is no changepoint between ``t`` and ``s``. Only
-            returned if ``full_output=True``.
+            returned if ``full_output=True`` and ``prob_threshold=None``.
         Pcp : numpy.ndarray
             ``Pcp[i, t]`` is the log-likelihood that the ``i``-th changepoint
             is at time step ``t``. To actually get the probility of a
             changepoint at time step ``t``, sum the probabilities (which is
-            `prob`). Only returned if ``full_output=True``.
+            `prob`). Only returned if ``full_output=True`` and
+            ``prob_threshold=None``.
         """
         Q, P, Pcp = self.finder_func(data, truncate)
         prob = np.exp(Pcp).sum(axis=0)
-        if full_output:
+        if prob_threshold is not None:
+            lmax = scipy.signal.argrelmax(prob)[0]
+            return lmax[prob[lmax] >= prob_threshold]
+        elif full_output:
             return prob, Q, P, Pcp
         else:
             return prob

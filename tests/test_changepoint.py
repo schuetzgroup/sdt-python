@@ -131,12 +131,12 @@ class TestBayesOffline(unittest.TestCase):
         self.engine = "python"
 
     def test_engine(self):
-        """changepoint.bayes_offline.BayesOffline: set python engine"""
+        """changepoint.BayesOffline: set python engine"""
         f = offline.BayesOffline("const", "gauss", engine=self.engine)
         self.assertIsInstance(f.finder_func, types.FunctionType)
 
     def test_offline_changepoint_gauss_univ(self):
-        """changepoint.bayes_offline.BayesOffline: Gauss, univariate
+        """changepoint.BayesOffline: Gauss, univariate
 
         This is a regression test against the output of the original
         implementation.
@@ -150,7 +150,7 @@ class TestBayesOffline(unittest.TestCase):
         np.testing.assert_allclose(Pcp, orig["Pcp"], rtol=1e-6)
 
     def test_offline_changepoint_full_multiv(self):
-        """changepoint.bayes_offline.BayesOffline: full cov., multiv
+        """changepoint.BayesOffline: full cov., multiv
 
         This is a regression test against the output of the original
         implementation.
@@ -164,6 +164,12 @@ class TestBayesOffline(unittest.TestCase):
         np.testing.assert_allclose(P, orig["P"])
         np.testing.assert_allclose(Pcp, orig["Pcp"], rtol=1e-6)
 
+    def test_find_changepoints_prob_thresh(self):
+        """changepoint.BayesOffline.find_changepoints: `prob_threshold`"""
+        f = offline.BayesOffline("const", "gauss", engine=self.engine)
+        cp = f.find_changepoints(self.data, truncate=-20, prob_threshold=0.2)
+        np.testing.assert_array_equal(cp, [30, 69])
+
 
 @unittest.skipIf(not numba.numba_available, "Numba not available")
 class TestBayesOfflineNumba(TestBayesOffline):
@@ -172,13 +178,13 @@ class TestBayesOfflineNumba(TestBayesOffline):
         self.engine = "numba"
 
     def test_engine(self):
-        """changepoint.bayes_offline.BayesOffline: set numba engine"""
+        """changepoint.BayesOffline: set numba engine"""
         f = offline.BayesOffline("const", "gauss", engine=self.engine)
         from numba.dispatcher import Dispatcher
         self.assertIsInstance(f.finder_func, Dispatcher)
 
     def test_offline_changepoint_gauss_univ(self):
-        """changepoint.bayes_offline.BayesOffline: Gauss, numba
+        """changepoint.BayesOffline: Gauss, numba
 
         This is a regression test against the output of the original
         implementation.
@@ -186,12 +192,16 @@ class TestBayesOfflineNumba(TestBayesOffline):
         super().test_offline_changepoint_gauss_univ()
 
     def test_offline_changepoint_full_multiv(self):
-        """changepoint.bayes_offline.BayesOffline: full cov., numba
+        """changepoint.BayesOffline: full cov., numba
 
         This is a regression test against the output of the original
         implementation.
         """
         super().test_offline_changepoint_full_multiv()
+
+    def test_find_changepoints_prob_thresh(self):
+        """changepoint.BayesOffline.find_changepoints: `prob_threshold`"""
+        super().test_find_changepoints_prob_thresh()
 
 
 class TestOnlineHazard(unittest.TestCase):
