@@ -2,7 +2,7 @@
 import math
 
 import numpy as np
-from scipy import stats
+from scipy import stats, signal
 
 from ..helper import numba
 
@@ -249,7 +249,7 @@ class BayesOnline:
         new_p = self.finder_single(x, old_p, self.observation_likelihood)
         self.probabilities.append(new_p)
 
-    def find_changepoints(self, data):
+    def find_changepoints(self, data, past=3, prob_threshold=None):
         """Analyze dataset
 
         This resets the detector and calls :py:meth:`update` on all data
@@ -259,6 +259,27 @@ class BayesOnline:
         ----------
         data : array-like
             Dataset
+        past : int, optional
+            How many datapoints into the past to look. Larger values will
+            increase robustness, but also latency, meaning that if `past`
+            equals some number `x`, a changepoint within the last `x` data
+            points cannot be detected. Defaults to 3.
+        prob_threshold : float or None, optional
+            If this is a float, local maxima in the changepoint probabilities
+            are considered changepoints, if they are above the threshold. In
+            that case, an array of changepoints is returned. If `None`,
+            an array of probabilities is returned. Defaults to `None`.
+
+        Returns
+        -------
+        numpy.ndarray
+            Probabilities for a changepoint as a function of time (if
+            ``prob_threshold=None``) or the enumeration of changepoints (if
+            `prob_threshold` is not `None`). Note that while the algorithm
+            sets the probability for a changepoint at index 0 to 100%
+            (meaning that there is a changepoint before the start of the
+            sequence), the returned probability array has the 0-th entry set
+            to h0.
         """
         self.reset()
 
@@ -271,6 +292,14 @@ class BayesOnline:
             for x in data:
                 self.update(x)
 
+        prob = self.get_probabilities(past)
+        prob[0] = 0
+        if prob_threshold is not None:
+            lmax = signal.argrelmax(prob)[0]
+            return lmax[prob[lmax] >= prob_threshold]
+        else:
+            return prob
+
     def get_probabilities(self, past):
         """Get changepoint probabilities
 
@@ -278,7 +307,9 @@ class BayesOnline:
         given by the `past` parameter) into the past to increase robustness.
 
         There is always 100% probability that there was a changepoint at the
-        start of the signal; one should filter that out if necessary.
+        start of the signal due to how the algorithm is implemented; one should
+        filter that out if necessary or use :py:meth:`find_changepoints`,
+        which does that for you.
 
         Parameters
         ----------

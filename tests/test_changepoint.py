@@ -202,7 +202,7 @@ class TestBayesOfflineNumba(TestBayesOffline):
         super().test_offline_changepoint_full_multiv()
 
     def test_find_changepoints_prob_thresh(self):
-        """changepoint.BayesOffline.find_changepoints: `prob_threshold`"""
+        """changepoint.BayesOffline.find_changepoints: `prob_thresh` (numba)"""
         super().test_find_changepoints_prob_thresh()
 
 
@@ -308,11 +308,11 @@ class TestOnlineFinderPython(unittest.TestCase):
         self.orig = np.load(os.path.join(data_path, "online.npz"))["R"]
 
     def test_engine(self):
-        """changepoint.bayes_online.BayesOnline: set python engine"""
+        """changepoint.BayesOnline: set python engine"""
         self.assertIsInstance(self.finder.finder_single, types.FunctionType)
 
     def test_reset(self):
-        """changepoint.bayes_online.BayesOnline.reset"""
+        """changepoint.BayesOnline.reset"""
         self.finder.update(self.data[0])
         self.finder.update(self.data[1])
         self.finder.reset()
@@ -320,7 +320,7 @@ class TestOnlineFinderPython(unittest.TestCase):
         np.testing.assert_equal(self.finder.probabilities, [np.array([1])])
 
     def test_update(self):
-        """changepoint.bayes_online.BayesOnline.update
+        """changepoint.BayesOnline.update
 
         This is a regression test against the output of the original
         implementation.
@@ -335,7 +335,7 @@ class TestOnlineFinderPython(unittest.TestCase):
                                    self.orig[:3, 2])
 
     def test_find_changepoints(self):
-        """changepoint.bayes_online.BayesOnline.find_changepoints
+        """changepoint.BayesOnline.find_changepoints
 
         This is a regression test against the output of the original
         implementation.
@@ -346,8 +346,20 @@ class TestOnlineFinderPython(unittest.TestCase):
             R[:i+1, i] = p
         np.testing.assert_allclose(R, self.orig)
 
+    def test_find_changepoints_prob_thresh(self):
+        """changepoint.BayesOnline.find_changepoints: `prob_threshold`"""
+        cp = self.finder.find_changepoints(self.data, prob_threshold=0.2)
+        np.testing.assert_array_equal(cp, [30, 70])
+
+    def test_find_changepoints_prob(self):
+        """changepoint.BayesOnline.find_changepoints: returned probabilites"""
+        prob = self.finder.find_changepoints(self.data, past=5)
+        exp = self.finder.get_probabilities(5)
+        exp[0] = 0
+        np.testing.assert_allclose(prob, exp)
+
     def test_get_probabilities(self):
-        """changepoint.bayes_online.BayesOnline.get_probabilities"""
+        """changepoint.BayesOnline.get_probabilities"""
         self.finder.find_changepoints(self.data)
         np.testing.assert_allclose(self.finder.get_probabilities(10),
                                    self.orig[10, 10:-1])
@@ -362,16 +374,16 @@ class TestOnlineFinderNumba(TestOnlineFinderPython):
                                          engine="numba")
 
     def test_engine(self):
-        """changepoint.bayes_online.BayesOnline: set numba engine"""
+        """changepoint.BayesOnline: set numba engine"""
         from numba.dispatcher import Dispatcher
         self.assertIsInstance(self.finder.finder_single, Dispatcher)
 
     def test_reset(self):
-        """changepoint.bayes_online.BayesOnline.reset (numba)"""
+        """changepoint.BayesOnline.reset (numba)"""
         super().test_reset()
 
     def test_update(self):
-        """changepoint.bayes_online.BayesOnline.update (numba)
+        """changepoint.BayesOnline.update (numba)
 
         This is a regression test against the output of the original
         implementation.
@@ -379,7 +391,7 @@ class TestOnlineFinderNumba(TestOnlineFinderPython):
         super().test_update()
 
     def test_find_changepoints(self):
-        """changepoint.bayes_online.BayesOnline.find_changepoints (numba)
+        """changepoint.BayesOnline.find_changepoints (numba)
 
         This is a regression test against the output of the original
         implementation.
@@ -387,8 +399,16 @@ class TestOnlineFinderNumba(TestOnlineFinderPython):
         super().test_find_changepoints()
 
     def test_get_probabilites(self):
-        """changepoint.bayes_online.BayesOnline.get_probabilities (numba)"""
+        """changepoint.BayesOnline.get_probabilities (numba)"""
         super().test_get_probabilities()
+
+    def test_find_changepoints_prob_thresh(self):
+        """changepoint.BayesOnline.find_changepoints: `prob_thresh.` (numba)"""
+        super().test_find_changepoints_prob_thresh()
+
+    def test_find_changepoints_prob(self):
+        """changepoint.BayesOnline.find_changepoints: returned prob. (numba)"""
+        super().test_find_changepoints_prob()
 
 
 class TestPeltCosts(unittest.TestCase):
