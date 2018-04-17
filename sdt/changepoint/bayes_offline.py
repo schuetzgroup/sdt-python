@@ -295,26 +295,28 @@ class BayesOffline:
                           full_cov=(fullcov_obs_likelihood,
                                     fullcov_obs_likelihood_numba))
 
-    def __init__(self, prior, obs_likelihood, prior_params=np.empty(0),
-                 numba_logsumexp=True, engine="numba"):
+    def __init__(self, prior="const", obs_likelihood="gauss",
+                 prior_params=np.empty(0), numba_logsumexp=True,
+                 engine="numba"):
         """Parameters
         ----------
-        prior : {"const", "geometric", "neg_binomial"} or callable
+        prior : {"const", "geometric", "neg_binomial"} or callable, optional
             Prior probabiltiy function. This has to take three parameters, the
             first being the timepoint, the second the data array, and the third
             an array of parameters. See the `prior_params` parameter for
             details. It has to return the prior corresponding to the timepoint.
             If "const", use :py:func:`constant_prior`. If "geometric", use
             :py:func:`geometric_prior`. If "neg_binomial", use
-            :py:func:`neg_binomial_prior`.
+            :py:func:`neg_binomial_prior`. Defaults to "const".
         obs_likelihood : {"gauss", "ifm", "full_cov"} or callable
             Observation likelihood function. This has to take three parameters:
             the data array, the start and the end timepoints. If "gauss", use
             :py:func:`gaussian_obs_likelihood`. If "ifm", use
             :py:func:`ifm_obs_likelihood`. If "full_cov", use
-            :py:func:`fullcov_obs_likelihood`.
-        prior_params : np.ndarray
+            :py:func:`fullcov_obs_likelihood`. Defaults to "gauss".
+        prior_params : np.ndarray, optional
             Parameters to pass as last argument to the prior function.
+            Defaults to an empty array.
 
         Other parameters
         ----------------
