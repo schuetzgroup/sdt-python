@@ -150,24 +150,27 @@ class BayesOnline:
     hazard_map = dict(const=(constant_hazard, constant_hazard_numba))
     likelihood_map = dict(student_t=(StudentT, StudentTNumba))
 
-    def __init__(self, hazard_func, obs_likelihood,
-                 hazard_params=np.empty(0), obs_params=[], engine="numba"):
+    def __init__(self, hazard_func="const", obs_likelihood="student_t",
+                 hazard_params=np.array([250]), obs_params=[0.1, 0.01, 1., 0.],
+                 engine="numba"):
         """Parameters
         ----------
-        hazard_func : "const" or callable
+        hazard_func : "const" or callable, optional
             Hazard function. This has to take two parameters, the first
             being an array of runlengths, the second an array of parameters.
             See the `hazard_params` parameter for details. It has to return
             the hazards corresponding to the runlengths.
-            If "const", use :py:func:`constant_hazard`.
+            If "const", use :py:func:`constant_hazard`. Defaults to "const".
         obs_likelihood : "student_t" or type
             Class implementing the observation likelihood. See
             :py:class:`StudentTPython` for an example. If "student_t", use
-            :py:class:`StudentTPython`.
-        hazard_params : np.ndarray
+            :py:class:`StudentTPython`. Defaults to "student_t".
+        hazard_params : numpy.ndarray, optional
             Parameters to pass as second argument to the hazard function.
-        obs_params : list
+            Defaults to ``numpy.array([250])``.
+        obs_params : list, optional
             Parameters to pass to the `observation_likelihood` constructor.
+            Defaults to ``[0.1, 0.01, 1., 0.]``.
         """
         self.use_numba = (engine == "numba") and numba.numba_available
 
