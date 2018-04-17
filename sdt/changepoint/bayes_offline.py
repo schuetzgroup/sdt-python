@@ -380,18 +380,18 @@ class BayesOffline:
 
                 Q[t] = np.logaddexp(P_next_cp, P[t, n-1] + antiG)
 
-            Pcp = np.full((n-1, n-1), -np.inf)
+            Pcp = np.full((n-1, n), -np.inf)
             for t in range(n-1):
-                Pcp[0, t] = P[0, t] + Q[t + 1] + g[t] - Q[0]
-                if np.isnan(Pcp[0, t]):
-                    Pcp[0, t] = -np.inf
+                Pcp[0, t+1] = P[0, t] + Q[t + 1] + g[t] - Q[0]
+                if np.isnan(Pcp[0, t+1]):
+                    Pcp[0, t+1] = -np.inf
             for j in range(1, n-1):
                 for t in range(j, n-1):
-                    tmp_cond = (Pcp[j-1, j-1:t] + P[j:t+1, t] + Q[t + 1] +
+                    tmp_cond = (Pcp[j-1, j:t+1] + P[j:t+1, t] + Q[t + 1] +
                                 g[0:t-j+1] - Q[j:t+1])
-                    Pcp[j, t] = logsumexp(tmp_cond)
-                    if np.isnan(Pcp[j, t]):
-                        Pcp[j, t] = -np.inf
+                    Pcp[j, t+1] = logsumexp(tmp_cond)
+                    if np.isnan(Pcp[j, t+1]):
+                        Pcp[j, t+1] = -np.inf
 
             return Q, P, Pcp
 

@@ -147,7 +147,8 @@ class TestBayesOffline(unittest.TestCase):
         orig = np.load(os.path.join(data_path, "offline_gauss_univ.npz"))
         np.testing.assert_allclose(Q, orig["Q"])
         np.testing.assert_allclose(P, orig["P"])
-        np.testing.assert_allclose(Pcp, orig["Pcp"], rtol=1e-6)
+        o_pcp = np.hstack([np.full((Pcp.shape[0], 1), -np.inf), orig["Pcp"]])
+        np.testing.assert_allclose(Pcp, o_pcp, rtol=1e-6)
 
     def test_offline_changepoint_full_multiv(self):
         """changepoint.BayesOffline: full cov., multiv
@@ -162,7 +163,8 @@ class TestBayesOffline(unittest.TestCase):
         orig = np.load(os.path.join(data_path, "offline_full_multiv.npz"))
         np.testing.assert_allclose(Q, orig["Q"])
         np.testing.assert_allclose(P, orig["P"])
-        np.testing.assert_allclose(Pcp, orig["Pcp"], rtol=1e-6)
+        o_pcp = np.hstack([np.full((Pcp.shape[0], 1), -np.inf), orig["Pcp"]])
+        np.testing.assert_allclose(Pcp, o_pcp, rtol=1e-6)
 
     def test_find_changepoints_prob_thresh(self):
         """changepoint.BayesOffline.find_changepoints: `prob_threshold`"""
