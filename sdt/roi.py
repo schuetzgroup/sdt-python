@@ -63,8 +63,12 @@ class ROI(object):
             self.bottom_right = tuple(t + s for t, s in zip(top_left, shape))
 
     @property
-    def shape(self):
+    def size(self):
         return tuple(b - t for t, b in zip(self.top_left, self.bottom_right))
+
+    @property
+    def area(self):
+        return np.prod(self.size)
 
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
                  invert=False):
@@ -155,15 +159,21 @@ class PathROI(object):
     Attributes
     ----------
     path : matplotlib.path.Path
-        The path outlining the region of interest. Read-only.
+        The path outlining the region of interest. Do not modifiy.
     buffer : float
         Extra space around the path. Does not affect the size of the image,
         which is just the size of the bounding box of the `polygon`, without
-        `buffer`. Read-only
-    image_mask : numpy.ndarray, dtype=bool
-        Boolean pixel mask of the path. Read-only
-    bounding_rect : numpy.ndarray, shape=(2, 2), dtype=int
-        Integer bounding rectangle of the path
+        `buffer`. Do not modify.
+    image_mask : numpy.ndarray, dtype(bool)
+        Boolean pixel mask of the path
+    bounding_box : numpy.ndarray, shape(2, 2), dtype(float)
+        Bounding box of the path
+    bounding_box_int : numpy.ndarray, shape(2, 2), dtype(int)
+        Integer bounding box of the path
+    area : float
+        Area of the ROI
+    size : numpy.ndarray, shape(2), dtype(float)
+        Extents of the bounding box
     """
     yaml_tag = "!PathROI"
 
@@ -185,54 +195,44 @@ class PathROI(object):
             DataFrames. Defaults to False.
         """
         if isinstance(path, mpl.path.Path):
-            self._path = mpl.path.Path(path.vertices, path.codes)
+            self.path = mpl.path.Path(path.vertices, path.codes)
         else:
-            self._path = mpl.path.Path(path)
+            self.path = mpl.path.Path(path)
 
-        self._buffer = buffer
+        self.buffer = buffer
 
         # calculate bounding box
-        bb = self._path.get_extents()
-        self._top_left, self._bottom_right = bb.get_points()
-        self._top_left = np.floor(self._top_left).astype(np.int)
-        self._bottom_right = np.ceil(self._bottom_right).astype(np.int)
+        self.bounding_box = self.path.get_extents().get_points()
+        self.bounding_box_int = np.array(
+            [np.floor(self.bounding_box[0]),
+             np.ceil(self.bounding_box[1])], dtype=int)
+
+        self.size = self.bounding_box[1] - self.bounding_box[0]
 
         if no_image:
-            self._img_mask = None
+            self.image_mask = None
             return
 
+        self.area = polygon_area(self.path.vertices)
         # if the path is clockwise, the `radius` argument to
         # Path.contains_points needs to be negative to enlarge the ROI
-        buf_sign = -1 if polygon_area(self._path.vertices) < 0 else 1
+        buf_sign = -1 if self.area < 0 else 1
+        # Now that we know the sign, make the area positive
+        self.area = abs(self.area)
 
         # Make ROI polygon, but only for bounding box of the polygon, for
         # performance reasons
-        mask_size = self._bottom_right - self._top_left
+        mask_size = self.bounding_box_int[1] - self.bounding_box_int[0]
         # move polygon to the top left, subtract another half pixel so that
         # coordinates are pixel centers
-        trans = mpl.transforms.Affine2D().translate(*(-self._top_left-0.5))
+        trans = mpl.transforms.Affine2D().translate(
+            *(-self.bounding_box_int[0] - 0.5))
         # checking a lot of points if they are inside the polygon,
         # this is rather slow
         idx = np.indices(mask_size).reshape((2, -1))
-        self._img_mask = self._path.contains_points(
-            idx.T, trans, buf_sign*self._buffer)
-        self._img_mask = self._img_mask.reshape(mask_size)
-
-    @property
-    def path(self):
-        return self._path
-
-    @property
-    def buffer(self):
-        return self._buffer
-
-    @property
-    def image_mask(self):
-        return self._img_mask
-
-    @property
-    def bounding_rect(self):
-        return np.array([self._top_left, self._bottom_right])
+        self.image_mask = self.path.contains_points(
+            idx.T, trans, buf_sign * self.buffer)
+        self.image_mask = self.image_mask.reshape(mask_size)
 
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
                  fill_value=0, invert=False):
@@ -278,18 +278,17 @@ class PathROI(object):
                 # below
                 return data
 
-            roi_mask = self._path.contains_points(data[pos_columns])
+            roi_mask = self.path.contains_points(data[pos_columns])
             if invert:
                 roi_data = data[~roi_mask].copy()
             else:
                 roi_data = data[roi_mask].copy()
             if reset_origin and not invert:
-                roi_data.loc[:, pos_columns[0]] -= self._top_left[0]
-                roi_data.loc[:, pos_columns[1]] -= self._top_left[1]
+                roi_data.loc[:, pos_columns] -= self.bounding_box_int[0]
             return roi_data
 
         else:
-            if self._img_mask is None:
+            if self.image_mask is None:
                 raise ValueError("Cannot crop image since no image mask "
                                  "was created during construction.")
 
@@ -297,15 +296,15 @@ class PathROI(object):
             def crop(img):
                 img = img.copy().T
 
-                tl_shift = np.maximum(np.subtract((0, 0), self._top_left), 0)
-                br_shift = np.minimum(
-                    np.subtract(img.shape, self._bottom_right), 0)
-                tl = self._top_left + tl_shift
-                br = self._bottom_right + br_shift
+                bb_i = self.bounding_box_int
+                tl_shift = np.maximum(np.subtract((0, 0), bb_i[0]), 0)
+                br_shift = np.minimum(np.subtract(img.shape, bb_i[1]), 0)
+                tl = bb_i[0] + tl_shift
+                br = bb_i[1] + br_shift
 
                 img = img[tl[0]:br[0], tl[1]:br[1]]
-                mask = self._img_mask[tl_shift[0] or None:br_shift[0] or None,
-                                      tl_shift[1] or None:br_shift[1] or None]
+                mask = self.image_mask[tl_shift[0] or None:br_shift[0] or None,
+                                       tl_shift[1] or None:br_shift[1] or None]
 
                 if isinstance(fill_value, str):
                     fv = np.mean(img[mask])
@@ -322,11 +321,11 @@ class PathROI(object):
         Pass this as the `representer` parameter to
         :py:meth:`yaml.Dumper.add_representer`
         """
-        vert = data._path.vertices.tolist()
-        cod = None if data._path.codes is None else data._path.codes.tolist()
+        vert = data.path.vertices.tolist()
+        cod = None if data.path.codes is None else data.path.codes.tolist()
         m = (("vertices", vert),
              ("vertex codes", cod),
-             ("buffer", data._buffer))
+             ("buffer", data.buffer))
         return dumper.represent_mapping(cls.yaml_tag, m)
 
     @classmethod
@@ -399,7 +398,7 @@ class RectangleROI(PathROI):
         """
         m = (("top_left", list(data.top_left)),
              ("bottom_right", list(data.bottom_right)),
-             ("buffer", data._buffer))
+             ("buffer", data.buffer))
         return dumper.represent_mapping(cls.yaml_tag, m)
 
     @classmethod
@@ -424,7 +423,7 @@ class EllipseROI(PathROI):
     center : tuple of float
         x and y coordinates of the ellipse center.
     axes : tuple of float
-        Lengths of first and second axis.
+        Lengths of first and second half-axis.
     angle : float, optional
         Angle of rotation (counterclockwise, in radians). Defaults to 0.
     """
@@ -450,6 +449,8 @@ class EllipseROI(PathROI):
         self.axes = axes
         self.angle = angle
 
+        self.area = self.axes[0] * self.axes[1] * np.pi
+
     @classmethod
     def to_yaml(cls, dumper, data):
         """Dump as YAML
@@ -460,7 +461,7 @@ class EllipseROI(PathROI):
         m = (("center", list(data.center)),
              ("axes", list(data.axes)),
              ("angle", data.angle),
-             ("buffer", data._buffer))
+             ("buffer", data.buffer))
         return dumper.represent_mapping(cls.yaml_tag, m)
 
     @classmethod

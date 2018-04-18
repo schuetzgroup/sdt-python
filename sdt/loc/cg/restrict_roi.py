@@ -91,7 +91,7 @@ def restrict_roi(locate_func, buffer=10):
                           bandpass=False, **kwargs)
 
         # since we cropped the image, we have to add to the coordinates
-        loc[["x", "y"]] += img_roi.bounding_rect[0]
+        loc[["x", "y"]] += img_roi.bounding_box_int[0]
 
         # now get only stuff inside the polygon
         loc = feat_roi(loc, reset_origin=reset_origin)
