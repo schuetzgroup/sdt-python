@@ -41,18 +41,30 @@ class ROI(object):
     """
     yaml_tag = "!ROI"
 
-    def __init__(self, top_left, bottom_right):
+    def __init__(self, top_left, bottom_right=None, shape=None):
         """Parameters
         ----------
         top_left : tuple of int
-            x and y coordinates of the top-left corner. Pixels with coordinates
+            Coordinates of the top-left corner. Pixels with coordinates
             greater or equal than these are excluded from the ROI.
-        bottom_right : tuple of int
-            x and y coordinates of the bottom-right corner. Pixels with
+        bottom_right : tuple of int or None, optional
+            Coordinates of the bottom-right corner. Pixels with
             coordinates greater or equal than these are excluded from the ROI.
+            Either this or `shape` need to specified.
+        shape : tuple of int or None, optional
+            Size of the ROI. Specifying `size` is equivalent to
+            ``bottom_right=[t+s for t, s in zip(top_left, shape)].
+            Either this or `bottom_right` need to specified.
         """
         self.top_left = top_left
-        self.bottom_right = bottom_right
+        if bottom_right is not None:
+            self.bottom_right = bottom_right
+        else:
+            self.bottom_right = tuple(t + s for t, s in zip(top_left, shape))
+
+    @property
+    def shape(self):
+        return tuple(b - t for t, b in zip(self.top_left, self.bottom_right))
 
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
                  invert=False):
@@ -349,16 +361,27 @@ class RectangleROI(PathROI):
     """
     yaml_tag = "!RectangleROI"
 
-    def __init__(self, top_left, bottom_right, buffer=0., no_image=False):
+    def __init__(self, top_left, bottom_right=None, shape=None,
+                 buffer=0., no_image=False):
         """Parameters
         ----------
         top_left : tuple of float
             x and y coordinates of the top-left corner.
-        bottom_right : tuple of float
             x and y coordinates of the bottom-right corner.
+        bottom_right : tuple of float or None, optional
+            Coordinates of the bottom-right corner. Pixels with
+            coordinates greater or equal than these are excluded from the ROI.
+            Either this or `shape` need to specified.
+        shape : tuple of float or None, optional
+            Size of the ROI. Specifying `size` is equivalent to
+            ``bottom_right=[t+s for t, s in zip(top_left, shape)].
+            Either this or `bottom_right` need to specified.
         buffer, no_image
             see :py:class:`PathROI`.
         """
+        if bottom_right is None:
+            bottom_right = tuple(t + s for t, s in zip(top_left, shape))
+
         path = mpl.path.Path.unit_rectangle()
         trafo = mpl.transforms.Affine2D().scale(bottom_right[0]-top_left[0],
                                                 bottom_right[1]-top_left[1])
