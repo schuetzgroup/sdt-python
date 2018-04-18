@@ -286,13 +286,14 @@ class TestNonOverlappingPathRoi(TestPathRoi):
                                 [self.mask.astype(float).T[:20, :20]]*2)
 
 
-class TestRectangleRoi(TestRoi):
+class TestRectangleRoi(TestPathRoi):
     msg_prefix = "roi.RectangleROI"
 
     def setUp(self):
         super().setUp()
-        self.top_left = (10, 10)
-        self.bottom_right = (90, 70)
+        self.vertices = np.vstack([self.vertices, [self.vertices[0]]])
+        self.top_left = self.vertices[0]
+        self.bottom_right = self.vertices[2]
         self.roi = roi.RectangleROI(self.top_left, self.bottom_right)
 
     def test_init(self):
