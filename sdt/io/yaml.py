@@ -208,6 +208,15 @@ def odict_constructor(loader, data):
 Dumper.add_representer(slice, slice_representer)
 SafeDumper.add_representer(slice, slice_representer)
 SafeDumper.add_representer(collections.OrderedDict, dict_representer)
+
+# Represent numpy scalars as standard types
+for D in (Dumper, SafeDumper):
+    for t in (np.float16, np.float32, np.float64, np.float128):
+        D.add_representer(t, D.represent_float)
+    for t in (np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16,
+              np.uint32, np.uint64):
+        D.add_representer(t, D.represent_int)
+
 Loader.add_constructor("!slice", slice_constructor)
 SafeLoader.add_constructor("!slice", slice_constructor)
 Loader.add_constructor(yaml.resolver.Resolver.DEFAULT_MAPPING_TAG,
