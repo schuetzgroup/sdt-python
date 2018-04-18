@@ -173,8 +173,6 @@ class PathROI(object):
         side
     area : float
         Area of the ROI (without :py:attr:`buffer`)
-    size : numpy.ndarray, shape(2), dtype(float)
-        Extents of the bounding box
     """
     yaml_tag = "!PathROI"
 
@@ -215,8 +213,6 @@ class PathROI(object):
         self.buffer_sign = -1 if self.area < 0 else 1
         # Now that we know the sign, make the area positive
         self.area = abs(self.area)
-
-        self.size = self.bounding_box[1] - self.bounding_box[0]
 
         if no_image:
             self.image_mask = None
