@@ -167,11 +167,12 @@ class PathROI(object):
     image_mask : numpy.ndarray, dtype(bool)
         Boolean pixel mask of the path
     bounding_box : numpy.ndarray, shape(2, 2), dtype(float)
-        Bounding box of the path
+        Bounding box of the path, enlarged by :py:attr:`buffer` on each side
     bounding_box_int : numpy.ndarray, shape(2, 2), dtype(int)
-        Integer bounding box of the path
+        Integer bounding box of the path, enlarged by :py:attr:`buffer` on each
+        side
     area : float
-        Area of the ROI
+        Area of the ROI (without :py:attr:`buffer`)
     size : numpy.ndarray, shape(2), dtype(float)
         Extents of the bounding box
     """
@@ -203,6 +204,7 @@ class PathROI(object):
 
         # calculate bounding box
         self.bounding_box = self.path.get_extents().get_points()
+        self.bounding_box += np.array([-buffer, buffer]).reshape((2, 1))
         self.bounding_box_int = np.array(
             [np.floor(self.bounding_box[0]),
              np.ceil(self.bounding_box[1])], dtype=int)
@@ -230,8 +232,10 @@ class PathROI(object):
         # Checking a lot of points if they are inside the polygon,
         # this is rather slow
         idx = np.indices(mask_size).reshape((2, -1))
+        # Using 2 * buffer seems to give the expected result (enlarge the
+        # path by about `buffer` units)
         self.image_mask = self.path.contains_points(
-            idx.T, trans, self.buffer_sign * self.buffer)
+            idx.T, trans, 2 * self.buffer_sign * self.buffer)
         self.image_mask = self.image_mask.reshape(mask_size)
 
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
@@ -278,7 +282,16 @@ class PathROI(object):
                 # below
                 return data
 
-            roi_mask = self.path.contains_points(data[pos_columns])
+            pos = data[pos_columns]
+            # Using 2 * buffer seems to give the expected result (enlarge the
+            # path by about `buffer` units)
+            roi_mask = self.path.contains_points(
+                pos, radius=2*self.buffer_sign*self.buffer)
+            # If buffer > 0, the path + buffer can be larger than the
+            # bounding rect. Restrict localizations to bounding rect so that
+            # results are consistent with image data.
+            roi_mask &= np.all(pos >= self.bounding_box_int[0], axis=1)
+            roi_mask &= np.all(pos < self.bounding_box_int[1], axis=1)
             if invert:
                 roi_data = data[~roi_mask].copy()
             else:

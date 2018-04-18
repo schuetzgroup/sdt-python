@@ -231,9 +231,21 @@ class TestBufferedPathRoi(TestPathRoi):
                                  dtype=float) + 0.7
         self.buffer = 10
         self.roi = roi.PathROI(self.vertices, buffer=self.buffer)
-        self.bbox = np.array([self.vertices[0], self.vertices[2]])
-        self.bbox_int = np.array([[20, 20], [81, 61]])
-        self.mask = np.ones((61, 41), dtype=bool)
+        self.bbox = np.array([self.vertices[0] - self.buffer,
+                              self.vertices[2] + self.buffer])
+        self.bbox_int = np.array([[10, 10], [91, 71]])
+        self.mask = np.zeros((81, 61), dtype=bool)
+        self.mask[1:, 1:] = True
+
+        self.loc = pd.DataFrame([[3, 3], [12, 12], [30, 30], [100, 80]],
+                                columns=["x", "y"])
+        self.loc_roi = self.loc.drop([0, 3])
+        self.loc_roi_inv = self.loc.drop([1, 2])
+
+    def test_area(self):
+        """.area property"""
+        a = np.prod(self.vertices[2] - self.vertices[0])
+        np.testing.assert_allclose(self.roi.area, abs(a))
 
 
 class TestCwPathRoi(TestBufferedPathRoi):
