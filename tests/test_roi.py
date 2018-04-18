@@ -14,11 +14,10 @@ from sdt.io import yaml
 
 
 path, f = os.path.split(os.path.abspath(__file__))
+data_path = os.path.join(path, "data_roi")
 
 
-class TestRoi(unittest.TestCase):
-    msg_prefix = "roi.ROI"
-
+class TestCaseBase(unittest.TestCase):
     def __init__(self, methodName):
         super().__init__(methodName)
         try:
@@ -32,22 +31,25 @@ class TestRoi(unittest.TestCase):
         else:
             return self.msg_prefix + self._doc
 
-    def _setUp(self, top_left, bottom_right):
-        self.top_left = top_left
-        self.bottom_right = bottom_right
+
+class TestRoi(TestCaseBase):
+    msg_prefix = "roi.ROI"
+
+    def setUp(self):
+        self.top_left = (10, 10)
+        self.bottom_right = (90, 70)
         self.roi = roi.ROI(self.top_left, self.bottom_right)
+
         self.img = np.zeros((80, 100))
         self.img[self.top_left[1]:self.bottom_right[1],
                  self.top_left[0]:self.bottom_right[0]] = 1
         self.cropped_img = self.img[self.top_left[1]:self.bottom_right[1],
                                     self.top_left[0]:self.bottom_right[0]]
+
         self.loc = pd.DataFrame([[3, 3], [30, 30], [100, 80]],
                                 columns=["x", "y"])
         self.loc_roi = self.loc.drop([0, 2])
         self.loc_roi_inv = self.loc.drop(1)
-
-    def setUp(self):
-        self._setUp((10, 10), (90, 70))
 
     def test_init(self):
         """.__init__"""
@@ -59,12 +61,11 @@ class TestRoi(unittest.TestCase):
                                                     self.bottom_right)))
         self.assert_roi_equal(r, self.roi)
 
-    def test_crop(self):
+    def test_image(self):
         """.__call__: image data"""
-        np.testing.assert_equal(self.roi(self.img),
-                                self.cropped_img)
+        np.testing.assert_equal(self.roi(self.img), self.cropped_img)
 
-    def test_crop_subtype(self):
+    def test_image_subtype(self):
         """.__call__: image data, check return subtype"""
         img = self.img.view(pims.Frame)
         assert(isinstance(self.roi(img), pims.Frame))
@@ -105,29 +106,87 @@ class TestRoi(unittest.TestCase):
         self.assert_roi_equal(roi2, self.roi)
 
     def test_size(self):
-        """.size property"""
+        """.size attribute"""
         np.testing.assert_equal(self.roi.size,
                                 (self.bottom_right[0] - self.top_left[0],
                                  self.bottom_right[1] - self.top_left[1]))
+
+    def test_area(self):
+        """.area attribute"""
+        a = ((self.bottom_right[0] - self.top_left[0]) *
+             (self.bottom_right[1] - self.top_left[1]))
+        self.assertAlmostEqual(self.roi.area, a)
 
 
 class TestPathRoi(TestRoi):
     msg_prefix = "roi.PathROI"
 
     def setUp(self):
-        super().setUp()
-        self.vertices = [[10, 10], [90, 10], [90, 70], [10, 70]]
+        self.vertices = np.array([[10, 10], [90, 10], [90, 70], [10, 70]],
+                                 dtype=float) + 0.7
+        self.bbox = np.array([self.vertices[0], self.vertices[2]])
+        self.bbox_int = np.array([[10, 10], [91, 71]])
+        self.mask = np.zeros((81, 61), dtype=bool)
+        self.mask[1:, 1:] = True
+        self.buffer = 0
         self.roi = roi.PathROI(self.vertices)
+
+        self.img = np.ones((80, 100))
+
+        self.loc = pd.DataFrame([[3, 3], [30, 30], [100, 80]],
+                                columns=["x", "y"])
+        self.loc_roi = self.loc.drop([0, 2])
+        self.loc_roi_inv = self.loc.drop(1)
 
     def test_init(self):
         """.__init__"""
         np.testing.assert_array_equal(self.roi.path.vertices, self.vertices)
+        np.testing.assert_allclose(self.roi.bounding_box, self.bbox)
+        np.testing.assert_allclose(self.roi.bounding_box_int, self.bbox_int)
+        self.assertEqual(self.roi.buffer, self.buffer)
 
     def test_size(self):
         """.size property"""
         p = self.roi.path
-        bb = self.roi.path.get_extents().get_points()
-        np.testing.assert_equal(self.roi.size, bb[1] - bb[0])
+        np.testing.assert_equal(self.roi.size, self.bbox[1] - self.bbox[0])
+
+    def test_area(self):
+        """.area property"""
+        a = np.prod(self.bbox[1] - self.bbox[0])
+        np.testing.assert_allclose(self.roi.area, a)
+
+    def test_bbox_int(self):
+        """.bounding_box_int attribute"""
+        np.testing.assert_allclose(self.roi.bounding_box_int, self.bbox_int)
+
+    def test_bbox(self):
+        """.bounding_box attribute"""
+        np.testing.assert_allclose(self.roi.bounding_box, self.bbox)
+
+    def test_mask(self):
+        """.image_mask attribute"""
+        np.testing.assert_array_equal(self.roi.image_mask, self.mask)
+
+    def test_image(self):
+        """.__call__: image data"""
+        np.testing.assert_equal(self.roi(self.img), self.mask.astype(float).T)
+
+    def test_image_subtype(self):
+        """.__call__: image data, check return subtype"""
+        img = self.img.view(pims.Frame)
+        assert(isinstance(self.roi(img), pims.Frame))
+
+    def test_pipeline(self):
+        """.__call__: image data, test pipeline capabilities"""
+        l = [self.img]*2
+        s = slicerator.Slicerator(l)
+        np.testing.assert_equal(list(self.roi(s)),
+                                [self.mask.astype(float).T]*2)
+
+    def test_dataframe_reset_origin(self):
+        """.__call__: localization data, reset origin"""
+        np.testing.assert_equal(self.roi(self.loc, reset_origin=True).values,
+                                self.loc_roi - self.bbox_int[0])
 
     def assert_roi_equal(self, actual, desired):
         np.testing.assert_allclose(actual.path.vertices, desired.path.vertices)
@@ -135,34 +194,56 @@ class TestPathRoi(TestRoi):
         np.testing.assert_allclose(actual.buffer, desired.buffer)
 
 
-class TestBufferdPathRoi(TestPathRoi):
+class TestBufferedPathRoi(TestPathRoi):
     msg_prefix = "roi.PathROI(buffered)"
 
     def setUp(self):
-        super()._setUp((20, 20), (80, 60))
-        self.vertices = [[20, 20], [80, 20], [80, 60], [20, 60]]
+        super().setUp()
+        self.vertices = np.array([[20, 20], [80, 20], [80, 60], [20, 60]],
+                                 dtype=float) + 0.7
         self.buffer = 10
-        self.roi = roi.PathROI([[20, 20], [80, 20], [80, 60],
-                                [20, 60]], buffer=10)
+        self.roi = roi.PathROI(self.vertices, buffer=self.buffer)
+        self.bbox = np.array([self.vertices[0], self.vertices[2]])
+        self.bbox_int = np.array([[20, 20], [81, 61]])
+        self.mask = np.ones((61, 41), dtype=bool)
 
-    def test_init(self):
-        """.__init__"""
-        np.testing.assert_array_equal(self.roi.path.vertices, self.vertices)
-        self.assertEqual(self.roi.buffer, self.buffer)
+
+class TestCwPathRoi(TestBufferedPathRoi):
+    msg_prefix = "roi.PathROI(buffered,clockwise)"
+
+    def setUp(self):
+        super().setUp()
+        self.vertices = self.vertices[::-1]
+        self.roi = roi.PathROI(self.vertices, buffer=self.buffer)
 
 
 class TestNonOverlappingPathRoi(TestPathRoi):
     msg_prefix = "roi.PathRoi(non-overlapping)"
 
     def setUp(self):
-        super()._setUp((-30, -30), (20, 20))
-        self.vertices = [[-30, -30], [-30, 20], [20, 20], [20, -30]]
+        super().setUp()
+        self.vertices = np.array([[-30, -30], [-30, 20], [20, 20], [20, -30]],
+                                 dtype=float)
+        self.bbox = np.array([self.vertices[0], self.vertices[2]])
+        self.bbox_int = self.bbox
+        self.mask = np.ones((50, 50), dtype=bool)
         self.roi = roi.PathROI(self.vertices)
-        self.cropped_img = self.img[:20, :20]
         self.loc = pd.DataFrame([[3, 3], [30, 30], [100, 80]],
                                 columns=["x", "y"])
         self.loc_roi = self.loc.drop([1, 2])
         self.loc_roi_inv = self.loc.drop(0)
+
+    def test_image(self):
+        """.__call__: image data"""
+        np.testing.assert_equal(self.roi(self.img),
+                                self.mask.astype(float).T[:20, :20])
+
+    def test_pipeline(self):
+        """.__call__: image data, test pipeline capabilities"""
+        l = [self.img]*2
+        s = slicerator.Slicerator(l)
+        np.testing.assert_equal(list(self.roi(s)),
+                                [self.mask.astype(float).T[:20, :20]]*2)
 
 
 class TestRectangleRoi(TestRoi):
@@ -183,27 +264,50 @@ class TestRectangleRoi(TestRoi):
                                                            self.bottom_right)))
         self.assert_roi_equal(r, self.roi)
 
-class TestEllipseRoi(TestRoi):
+
+class TestEllipseRoi(TestPathRoi):
     msg_prefix = "roi.EllipseROI"
 
     def setUp(self):
-        x_c = 30
-        y_c = 50
-        a = 30
-        b = 40
-        super()._setUp((x_c - a, y_c - b), (x_c + a, y_c + b))
-        self.roi = roi.EllipseROI((x_c, y_c), (a, b))
-        # bottom ten rows get chopped off due to small self.img size
-        self.cropped_img = self.roi.image_mask.astype(np.float).T[:70, :]
+        super().setUp()
+        self.center = np.array([30, 50])
+        self.axes = np.array([30, 40])
+        self.roi = roi.EllipseROI(self.center, self.axes)
+
+        self.bbox = self.bbox_int = np.array([[0, 10], [60, 90]])
+        with np.load(os.path.join(data_path, "ellipse_roi.npz")) as orig:
+            self.mask = orig["image_mask"]
+            self.vertices = orig["vertices"]
+            self.codes = orig["codes"]
 
     def test_init(self):
         """.__init__"""
-        raise unittest.SkipTest("Test not implemented")
+        super().test_init()
+        np.testing.assert_array_equal(self.roi.path.codes, self.codes)
 
     def assert_roi_equal(self, desired, actual):
         np.testing.assert_allclose([actual.center, actual.axes],
                                    [desired.center, desired.axes])
         np.testing.assert_allclose(actual.angle, desired.angle)
+
+    def test_area(self):
+        """.area attribute"""
+        a = np.pi * self.axes[0] * self.axes[1]
+        self.assertAlmostEqual(self.roi.area, a)
+
+    def test_image(self):
+        """.__call__: image data"""
+        # bottom ten rows get chopped off due to small self.img size
+        np.testing.assert_equal(self.roi(self.img),
+                                self.mask.astype(float).T[:70, :])
+
+    def test_pipeline(self):
+        """.__call__: image data, test pipeline capabilities"""
+        l = [self.img]*2
+        s = slicerator.Slicerator(l)
+        # bottom ten rows get chopped off due to small self.img size
+        np.testing.assert_equal(list(self.roi(s)),
+                                [self.mask.astype(float).T[:70, :]]*2)
 
 
 if __name__ == "__main__":
