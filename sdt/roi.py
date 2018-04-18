@@ -207,31 +207,31 @@ class PathROI(object):
             [np.floor(self.bounding_box[0]),
              np.ceil(self.bounding_box[1])], dtype=int)
 
+        self.area = polygon_area(self.path.vertices)
+        # If the path is clockwise, the `radius` argument to
+        # Path.contains_points needs to be negative to enlarge the ROI
+        self.buffer_sign = -1 if self.area < 0 else 1
+        # Now that we know the sign, make the area positive
+        self.area = abs(self.area)
+
         self.size = self.bounding_box[1] - self.bounding_box[0]
 
         if no_image:
             self.image_mask = None
             return
 
-        self.area = polygon_area(self.path.vertices)
-        # if the path is clockwise, the `radius` argument to
-        # Path.contains_points needs to be negative to enlarge the ROI
-        buf_sign = -1 if self.area < 0 else 1
-        # Now that we know the sign, make the area positive
-        self.area = abs(self.area)
-
-        # Make ROI polygon, but only for bounding box of the polygon, for
+        # Draw ROI path, but only in the bounding box of the polygon, for
         # performance reasons
         mask_size = self.bounding_box_int[1] - self.bounding_box_int[0]
-        # move polygon to the top left, subtract another half pixel so that
+        # Move polygon to the top left, subtract another half pixel so that
         # coordinates are pixel centers
         trans = mpl.transforms.Affine2D().translate(
             *(-self.bounding_box_int[0] - 0.5))
-        # checking a lot of points if they are inside the polygon,
+        # Checking a lot of points if they are inside the polygon,
         # this is rather slow
         idx = np.indices(mask_size).reshape((2, -1))
         self.image_mask = self.path.contains_points(
-            idx.T, trans, buf_sign * self.buffer)
+            idx.T, trans, self.buffer_sign * self.buffer)
         self.image_mask = self.image_mask.reshape(mask_size)
 
     def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,

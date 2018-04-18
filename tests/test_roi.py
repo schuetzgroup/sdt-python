@@ -194,6 +194,34 @@ class TestPathRoi(TestRoi):
         np.testing.assert_allclose(actual.buffer, desired.buffer)
 
 
+class TestNoImagePathRoi(TestPathRoi):
+    msg_prefix = "roi.PathROI(no_image)"
+
+    def setUp(self):
+        super().setUp()
+        self.roi = roi.PathROI(self.vertices, no_image=True)
+
+    def test_mask(self):
+        """.image_mask attribute"""
+        self.assertIs(self.roi.image_mask, None)
+
+    def test_image(self):
+        """.__call__: image data"""
+        with self.assertRaises(ValueError):
+            self.roi(self.img)
+
+    def test_image_subtype(self):
+        """.__call__: image data, check return subtype"""
+        self.test_image()
+
+    def test_pipeline(self):
+        """.__call__: image data, test pipeline capabilities"""
+        l = [self.img]*2
+        s = slicerator.Slicerator(l)
+        with self.assertRaises(ValueError):
+            self.roi(s)
+
+
 class TestBufferedPathRoi(TestPathRoi):
     msg_prefix = "roi.PathROI(buffered)"
 
