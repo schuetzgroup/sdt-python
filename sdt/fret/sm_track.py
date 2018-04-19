@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 
-from .. import multicolor, spatial, brightness, config
+from .. import multicolor, spatial, brightness, config, helper
 
 try:
     import trackpy
@@ -321,7 +321,7 @@ class SmFretTracker:
 
         return ret.reset_index(drop=True)
 
-    def analyze(self, tracks, aa_interp="linear", direct_nan=True):
+    def analyze(self, tracks, aa_interp="linear", invalid_nan=True):
         r"""Calculate FRET-related values
 
         This includes apparent FRET efficiencies, FRET stoichiometries,
@@ -369,88 +369,84 @@ class SmFretTracker:
         aa_interp : {"nearest", "linear"}, optional
             What kind of interpolation to use for calculating acceptor
             brightness upon direct excitation. Defaults to "linear".
-        direct_nan : bool, optional
-            If True, all "d_mass", "eff", and "stoi" values for direct
-            acceptor excitation frames are set to NaN, since the values don't
-            make sense. Defaults to True.
+        invalid_nan : bool, optional
+            If True, all "d_mass", "eff", and "stoi" values for excitation
+            types other than donor excitation are set to NaN, since the values
+            don't make sense. Defaults to True.
         """
-        don = tracks["donor"][["mass", "frame"]].values
-        acc = tracks["acceptor"][["mass", "frame"]].values
-        particles = tracks["fret", "particle"].values  # particle numbers
+        tracks.sort_values([("fret", "particle"), ("donor", "frame")],
+                           inplace=True)
 
-        # Direct acceptor excitation
-        a_dir_mask = np.in1d(acc[:, 1] % len(self.excitation_seq),
-                             self.excitation_frames["a"])
-        # Localizations with near neighbors bias brightness measurements
-        try:
-            no_neigh_mask = (tracks["fret", "has_neighbor"] == 0).values
-        except KeyError:
-            # No such column
-            no_neigh_mask = np.ones(len(tracks), dtype=bool)
+        # Excitation type, needed below
+        self.flag_excitation_type(tracks)
 
-        # Total mass upon donor excitation
-        d_mass = np.asanyarray(don[:, 0] + acc[:, 0], dtype=float)
-        # FRET efficiency
-        with np.errstate(divide="ignore", invalid="ignore"):
-            # ignore divide by zero and 0 / 0
-            eff = acc[:, 0] / d_mass
+        a_mass = []
 
-        sto = np.empty(len(don))  # pre-allocate
-        a_mass = np.empty(len(don))
-        for p in particles:
-            p_mask = particles == p  # boolean array for current particle
-            d = don[p_mask]
-            a = acc[p_mask]
+        # Calculate brightness upon acceptor excitation. This requires
+        # interpolation
+        cols = [("donor", "mass"), ("acceptor", "mass"), ("donor", "frame"),
+                ("fret", "exc_type")]
+        if ("fret", "has_neighbor") in tracks.columns:
+            cols.append(("fret", "has_neighbor"))
+            has_nn = True
+        else:
+            has_nn = False
 
-            # Direct acceptor excitation of current particle
-            ad_p_mask = a_dir_mask[p_mask]
-            # Locs without neighbors of current particle
-            nn_p_mask = no_neigh_mask[p_mask]
+        for p, t in helper.split_dataframe(tracks, ("fret", "particle"), cols,
+                                           sort=False):
+            # Direct acceptor excitation
+            ad_p_mask = (t[:, 3] == self.exc_type_nums["a"])
+            # Locs without neighbors
+            if has_nn:
+                nn_p_mask = ~t[:, -1].astype(bool)
+            else:
+                nn_p_mask = np.ones(len(t), dtype=bool)
             # Only use locs with direct accept ex and no neighbors
-            a_direct = a[ad_p_mask & nn_p_mask]
+            a_direct = t[ad_p_mask & nn_p_mask, 1:3]
 
             if len(a_direct) == 0:
                 # No direct acceptor excitation, cannot do anything
-                sto[p_mask] = np.NaN
-                a_mass[p_mask] = np.NaN
+                a_mass.append(np.full(len(t), np.NaN))
                 continue
             elif len(a_direct) == 1:
                 # Only one direct acceptor excitation; use this value for
                 # all data points of this particle
-                def a_mass_func(x):
-                    return a_direct[0, 0]
+                a_mass.append(np.full(len(t), a_direct[0, 0]))
+                continue
             else:
                 # Enough direct acceptor excitations for interpolation
-                # Sort for easy determination of the first and last values,
-                # which are used as fill_value; values have to be sorted
-                # for interp1d anyways.
-                srt = np.argsort(a_direct[:, 1])
-                y, x = a_direct[srt].T
+                # Values are sorted.
+                y, x = a_direct.T
                 a_mass_func = interp1d(x, y, aa_interp, copy=False,
                                        fill_value=(y[0], y[-1]),
                                        assume_sorted=True, bounds_error=False)
-            # Calculate (interpolated) mass upon direct acceptor excitation
-            am = a_mass_func(d[:, 1])
-            # calculate stoichiometry
-            dm = d[:, 0] + a[:, 0]
-            with np.errstate(divide="ignore", invalid="ignore"):
-                # ignore divide by zero and 0 / 0
-                s = dm / (dm + am)
+                # Calculate (interpolated) mass upon direct acceptor excitation
+                a_mass.append(a_mass_func(t[:, 2]))
 
-            sto[p_mask] = s
-            a_mass[p_mask] = am
-        if direct_nan:
+        # Total mass upon donor excitation
+        d_mass = tracks["donor", "mass"] + tracks["acceptor", "mass"]
+        # Total mass upon acceptor excitation
+        a_mass = np.concatenate(a_mass)
+
+        with np.errstate(divide="ignore", invalid="ignore"):
+            # ignore divide by zero and 0 / 0
+            # FRET efficiency
+            eff = tracks["acceptor", "mass"] / d_mass
+            # FRET stoichiometry
+            stoi = d_mass / (d_mass + a_mass)
+
+        if invalid_nan:
             # For direct acceptor excitation, FRET efficiency and stoichiometry
             # are not sensible
-            eff[a_dir_mask] = np.NaN
-            sto[a_dir_mask] = np.NaN
-            d_mass[a_dir_mask] = np.NaN
+            nd_mask = (tracks["fret", "exc_type"] != self.exc_type_nums["d"])
+            eff[nd_mask] = np.NaN
+            stoi[nd_mask] = np.NaN
+            d_mass[nd_mask] = np.NaN
 
         tracks["fret", "eff"] = eff
-        tracks["fret", "stoi"] = sto
+        tracks["fret", "stoi"] = stoi
         tracks["fret", "d_mass"] = d_mass
         tracks["fret", "a_mass"] = a_mass
-        self.flag_excitation_type(tracks)
         tracks.reindex(columns=tracks.columns.sortlevel(0)[0])
 
     def flag_excitation_type(self, tracks):

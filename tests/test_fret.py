@@ -173,7 +173,7 @@ class TestSmFretTracker(unittest.TestCase):
         stoi[self.is_direct_acc2] = np.NaN
 
         self.tracker2.analyze(self.fret_data2, aa_interp="linear",
-                              direct_nan=True)
+                              invalid_nan=True)
 
         assert(("fret", "stoi") in self.fret_data2.columns)
         np.testing.assert_allclose(self.fret_data2["fret", "stoi"], stoi)
@@ -235,14 +235,14 @@ class TestSmFretTracker(unittest.TestCase):
         np.testing.assert_allclose(trc["fret", "stoi"], stoi)
         np.testing.assert_allclose(trc["fret", "a_mass"], single_mass)
 
-    def test_analyze_direct_nan(self):
-        """fret.SmFretTracker.analyze: direct_nan=False"""
+    def test_analyze_invalid_nan(self):
+        """fret.SmFretTracker.analyze: invalid_nan=False"""
         don_mass = np.ones(len(self.fret_data2)) * 1000
         acc_mass = (np.arange(len(self.fret_data2), dtype=float) + 1) * 1000
         self.fret_data2["donor", "mass"] = don_mass
         self.fret_data2["acceptor", "mass"] = acc_mass
 
-        self.tracker2.analyze(self.fret_data2, direct_nan=False)
+        self.tracker2.analyze(self.fret_data2, invalid_nan=False)
         np.testing.assert_equal(np.isfinite(self.fret_data2["fret", "eff"]),
                                 np.ones(len(self.fret_data2), dtype=bool))
         np.testing.assert_equal(np.isfinite(self.fret_data2["fret", "stoi"]),
