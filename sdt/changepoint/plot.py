@@ -4,9 +4,39 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_changepoints(data, changepoints, time=None, segment_alpha=0.2,
-                      style="shade", segment_colors=["#4286f4", "#f44174"],
+def plot_changepoints(data, changepoints, time=None, style="shade",
+                      segment_alpha=0.2, segment_colors=["#4286f4", "#f44174"],
                       ax=None):
+    """Plot time series with changepoints
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Data points in time series
+    changepoints : list-like of int
+        Indices of changepoints
+    time : numpy.ndarray or None
+        x axis values. If `None` (the default), use 1, 2, 3…
+    style : {"shade", "line"}, optional
+        How to indicate changepoints. If "shade" (default), draw the
+        background of the segments separated by changepoints in different
+        colors. If "lines", draw vertical lines at the positions of th
+        changepoints.
+    segment_alpha : float, optional
+        Alpha value of the background color in case of ``style="shade"``.
+        Defaults to 0.2.
+    segment_colors : list of str
+        Sequence of background colors for use with ``style="shade"``. Defaults
+        to ``["#4286f4", "#f44174"]``, which are purple and pink.
+    ax : matplotlib.axes.Axes or None
+        Axes object to plot on. If `None` (the default), get it by calling
+        pyplot's ``gca()``.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes object used for plotting.
+    """
     if ax is None:
         ax = plt.gca()
     if time is None:
