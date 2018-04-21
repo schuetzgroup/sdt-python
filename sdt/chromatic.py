@@ -6,6 +6,7 @@ localizations (as determined by a localization algorithm such as those in the
 :py:mod:`sdt.loc` package) of the two channels and determine affine
 transformations for the x and y coordinates.
 """
+from contextlib import suppress
 
 import numpy as np
 import pandas as pd
@@ -65,6 +66,8 @@ class Corrector(object):
         of channel 1 and channel 2 respectively, embedded in a vector space of
         higher dimension.
     """
+    yaml_tag = "!ChromaticCorrector"
+
     @config.use_defaults
     def __init__(self, feat1=None, feat2=None, pos_columns=None,
                  channel_names=["channel1", "channel2"]):
@@ -548,3 +551,32 @@ class Corrector(object):
 
         mi = pd.MultiIndex.from_product([self.channel_names, self.pos_columns])
         return pd.DataFrame(pair_matrix, columns=mi)
+
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        """Dump as YAML
+
+        Pass this as the `representer` parameter to
+        :py:meth:`yaml.Dumper.add_representer`
+        """
+        m = (("parameters1", data.parameters1),
+             ("parameters2", data.parameters2))
+        return dumper.represent_mapping(cls.yaml_tag, m)
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        """Construct from YAML
+
+        Pass this as the `constructor` parameter to
+        :py:meth:`yaml.Loader.add_constructor`
+        """
+        m = loader.construct_mapping(node)
+        ret = cls()
+        ret.parameters1 = m["parameters1"]
+        ret.parameters2 = m["parameters2"]
+        return ret
+
+
+with suppress(ImportError):
+    from .io import yaml
+    yaml.register_yaml_class(Corrector)

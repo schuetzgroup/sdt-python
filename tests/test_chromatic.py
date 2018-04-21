@@ -1,5 +1,6 @@
 import unittest
 import os
+from io import StringIO
 
 import pandas as pd
 import numpy as np
@@ -117,6 +118,18 @@ class TestChromaticCorrector(unittest.TestCase):
         img_corr = self.corrector(img, channel=1, cval=lambda x: 0)
         orig = np.load(os.path.join(data_path, "img_corrected.npy"))
         np.testing.assert_allclose(img_corr, orig)
+
+    @unittest.skipUnless(hasattr(io, "yaml"), "YAML not found")
+    def test_yaml(self):
+        """chromatic.Corrector: save to/load from YAML"""
+        self.corrector.determine_parameters()
+        sio = StringIO()
+        io.yaml.safe_dump(self.corrector, sio)
+        sio.seek(0)
+        cc = io.yaml.safe_load(sio)
+
+        np.testing.assert_allclose(self.corrector.parameters1, cc.parameters1)
+        np.testing.assert_allclose(self.corrector.parameters2, cc.parameters2)
 
 
 if __name__ == "__main__":
