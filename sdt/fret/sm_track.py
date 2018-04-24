@@ -1,6 +1,7 @@
 """Module containing a class for tracking smFRET data """
 import itertools
 from collections import defaultdict
+from contextlib import suppress
 
 import numpy as np
 import pandas as pd
@@ -77,6 +78,10 @@ class SmFretTracker:
         :py:class:`pandas.DataFrames`.
     """
     yaml_tag = "!SmFretTracker"
+    _yaml_keys = ("chromatic_corr", "link_options", "min_length",
+                  "brightness_options", "interpolate", "coloc_dist",
+                  "acceptor_channel", "neighbor_radius", "a_mass_interp",
+                  "invalid_nan")
 
     exc_type_nums = defaultdict(lambda: -1, dict(d=0, a=1))
 
@@ -476,3 +481,32 @@ class SmFretTracker:
                 self.excitation_frames[t])
             exc_type[mask] = self.exc_type_nums[t]
         tracks["fret", "exc_type"] = exc_type
+
+    @classmethod
+    def to_yaml(cls, dumper, data):
+        """Dump as YAML
+
+        Pass this as the `representer` parameter to
+        :py:meth:`yaml.Dumper.add_representer`
+        """
+        m = {k: getattr(data, k) for k in cls._yaml_keys}
+        m["excitation_seq"] = "".join(data.excitation_seq)
+        return dumper.represent_mapping(cls.yaml_tag, m)
+
+    @classmethod
+    def from_yaml(cls, loader, node):
+        """Construct from YAML
+
+        Pass this as the `constructor` parameter to
+        :py:meth:`yaml.Loader.add_constructor`
+        """
+        m = loader.construct_mapping(node)
+        ret = cls(m["excitation_seq"])
+        for k in cls._yaml_keys:
+            setattr(ret, k, m[k])
+        return ret
+
+
+with suppress(ImportError):
+    from ..io import yaml
+    yaml.register_yaml_class(SmFretTracker)

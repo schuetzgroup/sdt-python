@@ -2,11 +2,12 @@ import unittest
 import os
 from collections import OrderedDict
 import warnings
+from io import StringIO
 
 import pandas as pd
 import numpy as np
 
-from sdt import fret, chromatic, image, changepoint
+from sdt import fret, chromatic, image, changepoint, io
 from sdt.fret.sm_filter import _image_mask_single
 
 
@@ -261,6 +262,34 @@ class TestSmFretTracker(unittest.TestCase):
         exc[self.fret_data["donor", "frame"] % p == p - 1] = 1
         np.testing.assert_equal(self.fret_data["fret", "exc_type"].values,
                                 exc)
+
+    @unittest.skipUnless(hasattr(io, "yaml"), "YAML not found")
+    def test_yaml(self):
+        """fret.SmFretTracker: save to/load from YAML"""
+        sio = StringIO()
+        self.tracker.a_mass_interp = "nearest"
+        self.tracker.acceptor_channel = 1
+        io.yaml.safe_dump(self.tracker, sio)
+        sio.seek(0)
+        tracker = io.yaml.safe_load(sio)
+
+        self.assertDictEqual(tracker.link_options, self.tracker.link_options)
+        self.assertDictEqual(tracker.brightness_options,
+                             self.tracker.brightness_options)
+        res = {}
+        orig = {}
+        for k in ("a_mass_interp", "acceptor_channel", "coloc_dist",
+                  "interpolate", "invalid_nan"):
+            res[k] = getattr(tracker, k)
+            orig[k] = getattr(self.tracker, k)
+        self.assertEqual(res, orig)
+
+        np.testing.assert_array_equal(tracker.excitation_seq,
+                                      self.tracker.excitation_seq)
+        np.testing.assert_allclose(tracker.chromatic_corr.parameters1,
+                                   self.tracker.chromatic_corr.parameters1)
+        np.testing.assert_allclose(tracker.chromatic_corr.parameters2,
+                                   self.tracker.chromatic_corr.parameters2)
 
 
 class TestSmFretFilter(unittest.TestCase):
