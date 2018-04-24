@@ -54,6 +54,13 @@ class SmFretTracker:
         enough so that one influences the brightness measurement of the other.
         This is related to the `radius` option of
         :py:func:`brightness.from_raw_image`.
+    a_mass_interp : {"linear", "nearest"}
+        How to interpolate the acceptor mass upon direct excitation in
+        donor excitation frames. This is relevant in :py:meth:`analyze`.
+    invalid_nan : bool
+        If True, all "d_mass", "eff", and "stoi" values for excitation
+        types other than donor excitation are set to NaN, since the values
+        don't make sense. This is relevant in :py:meth:`analyze`.
     excitation_type_nums : dict
         Map of excitation types to integers as written into the ``(fret,
         exc_type)`` column of tracking DataFrames by
@@ -64,6 +71,7 @@ class SmFretTracker:
         - "d" -> 0
         - "a" -> 1
         - others -> -1
+
     pos_colums : list of str
         Names of the columns describing the coordinates of the features in
         :py:class:`pandas.DataFrames`.
@@ -73,10 +81,11 @@ class SmFretTracker:
     exc_type_nums = defaultdict(lambda: -1, dict(d=0, a=1))
 
     @config.use_defaults
-    def __init__(self, excitation_seq, chromatic_corr, link_radius, link_mem,
-                 min_length, feat_radius, bg_frame=2, bg_estimator="mean",
-                 neighbor_radius="auto", interpolate=True, coloc_dist=2.,
-                 acceptor_channel=2, link_options={}, link_quiet=True,
+    def __init__(self, excitation_seq, chromatic_corr=None, link_radius=5,
+                 link_mem=1, min_length=1, feat_radius=4, bg_frame=2,
+                 bg_estimator="mean", neighbor_radius="auto", interpolate=True,
+                 coloc_dist=2., acceptor_channel=2, a_mass_interp="linear",
+                 invalid_nan=True, link_quiet=True, link_options={},
                  pos_columns=None):
         """Parameters
         ----------
@@ -87,19 +96,21 @@ class SmFretTracker:
 
             One needs only specify the shortest sequence that is repeated,
             i. e. "ddddaddddadddda" is the same as "dddda".
-        chromatic_corr : chromatic.Corrector
-            Corrector used to overlay channels
-        link_radius : float
+        chromatic_corr : chromatic.Corrector or None, optional
+            Corrector used to overlay channels. If `None`, create a Corrector
+            with the identity transform. Defaults to `None`.
+        link_radius : float, optional
             Maximum movement of features between frames. See `search_range`
-            option of :py:func:`trackpy.link_df`.
-        link_mem : int
+            option of :py:func:`trackpy.link_df`. Defaults to 5.
+        link_mem : int, optional
             Maximum number of frames for which a feature may not be detected.
-            See `memory` option of :py:func:`trackpy.link_df`.
-        min_length : int
-            Minimum length of tracks
-        feat_radius : int
+            See `memory` option of :py:func:`trackpy.link_df`. Defaults to 1.
+        min_length : int, optional
+            Minimum length of tracks. Defaults to 1.
+        feat_radius : int, optional
             Radius of circle that is a little larger than features. See
             `radius` option of :py:func:`brightness.from_raw_image`.
+            Defaults to 4.
         bg_frame : int, optional
             Size of frame around features for background determination. See
             `bg_frame` option of :py:func:`brightness.from_raw_image`.
@@ -123,6 +134,13 @@ class SmFretTracker:
         acceptor_channel : {1, 2}, optional
             Whether the acceptor channel is number 1 or 2 in `chromatic_corr`.
             Defaults to 2
+        a_mass_interp : {"linear", "nearest"}, optional
+            How to interpolate the acceptor mass upon direct excitation in
+            donor excitation frames. Defaults to "linear".
+        invalid_nan : bool, optional
+            If True, all "d_mass", "eff", and "stoi" values for excitation
+            types other than donor excitation are set to NaN, since the values
+            don't make sense. Defaults to True.
         link_options : dict, optional
             Specify additional options to :py:func:`trackpy.link_df`.
             "search_range" and "memory" will be overwritten by the
@@ -161,6 +179,9 @@ class SmFretTracker:
             trackpy.quiet()
 
         self.excitation_seq = np.array(list(excitation_seq))
+
+        self.a_mass_interp = a_mass_interp
+        self.invalid_nan = invalid_nan
 
     @property
     def excitation_seq(self):
@@ -321,7 +342,7 @@ class SmFretTracker:
 
         return ret.reset_index(drop=True)
 
-    def analyze(self, tracks, aa_interp="linear", invalid_nan=True):
+    def analyze(self, tracks):
         r"""Calculate FRET-related values
 
         This includes apparent FRET efficiencies, FRET stoichiometries,
@@ -360,19 +381,6 @@ class SmFretTracker:
         .. [Uphoff2010] Uphoff, S. et al.: "Monitoring multiple distances
             within a single molecule using switchable FRET".
             Nat Meth, 2010, 7, 831–836
-
-        Parameters
-        ----------
-        tracks : pandas.DataFrame
-            FRET tracking data as e. g. produced by :py:meth:`track`. This
-            method appends the resulting columns.
-        aa_interp : {"nearest", "linear"}, optional
-            What kind of interpolation to use for calculating acceptor
-            brightness upon direct excitation. Defaults to "linear".
-        invalid_nan : bool, optional
-            If True, all "d_mass", "eff", and "stoi" values for excitation
-            types other than donor excitation are set to NaN, since the values
-            don't make sense. Defaults to True.
         """
         tracks.sort_values([("fret", "particle"), ("donor", "frame")],
                            inplace=True)
@@ -417,7 +425,7 @@ class SmFretTracker:
                 # Enough direct acceptor excitations for interpolation
                 # Values are sorted.
                 y, x = a_direct.T
-                a_mass_func = interp1d(x, y, aa_interp, copy=False,
+                a_mass_func = interp1d(x, y, self.a_mass_interp, copy=False,
                                        fill_value=(y[0], y[-1]),
                                        assume_sorted=True, bounds_error=False)
                 # Calculate (interpolated) mass upon direct acceptor excitation
@@ -435,7 +443,7 @@ class SmFretTracker:
             # FRET stoichiometry
             stoi = d_mass / (d_mass + a_mass)
 
-        if invalid_nan:
+        if self.invalid_nan:
             # For direct acceptor excitation, FRET efficiency and stoichiometry
             # are not sensible
             nd_mask = (tracks["fret", "exc_type"] != self.exc_type_nums["d"])
