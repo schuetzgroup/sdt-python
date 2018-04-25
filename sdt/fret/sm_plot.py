@@ -158,8 +158,8 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
 
 
 @config.use_defaults
-def smfret_draw_track(tracks, track_no, donor_img, acceptor_img, size,
-                      columns=8, figure=None, pos_colums=None):
+def draw_track(tracks, track_no, donor_img, acceptor_img, size, columns=8,
+               figure=None, pos_colums=None):
     """Draw donor and acceptor images for a track
 
     For each frame in a track, draw the raw image in the proximity of the
