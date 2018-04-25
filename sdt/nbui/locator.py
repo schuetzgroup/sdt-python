@@ -131,7 +131,7 @@ class Locator:
             self._cur_img_seq = self._files[self._file_selector.value]
         else:
             if self._cur_img_seq is not None:
-                self._cur_img.close()
+                self._cur_img_seq.close()
             self._cur_img_seq = pims.open(self._file_selector.value)
         self._frame_selector.max = len(self._cur_img_seq) - 1
 
