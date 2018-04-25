@@ -28,7 +28,7 @@ def get_files(pattern, subdir=os.curdir):
 
     Parameters
     ----------
-    pattern : str
+    pattern : str or pathlib.Path
         Regular expression to search in the file name. Search is performed
         on the path relative to `subdir`. One can also define groups (using
         parenthesis), which will be returned in addition to the matching
@@ -46,7 +46,7 @@ def get_files(pattern, subdir=os.curdir):
         to int if possible, otherwise try converting to float. If that fails
         as well, use the string.
     """
-    r = re.compile(pattern)
+    r = re.compile(str(pattern))
     flist = []
     idlist = []
     for dp, dn, fn in os.walk(subdir):
