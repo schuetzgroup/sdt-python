@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-from .. import plot, config
+from .. import loc, config, plot
 
 
 def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
@@ -199,9 +199,9 @@ def draw_track(tracks, track_no, donor_img, acceptor_img, size, columns=8,
         figure = plt.gcf()
 
     trc = tracks[tracks["fret", "particle"] == track_no]
-    don_px = plot.get_raw_features(trc["donor"], donor_img, size, pos_colums)
-    acc_px = plot.get_raw_features(trc["acceptor"], acceptor_img, size,
-                                   pos_colums)
+    don_px = loc.get_raw_features(trc["donor"], donor_img, size, pos_colums)
+    acc_px = loc.get_raw_features(trc["acceptor"], acceptor_img, size,
+                                  pos_colums)
 
     rows = int(np.ceil(len(trc)/columns))
     gs = mpl.gridspec.GridSpec(rows*3, columns+1, wspace=0.1, hspace=0.1)
