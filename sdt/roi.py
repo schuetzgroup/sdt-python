@@ -1,4 +1,4 @@
-"""Various simple tools for dealing with microscopy images"""
+"""Classes for dealing with regions of interest in microscopy data"""
 from contextlib import suppress
 
 import numpy as np
@@ -153,7 +153,7 @@ class PathROI(object):
     It uses :py:class:`matplotlib.path.Path` to this end. It can crop images
     or restrict data (such as feature localization data) to a specified region.
 
-    This works only for paths that do not intersects themselves and for single
+    This works only for paths that do not intersect themselves and for single
     channel (i. e. grayscale) images.
 
     Attributes
