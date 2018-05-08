@@ -41,7 +41,7 @@ class ROI(object):
     """
     yaml_tag = "!ROI"
 
-    def __init__(self, top_left, bottom_right=None, shape=None):
+    def __init__(self, top_left, bottom_right=None, size=None):
         """Parameters
         ----------
         top_left : tuple of int
@@ -51,7 +51,7 @@ class ROI(object):
             Coordinates of the bottom-right corner. Pixels with
             coordinates greater or equal than these are excluded from the ROI.
             Either this or `shape` need to specified.
-        shape : tuple of int or None, optional
+        size : tuple of int or None, optional
             Size of the ROI. Specifying `size` is equivalent to
             ``bottom_right=[t+s for t, s in zip(top_left, shape)].
             Either this or `bottom_right` need to specified.
@@ -60,7 +60,7 @@ class ROI(object):
         if bottom_right is not None:
             self.bottom_right = bottom_right
         else:
-            self.bottom_right = tuple(t + s for t, s in zip(top_left, shape))
+            self.bottom_right = tuple(t + s for t, s in zip(top_left, size))
 
     @property
     def size(self):
