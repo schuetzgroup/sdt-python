@@ -57,8 +57,8 @@ class TestRoi(TestCaseBase):
         np.testing.assert_equal(self.roi.bottom_right, self.bottom_right)
 
         r = roi.ROI(self.top_left,
-                    shape=tuple(b-t for t, b in zip(self.top_left,
-                                                    self.bottom_right)))
+                    size=tuple(b-t for t, b in zip(self.top_left,
+                                                   self.bottom_right)))
         self.assert_roi_equal(r, self.roi)
 
     def test_image(self):
