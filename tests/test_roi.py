@@ -117,6 +117,12 @@ class TestRoi(TestCaseBase):
              (self.bottom_right[1] - self.top_left[1]))
         self.assertAlmostEqual(self.roi.area, a)
 
+    def test_unset_origin(self):
+        """.unset_origin"""
+        d = self.roi(self.loc, reset_origin=True)
+        self.roi.unset_origin(d)
+        pd.testing.assert_frame_equal(d, self.loc_roi)
+
 
 class TestPathRoi(TestRoi):
     msg_prefix = "roi.PathROI"

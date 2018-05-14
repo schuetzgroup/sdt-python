@@ -130,6 +130,28 @@ class ROI(object):
                 return img[sl]
             return crop(data)
 
+    @config.use_defaults
+    def unset_origin(self, data, pos_columns=None):
+        """Reset coordinates to the original coordinate system
+
+        This undoes the effect of the `reset_origin` parameter to
+        :py:meth:`__call__`. The coordinates of the top-left ROI corner are
+        added to the feature coordinates in `data`.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Localization data, modified in place.
+
+        Other parameters
+        ----------------
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
+        """
+        data[pos_columns] += self.top_left
+
     @classmethod
     def to_yaml(cls, dumper, data):
         """Dump as YAML
@@ -332,6 +354,28 @@ class PathROI(object):
                 img[~mask] = fv
                 return img.T
             return crop(data)
+
+    @config.use_defaults
+    def unset_origin(self, data, pos_columns=None):
+        """Reset coordinates to the original coordinate system
+
+        This undoes the effect of the `reset_origin` parameter to
+        :py:meth:`__call__`. The coordinates of the top-left ROI corner are
+        added to the feature coordinates in `data`.
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Localization data, modified in place.
+
+        Other parameters
+        ----------------
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
+        """
+        data[pos_columns] += self.bounding_box_int[0]
 
     @classmethod
     def to_yaml(cls, dumper, data):
