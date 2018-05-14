@@ -7,7 +7,7 @@ import matplotlib as mpl
 
 from slicerator import pipeline
 
-from .spatial import polygon_area
+from . import spatial, config
 
 
 class ROI(object):
@@ -70,8 +70,9 @@ class ROI(object):
     def area(self):
         return np.prod(self.size)
 
-    def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
-                 invert=False):
+    @config.use_defaults
+    def __call__(self, data, reset_origin=True, invert=False,
+                 pos_columns=None):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -83,14 +84,11 @@ class ROI(object):
         data : pandas.DataFrame or pims.FramesSequence or array-like
             Data to be processed. If a pandas.Dataframe, select only those
             lines with coordinate values within the ROI. Crop the image.
-        pos_columns : list of str, optional
-            The names of the columns of the x and y coordinates of features.
-            This only applies to DataFrame `data` arguments. Defaults to
-            ["x", "y"].
         reset_origin : bool, optional
             If True, the top-left corner coordinates will be subtracted off
-            all feature coordinates, i. e. the top-left corner will be the
-            new origin. Only valid if `invert` is False. Defaults to True.
+            all feature coordinates, i. e. the top-left corner of the ROI will
+            be the new origin. Only valid if `invert` is False. Defaults to
+            True.
         invert : bool, optional
             If True, only datapoints outside the ROI are selected. Works only
             if `data` is a :py:class:`pandas.DataFrame`. Defaults to `False`.
@@ -99,6 +97,13 @@ class ROI(object):
         -------
         pandas.DataFrame or slicerator.Slicerator or numpy.array
             Data restricted to the ROI represented by this class.
+
+        Other parameters
+        ----------------
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
         """
         if isinstance(data, pd.DataFrame):
             mask = np.ones(len(data), dtype=bool)
@@ -113,8 +118,7 @@ class ROI(object):
                 roi_data = data[mask].copy()
 
             if reset_origin and not invert:
-                for p, t in zip(pos_columns, self.top_left):
-                    roi_data[p] -= t
+                roi_data[pos_columns] -= self.top_left
 
             return roi_data
 
@@ -209,7 +213,7 @@ class PathROI(object):
             [np.floor(self.bounding_box[0]),
              np.ceil(self.bounding_box[1])], dtype=int)
 
-        self.area = polygon_area(self.path.vertices)
+        self.area = spatial.polygon_area(self.path.vertices)
         # If the path is clockwise, the `radius` argument to
         # Path.contains_points needs to be negative to enlarge the ROI
         self.buffer_sign = -1 if self.area < 0 else 1
@@ -236,8 +240,9 @@ class PathROI(object):
             idx.T, trans, 2 * self.buffer_sign * self.buffer)
         self.image_mask = self.image_mask.reshape(mask_size)
 
-    def __call__(self, data, pos_columns=["x", "y"], reset_origin=True,
-                 fill_value=0, invert=False):
+    @config.use_defaults
+    def __call__(self, data, reset_origin=True, fill_value=0, invert=False,
+                 pos_columns=None):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -253,10 +258,6 @@ class PathROI(object):
             Otherwise, `slicerator.pipeline` is used to crop image data to the
             bounding rectangle of the path and set all pixels not within the
             path to `fill_value`
-        pos_columns : list of str, optional
-            The names of the columns of the x and y coordinates of features.
-            This only applies to DataFrame `data` arguments. Defaults to
-            ["x", "y"].
         reset_origin : bool, optional
             If True, the top-left corner coordinates of the path's bounding
             rectangle will be subtracted off all feature coordinates, i. e.
@@ -273,6 +274,13 @@ class PathROI(object):
         -------
         pandas.DataFrame or slicerator.Slicerator or numpy.array
             Data restricted to the ROI represented by this class.
+
+        Other parameters
+        ----------------
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
         """
         if isinstance(data, pd.DataFrame):
             if not len(data):
