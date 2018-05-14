@@ -101,27 +101,29 @@ class ROI(object):
             Data restricted to the ROI represented by this class.
         """
         if isinstance(data, pd.DataFrame):
-            x = pos_columns[0]
-            y = pos_columns[1]
-            mask = ((data[x] > self.top_left[0]) &
-                    (data[x] < self.bottom_right[0]) &
-                    (data[y] > self.top_left[1]) &
-                    (data[y] < self.bottom_right[1]))
+            mask = np.ones(len(data), dtype=bool)
+            for p, t, b in zip(pos_columns, self.top_left, self.bottom_right):
+                d = data[p]
+                mask &= d > t
+                mask &= d < b
+
             if invert:
                 roi_data = data[~mask].copy()
             else:
                 roi_data = data[mask].copy()
+
             if reset_origin and not invert:
-                roi_data.loc[:, x] -= self.top_left[0]
-                roi_data.loc[:, y] -= self.top_left[1]
+                for p, t in zip(pos_columns, self.top_left):
+                    roi_data[p] -= t
 
             return roi_data
 
         else:
+            sl = tuple(slice(t, b) for t, b in zip(self.top_left[::-1],
+                                                   self.bottom_right[::-1]))
             @pipeline
             def crop(img):
-                return img[self.top_left[1]:self.bottom_right[1],
-                           self.top_left[0]:self.bottom_right[0]]
+                return img[sl]
             return crop(data)
 
     @classmethod
