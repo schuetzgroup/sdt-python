@@ -203,7 +203,8 @@ class SmFretTracker:
                                        {k: np.nonzero(self._exc_seq == k)[0]
                                         for k in np.unique(self._exc_seq)})
 
-    def track(self, donor_img, acceptor_img, donor_loc, acceptor_loc):
+    def track(self, donor_img, acceptor_img, donor_loc, acceptor_loc,
+              d_mass=False):
         """Track smFRET data
 
         Localization data for both the donor and the acceptor channel is
@@ -225,6 +226,17 @@ class SmFretTracker:
             with a frame number will do.
         donor_loc, acceptor_loc : pandas.DataFrame
             Localization data for donor and acceptor channel
+        d_mass : bool, optional
+            If `True`, get total brightness upon donor excitation by
+            from the sum of donor and acceptor image. If `False`, the
+            donor excitation brightness can still be calculated as the sum of
+            donor and acceptor brightness in :py:meth:`analyze`. Defaults to
+            `False`.
+
+            Note: Until :py:mod:`slicerator` with support for multiple
+            inputs to pipelines is released, setting this to `True` will load
+            all of `donor_img` and `acceptor_img` into memory, even if
+            :py:mod:`pims` is used.
 
         Returns
         -------
@@ -330,6 +342,20 @@ class SmFretTracker:
         brightness.from_raw_image(ret_d, donor_img, **self.brightness_options)
         brightness.from_raw_image(ret_a, acceptor_img,
                                   **self.brightness_options)
+
+        # If desired, get brightness upon donor excitation from image overlay
+        if d_mass:
+            # Until slicerator with support for multiple inputs to pipelines
+            # is released, load everything into memory
+            overlay = []
+            for di, da in zip(donor_img, acceptor_img):
+                o = di + self.chromatic_corr(da, cval=np.mean,
+                                             channel=self.acceptor_channel)
+                overlay.append(o)
+            df = ret_d[self.pos_columns + ["frame"]].copy()
+            brightness.from_raw_image(df, overlay, **self.brightness_options)
+            ret["fret", "d_mass"] = df["mass"]
+
         ret_d.columns = pd.MultiIndex.from_product((["donor"], ret_d.columns))
         ret_a.columns = pd.MultiIndex.from_product((["acceptor"],
                                                     ret_a.columns))
@@ -347,7 +373,7 @@ class SmFretTracker:
 
         return ret.reset_index(drop=True)
 
-    def analyze(self, tracks):
+    def analyze(self, tracks, keep_d_mass=False):
         r"""Calculate FRET-related values
 
         This includes apparent FRET efficiencies, FRET stoichiometries,
@@ -386,6 +412,17 @@ class SmFretTracker:
         .. [Uphoff2010] Uphoff, S. et al.: "Monitoring multiple distances
             within a single molecule using switchable FRET".
             Nat Meth, 2010, 7, 831–836
+
+        Parameters
+        ----------
+        tracks : pandas.DataFrame
+            smFRET tracking data as produced by the
+            :py:meth:`SmFretTracker.track`
+        keep_d_mass : bool, optional
+            If a ``("fret", "d_mass")`` column is already present in `tracks`,
+            use that instead of overwriting it with the sum of
+            ``("donor", "mass")`` and ``("acceptor", "mass")`` values. Useful
+            if :py:meth:`track` was called with ``d_mass=True``.
         """
         tracks.sort_values([("fret", "particle"), ("donor", "frame")],
                            inplace=True)
@@ -437,7 +474,10 @@ class SmFretTracker:
                 a_mass.append(a_mass_func(t[:, 2]))
 
         # Total mass upon donor excitation
-        d_mass = tracks["donor", "mass"] + tracks["acceptor", "mass"]
+        if keep_d_mass and ("fret", "d_mass") in tracks.columns:
+            d_mass = tracks["fret", "d_mass"].copy()
+        else:
+            d_mass = tracks["donor", "mass"] + tracks["acceptor", "mass"]
         # Total mass upon acceptor excitation
         a_mass = np.concatenate(a_mass)
 

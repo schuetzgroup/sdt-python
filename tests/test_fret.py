@@ -129,6 +129,15 @@ class TestSmFretTracker(unittest.TestCase):
         pd.testing.assert_frame_equal(fret_data, self.fret_data,
                                       check_dtype=False, check_like=True)
 
+    def test_track_d_mass(self):
+        """fret.SmFretTracker.track: d_mass=True"""
+        fret_data = self.tracker.track(self.don_img, self.acc_img,
+                                       self.don_loc, self.acc_loc, d_mass=True)
+        self.fret_data["fret", "d_mass"] = (self.don_loc["mass"] +
+                                            self.acc_loc["mass"])
+        pd.testing.assert_frame_equal(fret_data, self.fret_data,
+                                      check_dtype=False, check_like=True)
+
     def test_analyze_fret_eff(self):
         """fret.SmFretTracker.analyze: FRET efficiency"""
         don_mass = np.ones(len(self.fret_data2)) * 1000
@@ -251,6 +260,38 @@ class TestSmFretTracker(unittest.TestCase):
                                 np.ones(len(self.fret_data2), dtype=bool))
         np.testing.assert_equal(np.isfinite(self.fret_data2["fret", "d_mass"]),
                                 np.ones(len(self.fret_data2), dtype=bool))
+
+    def test_analyze_keep_d_mass_true(self):
+        """fret.SmFretTracker.analyze: keep_d_mass=True"""
+        dm = np.arange(len(self.fret_data))
+        self.fret_data["fret", "d_mass"] = dm
+
+        self.tracker.analyze(self.fret_data, keep_d_mass=True)
+
+        self.assertIn(("fret", "d_mass"), self.fret_data)
+        np.testing.assert_allclose(self.fret_data["fret", "d_mass"], dm)
+
+    def test_analyze_keep_d_mass_false(self):
+        """fret.SmFretTracker.analyze: keep_d_mass=False"""
+        dm = np.arange(len(self.fret_data))
+        dm_orig = (self.fret_data["donor", "mass"] +
+                   self.fret_data["acceptor", "mass"])
+        self.fret_data["fret", "d_mass"] = dm
+
+        self.tracker.analyze(self.fret_data, keep_d_mass=False)
+
+        self.assertIn(("fret", "d_mass"), self.fret_data)
+        np.testing.assert_allclose(self.fret_data["fret", "d_mass"], dm_orig)
+
+    def test_analyze_keep_d_mass_missing(self):
+        """fret.SmFretTracker.analyze: keep_d_mass=True, missing column"""
+        dm_orig = (self.fret_data["donor", "mass"] +
+                   self.fret_data["acceptor", "mass"])
+
+        self.tracker.analyze(self.fret_data, keep_d_mass=True)
+
+        self.assertIn(("fret", "d_mass"), self.fret_data)
+        np.testing.assert_allclose(self.fret_data["fret", "d_mass"], dm_orig)
 
     def test_flag_excitation_type(self):
         """fret.SmFretTracker.flag_excitation_type"""
