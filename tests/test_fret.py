@@ -414,6 +414,28 @@ class TestSmFretFilter(unittest.TestCase):
         pd.testing.assert_frame_equal(self.filt.tracks,
                                       data[data["fret", "particle"] == 1])
 
+    def test_filter_particles_neg_min_count(self):
+        """fret.SmFretFilter.filter_particles: Negative min_count"""
+        self.data1.loc[3, ("fret", "a_mass")] = -1
+        self.data2.loc[[4, 7], ("fret", "a_mass")] = -1
+        data = pd.concat([self.data1, self.data2, self.data3],
+                         ignore_index=True)
+        self.filt.tracks = data.copy()
+        self.filt.filter_particles("fret_a_mass > 0", -1)
+        pd.testing.assert_frame_equal(
+            self.filt.tracks, data[data["fret", "particle"].isin([0, 2])])
+
+    def test_filter_particles_zero_min_count(self):
+        """fret.SmFretFilter.filter_particles: 0 min_count"""
+        self.data1.loc[3, ("fret", "a_mass")] = -1
+        self.data2.loc[[4, 7], ("fret", "a_mass")] = -1
+        data = pd.concat([self.data1, self.data2, self.data3],
+                         ignore_index=True)
+        self.filt.tracks = data.copy()
+        self.filt.filter_particles("fret_a_mass > 0", 0)
+        pd.testing.assert_frame_equal(
+            self.filt.tracks, data[data["fret", "particle"] == 2])
+
     def test_image_mask_single(self):
         """fret.sm_filter._image_mask_single"""
         mask = np.zeros((200, 200), dtype=bool)

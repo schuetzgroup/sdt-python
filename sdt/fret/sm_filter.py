@@ -232,15 +232,19 @@ class SmFretFilter:
             Filter expression. See :py:meth:`pandas.DataFrame.eval` for
             details.
         min_count : int, optional
-            Minimum number of times a particle has to fulfill expr. Defaults to
-            1.
+            Minimum number of times a particle has to fulfill expr. If
+            negative, this means "all but ``abs(min_count)``". If 0, it has
+            to be fulfilled in all frames.
 
         Examples
         --------
         Remove any particles where not ("fret", "a_mass") > 500 at least twice
         from :py:attr:`tracks`.
 
+        >>> # acceptor mass has to be > 500 in at least 2 frames
         >>> filt.filter_particles("fret_a_mass > 500", 2)
+        >>> # acceptor mass may be <= 500 in no more than one frame
+        >>> filt.filter_particles("fret_a_mass > 500", -1)
 
         Other parameters
         ----------------
@@ -249,8 +253,12 @@ class SmFretFilter:
             MultiIndex. Defaults to "_".
         """
         e = self.eval(expr, mi_sep)
-        p = self.tracks.loc[e, ("fret", "particle")]
+        p = self.tracks.loc[e, ("fret", "particle")].values
         p, c = np.unique(p, return_counts=True)
+        if min_count <= 0:
+            p2 = self.tracks.loc[self.tracks["fret", "particle"].isin(p),
+                                 ("fret", "particle")].values
+            min_count = np.unique(p2, return_counts=True)[1] + min_count
         good_p = p[c >= min_count]
         self.tracks = self.tracks[self.tracks["fret", "particle"].isin(good_p)]
 
