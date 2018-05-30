@@ -61,7 +61,10 @@ def make_batch(locate_func):
 
             all_features.append(features)
 
-        return pd.concat(all_features, ignore_index=True)
+        if all_features:
+            return pd.concat(all_features, ignore_index=True)
+        else:
+            raise ValueError("Empty `frames`")
 
     batch.__doc__ = batch.__doc__.format(fname=locate_func.__name__)
     return batch
@@ -124,7 +127,10 @@ def make_batch_threaded(locate_func):
             if "frame" not in df.columns:
                 df["frame"] = i
 
-        return pd.concat(all_features, ignore_index=True)
+        if all_features:
+            return pd.concat(all_features, ignore_index=True)
+        else:
+            raise ValueError("Empty `frames`")
 
     batch.__doc__ = batch.__doc__.format(fname=locate_func.__name__)
     return batch
