@@ -308,9 +308,15 @@ class SmFretFilter:
             self.tracks = _image_mask_single(self.tracks, mask, channel,
                                              pos_columns)
         else:
-            ret = [(k, _image_mask_single(self.tracks.loc[k], v, channel,
-                                          pos_columns))
-                   for k, v in mask]
+            ret = []
+            for k, v in mask:
+                try:
+                    m = _image_mask_single(self.tracks.loc[k], v, channel,
+                                           pos_columns)
+                except KeyError:
+                    # No tracking data for the current image
+                    continue
+                ret.append((k, m))
             self.tracks = pd.concat([r[1] for r in ret],
                                     keys=[r[0] for r in ret])
 
