@@ -7,7 +7,7 @@ import matplotlib as mpl
 
 from slicerator import pipeline
 
-from . import spatial, config
+from .. import spatial, config
 
 
 class ROI(object):
@@ -423,7 +423,7 @@ class RectangleROI(PathROI):
     """
     yaml_tag = "!RectangleROI"
 
-    def __init__(self, top_left, bottom_right=None, shape=None,
+    def __init__(self, top_left, bottom_right=None, size=None,
                  buffer=0., no_image=False):
         """Parameters
         ----------
@@ -434,7 +434,7 @@ class RectangleROI(PathROI):
             Coordinates of the bottom-right corner. Pixels with
             coordinates greater or equal than these are excluded from the ROI.
             Either this or `shape` need to specified.
-        shape : tuple of float or None, optional
+        size : tuple of float or None, optional
             Size of the ROI. Specifying `size` is equivalent to
             ``bottom_right=[t+s for t, s in zip(top_left, shape)].
             Either this or `bottom_right` need to specified.
@@ -442,7 +442,7 @@ class RectangleROI(PathROI):
             see :py:class:`PathROI`.
         """
         if bottom_right is None:
-            bottom_right = tuple(t + s for t, s in zip(top_left, shape))
+            bottom_right = tuple(t + s for t, s in zip(top_left, size))
 
         path = mpl.path.Path.unit_rectangle()
         trafo = mpl.transforms.Affine2D().scale(bottom_right[0]-top_left[0],
@@ -541,7 +541,7 @@ class EllipseROI(PathROI):
 
 
 with suppress(ImportError):
-    from .io import yaml
+    from ..io import yaml
     yaml.register_yaml_class(ROI)
     yaml.register_yaml_class(PathROI)
     yaml.register_yaml_class(RectangleROI)
