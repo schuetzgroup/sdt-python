@@ -5,6 +5,7 @@ import os
 from io import BytesIO
 import pathlib
 import zipfile
+import mmap
 
 import numpy as np
 
@@ -97,21 +98,20 @@ class Options(enum.IntFlag):
 coord_offset = 64
 
 
-def _load(file):
+def _load(data):
     """Load ROI from file (implementation)
 
     Parameters
     ----------
-    file : file-like object
-        Source file. Has to be seekable and opened for binary reading.
+    data : bytes or mmap
+        ROI file data
 
     Returns
     -------
     roi.ROI or roi.PathROI or roi.RectangleROI or roi.EllipseROI
         ROI object representing the ROI described in the file
     """
-    h1 = struct.unpack(header1_unpack,
-                       file.read(struct.calcsize(header1_unpack)))
+    h1 = struct.unpack(header1_unpack, data[:struct.calcsize(header1_unpack)])
     h1 = {k[0]: v for k, v in zip(header1_spec, h1)}
 
     if h1["magic"] != b"Iout":
@@ -163,12 +163,12 @@ def _load(file):
         float_coord_unpack = ">{}f".format(n)
         if (h1["options"] & Options.sub_pixel_resolution and
                 h1["version"] >= 223):
-            file.seek(coord_offset + 2 * struct.calcsize(int_coord_unpack))
-            coords = np.fromfile(file, float_coord_unpack, count=2).T
+            start_read = coord_offset + 2 * struct.calcsize(int_coord_unpack)
+            coords = np.frombuffer(data, float_coord_unpack, offset=start_read,
+                                   count=2).T
         else:
-            file.seek(coord_offset)
-            coords = np.fromfile(file, int_coord_unpack, count=2).T
-            coords += (h1["left"], h1["top"])
+            coords = np.frombuffer(data, int_coord_unpack, offset=coord_offset,
+                                   count=2).T + (h1["left"], h1["top"])
         return roi.PathROI(coords)
 
     raise NotImplementedError(
@@ -180,11 +180,11 @@ def load_imagej(file_or_data):
 
     Parameters
     ----------
-    file_or_data : str or pathlib.Path or bytes or file-like object
+    file_or_data : str or pathlib.Path or bytes or file
         Source data. A `str` or `pathlib.Path` has to point to a file that
         can be opened for binary reading and is seekable. If `bytes`,
-        this has to be the contents of a ROI file. A file-like object has
-        to be open for binary reading and seekable.
+        this has to be the contents of a ROI file. A file has to be opened to
+        allow mem-mapping ("r+b").
 
     Returns
     -------
@@ -192,13 +192,14 @@ def load_imagej(file_or_data):
         ROI object representing the ROI described in the file
     """
     if isinstance(file_or_data, bytes):
-        bio = BytesIO(file_or_data)
-        return _load(bio)
+        return _load(file_or_data)
     if isinstance(file_or_data, (str, pathlib.Path)):
-        with open(file_or_data, "rb") as f:
-            return _load(f)
+        with open(file_or_data, "r+b") as f:
+            with mmap.mmap(f.fileno(), 0) as m:
+                return _load(m)
     # Let's hope it is an opened file
-    return _load(file_or_data)
+    with mmap.mmap(file_or_data.fileno(), 0) as m:
+        return _load(m)
 
 
 def _load_zip(z):

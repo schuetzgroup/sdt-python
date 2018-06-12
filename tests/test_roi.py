@@ -364,23 +364,20 @@ class TestImagej(unittest.TestCase):
 
     def test_load_rect_roi(self):
         """roi.imagej._load: rectangular ROI"""
-        with (data_path / "rect.roi").open("rb") as f:
-            r = roi.imagej._load(f)
+        r = roi.imagej._load((data_path / "rect.roi").read_bytes())
         self._check_rect_roi(r)
 
     def test_load_oval_roi(self):
         """roi.imagej._load: oval ROI"""
-        with (data_path / "oval.roi").open("rb") as f:
-            r = roi.imagej._load(f)
+        r = roi.imagej._load((data_path / "oval.roi").read_bytes())
         self.assertIsInstance(r, roi.EllipseROI)
         np.testing.assert_allclose(r.center, (183, 62))
         np.testing.assert_allclose(r.axes, (10, 7))
         np.testing.assert_equal(r.angle, 0)
 
     def test_load_ellipse_roi(self):
-        """roi.imagej._load: oval ROI"""
-        with (data_path / "ellipse.roi").open("rb") as f:
-            r = roi.imagej._load(f)
+        """roi.imagej._load: ellipse ROI"""
+        r = roi.imagej._load((data_path / "ellipse.roi").read_bytes())
         self.assertIsInstance(r, roi.EllipseROI)
         np.testing.assert_allclose(r.center, ((172 + 185) / 2,
                                               (63 + 58) / 2))
@@ -391,16 +388,14 @@ class TestImagej(unittest.TestCase):
 
     def test_load_polygon_roi(self):
         """roi.imagej._load: polygon ROI"""
-        with (data_path / "polygon.roi").open("rb") as f:
-            r = roi.imagej._load(f)
+        r = roi.imagej._load((data_path / "polygon.roi").read_bytes())
         self.assertIsInstance(r, roi.PathROI)
         vert = [[131, 40], [117, 59], [152, 57]]
         np.testing.assert_equal(r.path.vertices, vert)
 
     def test_load_freehand_roi(self):
         """roi.imagej._load: freehand ROI"""
-        with (data_path / "freehand.roi").open("rb") as f:
-            r = roi.imagej._load(f)
+        r = roi.imagej._load((data_path / "freehand.roi").read_bytes())
         self.assertIsInstance(r, roi.PathROI)
         vert = ([[122, i] for i in range(42, 46)] +
                 [[i, 46] for i in range(122, 127)] +
@@ -417,8 +412,7 @@ class TestImagej(unittest.TestCase):
             a = np.zeros((100, 150), dtype=np.uint8)
             a[10:70, 25:80] = 100
         """
-        with (data_path / "traced.roi").open("rb") as f:
-            r = roi.imagej._load(f)
+        r = roi.imagej._load((data_path / "traced.roi").read_bytes())
         self.assertIsInstance(r, roi.PathROI)
         vert = [[80, 70], [25, 70], [25, 10], [80, 10]]
         np.testing.assert_equal(r.path.vertices, vert)
@@ -441,7 +435,7 @@ class TestImagej(unittest.TestCase):
 
     def test_load_imagej_file(self):
         """roi.load_imagej: file-like arg"""
-        with (data_path / "rect.roi").open("rb") as f:
+        with (data_path / "rect.roi").open("r+b") as f:
             r = roi.load_imagej(f)
         self._check_rect_roi(r)
 
