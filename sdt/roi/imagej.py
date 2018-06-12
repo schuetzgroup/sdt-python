@@ -1,10 +1,14 @@
+"""Load ROIs from ImageJ .roi and .zip files"""
 import struct
 import enum
 import os
+from io import BytesIO
+import pathlib
+import zipfile
 
 import numpy as np
 
-from sdt import roi
+from . import roi
 
 
 __all__ = ["load_imagej", "load_imagej_zip"]
@@ -30,7 +34,8 @@ header1_spec = [
     ("fill color", "i"),
     ("subtype", "h"),
     ("options", "h"),
-    ("float param", "f"),
+    ("float param", "f"),  # This can also be two bytes for certain
+                           # (unsupported) ROI types
     ("rounded rect arc size", "h"),
     ("position", "i"),
     ("header2 offset", "i")]
@@ -92,8 +97,21 @@ class Options(enum.IntFlag):
 coord_offset = 64
 
 
-def load_imagej(data):
-    h1 = struct.unpack(header1_unpack, data[:struct.calcsize(header1_unpack)])
+def _load(file):
+    """Load ROI from file (implementation)
+
+    Parameters
+    ----------
+    file : file-like object
+        Source file. Has to be seekable and opened for binary reading.
+
+    Returns
+    -------
+    roi.ROI or roi.PathROI or roi.RectangleROI or roi.EllipseROI
+        ROI object representing the ROI described in the file
+    """
+    h1 = struct.unpack(header1_unpack,
+                       file.read(struct.calcsize(header1_unpack)))
     h1 = {k[0]: v for k, v in zip(header1_spec, h1)}
 
     if h1["magic"] != b"Iout":
@@ -145,21 +163,81 @@ def load_imagej(data):
         float_coord_unpack = ">{}f".format(n)
         if (h1["options"] & Options.sub_pixel_resolution and
                 h1["version"] >= 223):
-            read_start = coord_offset + 2 * struct.calcsize(int_coord_unpack)
-            coords = np.frombuffer(data, float_coord_unpack, offset=read_start,
-                                   count=2).T
+            file.seek(coord_offset + 2 * struct.calcsize(int_coord_unpack))
+            coords = np.fromfile(file, float_coord_unpack, count=2).T
         else:
-            coords = np.frombuffer(data, int_coord_unpack, offset=coord_offset,
-                                   count=2).T + (h1["left"], h1["top"])
+            file.seek(coord_offset)
+            coords = np.fromfile(file, int_coord_unpack, count=2).T
+            coords += (h1["left"], h1["top"])
         return roi.PathROI(coords)
 
     raise NotImplementedError(
         "{} ROIs are not supported".format(str(Type(h1["type"]))))
 
 
-def load_imagej_zip(zipfile):
+def load_imagej(file_or_data):
+    """Load ROI from file
+
+    Parameters
+    ----------
+    file_or_data : str or pathlib.Path or bytes or file-like object
+        Source data. A `str` or `pathlib.Path` has to point to a file that
+        can be opened for binary reading and is seekable. If `bytes`,
+        this has to be the contents of a ROI file. A file-like object has
+        to be open for binary reading and seekable.
+
+    Returns
+    -------
+    roi.ROI or roi.PathROI or roi.RectangleROI or roi.EllipseROI
+        ROI object representing the ROI described in the file
+    """
+    if isinstance(file_or_data, bytes):
+        bio = BytesIO(file_or_data)
+        return _load(bio)
+    if isinstance(file_or_data, (str, pathlib.Path)):
+        with open(file_or_data, "rb") as f:
+            return _load(f)
+    # Let's hope it is an opened file
+    return _load(file_or_data)
+
+
+def _load_zip(z):
+    """Load ROIs from ImageJ zip file (implementation)
+
+    Parameters
+    ----------
+    z : zipfile.ZipFile
+        Zip file opened for reading
+
+    Returns
+    -------
+    dict of ROI objects
+        Use the ROI names inside the zip as keys and the return values
+        :py:func:`load_imagej` calls as values.
+    """
     ret = {}
-    for n in zipfile.namelist():
-        with zipfile.open(n) as f:
+    for n in z.namelist():
+        with z.open(n) as f:
             ret[os.path.splitext(n)[0]] = load_imagej(f.read())
     return ret
+
+
+def load_imagej_zip(file):
+    """Load ROIs from ImageJ zip file (implementation)
+
+    Parameters
+    ----------
+    file: str or pathlib.Path or zipfile.ZipFile
+        Name/path of the zip file or ZipFile opened for reading
+
+    Returns
+    -------
+    dict of ROI objects
+        Use the ROI names inside the zip as keys and the return values
+        :py:func:`load_imagej` calls as values.
+    """
+    if isinstance(file, (str, pathlib.Path)):
+        with zipfile.ZipFile(file) as z:
+            return _load_zip(z)
+    # Let's hope it is an opened ZipFile
+    return _load_zip(file)
