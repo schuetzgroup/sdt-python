@@ -81,7 +81,7 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
     end_frame = idx[-1]
     frame_list = list(range(start_frame, end_frame + 1))
     pdata = particle_data.reindex(frame_list)
-    pdata = pdata[pos_columns].as_matrix()
+    pdata = pdata[pos_columns].values
 
     # there can be at most len(pdata) - 1 steps
     max_lagtime = round(min(len(pdata)-1, max_lagtime))

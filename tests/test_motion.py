@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import unittest
 import os
 import pickle
@@ -81,7 +80,7 @@ class TestMotion(unittest.TestCase):
         np.testing.assert_allclose(emsd["msd"], orig[:, 1], rtol=1e-5)
         # if there is only one data point, numpy std returns NaN, MATLAB 0
         # therefore remove affected lines
-        valid_stderr = np.isfinite(emsd["stderr"].as_matrix())
+        valid_stderr = np.isfinite(emsd["stderr"].values)
         np.testing.assert_allclose(emsd["stderr"].dropna(),
                                    orig[valid_stderr, 2],
                                    rtol=1e-5)
@@ -169,8 +168,8 @@ class TestMotion(unittest.TestCase):
             sd_dict = pickle.load(f)
 
         e1, e2 = motion.emsd_from_square_displacements_cdf(sd_dict)
-        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
-        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+        np.testing.assert_allclose(e1.values, orig1.values)
+        np.testing.assert_allclose(e2.values, orig2.values)
 
     def test_emsd_from_square_displacements_cdf_lsq(self):
         # From a test run
@@ -182,8 +181,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_from_square_displacements_cdf(
             sd_dict, method="lsq")
-        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
-        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+        np.testing.assert_allclose(e1.values, orig1.values)
+        np.testing.assert_allclose(e2.values, orig2.values)
 
     def test_emsd_from_square_displacements_cdf_wlsq(self):
         # From a test run
@@ -195,8 +194,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_from_square_displacements_cdf(
             sd_dict, method="weighted-lsq")
-        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
-        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+        np.testing.assert_allclose(e1.values, orig1.values)
+        np.testing.assert_allclose(e2.values, orig2.values)
 
     def test_emsd_cdf_prony(self):
         # From a test run
@@ -205,8 +204,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
                                  method="prony")
-        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
-        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+        np.testing.assert_allclose(e1.values, orig1.values)
+        np.testing.assert_allclose(e2.values, orig2.values)
 
     def test_emsd_cdf_lsq(self):
         # From a test run
@@ -215,8 +214,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
                                  method="lsq")
-        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
-        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+        np.testing.assert_allclose(e1.values, orig1.values)
+        np.testing.assert_allclose(e2.values, orig2.values)
 
     def test_emsd_cdf_wlsq(self):
         # From a test run
@@ -225,8 +224,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
                                  method="weighted-lsq")
-        np.testing.assert_allclose(e1.as_matrix(), orig1.as_matrix())
-        np.testing.assert_allclose(e2.as_matrix(), orig2.as_matrix())
+        np.testing.assert_allclose(e1.values, orig1.values)
+        np.testing.assert_allclose(e2.values, orig2.values)
 
 
 class TestFindImmobilizations(unittest.TestCase):

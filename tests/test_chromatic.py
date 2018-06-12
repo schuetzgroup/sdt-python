@@ -99,7 +99,7 @@ class TestChromaticCorrector(unittest.TestCase):
 
         self.corrector(data, channel=1, inplace=True)
         orig = np.load(os.path.join(data_path, "coords_corrected.npy"))
-        np.testing.assert_allclose(data.as_matrix(), orig)
+        np.testing.assert_allclose(data.values, orig)
 
     def test_call_img(self):
         """chromatic.Corrector.__call__: image arg"""

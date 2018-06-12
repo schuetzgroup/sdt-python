@@ -431,7 +431,7 @@ class Corrector(object):
             from the j-th feature in `features` to the k-th feature.
         """
         # transpose so that data[1] gives x coordinates, data[2] y coordinates
-        data = features[self.pos_columns].as_matrix().T
+        data = features[self.pos_columns].values.T
         # for each coordinate (the first ':'), calculate the differences
         # between all entries (thus 'np.newaxis, :' and ':, np.newaxis')
         return data[:, np.newaxis, :] - data[:, :, np.newaxis]
