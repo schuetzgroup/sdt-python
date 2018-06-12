@@ -1,7 +1,8 @@
 import unittest
-import os
 import tempfile
 import io
+from pathlib import Path
+import zipfile
 
 import numpy as np
 import pandas as pd
@@ -13,8 +14,7 @@ from sdt import roi
 from sdt.io import yaml
 
 
-path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_roi")
+data_path = Path(__file__).resolve().parents[0] / "data_roi"
 
 
 class TestCaseBase(unittest.TestCase):
@@ -306,8 +306,8 @@ class TestRectangleRoi(TestPathRoi):
         super().test_init()
 
         r = roi.RectangleROI(
-            self.top_left, shape=tuple(b-t for t, b in zip(self.top_left,
-                                                           self.bottom_right)))
+            self.top_left, size=tuple(b-t for t, b in zip(self.top_left,
+                                                          self.bottom_right)))
         self.assert_roi_equal(r, self.roi)
 
 
@@ -321,7 +321,7 @@ class TestEllipseRoi(TestPathRoi):
         self.roi = roi.EllipseROI(self.center, self.axes)
 
         self.bbox = self.bbox_int = np.array([[0, 10], [60, 90]])
-        with np.load(os.path.join(data_path, "ellipse_roi.npz")) as orig:
+        with np.load(data_path / "ellipse_roi.npz") as orig:
             self.mask = orig["image_mask"]
             self.vertices = orig["vertices"]
             self.codes = orig["codes"]
@@ -354,6 +354,124 @@ class TestEllipseRoi(TestPathRoi):
         # bottom ten rows get chopped off due to small self.img size
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float).T[:70, :]]*2)
+
+
+class TestImagej(unittest.TestCase):
+    def _check_rect_roi(self, r):
+        self.assertIsInstance(r, roi.ROI)
+        np.testing.assert_equal(r.top_left, (169, 55))
+        np.testing.assert_equal(r.bottom_right, (169 + 42, 55 + 13))
+
+    def test_load_rect_roi(self):
+        """roi.imagej._load: rectangular ROI"""
+        with (data_path / "rect.roi").open("rb") as f:
+            r = roi.imagej._load(f)
+        self._check_rect_roi(r)
+
+    def test_load_oval_roi(self):
+        """roi.imagej._load: oval ROI"""
+        with (data_path / "oval.roi").open("rb") as f:
+            r = roi.imagej._load(f)
+        self.assertIsInstance(r, roi.EllipseROI)
+        np.testing.assert_allclose(r.center, (183, 62))
+        np.testing.assert_allclose(r.axes, (10, 7))
+        np.testing.assert_equal(r.angle, 0)
+
+    def test_load_ellipse_roi(self):
+        """roi.imagej._load: oval ROI"""
+        with (data_path / "ellipse.roi").open("rb") as f:
+            r = roi.imagej._load(f)
+        self.assertIsInstance(r, roi.EllipseROI)
+        np.testing.assert_allclose(r.center, ((172 + 185) / 2,
+                                              (63 + 58) / 2))
+        long_ax = np.sqrt((172 - 185)**2 + (63 - 58)**2) / 2
+        np.testing.assert_allclose(r.axes, (long_ax, 0.608 * long_ax),
+                                   atol=1e-3)
+        np.testing.assert_equal(r.angle, np.arctan2(58 - 63, 185 - 172))
+
+    def test_load_polygon_roi(self):
+        """roi.imagej._load: polygon ROI"""
+        with (data_path / "polygon.roi").open("rb") as f:
+            r = roi.imagej._load(f)
+        self.assertIsInstance(r, roi.PathROI)
+        vert = [[131, 40], [117, 59], [152, 57]]
+        np.testing.assert_equal(r.path.vertices, vert)
+
+    def test_load_freehand_roi(self):
+        """roi.imagej._load: freehand ROI"""
+        with (data_path / "freehand.roi").open("rb") as f:
+            r = roi.imagej._load(f)
+        self.assertIsInstance(r, roi.PathROI)
+        vert = ([[122, i] for i in range(42, 46)] +
+                [[i, 46] for i in range(122, 127)] +
+                [[127, i] for i in range(46, 42, -1)] +
+                [[i, 42] for i in range(127, 121, -1)])
+        np.testing.assert_equal(r.path.vertices, vert)
+
+    def test_load_traced_roi(self):
+        """roi.imagej._load: traced ROI
+
+        This is from using the wand tool on an image created by
+        ::
+
+            a = np.zeros((100, 150), dtype=np.uint8)
+            a[10:70, 25:80] = 100
+        """
+        with (data_path / "traced.roi").open("rb") as f:
+            r = roi.imagej._load(f)
+        self.assertIsInstance(r, roi.PathROI)
+        vert = [[80, 70], [25, 70], [25, 10], [80, 10]]
+        np.testing.assert_equal(r.path.vertices, vert)
+
+    def test_load_imagej_str(self):
+        """roi.load_imagej: string arg"""
+        r = roi.load_imagej(str(data_path / "rect.roi"))
+        self._check_rect_roi(r)
+
+    def test_load_imagej_path(self):
+        """roi.load_imagej: Path arg"""
+        r = roi.load_imagej(data_path / "rect.roi")
+        self._check_rect_roi(r)
+
+    def test_load_imagej_bytes(self):
+        """roi.load_imagej: bytes arg"""
+        b = (data_path / "rect.roi").read_bytes()
+        r = roi.load_imagej(b)
+        self._check_rect_roi(r)
+
+    def test_load_imagej_file(self):
+        """roi.load_imagej: file-like arg"""
+        with (data_path / "rect.roi").open("rb") as f:
+            r = roi.load_imagej(f)
+        self._check_rect_roi(r)
+
+    def _check_rects_zip(self, r):
+        self.assertIsInstance(r, dict)
+        self.assertEqual(set(r.keys()), {"rect", "rect2"})
+        self._check_rect_roi(r["rect"])
+        self._check_rect_roi(r["rect2"])
+
+    def test_load_zip(self):
+        """roi.imagej._load_zip"""
+        with zipfile.ZipFile(data_path / "rects.zip") as z:
+            r = roi.imagej._load_zip(z)
+        self._check_rects_zip(r)
+
+    def test_load_imagej_zip_str(self):
+        """roi.load_imagej_zip: string arg"""
+        r = roi.load_imagej_zip(str(data_path / "rects.zip"))
+        self._check_rects_zip(r)
+
+    def test_load_imagej_zip_path(self):
+        """roi.load_imagej_zip: Path arg"""
+        r = roi.load_imagej_zip(data_path / "rects.zip")
+        self._check_rects_zip(r)
+
+    def test_load_imagej_zip_file(self):
+        """roi.load_imagej_zip: ZipFile arg"""
+        with zipfile.ZipFile(data_path / "rects.zip") as z:
+            r = roi.load_imagej_zip(z)
+        self._check_rects_zip(r)
 
 
 if __name__ == "__main__":
