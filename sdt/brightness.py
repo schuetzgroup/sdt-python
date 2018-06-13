@@ -1,4 +1,51 @@
-"""Collection of functions related to the brightness of fluorophores"""
+"""Brightness analysis
+===================
+
+This is a collection of tools to analyze the brightness of fluorophores. It
+offers
+
+- The :py:func:`from_raw_image` function which may be used to calculate the
+  brightness of single molecules by extracting the information directly from
+  the raw image data.
+- The :py:class:`Distribution` class, with which one can determine the
+  brightness distribution of fluorophores via kernel density estimation.
+
+
+Examples
+--------
+
+To determine single molecule brightness using :py:func:`from_raw_image`, one
+needs the raw image data and localization data of molecules (which can be
+determined from the image date e.g. using functionality from the
+:py:mod:`sdt.loc` module):
+
+>>> img_seq = pims.open("images.tif")  # Load image sequence
+>>> loc = sdt.io.load("localizations.h5")  # Load single molecule localizations
+>>> from_raw_image(loc, img_seq, radius=4)
+
+The last line updates the ``loc`` DataFrame with the brightness data extracted
+from the raw image.
+
+The distribution of the brightness of single molecules can be calculated
+by means of the :py:class:`Distribution` class:
+
+>>> loc = [sdt.io.load(f) for f in glob.glob("*.h5")]  # Load sm data
+>>> cam_eff = 300 / 15.7  # number of camera counts per photon
+>>> bdist = Distribution(loc, cam_eff)
+>>> bdist.mean()
+314.1592653589793
+>>> bdist.std()
+31.41592653589793
+>>> bdist.plot()
+
+
+Programming reference
+---------------------
+
+.. autofunction:: from_raw_image
+.. autoclass:: Distribution
+    :members:
+"""
 import warnings
 import math
 
@@ -580,13 +627,13 @@ class Distribution(object):
         bw : float, optional
             Bandwidth factor. The bandwidth for each data point ``d`` is
             calculated as ``bw * np.sqrt(d)``. Defaults to 2.
+        cam_eff : float, optional
+            Camera efficiency, i. e. how many camera counts correspond to one
+            photon. The brightness data will be divided by this number.
+            Defaults to 1.
         kern_width : float, optional
             Calculate kernels only in the range of +/- `kern_width` times the
             bandwidth to save computation time. Defaults to 5.
-        cam_eff : float, optional
-            Camera efficiency, i. e. how many photons correspond to one
-            camera count. The brightness data will be divided by this number.
-            Defaults to 1.
 
         Other parameters
         ----------------
@@ -651,7 +698,7 @@ class Distribution(object):
         return np.sqrt(var)
 
     def most_probable(self):
-        """Most probable value
+        """Most probable value (mode)
 
         Returns
         -------
