@@ -14,15 +14,38 @@ _log_pi = math.log(np.pi)
 
 
 class ConstPrior:
+    """Class implementing a constant prior
+
+    :math:`P(t) = 1 / (\\text{len}(data) + 1)`
+    """
     def __init__(self):
         self._data = np.empty((0, 0))
         self._prior = np.NaN
 
     def set_data(self, data):
+        """Set data for calculation of the prior
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+            m datasets of n data points
+        """
         self._data = data
         self._prior = 1 / (len(data) + 1)
 
     def prior(self, t):
+        """Get prior at time `t`.
+
+        Parameters
+        ----------
+        t : int
+            Time point
+
+        Returns
+        -------
+        float
+            Prior probability for time point `t`
+        """
         return self._prior
 
 
@@ -31,14 +54,42 @@ ConstPriorNumba = numba.jitclass(
 
 
 class GeometricPrior:
+    """Class implementing a geometrically distributed prior
+
+    :math:`P(t) =  p (1 - p)^{t - 1}`
+    """
     def __init__(self, p):
+        """Parameters
+        ----------
+        p : float
+            `p` in the forumla above
+        """
         self._data = np.empty((0, 0))
         self.p = p
 
     def set_data(self, data):
+        """Set data for calculation of the prior
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+            m datasets of n data points
+        """
         self._data = data
 
     def prior(self, t):
+        """Get prior at time `t`.
+
+        Parameters
+        ----------
+        t : int
+            Time point
+
+        Returns
+        -------
+        float
+            Prior probability for time point `t`
+        """
         return self.p * (1 - self.p)**(t - 1)
 
 
@@ -47,44 +98,115 @@ GeomtricPriorNumba = numba.jitclass(
 
 
 class NegBinomialPrior:
+    """Class implementing a neg-binomially distributed prior
+
+    :math:`P(t) =  {{t - k}\choose{k - 1}} p^k (1 - p)^{t - k}`
+    """
     def __init__(self, k, p):
+        """Parameters
+        ----------
+        k : int
+            `k` in the formula above
+        p : float
+            `p` in the formula above
+        """
         self._data = np.empty((0, 0))
         self.p = p
         self.k = k
 
     def set_data(self, data):
+        """Set data for calculation of the prior
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+            m datasets of n data points
+        """
         self._data = data
 
     def prior(self, t):
+        """Get prior at time `t`.
+
+        Parameters
+        ----------
+        t : int
+            Time point
+
+        Returns
+        -------
+        float
+            Prior probability for time point `t`
+        """
         return (scipy.special.comb(t - self.k, self.k - 1) *
                 self.p**self.k * (1 - self.p)**(t - self.k))
 
 
 class _DynPLikelihood:
+    """Base class for caching observation likelihood results"""
     def __init__(self):
         self._cache = {}
 
     def set_data(self, data):
+        """Set data for calculation of the likelihood
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+            m datasets of n data points
+        """
         self._cache = {}
         self._data = data
 
     def likelihood(self, t, s):
+        """Get likelihood
+
+        Parameters
+        ----------
+        t, s : int
+            First and last time point to consider
+
+        Returns
+        -------
+        float
+            likelihood
+        """
         if (t, s) not in self._cache:
             self._cache[(t, s)] = self._likelihood(t, s)
         return self._cache[(t, s)]
 
 
 class _GaussianObsLikelihoodBase:
+    """Gaussian observation likelihood"""
     def __init__(self):
         self._data = np.empty((0, 0))
 
     def set_data(self, data):
+        """Set data for calculation of the likelihood
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+            m datasets of n data points
+        """
         self._data = data
 
     def likelihood(self, t, s):
+        """Get likelihood
+
+        Parameters
+        ----------
+        t, s : int
+            First and last time point to consider
+
+        Returns
+        -------
+        float
+            likelihood
+        """
         return self._likelihood(t, s)
 
     def _likelihood(self, t, s):
+        """Actual implementation of the `likelihood` method"""
         s += 1
         n = s - t
         mean = self._data[t:s].sum(0) / n
@@ -104,6 +226,7 @@ class _GaussianObsLikelihoodBase:
 
 
 class GaussianObsLikelihood(_DynPLikelihood, _GaussianObsLikelihoodBase):
+    """Gaussian observation likelihood"""
     pass
 
 
@@ -112,16 +235,41 @@ GaussianObsLikelihoodNumba = numba.jitclass(
 
 
 class _IfmObsLikelihoodBase:
+    """Independent features model from Xuan et al.
+
+    See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure in
+    Multivariate Time Series", ICML (2007), pp. 1055--1062*.
+    """
     def __init__(self):
         self._data = np.empty((0, 0))
 
     def set_data(self, data):
+        """Set data for calculation of the likelihood
+
+        Parameters
+        ----------
+        data : numpy.ndarray, shape(n, m)
+            m datasets of n data points
+        """
         self._data = data
 
     def likelihood(self, t, s):
+        """Get likelihood
+
+        Parameters
+        ----------
+        t, s : int
+            First and last time point to consider
+
+        Returns
+        -------
+        float
+            likelihood
+        """
         return self._likelihood(t, s)
 
     def _likelihood(self, t, s):
+        """Actual implementation of the `likelihood` method"""
         s += 1
         n = s - t
         x = self._data[t:s]
@@ -138,6 +286,11 @@ class _IfmObsLikelihoodBase:
 
 
 class IfmObsLikelihood(_DynPLikelihood, _IfmObsLikelihoodBase):
+    """Independent features model from Xuan et al.
+
+    See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure in
+    Multivariate Time Series", ICML (2007), pp. 1055--1062*.
+    """
     pass
 
 
@@ -146,28 +299,16 @@ IfmObsLikelihoodNumba = numba.jitclass(
 
 
 class FullCovObsLikelihood(_DynPLikelihood):
+    """Full covariance model from Xuan et al.
+
+    See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure
+    in Multivariate Time Series", ICML (2007), pp. 1055--1062*.
+    """
     def __init__(self):
         super().__init__()
         self._data = np.empty((0, 0))
 
     def _likelihood(self, t, s):
-        """Full covariance model from Xuan et al.
-
-        See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure
-        in Multivariate Time Series", ICML (2007), pp. 1055--1062*.
-
-        Parameters
-        ----------
-        data : array-like
-            Data in which to find changepoints
-        t, s : int
-            First and last time point to consider
-
-        Returns
-        -------
-        float
-            Likelihood
-        """
         s += 1
         n = s - t
         x = self._data[t:s]
@@ -187,28 +328,36 @@ class FullCovObsLikelihood(_DynPLikelihood):
 
 @numba.jitclass([("_data", numba.float64[:, :])])
 class FullCovObsLikelihoodNumba:
+    """Full covariance model from Xuan et al.
+
+    See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure
+    in Multivariate Time Series", ICML (2007), pp. 1055--1062*.
+    """
     def __init__(self):
         self._data = np.empty((0, 0))
 
     def set_data(self, data):
-        self._data = data
-
-    def likelihood(self, t, s):
-        """Full covariance model from Xuan et al.
-
-        Numba implementation
+        """Set data for calculation of the likelihood
 
         Parameters
         ----------
-        data : array-like
-            Data in which to find changepoints
+        data : numpy.ndarray, shape(n, m)
+            m datasets of n data points
+        """
+        self._data = data
+
+    def likelihood(self, t, s):
+        """Get likelihood
+
+        Parameters
+        ----------
         t, s : int
             First and last time point to consider
 
         Returns
         -------
         float
-            Likelihood
+            likelihood
         """
         s += 1
         n = s - t
@@ -232,13 +381,23 @@ class FullCovObsLikelihoodNumba:
                 (N0 + n) / 2 * np.linalg.slogdet(Vn)[1])
 
 
-class ScipyLogsumexp:
+class _ScipyLogsumexp:
+    """Wrapper class for `scipy.special.logsumexp`
+
+    Necessary because functions cannot be passed as arguments to numba
+    jitted functions, but jitclasses can.
+    """
     def call(self, *args, **kwargs):
         return scipy.special.logsumexp(*args, **kwargs)
 
 
 @numba.jitclass([])
-class NumbaLogsumexp:
+class _NumbaLogsumexp:
+    """Wrapper class for `sdt.helper.numba.logsumexp`
+
+    Necessary because functions cannot be passed as arguments to numba
+    jitted functions, but jitclasses can.
+    """
     def __init__(self):
         pass
 
@@ -247,6 +406,43 @@ class NumbaLogsumexp:
 
 
 def segmentation(prior, obs_likelihood, truncate, logsumexp_wrapper):
+    """Bayesian offline changepoint detection (actual implementation)
+
+    This is an implementation of *Fearnhead, Paul: "Exact and efficient
+    Bayesian inference for multiple changepoint problems", Statistics and
+    computing 16.2 (2006), pp. 203--213*.
+
+    Parameters
+    ----------
+    prior : class instance
+        Instance of a class implementing a prior probability. See
+        :py:class:`ConstPrior`, :py:class:`GeometricPrior`, or
+        :py:class:`NegBinomialPrior` for examples.
+    obs_likelihood : class instance
+        Instance of a class implementing the observation likelihood. See
+        :py:class:`GaussianObsLikelihood`, :py:class:`IfmObsLikelihood`, or
+        :py:class:`FullCovObsLikelihood` for examples.
+    truncate : float
+        Speed up calculations by truncating a sum if the summands provide
+        negligible contributions. This parameter is the exponent of the
+        threshold. A sensible value would be e.g. -20. Defaults to -inf,
+        i.e. no truncation.
+    logsumexp_wrapper : _ScipyLogsumexp or _NumbaLogsumexp
+        Which ``logsumexp`` function to use
+
+    Returns
+    -------
+    Q : numpy.ndarray
+        ``Q[t]`` is the log-likelihood of data ``[t, n]``..
+    P : numpy.ndarray
+        ``P[t, s]`` is the log-likelihood of a datasequence ``[t, s]``,
+        given there is no changepoint between ``t`` and ``s``.
+    Pcp : numpy.ndarray
+        ``Pcp[i, t]`` is the log-likelihood that the ``i``-th changepoint
+        is at time step ``t``. To actually get the probility of a
+        changepoint at time step ``t``, sum the probabilities (which is
+        `prob`).
+    """
     n = len(prior._data)
     Q = np.zeros(n)
     g = np.zeros(n)
@@ -331,23 +527,39 @@ class BayesOffline:
                  numba_logsumexp=True, engine="numba"):
         """Parameters
         ----------
-        prior : {"const", "geometric", "neg_binomial"} or callable, optional
-            Prior probabiltiy function. This has to take three parameters, the
-            first being the timepoint, the second the data array, and the third
-            an array of parameters. See the `prior_params` parameter for
-            details. It has to return the prior corresponding to the timepoint.
-            If "const", use :py:func:`constant_prior`. If "geometric", use
-            :py:func:`geometric_prior`. If "neg_binomial", use
-            :py:func:`neg_binomial_prior`. Defaults to "const".
-        obs_likelihood : {"gauss", "ifm", "full_cov"} or callable
-            Observation likelihood function. This has to take three parameters:
-            the data array, the start and the end timepoints. If "gauss", use
-            :py:func:`gaussian_obs_likelihood`. If "ifm", use
-            :py:func:`ifm_obs_likelihood`. If "full_cov", use
-            :py:func:`fullcov_obs_likelihood`. Defaults to "gauss".
-        prior_params : np.ndarray, optional
-            Parameters to pass as last argument to the prior function.
-            Defaults to an empty array.
+        prior : {"const", "geometric", "neg_binomial"} or prior class, optional
+            Prior probabiltiy. This can either be a string describing the
+            prior or a type or instance of a class implementing the prior, as
+            for example :py:class:`ConstPrior`, :py:class:`GeometricPrior`, or
+            :py:class:`NegBinomialPrior`.
+
+            If a string or a type ar passed, a class instance will be created
+            passing `prior_params` to ``__init__``.
+
+            If "const", use :py:class:`ConstPrior`. If "geometric", use
+            :py:class:`GeometricPrior`. If "neg_binomial", use
+            :py:class:`GeometricPrior`. Defaults to "const".
+        obs_likelihood : {"gauss", "ifm", "full_cov"} or likelihood class, opt.
+            Observation likelhood. This can either be a string describing the
+            likelihood or a type or instance of a class implementing the
+            likelihood, as for example :py:class:`GaussianObsLikelihood`,
+            :py:class:`IfmObsLikelihood`, or :py:class:`FullCovObsLikelihood`.
+
+            If a string or a type ar passed, a class instance will be created
+            passing `obs_likelihood_params` to ``__init__``.
+
+            If "gauss", use :py:class:`GaussianObsLikelihood`.
+            If "ifm", use :py:class:`IfmObsLikelihood`. If "full_cov", use
+            :py:class:`FullCovObsLikelihood`. Defaults to "gauss".
+        prior_params : dict, optional
+            Parameters to `prior`'s ``__init__`` if it needs to be
+            constructed. Defaults to {}.
+        obs_likelihood_params : dict, optional
+            Parameters to `obs_likelihood`'s ``__init__`` if it needs to be
+            constructed. Defaults to {}.
+        engine : {"python", "numba"}, optional
+            If "numba", use the numba-accelerated implementation. Defaults to
+            "numba".
 
         Other parameters
         ----------------
@@ -373,9 +585,9 @@ class BayesOffline:
         self.segmentation = segmentation_numba if use_numba else segmentation
 
         if numba_logsumexp and numba.numba_available:
-            self.logsumexp = NumbaLogsumexp()
+            self.logsumexp = _NumbaLogsumexp()
         else:
-            self.logsumexp = ScipyLogsumexp()
+            self.logsumexp = _ScipyLogsumexp()
 
     def find_changepoints(self, data, truncate=-np.inf, prob_threshold=None,
                           full_output=False):

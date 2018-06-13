@@ -11,10 +11,28 @@ _jit = numba.jit(nopython=True, nogil=True)
 
 
 class ConstantHazard:
+    """Class implementing a constant hazard function"""
     def __init__(self, time_scale):
+        """Parameters
+        ----------
+        time_scale : float
+            Time scale
+        """
         self.time_scale = time_scale
 
     def hazard(self, run_lengths):
+        """Calculate hazard
+
+        Parameters
+        ----------
+        run_lengths : numpy.ndarray
+            Run lengths
+
+        Returns
+        -------
+        numpy.ndarray
+            Hazards for run lengths
+        """
         return 1 / self.time_scale * np.ones(run_lengths.shape)
 
 ConstantHazardNumba = numba.jitclass(
@@ -128,6 +146,26 @@ class StudentTNumba(StudentT):
 
 
 def segmentation_step(x, old_p, hazard, obs_likelihood):
+    """Calculate changepoint probabilites for new datapoint
+
+    Parameters
+    ----------
+    x : float
+        New datapoint
+    old_p : list-like of numpy.ndarray
+        Probabilities for changepoints in data excluding the new datapoint
+    hazard : class instance
+        Instance of a class implementing the hazard function. See
+        :py:class:`ConstantHazard` for an example.
+    obs_likelihood : class instance
+        Instance of a class implementing the observation likelihood. See
+        :py:class:`StudenT` for an example.
+
+    Returns
+    -------
+    numpy.ndarray
+        Changepoint probabilities including the new datapoint
+    """
     # Evaluate the predictive distribution for the new datum under each
     # of the parameters.  This is the standard thing from Bayesian
     # inference.

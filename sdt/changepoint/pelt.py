@@ -233,17 +233,17 @@ class Pelt:
                  engine="numba"):
         """Parameters
         ----------
-        cost : cost class or str, optional
+        cost : cost class or cost class instance or str, optional
             If "l1", use :py:class:`CostL1`, "l2", use :py:class:`CostL2`.
-            A cost class instance can be passed directly; this needs a `data`
-            attribute with the data to find changepoints in
-            and a `cost` function that computes the cost of a data segment.
-            See :py:class:`CostL1` and :py:class:`CostL2` for details.
+            A cost class type or instance can be passed directly.
         min_size : int, optional
             Minimum length of segments between change points. Defaults to 2.
         jump : int, optional
             Consider only every `jump`-th data point to speed up calculation.
             Defaults to 5.
+        cost_params : dict, optional
+            Parameters to pass to the cost class's `__init__`. Only relevant
+            if `cost` is not a class instance. Defaults to {}.
         engine : {"python", "numba"}, optional
             If "numba", use the numba-accelerated implementation. Defaults to
             "numba".
