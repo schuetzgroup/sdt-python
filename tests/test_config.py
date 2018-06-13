@@ -42,3 +42,57 @@ class TestUseDefaults(unittest.TestCase):
         finally:
             config.rc["pos_columns"] = self.pos_columns.copy()
         self.assertEqual(res.pos_columns, ["x", "y", "z"])
+
+
+class TestSetColumns(unittest.TestCase):
+    def setUp(self):
+        self.columns = config.columns.copy()
+
+    def test_function_decorator(self):
+        """config.set_columns: function decorator"""
+        @config.set_columns
+        def f(columns={}):
+            return columns
+
+        self.assertDictEqual(f(), self.columns)
+        self.assertDictEqual(f({}), self.columns)
+
+        cols = self.columns.copy()
+        cols["pos"] = ["z"]
+        self.assertDictEqual(f({"pos": ["z"]}), cols)
+
+        try:
+            config.columns["pos"] = ["x", "y", "z"]
+            res = f()
+        except:
+            raise
+        finally:
+            config.columns = self.columns.copy()
+        cols = self.columns.copy()
+        cols["pos"] = ["x", "y", "z"]
+        self.assertDictEqual(res, cols)
+
+    def test_method_decorator(self):
+        """config.set_columns: method decorator"""
+        class A:
+            @config.set_columns
+            def __init__(self, columns={}):
+                A.columns = columns
+
+        self.assertDictEqual(A().columns, self.columns)
+        self.assertDictEqual(A({}).columns, self.columns)
+
+        cols = self.columns.copy()
+        cols["pos"] = ["z"]
+        self.assertEqual(A({"pos": ["z"]}).columns, cols)
+
+        try:
+            config.columns["pos"] = ["x", "y", "z"]
+            res = A()
+        except:
+            raise
+        finally:
+            config.columns = self.columns.copy()
+        cols = self.columns.copy()
+        cols["pos"] = ["x", "y", "z"]
+        self.assertDictEqual(res.columns, cols)
