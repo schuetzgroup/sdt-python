@@ -709,6 +709,8 @@ class Distribution(object):
         x, y = self.graph
         return x[np.argmax(y)]
 
+    mode = most_probable
+
     def plot(self, ax=None, label=None):
         """Plot the distribution function graph
 
