@@ -204,10 +204,10 @@ class TestBayesOfflineNumba(TestBayesOffline):
 
 class TestBayesOnlineHazard(unittest.TestCase):
     def test_constant_hazard(self):
-        """changepoint.bayes_online.constant_hazard"""
+        """changepoint.bayes_online.ConstHazard"""
         lam = 2
         a = np.arange(10).reshape((2, -1))
-        for cls in (online.ConstantHazard, online.ConstantHazardNumba):
+        for cls in (online.ConstHazard, online.ConstHazardNumba):
             c = cls(lam)
             h = c.hazard(a)
             np.testing.assert_allclose(h, 1/lam * np.ones_like(a))

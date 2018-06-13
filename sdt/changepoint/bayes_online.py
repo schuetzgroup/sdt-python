@@ -10,7 +10,7 @@ from ..helper import numba
 _jit = numba.jit(nopython=True, nogil=True)
 
 
-class ConstantHazard:
+class ConstHazard:
     """Class implementing a constant hazard function"""
     def __init__(self, time_scale):
         """Parameters
@@ -35,8 +35,8 @@ class ConstantHazard:
         """
         return 1 / self.time_scale * np.ones(run_lengths.shape)
 
-ConstantHazardNumba = numba.jitclass(
-    [("time_scale", numba.float64)])(ConstantHazard)
+ConstHazardNumba = numba.jitclass(
+    [("time_scale", numba.float64)])(ConstHazard)
 
 
 class StudentT:
@@ -156,7 +156,7 @@ def segmentation_step(x, old_p, hazard, obs_likelihood):
         Probabilities for changepoints in data excluding the new datapoint
     hazard : class instance
         Instance of a class implementing the hazard function. See
-        :py:class:`ConstantHazard` for an example.
+        :py:class:`ConstHazard` for an example.
     obs_likelihood : class instance
         Instance of a class implementing the observation likelihood. See
         :py:class:`StudenT` for an example.
@@ -218,7 +218,7 @@ class BayesOnline:
     :py:meth:`update` for each datapoint and then extract the changepoint
     probabilities from :py:attr:`probabilities`.
     """
-    hazard_map = dict(const=(ConstantHazard, ConstantHazardNumba))
+    hazard_map = dict(const=(ConstHazard, ConstHazardNumba))
     likelihood_map = dict(student_t=(StudentT, StudentTNumba))
 
     def __init__(self, hazard="const", obs_likelihood="student_t",
