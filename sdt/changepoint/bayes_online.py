@@ -7,28 +7,18 @@ from scipy import stats, signal
 from ..helper import numba
 
 
-_jit = numba.jit(nopython=True, nogil=True, cache=True)
+_jit = numba.jit(nopython=True, nogil=True)
 
 
-def constant_hazard(r, params):
-    """Constant hazard function
+class ConstantHazard:
+    def __init__(self, time_scale):
+        self.time_scale = time_scale
 
-    Parameters
-    ----------
-    r : np.ndarray
-        Run lengths
-    params : array-like
-        ``params[0]`` is the timescale
+    def hazard(self, run_lengths):
+        return 1 / self.time_scale * np.ones(run_lengths.shape)
 
-    Returns
-    -------
-    np.ndarray
-        Hazards for run lengths
-    """
-    return 1 / params[0] * np.ones(r.shape)
-
-
-constant_hazard_numba = _jit(constant_hazard)
+ConstantHazardNumba = numba.jitclass(
+    [("time_scale", numba.float64)])(ConstantHazard)
 
 
 class StudentT:
@@ -39,19 +29,19 @@ class StudentT:
         alpha, beta, kappa, mu : float
             Distribution parameters
         """
-        self.alpha0 = np.float64(alpha)
-        self.beta0 = np.float64(beta)
-        self.kappa0 = np.float64(kappa)
-        self.mu0 = np.float64(mu)
+        self._alpha0 = np.float64(alpha)
+        self._beta0 = np.float64(beta)
+        self._kappa0 = np.float64(kappa)
+        self._mu0 = np.float64(mu)
 
         self.reset()
 
     def reset(self):
         """Reset state"""
-        self.alpha = np.full(1, self.alpha0)
-        self.beta = np.full(1, self.beta0)
-        self.kappa = np.full(1, self.kappa0)
-        self.mu = np.full(1, self.mu0)
+        self._alpha = np.full(1, self._alpha0)
+        self._beta = np.full(1, self._beta0)
+        self._kappa = np.full(1, self._kappa0)
+        self._mu = np.full(1, self._mu0)
 
     def pdf(self, data):
         """Calculate probability density function (PDF)
@@ -61,10 +51,10 @@ class StudentT:
         data : array-like
             Data points for which to calculate the PDF
         """
-        df = 2 * self.alpha
-        loc = self.mu
-        scale = np.sqrt(self.beta * (self.kappa + 1) /
-                        (self.alpha * self.kappa))
+        df = 2 * self._alpha
+        loc = self._mu
+        scale = np.sqrt(self._beta * (self._kappa + 1) /
+                        (self._alpha * self._kappa))
 
         return stats.t.pdf(data, df, loc, scale)
 
@@ -76,27 +66,27 @@ class StudentT:
         data : array-like
             Data points to use for update
         """
-        muT0 = np.empty(len(self.mu) + 1)
-        muT0[0] = self.mu0
-        muT0[1:] = (self.kappa * self.mu + data) / (self.kappa + 1)
+        muT0 = np.empty(len(self._mu) + 1)
+        muT0[0] = self._mu0
+        muT0[1:] = (self._kappa * self._mu + data) / (self._kappa + 1)
 
-        kappaT0 = np.empty(len(self.kappa) + 1)
-        kappaT0[0] = self.kappa0
-        kappaT0[1:] = self.kappa + 1.
+        kappaT0 = np.empty(len(self._kappa) + 1)
+        kappaT0[0] = self._kappa0
+        kappaT0[1:] = self._kappa + 1.
 
-        alphaT0 = np.empty(len(self.alpha) + 1)
-        alphaT0[0] = self.alpha0
-        alphaT0[1:] = self.alpha + 0.5
+        alphaT0 = np.empty(len(self._alpha) + 1)
+        alphaT0[0] = self._alpha0
+        alphaT0[1:] = self._alpha + 0.5
 
-        betaT0 = np.empty(len(self.beta) + 1)
-        betaT0[0] = self.beta0
-        betaT0[1:] = (self.beta + (self.kappa * (data - self.mu)**2) /
-                      (2. * (self.kappa + 1.)))
+        betaT0 = np.empty(len(self._beta) + 1)
+        betaT0[0] = self._beta0
+        betaT0[1:] = (self._beta + (self._kappa * (data - self._mu)**2) /
+                      (2. * (self._kappa + 1.)))
 
-        self.mu = muT0
-        self.kappa = kappaT0
-        self.alpha = alphaT0
-        self.beta = betaT0
+        self._mu = muT0
+        self._kappa = kappaT0
+        self._alpha = alphaT0
+        self._beta = betaT0
 
 
 @_jit
@@ -111,10 +101,10 @@ def t_pdf(x, df, loc=0, scale=1):
     return ret / scale
 
 
-@numba.jitclass([("alpha0", numba.float64), ("beta0", numba.float64),
-                 ("kappa0", numba.float64), ("mu0", numba.float64),
-                 ("alpha", numba.float64[:]), ("beta", numba.float64[:]),
-                 ("kappa", numba.float64[:]), ("mu", numba.float64[:])])
+@numba.jitclass([("_alpha0", numba.float64), ("_beta0", numba.float64),
+                 ("_kappa0", numba.float64), ("_mu0", numba.float64),
+                 ("_alpha", numba.float64[:]), ("_beta", numba.float64[:]),
+                 ("_kappa", numba.float64[:]), ("_mu", numba.float64[:])])
 class StudentTNumba(StudentT):
     """Student T observation likelihood (numba-accelerated)"""
     def pdf(self, data):
@@ -125,16 +115,59 @@ class StudentTNumba(StudentT):
         data : array-like
             Data points for which to calculate the PDF
         """
-        df = 2 * self.alpha
-        loc = self.mu
-        scale = np.sqrt(self.beta * (self.kappa + 1) /
-                        (self.alpha * self.kappa))
+        df = 2 * self._alpha
+        loc = self._mu
+        scale = np.sqrt(self._beta * (self._kappa + 1) /
+                        (self._alpha * self._kappa))
 
         ret = np.empty(len(df))
         for i in range(len(ret)):
             ret[i] = t_pdf(data, df[i], loc[i], scale[i])
 
         return ret
+
+
+def segmentation_step(x, old_p, hazard, obs_likelihood):
+    # Evaluate the predictive distribution for the new datum under each
+    # of the parameters.  This is the standard thing from Bayesian
+    # inference.
+    predprobs = obs_likelihood.pdf(x)
+
+    # Evaluate the hazard function for this interval
+    H = hazard.hazard(np.arange(len(old_p)))
+
+    # Evaluate the growth probabilities - shift the probabilities down
+    # and to the right, scaled by the hazard function and the
+    # predictive probabilities.
+    new_p = np.empty(len(old_p) + 1)
+    new_p[1:] = old_p * predprobs * (1 - H)
+
+    # Evaluate the probability that there *was* a changepoint and we're
+    # accumulating the mass back down at r = 0.
+    new_p[0] = np.sum(old_p * predprobs * H)
+
+    # Renormalize the run length probabilities for improved numerical
+    # stability.
+    new_p /= np.sum(new_p)
+
+    # Update the parameter sets for each possible run length.
+    obs_likelihood.update_theta(x)
+
+    return new_p
+
+
+segmentation_step_numba = _jit(segmentation_step)
+
+
+@_jit
+def segmentation_numba(data, hazard, obs_likelihood):
+    ret = np.zeros((len(data) + 1, len(data) + 1))
+    ret[0, 0] = 1
+    for i in range(len(data)):
+        old_p = ret[i, :i+1]
+        new_p = segmentation_step_numba(data[i], old_p, hazard, obs_likelihood)
+        ret[i+1, :i+2] = new_p
+    return ret
 
 
 class BayesOnline:
@@ -147,11 +180,13 @@ class BayesOnline:
     :py:meth:`update` for each datapoint and then extract the changepoint
     probabilities from :py:attr:`probabilities`.
     """
-    hazard_map = dict(const=(constant_hazard, constant_hazard_numba))
+    hazard_map = dict(const=(ConstantHazard, ConstantHazardNumba))
     likelihood_map = dict(student_t=(StudentT, StudentTNumba))
 
-    def __init__(self, hazard_func="const", obs_likelihood="student_t",
-                 hazard_params=np.array([250]), obs_params=[0.1, 0.01, 1., 0.],
+    def __init__(self, hazard="const", obs_likelihood="student_t",
+                 hazard_params={"time_scale": 250.},
+                 obs_params={"alpha": 0.1, "beta": 0.01, "kappa": 1.,
+                             "mu": 0.},
                  engine="numba"):
         """Parameters
         ----------
@@ -172,63 +207,21 @@ class BayesOnline:
             Parameters to pass to the `observation_likelihood` constructor.
             Defaults to ``[0.1, 0.01, 1., 0.]``.
         """
-        self.use_numba = (engine == "numba") and numba.numba_available
+        self._use_numba = (engine == "numba") and numba.numba_available
 
-        if isinstance(hazard_func, str):
-            hazard_func = self.hazard_map[hazard_func][int(self.use_numba)]
+        if isinstance(hazard, str):
+            hazard = self.hazard_map[hazard][int(self._use_numba)]
+        if isinstance(hazard, type):
+            hazard = hazard(**hazard_params)
+        self.hazard = hazard
+
         if isinstance(obs_likelihood, str):
             obs_likelihood = self.likelihood_map[obs_likelihood]
-            obs_likelihood = obs_likelihood[int(self.use_numba)]
+            obs_likelihood = obs_likelihood[int(self._use_numba)]
         if isinstance(obs_likelihood, type):
-            obs_likelihood = obs_likelihood(*obs_params)
+            obs_likelihood = obs_likelihood(**obs_params)
+        self.obs_likelihood = obs_likelihood
 
-        def finder_single(x, old_p, obs_ll):
-            # Evaluate the predictive distribution for the new datum under each
-            # of the parameters.  This is the standard thing from Bayesian
-            # inference.
-            predprobs = obs_ll.pdf(x)
-
-            # Evaluate the hazard function for this interval
-            H = hazard_func(np.arange(len(old_p)), hazard_params)
-
-            # Evaluate the growth probabilities - shift the probabilities down
-            # and to the right, scaled by the hazard function and the
-            # predictive probabilities.
-            new_p = np.empty(len(old_p) + 1)
-            new_p[1:] = old_p * predprobs * (1 - H)
-
-            # Evaluate the probability that there *was* a changepoint and we're
-            # accumulating the mass back down at r = 0.
-            new_p[0] = np.sum(old_p * predprobs * H)
-
-            # Renormalize the run length probabilities for improved numerical
-            # stability.
-            new_p /= np.sum(new_p)
-
-            # Update the parameter sets for each possible run length.
-            obs_ll.update_theta(x)
-
-            return new_p
-
-        if self.use_numba:
-            finder_single_numba = _jit(finder_single)
-            self.finder_single = finder_single_numba
-
-            @_jit
-            def finder_all(data, obs_ll):
-                ret = np.zeros((len(data) + 1, len(data) + 1))
-                ret[0, 0] = 1
-                for i in range(len(data)):
-                    old_p = ret[i, :i+1]
-                    new_p = finder_single_numba(data[i], old_p, obs_ll)
-                    ret[i+1, :i+2] = new_p
-                return ret
-
-            self.finder_all = finder_all
-        else:
-            self.finder_single = finder_single
-
-        self.observation_likelihood = obs_likelihood
         self.reset()
 
     def reset(self):
@@ -238,7 +231,7 @@ class BayesOnline:
         on a new dataset.
         """
         self.probabilities = [np.array([1])]
-        self.observation_likelihood.reset()
+        self.obs_likelihood.reset()
 
     def update(self, x):
         """Add data point an calculate changepoint probabilities
@@ -249,7 +242,12 @@ class BayesOnline:
             New data point
         """
         old_p = self.probabilities[-1]
-        new_p = self.finder_single(x, old_p, self.observation_likelihood)
+        if self._use_numba:
+            new_p = segmentation_step_numba(x, old_p, self.hazard,
+                                            self.obs_likelihood)
+        else:
+            new_p = segmentation_step(x, old_p, self.hazard,
+                                      self.obs_likelihood)
         self.probabilities.append(new_p)
 
     def find_changepoints(self, data, past=3, prob_threshold=None):
@@ -286,8 +284,8 @@ class BayesOnline:
         """
         self.reset()
 
-        if self.use_numba:
-            prob = self.finder_all(data, self.observation_likelihood)
+        if self._use_numba:
+            prob = segmentation_numba(data, self.hazard, self.obs_likelihood)
             self.probabilities = []
             for i, p in enumerate(prob):
                 self.probabilities.append(p[:i+1])

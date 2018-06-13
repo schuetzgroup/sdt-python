@@ -16,7 +16,7 @@ path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_changepoint")
 
 
-class TestOfflineObs(unittest.TestCase):
+class TestBayesOfflineObs(unittest.TestCase):
     def _test_univ(self, cls, res):
         a = np.atleast_2d(np.arange(10000, dtype=float)).T
         for c in cls:
@@ -90,7 +90,7 @@ class TestOfflineObs(unittest.TestCase):
         self._test_dynp(offline.FullCovObsLikelihood)
 
 
-class TestOfflinePriors(unittest.TestCase):
+class TestBayesOfflinePriors(unittest.TestCase):
     def test_const_prior(self):
         """changepoint.bayes_offline.ConstPrior{,Numba}"""
         for cls in (offline.ConstPrior, offline.ConstPriorNumba):
@@ -202,13 +202,15 @@ class TestBayesOfflineNumba(TestBayesOffline):
         super().test_find_changepoints_prob_thresh()
 
 
-class TestOnlineHazard(unittest.TestCase):
+class TestBayesOnlineHazard(unittest.TestCase):
     def test_constant_hazard(self):
         """changepoint.bayes_online.constant_hazard"""
         lam = 2
         a = np.arange(10).reshape((2, -1))
-        h = online.constant_hazard(a, np.array([lam]))
-        np.testing.assert_allclose(h, 1/lam * np.ones_like(a))
+        for cls in (online.ConstantHazard, online.ConstantHazardNumba):
+            c = cls(lam)
+            h = c.hazard(a)
+            np.testing.assert_allclose(h, 1/lam * np.ones_like(a))
 
 
 class TestOnlineStudentT(unittest.TestCase):
@@ -227,11 +229,11 @@ class TestOnlineStudentT(unittest.TestCase):
         implementation.
         """
         self.t.update_theta(self.data[0])
-        np.testing.assert_allclose(self.t.alpha, [0.1, 0.6])
-        np.testing.assert_allclose(self.t.beta,
+        np.testing.assert_allclose(self.t._alpha, [0.1, 0.6])
+        np.testing.assert_allclose(self.t._beta,
                                    [1.00000000e-02, 3.45983319e+03])
-        np.testing.assert_allclose(self.t.kappa, [1., 2.])
-        np.testing.assert_allclose(self.t.mu, [0., 58.82026173])
+        np.testing.assert_allclose(self.t._kappa, [1., 2.])
+        np.testing.assert_allclose(self.t._mu, [0., 58.82026173])
 
     def test_pdf(self):
         """changepoint.bayes_online.StudentT.pdf
@@ -250,10 +252,10 @@ class TestOnlineStudentT(unittest.TestCase):
         self.t.update_theta(self.data[1])
         self.t.reset()
 
-        np.testing.assert_equal(self.t.alpha, [self.t.alpha0])
-        np.testing.assert_equal(self.t.beta, [self.t.beta0])
-        np.testing.assert_equal(self.t.kappa, [self.t.kappa0])
-        np.testing.assert_equal(self.t.mu, [self.t.mu0])
+        np.testing.assert_equal(self.t._alpha, [self.t._alpha0])
+        np.testing.assert_equal(self.t._beta, [self.t._beta0])
+        np.testing.assert_equal(self.t._kappa, [self.t._kappa0])
+        np.testing.assert_equal(self.t._mu, [self.t._mu0])
 
 
 @unittest.skipIf(not numba.numba_available, "Numba not available")
@@ -295,8 +297,8 @@ class TestOnlineFinderPython(unittest.TestCase):
         self.data = np.concatenate([self.rand_state.normal(100, 10, 30),
                                     self.rand_state.normal(30, 5, 40),
                                     self.rand_state.normal(50, 20, 20)])
-        self.h_params = np.array([250])
-        self.t_params = np.array([0.1, 0.01, 1, 0])
+        self.h_params = {"time_scale": 250}
+        self.t_params = {"alpha": 0.1, "beta": 0.01, "kappa": 1, "mu": 0}
         self.finder = online.BayesOnline("const", "student_t",
                                          self.h_params, self.t_params,
                                          engine="python")
@@ -305,7 +307,7 @@ class TestOnlineFinderPython(unittest.TestCase):
 
     def test_engine(self):
         """changepoint.BayesOnline: set python engine"""
-        self.assertIsInstance(self.finder.finder_single, types.FunctionType)
+        self.assertFalse(self.finder._use_numba)
 
     def test_reset(self):
         """changepoint.BayesOnline.reset"""
@@ -371,8 +373,7 @@ class TestOnlineFinderNumba(TestOnlineFinderPython):
 
     def test_engine(self):
         """changepoint.BayesOnline: set numba engine"""
-        from numba.dispatcher import Dispatcher
-        self.assertIsInstance(self.finder.finder_single, Dispatcher)
+        self.assertTrue(self.finder._use_numba)
 
     def test_reset(self):
         """changepoint.BayesOnline.reset (numba)"""
