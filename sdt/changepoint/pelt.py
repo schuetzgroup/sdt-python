@@ -229,7 +229,8 @@ class Pelt:
     """
     cost_map = dict(l1=(CostL1, CostL1Numba), l2=(CostL2, CostL2Numba))
 
-    def __init__(self, cost="l2", min_size=2, jump=5, engine="numba"):
+    def __init__(self, cost="l2", min_size=2, jump=5, cost_params={},
+                 engine="numba"):
         """Parameters
         ----------
         cost : cost class or str, optional
@@ -247,16 +248,18 @@ class Pelt:
             If "numba", use the numba-accelerated implementation. Defaults to
             "numba".
         """
-        self.use_numba = (engine == "numba") and numba.numba_available
+        use_numba = (engine == "numba") and numba.numba_available
 
         if isinstance(cost, str):
-            c = self.cost_map[cost][int(self.use_numba)]
-            self.cost = c()
-        else:
-            self.cost = cost
+            cost = self.cost_map[cost][int(use_numba)]
+        if isinstance(cost, type):
+            cost = cost(**cost_params)
+        self.cost = cost
 
-        self.min_size = max(min_size, self.cost.min_size)
-        self.jump = jump
+        self.segmentation = segmentation_numba if use_numba else segmentation
+
+        self._min_size = max(min_size, self.cost.min_size)
+        self._jump = jump
 
     def find_changepoints(self, data, penalty, max_exp_cp=10):
         """Do the changpoint detection on `data`
@@ -281,10 +284,5 @@ class Pelt:
         if data.ndim == 1:
             data = data.reshape((-1, 1))
         self.cost.set_data(data)
-
-        if self.use_numba:
-            return segmentation_numba(self.cost, self.min_size, self.jump,
-                                      penalty, max_exp_cp)
-        else:
-            return segmentation(self.cost, self.min_size, self.jump, penalty,
-                                max_exp_cp)
+        return self.segmentation(self.cost, self._min_size, self._jump,
+                                 penalty, max_exp_cp)

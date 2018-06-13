@@ -456,6 +456,11 @@ class TestPelt(unittest.TestCase):
         self.seg_func = pelt.segmentation
         self.engine = "python"
 
+    def test_engine(self):
+        """changepoint.pelt.Pelt: set python engine"""
+        c = pelt.Pelt("l2", 1, 1, engine=self.engine)
+        self.assertIsInstance(c.segmentation, types.FunctionType)
+
     def test_segmentation(self):
         """changepoint.pelt.segmentation"""
         self.cost.set_data(self.data)
@@ -493,14 +498,13 @@ class TestPelt(unittest.TestCase):
 
     def test_init(self):
         """changepoint.pelt.Pelt.__init__"""
-        c = pelt.Pelt("l2", 1, 1, self.engine)
+        c = pelt.Pelt("l2", 1, 1, engine=self.engine)
         self.assertIsInstance(c.cost, type(self.cost))
-        self.assertEqual(c.min_size, self.cost.min_size)
-        self.assertEqual(c.use_numba, self.engine == "numba")
+        self.assertEqual(c._min_size, self.cost.min_size)
 
     def test_find_changepoints(self):
         """changepoint.pelt.Pelt.find_changepoints"""
-        c = pelt.Pelt("l2", 1, 1, self.engine)
+        c = pelt.Pelt("l2", 1, 1, engine=self.engine)
         cp = c.find_changepoints(self.data, self.penalty)
         np.testing.assert_equal(cp, self.cp)
 
@@ -512,6 +516,12 @@ class TestPeltNumba(TestPelt):
         self.cost = pelt.CostL2Numba()
         self.seg_func = pelt.segmentation_numba
         self.engine = "numba"
+
+    def test_engine(self):
+        """changepoint.pelt.Pelt: set numba engine"""
+        c = pelt.Pelt("l2", 1, 1, engine=self.engine)
+        from numba.dispatcher import Dispatcher
+        self.assertIsInstance(c.segmentation, Dispatcher)
 
     def test_segmentation(self):
         """changepoint.pelt.segmentation_numba"""

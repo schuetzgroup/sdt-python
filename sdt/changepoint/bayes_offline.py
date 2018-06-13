@@ -358,11 +358,17 @@ class BayesOffline:
         use_numba = (engine == "numba") and numba.numba_available
 
         if isinstance(prior, str):
-            p = self.prior_map[prior][int(use_numba)]
-            self.prior = p(**prior_params)
+            prior = self.prior_map[prior][int(use_numba)]
+        if isinstance(prior, type):
+            prior = prior(**prior_params)
+        self.prior = prior
+
         if isinstance(obs_likelihood, str):
-            o = self.likelihood_map[obs_likelihood][int(use_numba)]
-            self.obs_likelihood = o(**obs_likelihood_params)
+            obs_likelihood = self.likelihood_map[obs_likelihood]
+            obs_likelihood = obs_likelihood[int(use_numba)]
+        if isinstance(obs_likelihood, type):
+            obs_likelihood = obs_likelihood(**obs_likelihood_params)
+        self.obs_likelihood = obs_likelihood
 
         self.segmentation = segmentation_numba if use_numba else segmentation
 
