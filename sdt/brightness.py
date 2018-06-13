@@ -55,12 +55,7 @@ from scipy import signal
 
 from .helper import numba
 from .image import CircleMask, RectMask
-
-
-pos_columns = ["x", "y"]
-"""Names of the columns describing the x and the y coordinate of the features
-in pandas.DataFrames
-"""
+from . import config
 
 
 def _make_mask_image(feat_idx, mask, shape):
@@ -424,8 +419,9 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator,
     return ret
 
 
+@config.set_columns
 def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
-                   pos_columns=pos_columns, engine="numba", mask="square"):
+                   columns={}, engine="numba", mask="square"):
     """Determine particle brightness by counting pixel values
 
     Around each localization, pixel values are summed up (see the `mask`
@@ -473,9 +469,9 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
 
     Other parameters
     ----------------
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinates of the
-        features in `positions`.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`).
+        Relevant names are `pos`, `mass`, `signal`, `bg`, `bg_dev`.
     engine : {"numba", "python"}, optional
         Numba is faster, but only supports 2D data and mean or median
         bg_estimator. If numba cannot be used, automatically fall back to
@@ -488,7 +484,7 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     if isinstance(bg_estimator, str):
         bg_estimator = getattr(np, bg_estimator)
 
-    ndim = len(pos_columns)
+    ndim = len(columns["pos"])
 
     if engine == "numba":
         if ndim != 2:
@@ -526,9 +522,9 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
         feat_mask, bg_mask = mask
 
     # Convert to numpy array for performance reasons
-    # This is faster than pos_matrix = positions[pos_columns].values
+    # This is faster than pos_matrix = positions[columns["pos"]].values
     pos_matrix = []
-    for p in pos_columns:
+    for p in columns["pos"]:
         pos_matrix.append(positions[p].values)
     pos_matrix = np.array(pos_matrix).T
     fno_matrix = positions["frame"].values.astype(int)
@@ -554,10 +550,10 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
         ret[current] = worker(pos_matrix[current], frames[f], feat_mask,
                               bg_mask, bg_estimator, global_bg)
 
-    positions["signal"] = ret[:, 0]
-    positions["mass"] = ret[:, 1]
-    positions["bg"] = ret[:, 2]
-    positions["bg_dev"] = ret[:, 3]
+    positions[columns["signal"]] = ret[:, 0]
+    positions[columns["mass"]] = ret[:, 1]
+    positions[columns["bg"]] = ret[:, 2]
+    positions[columns["bg_dev"]] = ret[:, 3]
 
 
 def _norm_pdf_python(x, m, s):
@@ -611,8 +607,9 @@ class Distribution(object):
         Number of data points (single molecules) used to create the
         distribution
     """
+    @config.set_columns
     def __init__(self, data, abscissa=None, bw=2., cam_eff=1., kern_width=5.,
-                 engine="numba"):
+                 engine="numba", columns={}):
         """Parameters
         ----------
         data : list of pandas.DataFrame or pandas.DataFrame or numpy.ndarray
@@ -642,10 +639,10 @@ class Distribution(object):
             pure python one. Defaults to "numba".
         """
         if isinstance(data, pd.DataFrame):
-            data = data["mass"].values
+            data = data[columns["mass"]].values
         elif not isinstance(data, np.ndarray):
             # assume it is an iterable of DataFrames
-            data = np.concatenate([d["mass"].values for d in data])
+            data = np.concatenate([d[columns["mass"]].values for d in data])
 
         data = data / cam_eff  # don't change original data by using /=
         sigma = bw * np.sqrt(data)
