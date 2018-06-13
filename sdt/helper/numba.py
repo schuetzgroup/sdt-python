@@ -30,6 +30,20 @@ except ImportError:
 
 @jit(nopython=True, nogil=True, cache=True)
 def logsumexp(a):
+    """Numba implementation of :py:func:`scipy.special.logsumexp`"""
     a = a.flatten()
     m = np.max(a)  # Trick from scipy.special.logsumexp to avoid overflows
     return np.log(np.sum(np.exp(a - m))) + m
+
+
+@jit(nopython=True, nogil=True, cache=True)
+def multigammaln(a, d):
+    """Numba implementation of :py:func:`scipy.special.multigammaln`
+
+    This is only for scalars.
+    """
+    res = 0
+    for j in range(1, d+1):
+        res += math.lgamma(a - (j - 1.)/2)
+    return res
+

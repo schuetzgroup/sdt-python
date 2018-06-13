@@ -14,267 +14,302 @@ _log_pi = math.log(np.pi)
 _jit = numba.jit(nopython=True, nogil=True, cache=True)
 
 
-def dynamic_programming(f):
-    f.cache = {}
-    f.data = None
+class ConstPrior:
+    def __init__(self):
+        self.data = np.empty((0, 0))
+        self._prior = np.NaN
 
-    @functools.wraps(f)
-    def _dyn_p(*args, **kwargs):
-        if f.data is None:
-            f.data = args[0]
+    def initialize(self, data):
+        self.data = data
+        self._prior = 1 / (len(data) + 1)
 
-        if not np.array_equal(f.data, args[0]):
-            f.cache = {}
-            f.data = args[0]
-
-        try:
-            f.cache[args[1:]]
-        except KeyError:
-            f.cache[args[1:]] = f(*args, **kwargs)
-        return f.cache[args[1:]]
-
-    return _dyn_p
+    def prior(self, t):
+        return self._prior
 
 
-def const_prior(t, data, params=np.empty(0)):
-    """Function implementing a constant prior
-
-    :math:`P(t) = 1 / (\\text{len}(data) + 1)`
-
-    Parameters
-    ----------
-    t : int
-        Current time point
-    data : array-like
-        Data in which to find changepoints
-    params : array-like
-        Parameters to the prior. This is ignored for the constant prior.
-
-    Returns
-    -------
-    float
-        Prior probability for time point `t`
-    """
-    return 1 / (len(data) + 1)
+ConstPriorNumba = numba.jitclass(
+    [("data", numba.float64[:, :]), ("_prior", numba.float64)])(ConstPrior)
 
 
-const_prior_numba = _jit(const_prior)
+class GeometricPrior:
+    def __init__(self, p):
+        self.data = np.empty((0, 0))
+        self.p = p
+
+    def initialize(self, data):
+        self.data = data
+
+    def prior(self, t):
+        return self.p * (1 - self.p)**(t - 1)
 
 
-def geometric_prior(t, data, params):
-    """Function implementing a geometrically distributed prior
-
-    :math:`P(t) =  p (1 - p)^{t - 1}`
-
-    Parameters
-    ----------
-    t : int
-        Current time point
-    data : array-like
-        Data in which to find changepoints
-    params : array-like
-        Parameters to the prior. ``params[0]`` is `p` in the formula above.
-
-    Returns
-    -------
-    float
-        Prior probability for time point `t`
-    """
-    p = params[0]
-    return p * (1 - p)**(t - 1)
+GeomtricPriorNumba = numba.jitclass(
+    [("data", numba.float64[:, :]), ("p", numba.float64)])(GeometricPrior)
 
 
-geometric_prior_numba = _jit(geometric_prior)
+class NegBinomialPrior:
+    def __init__(self, k, p):
+        self.data = np.empty((0, 0))
+        self.p = p
+        self.k = k
+
+    def initialize(self, data):
+        self.data = data
+
+    def prior(self, t):
+        return (scipy.special.comb(t - self.k, self.k - 1) *
+                self.p**self.k * (1 - self.p)**(t - self.k))
 
 
-def neg_binomial_prior(t, data, params):
-    """Function implementing a neg-binomially distributed prior
+class _DynPLikelihood:
+    def __init__(self):
+        self.cache = {}
 
-    :math:`P(t) =  {{t - k}\choose{k - 1}} p^k (1 - p)^{t - k}`
+    def initialize(self, data):
+        self.cache = {}
+        self.data = data
 
-    Parameters
-    ----------
-    t : int
-        Current time point
-    data : array-like
-        Data in which to find changepoints
-    params : array-like
-        Parameters to the prior. ``params[0]`` is `k` and ``params[1]`` is
-        `p` in the formula above.
-
-    Returns
-    -------
-    float
-        Prior probability for time point `t`
-    """
-    k = params[0]
-    p = params[1]
-    return scipy.special.comb(t - k, k - 1) * p**k * (1 - p)**(t - k)
+    def likelihood(self, t, s):
+        if (t, s) not in self.cache:
+            self.cache[(t, s)] = self._likelihood(t, s)
+        return self.cache[(t, s)]
 
 
-neg_binomial_prior_numba = None
+class _GaussianObsLikelihoodBase:
+    def __init__(self):
+        self.data = np.empty((0, 0))
+
+    def initialize(self, data):
+        self.data = data
+
+    def likelihood(self, t, s):
+        return self._likelihood(t, s)
+
+    def _likelihood(self, t, s):
+        s += 1
+        n = s - t
+        mean = self.data[t:s].sum(0) / n
+
+        muT = n * mean / (1 + n)
+        nuT = 1 + n
+        alphaT = 1 + n / 2
+        betaT = (1 + 0.5 * ((self.data[t:s] - mean)**2).sum(0) +
+                 n / (1 + n) * mean**2 / 2)
+        scale = betaT * (nuT + 1) / (alphaT * nuT)
+
+        prob = np.sum(np.log(1 + (self.data[t:s] - muT)**2 / (nuT * scale)))
+        lgA = (math.lgamma((nuT + 1) / 2) - np.log(np.sqrt(np.pi * nuT * scale)) -
+               math.lgamma(nuT / 2))
+
+        return np.sum(n * lgA - (nuT + 1) / 2 * prob)
 
 
-def _gaussian_obs_likelihood(data, t, s):
-    """Gaussian observation likelihood
-
-    Parameters
-    ----------
-    data : array-like
-        Data in which to find changepoints
-    t, s : int
-        First and last time point to consider
-
-    Returns
-    -------
-    float
-        Likelihood
-    """
-    s += 1
-    n = s - t
-    mean = data[t:s].sum(0) / n
-
-    muT = n * mean / (1 + n)
-    nuT = 1 + n
-    alphaT = 1 + n / 2
-    betaT = (1 + 0.5 * ((data[t:s] - mean)**2).sum(0) +
-             n / (1 + n) * mean**2 / 2)
-    scale = betaT * (nuT + 1) / (alphaT * nuT)
-
-    prob = np.sum(np.log(1 + (data[t:s] - muT)**2 / (nuT * scale)))
-    lgA = (math.lgamma((nuT + 1) / 2) - np.log(np.sqrt(np.pi * nuT * scale)) -
-           math.lgamma(nuT / 2))
-
-    return np.sum(n * lgA - (nuT + 1) / 2 * prob)
+class GaussianObsLikelihood(_DynPLikelihood, _GaussianObsLikelihoodBase):
+    pass
 
 
-gaussian_obs_likelihood = dynamic_programming(_gaussian_obs_likelihood)
-gaussian_obs_likelihood_numba = _jit(_gaussian_obs_likelihood)
+GaussianObsLikelihoodNumba = numba.jitclass(
+    [("data", numba.float64[:, :])])(_GaussianObsLikelihoodBase)
 
 
-def _ifm_obs_likelihood(data, t, s):
-    """Independent features model from Xuan et al.
+class _IfmObsLikelihoodBase:
+    def __init__(self):
+        self.data = np.empty((0, 0))
 
-    See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure in
-    Multivariate Time Series", ICML (2007), pp. 1055--1062*.
+    def initialize(self, data):
+        self.data = data
 
-    Parameters
-    ----------
-    data : array-like
-        Data in which to find changepoints
-    t, s : int
-        First and last time point to consider
+    def likelihood(self, t, s):
+        return self._likelihood(t, s)
 
-    Returns
-    -------
-    float
-        Likelihood
-    """
-    s += 1
-    n = s - t
-    x = data[t:s]
-    d = x.shape[1]
+    def _likelihood(self, t, s):
+        s += 1
+        n = s - t
+        x = self.data[t:s]
+        d = x.shape[1]
 
-    N0 = d  # Weakest prior we can use to retain proper prior
-    V0 = np.var(x)
-    Vn = V0 + (x**2).sum(0)
+        N0 = d  # Weakest prior we can use to retain proper prior
+        V0 = np.var(x)
+        Vn = V0 + (x**2).sum(0)
 
-    # Sum over dimension and return (section 3.1 from Xuan paper):
-    return (d * (-(n / 2) * _log_pi + (N0 / 2) * np.log(V0) -
-                 math.lgamma(N0 / 2) + math.lgamma((N0 + n) / 2)) -
-            np.sum(((N0 + n) / 2) * np.log(Vn), axis=0))
+        # Sum over dimension and return (section 3.1 from Xuan paper):
+        return (d * (-(n / 2) * _log_pi + (N0 / 2) * np.log(V0) -
+                     math.lgamma(N0 / 2) + math.lgamma((N0 + n) / 2)) -
+                np.sum(((N0 + n) / 2) * np.log(Vn), axis=0))
 
 
-ifm_obs_likelihood = dynamic_programming(_ifm_obs_likelihood)
-ifm_obs_likelihood_numba = _jit(_ifm_obs_likelihood)
+class IfmObsLikelihood(_DynPLikelihood, _IfmObsLikelihoodBase):
+    pass
 
 
-@dynamic_programming
-def fullcov_obs_likelihood(data, t, s):
-    """Full covariance model from Xuan et al.
-
-    See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure in
-    Multivariate Time Series", ICML (2007), pp. 1055--1062*.
-
-    Parameters
-    ----------
-    data : array-like
-        Data in which to find changepoints
-    t, s : int
-        First and last time point to consider
-
-    Returns
-    -------
-    float
-        Likelihood
-    """
-    s += 1
-    n = s - t
-    x = data[t:s]
-    dim = x.shape[1]
-
-    N0 = dim  # weakest prior we can use to retain proper prior
-    V0 = np.var(x) * np.eye(dim)
-
-    Vn = V0 + np.einsum("ij, ik -> jk", x, x)
-
-    # section 3.2 from Xuan paper:
-    return (-(dim * n / 2) * _log_pi + N0 / 2 * np.linalg.slogdet(V0)[1] -
-            scipy.special.multigammaln(N0 / 2, dim) +
-            scipy.special.multigammaln((N0 + n) / 2, dim) -
-            (N0 + n) / 2 * np.linalg.slogdet(Vn)[1])
+IfmObsLikelihoodNumba = numba.jitclass(
+    [("data", numba.float64[:, :])])(_IfmObsLikelihoodBase)
 
 
-@_jit
-def multigammaln(a, d):
-    """Numba implementation of :py:func:`scipy.special.multigammaln`
+class FullCovObsLikelihood:
+    def __init__(self):
+        self.data = np.empty((0, 0))
 
-    This is only for scalars.
-    """
-    res = 0
-    for j in range(1, d+1):
-        res += math.lgamma(a - (j - 1.)/2)
-    return res
+    def initialize(self, data):
+        self.data = data
+
+    def likelihood(self, t, s):
+        """Full covariance model from Xuan et al.
+
+        See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure
+        in Multivariate Time Series", ICML (2007), pp. 1055--1062*.
+
+        Parameters
+        ----------
+        data : array-like
+            Data in which to find changepoints
+        t, s : int
+            First and last time point to consider
+
+        Returns
+        -------
+        float
+            Likelihood
+        """
+        s += 1
+        n = s - t
+        x = self.data[t:s]
+        dim = x.shape[1]
+
+        N0 = dim  # weakest prior we can use to retain proper prior
+        V0 = np.var(x) * np.eye(dim)
+
+        Vn = V0 + np.einsum("ij, ik -> jk", x, x)
+
+        # section 3.2 from Xuan paper:
+        return (-(dim * n / 2) * _log_pi + N0 / 2 * np.linalg.slogdet(V0)[1] -
+                scipy.special.multigammaln(N0 / 2, dim) +
+                scipy.special.multigammaln((N0 + n) / 2, dim) -
+                (N0 + n) / 2 * np.linalg.slogdet(Vn)[1])
 
 
-@_jit
-def fullcov_obs_likelihood_numba(data, t, s):
-    """Full covariance model from Xuan et al.
+@numba.jitclass([("data", numba.float64[:, :])])
+class FullCovObsLikelihoodNumba:
+    def __init__(self):
+        self.data = np.empty((0, 0))
 
-    Numba implementation
+    def initialize(self, data):
+        self.data = data
 
-    Parameters
-    ----------
-    data : array-like
-        Data in which to find changepoints
-    t, s : int
-        First and last time point to consider
+    def likelihood(self, t, s):
+        """Full covariance model from Xuan et al.
 
-    Returns
-    -------
-    float
-        Likelihood
-    """
-    s += 1
-    n = s - t
-    x = data[t:s]
-    dim = x.shape[1]
+        Numba implementation
 
-    N0 = dim  # weakest prior we can use to retain proper prior
-    V0 = np.var(x) * np.eye(dim)
+        Parameters
+        ----------
+        data : array-like
+            Data in which to find changepoints
+        t, s : int
+            First and last time point to consider
 
-    einsum = np.zeros((x.shape[1], x.shape[1]))
-    for j in range(x.shape[1]):
-        for k in range(x.shape[1]):
-            for i in range(x.shape[0]):
-                einsum[j, k] += x[i, j] * x[i, k]
-    Vn = V0 + einsum
+        Returns
+        -------
+        float
+            Likelihood
+        """
+        s += 1
+        n = s - t
+        x = self.data[t:s]
+        dim = x.shape[1]
 
-    # section 3.2 from Xuan paper:
-    return (-(dim * n / 2) * _log_pi + N0 / 2 * np.linalg.slogdet(V0)[1] -
-            multigammaln(N0 / 2, dim) +
-            multigammaln((N0 + n) / 2, dim) -
-            (N0 + n) / 2 * np.linalg.slogdet(Vn)[1])
+        N0 = dim  # weakest prior we can use to retain proper prior
+        V0 = np.var(x) * np.eye(dim)
+
+        einsum = np.zeros((x.shape[1], x.shape[1]))
+        for j in range(x.shape[1]):
+            for k in range(x.shape[1]):
+                for i in range(x.shape[0]):
+                    einsum[j, k] += x[i, j] * x[i, k]
+        Vn = V0 + einsum
+
+        # section 3.2 from Xuan paper:
+        return (-(dim * n / 2) * _log_pi + N0 / 2 * np.linalg.slogdet(V0)[1] -
+                numba.multigammaln(N0 / 2, dim) +
+                numba.multigammaln((N0 + n) / 2, dim) -
+                (N0 + n) / 2 * np.linalg.slogdet(Vn)[1])
+
+
+class ScipyLogsumexp:
+    def call(self, *args, **kwargs):
+        return scipy.special.logsumexp(*args, **kwargs)
+
+
+@numba.jitclass([])
+class NumbaLogsumexp:
+    def __init__(self):
+        pass
+
+    def call(self, a):
+        return numba.logsumexp(a)
+
+
+def segmentation(prior, obs_likelihood, truncate, logsumexp_wrapper):
+    n = len(prior.data)
+    Q = np.zeros(n)
+    g = np.zeros(n)
+    G = np.zeros(n)
+    P = np.full((n, n), -np.inf)
+
+    # Save everything in log representation
+    for t in range(n):
+        g[t] = np.log(prior.prior(t))
+        if t == 0:
+            G[t] = g[t]
+        else:
+            G[t] = np.logaddexp(G[t-1], g[t])
+
+    P[n-1, n-1] = obs_likelihood.likelihood(n-1, n)
+    Q[n-1] = P[n-1, n-1]
+
+    for t in range(n-2, -1, -1):
+        P_next_cp = -np.inf  # == log(0)
+        for s in range(t, n-1):
+            P[t, s] = obs_likelihood.likelihood(t, s+1)
+
+            # Compute recursion
+            summand = P[t, s] + Q[s+1] + g[s+1-t]
+            P_next_cp = np.logaddexp(P_next_cp, summand)
+
+            # Truncate sum to become approx. linear in time (see
+            # Fearnhead, 2006, eq. (3))
+            if ((np.isfinite(summand) or np.isfinite(P_next_cp)) and
+                    summand - P_next_cp < truncate):
+                break
+
+        P[t, n-1] = obs_likelihood.likelihood(t, n)
+
+        # (1 - G) is numerical stable until G becomes numerically 1
+        if G[n-1-t] < -1e-15:  # exp(-1e-15) = .99999...
+            antiG = np.log(1 - np.exp(G[n-1-t]))
+        else:
+            # (1 - G) is approx. -log(G) for G close to 1
+            antiG = np.log(-G[n-1-t])
+
+        Q[t] = np.logaddexp(P_next_cp, P[t, n-1] + antiG)
+
+    Pcp = np.full((n-1, n), -np.inf)
+    for t in range(n-1):
+        Pcp[0, t+1] = P[0, t] + Q[t + 1] + g[t] - Q[0]
+        if np.isnan(Pcp[0, t+1]):
+            Pcp[0, t+1] = -np.inf
+    for j in range(1, n-1):
+        for t in range(j, n-1):
+            tmp_cond = (Pcp[j-1, j:t+1] + P[j:t+1, t] + Q[t + 1] +
+                        g[0:t-j+1] - Q[j:t+1])
+            Pcp[j, t+1] = logsumexp_wrapper.call(tmp_cond)
+            if np.isnan(Pcp[j, t+1]):
+                Pcp[j, t+1] = -np.inf
+
+    return Q, P, Pcp
+
+
+segmentation_numba = numba.jit(nopython=True, nogil=True)(segmentation)
 
 
 class BayesOffline:
@@ -284,20 +319,19 @@ class BayesOffline:
     Bayesian inference for multiple changepoint problems", Statistics and
     computing 16.2 (2006), pp. 203--213*.
     """
-    prior_map = dict(const=(const_prior, const_prior_numba),
-                     geometric=(geometric_prior, geometric_prior_numba),
-                     neg_binomial=(neg_binomial_prior,
-                                   neg_binomial_prior_numba))
+    prior_map = dict(const=(ConstPrior, ConstPriorNumba),
+                     geometric=(GeometricPrior, GeomtricPriorNumba),
+                     neg_binomial=(NegBinomialPrior, None))
 
-    likelihood_map = dict(gauss=(gaussian_obs_likelihood,
-                                 gaussian_obs_likelihood_numba),
-                          ifm=(ifm_obs_likelihood, ifm_obs_likelihood_numba),
-                          full_cov=(fullcov_obs_likelihood,
-                                    fullcov_obs_likelihood_numba))
+    likelihood_map = dict(gauss=(GaussianObsLikelihood,
+                                 GaussianObsLikelihoodNumba),
+                          ifm=(IfmObsLikelihood, IfmObsLikelihoodNumba),
+                          full_cov=(FullCovObsLikelihood,
+                                    FullCovObsLikelihoodNumba))
 
     def __init__(self, prior="const", obs_likelihood="gauss",
-                 prior_params=np.empty(0), numba_logsumexp=True,
-                 engine="numba"):
+                 prior_params={}, obs_likelihood_params={},
+                 numba_logsumexp=True, engine="numba"):
         """Parameters
         ----------
         prior : {"const", "geometric", "neg_binomial"} or callable, optional
@@ -327,80 +361,18 @@ class BayesOffline:
         use_numba = (engine == "numba") and numba.numba_available
 
         if isinstance(prior, str):
-            prior = self.prior_map[prior][int(use_numba)]
+            p = self.prior_map[prior][int(use_numba)]
+            self.prior = p(**prior_params)
         if isinstance(obs_likelihood, str):
-            obs_likelihood = self.likelihood_map[obs_likelihood]
-            obs_likelihood = obs_likelihood[int(use_numba)]
+            o = self.likelihood_map[obs_likelihood][int(use_numba)]
+            self.obs_likelihood = o(**obs_likelihood_params)
+
+        self.segmentation = segmentation_numba if use_numba else segmentation
 
         if numba_logsumexp and numba.numba_available:
-            logsumexp = numba.logsumexp
+            self.logsumexp = NumbaLogsumexp()
         else:
-            logsumexp = scipy.special.logsumexp
-
-        def finder(data, truncate=-np.inf):
-            data = np.atleast_2d(data).T
-            n = len(data)
-            Q = np.zeros(n)
-            g = np.zeros(n)
-            G = np.zeros(n)
-            P = np.full((n, n), -np.inf)
-
-            # Save everything in log representation
-            for t in range(n):
-                g[t] = np.log(prior(t, data, prior_params))
-                if t == 0:
-                    G[t] = g[t]
-                else:
-                    G[t] = np.logaddexp(G[t-1], g[t])
-
-            P[n-1, n-1] = obs_likelihood(data, n-1, n)
-            Q[n-1] = P[n-1, n-1]
-
-            for t in range(n-2, -1, -1):
-                P_next_cp = -np.inf  # == log(0)
-                for s in range(t, n-1):
-                    P[t, s] = obs_likelihood(data, t, s+1)
-
-                    # Compute recursion
-                    summand = P[t, s] + Q[s+1] + g[s+1-t]
-                    P_next_cp = np.logaddexp(P_next_cp, summand)
-
-                    # Truncate sum to become approx. linear in time (see
-                    # Fearnhead, 2006, eq. (3))
-                    if ((np.isfinite(summand) or np.isfinite(P_next_cp)) and
-                            summand - P_next_cp < truncate):
-                        break
-
-                P[t, n-1] = obs_likelihood(data, t, n)
-
-                # (1 - G) is numerical stable until G becomes numerically 1
-                if G[n-1-t] < -1e-15:  # exp(-1e-15) = .99999...
-                    antiG = np.log(1 - np.exp(G[n-1-t]))
-                else:
-                    # (1 - G) is approx. -log(G) for G close to 1
-                    antiG = np.log(-G[n-1-t])
-
-                Q[t] = np.logaddexp(P_next_cp, P[t, n-1] + antiG)
-
-            Pcp = np.full((n-1, n), -np.inf)
-            for t in range(n-1):
-                Pcp[0, t+1] = P[0, t] + Q[t + 1] + g[t] - Q[0]
-                if np.isnan(Pcp[0, t+1]):
-                    Pcp[0, t+1] = -np.inf
-            for j in range(1, n-1):
-                for t in range(j, n-1):
-                    tmp_cond = (Pcp[j-1, j:t+1] + P[j:t+1, t] + Q[t + 1] +
-                                g[0:t-j+1] - Q[j:t+1])
-                    Pcp[j, t+1] = logsumexp(tmp_cond)
-                    if np.isnan(Pcp[j, t+1]):
-                        Pcp[j, t+1] = -np.inf
-
-            return Q, P, Pcp
-
-        if use_numba:
-            self.finder_func = _jit(finder)
-        else:
-            self.finder_func = finder
+            self.logsumexp = ScipyLogsumexp()
 
     def find_changepoints(self, data, truncate=-np.inf, prob_threshold=None,
                           full_output=False):
@@ -445,7 +417,13 @@ class BayesOffline:
             `prob`). Only returned if ``full_output=True`` and
             ``prob_threshold=None``.
         """
-        Q, P, Pcp = self.finder_func(data, truncate)
+        if data.ndim == 1:
+            data = data.reshape((-1, 1))
+        self.prior.initialize(data)
+        self.obs_likelihood.initialize(data)
+
+        Q, P, Pcp = self.segmentation(self.prior, self.obs_likelihood,
+                                      truncate, self.logsumexp)
         prob = np.exp(Pcp).sum(axis=0)
         if prob_threshold is not None:
             lmax = scipy.signal.argrelmax(prob)[0]
