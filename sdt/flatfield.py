@@ -1,18 +1,52 @@
-"""Correct for inhomogeneous illumination
+"""Flat field correction
+=====================
 
-The intensity cross section of a laser beam is usually not flat, but a
-Gaussian curve or worse. That means that fluorophores closer to the edges of
+The intensity cross section of a laser beam is usually not flat, but of
+Gaussian shape or worse. That means that fluorophores closer to the edges of
 the image will appear dimmer simply because they do not receive so much
 exciting laser light.
 
-Attributes
-----------
-pos_colums : list of str
-    Names of the columns describing the x and the y coordinate of the features
-    in pandas.DataFrames. Defaults to ["x", "y"].
-mass_column : str
-    Name of the column describing the integrated intensities ("masses") of the
-    features. Defaults to "mass".
+A camera's pixels may differ in efficiency so that even a homogeneously
+illuminated sample will not look homogeneous.
+
+Errors as these can corrected for to some extent by *flat field correction*.
+The error is determined by recording a supposedly homogeneous (flat) sample
+(e.g. a homogeneously fluorescent surface) and can later be removed from
+other/real experimental data.
+
+
+Examples
+--------
+
+First, load images that show the error, e.g. images of a surface with
+homogenous fluorescence label.
+
+>>> baseline = 200.  # camera baseline
+>>> # Load homogenous sample image sequences
+>>> img1 = pims.open("flat1.tif")
+>>> img2 = pims.open("flat2.tif")
+
+These can now be used to create the :py:class:`Corrector` object:
+
+>>> corr = Corrector(img1, img2, bg=baseline)
+
+With help of ``corr``, other images or even whole image sequences (when using
+:py:mod:`pims` to load them) can now be corrected.
+
+>>> img3 = pims.open("experiment_data.tif")
+>>> img3_flat = corr(img3)
+
+The brightness values of single molecule data may be corrected as well:
+
+>>> sm_data = sdt.io.load("data.h5")
+>>> sm_data_flat = corr(sm_data)
+
+
+Programming reference
+---------------------
+.. autoclass:: Corrector
+    :members:
+    :special-members: __call__
 """
 import pandas as pd
 import numpy as np
@@ -21,11 +55,8 @@ from scipy import stats
 
 import slicerator
 
+from . import config
 from . import gaussian_fit as gfit
-
-
-pos_columns = ["x", "y"]
-mass_column = "mass"
 
 
 class Corrector(object):
@@ -53,7 +84,8 @@ class Corrector(object):
 
     **Images (both for deterimnation of the correction and those to be
     corrected) need to have their background subtracted for this to work
-    properly.**
+    properly.** This can be done by telling the `Corrector` object what the
+    background is (or of course, before passing the data to the `Corrector`.)
 
     Attributes
     ----------
@@ -65,19 +97,22 @@ class Corrector(object):
     fit_result : lmfit.models.ModelResult or None
         If a Gaussian fit was done, this holds the result. Otherwise, it is
         None.
-    pos_columns : list of str
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    bg : scalar or array-like
+        Background to be subtracted from image data.
     """
-
-    def __init__(self, *data, gaussian_fit=True, shape=None,
-                 density_weight=True, pos_columns=pos_columns,
-                 mass_column=mass_column):
+    @config.use_defaults
+    def __init__(self, *data, bg=0., gaussian_fit=True, shape=None,
+                 density_weight=False, pos_columns=None, mass_column=None):
         """Parameters
         ----------
         *data : iterables of image data or pandas.DataFrames
             Collections of images fluorescent surfaces or single molecule
             data to use for determining the correction function.
+        bg : scalar or array-like, optional
+            Background that is subtracted from each image. This may be a
+            scalar or an array of the same size as the images in `data`. It
+            is not used on single molecule data. Also sets the
+            :py:attr`bg` attribute. Defaults to 0.
         gaussian_fit : bool, optional
             Whether to fit a Gaussian to the averaged image. This is ignored
             if `data` is single molecule data. Default: True
@@ -88,19 +123,20 @@ class Corrector(object):
         density_weight : bool, optional
             If `data` is single molecule data, weigh data points inversely to
             their density for fitting so that areas with higher densities don't
-            have a higher impact on the result. Defaults to True.
+            have a higher impact on the result. Defaults to False.
 
         Other parameters
         ----------------
-        pos_columns : list of str, optional
-            Names of the columns describing the x and the y coordinates of the
-            features in `positions`.
-        mass_column : str
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
+        mass_column : str, optional
             Name of the column describing the total brightness (mass) of single
-            molecules. Only applicable if `data` are single molecule data.
-            Defaults to "mass".
+            molecules. If `None`, use the defaults from :py:mod:`config`.
+            Defaults to `None`.
         """
-        self.pos_columns = pos_columns
+        self.bg = bg
 
         if isinstance(data[0], pd.DataFrame):
             # Get the beam shape from single molecule brightness values
@@ -137,7 +173,7 @@ class Corrector(object):
                 for img in stack:
                     # divide by max so that intensity fluctuations don't affect
                     # the results
-                    self.avg_img += img/img.max()
+                    self.avg_img += (img - self.bg) / img.max()
             self.avg_img /= self.avg_img.max()
 
             if gaussian_fit:
@@ -157,7 +193,9 @@ class Corrector(object):
                 self.interp = sp_int.RegularGridInterpolator(
                     [np.arange(i) for i in self.corr_img.shape], self.corr_img)
 
-    def __call__(self, data, inplace=False):
+    @config.use_defaults
+    def __call__(self, data, inplace=False, bg=None, pos_columns=None,
+                 mass_column=None, signal_column=None):
         """Do brightness correction on `features` intensities
 
         Parameters
@@ -169,6 +207,10 @@ class Corrector(object):
         inplace : bool, optional
             Only has an effect if `data` is a DataFrame. If True, the
             feature intensities will be corrected in place. Defaults to False.
+        bg : scalar or array-like, optional
+            Background to be subtracted from image data. If `None`, use the
+            :py:attr:`bg` attribute. Ignored for single molecule data.
+            Defaults to `None`.
 
         Returns
         -------
@@ -176,24 +218,42 @@ class Corrector(object):
             If `data` is a DataFrame and `inplace` is False, return the
             corrected frame. If `data` is raw image data, return corrected
             images
+
+        Other parameters
+        ----------------
+        pos_columns : list of str or None, optional
+            Names of the columns describing the coordinates of the features in
+            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
+            :py:mod:`config`. Defaults to `None`.
+        mass_column : str, optional
+            Name of the column describing the total brightness (mass) of single
+            molecules. If `None`, use the defaults from :py:mod:`config`.
+            Defaults to `None`.
+        signal_column : str, optional
+            Name of the column describing the brightness amplitude (signal) of
+            single molecules. If `None`, use the defaults
+            from :py:mod:`config`. Defaults to `None`.
         """
         if isinstance(data, pd.DataFrame):
-            x = self.pos_columns[0]
-            y = self.pos_columns[1]
+            x = pos_columns[0]
+            y = pos_columns[1]
             if not inplace:
                 data = data.copy()
             factors = self.get_factors(data[x], data[y])
-            if "mass" in data.columns:
-                data["mass"] *= factors
-            if "signal" in data.columns:
-                data["signal"] *= factors
+            if mass_column in data.columns:
+                data[mass_column] *= factors
+            if signal_column in data.columns:
+                data[signal_column] *= factors
             if not inplace:
                 # copied previously, now return
                 return data
         else:
+            if bg is None:
+                bg = self.bg
+
             @slicerator.pipeline
             def corr(img):
-                return img / self.corr_img
+                return (img - bg) / self.corr_img
             return corr(data)
 
     def get_factors(self, x, y):
@@ -218,4 +278,4 @@ class Corrector(object):
             gparm = self.fit_result.best_values
             return 1. / (self.fit_result.eval(x=x, y=y) / gparm["amplitude"])
         else:
-            return 1. / self.interp(np.array([y, x]).T)
+            return np.transpose(1. / self.interp(np.array([y, x]).T))

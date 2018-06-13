@@ -40,7 +40,7 @@ Overview
   :py:mod:`sdt.roi` module.
 - With help of the :py:mod:`sdt.image` module it is possible to
   do image processing, e. g. background subtraction from images.
-- Using the :py:mod:`sdt.beam_shape` module, flat field correction of image
+- Using the :py:mod:`sdt.flatfield` module, flat field correction of image
   and localization data can be achieved.
 - With help of the :py:mod:`sdt.sim` module, fluorescence microscopy images
   can be simulated.
@@ -82,7 +82,7 @@ Table of contents
   spatial
   roi
   image_processing
-  beam_shape
+  flatfield
   sim
   plot
   changepoint

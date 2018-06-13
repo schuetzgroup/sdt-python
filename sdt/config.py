@@ -3,7 +3,9 @@ import functools
 
 
 rc = dict(
-    pos_columns=["x", "y"])
+    pos_columns=["x", "y"],
+    mass_column="mass",
+    signal_column="signal")
 """Global config dictionary"""
 
 

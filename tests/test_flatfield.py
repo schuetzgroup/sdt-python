@@ -5,14 +5,10 @@ import os
 import pandas as pd
 import numpy as np
 
-import sdt.beam_shape
+from sdt import flatfield
 
 
-path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_beam_shape")
-
-
-class TestBeamShape(unittest.TestCase):
+class TestCorrector(unittest.TestCase):
     def setUp(self):
         self.img_shape = (100, 150)
         self.y, self.x = np.indices(self.img_shape)
@@ -30,13 +26,34 @@ class TestBeamShape(unittest.TestCase):
         return self.amp * np.exp(argx) * np.exp(argy)
 
     def test_init_img_nofit(self):
-        """beam_shape.Corrector.__init__: Image data, no fit"""
+        """flatfield.Corrector.__init__: image data, no fit"""
         imgs = []
         for amp in range(3, 0, -1):
             img = amp * self.img
             imgs.append(img)
 
-        corr = sdt.beam_shape.Corrector(imgs, gaussian_fit=False)
+        corr = flatfield.Corrector(imgs, gaussian_fit=False)
+        np.testing.assert_allclose(corr.avg_img, self.img / self.img.max())
+        np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
+        self.assertFalse(corr.fit_result)
+
+    def test_init_bg_scalar(self):
+        """flatfield.Corrector.__init__: scalar `bg` parameter"""
+        bg = 200.
+        imgs = [self.img + bg] * 3
+
+        corr = flatfield.Corrector(imgs, bg=bg, gaussian_fit=False)
+        np.testing.assert_allclose(corr.avg_img, self.img / self.img.max())
+        np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
+        self.assertFalse(corr.fit_result)
+
+    def test_init_bg_array(self):
+        """flatfield.Corrector.__init__: array `bg` parameter"""
+        bg = np.full(self.img.shape, 100.)
+        bg[:, bg.shape[1]//2:] = 200.
+        imgs = [self.img + bg] * 3
+
+        corr = flatfield.Corrector(imgs, bg=bg, gaussian_fit=False)
         np.testing.assert_allclose(corr.avg_img, self.img / self.img.max())
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
         self.assertFalse(corr.fit_result)
@@ -51,13 +68,13 @@ class TestBeamShape(unittest.TestCase):
                 msg="{} mismatch: expected {}, got {}".format(k, e, i))
 
     def test_init_img_fit(self):
-        """beam_shape.Corrector.__init__: Image data, fit"""
+        """flatfield.Corrector.__init__: image data, fit"""
         imgs = []
         for amp in range(3, 0, -1):
             img = amp * self.img
             imgs.append(img)
 
-        corr = sdt.beam_shape.Corrector(imgs, gaussian_fit=True)
+        corr = flatfield.Corrector(imgs, gaussian_fit=True)
         np.testing.assert_allclose(corr.avg_img, self.img / self.img.max())
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
 
@@ -66,15 +83,15 @@ class TestBeamShape(unittest.TestCase):
         self._check_fit_result(corr.fit_result.best_values, expected)
 
     def test_init_list(self):
-        """beam_shape.Corrector.__init__: List of data points, not weighted"""
+        """flatfield.Corrector.__init__: list of data points, not weighted"""
         y, x = [i.flatten() for i in np.indices(self.img_shape)]
         x = x[::10]
         y = y[::10]
         data = np.column_stack([x, y, self._make_gauss(x, y)])
         df = pd.DataFrame(data, columns=["x", "y", "mass"])
 
-        corr = sdt.beam_shape.Corrector(df, density_weight=False,
-                                        shape=self.img_shape)
+        corr = flatfield.Corrector(df, density_weight=False,
+                                   shape=self.img_shape)
 
         np.testing.assert_allclose(corr.avg_img, self.img / self.img.max(),
                                    rtol=1e-5)
@@ -86,15 +103,15 @@ class TestBeamShape(unittest.TestCase):
         self._check_fit_result(corr.fit_result.best_values, expected)
 
     def test_init_list_weighted(self):
-        """beam_shape.Corrector.__init__: List of data points, weighted"""
+        """flatfield.Corrector.__init__: list of data points, weighted"""
         y, x = [i.flatten() for i in np.indices(self.img_shape)]
         x = x[::10]
         y = y[::10]
         data = np.column_stack([x, y, self._make_gauss(x, y)])
         df = pd.DataFrame(data, columns=["x", "y", "mass"])
 
-        corr = sdt.beam_shape.Corrector(df, density_weight=True,
-                                        shape=self.img_shape)
+        corr = flatfield.Corrector(df, density_weight=True,
+                                   shape=self.img_shape)
 
         np.testing.assert_allclose(corr.avg_img, self.img / self.img.max(),
                                    rtol=1e-5)
@@ -106,7 +123,7 @@ class TestBeamShape(unittest.TestCase):
         self._check_fit_result(corr.fit_result.best_values, expected)
 
     def test_feature_correction(self):
-        """beam_shape.Corrector.__call__: Single molecule data correction"""
+        """flatfield.Corrector.__call__: single molecule data correction"""
         x = np.concatenate(
             [np.arange(self.img_shape[1]),
              np.full(self.img_shape[0], self.img_shape[1] // 2)])
@@ -118,26 +135,54 @@ class TestBeamShape(unittest.TestCase):
         pdata = pd.DataFrame(dict(x=x, y=y, mass=mass))
         pdata1 = pdata.copy()
 
-        corr_img = sdt.beam_shape.Corrector([self.img], gaussian_fit=False)
+        corr_img = flatfield.Corrector([self.img], gaussian_fit=False)
         corr_img(pdata, inplace=True)
         np.testing.assert_allclose(pdata["mass"].tolist(), mass_orig)
 
-        corr_gauss = sdt.beam_shape.Corrector([self.img], gaussian_fit=True)
+        corr_gauss = flatfield.Corrector([self.img], gaussian_fit=True)
         pdata1 = corr_gauss(pdata1)
         np.testing.assert_allclose(pdata1["mass"].tolist(), mass_orig,
                                    rtol=1e-5)
 
     def test_image_correction_with_img(self):
-        """beam_shape.Corrector.__call__: Image correction, no fit"""
-        corr_img = sdt.beam_shape.Corrector([self.img], gaussian_fit=False)
+        """flatfield.Corrector.__call__: image correction, no fit"""
+        corr_img = flatfield.Corrector([self.img], gaussian_fit=False)
         np.testing.assert_allclose(corr_img(self.img),
                                    np.full(self.img.shape, self.amp))
 
+    def test_image_correction_bg(self):
+        """flatfield.Corrector.__call__: image correction, background"""
+        bg1 = 200
+        corr = flatfield.Corrector([self.img + bg1], bg=bg1,
+                                   gaussian_fit=False)
+        np.testing.assert_allclose(corr(self.img + bg1),
+                                   np.full(self.img.shape, self.amp))
+
+        bg2 = 300
+        np.testing.assert_allclose(corr(self.img + bg2, bg=bg2),
+                                   np.full(self.img.shape, self.amp))
+
+
     def test_image_correction_with_gauss(self):
-        """beam_shape.Corrector.__call__: Image correction, fit"""
-        corr_g = sdt.beam_shape.Corrector([self.img], gaussian_fit=True)
+        """flatfield.Corrector.__call__: image correction, fit"""
+        corr_g = flatfield.Corrector([self.img], gaussian_fit=True)
         np.testing.assert_allclose(corr_g(self.img),
                                    np.full(self.img.shape, 2),
+                                   rtol=1e-5)
+
+    def test_get_factors_img(self):
+        """flatfield.Corrector.get_factors: no fit"""
+        corr = flatfield.Corrector([self.img], gaussian_fit=False)
+        i, j = np.indices(self.img.shape)
+        fact = corr.get_factors(j, i)
+        np.testing.assert_allclose(1 / fact, self.img / self.img.max())
+
+    def test_get_factors_gauss(self):
+        """flatfield.Corrector.get_factors: fit"""
+        corr = flatfield.Corrector([self.img], gaussian_fit=True)
+        i, j = np.indices(self.img.shape)
+        fact = corr.get_factors(j, i)
+        np.testing.assert_allclose(1 / fact, self.img / self.img.max(),
                                    rtol=1e-5)
 
 
