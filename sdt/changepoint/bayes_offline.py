@@ -11,16 +11,15 @@ from ..helper import numba
 
 
 _log_pi = math.log(np.pi)
-_jit = numba.jit(nopython=True, nogil=True, cache=True)
 
 
 class ConstPrior:
     def __init__(self):
-        self.data = np.empty((0, 0))
+        self._data = np.empty((0, 0))
         self._prior = np.NaN
 
-    def initialize(self, data):
-        self.data = data
+    def set_data(self, data):
+        self._data = data
         self._prior = 1 / (len(data) + 1)
 
     def prior(self, t):
@@ -28,33 +27,33 @@ class ConstPrior:
 
 
 ConstPriorNumba = numba.jitclass(
-    [("data", numba.float64[:, :]), ("_prior", numba.float64)])(ConstPrior)
+    [("_data", numba.float64[:, :]), ("_prior", numba.float64)])(ConstPrior)
 
 
 class GeometricPrior:
     def __init__(self, p):
-        self.data = np.empty((0, 0))
+        self._data = np.empty((0, 0))
         self.p = p
 
-    def initialize(self, data):
-        self.data = data
+    def set_data(self, data):
+        self._data = data
 
     def prior(self, t):
         return self.p * (1 - self.p)**(t - 1)
 
 
 GeomtricPriorNumba = numba.jitclass(
-    [("data", numba.float64[:, :]), ("p", numba.float64)])(GeometricPrior)
+    [("_data", numba.float64[:, :]), ("p", numba.float64)])(GeometricPrior)
 
 
 class NegBinomialPrior:
     def __init__(self, k, p):
-        self.data = np.empty((0, 0))
+        self._data = np.empty((0, 0))
         self.p = p
         self.k = k
 
-    def initialize(self, data):
-        self.data = data
+    def set_data(self, data):
+        self._data = data
 
     def prior(self, t):
         return (scipy.special.comb(t - self.k, self.k - 1) *
@@ -63,24 +62,24 @@ class NegBinomialPrior:
 
 class _DynPLikelihood:
     def __init__(self):
-        self.cache = {}
+        self._cache = {}
 
-    def initialize(self, data):
-        self.cache = {}
-        self.data = data
+    def set_data(self, data):
+        self._cache = {}
+        self._data = data
 
     def likelihood(self, t, s):
-        if (t, s) not in self.cache:
-            self.cache[(t, s)] = self._likelihood(t, s)
-        return self.cache[(t, s)]
+        if (t, s) not in self._cache:
+            self._cache[(t, s)] = self._likelihood(t, s)
+        return self._cache[(t, s)]
 
 
 class _GaussianObsLikelihoodBase:
     def __init__(self):
-        self.data = np.empty((0, 0))
+        self._data = np.empty((0, 0))
 
-    def initialize(self, data):
-        self.data = data
+    def set_data(self, data):
+        self._data = data
 
     def likelihood(self, t, s):
         return self._likelihood(t, s)
@@ -88,16 +87,16 @@ class _GaussianObsLikelihoodBase:
     def _likelihood(self, t, s):
         s += 1
         n = s - t
-        mean = self.data[t:s].sum(0) / n
+        mean = self._data[t:s].sum(0) / n
 
         muT = n * mean / (1 + n)
         nuT = 1 + n
         alphaT = 1 + n / 2
-        betaT = (1 + 0.5 * ((self.data[t:s] - mean)**2).sum(0) +
+        betaT = (1 + 0.5 * ((self._data[t:s] - mean)**2).sum(0) +
                  n / (1 + n) * mean**2 / 2)
         scale = betaT * (nuT + 1) / (alphaT * nuT)
 
-        prob = np.sum(np.log(1 + (self.data[t:s] - muT)**2 / (nuT * scale)))
+        prob = np.sum(np.log(1 + (self._data[t:s] - muT)**2 / (nuT * scale)))
         lgA = (math.lgamma((nuT + 1) / 2) - np.log(np.sqrt(np.pi * nuT * scale)) -
                math.lgamma(nuT / 2))
 
@@ -109,15 +108,15 @@ class GaussianObsLikelihood(_DynPLikelihood, _GaussianObsLikelihoodBase):
 
 
 GaussianObsLikelihoodNumba = numba.jitclass(
-    [("data", numba.float64[:, :])])(_GaussianObsLikelihoodBase)
+    [("_data", numba.float64[:, :])])(_GaussianObsLikelihoodBase)
 
 
 class _IfmObsLikelihoodBase:
     def __init__(self):
-        self.data = np.empty((0, 0))
+        self._data = np.empty((0, 0))
 
-    def initialize(self, data):
-        self.data = data
+    def set_data(self, data):
+        self._data = data
 
     def likelihood(self, t, s):
         return self._likelihood(t, s)
@@ -125,7 +124,7 @@ class _IfmObsLikelihoodBase:
     def _likelihood(self, t, s):
         s += 1
         n = s - t
-        x = self.data[t:s]
+        x = self._data[t:s]
         d = x.shape[1]
 
         N0 = d  # Weakest prior we can use to retain proper prior
@@ -143,17 +142,15 @@ class IfmObsLikelihood(_DynPLikelihood, _IfmObsLikelihoodBase):
 
 
 IfmObsLikelihoodNumba = numba.jitclass(
-    [("data", numba.float64[:, :])])(_IfmObsLikelihoodBase)
+    [("_data", numba.float64[:, :])])(_IfmObsLikelihoodBase)
 
 
-class FullCovObsLikelihood:
+class FullCovObsLikelihood(_DynPLikelihood):
     def __init__(self):
-        self.data = np.empty((0, 0))
+        super().__init__()
+        self._data = np.empty((0, 0))
 
-    def initialize(self, data):
-        self.data = data
-
-    def likelihood(self, t, s):
+    def _likelihood(self, t, s):
         """Full covariance model from Xuan et al.
 
         See *Xuan Xiang, Kevin Murphy: "Modeling Changing Dependency Structure
@@ -173,7 +170,7 @@ class FullCovObsLikelihood:
         """
         s += 1
         n = s - t
-        x = self.data[t:s]
+        x = self._data[t:s]
         dim = x.shape[1]
 
         N0 = dim  # weakest prior we can use to retain proper prior
@@ -188,13 +185,13 @@ class FullCovObsLikelihood:
                 (N0 + n) / 2 * np.linalg.slogdet(Vn)[1])
 
 
-@numba.jitclass([("data", numba.float64[:, :])])
+@numba.jitclass([("_data", numba.float64[:, :])])
 class FullCovObsLikelihoodNumba:
     def __init__(self):
-        self.data = np.empty((0, 0))
+        self._data = np.empty((0, 0))
 
-    def initialize(self, data):
-        self.data = data
+    def set_data(self, data):
+        self._data = data
 
     def likelihood(self, t, s):
         """Full covariance model from Xuan et al.
@@ -215,7 +212,7 @@ class FullCovObsLikelihoodNumba:
         """
         s += 1
         n = s - t
-        x = self.data[t:s]
+        x = self._data[t:s]
         dim = x.shape[1]
 
         N0 = dim  # weakest prior we can use to retain proper prior
@@ -250,7 +247,7 @@ class NumbaLogsumexp:
 
 
 def segmentation(prior, obs_likelihood, truncate, logsumexp_wrapper):
-    n = len(prior.data)
+    n = len(prior._data)
     Q = np.zeros(n)
     g = np.zeros(n)
     G = np.zeros(n)
@@ -419,8 +416,8 @@ class BayesOffline:
         """
         if data.ndim == 1:
             data = data.reshape((-1, 1))
-        self.prior.initialize(data)
-        self.obs_likelihood.initialize(data)
+        self.prior.set_data(data)
+        self.obs_likelihood.set_data(data)
 
         Q, P, Pcp = self.segmentation(self.prior, self.obs_likelihood,
                                       truncate, self.logsumexp)

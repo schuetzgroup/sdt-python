@@ -13,22 +13,20 @@ class CostL1:
     ----------
     min_size : int
         Minimum size of a segment that works with this cost function
-    data : numpy.ndarray, shape(n, m)
-        m datasets of n data points
     """
     def __init__(self):
         self.min_size = 2
-        self.data = np.empty((0, 0))
+        self._data = np.empty((0, 0))
 
-    def initialize(self, data):
-        """Initialze cost function
+    def set_data(self, data):
+        """Set data for cost function
 
         Parameters
         ----------
         data : numpy.ndarray, shape(n, m)
-        m datasets of n data points
+            m datasets of n data points
         """
-        self.data = data
+        self._data = data
 
     def cost(self, t, s):
         """Calculate cost from time `t` to time `s`
@@ -46,7 +44,7 @@ class CostL1:
         if s - t < self.min_size:
             raise ValueError("t - s less than min_size")
 
-        sub = self.data[t:s]
+        sub = self._data[t:s]
         # Cannot use axis=0 argument in numba
         med = np.empty(sub.shape[1])
         for i in range(sub.shape[1]):
@@ -55,7 +53,7 @@ class CostL1:
 
 
 CostL1Numba = numba.jitclass(
-    [("min_size", numba.int64), ("data", numba.float64[:, :])])(
+    [("min_size", numba.int64), ("_data", numba.float64[:, :])])(
         CostL1)
 
 
@@ -66,22 +64,20 @@ class CostL2:
     ----------
     min_size : int
         Minimum size of a segment that works with this cost function
-    data : numpy.ndarray, shape(n, m)
-        m datasets of n data points
     """
     def __init__(self):
         self.min_size = 2
-        self.data = np.empty((0, 0))
+        self._data = np.empty((0, 0))
 
-    def initialize(self, data):
-        """Initialze cost function
+    def set_data(self, data):
+        """Set data for cost function
 
         Parameters
         ----------
         data : numpy.ndarray, shape(n, m)
-        m datasets of n data points
+            m datasets of n data points
         """
-        self.data = data
+        self._data = data
 
     def cost(self, t, s):
         """Calculate cost from time `t` to time `s`
@@ -99,7 +95,7 @@ class CostL2:
         if s - t < self.min_size:
             raise ValueError("t - s less than min_size")
 
-        sub = self.data[t:s]
+        sub = self._data[t:s]
         # Cannot use axis=0 argument in numba
         var = np.empty(sub.shape[1])
         for i in range(sub.shape[1]):
@@ -108,7 +104,7 @@ class CostL2:
 
 
 CostL2Numba = numba.jitclass(
-    [("min_size", numba.int64), ("data", numba.float64[:, :])])(
+    [("min_size", numba.int64), ("_data", numba.float64[:, :])])(
         CostL2)
 
 
@@ -149,7 +145,7 @@ def segmentation(cost, min_size, jump, penalty, max_exp_cp):
         Computational Cost", Journal of the American Statistical Association,
         Informa UK Limited, 2012, 107, 1590–1598
     """
-    n_samples = len(cost.data)
+    n_samples = len(cost._data)
     times = np.arange(0, n_samples + jump, jump)
     times[-1] = n_samples
     min_idx_diff = math.ceil(min_size/jump)
@@ -284,7 +280,7 @@ class Pelt:
         """
         if data.ndim == 1:
             data = data.reshape((-1, 1))
-        self.cost.initialize(data)
+        self.cost.set_data(data)
 
         if self.use_numba:
             return segmentation_numba(self.cost, self.min_size, self.jump,

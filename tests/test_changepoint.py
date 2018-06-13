@@ -21,7 +21,7 @@ class TestOfflineObs(unittest.TestCase):
         a = np.atleast_2d(np.arange(10000, dtype=float)).T
         for c in cls:
             inst = c()
-            inst.initialize(a)
+            inst.set_data(a)
             r = inst.likelihood(10, 1000)
             self.assertAlmostEqual(r, res)
 
@@ -29,9 +29,22 @@ class TestOfflineObs(unittest.TestCase):
         a = np.arange(10000, dtype=float).reshape((-1, 2))
         for c in cls:
             inst = c()
-            inst.initialize(a)
+            inst.set_data(a)
             r = inst.likelihood(10, 1000)
             self.assertAlmostEqual(r, res)
+
+    def _test_dynp(self, cls):
+        t1 = (10, 100)
+        t2 = (100, 200)
+        c = cls()
+
+        c.set_data(np.atleast_2d(np.arange(1000, dtype=float)).T)
+        r1 = c.likelihood(*t1)
+        r2 = c.likelihood(*t2)
+        self.assertDictEqual(c._cache, {t1: r1, t2: r2})
+
+        c.set_data(np.empty((1, 1)))
+        self.assertDictEqual(c._cache, {})
 
     def test_gaussian_obs(self):
         """changepoint.bayes_offline.GaussianObsLikelihood{,Numba}
@@ -44,6 +57,10 @@ class TestOfflineObs(unittest.TestCase):
         self._test_univ(cls, -7011.825860906335)
         self._test_multiv(cls, -16386.465097707242)
 
+    def test_gaussian_obs_dynp(self):
+        """changepoint.bayes_offline.GaussianObsLikelihood: dynamic prog"""
+        self._test_dynp(offline.GaussianObsLikelihood)
+
     def test_ifm_obs(self):
         """changepoint.bayes_offline.IfmObsLikelihood{,Numba}
 
@@ -53,6 +70,10 @@ class TestOfflineObs(unittest.TestCase):
         cls = (offline.IfmObsLikelihood, offline.IfmObsLikelihoodNumba)
         self._test_univ(cls, -7716.5452917994835)
         self._test_multiv(cls, -16808.615307987133)
+
+    def test_ifm_obs_dynp(self):
+        """changepoint.bayes_offline.IfmObsLikelihood: dynamic prog"""
+        self._test_dynp(offline.IfmObsLikelihood)
 
     def test_fullcov_obs(self):
         """changepoint.bayes_offline.FullCovObsLikelihood{,Numba}
@@ -64,13 +85,17 @@ class TestOfflineObs(unittest.TestCase):
         self._test_univ(cls, -7716.5452917994835)
         self._test_multiv(cls, -13028.349084233618)
 
+    def test_fullcov_obs_dynp(self):
+        """changepoint.bayes_offline.FullCovObsLikelihood: dynamic prog"""
+        self._test_dynp(offline.FullCovObsLikelihood)
+
 
 class TestOfflinePriors(unittest.TestCase):
     def test_const_prior(self):
         """changepoint.bayes_offline.ConstPrior{,Numba}"""
         for cls in (offline.ConstPrior, offline.ConstPriorNumba):
             c = cls()
-            c.initialize(np.empty((99, 1)))
+            c.set_data(np.empty((99, 1)))
             self.assertAlmostEqual(c.prior(4), 0.01)
 
     def test_geometric_prior(self):
@@ -391,12 +416,12 @@ class TestPeltCosts(unittest.TestCase):
 
     def test_l1(self):
         """changepoint.pelt.CostL1"""
-        self.l1.initialize(self.data)
+        self.l1.set_data(self.data)
         self.assertAlmostEqual(self.l1.cost(1, 9), 10)
 
     def test_l2(self):
         """changepoint.pelt.CostL2"""
-        self.l2.initialize(self.data)
+        self.l2.set_data(self.data)
         self.assertAlmostEqual(self.l2.cost(1, 9), 20.75)
 
 
@@ -432,19 +457,19 @@ class TestPelt(unittest.TestCase):
 
     def test_segmentation(self):
         """changepoint.pelt.segmentation"""
-        self.cost.initialize(self.data)
+        self.cost.set_data(self.data)
         cp = self.seg_func(self.cost, 2, 1, self.penalty, 10)
         np.testing.assert_equal(cp, self.cp)
 
     def test_segmentation_nocp(self):
         """changepoint.pelt.segmentation: no changepoints"""
-        self.cost.initialize(self.data)
+        self.cost.set_data(self.data)
         cp = self.seg_func(self.cost, 2, 1, self.penalty * 100, 10)
         np.testing.assert_equal(cp, [])
 
     def test_segmentation_jump(self):
         """changepoint.pelt.segmentation: `jump` parameter"""
-        self.cost.initialize(self.data)
+        self.cost.set_data(self.data)
         jump = 8
         cp = self.seg_func(self.cost, 2, jump, self.penalty, 10)
         expected = np.asarray(np.ceil(self.cp / jump) * jump, dtype=int)
@@ -452,7 +477,7 @@ class TestPelt(unittest.TestCase):
 
     def test_segmentation_minsize(self):
         """changepoint.pelt.segmentation: `min_size` parameter"""
-        self.cost.initialize(self.data)
+        self.cost.set_data(self.data)
         cp = self.seg_func(self.cost, 35, 1, self.penalty, 10)
         np.testing.assert_equal(cp, [35])
 
@@ -461,7 +486,7 @@ class TestPelt(unittest.TestCase):
 
         This happens when `max_exp_cp` is too low.
         """
-        self.cost.initialize(self.data)
+        self.cost.set_data(self.data)
         cp = self.seg_func(self.cost, 2, 1, self.penalty, 1)
         np.testing.assert_equal(cp, self.cp)
 
