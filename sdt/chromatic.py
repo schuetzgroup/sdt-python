@@ -114,8 +114,8 @@ class Corrector(object):
     """
     yaml_tag = "!ChromaticCorrector"
 
-    @config.use_defaults
-    def __init__(self, feat1=None, feat2=None, pos_columns=None,
+    @config.set_columns
+    def __init__(self, feat1=None, feat2=None, columns={},
                  channel_names=["channel1", "channel2"]):
         """Parameters
         ----------
@@ -124,10 +124,11 @@ class Corrector(object):
             if it is a single DataFrame). Can also be `None`, but in this case
             :py:meth:`find_pairs` and :py:meth:`determine_parameters` will
             not work. Defaults to `None`.
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `pos`.
+            That means, if the DataFrames have coordinate columns "x" and "z",
+            set ``columns={"pos": ["x", "z"]}``.
         channel_names : list of str, optional
             Set the `channel_names` attribute. Defaults to ``["channel1",
             "channel2"]``.
@@ -140,7 +141,7 @@ class Corrector(object):
         """
         self.feat2 = [feat2] if isinstance(feat2, pd.DataFrame) else feat2
         """Same as :py:attr:`feat1`, but for the second channel"""
-        self.pos_columns = pos_columns
+        self.pos_columns = columns["pos"]
         """List of names of the columns describing the coordinates of the
         features.
         """
@@ -150,11 +151,11 @@ class Corrector(object):
         """:py:class:`pandas.DataFrame` containing the pairs found by
         :py:meth:`determine_parameters`.
         """
-        self.parameters1 = np.eye(len(pos_columns) + 1)
+        self.parameters1 = np.eye(len(self.pos_columns) + 1)
         """Array describing the affine transformation of data from
         channel 1 to channel 2.
         """
-        self.parameters2 = np.eye(len(pos_columns) + 1)
+        self.parameters2 = np.eye(len(self.pos_columns) + 1)
         """Array describing the affine transformation of data from
         channel 2 to channel 1.
         """
@@ -195,7 +196,7 @@ class Corrector(object):
         self.fit_parameters()
 
     def __call__(self, data, channel=2, inplace=False, mode="constant",
-                 cval=0.0):
+                 cval=0.0, columns={}):
         """Correct for chromatic aberrations
 
         This can be done either on coordinates (e. g. resulting from feature
@@ -226,16 +227,23 @@ class Corrector(object):
             What value to use for `mode="constant"`. If this is callable, it
             should take a single argument (the uncorrected image) and return a
             scalar, which will be used as the fill value. Defaults to 0.0.
+        columns : dict, optional
+            Override default column names in case `data` is a
+            :py:class:`pandas.DataFrame`. The only relevant name is `pos`.
+            That means, if the DataFrame has coordinate columns "x" and "z",
+            set ``columns={"pos": ["x", "z"]}``.
         """
         if channel not in (1, 2):
             raise ValueError("channel has to be either 1 or 2")
 
+        pos_columns = columns.get("pos", self.pos_columns)
+
         if isinstance(data, pd.DataFrame):
             if not inplace:
                 data = data.copy()
-            loc = data[self.pos_columns].values
+            loc = data[pos_columns].values
             par = getattr(self, "parameters{}".format(channel))
-            data[self.pos_columns] = _affine_trafo(par, loc)
+            data[pos_columns] = _affine_trafo(par, loc)
 
             if not inplace:
                 # copied previously, now return
@@ -346,9 +354,8 @@ class Corrector(object):
             raise ValueError("Unknown format: {}".format(fmt))
 
     @staticmethod
-    @config.use_defaults
     def load(file, fmt="npz", key=("chromatic_param1", "chromatic_param2"),
-             pos_columns=None):
+             columns={}):
         """Read paramaters from a file and construct a `Corrector`
 
         Parameters
@@ -367,15 +374,16 @@ class Corrector(object):
 
         Other parameters
         ----------------
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `pos`.
+            That means, if the DataFrames have coordinate columns "x" and "z",
+            set ``columns={"pos": ["x", "z"]}``.
         key : tuple of str, optional
             Name of the variables in the saved file (does not apply to "wrp").
             Defaults to ("chromatic_param1", "chromatic_param2").
         """
-        corr = Corrector(None, None, pos_columns=pos_columns)
+        corr = Corrector(None, None, columns=columns)
         if fmt == "npz":
             npz = np.load(file)
             corr.parameters1 = npz[key[0]]
