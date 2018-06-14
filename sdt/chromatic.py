@@ -1,10 +1,75 @@
-"""This module allows for correction of chromatic aberrations.
+"""Overlay color channels
+======================
 
-When doing multi-color single molecule microscopy, chromatic aberrations pose
-a problem. To circumvent this, one can record an image of beads, match the
-localizations (as determined by a localization algorithm such as those in the
-:py:mod:`sdt.loc` package) of the two channels and determine affine
-transformations for the x and y coordinates.
+Multi-color microscopy images are typically created by directing the light of
+different wavelengths onto different regions of the camera chip or onto
+different cameras.
+
+In order to overlay the different channels, one can record images of
+multi-color beads and identify each bead's position in each channel to
+determine a transformation that transforms data from one channel to match the
+other channel. The :py:class:`Corrector` class offers an easy way to do this.
+
+
+Examples
+--------
+
+Let's assume that multiple images/sequences of flourescent beads have been
+acquired with two color channels on in the same image. First, the beads
+need to be localized (e.g. using the ``sdt.gui.locator`` application).
+These need to be loaded:
+
+>>> bead_loc = [sdt.io.load(b) for b in glob.glob("beads*.h5")]
+
+Next, we define ROIs for the two channels using :py:class:`sdt.roi.ROI` and
+choose the bead localizations with respect to the ROIs:
+
+>>> r1 = sdt.roi.ROI((0, 0), size=(200, 100))
+>>> r2 = sdt.roi.ROI((0, 200), size=(200, 100))
+>>> beads_r1 = [r1(b) for b in bead_loc]
+>>> beads_r2 = [r2(b) for b in bead_loc]
+
+Now, calculate the transform that overlays the two channels using
+:py:class:`Corrector`:
+
+>>> corr = Corrector(beads_r1, beads_r2)
+>>> corr.determine_parameters()
+>>> corr.test()  # Plot results
+
+This can now be used to transform i.e. image data from channel 1 so that it
+can be overlaid with channel 1:
+
+>>> img = pims.open("image.tif")[0]  # Load first frame (number 0)
+>>> img_r1 = r1(img)  # Get channel 1 part of the image
+>>> img_r2 = r2(img)  # Get channel 2 part of the image
+>>> img_r1_corr = corr(img_r1, channel=1)  # Transform channel 1 image
+>>> overlay = numpy.dstack([img_r1, img_r2, np.zeros_like(img_r1)])
+>>> matplotlib.pyplot.imshow(overlay)  # Plot overlay
+
+Similarly, coordinates of single molecule data can be transformed:
+
+>>> loc = sdt.io.load("loc.h5")  # Load data
+>>> loc_r1 = r1(loc)  # Get data from channel 1
+>>> loc_r2 = r2(loc)  # Get data from channel 2
+>>> loc_r1_corr = corr(loc_r1, channel=1)  # Transform channel 1 data
+>>> matplotlib.pyplot.scatter(loc_r1_corr["x"], loc_r1_corr["y"], marker="+")
+>>> matplotlib.pyplot.scatter(loc_r2["x"], loc_r2["y"], marker="x")
+
+There is also support for saving and loading a :py:class:`Corrector` instance
+to/from YAML:
+
+>>> with open("output.yaml", "w") as f:
+>>>     sdt.io.yaml.safe_dump(corr, f)
+>>> with opon("output.yaml", "r") as f:
+>>>     corr_loaded = sdt.io.yaml.safe_load(f)
+
+
+Programming reference
+---------------------
+
+.. autoclass:: Corrector
+    :members:
+    :special-members: __call__
 """
 from contextlib import suppress
 
@@ -42,29 +107,10 @@ def _affine_trafo(params, loc):
 
 
 class Corrector(object):
-    """Convenience class for easy correction of chromatic aberrations
+    """Class for easy overlay of two fluorescence microscopy channels
 
     This class provides an easy-to-use interface to the correction
     process.
-
-    Attributes
-    ----------
-    pos_columns : list of str
-        Names of the columns describing the coordinates of the features.
-    channel_names : list of str
-        Names of the channels
-    feat1, feat2 : list of pandas.DataFrames
-        Bead positions of the first and second channel found by the
-        localization algorithm. The x coordinate is in the column with name
-        ``pos_columns[0]``, etc. Each DataFrame corresponds to one image
-        (sequence), thus multiple bead images can be used to increase
-        the accuracy.
-    pairs : pandas.DataFrame
-        The pairs found by `determine_parameters`.
-    parameters1, parameters2 : pandas.DataFrame
-        The parameters for the affine transformation to correct coordinates
-        of channel 1 and channel 2 respectively, embedded in a vector space of
-        higher dimension.
     """
     yaml_tag = "!ChromaticCorrector"
 
@@ -87,12 +133,31 @@ class Corrector(object):
             "channel2"]``.
         """
         self.feat1 = [feat1] if isinstance(feat1, pd.DataFrame) else feat1
+        """List of pandas.DataFrame; Positions of beads (as found by a
+        localization algorithm) in the first channel. Each DataFrame
+        corresponds to one image (sequence), thus multiple bead images can be
+        used to increase the accuracy.
+        """
         self.feat2 = [feat2] if isinstance(feat2, pd.DataFrame) else feat2
+        """Same as :py:attr:`feat1`, but for the second channel"""
         self.pos_columns = pos_columns
+        """List of names of the columns describing the coordinates of the
+        features.
+        """
         self.channel_names = channel_names
+        """List of channel names"""
         self.pairs = None
+        """:py:class:`pandas.DataFrame` containing the pairs found by
+        :py:meth:`determine_parameters`.
+        """
         self.parameters1 = np.eye(len(pos_columns) + 1)
+        """Array describing the affine transformation of data from
+        channel 1 to channel 2.
+        """
         self.parameters2 = np.eye(len(pos_columns) + 1)
+        """Array describing the affine transformation of data from
+        channel 2 to channel 1.
+        """
 
     def determine_parameters(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
                              ambiguity_factor=0.8):
@@ -104,7 +169,8 @@ class Corrector(object):
         aberrations.
 
         This is a convenience function that calls :py:meth:`find_pairs` and
-        :py:meth:`fit_parameters`.
+        :py:meth:`fit_parameters`; see the documentation of the methods for
+        details.
 
         Parameters
         ----------
@@ -127,89 +193,6 @@ class Corrector(object):
         """
         self.find_pairs(tol_rel, tol_abs, score_cutoff, ambiguity_factor)
         self.fit_parameters()
-
-    def find_pairs(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
-                   ambiguity_factor=0.8):
-        """Match features of `feat1` with features of `feat2`
-
-        This is done by calculating the vectors from every
-        feature all the other features in :py:attr:`feat1` and compare them to
-        those of :py:attr:`feat2` using the :py:func:`numpy.isclose` function
-        on both the x and the y
-        coordinate, where `tol_rel` and `tol_abs` are the relative and
-        absolute tolerance parameters.
-
-        Parameters
-        ----------
-        tol_rel : float
-            Relative tolerance parameter for `numpy.isclose()`. Defaults to
-            0.05.
-        tol_abs : float
-            Absolute tolerance parameter for `numpy.isclose()`. Defaults to 0.
-        score_cutoff : float, optional
-            In order to get rid of false matches a threshold for scores can
-            be set. All scores below this threshold are discarded. The
-            threshold is calculated as score_cutoff * score.max(). Defaults to
-            0.5.
-        ambiguity_factor : float
-            If there are two candidates as a partner for a feature, and the
-            score of the lower scoring one is larger than `ambiguity_factor`
-            times the score of the higher scorer, the pairs are considered
-            ambiguous and therefore discarded. Defaults to 0.8.
-        """
-        p = []
-        for f1, f2 in zip(self.feat1, self.feat2):
-            if "frame" in f1.columns and "frame" in f2.columns:
-                # If there is a "frame" column, split data according to
-                # frame number since pairs can only be in the same frame
-                data = ((f1[f1["frame"] == i], f2[f2["frame"] == i])
-                        for i in f1["frame"].unique())
-            else:
-                # If there is no "frame" column, just take everything
-                data = ((f1, f2),)
-            for f1_frame_data, f2_frame_data in data:
-                if f1_frame_data.empty or f2_frame_data.empty:
-                    # Don't even try to operate on empty frames. Weird things
-                    # are bound to happen
-                    continue
-                v1 = self._vectors_cartesian(f1_frame_data)
-                v2 = self._vectors_cartesian(f2_frame_data)
-                s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
-                p.append(self._pairs_from_score(
-                    f1_frame_data, f2_frame_data, s, score_cutoff,
-                    ambiguity_factor))
-        self.pairs = pd.concat(p)
-
-    def fit_parameters(self):
-        """Determine parameters for the affine transformation
-
-        An affine transformation is used to map x and y coordinates of `feat1`
-        to to those of `feat2`. This requires :py:attr:`pairs` to be set, e.g.
-        by running :py:meth:`find_pairs`.
-        The result is saved as :py:attr:`parameters1` (transform of channel 1
-        coordinates to channel 2) and :py:attr:`parameters2` (transform of
-        channel 2  coordinates to channel 1) attributes.
-
-        :py:attr:`parameters1` is calculated by determining the affine
-        transformation between the :py:attr:`pairs` entries using a linear
-        least squares fit. :py:attr:`parameters2` is its inverse. Therefore,
-        results may be slightly different depending on what is channel1 and
-        what is channel2.
-        """
-        ch1_name = self.channel_names[0]
-        ch2_name = self.channel_names[1]
-
-        loc1 = self.pairs[ch1_name][self.pos_columns].values
-        loc2 = self.pairs[ch2_name][self.pos_columns].values
-        ndim = loc1.shape[1]
-
-        self.parameters1 = np.empty((ndim + 1,) * 2)
-        loc1_embedded = np.hstack([loc1, np.ones((len(loc1), 1))])
-        self.parameters1[:ndim, :] = np.linalg.lstsq(loc1_embedded, loc2)[0].T
-        self.parameters1[ndim, :ndim] = 0.
-        self.parameters1[ndim, ndim] = 1.
-
-        self.parameters2 = np.linalg.inv(self.parameters1)
 
     def __call__(self, data, channel=2, inplace=False, mode="constant",
                  cval=0.0):
@@ -378,7 +361,7 @@ class Corrector(object):
 
         Returns
         -------
-        Corrector
+        sdt.chromatic.Corrector
             A :py:class:`Corrector` instance with the parameters read from the
             file.
 
@@ -413,6 +396,89 @@ class Corrector(object):
             raise ValueError("Unknown format: {}".format(fmt))
 
         return corr
+
+    def find_pairs(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
+                   ambiguity_factor=0.8):
+        """Match features of `feat1` with features of `feat2`
+
+        This is done by calculating the vectors from every
+        feature all the other features in :py:attr:`feat1` and compare them to
+        those of :py:attr:`feat2` using the :py:func:`numpy.isclose` function
+        on both the x and the y
+        coordinate, where `tol_rel` and `tol_abs` are the relative and
+        absolute tolerance parameters.
+
+        Parameters
+        ----------
+        tol_rel : float
+            Relative tolerance parameter for `numpy.isclose()`. Defaults to
+            0.05.
+        tol_abs : float
+            Absolute tolerance parameter for `numpy.isclose()`. Defaults to 0.
+        score_cutoff : float, optional
+            In order to get rid of false matches a threshold for scores can
+            be set. All scores below this threshold are discarded. The
+            threshold is calculated as score_cutoff * score.max(). Defaults to
+            0.5.
+        ambiguity_factor : float
+            If there are two candidates as a partner for a feature, and the
+            score of the lower scoring one is larger than `ambiguity_factor`
+            times the score of the higher scorer, the pairs are considered
+            ambiguous and therefore discarded. Defaults to 0.8.
+        """
+        p = []
+        for f1, f2 in zip(self.feat1, self.feat2):
+            if "frame" in f1.columns and "frame" in f2.columns:
+                # If there is a "frame" column, split data according to
+                # frame number since pairs can only be in the same frame
+                data = ((f1[f1["frame"] == i], f2[f2["frame"] == i])
+                        for i in f1["frame"].unique())
+            else:
+                # If there is no "frame" column, just take everything
+                data = ((f1, f2),)
+            for f1_frame_data, f2_frame_data in data:
+                if f1_frame_data.empty or f2_frame_data.empty:
+                    # Don't even try to operate on empty frames. Weird things
+                    # are bound to happen
+                    continue
+                v1 = self._vectors_cartesian(f1_frame_data)
+                v2 = self._vectors_cartesian(f2_frame_data)
+                s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
+                p.append(self._pairs_from_score(
+                    f1_frame_data, f2_frame_data, s, score_cutoff,
+                    ambiguity_factor))
+        self.pairs = pd.concat(p)
+
+    def fit_parameters(self):
+        """Determine parameters for the affine transformation
+
+        An affine transformation is used to map x and y coordinates of `feat1`
+        to to those of `feat2`. This requires :py:attr:`pairs` to be set, e.g.
+        by running :py:meth:`find_pairs`.
+        The result is saved as :py:attr:`parameters1` (transform of channel 1
+        coordinates to channel 2) and :py:attr:`parameters2` (transform of
+        channel 2  coordinates to channel 1) attributes.
+
+        :py:attr:`parameters1` is calculated by determining the affine
+        transformation between the :py:attr:`pairs` entries using a linear
+        least squares fit. :py:attr:`parameters2` is its inverse. Therefore,
+        results may be slightly different depending on what is channel1 and
+        what is channel2.
+        """
+        ch1_name = self.channel_names[0]
+        ch2_name = self.channel_names[1]
+
+        loc1 = self.pairs[ch1_name][self.pos_columns].values
+        loc2 = self.pairs[ch2_name][self.pos_columns].values
+        ndim = loc1.shape[1]
+
+        self.parameters1 = np.empty((ndim + 1,) * 2)
+        loc1_embedded = np.hstack([loc1, np.ones((len(loc1), 1))])
+        self.parameters1[:ndim, :] = np.linalg.lstsq(loc1_embedded, loc2)[0].T
+        self.parameters1[ndim, :ndim] = 0.
+        self.parameters1[ndim, ndim] = 1.
+
+        self.parameters2 = np.linalg.inv(self.parameters1)
 
     def _vectors_cartesian(self, features):
         """Calculate vectors of each point in features to every other point
@@ -556,8 +622,8 @@ class Corrector(object):
     def to_yaml(cls, dumper, data):
         """Dump as YAML
 
-        Pass this as the `representer` parameter to
-        :py:meth:`yaml.Dumper.add_representer`
+        Pass this as the `representer` parameter to your
+        :py:class:`yaml.Dumper` subclass's `add_representer` method.
         """
         m = (("parameters1", data.parameters1),
              ("parameters2", data.parameters2))
@@ -567,8 +633,8 @@ class Corrector(object):
     def from_yaml(cls, loader, node):
         """Construct from YAML
 
-        Pass this as the `constructor` parameter to
-        :py:meth:`yaml.Loader.add_constructor`
+        Pass this as the `constructor` parameter to your
+        :py:class:`yaml.Loader` subclass's `add_constructor` method.
         """
         m = loader.construct_mapping(node)
         ret = cls()
