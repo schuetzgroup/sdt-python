@@ -628,6 +628,9 @@ class Distribution(object):
         engine : {"numba", "python"}, optional
             Whether to use the faster numba-based implementation or the slower
             pure python one. Defaults to "numba".
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`).
+        The only relevant name is `mass`.
         """
         if isinstance(data, pd.DataFrame):
             data = data[columns["mass"]].values
