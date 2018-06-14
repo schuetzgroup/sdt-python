@@ -328,7 +328,6 @@ class Corrector(object):
         ax[1].set_ylabel("y")
 
         ax[0].figure.tight_layout()
-        ax[0].figure.tight_layout()
 
     def save(self, file, fmt="npz", key=("chromatic_param1",
                                          "chromatic_param2")):
