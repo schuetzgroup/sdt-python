@@ -634,7 +634,8 @@ class Corrector(object):
         :py:class:`yaml.Dumper` subclass's `add_representer` method.
         """
         m = (("parameters1", data.parameters1),
-             ("parameters2", data.parameters2))
+             ("parameters2", data.parameters2),
+             ("pos_columns", data.pos_columns))
         return dumper.represent_mapping(cls.yaml_tag, m)
 
     @classmethod
@@ -645,7 +646,8 @@ class Corrector(object):
         :py:class:`yaml.Loader` subclass's `add_constructor` method.
         """
         m = loader.construct_mapping(node)
-        ret = cls()
+        cols = {} if "pos_columns" not in m else {"pos": m["pos_columns"]}
+        ret = cls(columns=cols)
         ret.parameters1 = m["parameters1"]
         ret.parameters2 = m["parameters2"]
         return ret
