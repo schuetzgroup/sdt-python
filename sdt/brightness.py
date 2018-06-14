@@ -461,7 +461,7 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
         localization and get the background from an annulus of width
         ``bg_frame``. One can also pass a tuple ``(feat_mask, bg_mask)`` of
         boolean arrays for brightness and background detection. In this case,
-        `radius` and `bg_frame` are ignored. If `bg_mask is None, calculate
+        `radius` and `bg_frame` are ignored. If `bg_mask` is None, calculate
         background globally (per frame) from all pixels that are not
         part of any feature. In all cases, all pixels belonging
         to any signal are automatically excluded from the background detection.
@@ -470,8 +470,11 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     Other parameters
     ----------------
     columns : dict, optional
-        Override default column names as defined in :py:attr:`config.columns`).
-        Relevant names are `pos`, `mass`, `signal`, `bg`, `bg_dev`.
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `pos`, `mass`, `signal`, `bg`, `bg_dev`. This means,
+        if your DataFrame has coordinate columns "x" and "z" and the mass
+        column "alt_mass", set ``columns={"pos": ["x", "z"],
+        "mass": "alt_mass"}``.
     engine : {"numba", "python"}, optional
         Numba is faster, but only supports 2D data and mean or median
         bg_estimator. If numba cannot be used, automatically fall back to
@@ -628,9 +631,9 @@ class Distribution(object):
         engine : {"numba", "python"}, optional
             Whether to use the faster numba-based implementation or the slower
             pure python one. Defaults to "numba".
-    columns : dict, optional
-        Override default column names as defined in :py:attr:`config.columns`).
-        The only relevant name is `mass`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `mass`.
         """
         if isinstance(data, pd.DataFrame):
             data = data[columns["mass"]].values
