@@ -284,7 +284,7 @@ class Corrector(object):
                 return ret.T  # transpose back
             return corr(data)
 
-    def test(self, ax=None, safe_labels=False):
+    def test(self, ax=None):
         """Test validity of the correction parameters
 
         This plots the affine transformation functions and the coordinates of
@@ -298,9 +298,6 @@ class Corrector(object):
             Axes to use for plotting. The length of the tuple has to be 2.
             If None, allocate new axes using
             :py:func:`matplotlib.pyplot.subplots`. Defaults to None.
-        safe_labels : bool, optional
-            If True, do not use math mode for labels since that can cause
-            crashes in GUI applications (at least with Qt4). Defaults to False.
         """
         import matplotlib.pyplot as plt
 
