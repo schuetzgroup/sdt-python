@@ -597,15 +597,6 @@ class Distribution(object):
 
     This is a Gaussian KDE with variable bandwith. See the `bw` parameter
     documentation for details.
-
-    Attributes
-    ----------
-    graph : numpy.ndarray, shape=(2, n)
-        First row is the abscissa, second row is the ordinate of the normalized
-        distribution function.
-    num_data : int
-        Number of data points (single molecules) used to create the
-        distribution
     """
     @config.set_columns
     def __init__(self, data, abscissa=None, bw=2., cam_eff=1., kern_width=5.,
@@ -666,8 +657,15 @@ class Distribution(object):
 
         y /= self.norm_factor
         self.graph = np.array([x, y], copy=False)
+        """:py:class:`numpy.ndarray` of shape (2, n); First row is the
+        abscissa, second row is the ordinate of the normalized distribution
+        function.
+        """
 
         self.num_data = len(data)
+        """Number of data points (single molecules) used to create the
+        distribution.
+        """
 
     def mean(self):
         """Mean

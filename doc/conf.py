@@ -18,6 +18,18 @@ import os
 import shlex
 import re
 
+
+# Suppress the display of '= None' for class instance attributes
+# https://github.com/sphinx-doc/sphinx/issues/2044
+# https://stackoverflow.com/a/42738894
+from sphinx.ext.autodoc import (
+    ClassLevelDocumenter, InstanceAttributeDocumenter)
+
+def iad_add_directive_header(self, sig):
+    ClassLevelDocumenter.add_directive_header(self, sig)
+
+InstanceAttributeDocumenter.add_directive_header = iad_add_directive_header
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
