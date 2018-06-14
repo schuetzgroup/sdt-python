@@ -1,26 +1,121 @@
-# -*- coding: utf-8 -*-
-r"""Fit a sum of exponential functions to data
+r"""Fit of a sum of exponential functions
+=====================================
 
-Given 1D data, use a variant of Prony's method to fit the parameters of
-the sum
+The :py:mod:`sdt.exp_fit` module provides routines to fit a sum of exponential
+functions
 
-.. math:: \alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}
+.. math:: y(t) = \alpha + \sum_{i=1}^p \beta_i \text{e}^{\lambda_i t}
 
-to the data. This is based on code published by Greg von Winckel [1]_ under
-the GPLv3. Further insights about the algorithm may be gained by reading
-anything about Prony's method and [2]_.
+to data represented by pairs :math:`(t_k, y_k)`. This is done by using a
+modified Prony's method.
 
-Examples
---------
->>> # assume x and y describe the data points (x_i, y_i)
->>> a, b, l, _ = fit(x, y, num_exp=2, poly_order=30)
+The mathematics behind this can be found in :ref:`theory` as well as at [1]_.
+This code is based on GPLv3-licensed code by Greg von Winckel which can be
+which is also available at [1]_. Further insights about the algorithm may be
+gained by reading anything about Prony's method and [2]_.
 
-References
-----------
+
 .. [1] https://web.archive.org/web/20160813110706/http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions
 .. [2] M. R. Osborne, G. K. Smyth: A Modified Prony Algorithm for Fitting
     Functions Defined by Difference Equations. SIAM J. on Sci. and Statist.
     Comp., Vol 12 (1991), pages 362–382.
+
+
+Examples
+--------
+
+Given an array ``t`` of values of the independent variable and an array ``y``
+of corresponding values of the sum of the exponentials, the parameters
+``a`` (:math:`\alpha` in above formula), ``b`` (:math:`\beta_i`) and ``l``
+(:math:`\lambda_i`) can be found by calling
+
+>>> a, b, l, _ = sdt.exp_fit.fit(t, y, num_exp=2, poly_order=30)
+
+
+High level API
+--------------
+
+.. autofunction:: fit
+.. autofunction:: exp_sum
+
+
+Low level functions
+-------------------
+
+The functions above use (as documented in the :ref:`theory` section) several
+lower level functions.
+
+.. autofunction:: int_mat_legendre
+.. autoclass:: OdeSolver
+  :members:
+  :undoc-members:
+.. autofunction:: get_exponential_coeffs
+
+
+.. _theory:
+
+Theory
+------
+
+:math:`y(t)` is the general solution of the ordinary differential equation (ODE)
+
+.. math:: \sum_{j=0}^p a_j \frac{d^j y}{dt^j} = \alpha
+
+if
+
+.. math:: \sum_{j=0}^p a_j \lambda_i^j = 0 \quad\forall i\in \{1,\ldots, p\}.
+
+In other words: The :math:`\lambda_i` are the roots of the polynomial
+:math:`p(z) = \sum_{j=0}^p a_j z^j`.
+
+For numerical calculations, :math:`y(t)` is approximated by a Legendre series,
+
+.. math:: y(t)\approx \sum_{k=0}^m\hat{y}_k P_k(t).
+
+Since this is a polynomial, any derivative is again a polynomial and can thus
+be written again as sum of Legendre polynomials,
+
+.. math:: \frac{d^j y(t)}{dt^j} \approx \sum_{k=0}^m (D^j\hat{y})_k P_k(t),
+
+where :math:`D` is the Legendre differentiation matrix.
+
+For the purpose of solving the ODE, let :math:`\alpha = 1` (i. e. divide the
+whole ODE by :math:`alpha`). Its approximated version is then
+
+.. math:: \sum_{j=0}^p a_j D^j \hat{y} = e_1
+
+with :math:`e_1 = (1, 0, \ldots, 0)` being the first canonical unit vector.
+
+:math:`y(t)` is supposed to be the best approximation of the original data
+:math:`z`, meaning that
+
+.. math:: x - y \perp \mathbb{P}_m.
+
+From that follows
+
+.. math:: \int_{-1}^1 (z-y)P_l(t)\, dt = 0 \quad \Rightarrow
+
+    \int_{-1}^1 zP_l(t)\,dt = \sum_{k = 0}^m\hat{y}_k
+    \int_{-1}^1 P_k(t) P_l(t)\, dt = \frac{2\hat{y}_l}{2l+1}.
+
+This leads to
+
+.. math:: \hat{y}_l = (l+\frac{1}{2})\int_{-1}^1 z P_l(t)\, dt \approx
+    (l + \frac{1}{2})\sum_{i=1}^n w_i z_i P(x_i)
+
+where :math:`w_i` are weights for numerical integration.
+
+In order to determine the model parameters, first determine the first
+:math:`p` Legendre coefficients :math:`\hat{y}_k`. Then, for some set of
+parameters :math:`a_j`, determine the rest of the Legendre coefficient by
+solving the ODE (which is a linear system of equations in Legendre space) and
+compare to the original data :math:`z`. Do least squares fitting of
+:math:`a_j` in that manner. This yields some optimal :math:`a_j` values. From
+that, it is straight-forward to determine the exponential factors
+:math:`\lambda_i` by finding the roots of the polynomial.
+
+A linear least squares fit can then be used to determine the remaining
+parameters :math:`\alpha` and :math:`\beta_i`.
 """
 import numpy as np
 from numpy.polynomial.legendre import legint, legval, legvander
@@ -49,13 +144,7 @@ def int_mat_legendre(n, order):
 
 
 class OdeSolver(object):
-    """Class for solving the ODE involved in fitting
-
-    Attributes
-    ----------
-    coefficients : numpy.ndarray
-        1D array of coefficients of the ODE
-    """
+    """Class for solving the ODE involved in fitting"""
     def __init__(self, m, p):
         """Parameters
         ----------
@@ -82,6 +171,7 @@ class OdeSolver(object):
 
     @property
     def coefficients(self):
+        """1D array of coefficients of the ODE"""
         return self._a
 
     @coefficients.setter
@@ -141,20 +231,20 @@ class OdeSolver(object):
         return dy
 
 
-def get_exponential_coeffs(x, y, num_exp, poly_order, initial_guess=None):
+def get_exponential_coeffs(t, y, num_exp, poly_order, initial_guess=None):
     r"""Calculate the exponential coefficients
 
     As a first step to fitting the sum of exponentials
-    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data,
-    calculate the exponential "rate" factors :math:`\lambda_k` using a
+    :math:`y(t) = \alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the
+    data, calculate the exponential "rate" factors :math:`\lambda_k` using a
     modified Prony's method.
 
     Parameters
     ----------
-    x : numpy.ndarray
-        Abscissa (x-axis) data
+    t : numpy.ndarray
+        Independent variable values
     y : numpy.ndarray
-        Function values corresponding to `x`.
+        Function values corresponding to `t`.
     num_exp : int
         Number of exponential functions (``p`` in the equation above) in the
         sum
@@ -184,39 +274,39 @@ def get_exponential_coeffs(x, y, num_exp, poly_order, initial_guess=None):
 
     s = OdeSolver(poly_order, num_exp)
 
-    scale = 2/(x[-1]-x[0])
+    scale = 2 / (t[-1] - t[0])
 
     # Trapezoidal weights
-    dx = x[1:] - x[:-1]
-    w = np.zeros(len(x))
-    w[0] = 0.5 * dx[0]
-    w[1:-1] = 0.5 * (dx[1:] + dx[:-1])
-    w[-1] = 0.5 * dx[-1]
+    dt = t[1:] - t[:-1]
+    w = np.zeros(len(t))
+    w[0] = 0.5 * dt[0]
+    w[1:-1] = 0.5 * (dt[1:] + dt[:-1])
+    w[-1] = 0.5 * dt[-1]
     w *= scale
 
     # Mapped abscissa to [-1, 1]
-    x_mapped = scale*(x - x[0]) - 1
-    L = legvander(x_mapped, num_exp-1)
+    t_mapped = scale * (t - t[0]) - 1
+    L = legvander(t_mapped, num_exp - 1)
 
     def residual(a):
         s.coefficients = a
         # The following is the residual condition
-        # \hat{y}_k = (k + 1/2) \sum_{i=1}^n w_i z_i P(x_i)
-        c = np.dot(L.T, w*y) * (0.5 + np.arange(num_exp))
+        # \hat{y}_k = (k + 1 / 2) \sum_{i=1}^n w_i z_i P(t_i)
+        c = np.dot(L.T, w * y) * (0.5 + np.arange(num_exp))
         # Solve the ODE in Legendre space
         # \sum_{k=0}^p a_k D^k \hat{y} = e_1
         sol_hat = s.solve(c, np.eye(poly_order)[0])
         # transform to real space
-        sol = legval(x_mapped, sol_hat)
+        sol = legval(t_mapped, sol_hat)
         return y - sol
 
     def jacobian(a):
         s.coefficients = a
-        J = np.zeros((len(x), num_exp+1))
+        J = np.zeros((len(t), num_exp+1))
 
         dy = s.tangent()
         for k in range(num_exp + 1):
-            J[:, k] = -legval(x_mapped, dy[:, k])
+            J[:, k] = -legval(t_mapped, dy[:, k])
 
         return J
 
@@ -226,7 +316,7 @@ def get_exponential_coeffs(x, y, num_exp, poly_order, initial_guess=None):
     return np.roots(a_opt[::-1])*scale, a_opt
 
 
-def fit(x, y, num_exp, poly_order, initial_guess=None):
+def fit(t, y, num_exp, poly_order, initial_guess=None):
     r"""Fit a sum of exponential functions to data
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
@@ -235,10 +325,10 @@ def fit(x, y, num_exp, poly_order, initial_guess=None):
 
     Parameters
     ----------
-    x : numpy.ndarray
-        Abscissa (x-axis) data
+    t : numpy.ndarray
+        Independent variable values
     y : numpy.ndarray
-        Function values corresponding to `x`.
+        Function values corresponding to `t`.
     num_exp : int
         Number of exponential functions (`p` in the equation above) in the
         sum
@@ -267,9 +357,9 @@ def fit(x, y, num_exp, poly_order, initial_guess=None):
         `num_exp` + 1 entries. If None, use ``numpy.ones(num_exp + 1)``.
         Defaults to None.
     """
-    exp_coeff, ode_coeff = get_exponential_coeffs(x, y, num_exp, poly_order,
+    exp_coeff, ode_coeff = get_exponential_coeffs(t, y, num_exp, poly_order,
                                                   initial_guess)
-    V = np.exp(np.outer(x, np.hstack((0, exp_coeff))))
+    V = np.exp(np.outer(t, np.hstack((0, exp_coeff))))
     lsq = np.linalg.lstsq(V, y)
     offset = lsq[0][0]
     mant_coeff = lsq[0][1:]
@@ -277,18 +367,18 @@ def fit(x, y, num_exp, poly_order, initial_guess=None):
     return offset, mant_coeff, exp_coeff, ode_coeff
 
 
-def exp_sum(x, a=1., **params):
+def exp_sum(t, a=1., **params):
     """Sum of exponentials
 
-    Return ``a + b0*exp(l0*x) + b1*exp(l1*x) + …``
+    Return ``a + b0*exp(l0*t) + b1*exp(l1*t) + …``
 
     Parameters
     ----------
-    x : numpy.ndarray
+    t : numpy.ndarray
         Independent variable
     a : float
         Additive parameter
-    params : floats
+    **params : floats
         To get the sum of `n+1` exponentials, one needs to supply floats
         `b0`, `b1`, …, `bn` as mantissa coefficients and `l0`, `ln` as
         coefficients in the exponent.
@@ -300,7 +390,6 @@ def exp_sum(x, a=1., **params):
 
     Examples
     --------
-    >>> x = np.arange(10)
     >>> exp_sum(np.arange(10), a=1, b0=-0.2, l0=-0.1, b1=-0.8, l1=-0.01)
     array([ 0.        ,  0.02699265,  0.05209491,  0.07547993,  0.09730444,
             0.11771033,  0.13682605,  0.15476788,  0.17164113,  0.18754112])
@@ -308,5 +397,5 @@ def exp_sum(x, a=1., **params):
     num_exp = len(params) // 2
     res = a
     for i in range(num_exp):
-        res += params["b{}".format(i)] * np.exp(params["l{}".format(i)] * x)
+        res += params["b{}".format(i)] * np.exp(params["l{}".format(i)] * t)
     return res

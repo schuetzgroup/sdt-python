@@ -158,7 +158,7 @@ def _fit_cdf_model_lsq(x, y, num_exp, weighted=True, initial_b=None,
     else:
         w = None
     p = m.make_params()
-    f = m.fit(y, params=p, weights=w, x=x)
+    f = m.fit(y, params=p, weights=w, t=x)
 
     # return in the correct format
     fd = f.best_values
