@@ -124,6 +124,9 @@ class Corrector(object):
             if it is a single DataFrame). Can also be `None`, but in this case
             :py:meth:`find_pairs` and :py:meth:`determine_parameters` will
             not work. Defaults to `None`.
+
+        Other parameters
+        ----------------
         columns : dict, optional
             Override default column names as defined in
             :py:attr:`config.columns`. The only relevant name is `pos`.
@@ -227,6 +230,9 @@ class Corrector(object):
             What value to use for `mode="constant"`. If this is callable, it
             should take a single argument (the uncorrected image) and return a
             scalar, which will be used as the fill value. Defaults to 0.0.
+
+        Other parameters
+        ----------------
         columns : dict, optional
             Override default column names in case `data` is a
             :py:class:`pandas.DataFrame`. The only relevant name is `pos`.
