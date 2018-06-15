@@ -8,9 +8,10 @@ import pandas as pd
 import numpy as np
 from scipy.spatial import cKDTree
 
+from . import config
+
 
 # Default values. If changed, also change doc strings
-_pos_columns = ["x", "y"]
 _channel_names = ["channel1", "channel2"]
 
 
@@ -67,9 +68,10 @@ def find_closest_pairs(coords1, coords2, max_dist):
     return np.array(pairs, dtype=int).reshape((-1, 2))
 
 
+@config.set_columns
 def find_colocalizations(features1, features2, max_dist=2.,
                          keep_non_coloc=False, channel_names=_channel_names,
-                         pos_columns=_pos_columns):
+                         columns={}):
     """Match localizations in one channel to localizations in another
 
     For every localization in `features1` find localizations in
@@ -79,7 +81,7 @@ def find_colocalizations(features1, features2, max_dist=2.,
     Parameters
     ----------
     features1, features2 : pandas.DataFrame
-        Localization data. Requires `pos_columns` and "frame" columns
+        Localization data
     max_dist : float, optional
         Maximum distance between features to still be considered colocalizing.
         Defaults to 2.
@@ -99,12 +101,16 @@ def find_colocalizations(features1, features2, max_dist=2.,
 
     Other parameters
     ----------------
-    pos_colums : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords` and `time`. This means,
+        if your DataFrame has coordinate columns "x" and "z" and the time
+        column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
-    p1_mat = features1[pos_columns + ["frame"]].values
-    p2_mat = features2[pos_columns + ["frame"]].values
+    cols = columns["coords"] + [columns["time"]]
+    p1_mat = features1[cols].values
+    p2_mat = features2[cols].values
 
     pairs1_idx = []
     pairs2_idx = []
@@ -152,8 +158,9 @@ def find_colocalizations(features1, features2, max_dist=2.,
     return pd.concat([pairs1, pairs2], keys=channel_names, axis=1)
 
 
+@config.set_columns
 def merge_channels(features1, features2, max_dist=2., mean_pos=False,
-                   return_data="data", pos_columns=_pos_columns):
+                   return_data="data", columns={}):
     """Merge features of `features1` and `features2`
 
     Concatenate all of `features1` and those entries of `features2` that do
@@ -162,7 +169,7 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
     Parameters
     ----------
     features1, features2 : pandas.DataFrame
-        Localization data. Requires `pos_columns` and "frame" columns
+        Localization data
     max_dist : float, optional
         Maximum distance between features to still be considered colocalizing.
         Defaults to 2.
@@ -192,12 +199,16 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
 
     Other parameters
     ----------------
-    pos_colums : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords` and `time`. This means,
+        if your DataFrame has coordinate columns "x" and "z" and the time
+        column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
-    f1_mat = features1[pos_columns + ["frame"]].values
-    f2_mat = features2[pos_columns + ["frame"]].values
+    cols = columns["coords"] + [columns["time"]]
+    f1_mat = features1[cols].values
+    f2_mat = features2[cols].values
 
     coloc_idx_1 = []
     coloc_idx_2 = []
@@ -238,7 +249,7 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
         p1 = f1_mat[coloc_idx_1, :-1]
         p2 = f2_mat[coloc_idx_2, :-1]
 
-        ret.loc[ret.index[coloc_idx_1], pos_columns] = (p1 + p2) / 2
+        ret.loc[ret.index[coloc_idx_1], columns["coords"]] = (p1 + p2) / 2
 
     if coloc_idx_2.size != f2_mat.shape[0]:
         # Append non-merged features of channel 2 to `ret`
@@ -257,9 +268,10 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
                          "or 'both'.")
 
 
+@config.set_columns
 def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
                      return_data="data", feature_pairs=None, max_dist=2,
-                     channel_names=_channel_names, pos_columns=_pos_columns):
+                     channel_names=_channel_names, columns={}):
     """Find codiffusion in tracking data
 
     First, find pairs of localizations, the look up to which tracks they
@@ -303,27 +315,31 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
     match_numbers : numpy.ndarray, shape=(n, 4)
         Each row's first entry is a particle number in the first channel and
         its second entry is the matching particle number in the second channel.
-        Third and fourth colums are start and end frame, respectively.
+        Third and fourth columns are start and end frame, respectively.
         Returned if `return_data` is "numbers" or "both".
 
     Other parameters
     ----------------
-    pos_colums : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `particle`, and `time`. This means,
+        if your DataFrame has coordinate columns "x" and "z" and the time
+        column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
     if feature_pairs is None:
         feature_pairs = find_colocalizations(
                 tracks1, tracks2, max_dist, channel_names=channel_names,
-                pos_columns=pos_columns)
+                columns=columns)
 
     ch1_pairs = feature_pairs[channel_names[0]]
     ch2_pairs = feature_pairs[channel_names[1]]
     matches = []
-    for pn, data1 in ch1_pairs.groupby("particle"):
+    for pn, data1 in ch1_pairs.groupby(columns["particle"]):
         # get channel 2 pair data corresponding to particle `pn` in channel 1
         # (only "particle" and "frame" columns)
-        data2 = ch2_pairs.loc[data1.index, ["particle", "frame"]].values
+        data2 = ch2_pairs.loc[data1.index, [columns["particle"],
+                                            columns["time"]]].values
         # count how often which channel 2 particle appears
         count = collections.Counter(data2[:, 0])
         # turn into array where each row is (channel2_particle_number, count)
@@ -347,13 +363,15 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
     # construct the DataFrame to be returned
     for new_pn, (pn1, pn2, start, end) in enumerate(matches):
         # get tracks between start frame and end frame
-        t1 = tracks1[tracks1["particle"] == pn1]
-        t1 = t1[(int(start) <= t1["frame"]) & (t1["frame"] <= int(end))]
-        t2 = tracks2[tracks2["particle"] == pn2]
-        t2 = t2[(int(start) <= t2["frame"]) & (t2["frame"] <= int(end))]
+        t1 = tracks1[tracks1[columns["particle"]] == pn1]
+        t1 = t1[(int(start) <= t1[columns["time"]]) &
+                (t1[columns["time"]] <= int(end))]
+        t2 = tracks2[tracks2[columns["particle"]] == pn2]
+        t2 = t2[(int(start) <= t2[columns["time"]]) &
+                (t2[columns["time"]] <= int(end))]
         # use frame as the index (=axis for merging when creating DataFrame)
-        t1 = t1.set_index("frame", drop=False)  # copy so that the original
-        t2 = t2.set_index("frame", drop=False)  # is not overridden here
+        t1 = t1.set_index(columns["time"], drop=False)  # Copy to save
+        t2 = t2.set_index(columns["time"], drop=False)  # the original
 
         p = pd.concat([t1, t2], keys=channel_names, axis=1)
         # assign new particle number
@@ -361,11 +379,11 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         # assign frame number even to localizations that are missing in one
         # channel (instead of a NaN). Thanks to set_index above, axes[0] is
         # the list of frame numbers
-        p.loc[:, (channel_names, "frame")] = \
+        p.loc[:, (channel_names, columns["time"])] = \
             np.broadcast_to(p.axes[0][:, np.newaxis], (len(p), 2))
         # re-assign particle numbers to overwrite NaNs
-        p[channel_names[0], "particle"] = pn1
-        p[channel_names[1], "particle"] = pn2
+        p[channel_names[0], columns["particle"]] = pn1
+        p[channel_names[1], columns["particle"]] = pn2
         data.append(p)
 
     data = pd.concat(data, ignore_index=True)
@@ -379,9 +397,10 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
                          "or 'both'.")
 
 
+@config.set_columns
 def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
                      legend_loc=0, linestyles=["-", "--", ":", "-."],
-                     channel_names=None, pos_columns=_pos_columns):
+                     channel_names=None, columns={}):
     """Plot trajectories of codiffusing particles
 
     Each step is colored differently so that by comparing colors one can
@@ -410,9 +429,6 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
     legend_loc : int or str
         Is passed as the `loc` parameter to matplotlib's axes' `legend` method.
         Defaults to 0.
-    pos_colums : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features in pandas.DataFrames.
     channel_names : list of str or None, optional
         Names of the channels. If None, use the first two entries of teh top
         level of `data`'s MultiIndex if it has one (i. e. if it is a DataFrame
@@ -421,9 +437,12 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
 
     Other parameters
     ----------------
-    pos_colums : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `particle`, and `time`. This means,
+        if your DataFrame has coordinate columns "x" and "z" and the time
+        column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
     import matplotlib as mpl
     import matplotlib.pyplot as plt
@@ -444,18 +463,20 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
             channel_names = _channel_names
 
     if isinstance(data, pd.DataFrame):
-        d_iter = (data.loc[data[c, "particle"] == particle, c]
+        d_iter = (data.loc[data[c, columns["particle"]] == particle, c]
                   for c in channel_names)
     else:
         if not isinstance(particle, collections.Iterable):
             particle = (particle,) * len(data)
-        d_iter = (d[d["particle"] == p] for d, p in zip(data, particle))
+        d_iter = (d[d[columns["particle"]] == p] for d, p in zip(data,
+                                                                 particle))
 
     legend = []
     for d, ls in zip(d_iter, linestyles):
         # the following two lines create a 3D array s. t. the i-th entry is
         # the matrix [[start_x, start_y], [end_x, end_y]]
-        xy = d.sort_values("frame")[pos_columns].values[:, np.newaxis, :]
+        xy = d.sort_values(columns["time"])[columns["coords"]]
+        xy = xy.values[:, np.newaxis, :]
         segments = np.concatenate([xy[:-1], xy[1:]], axis=1)
 
         lc = mpl.collections.LineCollection(

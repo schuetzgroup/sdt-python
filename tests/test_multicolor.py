@@ -131,7 +131,7 @@ class TestFindColocalizations(unittest.TestCase):
     def test_pairs_3d(self):
         """multicolor.find_colocalizations: 3D data"""
         pairs = sdt.multicolor.find_colocalizations(
-            self.pos1, self.pos2, 2, pos_columns=["x", "y", "z"])
+            self.pos1, self.pos2, 2, columns={"coords": ["x", "y", "z"]})
 
         exp = pd.concat([self.pos1.iloc[[1]].reset_index(drop=True),
                          self.pos2.iloc[[0]].reset_index(drop=True)],
