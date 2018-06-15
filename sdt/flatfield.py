@@ -123,11 +123,11 @@ class Corrector(object):
             molecules. If `None`, use the defaults from :py:mod:`config`.
             Defaults to `None`.
         """
-        self.avg_img = np.array()
+        self.avg_img = np.array([])
         """Pixel-wise average image from `data` argument to
         :py:meth:`__init__`.
         """
-        self.corr_img = np.array()
+        self.corr_img = np.array([])
         """Pixel data used for correction of images. Any image to be corrected
         is divided pixel-wise by `corr_img`.
         """
