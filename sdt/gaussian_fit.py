@@ -1,16 +1,73 @@
-# -*- coding: utf-8 -*-
-"""Easy fitting of data with Gaussian functions
+"""Fitting of 1D and 2D Gaussian functions
+=======================================
 
-This module allows for fitting Gaussian functions to 1D or 2D data. It is
-based on the :py:mod:`lmfit` package.
+The :py:mod:`gaussian_fit` module provides models for the `lmfit
+<http://lmfit.github.io/lmfit-py/>`_ package for easy fitting of 1D and 2D
+Gaussian functions to data. For further information on how to use these, please
+refer to the :py:mod:`lmfit` documentation.
+
 
 Examples
 --------
->>> data = np.load("gaussian_2d.npy")
->>> x, y = np.indices(data.shape)  # the corresponding x, y variables
->>> m = Gaussian2DModel()  # create the model
->>> p = m.guess(data, x, y)  # initial guess
->>> res = m.fit(data, params=p, x=x, y=y)  # fit
+
+1D fit example: First create some data to work on.
+
+>>> x = numpy.arange(100)  # Create some data
+>>> y = numpy.exp(-(x - 50)**2 / 8)
+
+Now fit model to the data:
+
+>>> m = sdt.gaussian_fit.Gaussian1DModel()  # Create model
+>>> p = m.guess(y, x)  # Initial guess
+>>> res = m.fit(y, params=p, x=x)  # Do the fitting
+>>> res.best_values  # Show fitted parameters
+{'offset': 4.4294473935549931e-136,
+ 'sigma': 1.9999999999999996,
+ 'center': 50.0,
+ 'amplitude': 1.0}
+>>> res.eval(x=50.3)  # Evaluate fitted Gaussian at x=50.3
+0.98881304461123321
+
+2D fit example: Create data, a little more complicated in 2D.
+
+>>> coords = numpy.indices((50, 100))  # Create data
+>>> x, y = coords
+>>> center = numpy.array([[20, 40]]).T
+>>> centered_flat = coords.reshape((2, -1)) - center
+>>> cov = numpy.linalg.inv(numpy.array([[8, 0], [0, 18]]))
+>>> z = 2 * numpy.exp(-np.sum(centered_flat * (cov @ centered_flat), axis=0))
+>>> z = z.reshape(x.shape)
+
+Do the fitting:
+
+>>> m = sdt.gaussian_fit.Gaussian2DModel()  # Create model
+>>> p = m.guess(z, x, y)  # Initial guess
+>>> res = m.fit(z, params=p, x=x, y=y)  # Do the fitting
+>>> res.best_values  # Show fitted parameters
+{'rotation': 0.0,
+ 'offset': 2.6045547770814313e-55,
+ 'sigmay': 3.0,
+ 'centery': 40.0,
+ 'sigmax': 1.9999999999999996,
+ 'centerx': 20.0,
+ 'amplitude': 2.0}
+>>> res.eval(x=20.5, y=40.5)  # Evaluate fitted Gaussian at x=20.5, y=40.5
+1.9117294272505907
+
+
+Models
+------
+
+.. autoclass:: Gaussian1DModel
+.. autoclass:: Gaussian2DModel
+
+
+Auxiliary functions
+-------------------
+
+.. autofunction:: guess_parameters
+.. autofunction:: gaussian_1d
+.. autofunction:: gaussian_2d
 """
 import numpy as np
 import lmfit
@@ -164,7 +221,7 @@ def gaussian_2d(x, y, amplitude=1., centerx=0., sigmax=1., centery=0.,
 class Gaussian1DModel(lmfit.Model):
     """Model class for fitting a 1D Gaussian
 
-    Derives from :class:`lmfit.Model`
+    Derives from :class:`lmfit.Model`.
 
     Parameters are `amplitude`, `center`, `sigma`, `offset`.
     """
@@ -186,7 +243,7 @@ class Gaussian1DModel(lmfit.Model):
 class Gaussian2DModel(lmfit.Model):
     """Model class for fitting a 2D Gaussian
 
-    Derives from :class:`lmfit.Model`
+    Derives from :class:`lmfit.Model`.
 
     Parameters are `amplitude`, `centerx`, `sigmax`, `centery`, `sigmay`,
     `offset`, `rotation`.
