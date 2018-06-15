@@ -86,19 +86,6 @@ class Corrector(object):
     corrected) need to have their background subtracted for this to work
     properly.** This can be done by telling the `Corrector` object what the
     background is (or of course, before passing the data to the `Corrector`.)
-
-    Attributes
-    ----------
-    avg_img : numpy.ndarray
-        Averaged image pixel data
-    corr_img : numpy.ndarray
-        Image used for correction of images. Any image to be corrected is
-        divided by `corr_img` pixel by pixel.
-    fit_result : lmfit.models.ModelResult or None
-        If a Gaussian fit was done, this holds the result. Otherwise, it is
-        None.
-    bg : scalar or array-like
-        Background to be subtracted from image data.
     """
     @config.use_defaults
     def __init__(self, *data, bg=0., gaussian_fit=True, shape=None,
@@ -136,7 +123,20 @@ class Corrector(object):
             molecules. If `None`, use the defaults from :py:mod:`config`.
             Defaults to `None`.
         """
+        self.avg_img = np.array()
+        """Pixel-wise average image from `data` argument to
+        :py:meth:`__init__`.
+        """
+        self.corr_img = np.array()
+        """Pixel data used for correction of images. Any image to be corrected
+        is divided pixel-wise by `corr_img`.
+        """
+        self.fit_result = None
+        """If a Gaussian fit was done, this holds the result. Otherwise, it is
+        `None`.
+        """
         self.bg = bg
+        """Background to be subtracted from image data."""
 
         if isinstance(data[0], pd.DataFrame):
             # Get the beam shape from single molecule brightness values
