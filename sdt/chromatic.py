@@ -129,9 +129,9 @@ class Corrector(object):
         ----------------
         columns : dict, optional
             Override default column names as defined in
-            :py:attr:`config.columns`. The only relevant name is `pos`.
+            :py:attr:`config.columns`. The only relevant name is `coords`.
             That means, if the DataFrames have coordinate columns "x" and "z",
-            set ``columns={"pos": ["x", "z"]}``.
+            set ``columns={"coords": ["x", "z"]}``.
         channel_names : list of str, optional
             Set the `channel_names` attribute. Defaults to ``["channel1",
             "channel2"]``.
@@ -144,7 +144,7 @@ class Corrector(object):
         """
         self.feat2 = [feat2] if isinstance(feat2, pd.DataFrame) else feat2
         """Same as :py:attr:`feat1`, but for the second channel"""
-        self.pos_columns = columns["pos"]
+        self.pos_columns = columns["coords"]
         """List of names of the columns describing the coordinates of the
         features.
         """
@@ -235,14 +235,14 @@ class Corrector(object):
         ----------------
         columns : dict, optional
             Override default column names in case `data` is a
-            :py:class:`pandas.DataFrame`. The only relevant name is `pos`.
+            :py:class:`pandas.DataFrame`. The only relevant name is `coords`.
             That means, if the DataFrame has coordinate columns "x" and "z",
-            set ``columns={"pos": ["x", "z"]}``.
+            set ``columns={"coords": ["x", "z"]}``.
         """
         if channel not in (1, 2):
             raise ValueError("channel has to be either 1 or 2")
 
-        pos_columns = columns.get("pos", self.pos_columns)
+        pos_columns = columns.get("coords", self.pos_columns)
 
         if isinstance(data, pd.DataFrame):
             if not inplace:
@@ -378,9 +378,9 @@ class Corrector(object):
         ----------------
         columns : dict, optional
             Override default column names as defined in
-            :py:attr:`config.columns`. The only relevant name is `pos`.
+            :py:attr:`config.columns`. The only relevant name is `coords`.
             That means, if the DataFrames have coordinate columns "x" and "z",
-            set ``columns={"pos": ["x", "z"]}``.
+            set ``columns={"coords": ["x", "z"]}``.
         key : tuple of str, optional
             Name of the variables in the saved file (does not apply to "wrp").
             Defaults to ("chromatic_param1", "chromatic_param2").
@@ -648,7 +648,7 @@ class Corrector(object):
         :py:class:`yaml.Loader` subclass's `add_constructor` method.
         """
         m = loader.construct_mapping(node)
-        cols = {} if "pos_columns" not in m else {"pos": m["pos_columns"]}
+        cols = {} if "pos_columns" not in m else {"coords": m["pos_columns"]}
         ret = cls(columns=cols)
         ret.parameters1 = m["parameters1"]
         ret.parameters2 = m["parameters2"]

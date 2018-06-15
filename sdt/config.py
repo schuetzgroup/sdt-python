@@ -10,12 +10,13 @@ rc = dict(
 
 
 columns = dict(
-    pos=["x", "y"],
+    coords=["x", "y"],
     time="frame",
     mass="mass",
     signal="signal",
     bg="bg",
-    bg_dev="bg_dev")
+    bg_dev="bg_dev",
+    particle="particle")
 """Default column names"""
 
 

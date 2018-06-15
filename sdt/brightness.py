@@ -471,10 +471,10 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     ----------------
     columns : dict, optional
         Override default column names as defined in :py:attr:`config.columns`.
-        Relevant names are `pos`, `mass`, `signal`, `bg`, `bg_dev`. This means,
-        if your DataFrame has coordinate columns "x" and "z" and the mass
-        column "alt_mass", set ``columns={"pos": ["x", "z"],
-        "mass": "alt_mass"}``.
+        Relevant names are `coords`, `time`, `mass`, `signal`, `bg`, `bg_dev`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     engine : {"numba", "python"}, optional
         Numba is faster, but only supports 2D data and mean or median
         bg_estimator. If numba cannot be used, automatically fall back to
@@ -487,7 +487,7 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     if isinstance(bg_estimator, str):
         bg_estimator = getattr(np, bg_estimator)
 
-    ndim = len(columns["pos"])
+    ndim = len(columns["coords"])
 
     if engine == "numba":
         if ndim != 2:
@@ -525,12 +525,12 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
         feat_mask, bg_mask = mask
 
     # Convert to numpy array for performance reasons
-    # This is faster than pos_matrix = positions[columns["pos"]].values
+    # This is faster than pos_matrix = positions[columns["coords"]].values
     pos_matrix = []
-    for p in columns["pos"]:
+    for p in columns["coords"]:
         pos_matrix.append(positions[p].values)
     pos_matrix = np.array(pos_matrix).T
-    fno_matrix = positions["frame"].values.astype(int)
+    fno_matrix = positions[columns["time"]].values.astype(int)
     # Pre-allocate result array
     ret = np.empty((len(pos_matrix), 4))
 
