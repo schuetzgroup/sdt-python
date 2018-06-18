@@ -146,7 +146,8 @@ class Corrector(object):
         """Same as :py:attr:`feat1`, but for the second channel"""
         self.pos_columns = columns["coords"]
         """List of names of the columns describing the coordinates of the
-        features.
+        features in :py:attr:`feat1` and :py:attr:`feat2`. This is not used
+        in :py:meth:`__call__`, which has its own `columns` parameter.
         """
         self.channel_names = channel_names
         """List of channel names"""
@@ -198,6 +199,7 @@ class Corrector(object):
         self.find_pairs(tol_rel, tol_abs, score_cutoff, ambiguity_factor)
         self.fit_parameters()
 
+    @config.set_columns
     def __call__(self, data, channel=2, inplace=False, mode="constant",
                  cval=0.0, columns={}):
         """Correct for chromatic aberrations
@@ -242,7 +244,7 @@ class Corrector(object):
         if channel not in (1, 2):
             raise ValueError("channel has to be either 1 or 2")
 
-        pos_columns = columns.get("coords", self.pos_columns)
+        pos_columns = columns["coords"]
 
         if isinstance(data, pd.DataFrame):
             if not inplace:
