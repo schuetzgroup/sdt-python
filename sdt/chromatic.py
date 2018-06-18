@@ -129,9 +129,11 @@ class Corrector(object):
         ----------------
         columns : dict, optional
             Override default column names as defined in
-            :py:attr:`config.columns`. The only relevant name is `coords`.
+            :py:attr:`config.columns`. Relevant name are `coords` and `time`.
             That means, if the DataFrames have coordinate columns "x" and "z",
-            set ``columns={"coords": ["x", "z"]}``.
+            and a time column "alt_frame", set
+            ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This is
+            used to set the :py:attr:`columns` attribute.
         channel_names : list of str, optional
             Set the `channel_names` attribute. Defaults to ``["channel1",
             "channel2"]``.
@@ -144,9 +146,9 @@ class Corrector(object):
         """
         self.feat2 = [feat2] if isinstance(feat2, pd.DataFrame) else feat2
         """Same as :py:attr:`feat1`, but for the second channel"""
-        self.pos_columns = columns["coords"]
-        """List of names of the columns describing the coordinates of the
-        features in :py:attr:`feat1` and :py:attr:`feat2`. This is not used
+        self.columns = columns
+        """dict of column names in :py:attr:`feat1` and :py:attr:`feat2`.
+        Defaults are taken from :py:attr:`config.columns`. This is not used
         in :py:meth:`__call__`, which has its own `columns` parameter.
         """
         self.channel_names = channel_names
@@ -155,11 +157,11 @@ class Corrector(object):
         """:py:class:`pandas.DataFrame` containing the pairs found by
         :py:meth:`determine_parameters`.
         """
-        self.parameters1 = np.eye(len(self.pos_columns) + 1)
+        self.parameters1 = np.eye(len(columns["coords"]) + 1)
         """Array describing the affine transformation of data from
         channel 1 to channel 2.
         """
-        self.parameters2 = np.eye(len(self.pos_columns) + 1)
+        self.parameters2 = np.eye(len(columns["coords"]) + 1)
         """Array describing the affine transformation of data from
         channel 2 to channel 1.
         """
@@ -309,8 +311,8 @@ class Corrector(object):
 
         c1 = self.pairs[self.channel_names[0]]
         c1_corr = self(c1, channel=1)
-        diff1 = (c1_corr[self.pos_columns] -
-                 self.pairs[self.channel_names[1]][self.pos_columns])
+        diff1 = (c1_corr[self.columns["coords"]] -
+                 self.pairs[self.channel_names[1]][self.columns["coords"]])
         diff1 = np.sqrt(np.sum(diff1**2, axis=1))
 
         c2 = self.pairs[self.channel_names[1]]
@@ -320,10 +322,9 @@ class Corrector(object):
         ax[0].set_xlabel("distance")
         ax[0].set_ylabel("# data points")
 
-        ax[1].scatter(c1_corr[self.pos_columns[0]],
-                      c1_corr[self.pos_columns[1]], marker="x", color="blue")
-        ax[1].scatter(c2[self.pos_columns[0]],
-                      c2[self.pos_columns[1]], marker="+", color="red")
+        x_col, y_col = self.columns["coords"]
+        ax[1].scatter(c1_corr[x_col], c1_corr[y_col], marker="x", color="blue")
+        ax[1].scatter(c2[x_col], c2[y_col], marker="+", color="red")
         ax[1].set_aspect(1, adjustable="datalim")
         ax[1].set_title("Overlay")
         ax[1].set_xlabel("x")
@@ -358,8 +359,7 @@ class Corrector(object):
             raise ValueError("Unknown format: {}".format(fmt))
 
     @staticmethod
-    def load(file, fmt="npz", key=("chromatic_param1", "chromatic_param2"),
-             columns={}):
+    def load(file, fmt="npz", key=("chromatic_param1", "chromatic_param2")):
         """Read paramaters from a file and construct a `Corrector`
 
         Parameters
@@ -378,16 +378,11 @@ class Corrector(object):
 
         Other parameters
         ----------------
-        columns : dict, optional
-            Override default column names as defined in
-            :py:attr:`config.columns`. The only relevant name is `coords`.
-            That means, if the DataFrames have coordinate columns "x" and "z",
-            set ``columns={"coords": ["x", "z"]}``.
         key : tuple of str, optional
             Name of the variables in the saved file (does not apply to "wrp").
             Defaults to ("chromatic_param1", "chromatic_param2").
         """
-        corr = Corrector(None, None, columns=columns)
+        corr = Corrector(None, None)
         if fmt == "npz":
             npz = np.load(file)
             corr.parameters1 = npz[key[0]]
@@ -440,11 +435,11 @@ class Corrector(object):
         """
         p = []
         for f1, f2 in zip(self.feat1, self.feat2):
-            if "frame" in f1.columns and "frame" in f2.columns:
+            if all(self.columns["time"] in f.columns for f in (f1, f2)):
                 # If there is a "frame" column, split data according to
                 # frame number since pairs can only be in the same frame
-                data = ((f1[f1["frame"] == i], f2[f2["frame"] == i])
-                        for i in f1["frame"].unique())
+                data = ([f[f[self.columns["time"]] == i] for f in (f1, f2)]
+                        for i in f1[self.columns["time"]].unique())
             else:
                 # If there is no "frame" column, just take everything
                 data = ((f1, f2),)
@@ -480,8 +475,8 @@ class Corrector(object):
         ch1_name = self.channel_names[0]
         ch2_name = self.channel_names[1]
 
-        loc1 = self.pairs[ch1_name][self.pos_columns].values
-        loc2 = self.pairs[ch2_name][self.pos_columns].values
+        loc1 = self.pairs[ch1_name][self.columns["coords"]].values
+        loc2 = self.pairs[ch2_name][self.columns["coords"]].values
         ndim = loc1.shape[1]
 
         self.parameters1 = np.empty((ndim + 1,) * 2)
@@ -509,7 +504,7 @@ class Corrector(object):
             from the j-th feature in `features` to the k-th feature.
         """
         # transpose so that data[1] gives x coordinates, data[2] y coordinates
-        data = features[self.pos_columns].values.T
+        data = features[self.columns["coords"]].values.T
         # for each coordinate (the first ':'), calculate the differences
         # between all entries (thus 'np.newaxis, :' and ':, np.newaxis')
         return data[:, np.newaxis, :] - data[:, :, np.newaxis]
@@ -624,10 +619,11 @@ class Corrector(object):
         indices = indices[:, cutoff_mask]
 
         pair_matrix = np.hstack((
-            feat1.iloc[indices[0]][self.pos_columns],
-            feat2.iloc[indices[1]][self.pos_columns]))
+            feat1.iloc[indices[0]][self.columns["coords"]],
+            feat2.iloc[indices[1]][self.columns["coords"]]))
 
-        mi = pd.MultiIndex.from_product([self.channel_names, self.pos_columns])
+        mi = pd.MultiIndex.from_product([self.channel_names,
+                                         self.columns["coords"]])
         return pd.DataFrame(pair_matrix, columns=mi)
 
     @classmethod
@@ -638,8 +634,7 @@ class Corrector(object):
         :py:class:`yaml.Dumper` subclass's `add_representer` method.
         """
         m = (("parameters1", data.parameters1),
-             ("parameters2", data.parameters2),
-             ("pos_columns", data.pos_columns))
+             ("parameters2", data.parameters2))
         return dumper.represent_mapping(cls.yaml_tag, m)
 
     @classmethod
@@ -650,8 +645,7 @@ class Corrector(object):
         :py:class:`yaml.Loader` subclass's `add_constructor` method.
         """
         m = loader.construct_mapping(node)
-        cols = {} if "pos_columns" not in m else {"coords": m["pos_columns"]}
-        ret = cls(columns=cols)
+        ret = cls()
         ret.parameters1 = m["parameters1"]
         ret.parameters2 = m["parameters2"]
         return ret
