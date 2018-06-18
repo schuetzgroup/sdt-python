@@ -1,4 +1,24 @@
-"""Useful helpers for plotting data"""
+"""Plotting utilities
+==================
+
+The :py:mod:`sdt.plot` module contains the :py:func:`density_scatter` function,
+which is a wrapper around `matplotlib`'s as well as `bokeh`'s ``scatter()``
+function that additionally colors data points according to data point
+density.
+
+
+Examples
+--------
+
+>>> x, y = numpy.random.normal(size=(2, 1000))  # create data
+>>> density_scatter(x, y)
+
+
+Programming reference
+---------------------
+
+.. autofunction:: density_scatter
+"""
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import scipy.stats
