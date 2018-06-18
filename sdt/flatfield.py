@@ -60,7 +60,7 @@ from . import gaussian_fit as gfit
 
 
 class Corrector(object):
-    """Correct for inhomogeneous illumination
+    """Flat field correction
 
     This works by multiplying features' integrated intensities ("mass") by
     a position-dependent correction factor. The factor can be calculated from
@@ -87,9 +87,9 @@ class Corrector(object):
     properly.** This can be done by telling the `Corrector` object what the
     background is (or of course, before passing the data to the `Corrector`.)
     """
-    @config.use_defaults
+    @config.set_columns
     def __init__(self, *data, bg=0., gaussian_fit=True, shape=None,
-                 density_weight=False, pos_columns=None, mass_column=None):
+                 density_weight=False, columns={}):
         """Parameters
         ----------
         *data : iterables of image data or pandas.DataFrames
@@ -114,14 +114,13 @@ class Corrector(object):
 
         Other parameters
         ----------------
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
-        mass_column : str, optional
-            Name of the column describing the total brightness (mass) of single
-            molecules. If `None`, use the defaults from :py:mod:`config`.
-            Defaults to `None`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. Only applicable of `data` are single
+            molecule DataFrames. The relevant names are `coords` and `mass`.
+            That means, if the DataFrames have coordinate columns "x" and "z"
+            and a mass column "alt_mass", set
+            ``columns={"coords": ["x", "z"], "mass": "alt_mass"}``.
         """
         self.avg_img = np.array([])
         """Pixel-wise average image from `data` argument to
@@ -138,11 +137,13 @@ class Corrector(object):
         self.bg = bg
         """Background to be subtracted from image data."""
 
+        pos_columns = columns["coords"]
+
         if isinstance(data[0], pd.DataFrame):
             # Get the beam shape from single molecule brightness values
             x = np.concatenate([d[pos_columns[0]].values for d in data])
             y = np.concatenate([d[pos_columns[1]].values for d in data])
-            mass = np.concatenate([d[mass_column].values for d in data])
+            mass = np.concatenate([d[columns["mass"]].values for d in data])
             fin = np.isfinite(mass)
             x = x[fin]
             y = y[fin]
@@ -193,9 +194,8 @@ class Corrector(object):
                 self.interp = sp_int.RegularGridInterpolator(
                     [np.arange(i) for i in self.corr_img.shape], self.corr_img)
 
-    @config.use_defaults
-    def __call__(self, data, inplace=False, bg=None, pos_columns=None,
-                 mass_column=None, signal_column=None):
+    @config.set_columns
+    def __call__(self, data, inplace=False, bg=None, columns={}):
         """Do brightness correction on `features` intensities
 
         Parameters
@@ -221,29 +221,23 @@ class Corrector(object):
 
         Other parameters
         ----------------
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
-        mass_column : str, optional
-            Name of the column describing the total brightness (mass) of single
-            molecules. If `None`, use the defaults from :py:mod:`config`.
-            Defaults to `None`.
-        signal_column : str, optional
-            Name of the column describing the brightness amplitude (signal) of
-            single molecules. If `None`, use the defaults
-            from :py:mod:`config`. Defaults to `None`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. Only applicable of `data` are single
+            molecule DataFrames. The relevant names are `coords`, `signal`, and
+            `mass`. That means, if the DataFrames have coordinate columns "x"
+            and "z" and a mass column "alt_mass", set
+            ``columns={"coords": ["x", "z"], "mass": "alt_mass"}``.
         """
         if isinstance(data, pd.DataFrame):
-            x = pos_columns[0]
-            y = pos_columns[1]
+            x, y = columns["coords"]
             if not inplace:
                 data = data.copy()
             factors = self.get_factors(data[x], data[y])
-            if mass_column in data.columns:
-                data[mass_column] *= factors
-            if signal_column in data.columns:
-                data[signal_column] *= factors
+            if columns["mass"] in data.columns:
+                data[columns["mass"]] *= factors
+            if columns["signal"] in data.columns:
+                data[columns["signal"]] *= factors
             if not inplace:
                 # copied previously, now return
                 return data
