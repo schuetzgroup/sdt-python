@@ -17,7 +17,11 @@ except ImportError:
 
 
 class SmFretTracker:
-    """Class for tracking of smFRET data"""
+    """Class for tracking of smFRET data
+
+    There is support for dumping and loading to/from YAML using
+    :py:mod:`sdt.io.yaml`.
+    """
     yaml_tag = "!SmFretTracker"
     _yaml_keys = ("chromatic_corr", "link_options", "min_length",
                   "brightness_options", "interpolate", "coloc_dist",
@@ -36,13 +40,13 @@ class SmFretTracker:
     - others -> -1
     """
 
-    @config.use_defaults
+    @config.set_columns
     def __init__(self, excitation_seq, chromatic_corr=None, link_radius=5,
                  link_mem=1, min_length=1, feat_radius=4, bg_frame=2,
                  bg_estimator="mean", neighbor_radius="auto", interpolate=True,
                  coloc_dist=2., acceptor_channel=2, a_mass_interp="linear",
                  invalid_nan=True, link_quiet=True, link_options={},
-                 pos_columns=None):
+                 columns={}):
         """Parameters
         ----------
         excitation_seq : str or list-like of characters
@@ -103,10 +107,16 @@ class SmFretTracker:
             `link_radius` and `link_mem` parameters. Defaults to {}.
         link_quiet : bool, optional
             If `True, call :py:func:`trackpy.quiet`. Defaults to `True`.
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
+
+        Other parameters
+        ----------------
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. Relevant names are `coords`, `time`,
+            `mass`, `signal`, `bg`, `bg_dev`. This means, if your DataFrame has
+            coordinate columns "x" and "z" and the time column "alt_frame", set
+            ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This
+            parameters sets the :py:attr:`columns` attribute.
         """
         self.chromatic_corr = chromatic_corr
         """chromatic.Corrector used to overlay channels"""
@@ -142,7 +152,10 @@ class SmFretTracker:
         """Can be either 1 or 2, depending the acceptor is the first or the
         second channel in :py:attr:`chromatic_corr`.
         """
-        self.pos_columns = pos_columns
+        self.columns = columns
+        """dict of column names in DataFrames. Defaults are taken from
+        :py:attr:`config.columns`.
+        """
 
         if isinstance(neighbor_radius, str):
             # auto radius
@@ -249,7 +262,7 @@ class SmFretTracker:
         # Names of brightness-related columns
         br_cols = ["signal", "mass", "bg", "bg_dev"]
         # Position and frame columns
-        posf_cols = self.pos_columns + ["frame"]
+        posf_cols = self.columns["coords"] + [self.columns["time"]]
 
         # Don't modify originals
         donor_loc = donor_loc.copy()
@@ -269,22 +282,23 @@ class SmFretTracker:
         coloc = multicolor.find_colocalizations(
                 donor_loc_corr, acceptor_loc, max_dist=self.coloc_dist,
                 channel_names=["donor", "acceptor"], keep_non_coloc=True)
-        coloc_pos_f = coloc.loc[:, (slice(None), self.pos_columns + ["frame"])]
-        coloc_pos_f = coloc_pos_f.values.reshape((len(coloc), 2,
-                                                  len(self.pos_columns) + 1))
+        coloc_pos_f = coloc.loc[:, (slice(None), posf_cols)]
+        coloc_pos_f = coloc_pos_f.values.reshape(
+            (len(coloc), 2, len(self.columns["coords"]) + 1))
         # Use the mean of positions as the new position
         merged = np.nanmean([coloc["donor"][posf_cols].values,
                              coloc["acceptor"][posf_cols].values], axis=0)
         merged = pd.DataFrame(merged, columns=posf_cols)
         merged["__trc_idx__"] = coloc.index  # works as long as index is unique
 
-        self.link_options["pos_columns"] = self.pos_columns
+        self.link_options["pos_columns"] = self.columns["coords"]
+        self.link_options["t_column"] = self.columns["time"]
         track_merged = trackpy.link_df(merged, **self.link_options)
 
         if self.interpolate:
             # Interpolate coordinates where no features were localized
             track_merged = spatial.interpolate_coords(track_merged,
-                                                      self.pos_columns)
+                                                      self.columns)
         else:
             # Mark all as not interpolated
             track_merged["interp"] = 0
@@ -292,7 +306,7 @@ class SmFretTracker:
         # Flag localizations that are too close together
         if self.neighbor_radius:
             spatial.has_near_neighbor(track_merged, self.neighbor_radius,
-                                      self.pos_columns)
+                                      self.columns)
 
         # Get non-interpolated colocalized features
         non_interp_mask = track_merged["interp"] == 0
@@ -303,10 +317,9 @@ class SmFretTracker:
 
         # Append interpolated features (which "appear" only in the acceptor
         # channel)
-        cols = self.pos_columns + ["frame"]
         interp_mask = ~non_interp_mask
-        interp = track_merged.loc[interp_mask, cols]
-        interp.columns = pd.MultiIndex.from_product([["acceptor"], cols])
+        interp = track_merged.loc[interp_mask, posf_cols]
+        interp.columns = pd.MultiIndex.from_product([["acceptor"], posf_cols])
         interp["fret", "particle"] = \
             track_merged.loc[interp_mask, "particle"].values
         ret = ret.append(interp)
@@ -332,9 +345,11 @@ class SmFretTracker:
         ret_d = self.chromatic_corr(ret["donor"],
                                     channel=self.acceptor_channel)
         ret_a = ret["acceptor"].copy()
-        brightness.from_raw_image(ret_d, donor_img, **self.brightness_options)
+        brightness.from_raw_image(ret_d, donor_img, **self.brightness_options,
+                                  columns=self.columns)
         brightness.from_raw_image(ret_a, acceptor_img,
-                                  **self.brightness_options)
+                                  **self.brightness_options,
+                                  columns=self.columns)
 
         # If desired, get brightness upon donor excitation from image overlay
         if d_mass:
@@ -343,19 +358,21 @@ class SmFretTracker:
             overlay = []
             for di, da in zip(donor_img, acceptor_img):
                 o = di + self.chromatic_corr(da, cval=np.mean,
-                                             channel=self.acceptor_channel)
+                                             channel=self.acceptor_channel,
+                                             columns=self.columns)
                 overlay.append(o)
-            df = ret_d[self.pos_columns + ["frame"]].copy()
+            df = ret_d[posf_cols].copy()
             brightness.from_raw_image(df, overlay, **self.brightness_options)
-            ret["fret", "d_mass"] = df["mass"]
+            ret["fret", "d_mass"] = df[self.columns["mass"]]
 
         ret_d.columns = pd.MultiIndex.from_product((["donor"], ret_d.columns))
         ret_a.columns = pd.MultiIndex.from_product((["acceptor"],
                                                     ret_a.columns))
         ret.drop(["donor", "acceptor"], axis=1, inplace=True)
         ret = pd.concat([ret_d, ret_a, ret], axis=1)
-        ret.sort_values([("fret", "particle"), ("donor", "frame")],
-                        inplace=True)
+        ret.sort_values(
+            [("fret", "particle"), ("donor", self.columns["time"])],
+            inplace=True)
 
         # Filter short tracks (only count non-interpolated localizations)
         u, c = np.unique(
@@ -413,8 +430,9 @@ class SmFretTracker:
             ``("donor", "mass")`` and ``("acceptor", "mass")`` values. Useful
             if :py:meth:`track` was called with ``d_mass=True``.
         """
-        tracks.sort_values([("fret", "particle"), ("donor", "frame")],
-                           inplace=True)
+        tracks.sort_values(
+            [("fret", "particle"), ("donor", self.columns["time"])],
+            inplace=True)
 
         # Excitation type, needed below
         self.flag_excitation_type(tracks)
@@ -423,7 +441,9 @@ class SmFretTracker:
 
         # Calculate brightness upon acceptor excitation. This requires
         # interpolation
-        cols = [("donor", "mass"), ("acceptor", "mass"), ("donor", "frame"),
+        cols = [("donor", self.columns["mass"]),
+                ("acceptor", self.columns["mass"]),
+                ("donor", self.columns["time"]),
                 ("fret", "exc_type")]
         if ("fret", "has_neighbor") in tracks.columns:
             cols.append(("fret", "has_neighbor"))
@@ -466,14 +486,15 @@ class SmFretTracker:
         if keep_d_mass and ("fret", "d_mass") in tracks.columns:
             d_mass = tracks["fret", "d_mass"].copy()
         else:
-            d_mass = tracks["donor", "mass"] + tracks["acceptor", "mass"]
+            d_mass = (tracks["donor", self.columns["mass"]] +
+                      tracks["acceptor", self.columns["mass"]])
         # Total mass upon acceptor excitation
         a_mass = np.concatenate(a_mass)
 
         with np.errstate(divide="ignore", invalid="ignore"):
             # ignore divide by zero and 0 / 0
             # FRET efficiency
-            eff = tracks["acceptor", "mass"] / d_mass
+            eff = tracks["acceptor", self.columns["mass"]] / d_mass
             # FRET stoichiometry
             stoi = d_mass / (d_mass + a_mass)
 
@@ -504,7 +525,7 @@ class SmFretTracker:
             method appends the resulting column.
         """
         exc_type = np.full(len(tracks), -1)
-        frames = tracks["acceptor", "frame"]
+        frames = tracks["acceptor", self.columns["time"]]
         for t in self.exc_type_nums:
             mask = (frames % len(self.excitation_seq)).isin(
                 self.excitation_frames[t])
