@@ -93,7 +93,7 @@ class GeometricPrior:
         return self.p * (1 - self.p)**(t - 1)
 
 
-GeomtricPriorNumba = numba.jitclass(
+GeometricPriorNumba = numba.jitclass(
     [("_data", numba.float64[:, :]), ("p", numba.float64)])(GeometricPrior)
 
 
@@ -514,7 +514,7 @@ class BayesOffline:
     package.
     """
     prior_map = dict(const=(ConstPrior, ConstPriorNumba),
-                     geometric=(GeometricPrior, GeomtricPriorNumba),
+                     geometric=(GeometricPrior, GeometricPriorNumba),
                      neg_binomial=(NegBinomialPrior, None))
 
     likelihood_map = dict(gauss=(GaussianObsLikelihood,
