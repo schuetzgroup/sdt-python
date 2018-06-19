@@ -7,7 +7,9 @@ from ..helper import numba
 
 
 class CostL1:
-    """L1 norm cost
+    r"""L1 norm cost
+
+    The cost is :math:`\sum_i |y_i - \operatorname{median}(y)|`.
 
     Attributes
     ----------
@@ -58,7 +60,10 @@ CostL1Numba = numba.jitclass(
 
 
 class CostL2:
-    """L2 norm cost
+    r"""L2 norm cost
+
+    The cost is :math:`\operatorname{var}(y) Δt`, where :math:`Δt` is the
+    duration of the segment.
 
     Attributes
     ----------
@@ -210,7 +215,7 @@ segmentation_numba = numba.jit(nopython=True, nogil=True)(segmentation)
 class Pelt:
     """PELT changepoint detection
 
-    Implementation of the PELT algorithm [1]_. It is compatible with the
+    Implementation of the PELT algorithm [Kill2012]_. It is compatible with the
     implementation from `ruptures <https://github.com/deepcharles/ruptures>`_.
 
     Examples
@@ -220,12 +225,6 @@ class Pelt:
     >>> data = np.concatenate([np.ones(10), np.zeros(10)])
     >>> det.find_changepoints(data, 1)
     array([10])
-
-    References
-    ----------
-    .. [1] Killick et al.: "Optimal Detection of Changepoints With a Linear
-        Computational Cost", Journal of the American Statistical Association,
-        Informa UK Limited, 2012, 107, 1590–1598
     """
     cost_map = dict(l1=(CostL1, CostL1Numba), l2=(CostL2, CostL2Numba))
 

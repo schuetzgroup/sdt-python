@@ -211,8 +211,10 @@ def segmentation_numba(data, hazard, obs_likelihood):
 class BayesOnline:
     """Bayesian online changepoint detector
 
-    This is an implementation of *Adams and McKay: "Bayesian Online Changepoint
-    Detection",* `arXiv:0710.3742 <https://arxiv.org/abs/0710.3742>`_.
+    This is an implementation of [Adam2007]_ based on the one from the
+    `bayesian_changepoint_detection
+    <https://github.com/hildensia/bayesian_changepoint_detection>`_ python
+    package.
 
     Since this is an online detector, it keeps state. One can call
     :py:meth:`update` for each datapoint and then extract the changepoint
@@ -318,7 +320,7 @@ class BayesOnline:
             sets the probability for a changepoint at index 0 to 100%
             (meaning that there is a changepoint before the start of the
             sequence), the returned probability array has the 0-th entry set
-            to h0.
+            to 0.
         """
         self.reset()
 

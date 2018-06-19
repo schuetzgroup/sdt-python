@@ -432,12 +432,12 @@ def segmentation(prior, obs_likelihood, truncate, logsumexp_wrapper):
 
     Returns
     -------
-    Q : numpy.ndarray
+    q : numpy.ndarray
         ``Q[t]`` is the log-likelihood of data ``[t, n]``..
-    P : numpy.ndarray
+    p : numpy.ndarray
         ``P[t, s]`` is the log-likelihood of a datasequence ``[t, s]``,
         given there is no changepoint between ``t`` and ``s``.
-    Pcp : numpy.ndarray
+    pcp : numpy.ndarray
         ``Pcp[i, t]`` is the log-likelihood that the ``i``-th changepoint
         is at time step ``t``. To actually get the probility of a
         changepoint at time step ``t``, sum the probabilities (which is
@@ -508,9 +508,10 @@ segmentation_numba = numba.jit(nopython=True, nogil=True)(segmentation)
 class BayesOffline:
     """Bayesian offline changepoint detector
 
-    This is an implementation of *Fearnhead, Paul: "Exact and efficient
-    Bayesian inference for multiple changepoint problems", Statistics and
-    computing 16.2 (2006), pp. 203--213*.
+    This is an implementation of [Fear2006]_ based on the one from the
+    `bayesian_changepoint_detection
+    <https://github.com/hildensia/bayesian_changepoint_detection>`_ python
+    package.
     """
     prior_map = dict(const=(ConstPrior, ConstPriorNumba),
                      geometric=(GeometricPrior, GeomtricPriorNumba),
@@ -551,6 +552,8 @@ class BayesOffline:
             If "gauss", use :py:class:`GaussianObsLikelihood`.
             If "ifm", use :py:class:`IfmObsLikelihood`. If "full_cov", use
             :py:class:`FullCovObsLikelihood`. Defaults to "gauss".
+
+            For multivariate data, "ifm" or "full_cov" is recommended.
         prior_params : dict, optional
             Parameters to `prior`'s ``__init__`` if it needs to be
             constructed. Defaults to {}.
@@ -597,11 +600,6 @@ class BayesOffline:
         ----------
         data : array-like
             Data array
-        truncate : float, optional
-            Speed up calculations by truncating a sum if the summands provide
-            negligible contributions. This parameter is the exponent of the
-            threshold. A sensible value would be e.g. -20. Defaults to -inf,
-            i.e. no truncation.
         prob_threshold : float or None, optional
             If this is a float, local maxima in the changepoint probabilities
             are considered changepoints, if they are above the threshold. In
@@ -618,19 +616,26 @@ class BayesOffline:
             Probabilities for a changepoint as a function of time (if
             ``prob_threshold=None``) or the enumeration of changepoints (if
             `prob_threshold` is not `None`).
-        Q : numpy.ndarray
+        q : numpy.ndarray
             ``Q[t]`` is the log-likelihood of data ``[t, n]``. Only returned
             if ``full_output=True`` and ``prob_threshold=None``.
-        P : numpy.ndarray
+        p : numpy.ndarray
             ``P[t, s]`` is the log-likelihood of a datasequence ``[t, s]``,
             given there is no changepoint between ``t`` and ``s``. Only
             returned if ``full_output=True`` and ``prob_threshold=None``.
-        Pcp : numpy.ndarray
+        pcp : numpy.ndarray
             ``Pcp[i, t]`` is the log-likelihood that the ``i``-th changepoint
             is at time step ``t``. To actually get the probility of a
             changepoint at time step ``t``, sum the probabilities (which is
             `prob`). Only returned if ``full_output=True`` and
             ``prob_threshold=None``.
+
+        Other parameters
+        ----------------
+        truncate : float, optional
+            Speed up calculations by truncating a sum if the summands provide
+            negligible contributions. This parameter is the exponent of the
+            threshold. Set to ``-inf`` to turn off. Defaults to -20.
         """
         if data.ndim == 1:
             data = data.reshape((-1, 1))
