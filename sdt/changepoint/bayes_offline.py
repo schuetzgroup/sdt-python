@@ -592,8 +592,8 @@ class BayesOffline:
         else:
             self.logsumexp = _ScipyLogsumexp()
 
-    def find_changepoints(self, data, truncate=-np.inf, prob_threshold=None,
-                          full_output=False):
+    def find_changepoints(self, data, prob_threshold=None, full_output=False,
+                          truncate=-20):
         """Find changepoints in datasets
 
         Parameters
