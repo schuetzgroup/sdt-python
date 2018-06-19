@@ -64,8 +64,7 @@ import numpy as np
 import pandas as pd
 from scipy.spatial import cKDTree
 
-
-_pos_columns = ["x", "y"]
+from . import config
 
 
 def _has_near_neighbor_impl(data, r):
@@ -93,7 +92,8 @@ def _has_near_neighbor_impl(data, r):
     return hn
 
 
-def has_near_neighbor(data, r, pos_columns=_pos_columns):
+@config.set_columns
+def has_near_neighbor(data, r, columns={}):
     """Check whether localized features have near neighbors
 
     Given a :py:class:`pandas.DataFrame` `data` with localization data, each
@@ -113,15 +113,18 @@ def has_near_neighbor(data, r, pos_columns=_pos_columns):
 
     Other parameters
     ----------------
-    pos_colums : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrame` s. Defaults to ["x", "y"].
+     columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords` and `time`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
     if not len(data):
         data["has_neighbor"] = []
         return
-    if "frame" in data.columns:
-        data_arr = data[pos_columns + ["frame"]].values
+    if columns["time"] in data.columns:
+        data_arr = data[columns["coords"] + [columns["time"]]].values
 
         # Sort so that `diff` works below
         sort_idx = np.argsort(data_arr[:, -1])
@@ -143,13 +146,14 @@ def has_near_neighbor(data, r, pos_columns=_pos_columns):
         # Undo sorting
         has_neighbor = has_neighbor[rev_sort_idx]
     else:
-        has_neighbor = _has_near_neighbor_impl(data[pos_columns], r)
+        has_neighbor = _has_near_neighbor_impl(data[columns["coords"]], r)
 
     # Append column to data frame
     data["has_neighbor"] = has_neighbor
 
 
-def interpolate_coords(tracks, pos_columns=_pos_columns):
+@config.set_columns
+def interpolate_coords(tracks, columns={}):
     """Interpolate coordinates for missing localizations
 
     For each particle in `tracks`, interpolate coordinates for frames
@@ -169,12 +173,16 @@ def interpolate_coords(tracks, pos_columns=_pos_columns):
 
     Other parameters
     ----------------
-    pos_colums : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features in :py:class:`pandas.DataFrames`. Defaults to ["x", "y"].
+     columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `time`, and `particle`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
     tracks = tracks.copy()
-    arr = tracks[pos_columns + ["particle", "frame"]].values
+    arr = tracks[columns["coords"] +
+                 [columns["particle"], columns["time"]]].values
     particles = np.unique(arr[:, -2])
     missing_coords = []
     missing_fno = []
@@ -198,22 +206,22 @@ def interpolate_coords(tracks, pos_columns=_pos_columns):
 
     if not missing_coords:
         tracks["interp"] = 0
-        ret = tracks.sort_values(["particle", "frame"])
+        ret = tracks.sort_values([columns["particle"], columns["time"]])
         return tracks.reset_index(drop=True)
 
     missing_coords = np.concatenate(missing_coords)
     missing_fno = np.concatenate(missing_fno)
     missing_pno = np.concatenate(missing_pno)
-    missing_df = pd.DataFrame(missing_coords, columns=pos_columns)
-    missing_df["particle"] = missing_pno
-    missing_df["frame"] = missing_fno
+    missing_df = pd.DataFrame(missing_coords, columns=columns["coords"])
+    missing_df[columns["particle"]] = missing_pno
+    missing_df[columns["time"]] = missing_fno
     # Don't use bool below. Otherwise, the `values` attribute of the DataFrame
     # will have "object" dtype.
     missing_df["interp"] = 1
     tracks["interp"] = 0
 
     ret = pd.merge(tracks, missing_df, "outer")
-    ret.sort_values(["particle", "frame"], inplace=True)
+    ret.sort_values([columns["particle"], columns["time"]], inplace=True)
     return ret.reset_index(drop=True)
 
 
