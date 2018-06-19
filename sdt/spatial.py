@@ -1,4 +1,65 @@
-"""Functions dealing with the spacial aspect of data"""
+"""Analyze spatial aspects of data
+===============================
+
+The :py:mod:`sdt.spatial` module provides methods for analyzing spatial
+aspects of single molecule data:
+
+- Check whether features have near neighbors using the
+  :py:func:`has_near_neighbor` function
+- In tracking data, interpolate features that have been missed by the
+  localization algorithm with help of :py:func:`interpolate_coords`
+- Calculate the area of a polygon using :py:func:`polygon_area`
+
+
+Examples
+--------
+
+To find out whether single molecule features have other features nearby,
+use the :py:func:`has_near_neighbor` function:
+
+>>> loc = pandas.DataFrame([[10, 10], [10, 11], [20, 20]], columns=["x", "y"])
+>>> loc
+    x   y
+0  10  10
+1  10  11
+2  20  20
+>>> has_near_neighbor(loc, r=2.)
+>>> loc
+    x   y  has_neighbor
+0  10  10             1
+1  10  11             1
+2  20  20             0
+
+Missing localizations in single molecule tracking data can be interpolated
+by :py:func:`interpolate_coords`:
+
+>>> trc = pandas.DataFrame([[10, 10, 0, 0], [10, 10, 2, 0]],
+...                        columns=["x", "y", "frame", "particle"])
+>>> trc
+    x   y  frame  particle
+0  10  10      0         0
+1  10  10      2         0
+>>> trc_i = interpolate_coords(trc)
+>>> trc_i
+    x   y  frame  particle  interp
+0  10  10      0         0       0
+1  10  10      1         0       1
+2  10  10      2         0       0
+
+:py:func:`polygon_area` can be used to calculate the area of a polygon:
+
+>>> vertices = [[0, 0], [10, 0], [10, 10], [0, 10]]
+>>> polygon_area(vertices)
+100.0
+
+
+Programming reference
+---------------------
+
+.. autofunction:: has_near_neighbor
+.. autofunction:: interpolate_coords
+.. autofunction:: polygon_area
+"""
 import numpy as np
 import pandas as pd
 from scipy.spatial import cKDTree
