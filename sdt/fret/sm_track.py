@@ -17,66 +17,7 @@ except ImportError:
 
 
 class SmFretTracker:
-    """Class for tracking of smFRET data
-
-    Attributes
-    ----------
-    excitation_seq : numpy.ndarray, dtype("<U1")
-        Excitation sequence. "d" stands for donor, "a" for acceptor, anything
-        else describes other kinds of frames which are to be ignored.
-
-        One needs only specify the shortest sequence that is repeated,
-        i. e. "ddddaddddadddda" is the same as "dddda".
-    excitation_frames : dict
-        Maps the excitation types in :py:attr:`excitation_seq` to the frame
-        corresponding frame numbers (modulo the length of
-        :py:attr:`excitation_seq`).
-    chromatic_corr : chromatic.Corrector
-        Corrector used to overlay channels
-    link_options : dict
-        Options passed to :py:func:`trackpy.link_df`
-    min_length : int
-        Minimum length of tracks
-    brightness_options : dict
-        Options passed to :py:func:`brightness.from_raw_image`. Make sure to
-        adjust :py:attr:`neighbor_radius` if you change either the `mask` or
-        the `radius` option!
-    interpolate : bool
-        Whether to interpolate coordinates of features that have been missed by
-        the localization algorithm.
-    coloc_dist : float
-        After overlaying donor and acceptor channel features, this gives the
-        maximum distance up to which donor and acceptor signal are considered
-        to come from the same molecule.
-    acceptor_channel : {1, 2}
-        Whether the acceptor channel is number 1 or 2 in `chromatic_corr`.
-    neighbor_radius : float
-        How far two features may be apart while still being considered close
-        enough so that one influences the brightness measurement of the other.
-        This is related to the `radius` option of
-        :py:func:`brightness.from_raw_image`.
-    a_mass_interp : {"linear", "nearest"}
-        How to interpolate the acceptor mass upon direct excitation in
-        donor excitation frames. This is relevant in :py:meth:`analyze`.
-    invalid_nan : bool
-        If True, all "d_mass", "eff", and "stoi" values for excitation
-        types other than donor excitation are set to NaN, since the values
-        don't make sense. This is relevant in :py:meth:`analyze`.
-    excitation_type_nums : dict
-        Map of excitation types to integers as written into the ``(fret,
-        exc_type)`` column of tracking DataFrames by
-        :py:func:`flag_excitation_type` and :py:meth:`SmFretTracker.analyze`.
-
-        Values are
-
-        - "d" -> 0
-        - "a" -> 1
-        - others -> -1
-
-    pos_colums : list of str
-        Names of the columns describing the coordinates of the features in
-        :py:class:`pandas.DataFrames`.
-    """
+    """Class for tracking of smFRET data"""
     yaml_tag = "!SmFretTracker"
     _yaml_keys = ("chromatic_corr", "link_options", "min_length",
                   "brightness_options", "interpolate", "coloc_dist",
@@ -84,6 +25,16 @@ class SmFretTracker:
                   "invalid_nan")
 
     exc_type_nums = defaultdict(lambda: -1, dict(d=0, a=1))
+    """Map of excitation types to integers as written into the ``(fret,
+    exc_type)`` column of tracking DataFrames by
+    :py:func:`flag_excitation_type` and :py:meth:`SmFretTracker.analyze`.
+
+    Values are
+
+    - "d" -> 0
+    - "a" -> 1
+    - others -> -1
+    """
 
     @config.use_defaults
     def __init__(self, excitation_seq, chromatic_corr=None, link_radius=5,
@@ -158,27 +109,50 @@ class SmFretTracker:
             :py:mod:`config`. Defaults to `None`.
         """
         self.chromatic_corr = chromatic_corr
+        """chromatic.Corrector used to overlay channels"""
 
         self.link_options = link_options.copy()
+        """dict of options passed to :py:func:`trackpy.link_df`"""
         self.link_options["search_range"] = link_radius
         self.link_options["memory"] = link_mem
+
         self.min_length = min_length
+        """Minimum length of tracks"""
 
         self.brightness_options = dict(
             radius=feat_radius,
             bg_frame=bg_frame,
             bg_estimator=bg_estimator,
             mask="circle")
+        """dict of options passed to :py:func:`brightness.from_raw_image`.
+        Make sure to adjust :py:attr:`neighbor_radius` if you change either the
+        `mask` or the `radius` option!
+        """
 
         self.interpolate = interpolate
+        """Whether to interpolate coordinates of features that have been missed
+        by the localization algorithm.
+        """
         self.coloc_dist = coloc_dist
+        """After overlaying donor and acceptor channel features, this gives the
+        maximum distance up to which donor and acceptor signal are considered
+        to come from the same molecule.
+        """
         self.acceptor_channel = acceptor_channel
+        """Can be either 1 or 2, depending the acceptor is the first or the
+        second channel in :py:attr:`chromatic_corr`.
+        """
         self.pos_columns = pos_columns
 
         if isinstance(neighbor_radius, str):
             # auto radius
             neighbor_radius = 2 * feat_radius + 1
         self.neighbor_radius = neighbor_radius
+        """How far two features may be apart while still being considered close
+        enough so that one influences the brightness measurement of the other.
+        This is related to the `radius` option of
+        :py:func:`brightness.from_raw_image`.
+        """
 
         if link_quiet and trackpy_available:
             trackpy.quiet()
@@ -186,14 +160,33 @@ class SmFretTracker:
         self.excitation_seq = np.array(list(excitation_seq))
 
         self.a_mass_interp = a_mass_interp
+        """How to interpolate the acceptor mass upon direct excitation in
+        donor excitation frames. This can be either "nearest" or "linear" and
+        is relevant to :py:meth:`analyze`.
+        """
         self.invalid_nan = invalid_nan
+        """If True, all "d_mass", "eff", and "stoi" values for excitation
+        types other than donor excitation are set to NaN, since the values
+        don't make sense. This is relevant to :py:meth:`analyze`.
+        """
 
     @property
     def excitation_seq(self):
+        """numpy.ndarray of dtype("<U1") describing the excitation sequence.
+        Typically, "d" would stand for donor, "a" for
+        acceptor.
+
+        One needs only specify the shortest sequence that is repeated,
+        i. e. "ddddaddddadddda" is the same as "dddda".
+        """
         return self._exc_seq
 
     @property
     def excitation_frames(self):
+        """dict mapping the excitation types in :py:attr:`excitation_seq` to
+        the corresponding frame numbers (modulo the length of
+        py:attr:`excitation_seq`).
+        """
         return self._exc_frames
 
     @excitation_seq.setter
@@ -400,7 +393,7 @@ class SmFretTracker:
 
         .. math:: S = \frac{F_{DD} + F_{DA}}{F_{DD} + F_{DA} + F_{AA}}
 
-        as in [Uphoff2010]_. :math:`F_{DD}` is the donor brightness upon donor
+        as in [Upho2010]_. :math:`F_{DD}` is the donor brightness upon donor
         excitation, :math:`F_{DA}` is the acceptor brightness upon donor
         excitation, and :math:`F_{AA}` is the acceptor brightness upon
         acceptor excitation. The latter is calculated by interpolation for
@@ -408,10 +401,6 @@ class SmFretTracker:
 
         :math:`F_{AA}` is append as a ``("fret", "a_mass")`` column.
         The stoichiometry value is added in the ``("fret", "stoi")`` column.
-
-        .. [Uphoff2010] Uphoff, S. et al.: "Monitoring multiple distances
-            within a single molecule using switchable FRET".
-            Nat Meth, 2010, 7, 831–836
 
         Parameters
         ----------

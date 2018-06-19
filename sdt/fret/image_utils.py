@@ -40,19 +40,6 @@ class FretImageSelector:
            [[6, 6, 6],
             [6, 6, 6],
             [6, 6, 6]]])
-
-    Attributes
-    ----------
-    excitation_seq : numpy.ndarray, dtype("<U1")
-        Excitation sequence. Typically, "d" would stand for donor, "a" for
-        acceptor.
-
-        One needs only specify the shortest sequence that is repeated,
-        i. e. "ddddaddddadddda" is the same as "dddda".
-    excitation_frames : dict
-        Maps the excitation types in :py:attr:`excitation_seq` to the frame
-        corresponding frame numbers (modulo the length of
-        :py:attr:`excitation_seq`).
     """
     def __init__(self, excitation_seq):
         """Parameters
@@ -68,10 +55,21 @@ class FretImageSelector:
 
     @property
     def excitation_seq(self):
+        """numpy.ndarray of dtype("<U1") describing the excitation sequence.
+        Typically, "d" would stand for donor, "a" for
+        acceptor.
+
+        One needs only specify the shortest sequence that is repeated,
+        i. e. "ddddaddddadddda" is the same as "dddda".
+        """
         return self._exc_seq
 
     @property
     def excitation_frames(self):
+        """dict mapping the excitation types in :py:attr:`excitation_seq` to
+        the corresponding frame numbers (modulo the length of
+        py:attr:`excitation_seq`).
+        """
         return self._exc_frames
 
     @excitation_seq.setter
