@@ -515,8 +515,9 @@ class SmFretTracker:
     def flag_excitation_type(self, tracks):
         """Add a column indicating excitation type (donor/acceptor)
 
-        Add  ("fret", "exc_type") column. Entries are 0 for donor and 1 for
-        acceptor excitation. See also :py:attr:`exc_type_nums`.
+        Add  ("fret", "exc_type") column. Entries are 0 for donor, 1 for
+        acceptor excitation, and -1 for everything else. See also
+        :py:attr:`exc_type_nums`.
 
         Parameters
         ----------

@@ -50,15 +50,6 @@ class SmFretFilter:
 
     This provides various filtering methods which act on the :py:attr:`tracks`
     attribute.
-
-    Attributes
-    ----------
-    tracks : pandas.DataFrame
-        Filtered smFRET tracking data
-    tracks_orig : pandas.DataFrame
-        Unfiltered (original) smFRET tracking data
-    cp_detector : changepoint detector class instance
-        Used to perform acceptor bleaching detection
     """
     def __init__(self, tracks, cp_detector=None):
         """Parameters
@@ -74,8 +65,13 @@ class SmFretFilter:
         if cp_detector is None:
             cp_detector = changepoint.Pelt("l2", min_size=1, jump=1)
         self.cp_detector = cp_detector
+        """Changepoint detector class instance used to perform acceptor
+        bleaching detection
+        """
         self.tracks = tracks.copy()
+        """Filtered smFRET tracking data"""
         self.tracks_orig = tracks.copy()
+        """Unfiltered (original) smFRET tracking data"""
 
     def acceptor_bleach_step(self, brightness_thresh, truncate=True, **kwargs):
         """Find tracks where the acceptor bleaches in a single step
