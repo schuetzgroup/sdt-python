@@ -2,7 +2,7 @@ import unittest
 import os
 import tempfile
 import io
-import pathlib
+from pathlib import Path
 import collections
 
 import pandas as pd
@@ -21,127 +21,109 @@ class TestSm(unittest.TestCase):
     def setUp(self):
         self.fname = "pMHC_AF647_200k_000_"
 
+    def _do_load(self, origname, origkey, func, filename, *args):
+        orig = pd.read_hdf(origname, origkey)
+
+        new = func(filename, *args)
+        newp = func(Path(filename), *args)
+
+        np.testing.assert_allclose(new, orig)
+        np.testing.assert_allclose(newp, orig)
+
+
     def test_load_hdf5_features(self):
+        """io.load: HDF5 features"""
         h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "features")
-        new = sdt.io.load(h5name, "features")
+        self._do_load(h5name, "features", sdt.io.load, h5name, "features")
 
-        np.testing.assert_allclose(new, orig)
-
-    def test_load_auto_hdf5_racks(self):
+    def test_load_auto_hdf5_tracks(self):
+        """io.load: HDF5 tracks"""
         h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "tracks")
-        new = sdt.io.load(h5name)
-
-        np.testing.assert_allclose(new, orig)
+        self._do_load(h5name, "tracks", sdt.io.load, h5name)
 
     def test_load_auto_hdf5_features(self):
+        """io.load: HDF5 features, autodetect"""
         h5name = os.path.join(data_path, "orig_pkc.h5")
-        orig = pd.read_hdf(h5name, "features")
-        new = sdt.io.load(h5name)
-
-        np.testing.assert_allclose(new, orig)
+        self._do_load(h5name, "features", sdt.io.load, h5name)
 
     def test_load_pt2d_features(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
-                           "features")
-        new = sdt.io.load_pt2d(
-            os.path.join(data_path, self.fname + "_positions.mat"),
-            "features", False)
-
-        np.testing.assert_allclose(new, orig)
+        """io.load_pt2d: features"""
+        self._do_load(os.path.join(data_path, "orig_pt2d.h5"), "features",
+                      sdt.io.load_pt2d,
+                      os.path.join(data_path, self.fname + "_positions.mat"),
+                      "features", False)
 
     def test_load_pt2d_features_with_protocol(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
-                           "features")
-        new = sdt.io.load_pt2d(
-            os.path.join(data_path, self.fname + "_positions.mat"),
-            "features", True)
+        """io.load_pt2d: features w/ protocol"""
+        self._do_load(os.path.join(data_path, "orig_pt2d.h5"), "features",
+                      sdt.io.load_pt2d,
+                      os.path.join(data_path, self.fname + "_positions.mat"),
+                      "features", True)
 
-        np.testing.assert_allclose(new, orig)
+    def test_load_auto_pt2d_features(self):
+        """io.load: pt2d features, autodetect"""
+        self._do_load(os.path.join(data_path, "orig_pt2d.h5"), "features",
+                      sdt.io.load,
+                      os.path.join(data_path, self.fname + "_positions.mat"))
 
-    def test_load_auto_pt2d_eatures(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
-                           "features")
-        new = sdt.io.load(
-            os.path.join(data_path, self.fname + "_positions.mat"))
-
-        np.testing.assert_allclose(new, orig)
-
-    def test_oad_pt2d_tracks(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
-                           "tracks")
-        new = sdt.io.load_pt2d(
-            os.path.join(data_path, self.fname + "_tracks.mat"),
-            "tracks", False)
-
-        np.testing.assert_allclose(new, orig)
+    def test_load_pt2d_tracks(self):
+        """io.load_pt2d: tracks"""
+        self._do_load(os.path.join(data_path, "orig_pt2d.h5"), "tracks",
+                      sdt.io.load_pt2d,
+                      os.path.join(data_path, self.fname + "_tracks.mat"),
+                      "tracks", False)
 
     def test_load_pt2d_tracks_wth_protocol(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
-                           "tracks")
-        new = sdt.io.load_pt2d(
-            os.path.join(data_path, self.fname + "_tracks.mat"),
-            "tracks", True)
-
-        np.testing.assert_allclose(new, orig)
+        """io.load_pt2d: tracks w/ protocol"""
+        self._do_load(os.path.join(data_path, "orig_pt2d.h5"), "tracks",
+                      sdt.io.load_pt2d,
+                      os.path.join(data_path, self.fname + "_tracks.mat"),
+                      "tracks", True)
 
     def test_load_auto_pt2d_tracks(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pt2d.h5"),
-                           "tracks")
-        new = sdt.io.load(
-            os.path.join(data_path, self.fname + "_tracks.mat"))
-
-        np.testing.assert_allclose(new, orig)
+        """io.load: pt2d tracks, autodetect"""
+        self._do_load(os.path.join(data_path, "orig_pt2d.h5"), "tracks",
+                      sdt.io.load,
+                      os.path.join(data_path, self.fname + "_tracks.mat"))
 
     def test_load_trc(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_trc.h5"),
-                           "tracks")
-        new = sdt.io.load_trc(
-            os.path.join(data_path, self.fname + "_tracks.trc"))
-
-        np.testing.assert_allclose(new, orig)
+        """io.load_trc"""
+        self._do_load(os.path.join(data_path, "orig_trc.h5"), "tracks",
+                      sdt.io.load_trc,
+                      os.path.join(data_path, self.fname + "_tracks.trc"))
 
     def test_load_auto_trc(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_trc.h5"),
-                           "tracks")
-        new = sdt.io.load(
-            os.path.join(data_path, self.fname + "_tracks.trc"))
-
-        np.testing.assert_allclose(new, orig)
+        """io.load: trc, autodetect"""
+        self._do_load(os.path.join(data_path, "orig_trc.h5"), "tracks",
+                      sdt.io.load,
+                      os.path.join(data_path, self.fname + "_tracks.trc"))
 
     def test_load_pkmatrix(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pkc.h5"),
-                           "features")
-        new = sdt.io.load_pkmatrix(
-            os.path.join(data_path, self.fname + ".pkc"))
-
-        np.testing.assert_allclose(new, orig)
+        """io.load_pkmatrix"""
+        self._do_load(os.path.join(data_path, "orig_pkc.h5"), "features",
+                      sdt.io.load_pkmatrix,
+                      os.path.join(data_path, self.fname + ".pkc"))
 
     def test_load_auto_pkmatrix(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pkc.h5"),
-                           "features")
-        new = sdt.io.load(os.path.join(data_path, self.fname + ".pkc"))
-
-        np.testing.assert_allclose(new, orig)
+        """io.load: pkc, autodetect"""
+        self._do_load(os.path.join(data_path, "orig_pkc.h5"), "features",
+                      sdt.io.load,
+                      os.path.join(data_path, self.fname + ".pkc"))
 
     def test_load_pks(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pks.h5"),
-                           "features")
-        new = sdt.io.load_pks(
-            os.path.join(data_path, self.fname + ".pks"))
-
-        np.testing.assert_allclose(new, orig)
+        """io.load_pks"""
+        self._do_load(os.path.join(data_path, "orig_pks.h5"), "features",
+                      sdt.io.load_pks,
+                      os.path.join(data_path, self.fname + ".pks"))
 
     def test_load_auto_pks(self):
-        orig = pd.read_hdf(os.path.join(data_path, "orig_pks.h5"),
-                           "features")
-        new = sdt.io.load(
-            os.path.join(data_path, self.fname + ".pks"))
-
-        np.testing.assert_allclose(new, orig)
+        """io.load: pks, autodetect"""
+        self._do_load(os.path.join(data_path, "orig_pks.h5"), "features",
+                      sdt.io.load,
+                      os.path.join(data_path, self.fname + ".pks"))
 
     def test_load_msdplot_mat(self):
+        """io.load_msdplot"""
         d = 1.1697336431747631
         pa = 54.4j
         qianerr = 0.18123428613208895
@@ -157,105 +139,70 @@ class TestSm(unittest.TestCase):
         np.testing.assert_allclose(stderr, msd["stderr"])
         np.testing.assert_allclose(data, msd["emsd"])
 
-    def test_save_hdf5_features(self):
-        h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "features")
+    def _do_save(self, origname, origkey, func, outfile, *args):
+        orig = pd.read_hdf(origname, origkey)
         with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out.h5")
-            sdt.io.save(tmp_out, orig, "features", "hdf5")
-            read_back = sdt.io.load(tmp_out, "features")
+            tmp_out = os.path.join(td, outfile)
 
+            func(tmp_out, orig, *args)
+            read_back = sdt.io.load(tmp_out, origkey)
             np.testing.assert_allclose(read_back, orig)
+
+            # again with pathlib.Path
+            tmp_out = Path(tmp_out)
+            func(tmp_out, orig, *args)
+            read_back = sdt.io.load(tmp_out, origkey)
+            np.testing.assert_allclose(read_back, orig)
+
+    def test_save_hdf5_features(self):
+        """io.save: HDF5 features"""
+        self._do_save(os.path.join(data_path, "orig_pt2d.h5"), "features",
+                      sdt.io.save, "out.h5", "features", "hdf5")
 
     def test_save_auto_hdf5_features(self):
-        h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "features")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out.h5")
-            sdt.io.save(tmp_out, orig)
-            read_back = sdt.io.load(tmp_out, "features")
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save: HDF5 features, autodetect"""
+        self._do_save(os.path.join(data_path, "orig_pt2d.h5"), "features",
+                      sdt.io.save, "out.h5")
 
     def test_save_hdf5_tracks(self):
-        h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "tracks")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out.h5")
-            sdt.io.save(tmp_out, orig, "tracks", "hdf5")
-            read_back = sdt.io.load(tmp_out, "tracks")
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save: HDF5 tracks"""
+        self._do_save(os.path.join(data_path, "orig_pt2d.h5"), "tracks",
+                      sdt.io.save, "out.h5", "tracks", "hdf5")
 
     def test_save_auto_hdf5_tracks(self):
-        h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "tracks")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out.h5")
-            sdt.io.save(tmp_out, orig)
-            read_back = sdt.io.load(tmp_out, "tracks")
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save: HDF5 tracks, autodetect"""
+        self._do_save(os.path.join(data_path, "orig_pt2d.h5"), "tracks",
+                      sdt.io.save, "out.h5")
 
     def test_save_pt2d_features(self):
-        h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "features")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out_positions.mat")
-            sdt.io.save(tmp_out, orig, "features", "particle_tracker")
-            read_back = sdt.io.load(tmp_out, "features")
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save_pt2d: features"""
+        self._do_save(os.path.join(data_path, "orig_pt2d.h5"), "features",
+                      sdt.io.save_pt2d, "out_positions.mat", "features")
 
     def test_save_auto_pt2d_features(self):
-        h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "features")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out_positions.mat")
-            sdt.io.save(tmp_out, orig)
-            read_back = sdt.io.load(tmp_out, "features")
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save: pt2d features, autodetect"""
+        self._do_save(os.path.join(data_path, "orig_pt2d.h5"), "features",
+                      sdt.io.save, "out_positions.mat")
 
     def test_save_pt2d_tracks(self):
-        h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "tracks")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out_tracks.mat")
-            sdt.io.save(tmp_out, orig, "tracks", "particle_tracker")
-            read_back = sdt.io.load(tmp_out, "tracks")
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save_pt2d: tracks"""
+        self._do_save(os.path.join(data_path, "orig_pt2d.h5"), "tracks",
+                      sdt.io.save_pt2d, "out_tracks.mat", "tracks")
 
     def test_save_auto_pt2d_tracks(self):
-        h5name = os.path.join(data_path, "orig_pt2d.h5")
-        orig = pd.read_hdf(h5name, "tracks")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out_tracks.mat")
-            sdt.io.save(tmp_out, orig)
-            read_back = sdt.io.load(tmp_out, "tracks")
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save: pt2d tracks, autodetect"""
+        self._do_save(os.path.join(data_path, "orig_pt2d.h5"), "tracks",
+                      sdt.io.save, "out_tracks.mat")
 
     def test_save_trc(self):
-        h5name = os.path.join(data_path, "orig_trc.h5")
-        orig = pd.read_hdf(h5name, "tracks")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out.trc")
-            sdt.io.save(tmp_out, orig, fmt="trc")
-            read_back = sdt.io.load(tmp_out)
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save_trc"""
+        self._do_save(os.path.join(data_path, "orig_trc.h5"), "tracks",
+                      sdt.io.save_trc, "out.trc")
 
     def test_save_auto_trc(self):
-        h5name = os.path.join(data_path, "orig_trc.h5")
-        orig = pd.read_hdf(h5name, "tracks")
-        with tempfile.TemporaryDirectory() as td:
-            tmp_out = os.path.join(td, "out.trc")
-            sdt.io.save(tmp_out, orig)
-            read_back = sdt.io.load(tmp_out)
-
-            np.testing.assert_allclose(read_back, orig)
+        """io.save: trc, autodetect"""
+        self._do_save(os.path.join(data_path, "orig_trc.h5"), "tracks",
+                      sdt.io.save, "out.trc")
 
 
 class TestYaml(unittest.TestCase):
@@ -339,7 +286,7 @@ class TestFiles(unittest.TestCase):
         self.files = sorted(self.files)
 
     def _make_files(self, d):
-        top = pathlib.Path(d)
+        top = Path(d)
         for s in self.subdirs:
             (top / s).mkdir()
         for f in self.files:
@@ -370,7 +317,7 @@ class TestFiles(unittest.TestCase):
                 f, _ = sdt.io.get_files(".*", s)
         expected = []
         for g in self.files:
-            sp = pathlib.Path(g).parts
+            sp = Path(g).parts
             if sp[0] == s:
                 expected.append(os.path.join(*sp[1:]))
         self.assertEqual(f, expected)
@@ -390,7 +337,7 @@ class TestFiles(unittest.TestCase):
             f, i = sdt.io.get_files("bla_(\d+)\.(\w+)", os.path.join(d, s))
         expected_f = []
         for g in self.files:
-            sp = pathlib.Path(g).parts
+            sp = Path(g).parts
             if sp[0] == s:
                 expected_f.append(os.path.join(*sp[1:]))
         self.assertEqual(f, expected_f)

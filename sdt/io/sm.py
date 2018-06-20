@@ -11,6 +11,7 @@ python tools. So far it can read data from
 import os
 import collections
 import logging
+from pathlib import Path
 
 import scipy.io as sp_io
 import pandas as pd
@@ -44,7 +45,7 @@ def load(filename, typ="auto", fmt="auto", color="red"):
 
     Arguments
     ---------
-    filename : str
+    filename : str or pathlib.Path
         Name of the file
     typ : str, optional
         If the file is HDF5, load this key (usually either "features" or
@@ -64,22 +65,24 @@ def load(filename, typ="auto", fmt="auto", color="red"):
     pandas.DataFrame
         Loaded data
     """
+    p = Path(filename)
+
     if fmt == "auto":
-        if filename.endswith(os.extsep + "h5"):
+        if p.suffix == ".h5":
             fmt = "hdf5"
-        elif filename.endswith("_positions.mat"):
+        elif str(p).endswith("_positions.mat"):
             fmt = "particle_tracker"
             if typ == "auto":
                 typ = "features"
-        elif filename.endswith("_tracks.mat"):
+        elif str(p).endswith("_tracks.mat"):
             fmt = "particle_tracker"
             if typ == "auto":
                 typ = "tracks"
-        elif filename.endswith(".pkc"):
+        elif p.suffix == ".pkc":
             fmt = "pkc"
-        elif filename.endswith(".pks"):
+        elif p.suffix == ".pks":
             fmt = "pks"
-        elif filename.endswith(".trc"):
+        elif p.suffix == ".trc":
             fmt = "trc"
         else:
             raise ValueError("Could not determine format from file name " +
@@ -91,15 +94,15 @@ def load(filename, typ="auto", fmt="auto", color="red"):
                 return pd.read_hdf(filename, "tracks")
             except Exception:
                 typ = "features"
-        return pd.read_hdf(filename, typ)
+        return pd.read_hdf(p, typ)
     if fmt == "particle_tracker":
-        return load_pt2d(filename, typ=typ)
+        return load_pt2d(p, typ=typ)
     if fmt == "pkc":
-        return load_pkmatrix(filename, (color == "green"))
+        return load_pkmatrix(p, (color == "green"))
     if fmt == "pks":
-        return load_pks(filename)
+        return load_pks(p)
     if fmt == "trc":
-        return load_trc(filename)
+        return load_trc(p)
 
     raise ValueError('Unknown format "{}"'.format(fmt))
 
@@ -128,7 +131,7 @@ def load_pt2d(filename, typ, load_protocol=True):
 
     Parameters
     ----------
-    filename : str
+    filename : str or pathlib.Path
         Name of the file to load
     typ : {"features", "tracks"}
         Specify whether to load feature data (positions.mat) or tracking data
@@ -145,6 +148,8 @@ def load_pt2d(filename, typ, load_protocol=True):
     pandas.DataFrame
         Loaded data.
     """
+    filename = str(filename)
+
     if typ == "features":
         mat_component = "MT"
         filename_component = "positions.mat"
@@ -207,7 +212,7 @@ def load_pkmatrix(filename, green=False):
 
     Parameters
     ----------
-    filename : str
+    filename : str or pathlib.Path
         Name of the file to load
     green : bool
         If True, load `pkmatrix_green`, which is the right half of the image
@@ -255,7 +260,7 @@ def load_pks(filename):
 
     Parameters
     ----------
-    filename : str
+    filename : str or pathlib.Path
         Name of the file to load
 
     Returns
@@ -294,7 +299,7 @@ def load_trc(filename):
 
     Parameters
     ----------
-    filename : str
+    filename : str or pathlib.Path
         Name of the file to load
 
     Returns
@@ -319,7 +324,7 @@ def load_msdplot(filename):
 
     Parameters
     ----------
-    filename : str
+    filename : str or pathlib.Path
         Name of the file to load
 
     Returns:
@@ -345,7 +350,7 @@ def save(filename, data, typ="auto", fmt="auto"):
 
     Parameters
     ----------
-    filename : str
+    filename : str or pathlib.Path
         Name of the file to write to
     data : pandas.DataFrame
         Data to save
@@ -357,16 +362,18 @@ def save(filename, data, typ="auto", fmt="auto"):
         Output format. If "auto", infer the format from `filename`. Otherwise,
         write the given format.
     """
+    p = Path(filename)
+
     if typ not in ("tracks", "features", "auto"):
         raise ValueError("Unknown type: " + typ)
 
     if fmt == "auto":
-        if filename.endswith(".h5"):
+        if p.suffix == ".h5":
             fmt = "hdf5"
-        elif (filename.endswith("_positions.mat") or
-                filename.endswith("_tracks.mat")):
+        elif (str(p).endswith("_positions.mat") or
+                str(p).endswith("_tracks.mat")):
             fmt = "particle_tracker"
-        elif filename.endswith(".trc"):
+        elif p.suffix == ".trc":
             fmt = "trc"
         else:
             raise ValueError("Could not determine format from file name " +
@@ -379,13 +386,13 @@ def save(filename, data, typ="auto", fmt="auto"):
             typ = "features"
 
     if fmt == "hdf5":
-        data.to_hdf(filename, typ)
+        data.to_hdf(p, typ)
         return
     if fmt == "particle_tracker":
-        save_pt2d(filename, data, typ)
+        save_pt2d(p, data, typ)
         return
     if fmt == "trc":
-        save_trc(filename, data)
+        save_trc(p, data)
         return
     else:
         raise ValueError('Unknown format "{}"'.format(fmt))
@@ -396,13 +403,15 @@ def save_pt2d(filename, data, typ="tracks"):
 
     Parameters
     ----------
-    filename : str
+    filename : str or pathlib.Path
         Name of the file to write to
     data : pandas.DataFrame
         Data to save
     typ : {"features", "tracks"}
         Specify whether to save feature data or tracking data.
     """
+    filename = str(filename)
+
     data_cols = []
     num_features = len(data)
     for v in _pt2d_name_trans.values():
