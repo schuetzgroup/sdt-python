@@ -167,7 +167,7 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
     lagt = (idx/fps)[:, np.newaxis]
 
     ret = pd.DataFrame(np.hstack((m_disp, msds, msd, lagt)), columns=cols)
-    ret.index = pd.Index(idx, name="lagt")
+    ret.index = pd.Index(idx)
     return ret
 
 
@@ -217,7 +217,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
 
     ret = pd.DataFrame(disps).T
     ret.columns = traj_grouped.groups.keys()
-    ret.index = pd.Index(np.arange(1, len(ret)+1)/fps, name="lagt")
+    ret.index = pd.Index(np.arange(1, len(ret)+1)/fps)
     return ret
 
 
@@ -331,7 +331,7 @@ def emsd_from_square_displacements(sd_dict):
     # TODO: Quian errors
     ret["lagt"] = idx
     ret = pd.DataFrame(ret)
-    ret.index = pd.Index(idx, name="lagt")
+    ret.index = pd.Index(idx)
     ret.sort_values("lagt", inplace=True)
     return ret
 
@@ -403,6 +403,8 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0):
     else:
         k, d = np.polyfit(emsd["lagt"].iloc[0:max_lagtime] - exposure_time/3,
                           emsd["msd"].iloc[0:max_lagtime], 1)
+
+    print(k, d)
 
     D = k/4
     pa = np.sqrt(complex(d))/2.
