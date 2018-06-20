@@ -42,21 +42,37 @@ class TestWavelet(unittest.TestCase):
         self.orig = self.orig["bg_est"]
 
     def test_estimate_bg(self):
+        """image.wavelet_bg: single image
+
+        Regression test
+        """
         bg_est = filters.wavelet_bg(
             self.bg+self.img, **self.wavelet_options)
         np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
 
     def test_estimate_bg_pipeline(self):
+        """image.wavelet_bg: slicerator
+
+        Regression test
+        """
         img = slicerator.Slicerator([self.bg+self.img])
         bg_est = filters.wavelet_bg(img, **self.wavelet_options)[0]
         np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
 
     def test_remove_bg(self):
+        """image.wavelet: single image
+
+        Regression test
+        """
         img_est = filters.wavelet(
             self.bg+self.img, **self.wavelet_options)
         np.testing.assert_allclose(img_est, self.img+self.bg-self.orig, rtol=1e-6)
 
     def test_remove_bg_pipeline(self):
+        """image.wavelet: slicerator
+
+        Regression test
+        """
         img = slicerator.Slicerator([self.bg+self.img])
         img_est = filters.wavelet(img, **self.wavelet_options)[0]
         np.testing.assert_allclose(img_est, self.img+self.bg-self.orig, rtol=1e-6)
@@ -71,21 +87,37 @@ class TestCG(unittest.TestCase):
         self.orig = np.load(os.path.join(data_path, "cg.npz"))["bp_img"]
 
     def test_remove_bg(self):
+        """image.cg: single image
+
+        Regression test
+        """
         bp_img = filters.cg(
             self.img+self.bg, **self.options)
         np.testing.assert_allclose(bp_img, self.orig)
 
     def test_remove_bg_pipeline(self):
+        """image.cg: slicerator
+
+        Regression test
+        """
         img = slicerator.Slicerator([self.bg+self.img])
         bp_img = filters.cg(img, **self.options)[0]
         np.testing.assert_allclose(bp_img, self.orig)
 
     def test_estimate_bg(self):
+        """image.cg_bg: single image
+
+        Regression test
+        """
         bp_img = filters.cg_bg(
             self.img+self.bg, **self.options)
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
 
     def test_estimate_bg_pipeline(self):
+        """image.cg_bg: slicerator
+
+        Regression test
+        """
         img = slicerator.Slicerator([self.bg+self.img])
         bp_img = filters.cg_bg(img, **self.options)[0]
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)

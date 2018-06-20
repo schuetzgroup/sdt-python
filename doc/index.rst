@@ -81,7 +81,7 @@ Table of contents
   io
   spatial
   roi
-  image_processing
+  image
   flatfield
   sim
   plot

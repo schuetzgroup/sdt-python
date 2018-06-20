@@ -195,15 +195,11 @@ def cg(image, feature_radius, noise_radius=1, nonneg=False):
     The first term in the sum in :math:`K` does Gaussian smoothing, the
     second one is a boxcar filter to get rid of long-range fluctuations.
 
-    The algorithm has been described in [Crocker1996]_.
+    The algorithm has been described in [Croc1996]_.
 
     This is a :py:func:`slicerator.pipeline`, meaning that it can be applied
     to single images or image sequences (as long as they are of type
     :py:class:`slicerator.Slicerator`).
-
-    .. [Crocker1996] Crocker, J. C. & Grier, D. G.: "Methods of digital video
-        microscopy for colloidal studies", Journal of colloid and interface
-        science, Elsevier, 1996, 179, 298-310
 
     Parameters
     ----------
@@ -258,4 +254,10 @@ def cg_bg(image, *args, **kwargs):
     return image - cg(image, *args, **kwargs)
 
 
-gaussian_filter = pipeline(retain_doc=True)(scipy.ndimage.gaussian_filter)
+@pipeline(retain_doc=True)
+def gaussian_filter(*args, **kwargs):
+    """`pipeline`'ed version of :py:func:`scipy.ndimage.gaussian_filter`
+
+    See :py:func:`scipy.ndimage.gaussian_filter` documentation for details.
+    """
+    return scipy.ndimage.gaussian_filter(*args, **kwargs)
