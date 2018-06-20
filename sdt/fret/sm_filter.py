@@ -67,8 +67,8 @@ class SmFretFilter:
         ----------------
         columns : dict, optional
             Override default column names as defined in
-            :py:attr:`config.columns`. Relevant names are `coords`, `time`,
-            `mass`, `signal`, `bg`, `bg_dev`. This means, if your DataFrame has
+            :py:attr:`config.columns`. Relevant names are `coords` and `time`.
+            This means, if your DataFrame has
             coordinate columns "x" and "z" and the time column "alt_frame", set
             ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This
             parameters sets the :py:attr:`columns` attribute.

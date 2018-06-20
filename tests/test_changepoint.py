@@ -99,8 +99,8 @@ class TestBayesOfflinePriors(unittest.TestCase):
             self.assertAlmostEqual(c.prior(4), 0.01)
 
     def test_geometric_prior(self):
-        """changepoint.bayes_offline.GeomtricPrior{,Numba}"""
-        for cls in (offline.GeometricPrior, offline.GeomtricPriorNumba):
+        """changepoint.bayes_offline.GeometricPrior{,Numba}"""
+        for cls in (offline.GeometricPrior, offline.GeometricPriorNumba):
             c = cls(0.1)
             self.assertAlmostEqual(c.prior(4), 0.9**3 * 0.1)
 
