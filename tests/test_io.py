@@ -292,13 +292,22 @@ class TestFiles(unittest.TestCase):
         for f in self.files:
             (top / f).touch()
 
-    def test_chdir(self):
-        """io.chdir"""
+    def test_chdir_str(self):
+        """io.chdir: str arg"""
         cwd = os.getcwd()
         with tempfile.TemporaryDirectory() as d:
             with sdt.io.chdir(d):
                 self.assertEqual(os.getcwd(), d)
             self.assertEqual(os.getcwd(), cwd)
+
+    def test_chdir_path(self):
+        """io.chdir: Path arg"""
+        cwd = Path.cwd()
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            with sdt.io.chdir(d):
+                self.assertEqual(Path.cwd(), d)
+            self.assertEqual(Path.cwd(), cwd)
 
     def test_get_files(self):
         """io.get_files"""
@@ -315,19 +324,23 @@ class TestFiles(unittest.TestCase):
             s = self.subdirs[0]
             with sdt.io.chdir(d):
                 f, _ = sdt.io.get_files(".*", s)
+                f2, _ = sdt.io.get_files(".*", Path(s))
         expected = []
         for g in self.files:
             sp = Path(g).parts
             if sp[0] == s:
                 expected.append(os.path.join(*sp[1:]))
         self.assertEqual(f, expected)
+        self.assertEqual(f2, expected)
 
     def test_get_files_abs_subdir(self):
         """io.get_files: absolute subdir"""
         with tempfile.TemporaryDirectory() as d:
             self._make_files(d)
             f, _ = sdt.io.get_files(".*", d)
+            f2, _ = sdt.io.get_files(".*", Path(d))
         self.assertEqual(f, self.files)
+        self.assertEqual(f2, self.files)
 
     def test_get_files_int_str_groups(self):
         """io.get_files: int and str groups"""
