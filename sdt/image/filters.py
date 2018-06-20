@@ -173,7 +173,7 @@ def wavelet(image, *args, **kwargs):
 
 
 @pipeline(retain_doc=True)
-def cg(image, feature_radius, noise_radius=1, nonneg=False):
+def cg(image, feature_radius, noise_radius=1, nonneg=True):
     r"""Remove background using a bandpass filter according to Crocker & Grier
 
     Convolve with kernel
@@ -212,7 +212,7 @@ def cg(image, feature_radius, noise_radius=1, nonneg=False):
         Noise correlation length in pixels. Defaults to 1.
     nonneg : bool, optional
         If True, clip values of the filtered image to [0, infinity). Defaults
-        to False.
+        to True.
 
     Returns
     -------
