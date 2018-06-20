@@ -1,26 +1,24 @@
-"""Create singleton classes
-
-Based on https://github.com/reyoung/singleton (released under MIT license).
-"""
+"""Create singleton classes"""
 from threading import RLock
 
 
-class Singleton(object):
-    """The Singleton class decorator.
+class Singleton:
+    """Class decorator to create singleton objects
+
+    Based on https://github.com/reyoung/singleton (released under MIT license).
 
     Examples
-    ========
-    >>> from singleton import Singleton
+    --------
     >>> @Singleton
-    ... class IntSingleton(object):
+    ... class Example:
     ...     def __init__(self):
-    ...         pass
-    >>> IntSingleton.instance()
-    <__main__.IntSingleton object at 0x7fe65a904a20>
+    ...         self.x = 1
+    >>> Example.instance
+    <__main__.Example object at 0x7fe65a904a20>
     """
     def __init__(self, cls):
         """Parameters
-        ==========
+        ----------
         cls : class
             Decorator class type
         """
@@ -31,18 +29,16 @@ class Singleton(object):
         """Initialize singleton object if it has not been initialized
 
         Parameters
-        ==========
-        *args
-            class init parameters
-        **kwargs
-            class init parameters
+        ----------
+        *args, **kwargs
+            Passed to the singleton object's ``__init__()``
         """
         if not self.is_initialized:
             self.__instance = self.__cls(*args, **kwargs)
 
     @property
     def is_initialized(self):
-        """True if instance is initialized"""
+        """True if :py:attr:`instance` is initialized"""
         return self.__instance is not None
 
     @property
@@ -70,7 +66,7 @@ class ThreadSafeSingleton(object):
     """Thread-safe version of the :py:class:`Singleton` class decorator"""
     def __init__(self, cls):
         """Parameters
-        ==========
+        ----------
         cls : class
             Decorator class type
         """
@@ -82,11 +78,9 @@ class ThreadSafeSingleton(object):
         """Initialize singleton object if it has not been initialized
 
         Parameters
-        ==========
-        *args
-            class init parameters
-        **kwargs
-            class init parameters
+        ----------
+        *args, **kwargs
+            Passed to the singleton object's ``__init__()``
         """
         with self.__mutex:
             if not self.is_initialized:
@@ -94,7 +88,7 @@ class ThreadSafeSingleton(object):
 
     @property
     def is_initialized(self):
-        """True if instance is initialized"""
+        """True if :py:attr:`instance` is initialized"""
         with self.__mutex:
             return self.__instance is not None
 

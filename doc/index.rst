@@ -86,6 +86,7 @@ Table of contents
   sim
   plot
   changepoint
+  helper
   exp_fit
   gaussian_fit
   CHANGELOG
