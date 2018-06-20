@@ -51,7 +51,8 @@ class SmFretFilter:
     This provides various filtering methods which act on the :py:attr:`tracks`
     attribute.
     """
-    def __init__(self, tracks, cp_detector=None):
+    @config.set_columns
+    def __init__(self, tracks, cp_detector=None, columns={}):
         """Parameters
         ----------
         tracks : pandas.DataFrame
@@ -61,6 +62,16 @@ class SmFretFilter:
         cp_detector : changepoint detector or None, optional
             If `None`, create a :py:class:`changepoint.Pelt` instance with
             ``model="l2"``, ``min_size=1``, and ``jump=1``.
+
+        Other parameters
+        ----------------
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. Relevant names are `coords`, `time`,
+            `mass`, `signal`, `bg`, `bg_dev`. This means, if your DataFrame has
+            coordinate columns "x" and "z" and the time column "alt_frame", set
+            ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This
+            parameters sets the :py:attr:`columns` attribute.
         """
         if cp_detector is None:
             cp_detector = changepoint.Pelt("l2", min_size=1, jump=1)
@@ -72,6 +83,10 @@ class SmFretFilter:
         """Filtered smFRET tracking data"""
         self.tracks_orig = tracks.copy()
         """Unfiltered (original) smFRET tracking data"""
+        self.columns = columns
+        """dict of column names in DataFrames. Defaults are taken from
+        :py:attr:`config.columns`.
+        """
 
     def acceptor_bleach_step(self, brightness_thresh, truncate=True, **kwargs):
         """Find tracks where the acceptor bleaches in a single step
@@ -99,11 +114,11 @@ class SmFretFilter:
 
         >>> filt.acceptor_bleach_step(500, penalty=1e6)
         """
-        trc = self.tracks.sort_values([("fret", "particle"),
-                                       ("donor", "frame")])
+        time_col = ("donor", self.columns["time"])
+        trc = self.tracks.sort_values([("fret", "particle"), time_col])
         trc_split = helper.split_dataframe(
             trc, ("fret", "particle"),
-            [("fret", "a_mass"), ("donor", "frame"), ("fret", "exc_type")],
+            [("fret", "a_mass"), time_col, ("fret", "exc_type")],
             type="array", sort=False)
 
         good = np.zeros(len(trc), dtype=bool)
@@ -259,7 +274,7 @@ class SmFretFilter:
         self.tracks = self.tracks[self.tracks["fret", "particle"].isin(good_p)]
 
     @config.use_defaults
-    def image_mask(self, mask, channel, pos_columns=None):
+    def image_mask(self, mask, channel):
         """Filter using a boolean mask image
 
         Remove all lines where coordinates lie in a region where `mask` is
@@ -292,23 +307,16 @@ class SmFretFilter:
         >>> masks = [("file%i" % i, numpy.ones((10*i, 10*i), dtype=bool))
         ...          for i in range(1, 11)]
         >>> filt.image_mask(masks, "donor")
-
-        Other parameters
-        ----------------
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
         """
         if isinstance(mask, np.ndarray):
             self.tracks = _image_mask_single(self.tracks, mask, channel,
-                                             pos_columns)
+                                             self.columns["coords"])
         else:
             ret = []
             for k, v in mask:
                 try:
                     m = _image_mask_single(self.tracks.loc[k], v, channel,
-                                           pos_columns)
+                                           self.columns["coords"])
                 except KeyError:
                     # No tracking data for the current image
                     continue
