@@ -273,7 +273,6 @@ class SmFretFilter:
         good_p = p[c >= min_count]
         self.tracks = self.tracks[self.tracks["fret", "particle"].isin(good_p)]
 
-    @config.use_defaults
     def image_mask(self, mask, channel):
         """Filter using a boolean mask image
 
