@@ -14,6 +14,12 @@ def chdir(path):
     path : str
         Path of the directory to change to. :py:func:`os.path.expanduser` is
         called on this.
+
+    Examples
+    --------
+    >>> with chdir("subdir"):
+    ...     # here the working directory is "subdir"
+    >>> # here we are back
     """
     old_wd = os.getcwd()
     os.chdir(os.path.expanduser(path))
@@ -45,6 +51,14 @@ def get_files(pattern, subdir=os.curdir):
         Values of the groups defined in the `pattern`. Values are converted
         to int if possible, otherwise try converting to float. If that fails
         as well, use the string.
+
+    Examples
+    --------
+    >>> names, ids = get_files(r"^image_.*_(\d{3}).tif$", "subdir")
+    >>> names
+    ['image_xxx_001.tif', 'image_xxx_002.tif', 'image_yyy_003.tif']
+    >>> ids
+    [(1,), (2,), (3,)]
     """
     r = re.compile(str(pattern))
     flist = []

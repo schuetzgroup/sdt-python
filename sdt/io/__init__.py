@@ -9,6 +9,8 @@
 - There is support for reading single molecule data as produced by the
   :py:mod:`sdt` package and various MATLAB tools using the :py:func:`load`
   function. Most data formats can be written by :py:func:`save`.
+- Further, there are helpers for common filesystem-related tasks, such as the
+  :py:func:`chdir` and :py:func:`get_files`.
 - YAML is a way of data in a both human- and machine-readable way.
   The :py:mod:`sdt.io.yaml` submodule extends PyYAML to give a nice
   representation of :py:class:`numpy.ndarrays`. Further, it provides a
@@ -63,8 +65,23 @@ use :py:func:`pims.open`, which will automatically use
 
 Single molecule data can be saved in various formats using :py:func:`save`:
 
->>> save("output.h5", d1
+>>> save("output.h5", d1)
 >>> save("output.trc", d2)
+
+Temporarily change the working directory using :py:func:`chdir`:
+
+>>> with chdir("subdir"):
+...     # here the working directory is "subdir"
+>>> # here we are back
+
+Recursively search files matching a regular expression in a subdirectory by
+means of :py:func:`get_files`:
+
+>>> names, ids = get_files(r"^image_.*_(\d{3}).tif$", "subdir")
+>>> names
+['image_xxx_001.tif', 'image_xxx_002.tif', 'image_yyy_003.tif']
+>>> ids
+[(1,), (2,), (3,)]
 
 :py:mod:`sdt.io.yaml` extends PyYAML's :py:mod:`yaml` package and can be used
 in place of it:
@@ -108,6 +125,12 @@ Specific functions
 
 .. autofunction:: save_pt2d
 .. autofunction:: save_trc
+
+Filesystem-related
+------------------
+
+.. autofunction:: chdir
+.. autofunction:: get_files
 
 
 YAML
