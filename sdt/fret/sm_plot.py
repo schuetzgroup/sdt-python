@@ -157,9 +157,9 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
     return fig, ax
 
 
-@config.use_defaults
-def draw_track(tracks, track_no, donor_img, acceptor_img, size, columns=8,
-               figure=None, pos_colums=None):
+@config.set_columns
+def draw_track(tracks, track_no, donor_img, acceptor_img, size, n_cols=8,
+               figure=None, columns={}):
     """Draw donor and acceptor images for a track
 
     For each frame in a track, draw the raw image in the proximity of the
@@ -177,7 +177,7 @@ def draw_track(tracks, track_no, donor_img, acceptor_img, size, columns=8,
         Image sequences of the donor and acceptor channels
     size : int
         For each feature, draw a square of ``2 * size + 1`` size pixels.
-    columns : int, optional
+    n_cols : int, optional
         Arrange images in that many columns. Defaults to 8.
     figure : matplotlib.figure.Figure or None, optional
         Use this figure to draw. If `None`, use
@@ -190,29 +190,31 @@ def draw_track(tracks, track_no, donor_img, acceptor_img, size, columns=8,
 
     Other parameters
     ----------------
-    pos_columns : list of str or None
-        Names of the columns describing the coordinates of the features in
-        :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-        :py:mod:`config`. Defaults to `None`.
+    columns : dict, optional
+        Override default column names as defined in
+        :py:attr:`config.columns`. The only relevant name is `coords`.
+        This means, if your DataFrame has coordinate columns "x" and "z", set
+        ``columns={"coords": ["x", "z"]}``.
     """
     if figure is None:
         figure = plt.gcf()
 
     trc = tracks[tracks["fret", "particle"] == track_no]
-    don_px = loc.get_raw_features(trc["donor"], donor_img, size, pos_colums)
+    don_px = loc.get_raw_features(trc["donor"], donor_img, size,
+                                  columns["coords"])
     acc_px = loc.get_raw_features(trc["acceptor"], acceptor_img, size,
-                                  pos_colums)
+                                  columns["coords"])
 
-    rows = int(np.ceil(len(trc)/columns))
-    gs = mpl.gridspec.GridSpec(rows*3, columns+1, wspace=0.1, hspace=0.1)
+    rows = int(np.ceil(len(trc)/n_cols))
+    gs = mpl.gridspec.GridSpec(rows*3, n_cols+1, wspace=0.1, hspace=0.1)
 
     for i, idx in enumerate(trc.index):
         f = int(trc.loc[idx, ("donor", "frame")])
         px_d = don_px[idx]
         px_a = acc_px[idx]
 
-        r = (i // columns) * 3
-        c = (i % columns) + 1
+        r = (i // n_cols) * 3
+        c = (i % n_cols) + 1
 
         fno_ax = figure.add_subplot(gs[r, c])
         fno_ax.text(0.5, 0., str(f), va="bottom", ha="center")
