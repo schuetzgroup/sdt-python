@@ -113,7 +113,7 @@ def has_near_neighbor(data, r, columns={}):
 
     Other parameters
     ----------------
-     columns : dict, optional
+    columns : dict, optional
         Override default column names as defined in :py:attr:`config.columns`.
         Relevant names are `coords` and `time`.
         This means, if your DataFrame has coordinate columns "x" and "z" and
