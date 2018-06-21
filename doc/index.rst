@@ -85,6 +85,7 @@ Table of contents
   sim
   plot
   changepoint
+  nbui
   helper
   exp_fit
   gaussian_fit
