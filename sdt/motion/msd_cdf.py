@@ -5,9 +5,8 @@ import numpy as np
 import pandas as pd
 import lmfit
 
-from .msd import (_pos_columns, all_displacements, all_square_displacements,
-                  fit_msd)
-from .. import exp_fit
+from .msd import all_displacements, all_square_displacements, fit_msd
+from .. import exp_fit, config
 
 
 def _fit_cdf_model_prony(x, y, num_exp, poly_order, initial_guess=None):
@@ -232,14 +231,15 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, method="prony",
         r["fraction"] = [f[i] for f in fractions]
         r = pd.DataFrame(r)
         r.sort_values("lagt", inplace=True)
-        r.reset_index(inplace=True, drop=True)
+        r.index = pd.Index(lagt)
         ret.append(r)
 
     return ret
 
 
+@config.set_columns
 def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
-             method="lsq", poly_order=30, pos_columns=_pos_columns):
+             method="lsq", poly_order=30, columns={}):
     r"""Calculate ensemble mean square displacements from tracking data CDF
 
     Fit the model cumulative density function to the measured CDF of tracking
@@ -280,11 +280,15 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
         For the "prony" method, the sum of exponentials is approximated by a
         polynomial. This parameter gives the degree of the polynomial.
         Defaults to 30.
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `particle`, and `time`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
+
     """
-    disp_dict = all_displacements(data, max_lagtime, pos_columns)
+    disp_dict = all_displacements(data, max_lagtime, columns)
     sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
     return emsd_from_square_displacements_cdf(sd_dict, num_frac,
                                               method, poly_order)

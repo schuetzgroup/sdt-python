@@ -1,8 +1,8 @@
 """Tools for finding immobilizations in tracking data"""
 import numpy as np
 
+from .. import config
 from ..helper import numba
-from .msd import _pos_columns
 
 
 try:
@@ -13,9 +13,10 @@ else:
     numexpr_usable = True
 
 
+@config.set_columns
 def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
                          longest_only=False, rtol=0., atol=0,
-                         engine="numba", pos_columns=_pos_columns):
+                         engine="numba", columns={}):
     """Find immobilizations in particle trajectories
 
     Analyze trajectories and mark parts where all localizations of a particle
@@ -79,16 +80,20 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
         If `engine` is "numba" and the `numba` package is installed, use the
         much faster numba-accelerated alogrithm. Otherwise, fall back to a
         pure python one. Defaults to "numba"
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `time`, and `particle`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
     immob_counter = 0
     mob_counter = -2
     # New column for `tracks` that holds the immobilization number
     immob_column = []
 
-    t_arr = tracks[pos_columns + ["frame", "particle"]].values
+    t_arr = tracks[columns["coords"] +
+                   [columns["time"], columns["particle"]]].values
     particles = np.unique(t_arr[:, -1])
 
     if engine == "numba" and numba.numba_available:
@@ -265,8 +270,9 @@ def _count_immob_numba(coords, max_dist):
     return count
 
 
+@config.set_columns
 def find_immobilizations_int(tracks, max_dist, min_duration, label_mobile=True,
-                             longest_only=False, pos_columns=_pos_columns):
+                             longest_only=False, columns={}):
     """Find immobilizations in particle trajectories
 
     Analyze trajectories and mark parts where all localizations of a particle
@@ -309,11 +315,19 @@ def find_immobilizations_int(tracks, max_dist, min_duration, label_mobile=True,
         Although the `tracks` DataFrame is modified in place, it is also
         returned for convenience.
 
+    See also
+    --------
+    find_immobilizations : Uses a slightly different criterion for finding
+        immobilizations
+
     Other parameters
     ----------------
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `time`, and `particle`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
     max_dist_sq = max_dist**2
     immob_counter = 0
@@ -321,7 +335,8 @@ def find_immobilizations_int(tracks, max_dist, min_duration, label_mobile=True,
     #  new column for `tracks` that holds the immobilization number
     immob_column = []
 
-    t_arr = tracks[pos_columns + ["frame", "particle"]].values
+    t_arr = tracks[columns["coords"] +
+                   [columns["time"], columns["particle"]]].values
     particles = np.unique(t_arr[:, -1])
 
     for p in particles:
@@ -517,7 +532,8 @@ def _label_mob_numba(immob_col, start):
     return start
 
 
-def label_mobile(data, engine="numba"):
+@config.set_columns
+def label_mobile(data, engine="numba", columns={}):
     """Give each mobile section of a track a label (unique number)
 
     When calling :py:func:`find_immobilizations` with ``label_mobile=False``,
@@ -540,8 +556,11 @@ def label_mobile(data, engine="numba"):
         If `engine` is "numba" and the `numba` package is installed, use the
         much faster numba-accelerated alogrithm. Otherwise, fall back to a
         pure python one. Defaults to "numba"
+    columns : dict, optional
+        Override default column names as defined in
+        :py:attr:`config.columns`. The only relevant name is `particle`.
     """
-    d_arr = data[["particle", "immob"]].values
+    d_arr = data[[columns["particle"], "immob"]].values
 
     if engine == "numba" and numba.numba_available:
         label_mob_func = _label_mob_numba

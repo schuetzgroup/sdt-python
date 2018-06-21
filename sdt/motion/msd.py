@@ -4,13 +4,11 @@ import numpy as np
 import collections
 import warnings
 
-
-_pos_columns = ["x", "y"]
-"""Names of the columns describing the x and the y coordinate of the features.
-"""
+from .. import config
 
 
-def _prepare_traj(data):
+@config.set_columns
+def _prepare_traj(data, columns={}):
     """Prepare data for use with :func:`_displacements`
 
     Does sorting according to the frame number and also sets the frame number
@@ -32,15 +30,15 @@ def _prepare_traj(data):
     # do not work on the original data
     data = data.copy()
     # sort here, not in loop
-    data.sort_values("frame", inplace=True)
+    data.sort_values(columns["time"], inplace=True)
     # set the index, needed later for reindexing, but do not do the loop
-    fnos = data["frame"].astype(int)
+    fnos = data[columns["time"]].astype(int)
     data.set_index(fnos, inplace=True)
     return data
 
 
-def _displacements(particle_data, max_lagtime, disp_dict=None,
-                   pos_columns=_pos_columns):
+@config.set_columns
+def _displacements(particle_data, max_lagtime, disp_dict=None, columns={}):
     """Do the actual calculation of displacements
 
     Calculate all possible displacements for each lag time for one particle.
@@ -71,9 +69,11 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
 
     Other parameters
     ----------------
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        The only relevant name is `coords`.
+        This means, if your DataFrame has coordinate columns "x" and "z", set
+        ``columns={"coords": ["x", "z"]}``.
     """
     # fill gaps with NaNs
     idx = particle_data.index
@@ -81,7 +81,7 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
     end_frame = idx[-1]
     frame_list = list(range(start_frame, end_frame + 1))
     pdata = particle_data.reindex(frame_list)
-    pdata = pdata[pos_columns].values
+    pdata = pdata[columns["coords"]].values
 
     # there can be at most len(pdata) - 1 steps
     max_lagtime = round(min(len(pdata)-1, max_lagtime))
@@ -96,17 +96,18 @@ def _displacements(particle_data, max_lagtime, disp_dict=None,
             except KeyError:
                 disp_dict[i] = [disp]
     else:
-        ret = np.empty((max_lagtime, len(pdata)-1, len(pos_columns)))
+        ret = np.empty((max_lagtime, len(pdata)-1, len(columns["coords"])))
         for i in range(1, max_lagtime+1):
             # calculate coordinate differences for each time lag
-            padding = np.full((i-1, len(pos_columns)), np.nan)
+            padding = np.full((i-1, len(columns["coords"])), np.nan)
             # append to output structure
             ret[i-1] = np.vstack((pdata[i:] - pdata[:-i], padding))
 
         return ret
 
 
-def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
+@config.set_columns
+def msd(traj, pixel_size, fps, max_lagtime=100, columns={}):
     r"""Calculate mean displacements from tracking data for one particle
 
     This calculates the mean displacement :math:`\langle x_i\rangle` for each
@@ -133,20 +134,24 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
 
     Other parameters
     ----------------
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords` and `time`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
+    ----------------
     """
     # check if traj is empty
-    cols = (["<{}>".format(p) for p in pos_columns] +
-            ["<{}^2>".format(p) for p in pos_columns] +
+    cols = (["<{}>".format(p) for p in columns["coords"]] +
+            ["<{}^2>".format(p) for p in columns["coords"]] +
             ["msd", "lagt"])
     if not len(traj):
         return pd.DataFrame(columns=cols)
 
     # calculate displacements
-    traj = _prepare_traj(traj)
-    disp = _displacements(traj, max_lagtime, pos_columns=pos_columns)
+    traj = _prepare_traj(traj, columns=columns)
+    disp = _displacements(traj, max_lagtime, columns=columns)
 
     # time lag steps
     idx = np.arange(1, disp.shape[0] + 1)
@@ -167,11 +172,12 @@ def msd(traj, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
     lagt = (idx/fps)[:, np.newaxis]
 
     ret = pd.DataFrame(np.hstack((m_disp, msds, msd, lagt)), columns=cols)
-    ret.index = pd.Index(idx)
+    ret.index = pd.Index(lagt.flatten())
     return ret
 
 
-def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
+@config.set_columns
+def imsd(data, pixel_size, fps, max_lagtime=100, columns={}):
     """Calculate mean square displacements from tracking data for each particle
 
     Parameters
@@ -193,19 +199,22 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
 
     Other parameters
     ----------------
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `particle`, and `time`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
     # check if traj is empty
     if not len(data):
         return pd.DataFrame()
 
-    traj = _prepare_traj(data)
-    traj_grouped = traj.groupby("particle")
+    traj = _prepare_traj(data, columns=columns)
+    traj_grouped = traj.groupby(columns["particle"])
     disps = []
     for pn, pdata in traj_grouped:
-        disp = _displacements(pdata, max_lagtime)
+        disp = _displacements(pdata, max_lagtime, columns=columns)
         sds = np.sum(disp**2 * pixel_size**2, axis=2)
         with warnings.catch_warnings():
             # nanmean raises a RuntimeWarning if all entries are NaNs.
@@ -217,11 +226,13 @@ def imsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
 
     ret = pd.DataFrame(disps).T
     ret.columns = traj_grouped.groups.keys()
-    ret.index = pd.Index(np.arange(1, len(ret)+1)/fps)
+    ret.columns.name = columns["particle"]
+    ret.index = pd.Index(np.arange(1, len(ret)+1)/fps, name="lagt")
     return ret
 
 
-def all_displacements(data, max_lagtime=100, pos_columns=_pos_columns):
+@config.set_columns
+def all_displacements(data, max_lagtime=100, columns={}):
     """Calculate all displacements
 
     For each lag time calculate all possible displacements for each trajectory
@@ -244,9 +255,12 @@ def all_displacements(data, max_lagtime=100, pos_columns=_pos_columns):
 
     Other parameters
     ----------------
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `particle`, and `time`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
     if isinstance(data, pd.DataFrame):
         data = [data]
@@ -258,11 +272,11 @@ def all_displacements(data, max_lagtime=100, pos_columns=_pos_columns):
         if not len(traj):
             continue
 
-        traj = _prepare_traj(traj)
-        traj_grouped = traj.groupby("particle")
+        traj = _prepare_traj(traj, columns=columns)
+        traj_grouped = traj.groupby(columns["particle"])
 
         for pn, pdata in traj_grouped:
-            _displacements(pdata, max_lagtime, pos_columns=pos_columns,
+            _displacements(pdata, max_lagtime, columns=columns,
                            disp_dict=disp_dict)
 
     return disp_dict
@@ -336,7 +350,8 @@ def emsd_from_square_displacements(sd_dict):
     return ret
 
 
-def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
+@config.set_columns
+def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
     """Calculate ensemble mean square displacements from tracking data
 
     This is equivalent to consecutively calling :func:`all_displacements`,
@@ -362,11 +377,14 @@ def emsd(data, pixel_size, fps, max_lagtime=100, pos_columns=_pos_columns):
 
     Other parameters
     ----------------
-    pos_columns : list of str, optional
-        Names of the columns describing the x and the y coordinate of the
-        features.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        Relevant names are `coords`, `particle`, and `time`.
+        This means, if your DataFrame has coordinate columns "x" and "z" and
+        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
+        "time": "alt_frame"}``.
     """
-    disp_dict = all_displacements(data, max_lagtime, pos_columns)
+    disp_dict = all_displacements(data, max_lagtime, columns)
     sd_dict = all_square_displacements(disp_dict, pixel_size, fps)
     return emsd_from_square_displacements(sd_dict)
 
