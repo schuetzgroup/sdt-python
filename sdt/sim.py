@@ -90,6 +90,7 @@ def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5., mass=False,
     numpy.ndarray
         Simulated image.
     """
+    centers = np.asarray(centers)
     amplitudes = np.broadcast_to(amplitudes, len(centers))
 
     sigmas = np.asarray(sigmas)
