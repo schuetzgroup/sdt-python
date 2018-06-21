@@ -54,6 +54,7 @@ def restrict_roi(locate_func, buffer=10):
         -------
         pandas.DataFrame
             Result of the calls to :py:func:`{fname}` restricted to the ROI.
+            Coordinates are given with respect to the bounding box of the ROI.
         """
         if isinstance(roi, PathROI):
             roi = roi.path

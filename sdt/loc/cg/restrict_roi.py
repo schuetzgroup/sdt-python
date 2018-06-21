@@ -53,6 +53,7 @@ def restrict_roi(locate_func, buffer=10):
         -------
         pandas.DataFrame
             Result of the calls to :py:func:`{fname}` restricted to the ROI.
+            Coordinates are given with respect to the bounding box of the ROI.
         """
         if isinstance(data, (tuple, list)):
             # Turn into Slicerator to make the pipelines work

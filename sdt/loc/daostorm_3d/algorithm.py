@@ -40,11 +40,8 @@ def locate(raw_image, radius, threshold, max_iterations, find_filter,
            finder_class, fitter_class, min_distance=None, size_range=None):
     """Locate bright, Gaussian-like features in an image
 
-    Implements the  3D-DAOSTORM algorithm [1]_. Call finder and fitter in a
-    loop to detect all features even if they are close together.
-
-    .. [1] Babcock et al.: "A high-density 3D localization algorithm for
-        stochastic optical reconstruction microscopy", Opt Nanoscopy, 2012, 1
+    Implements the  3D-DAOSTORM algorithm [Babc2012]_. Call finder and fitter
+    in a loop to detect all features even if they are close together.
 
     Parameters
     ----------

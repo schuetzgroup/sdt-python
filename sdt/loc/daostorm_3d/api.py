@@ -37,10 +37,7 @@ def locate(raw_image, radius, model, threshold, z_params=None,
            max_iterations=20):
     """Locate bright, Gaussian-like features in an image
 
-    Use the 3D-DAOSTORM algorithm [1]_.
-
-    .. [1] Babcock et al.: "A high-density 3D localization algorithm for
-        stochastic optical reconstruction microscopy", Opt Nanoscopy, 2012, 1
+    Uses the 3D-DAOSTORM algorithm [Babc2012]_.
 
     Parameters
     ----------

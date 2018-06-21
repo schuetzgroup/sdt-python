@@ -72,7 +72,6 @@ Table of contents
   :maxdepth: 2
 
   loc
-  z_fit
   motion
   brightness
   chromatic

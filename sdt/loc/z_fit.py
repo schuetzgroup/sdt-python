@@ -88,11 +88,6 @@ class Parameters(object):
         w = w_0 \sqrt{1 + \left(\frac{z - c}{d}\right)^2 +
         a_1 \left(\frac{z - c}{d}\right)^3 +
         a_2 \left(\frac{z - c}{d}\right)^4 + \ldots}
-
-    Attributes
-    ----------
-    z_range : tuple of float
-        Minimum and maximum valid z positions. Defaults to (-0.5, 0.5).
     """
     _file_header = "# z fit parameters\n"
 
@@ -115,6 +110,7 @@ class Parameters(object):
         self.x = self.Tuple(1, 0, np.inf, np.array([]))
         self.y = self.Tuple(1, 0, np.inf, np.array([]))
         self.z_range = z_range
+        """Minimum and maximum valid z positions. Defaults to (-0.5, 0.5)."""
 
     @property
     def x(self):
