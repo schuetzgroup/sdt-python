@@ -26,6 +26,9 @@ Additionally, one can fit the z position from astigmatism (if a zylindrical
 lense is inserted into the emission path) with help of the
 :py:mod:`sdt.loc.z_fit` module.
 
+The :py:func:`get_raw_features` function allows for extracting the pixels
+around a localized features from an image sequence
+
 
 Examples
 --------
@@ -116,6 +119,13 @@ fitting elliptical features. Currently, this is true only for
 
 .. autoclass:: Parameters
     :members:
+
+
+Raw pixel extraction
+--------------------
+
+.. py:module:: sdt.loc
+.. autofunction:: get_raw_features
 
 
 References
