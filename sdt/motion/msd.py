@@ -404,8 +404,6 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0):
         k, d = np.polyfit(emsd["lagt"].iloc[0:max_lagtime] - exposure_time/3,
                           emsd["msd"].iloc[0:max_lagtime], 1)
 
-    print(k, d)
-
     D = k/4
     pa = np.sqrt(complex(d))/2.
     pa = pa.real if d > 0 else -pa.imag
