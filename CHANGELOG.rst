@@ -1,4 +1,3 @@
-.. py:module:: sdt
 .. _CHANGELOG:
 
 Change log
@@ -6,6 +5,41 @@ Change log
 
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
+
+
+13.0
+----
+
+- Add changepoint detection algorithms (PELT, offline and online Bayesian
+  changepoint detection)
+- Image masks: Improve :py:class:`CircleMask`, add :py:class:`RectMask`
+- :py:func:`brightness.from_raw_image`: Improved background detection,
+  numba-accelerated implementation
+- Move :py:mod:`beam_shape` -> :py:mod:`flatfield` (API break)
+
+  - Add support for calculating correction image from single molecule data
+
+- Add :py:func:`io.get_files` and :py:func:`io.chdir`
+- Overhaul, improve, and extend the :py:mod:`fret` module for analyzing
+  single molecule FRET data. (API break)
+
+  - :py:class:`SmFretTracker` class for tracking and determination of
+    FRET-related quantities
+  - :py:class:`SmFretFilter` for filtering the data (stepwise bleaching,
+    brightness, …)
+  - Functions for plotting the data
+  - Huge speed-ups, bug fixes, etc.
+
+- Add :py:mod:`config` module for configurable default arguments to functions.
+- Add Jupyter notebook UI for finding 3D-DAOSTORM parameters
+- Allow creation of ROIs using `size` as second arg instead of `bottom_right`
+- Rename `reset_origin` arg to ROI classes ``__call__`` to `rel_origin`,
+  introduce ``unset_origin`` function that undoes the effect of
+  ``rel_origin=True`` (API break).
+- Load ROIs from ImageJ ROI files
+- Dump :py:class:`chromatic.Corrector` to YAML
+- Add support for :py:mod:`pathlib`
+- Many fixes and improvements
 
 
 12.0
@@ -71,8 +105,12 @@ so watch out for those!
 - Allow for not dropping non-colocalized data in
   :py:func:`multicolor.find_colocalizations`.
 
+
+Older versions
+--------------
+
 10.3
-----
+~~~~
 - Add the `plot` module. It contains
 
   - the `density_scatter` function. It produces scatter plots (supporting both
@@ -86,7 +124,7 @@ so watch out for those!
 - Remove unused and incomplete `plots_viewer` and `sm_fret_viewer`
 
 10.2
-----
+~~~~
 - Add classes for elliptical and rectangular path-based ROIs
 - Add an `invert` option to path-based ROIs
 - Implement YAML loaders and dumpers for various structures
@@ -96,7 +134,7 @@ so watch out for those!
 - Bug fixes
 
 10.1
-----
+~~~~
 - loc.daostorm_3d: Introduce `size_range` and `min_distance` parameters
 - loc.daostorm_3d: Allow for applying filters to the raw image data to increase
   the SNR for the feature finding process. Fitting is still done on the
@@ -105,7 +143,7 @@ so watch out for those!
 - Minor bug fixes
 
 10.0
-----
+~~~~
 - motion: Implement new `find_immobilizations` algorithm
 - locator: Use same default directory for all file dialogs
 - Port to qtpy 1.1
@@ -114,7 +152,7 @@ so watch out for those!
 - brightness: Improve `from_raw_image` performance
 
 9.0
----
+~~~
 - Fix infinite loop in `motion.find_immobilizations`
 - Minor fixes in `motion.find_immobilizations`
 - Rename `background` -> `image_filter` since the module may at some point
@@ -123,7 +161,7 @@ so watch out for those!
 - Add many tests (and/or make sure they are run).
 
 8.0
----
+~~~
 - Create `background` module for estimation and subtraction of background in
   fluorescence microscopy images. Unfortunately, there is no sphinx
   documentation yet since `slicerator.pipeline` does not work (yet) with
@@ -140,13 +178,13 @@ so watch out for those!
   ROIs are now a list of dicts instead of a structured array (API break).
 
 7.1
----
+~~~
 - Introduce the `multicolor` module. This is a better version (faster, with
   tests) of the `sm_fret` module, which is now deprecated.
 - Minor fixes and improvements.
 
 7.0
----
+~~~
 - Fix `chromatic.Corrector.__call__` when applied to `Slicerator`.
 - chromatic: Allow for using multiple files and files with multiple frames for
   calculation of the correction parameters in `Corrector` (slight API break:
@@ -161,11 +199,11 @@ so watch out for those!
 - Fix crash in loc.daostorm_3d in images without localizations
 
 6.1
----
+~~~
 - Fix start-up of sdt.gui.locator on Windows
 
 6.0
----
+~~~
 - Add data.Filter class for filtering of single molecule microscopy data
 - Implement the "z" model in daostorm_3d for z position fitting (slight API
   break)
@@ -175,30 +213,30 @@ so watch out for those!
 - sim: Allow for simultion of elliptical Gaussians (API break)
 
 5.5
----
+~~~
 - gui.locator: Add support for load options from file
 - brightness: Save information on how many data points were used
 
 5.4
----
+~~~
 - Improvements for gui.locator
 
 5.3
----
+~~~
 - Command line options for gui.locator
 - Add the `sim` module for Gaussian PSF simulation
 - Bug fixes
 
 5.2
----
+~~~
 - brightness: Add Distribution class
 
 5.1
----
+~~~
 - gui.locator: Fix saving settings on Qt4
 
 5.0
----
+~~~
 - Huge documentation update
 - Remove t_column, mass_column, etc. attributes (API break)
 - Change default method for motion.emsd_cdf to "lsq" (API break)
@@ -206,15 +244,15 @@ so watch out for those!
 - beam_shape: Also correct the "signal" column (API break)
 
 4.2
----
+~~~
 - Add support for writing trc files
 
 4.1
----
+~~~
 - remove python-dateutil dependency
 
 4.0
----
+~~~
 - Support ROIs in loc.* locate/batch functions
 - Save additional metadata as YAML (previously it was JSON) with
   `image_tools.save_as_tiff` (API break)
@@ -223,21 +261,21 @@ so watch out for those!
 - Minor bug fixes
 
 3.0
----
+~~~
 - Use full affine transformation in chromatic. This also leads to a different
   save file format etc. (API break, file format break)
 - fix gui.chromatic accordingly
 
 2.1
----
+~~~
 - Fix race condition in gui.locator preview worker
 
 2.0
----
+~~~
 - Add PathROI in image_tools
 - Smaller improvements to gui.locator
 
 1.0a1
------
+~~~~~
 
 First alpha release
