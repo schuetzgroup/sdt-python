@@ -5,43 +5,43 @@ from sdt import config
 
 class TestUseDefaults(unittest.TestCase):
     def setUp(self):
-        self.pos_columns = config.rc["pos_columns"].copy()
+        self.names = config.rc["channel_names"].copy()
 
     def test_function_decorator(self):
         """config.use_defaults: function decorator"""
         @config.use_defaults
-        def f(pos_columns=None):
-            return pos_columns
+        def f(channel_names=None):
+            return channel_names
 
-        self.assertEqual(f(), self.pos_columns)
-        self.assertEqual(f(None), self.pos_columns)
+        self.assertEqual(f(), self.names)
+        self.assertEqual(f(None), self.names)
         self.assertEqual(f(["z"]), ["z"])
         try:
-            config.rc["pos_columns"] = ["x", "y", "z"]
+            config.rc["channel_names"] = ["x", "y", "z"]
             res = f()
         except:
             raise
         finally:
-            config.rc["pos_columns"] = self.pos_columns.copy()
+            config.rc["channel_names"] = self.names.copy()
         self.assertEqual(res, ["x", "y", "z"])
 
     def test_method_decorator(self):
         """config.use_defaults: method decorator"""
         class A:
             @config.use_defaults
-            def __init__(self, pos_columns=None):
-                self.pos_columns = pos_columns
-        self.assertEqual(A().pos_columns, self.pos_columns)
-        self.assertEqual(A(None).pos_columns, self.pos_columns)
-        self.assertEqual(A(["z"]).pos_columns, ["z"])
+            def __init__(self, channel_names=None):
+                self.names = channel_names
+        self.assertEqual(A().names, self.names)
+        self.assertEqual(A(None).names, self.names)
+        self.assertEqual(A(["z"]).names, ["z"])
         try:
-            config.rc["pos_columns"] = ["x", "y", "z"]
+            config.rc["channel_names"] = ["x", "y", "z"]
             res = A()
         except:
             raise
         finally:
-            config.rc["pos_columns"] = self.pos_columns.copy()
-        self.assertEqual(res.pos_columns, ["x", "y", "z"])
+            config.rc["channel_names"] = self.names.copy()
+        self.assertEqual(res.names, ["x", "y", "z"])
 
 
 class TestSetColumns(unittest.TestCase):
