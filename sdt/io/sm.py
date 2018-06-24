@@ -224,7 +224,7 @@ def load_pkmatrix(filename, green=False):
     pandas.DataFrame
         Loaded data.
     """
-    mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
+    mat = sp_io.loadmat(str(filename), struct_as_record=False, squeeze_me=True)
 
     if not green:
         d = mat["par"].pkmatrix
@@ -268,7 +268,7 @@ def load_pks(filename):
     pandas.DataFrame
         Loaded data.
     """
-    mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
+    mat = sp_io.loadmat(str(filename), struct_as_record=False, squeeze_me=True)
 
     d = mat["pks"]
 
@@ -307,7 +307,7 @@ def load_trc(filename):
     pandas.DataFrame
         Loaded data.
     """
-    df = pd.read_table(filename, sep=r"\s+", names=_trc_col_names)
+    df = pd.read_table(str(filename), sep=r"\s+", names=_trc_col_names)
 
     for c in adjust_index:
         if c in df.columns:
@@ -333,7 +333,7 @@ def load_msdplot(filename):
         error, qianerr its Qian error, pa the positional accuracy in nm and
         emsd a pandas.DataFrame containing the msd-vs.-tlag data.
     """
-    mat = sp_io.loadmat(filename, struct_as_record=False, squeeze_me=True)
+    mat = sp_io.loadmat(str(filename), struct_as_record=False, squeeze_me=True)
     data = mat["msd1"]
     data[:, 0] /= 1000.
     return dict(d=mat["d1"],

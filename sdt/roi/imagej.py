@@ -194,7 +194,7 @@ def load_imagej(file_or_data):
     if isinstance(file_or_data, bytes):
         return _load(file_or_data)
     if isinstance(file_or_data, (str, pathlib.Path)):
-        with open(file_or_data, "r+b") as f:
+        with open(str(file_or_data), "r+b") as f:
             with mmap.mmap(f.fileno(), 0) as m:
                 return _load(m)
     # Let's hope it is an opened file
@@ -238,7 +238,7 @@ def load_imagej_zip(file):
         :py:func:`load_imagej` calls as values.
     """
     if isinstance(file, (str, pathlib.Path)):
-        with zipfile.ZipFile(file) as z:
+        with zipfile.ZipFile(str(file)) as z:
             return _load_zip(z)
     # Let's hope it is an opened ZipFile
     return _load_zip(file)

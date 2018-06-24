@@ -447,7 +447,7 @@ class TestImagej(unittest.TestCase):
 
     def test_load_zip(self):
         """roi.imagej._load_zip"""
-        with zipfile.ZipFile(data_path / "rects.zip") as z:
+        with zipfile.ZipFile(str(data_path / "rects.zip")) as z:
             r = roi.imagej._load_zip(z)
         self._check_rects_zip(r)
 
@@ -463,7 +463,7 @@ class TestImagej(unittest.TestCase):
 
     def test_load_imagej_zip_file(self):
         """roi.load_imagej_zip: ZipFile arg"""
-        with zipfile.ZipFile(data_path / "rects.zip") as z:
+        with zipfile.ZipFile(str(data_path / "rects.zip")) as z:
             r = roi.load_imagej_zip(z)
         self._check_rects_zip(r)
 

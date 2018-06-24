@@ -22,7 +22,7 @@ def chdir(path):
     >>> # here we are back
     """
     old_wd = os.getcwd()
-    os.chdir(os.path.expanduser(path))
+    os.chdir(os.path.expanduser(str(path)))
     try:
         yield
     finally:
@@ -63,9 +63,10 @@ def get_files(pattern, subdir=os.curdir):
     r = re.compile(str(pattern))
     flist = []
     idlist = []
-    for dp, dn, fn in os.walk(subdir):
+    sd = str(subdir)
+    for dp, dn, fn in os.walk(sd):
         for f in fn:
-            relp = os.path.relpath(os.path.join(dp, f), subdir)
+            relp = os.path.relpath(os.path.join(dp, f), sd)
             m = r.search(relp)
             if m is None:
                 continue
