@@ -362,7 +362,7 @@ def fit(t, y, num_exp, poly_order, initial_guess=None, return_ode_coeff=False):
     exp_coeff, ode_coeff = get_exponential_coeffs(t, y, num_exp, poly_order,
                                                   initial_guess)
     V = np.exp(np.outer(t, np.hstack((0, exp_coeff))))
-    lsq = np.linalg.lstsq(V, y)
+    lsq = np.linalg.lstsq(V, y, rcond=-1)
     offset = lsq[0][0]
     mant_coeff = lsq[0][1:]
 

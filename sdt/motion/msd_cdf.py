@@ -81,7 +81,7 @@ def _fit_cdf_model_prony(x, y, num_exp, poly_order, initial_guess=None):
     V = np.exp(np.outer(x, exp_coeff[:-1]))
     restr = np.exp(x*exp_coeff[-1])
     V -= restr.reshape(-1, 1)
-    lsq = np.linalg.lstsq(V, y - 1 + restr)
+    lsq = np.linalg.lstsq(V, y - 1 + restr, rcond=-1)
     lsq = lsq[0]
     # Also recover the last mantissa coefficient from the constraint
     mant_coeff = np.hstack((lsq, -1 - lsq.sum()))

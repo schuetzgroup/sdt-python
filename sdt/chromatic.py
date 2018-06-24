@@ -481,7 +481,8 @@ class Corrector(object):
 
         self.parameters1 = np.empty((ndim + 1,) * 2)
         loc1_embedded = np.hstack([loc1, np.ones((len(loc1), 1))])
-        self.parameters1[:ndim, :] = np.linalg.lstsq(loc1_embedded, loc2)[0].T
+        self.parameters1[:ndim, :] = np.linalg.lstsq(loc1_embedded, loc2,
+                                                     rcond=-1)[0].T
         self.parameters1[ndim, :ndim] = 0.
         self.parameters1[ndim, ndim] = 1.
 
