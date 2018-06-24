@@ -372,10 +372,45 @@ def fit(t, y, num_exp, poly_order, initial_guess=None, return_ode_coeff=False):
         return offset, mant_coeff, exp_coeff
 
 
-def exp_sum(t, a=1., **params):
+def exp_sum(t, a, b, l):
     """Sum of exponentials
 
-    Return ``a + b0*exp(l0*t) + b1*exp(l1*t) + …``
+    Return ``a + b[0]*exp(l[0]*t) + b[1]*exp(l[1]*t) + …``
+
+    Parameters
+    ----------
+    t : numpy.ndarray
+        Independent variable
+    a : float
+        Additive parameter
+    b : array-like of float, shape(n)
+        Mantissa coefficients
+    l : array-like of float, shape(n)
+        Coefficients in the exponent
+
+    Returns
+    -------
+    numpy.ndarray
+        Result
+
+    Examples
+    --------
+    >>> exp_sum(np.arange(10), a=1, b=[-0.2, -0.8], l=[-0.1, -0.01])
+    array([ 0.        ,  0.02699265,  0.05209491,  0.07547993,  0.09730444,
+            0.11771033,  0.13682605,  0.15476788,  0.17164113,  0.18754112])
+    """
+    t = np.asarray(t)
+    b = np.asarray(b)
+    l = np.asarray(l)
+    return np.sum(b * np.exp(t[:, None] * l[None, :]), axis=1) + a
+
+
+def exp_sum_lmfit(t, a=1., **params):
+    """Sum of exponentials, usable for :py:class:`lmfit.Model`
+
+    Return ``a + b0*exp(l0*t) + b1*exp(l1*t) + …``. This is more suitable
+    for fitting using :py:class:`lmfit.Model` than :py:func:`exp_sum`. See
+    the example below.
 
     Parameters
     ----------
@@ -395,12 +430,20 @@ def exp_sum(t, a=1., **params):
 
     Examples
     --------
-    >>> exp_sum(np.arange(10), a=1, b0=-0.2, l0=-0.1, b1=-0.8, l1=-0.01)
-    array([ 0.        ,  0.02699265,  0.05209491,  0.07547993,  0.09730444,
-            0.11771033,  0.13682605,  0.15476788,  0.17164113,  0.18754112])
+    >>> x = numpy.array(...)  # x values
+    >>> y = numpy.array(...)  # y values
+
+    >>> b_names = ["b{}".format(i) for i in num_exp]
+    >>> l_names = ["l{}".format(i) for i in num_exp]
+    >>> m = lmfit.Model(exp_fit.exp_sum_lmfit)
+    >>> m.set_param_hint("a", ...)
+    >>> for b in b_names:
+    ...     m.set_param_hint(b, ...)
+    >>> for l in l_names:
+    ...     m.set_param_hint(l, ...)
+    >>> p = m.make_params()
+    >>> f = m.fit(y, params=p, t=x)
     """
     num_exp = len(params) // 2
-    res = a
-    for i in range(num_exp):
-        res += params["b{}".format(i)] * np.exp(params["l{}".format(i)] * t)
-    return res
+    return exp_sum(t, a, [params["b{}".format(i)] for i in range(num_exp)],
+                   [params["l{}".format(i)] for i in range(num_exp)])

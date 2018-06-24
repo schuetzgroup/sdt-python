@@ -181,8 +181,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_from_square_displacements_cdf(
             sd_dict, method="lsq")
-        np.testing.assert_allclose(e1.values, orig1.values)
-        np.testing.assert_allclose(e2.values, orig2.values)
+        np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-5)
+        np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-5)
 
     def test_emsd_from_square_displacements_cdf_wlsq(self):
         # From a test run
@@ -194,8 +194,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_from_square_displacements_cdf(
             sd_dict, method="weighted-lsq")
-        np.testing.assert_allclose(e1.values, orig1.values)
-        np.testing.assert_allclose(e2.values, orig2.values)
+        np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-4)
+        np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-4)
 
     def test_emsd_cdf_prony(self):
         # From a test run
@@ -214,8 +214,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
                                  method="lsq")
-        np.testing.assert_allclose(e1.values, orig1.values)
-        np.testing.assert_allclose(e2.values, orig2.values)
+        np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-5)
+        np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-5)
 
     def test_emsd_cdf_wlsq(self):
         # From a test run
@@ -224,8 +224,8 @@ class TestMotion(unittest.TestCase):
 
         e1, e2 = motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
                                  method="weighted-lsq")
-        np.testing.assert_allclose(e1.values, orig1.values)
-        np.testing.assert_allclose(e2.values, orig2.values)
+        np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-4)
+        np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-4)
 
 
 class TestFindImmobilizations(unittest.TestCase):

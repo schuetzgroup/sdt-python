@@ -128,7 +128,7 @@ def _fit_cdf_model_lsq(x, y, num_exp, weighted=True, initial_b=None,
     for i in range(num_exp):
         p_b_names.append("b{}".format(i))
         p_l_names.append("l{}".format(i))
-    m = lmfit.Model(exp_fit.exp_sum)
+    m = lmfit.Model(exp_fit.exp_sum_lmfit)
 
     # initial guesses
     if initial_b is None:

@@ -83,29 +83,38 @@ class TestExpSum(unittest.TestCase):
         """exp_fit.exp_sum: 0 exponentials"""
         x = np.linspace(0, 10, 100)
         y_o = 2.5
-        y = sdt.exp_fit.exp_sum(x, a=2.5)
+        y = sdt.exp_fit.exp_sum(x, 2.5, [], [])
+        np.testing.assert_allclose(y, y_o)
+        y = sdt.exp_fit.exp_sum_lmfit(x, a=2.5)
         np.testing.assert_allclose(y, y_o)
 
     def test_sum1(self):
         """exp_fit.exp_sum: 1 exponential"""
         x = np.linspace(0, 10, 100)
         y_o = 2.5 - 7.6*np.exp(1.2*x)
-        y = sdt.exp_fit.exp_sum(x, a=2.5, b0=-7.6, l0=1.2)
+        y = sdt.exp_fit.exp_sum(x, 2.5, [-7.6], [1.2])
+        np.testing.assert_allclose(y, y_o)
+        y = sdt.exp_fit.exp_sum_lmfit(x, a=2.5, b0=-7.6, l0=1.2)
         np.testing.assert_allclose(y, y_o)
 
     def test_sum2(self):
         """exp_fit.exp_sum: 2 exponential"""
         x = np.linspace(0, 10, 100)
         y_o = 2.5 + 1.2*np.exp(-3.3*x) - 7.6*np.exp(1.2*x)
-        y = sdt.exp_fit.exp_sum(x, a=2.5, b0=1.2, l0=-3.3, b1=-7.6, l1=1.2)
+        y = sdt.exp_fit.exp_sum(x, 2.5, [1.2, -7.6], [-3.3, 1.2])
+        np.testing.assert_allclose(y, y_o)
+        y = sdt.exp_fit.exp_sum_lmfit(x, a=2.5, b0=1.2, l0=-3.3, b1=-7.6,
+                                      l1=1.2)
         np.testing.assert_allclose(y, y_o)
 
     def test_sum3(self):
         """exp_fit.exp_sum: 3 exponential"""
         x = np.linspace(0, 10, 100)
         y_o = 2.5 + 1.2*np.exp(-3.3*x) + 10.4*np.exp(0.7*x) - 7.6*np.exp(1.2*x)
-        y = sdt.exp_fit.exp_sum(x, a=2.5, b0=1.2, l0=-3.3, b1=10.4, l1=0.7,
-                                b2=-7.6, l2=1.2)
+        y = sdt.exp_fit.exp_sum(x, 2.5, [1.2, 10.4, -7.6], [-3.3, 0.7, 1.2])
+        np.testing.assert_allclose(y, y_o)
+        y = sdt.exp_fit.exp_sum_lmfit(x, a=2.5, b0=1.2, l0=-3.3, b1=10.4,
+                                      l1=0.7, b2=-7.6, l2=1.2)
         np.testing.assert_allclose(y, y_o)
 
 
