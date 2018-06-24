@@ -316,7 +316,7 @@ def get_exponential_coeffs(t, y, num_exp, poly_order, initial_guess=None):
     return np.roots(a_opt[::-1])*scale, a_opt
 
 
-def fit(t, y, num_exp, poly_order, initial_guess=None):
+def fit(t, y, num_exp, poly_order, initial_guess=None, return_ode_coeff=False):
     r"""Fit a sum of exponential functions to data
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
@@ -347,7 +347,7 @@ def fit(t, y, num_exp, poly_order, initial_guess=None):
         List of exponential coefficients (:math:`\lambda_k`)
     ode_coeff : numpy.ndarray
         Optimal coefficienst of the ODE involved in calculating the exponential
-        coefficients.
+        coefficients. Only returned if `return_ode_coeff` is `True`.
 
     Other parameters
     ----------------
@@ -356,6 +356,8 @@ def fit(t, y, num_exp, poly_order, initial_guess=None):
         don't know what this is about, don't bother). The array is 1D and has
         `num_exp` + 1 entries. If None, use ``numpy.ones(num_exp + 1)``.
         Defaults to None.
+    return_ode_coeff : bool, optional
+        Whether to return the ODE coefficients as well. Defaults to False.
     """
     exp_coeff, ode_coeff = get_exponential_coeffs(t, y, num_exp, poly_order,
                                                   initial_guess)
@@ -364,7 +366,10 @@ def fit(t, y, num_exp, poly_order, initial_guess=None):
     offset = lsq[0][0]
     mant_coeff = lsq[0][1:]
 
-    return offset, mant_coeff, exp_coeff, ode_coeff
+    if return_ode_coeff:
+        return offset, mant_coeff, exp_coeff, ode_coeff
+    else:
+        return offset, mant_coeff, exp_coeff
 
 
 def exp_sum(t, a=1., **params):

@@ -66,9 +66,14 @@ class TestExpFit(unittest.TestCase):
         for b, g in zip(self.beta, self.gamma):
             ydata += b*np.exp(g*self.time)
 
-        a, b, g, aopt = sdt.exp_fit.fit(self.time, ydata, len(self.beta),
-                                        self.legendre_order)
+        a, b, g = sdt.exp_fit.fit(self.time, ydata, len(self.beta),
+                                  self.legendre_order)
         orig = np.array((self.alpha, ) + self.beta + self.gamma)
+        fitted = np.hstack((a, b, g))
+        np.testing.assert_allclose(fitted, orig, rtol=1e-4)
+        a, b, g, o = sdt.exp_fit.fit(self.time, ydata, len(self.beta),
+                                     self.legendre_order,
+                                     return_ode_coeff=True)
         fitted = np.hstack((a, b, g))
         np.testing.assert_allclose(fitted, orig, rtol=1e-4)
 
