@@ -1,11 +1,54 @@
+"""Mechanism for getting and setting default function parameters
+=============================================================
+
+Typically, :py:class:`pandas.DataFrames` containing single molecule
+localization data would have x coordinates in the "x" column, y coordinates in
+the y column, the total intensity in the "mass" column and so on. Sometimes,
+this is however not the case, e.g. when multiple DataFrames have been
+concatenated using a MultiIndex. In that case, it is necessary to be able
+to tell a function that takes the DataFrame as an input, that it has to look
+for the x coordinate e.g. in the ``("channel1", "x")`` column.
+
+The :py:mod:`sdt.config` module contains function decorators that provide
+sensible default values (e.g. ``["x", "y"]`` for coordinate columns), which can
+be changed by the user. There exist the :py:func:`set_columns` decorator which
+is used for setting DataFrame column names and teh :py:func:`use_defaults`
+decorator, which for all other kind of default arguments.
+
+:py:func:`set_columns` gets its defaults for :py:attr:`columns`, which can
+be changed by the user for a global effect. Similarly, :py:func:`use_defaults`
+reads :py:attr:`rc`.
+
+
+Examples
+--------
+
+Define a function that will take the DataFrame column names from the
+`column` argument:
+
+>>> @set_columns
+... def get_mass(data, columns={}):
+...     return data[columns["mass"]]
+
+Thanks to :py:func:`set_columns`, the `columns` dict will have sensible
+default values (which can be changed globally by the user by setting the
+corresponding items in :py:attr:`columns`). Additionally, any user of the
+`get_mass` function can override the column names when calling the function.
+
+
+Programming reference
+---------------------
+
+.. autofunction:: set_columns
+.. autofunction:: use_defaults
+.. autodata:: columns
+.. autodata:: rc
+"""
 import inspect
 import functools
 
 
-rc = dict(
-    pos_columns=["x", "y"],
-    mass_column="mass",
-    signal_column="signal")
+rc = dict(channel_names = ["channel1", "channel2"],)
 """Global config dictionary"""
 
 
@@ -17,7 +60,7 @@ columns = dict(
     bg="bg",
     bg_dev="bg_dev",
     particle="particle")
-"""Default column names"""
+"""Default column names in :py:class:`pandas.DataFrame`"""
 
 
 def use_defaults(func):
@@ -39,17 +82,17 @@ def use_defaults(func):
     Examples
     --------
     >>> @use_defaults
-    ... def f(pos_columns=None):
-    ...     return pos_columns
-    >>> rc["pos_columns"]
-    ['x', 'y']
+    ... def f(channel_names=None):
+    ...     return channel_names
+    >>> ['channel1', 'channel2']
+    ['channel1', 'channel2']
     >>> f()
-    ['x', 'y']
-    >>> f(["x", "y", "z"])
-    ['x', 'y', 'z']
-    >>> rc["pos_columns"] = ["z"]
+    ['channel1', 'channel2']
+    >>> f(["ch1", "ch2", "ch3"])
+    ['ch1', 'ch2', 'ch3']
+    >>> config.rc["channel_names"] = ["channel4"]
     >>> f()
-    ['z']
+    ['channel4']
     """
     sig = inspect.signature(func)
 
