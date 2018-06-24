@@ -79,19 +79,24 @@ class TestRoi(TestCaseBase):
 
     def test_dataframe(self):
         """.__call__: localization data"""
-        np.testing.assert_equal(self.roi(self.loc, reset_origin=False).values,
+        np.testing.assert_equal(self.roi(self.loc, rel_origin=False).values,
                                 self.loc_roi)
 
     def test_dataframe_inv(self):
         """.__call__: localization data, inverted ROI"""
-        np.testing.assert_equal(self.roi(self.loc, reset_origin=False,
+        np.testing.assert_equal(self.roi(self.loc, rel_origin=False,
                                          invert=True).values,
                                 self.loc_roi_inv)
 
-    def test_dataframe_reset_origin(self):
-        """.__call__: localization data, reset origin"""
-        np.testing.assert_equal(self.roi(self.loc, reset_origin=True).values,
+    def test_dataframe_rel_origin(self):
+        """.__call__: localization data, rel. origin"""
+        np.testing.assert_equal(self.roi(self.loc, rel_origin=True).values,
                                 self.loc_roi - self.top_left)
+        with self.assertWarns(np.VisibleDeprecationWarning):
+            np.testing.assert_equal(
+                self.roi(self.loc, reset_origin=True).values,
+                self.loc_roi - self.top_left)
+
 
     def assert_roi_equal(self, actual, desired):
         np.testing.assert_equal([actual.top_left, actual.bottom_right],
@@ -117,10 +122,10 @@ class TestRoi(TestCaseBase):
              (self.bottom_right[1] - self.top_left[1]))
         self.assertAlmostEqual(self.roi.area, a)
 
-    def test_unset_origin(self):
-        """.unset_origin"""
-        d = self.roi(self.loc, reset_origin=True)
-        self.roi.unset_origin(d)
+    def test_reset_origin(self):
+        """.reset_origin"""
+        d = self.roi(self.loc, rel_origin=True)
+        self.roi.reset_origin(d)
         pd.testing.assert_frame_equal(d, self.loc_roi)
 
 
@@ -188,10 +193,14 @@ class TestPathRoi(TestRoi):
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float).T]*2)
 
-    def test_dataframe_reset_origin(self):
-        """.__call__: localization data, reset origin"""
-        np.testing.assert_equal(self.roi(self.loc, reset_origin=True).values,
+    def test_dataframe_rel_origin(self):
+        """.__call__: localization data, rel. origin"""
+        np.testing.assert_equal(self.roi(self.loc, rel=True).values,
                                 self.loc_roi - self.bbox_int[0])
+        with self.assertWarns(np.VisibleDeprecationWarning):
+            np.testing.assert_equal(
+                self.roi(self.loc, reset_origin=True).values,
+                self.loc_roi - self.bbox_int[0])
 
     def assert_roi_equal(self, actual, desired):
         np.testing.assert_allclose(actual.path.vertices, desired.path.vertices)

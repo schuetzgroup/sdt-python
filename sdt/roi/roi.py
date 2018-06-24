@@ -1,5 +1,6 @@
 """Classes for dealing with regions of interest in microscopy data"""
 from contextlib import suppress
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -68,7 +69,8 @@ class ROI(object):
         return np.prod(self.size)
 
     @config.set_columns
-    def __call__(self, data, reset_origin=True, invert=False, columns={}):
+    def __call__(self, data, rel_origin=True, invert=False, columns={},
+                 **kwargs):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -80,7 +82,7 @@ class ROI(object):
         data : pandas.DataFrame or pims.FramesSequence or array-like
             Data to be processed. If a pandas.Dataframe, select only those
             lines with coordinate values within the ROI. Crop the image.
-        reset_origin : bool, optional
+        rel_origin : bool, optional
             If True, the top-left corner coordinates will be subtracted off
             all feature coordinates, i. e. the top-left corner of the ROI will
             be the new origin. Only valid if `invert` is False. Defaults to
@@ -115,7 +117,14 @@ class ROI(object):
             else:
                 roi_data = data[mask].copy()
 
-            if reset_origin and not invert:
+            if "reset_origin" in kwargs:
+                warnings.warn(
+                    "The `reset_origin` parameter is deprecated and will be "
+                    "removed in the future. Use `rel_origin` instead.",
+                    np.VisibleDeprecationWarning)
+                rel_origin = kwargs["reset_origin"]
+
+            if rel_origin and not invert:
                 roi_data[columns["coords"]] -= self.top_left
 
             return roi_data
@@ -129,7 +138,7 @@ class ROI(object):
             return crop(data)
 
     @config.set_columns
-    def unset_origin(self, data, columns={}):
+    def reset_origin(self, data, columns={}):
         """Reset coordinates to the original coordinate system
 
         This undoes the effect of the `reset_origin` parameter to
@@ -262,8 +271,8 @@ class PathROI(object):
         self.image_mask = self.image_mask.reshape(mask_size)
 
     @config.set_columns
-    def __call__(self, data, reset_origin=True, fill_value=0, invert=False,
-                 columns={}):
+    def __call__(self, data, rel_origin=True, fill_value=0, invert=False,
+                 columns={}, **kwargs):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -324,7 +333,15 @@ class PathROI(object):
                 roi_data = data[~roi_mask].copy()
             else:
                 roi_data = data[roi_mask].copy()
-            if reset_origin and not invert:
+
+            if "reset_origin" in kwargs:
+                warnings.warn(
+                    "The `reset_origin` parameter is deprecated and will be "
+                    "removed in the future. Use `rel_origin` instead.",
+                    np.VisibleDeprecationWarning)
+                rel_origin = kwargs["reset_origin"]
+
+            if rel_origin and not invert:
                 roi_data.loc[:, columns["coords"]] -= self.bounding_box_int[0]
             return roi_data
 
@@ -356,7 +373,7 @@ class PathROI(object):
             return crop(data)
 
     @config.set_columns
-    def unset_origin(self, data, columns={}):
+    def reset_origin(self, data, columns={}):
         """Reset coordinates to the original coordinate system
 
         This undoes the effect of the `reset_origin` parameter to
