@@ -176,7 +176,7 @@ def _load(data):
 
 
 def load_imagej(file_or_data):
-    """Load ROI from file
+    """Load ROI from ImageJ ROI file
 
     Parameters
     ----------
@@ -224,7 +224,7 @@ def _load_zip(z):
 
 
 def load_imagej_zip(file):
-    """Load ROIs from ImageJ zip file (implementation)
+    """Load ROIs from ImageJ zip file
 
     Parameters
     ----------

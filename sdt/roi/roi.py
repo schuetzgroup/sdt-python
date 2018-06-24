@@ -18,18 +18,8 @@ class ROI(object):
 
     At the moment, this works only for single channel (i. e. grayscale) images.
 
-    Attributes
-    ----------
-    top_left : list of int
-        x and y coordinates of the top-left corner. Pixels with coordinates
-        greater or equal than these are excluded from the ROI.
-    bottom_right : list of int
-        x and y coordinates of the bottom-right corner. Pixels with coordinates
-        greater or equal than these are excluded from the ROI.
-
     Examples
     --------
-
     Let `f` be a numpy array representing an image.
 
     >>> f.shape
@@ -50,13 +40,20 @@ class ROI(object):
         bottom_right : tuple of int or None, optional
             Coordinates of the bottom-right corner. Pixels with
             coordinates greater or equal than these are excluded from the ROI.
-            Either this or `shape` need to specified.
+            Either this or `size` need to specified.
         size : tuple of int or None, optional
             Size of the ROI. Specifying `size` is equivalent to
-            ``bottom_right=[t+s for t, s in zip(top_left, shape)].
+            ``bottom_right=[t+s for t, s in zip(top_left, shape)]``.
             Either this or `bottom_right` need to specified.
         """
         self.top_left = top_left
+        """x and y coordinates of the top-left corner. Data with coordinates
+        greater or equal than these are excluded from the ROI.
+        """
+        self.bottom_right = None
+        """x and y coordinates of the bottom-right corner. Data with
+        coordinates greater or equal than these are excluded from the ROI.
+        """
         if bottom_right is not None:
             self.bottom_right = bottom_right
         else:
@@ -183,24 +180,6 @@ class PathROI(object):
 
     This works only for paths that do not intersect themselves and for single
     channel (i. e. grayscale) images.
-
-    Attributes
-    ----------
-    path : matplotlib.path.Path
-        The path outlining the region of interest. Do not modifiy.
-    buffer : float
-        Extra space around the path. Does not affect the size of the image,
-        which is just the size of the bounding box of the `polygon`, without
-        `buffer`. Do not modify.
-    image_mask : numpy.ndarray, dtype(bool)
-        Boolean pixel mask of the path
-    bounding_box : numpy.ndarray, shape(2, 2), dtype(float)
-        Bounding box of the path, enlarged by :py:attr:`buffer` on each side
-    bounding_box_int : numpy.ndarray, shape(2, 2), dtype(int)
-        Integer bounding box of the path, enlarged by :py:attr:`buffer` on each
-        side
-    area : float
-        Area of the ROI (without :py:attr:`buffer`)
     """
     yaml_tag = "!PathROI"
 
@@ -221,19 +200,32 @@ class PathROI(object):
             consuming). This implies that this instance only works for
             DataFrames. Defaults to False.
         """
+        self.path = None
+        """:py:class:`matplotlib.path.Path` outlining the region of interest.
+        Do not modifiy.
+        """
         if isinstance(path, mpl.path.Path):
             self.path = mpl.path.Path(path.vertices, path.codes)
         else:
             self.path = mpl.path.Path(path)
 
         self.buffer = buffer
+        """Float giving the width of extra space around the path. Does not
+        affect the size of the image, which is just the size of the bounding
+        box of the :py:attr:`path`, without :py:attr:`buffer`.
+        Do not modify.
+        """
 
         # calculate bounding box
         self.bounding_box = self.path.get_extents().get_points()
+        """numpy.ndarray, shape(2, 2), dtype(float) describing the bounding box
+        of the path, enlarged by :py:attr:`buffer` on each side.
+        """
         self.bounding_box += np.array([-buffer, buffer]).reshape((2, 1))
         self.bounding_box_int = np.array(
             [np.floor(self.bounding_box[0]),
              np.ceil(self.bounding_box[1])], dtype=int)
+        """Smallest integer bounding box containing :py:attr:`bounding_box`"""
 
         self.area = spatial.polygon_area(self.path.vertices)
         # If the path is clockwise, the `radius` argument to
@@ -241,7 +233,12 @@ class PathROI(object):
         self.buffer_sign = -1 if self.area < 0 else 1
         # Now that we know the sign, make the area positive
         self.area = abs(self.area)
+        """Area of the ROI (without :py:attr:`buffer`)"""
 
+        self.image_mask = None
+        """Boolean pixel array; rasterized :py:attr:`path` or None if
+        ``no_image=True`` was passed to the constructor.
+        """
         if no_image:
             self.image_mask = None
             return
@@ -413,13 +410,6 @@ class RectangleROI(PathROI):
     :py:class:`PathROI` and thus allows for float coordinates. Also, the
     :py:attr:`path` can easily be transformed using
     :py:class:`matplotlib.transforms`.
-
-    Attributes
-    ----------
-    top_left : tuple of float
-        x and y coordinates of the top-left corner.
-    bottom_right : tuple of float
-        x and y coordinates of the bottom-right corner.
     """
     yaml_tag = "!RectangleROI"
 
@@ -429,14 +419,12 @@ class RectangleROI(PathROI):
         ----------
         top_left : tuple of float
             x and y coordinates of the top-left corner.
-            x and y coordinates of the bottom-right corner.
         bottom_right : tuple of float or None, optional
-            Coordinates of the bottom-right corner. Pixels with
-            coordinates greater or equal than these are excluded from the ROI.
+            x and y coordinates of the bottom-right corner.
             Either this or `shape` need to specified.
         size : tuple of float or None, optional
             Size of the ROI. Specifying `size` is equivalent to
-            ``bottom_right=[t+s for t, s in zip(top_left, shape)].
+            ``bottom_right=[t+s for t, s in zip(top_left, shape)]``.
             Either this or `bottom_right` need to specified.
         buffer, no_image
             see :py:class:`PathROI`.
@@ -450,7 +438,9 @@ class RectangleROI(PathROI):
         trafo.translate(*top_left)
         super().__init__(trafo.transform_path(path), buffer, no_image)
         self.top_left = top_left
+        """x and y coordinates of the top-left corner."""
         self.bottom_right = bottom_right
+        """x and y coordinates of the bottom-right corner."""
 
     @classmethod
     def to_yaml(cls, dumper, data):
@@ -479,16 +469,7 @@ class RectangleROI(PathROI):
 class EllipseROI(PathROI):
     """Elliptical region of interest in a picture
 
-    Based on :py:class:`PathROI`.
-
-    Attributes
-    ----------
-    center : tuple of float
-        x and y coordinates of the ellipse center.
-    axes : tuple of float
-        Lengths of first and second half-axis.
-    angle : float, optional
-        Angle of rotation (counterclockwise, in radians). Defaults to 0.
+    Subclass of :py:class:`PathROI`.
     """
     yaml_tag = "!EllipseROI"
 
@@ -496,7 +477,6 @@ class EllipseROI(PathROI):
         """Parameters
         ----------
         center : tuple of float
-            x and y coordinates of the ellipse center.
         axes : tuple of float
             Lengths of first and second axis.
         angle : float, optional
@@ -509,8 +489,11 @@ class EllipseROI(PathROI):
         trafo.translate(*center)
         super().__init__(trafo.transform_path(path), buffer, no_image)
         self.center = center
+        """x and y coordinates of the ellipse center."""
         self.axes = axes
+        """Lengths of first and second half-axis."""
         self.angle = angle
+        """Angle of rotation (counterclockwise, in radians)."""
 
         self.area = self.axes[0] * self.axes[1] * np.pi
 
