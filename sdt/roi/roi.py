@@ -67,9 +67,8 @@ class ROI(object):
     def area(self):
         return np.prod(self.size)
 
-    @config.use_defaults
-    def __call__(self, data, reset_origin=True, invert=False,
-                 pos_columns=None):
+    @config.set_columns
+    def __call__(self, data, reset_origin=True, invert=False, columns={}):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -97,14 +96,16 @@ class ROI(object):
 
         Other parameters
         ----------------
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `coords`. This
+            means, if your DataFrame has coordinate columns "x" and "z", set
+            ``columns={"coords": ["x", "z"]}``.
         """
         if isinstance(data, pd.DataFrame):
             mask = np.ones(len(data), dtype=bool)
-            for p, t, b in zip(pos_columns, self.top_left, self.bottom_right):
+            for p, t, b in zip(columns["coords"],
+                               self.top_left, self.bottom_right):
                 d = data[p]
                 mask &= d > t
                 mask &= d < b
@@ -115,7 +116,7 @@ class ROI(object):
                 roi_data = data[mask].copy()
 
             if reset_origin and not invert:
-                roi_data[pos_columns] -= self.top_left
+                roi_data[columns["coords"]] -= self.top_left
 
             return roi_data
 
@@ -127,8 +128,8 @@ class ROI(object):
                 return img[sl]
             return crop(data)
 
-    @config.use_defaults
-    def unset_origin(self, data, pos_columns=None):
+    @config.set_columns
+    def unset_origin(self, data, columns={}):
         """Reset coordinates to the original coordinate system
 
         This undoes the effect of the `reset_origin` parameter to
@@ -142,12 +143,13 @@ class ROI(object):
 
         Other parameters
         ----------------
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `coords`. This
+            means, if your DataFrame has coordinate columns "x" and "z", set
+            ``columns={"coords": ["x", "z"]}``.
         """
-        data[pos_columns] += self.top_left
+        data[columns["coords"]] += self.top_left
 
     @classmethod
     def to_yaml(cls, dumper, data):
@@ -259,9 +261,9 @@ class PathROI(object):
             idx.T, trans, 2 * self.buffer_sign * self.buffer)
         self.image_mask = self.image_mask.reshape(mask_size)
 
-    @config.use_defaults
+    @config.set_columns
     def __call__(self, data, reset_origin=True, fill_value=0, invert=False,
-                 pos_columns=None):
+                 columns={}):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -296,10 +298,11 @@ class PathROI(object):
 
         Other parameters
         ----------------
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `coords`. This
+            means, if your DataFrame has coordinate columns "x" and "z", set
+            ``columns={"coords": ["x", "z"]}``.
         """
         if isinstance(data, pd.DataFrame):
             if not len(data):
@@ -307,7 +310,7 @@ class PathROI(object):
                 # below
                 return data
 
-            pos = data[pos_columns]
+            pos = data[columns["coords"]]
             # Using 2 * buffer seems to give the expected result (enlarge the
             # path by about `buffer` units)
             roi_mask = self.path.contains_points(
@@ -322,7 +325,7 @@ class PathROI(object):
             else:
                 roi_data = data[roi_mask].copy()
             if reset_origin and not invert:
-                roi_data.loc[:, pos_columns] -= self.bounding_box_int[0]
+                roi_data.loc[:, columns["coords"]] -= self.bounding_box_int[0]
             return roi_data
 
         else:
@@ -352,8 +355,8 @@ class PathROI(object):
                 return img.T
             return crop(data)
 
-    @config.use_defaults
-    def unset_origin(self, data, pos_columns=None):
+    @config.set_columns
+    def unset_origin(self, data, columns={}):
         """Reset coordinates to the original coordinate system
 
         This undoes the effect of the `reset_origin` parameter to
@@ -367,12 +370,13 @@ class PathROI(object):
 
         Other parameters
         ----------------
-        pos_columns : list of str or None, optional
-            Names of the columns describing the coordinates of the features in
-            :py:class:`pandas.DataFrames`. If `None`, use the defaults from
-            :py:mod:`config`. Defaults to `None`.
+        columns : dict, optional
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `coords`. This
+            means, if your DataFrame has coordinate columns "x" and "z", set
+            ``columns={"coords": ["x", "z"]}``.
         """
-        data[pos_columns] += self.bounding_box_int[0]
+        data[columns["coords"]] += self.bounding_box_int[0]
 
     @classmethod
     def to_yaml(cls, dumper, data):
