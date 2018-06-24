@@ -48,9 +48,9 @@ class TestLocate(unittest.TestCase):
         # later arise
         r = roi.PathROI(self.roi_vertices, no_image=True)
         peaks = locate_roi(self.frame, self.roi_vertices, engine="numba",
-                           reset_origin=False, **self.options)
+                           rel_origin=False, **self.options)
 
-        orig = r(self.orig, reset_origin=False)
+        orig = r(self.orig, rel_origin=False)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
                                    rtol=1e-6)
 
@@ -59,9 +59,9 @@ class TestLocate(unittest.TestCase):
         r = roi.PathROI(self.roi_vertices, no_image=True)
         roi_path = mpl.path.Path(self.roi_vertices)
         peaks = locate_roi(self.frame, roi_path, engine="numba",
-                           reset_origin=False, **self.options)
+                           rel_origin=False, **self.options)
 
-        orig = r(self.orig, reset_origin=False)
+        orig = r(self.orig, rel_origin=False)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
                                    rtol=1e-6)
 
@@ -69,9 +69,9 @@ class TestLocate(unittest.TestCase):
         # Test locate_roi specifying the ROI as a PathROI
         r = roi.PathROI(self.roi_vertices, no_image=True)
         peaks = locate_roi(self.frame, r, engine="numba",
-                           reset_origin=False, **self.options)
+                           rel_origin=False, **self.options)
 
-        orig = r(self.orig, reset_origin=False)
+        orig = r(self.orig, rel_origin=False)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
                                    rtol=1e-6)
 
@@ -85,10 +85,10 @@ class TestLocate(unittest.TestCase):
     def test_batch_roi(self):
         # Test the batch_roi function
         peaks = batch_roi([self.frame]*2, self.roi_vertices,
-                          reset_origin=False, engine="numba", **self.options)
+                          rel_origin=False, engine="numba", **self.options)
 
         r = roi.PathROI(self.roi_vertices, no_image=True)
-        orig = r(self.batch_orig, reset_origin=False)
+        orig = r(self.batch_orig, rel_origin=False)
         np.testing.assert_allclose(peaks, orig[peaks.columns.tolist()],
                                    rtol=1e-3)
 

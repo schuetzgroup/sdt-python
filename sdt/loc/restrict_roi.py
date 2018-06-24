@@ -1,4 +1,7 @@
 """Function to restrict peak localization to a ROI"""
+import warnings
+
+import numpy as np
 import slicerator
 
 from ..roi import PathROI
@@ -40,7 +43,7 @@ def restrict_roi(locate_func, buffer=10):
             If this isn't already a py:class:`PathROI`, use it to construct
             one, i. e. it is passed as the first parameter to the
             :py:class:`PathROI` constructor.
-        reset_origin : bool, optional
+        rel_origin : bool, optional
             If True, the top-left corner coordinates of the path's bounding
             rectangle will be subtracted off all feature coordinates, i. e.
             the top-left corner will be the new origin. Defaults to True.
@@ -66,15 +69,22 @@ def restrict_roi(locate_func, buffer=10):
             # Turn into Slicerator to make the img_roi pipeline work
             data = slicerator.Slicerator(data)
 
-        reset_origin = kwargs.pop("reset_origin", True)
+        if "reset_origin" in kwargs:
+            warnings.warn(
+                "The `reset_origin` parameter is deprecated and will be "
+                "removed in the future. Use `rel_origin` instead.",
+                np.VisibleDeprecationWarning)
+            rel_origin = kwargs.pop("reset_origin")
+        else:
+            rel_origin = kwargs.pop("rel_origin", True)
 
         loc = locate_func(img_roi(data, fill_value="mean"), *args, **kwargs)
 
         # since we cropped the image, we have to add to the coordinates
-        loc[["x", "y"]] += img_roi.bounding_box_int[0]
+        img_roi.reset_origin(loc)
 
         # now get only stuff inside the polygon
-        loc = feat_roi(loc, reset_origin=reset_origin)
+        loc = feat_roi(loc, rel_origin=rel_origin)
 
         return loc
 
