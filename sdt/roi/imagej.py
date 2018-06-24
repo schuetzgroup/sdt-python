@@ -82,7 +82,7 @@ class SubType(enum.IntEnum):
     rotated_rect = 5
 
 
-class Options(enum.IntFlag):
+class Options(enum.IntEnum):  # Python 3.5 has no IntFlag yet…
     spline_fit = 1
     double_headed = 2
     outline = 4
