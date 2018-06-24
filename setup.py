@@ -31,7 +31,7 @@ setup(
                       "scipy>0.18",
                       "pandas",
                       "tables",
-                      "tifffile>=0.7.0",
+                      "tifffile>=0.14.0",
                       "pyyaml",
                       "pims>=0.3.0",
                       "slicerator>=0.9.8",

@@ -4,11 +4,13 @@ import tempfile
 import io
 from pathlib import Path
 import collections
+from datetime import datetime
 
 import pandas as pd
 import numpy as np
 import pims
 import yaml
+import tifffile
 
 import sdt.io
 
@@ -250,26 +252,27 @@ class TestTiff(unittest.TestCase):
             fn = os.path.join(td, "test.tiff")
             sdt.io.save_as_tiff(self.frames, fn)
 
-            with pims.TiffStack(fn) as res:
-                np.testing.assert_allclose(res, self.frames)
-                md = yaml.load(res[0].metadata["ImageDescription"])
-                assert(md == self.frames[0].metadata)
+            with tifffile.TiffFile(fn) as res:
+                np.testing.assert_allclose(res.asarray(), self.frames)
+                md = res.series[0].pages[0].tags["ImageDescription"].value
+                self.assertDictEqual(yaml.safe_load(md),
+                                     self.frames[0].metadata)
 
     def test_sdt_tiff_stack(self):
         """io.SdtTiffStack"""
         with tempfile.TemporaryDirectory() as td:
             fn = os.path.join(td, "test.tiff")
+            dt = datetime(2000, 1, 1, 17, 0, 9)
+            self.frames[0].metadata["DateTime"] = dt
             sdt.io.save_as_tiff(self.frames, fn)
 
             with sdt.io.SdtTiffStack(fn) as res:
                 np.testing.assert_allclose(res, self.frames)
                 md = res.metadata
                 md.pop("Software")
-                md.pop("DateTime")
                 np.testing.assert_equal(md, self.frames[0].metadata)
                 md = res[0].metadata
                 md.pop("Software")
-                md.pop("DateTime")
                 np.testing.assert_equal(md, self.frames[0].metadata)
 
 

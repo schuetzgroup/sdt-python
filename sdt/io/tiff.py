@@ -1,7 +1,10 @@
 """High level TIFF I/O"""
 import logging
 from contextlib import suppress
+from datetime import datetime
+
 import tifffile
+
 from . import yaml
 
 
@@ -66,6 +69,21 @@ try:
                 self.metadata = md
             except Exception:
                 self.metadata = {}
+
+        def _read_metadata(self, tiff):
+            md = {}
+            for k in ("ImageDescription", "DateTime", "Software",
+                      "DocumentName"):
+                with suppress(KeyError):
+                    md[k] = tiff.tags[k].value
+            try:
+                md["DateTime"] = datetime.strptime(md["DateTime"],
+                                                   "%Y:%m:%d %H:%M:%S")
+            except (KeyError, ValueError):
+                md.pop("DateTime", None)
+
+            return md
+
 
         def _get_metadata_yaml(self, meta):
             img_desc = meta.get("ImageDescription", "{}")

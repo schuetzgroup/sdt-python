@@ -18,7 +18,7 @@ requirements:
         - pandas
         - pytables
         - scipy >0.18
-        - tifffile >=0.7.0
+        - tifffile >=0.14.0
         - pyyaml
         - pims >=0.3.0
         - slicerator >=0.9.8
@@ -34,7 +34,7 @@ requirements:
         - pandas
         - pytables
         - scipy >0.18
-        - tifffile
+        - tifffile >=0.14.0
         - pyyaml
         - pims >=0.3.0
         - slicerator >=0.9.8
