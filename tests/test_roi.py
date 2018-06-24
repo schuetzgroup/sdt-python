@@ -92,11 +92,6 @@ class TestRoi(TestCaseBase):
         """.__call__: localization data, rel. origin"""
         np.testing.assert_equal(self.roi(self.loc, rel_origin=True).values,
                                 self.loc_roi - self.top_left)
-        with self.assertWarns(np.VisibleDeprecationWarning):
-            np.testing.assert_equal(
-                self.roi(self.loc, reset_origin=True).values,
-                self.loc_roi - self.top_left)
-
 
     def assert_roi_equal(self, actual, desired):
         np.testing.assert_equal([actual.top_left, actual.bottom_right],
@@ -197,10 +192,6 @@ class TestPathRoi(TestRoi):
         """.__call__: localization data, rel. origin"""
         np.testing.assert_equal(self.roi(self.loc, rel=True).values,
                                 self.loc_roi - self.bbox_int[0])
-        with self.assertWarns(np.VisibleDeprecationWarning):
-            np.testing.assert_equal(
-                self.roi(self.loc, reset_origin=True).values,
-                self.loc_roi - self.bbox_int[0])
 
     def assert_roi_equal(self, actual, desired):
         np.testing.assert_allclose(actual.path.vertices, desired.path.vertices)
