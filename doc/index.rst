@@ -13,41 +13,40 @@ microscopy.
 Overview
 --------
 
-- The :py:mod:`sdt.loc` package allows for localization of fluorescent
-  features in images. To that end, several algorithms are provided
-  (:py:mod:`sdt.loc.daostorm_3d`, :py:mod:`sdt.loc.cg`,
-  :py:mod:`sdt.loc.fast_peakposition`),  which all share a similar API.
-  Additionally, :py:mod:`sdt.loc.z_fit` allows for determining the z
-  position of features from astigmatism.
-- The :py:mod:`sdt.motion` module contains functions for determination of
-  motion parameters (mean square displacements, diffusion coefficients, …)
-  from tracking experiments
+- Handle regions of interest (ROIs) is possible by means of the
+  :py:mod:`sdt.roi` module.
+- Overlay multiple channels and correct for chromatic aberrations using the
+  :py:mod:`sdt.chromatic` module.
+- Deal with multi-color data (colocalization, codiffusion, …)
+  with help of functions featured in the :py:mod:`sdt.multicolor` module.
+- Determine parameters related to the motion and diffusion of single molecules
+  (mean square displacements, diffusion coefficients, …) from tracking
+  experiments using functionality provided by the :py:mod:`sdt.motion` module.
 - Analysis of fluorescent molecule brightness can be done with help of the
   :py:mod:`sdt.brightness` module.
-- Methods for correction of chromatic aberrations can be found in the
-  :py:mod:`sdt.chromatic` module.
-- Functions for dealing with multi-color data (colocalization, codiffusion, …)
-  are featured in the :py:mod:`sdt.multicolor` module.
-- Single molecule FRET tracking and data analysis can by accomplished using
-  the :py:mod:`sdt.fret` module.
 - The :py:mod:`sdt.io` module includes support for reading and writing data
   from and to files in various formats.
+- Perform changepoint detection using the :py:mod:`sdt.changepoint` module.
 - The :py:mod:`sdt.spatial` module allows for saving dealing with spatial
   aspects of data such as determining whether there are near neighbors,
   interpolating missing features in tracking data and calculating the area of a
   polygon.
-- Handling of regions of interest (ROIs) is possible by means of the
-  :py:mod:`sdt.roi` module.
-- With help of the :py:mod:`sdt.image` module it is possible to
-  do image processing, e. g. background subtraction from images.
+- Analyze single molecule FRET data using the :py:mod:`sdt.fret` module.
+- Process raw images (e.g. background subtraction) with help of the
+  :py:mod:`sdt.image` module.
 - Using the :py:mod:`sdt.flatfield` module, flat field correction of image
   and localization data can be achieved.
+- The :py:mod:`sdt.loc` package allows for localization of fluorescent
+  features in images. To that end, several algorithms are provided
+  (:py:mod:`sdt.loc.daostorm_3d`, :py:mod:`sdt.loc.cg`),  which all share a
+  similar API.
+  Additionally, :py:mod:`sdt.loc.z_fit` allows for determining the z
+  position of features from astigmatism.
+- The :py:mod:`sdt.nbui` module contains GUIs to embed into Jupyter
+  notebooks.
 - With help of the :py:mod:`sdt.sim` module, fluorescence microscopy images
   can be simulated.
-- There are helpers for plotting data in :py:mod:`sdt.plot`.
-- Changepoint detection may be performed using the :py:mod:`sdt.changepoint`
-  module.
-
+- Plot data with methods from :py:mod:`sdt.plot`.
 
 There are also some helper modules that contain helpful functions and that
 the above modules are built on top of:
@@ -57,6 +56,8 @@ the above modules are built on top of:
 - :py:mod:`sdt.gaussian_fit` provides models for the `lmfit
   <http://lmfit.github.io/lmfit-py/>`_ package for non-linear least squares
   fitting of 1D and 2D Gaussian function parameters.
+- Some helpers for writing new code can be found in :py:mod:`sdt.helper` and
+  :py:mod:`sdt.config`.
 
 
 List of changes
@@ -71,24 +72,24 @@ Table of contents
 .. toctree::
   :maxdepth: 2
 
-  loc
+  roi
+  chromatic
+  multicolor
   motion
   brightness
-  chromatic
-  fret
-  multicolor
   io
+  changepoint
   spatial
-  roi
+  fret
   image
   flatfield
+  loc
+  nbui
   sim
   plot
-  changepoint
-  nbui
-  helper
   exp_fit
   gaussian_fit
+  helper
   CHANGELOG
 
 
