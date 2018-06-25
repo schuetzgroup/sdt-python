@@ -136,6 +136,19 @@ class TestMotion(unittest.TestCase):
         np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
         np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
 
+    def test_fit_msd_anomalous(self):
+        """motion.fit_msd: anomalous diffusion"""
+        t = np.arange(0.01, 0.205, 0.01)
+        d_e = 0.7
+        pa_e = 0.03
+        alpha_e = 1.1
+        msd = 4 * d_e * t**alpha_e + 4 * pa_e**2
+        emsd = pd.DataFrame({"lagt": t, "msd": msd})
+
+        d, pa, a = motion.fit_msd(emsd, model="anomalous")
+
+        np.testing.assert_allclose([d, pa, a], [d_e, pa_e, alpha_e])
+
     def test_fit_msd_neg(self):
         """Test `motion.fit_msd` with simple data (negative intercept)"""
         lagts = np.arange(1, 11)

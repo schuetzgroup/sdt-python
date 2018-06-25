@@ -4,6 +4,8 @@ import numpy as np
 import collections
 import warnings
 
+import scipy.optimize
+
 from .. import config
 
 
@@ -389,12 +391,13 @@ def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
     return emsd_from_square_displacements(sd_dict)
 
 
-def fit_msd(emsd, max_lagtime=2, exposure_time=0):
+def fit_msd(emsd, max_lagtime=2, exposure_time=0, model="brownian"):
     """Get the diffusion coefficient and positional accuracy from MSDs
 
-    Fit a linear function :math:`msd(t) = 4*D*t + 4*pa**2` to the tlag-vs.-MSD
-    graph, where :math:`D` is the diffusion coefficient and :math:`pa` is the
-    positional accuracy (uncertainty).
+    Fit a linear function :math:`msd(t) = 4*D*t^\alpha + 4*pa**2` to the
+    tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient and
+    :math:`pa` is the positional accuracy (uncertainty) and :math:`alpha`
+    the anomalous diffusion exponent.
 
     Parameters
     ----------
@@ -405,31 +408,47 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0):
     exposure_time : float, optional
         Correct positional accuracy for motion during exposure. Settings to 0
         turns this off. Defaults to 0.
+    model : {"brownian", "anomalous"}
+        If "brownian", set :math:`\alpha=1`. Otherwise, also fit
+        :math:`\alpha`.
 
     Returns
     -------
-    D : float
+    d : float
         Diffusion coefficient
     pa : float
         Positional accuracy. If this is negative, the fitted graph's
         intercept was negative (i. e. not meaningful).
+    alpha : float
+        Anomalous diffusion exponent. Only returned if ``model="anomalous"``.
     """
-    if max_lagtime == 2:
-        k = ((emsd["msd"].iloc[1] - emsd["msd"].iloc[0]) /
-             (emsd["lagt"].iloc[1] - emsd["lagt"].iloc[0]))
-        d = emsd["msd"].iloc[0] - k*(emsd["lagt"].iloc[0] - exposure_time/3.)
+    if model == "brownian":
+        if max_lagtime == 2:
+            k = ((emsd["msd"].iloc[1] - emsd["msd"].iloc[0]) /
+                 (emsd["lagt"].iloc[1] - emsd["lagt"].iloc[0]))
+            d = emsd["msd"].iloc[0] - k * (emsd["lagt"].iloc[0] -
+                                           exposure_time / 3.)
+        else:
+            k, d = np.polyfit(
+                emsd["lagt"].iloc[0:max_lagtime] - exposure_time / 3,
+                emsd["msd"].iloc[0:max_lagtime], 1)
+
+        D = k/4
+        pa = np.sqrt(complex(d))/2.
+        pa = pa.real if d > 0 else -pa.imag
+
+        # TODO: resample to get the error of D
+        # msdplot.m:417
+
+        return D, pa
+    elif model == "anomalous":
+        def an_diff(t, d, pa, alpha):
+            return 4 * d * t**alpha + 4 * pa**2
+        d, pa, alpha = scipy.optimize.curve_fit(an_diff, emsd["lagt"],
+                                                emsd["msd"])[0]
+        return d, pa, alpha
     else:
-        k, d = np.polyfit(emsd["lagt"].iloc[0:max_lagtime] - exposure_time/3,
-                          emsd["msd"].iloc[0:max_lagtime], 1)
-
-    D = k/4
-    pa = np.sqrt(complex(d))/2.
-    pa = pa.real if d > 0 else -pa.imag
-
-    # TODO: resample to get the error of D
-    # msdplot.m:403
-
-    return D, pa
+        raise ValueError("Unrecognized model")
 
 
 def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
