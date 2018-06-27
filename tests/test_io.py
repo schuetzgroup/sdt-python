@@ -275,6 +275,21 @@ class TestTiff(unittest.TestCase):
                 md.pop("Software")
                 np.testing.assert_equal(md, self.frames[0].metadata)
 
+    def test_sdt_tiff_stack_imagej(self):
+        """io.SdtTiffStack: ImageJ metadata"""
+        exp = {'ImageJ': '1.50d',
+               'images': 2,
+               'slices': 2,
+               'unit': '',
+               'loop': False,
+               'bla': 1,
+               'bla2': 2,
+               'shape': [2, 8, 8],
+               'Software': 'sdt.io',
+               'DateTime': datetime(2018, 6, 27, 13, 52, 58)}
+        with sdt.io.SdtTiffStack(os.path.join(data_path, "ij.tif")) as t:
+            self.assertDictEqual(t.metadata, exp)
+
 
 class TestFiles(unittest.TestCase):
     def setUp(self):

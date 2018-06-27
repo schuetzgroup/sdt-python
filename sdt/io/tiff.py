@@ -64,9 +64,7 @@ try:
             try:
                 with tifffile.TiffFile(filename) as f:
                     r = f.series[0].pages[0]
-                md = self._read_metadata(r)
-                self._get_metadata_yaml(md)
-                self.metadata = md
+                self.metadata = self._read_metadata(r)
             except Exception:
                 self.metadata = {}
 
@@ -76,6 +74,29 @@ try:
                       "DocumentName"):
                 with suppress(KeyError):
                     md[k] = tiff.tags[k].value
+
+            # Deal with special metadata
+            if tiff.parent.is_imagej:
+                # ImageJ
+                md.pop("ImageDescription", None)
+                ij_md = tiff.parent.imagej_metadata
+                with suppress(Exception):
+                    # "Info" may contain more metadata
+                    ij_info = ij_md.get("Info", "").replace("\n\n", "\n---\n")
+                    new_ij_md = {}
+                    for i in yaml.safe_load_all(ij_info):
+                        new_ij_md.update(i.pop("ImageDescription", {}))
+                        new_ij_md.update(i)
+                    ij_md.pop("Info")
+                    ij_md.update(new_ij_md)
+                md.update(ij_md)
+            else:
+                # Try YAML
+                with suppress(Exception):
+                    yaml_md = yaml.safe_load(md["ImageDescription"])
+                    md.pop("ImageDescription")
+                    md.update(yaml_md)
+
             try:
                 md["DateTime"] = datetime.strptime(md["DateTime"],
                                                    "%Y:%m:%d %H:%M:%S")
@@ -84,19 +105,10 @@ try:
 
             return md
 
-
-        def _get_metadata_yaml(self, meta):
-            img_desc = meta.get("ImageDescription", "{}")
-            yaml_meta = {}
-            with suppress(Exception):
-                yaml_meta = yaml.safe_load(img_desc)
-            if yaml_meta:
-                meta.pop("ImageDescription", None)
-                meta.update(yaml_meta)
-
         def get_frame(self, j):
             f = super().get_frame(j)
-            self._get_metadata_yaml(f.metadata)
             return f
+
+
 except ImportError:
     pass
