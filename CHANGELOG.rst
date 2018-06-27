@@ -7,6 +7,15 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+13.1
+----
+
+Bugfix release
+
+- Fix loading io.yaml on Windows, where there is no `numpy.float128`
+- Support ImageJ metadata in io.SdtTiffStack
+
+
 13.0
 ----
 
