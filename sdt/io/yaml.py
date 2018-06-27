@@ -211,7 +211,11 @@ SafeDumper.add_representer(collections.OrderedDict, dict_representer)
 
 # Represent numpy scalars as standard types
 for D in (Dumper, SafeDumper):
-    for t in (np.float16, np.float32, np.float64, np.float128):
+    # There is no float128 on Windows; do it the safe way
+    float_t = (getattr(np, t)
+               for t in ("float16", "float32", "float64", "float128")
+               if hasattr(np, t))
+    for t in float_t:
         D.add_representer(t, D.represent_float)
     for t in (np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16,
               np.uint32, np.uint64):
