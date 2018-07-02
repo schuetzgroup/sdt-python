@@ -98,7 +98,7 @@ def restrict_roi(locate_func, buffer=10):
         else:
             rel_origin = kwargs.pop("rel_origin", True)
 
-        loc = locate_func(img_roi(data, fill_value="mean"), *args[:-2],
+        loc = locate_func(img_roi(data, fill_value=np.mean), *args[:-2],
                           bandpass=False, **kwargs)
 
         # since we cropped the image, we have to add to the coordinates
