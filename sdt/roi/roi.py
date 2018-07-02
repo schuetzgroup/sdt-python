@@ -288,7 +288,7 @@ class PathROI(object):
             Otherwise, `slicerator.pipeline` is used to crop image data to the
             bounding rectangle of the path and set all pixels not within the
             path to `fill_value`
-        reset_origin : bool, optional
+        rel_origin : bool, optional
             If True, the top-left corner coordinates of the path's bounding
             rectangle will be subtracted off all feature coordinates, i. e.
             the top-left corner will be the new origin. Only valid if `invert`

@@ -36,20 +36,22 @@ class TestRoi(TestCaseBase):
     msg_prefix = "roi.ROI"
 
     def setUp(self):
-        self.top_left = (10, 10)
+        self.top_left = (20, 10)
         self.bottom_right = (90, 70)
         self.roi = roi.ROI(self.top_left, self.bottom_right)
 
-        self.img = np.zeros((80, 100))
+        self.img = np.zeros((100, 130))
         self.img[self.top_left[1]:self.bottom_right[1],
                  self.top_left[0]:self.bottom_right[0]] = 1
         self.cropped_img = self.img[self.top_left[1]:self.bottom_right[1],
                                     self.top_left[0]:self.bottom_right[0]]
 
-        self.loc = pd.DataFrame([[3, 3], [30, 30], [100, 80]],
+        self.loc = pd.DataFrame([[-80, -80], [3, 3], [30, 30], [100, 80],
+                                 [1000, 1000]],
                                 columns=["x", "y"])
-        self.loc_roi = self.loc.drop([0, 2])
-        self.loc_roi_inv = self.loc.drop(1)
+        self.loc_roi = self.loc.iloc[[2]].copy()
+        self.loc_roi_inv = self.loc.drop(2).copy()
+
 
     def test_init(self):
         """.__init__"""
@@ -354,6 +356,111 @@ class TestEllipseRoi(TestPathRoi):
         # bottom ten rows get chopped off due to small self.img size
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float).T[:70, :]]*2)
+
+
+class TestMaskRoi(TestRoi):
+    msg_prefix = "roi.MaskROI"
+    def setUp(self):
+        super().setUp()
+        self.mask = self.img.astype(bool)
+        self.origin = (20.2, 10)
+        self.pixel_size = 1.5
+        self.roi = roi.MaskROI(self.mask, self.origin, self.pixel_size)
+
+        for lo in (self.loc, self.loc_roi, self.loc_roi_inv):
+            lo[["x", "y"]] *= self.pixel_size
+            lo[["x", "y"]] += self.origin
+
+        int_origin = np.round(self.origin).astype(int)
+
+    def test_init(self):
+        """.__init__"""
+        np.testing.assert_equal(self.roi.mask, self.mask)
+        np.testing.assert_equal(self.roi.mask_origin, self.origin)
+        np.testing.assert_equal(self.roi.pixel_size, self.roi.pixel_size)
+
+    def test_image(self):
+        """.__call__: image data"""
+        self.roi.mask_origin = (0, 0)
+        img = self.roi(self.img, fill_value=10)
+        self.img[self.img == 0] = 10
+        np.testing.assert_equal(img, self.img)
+
+    def test_image_invert(self):
+        """.__call__: image data, invert=True"""
+        self.roi.mask_origin = (0, 0)
+        img = self.roi(self.img, fill_value=10, invert=True)
+        self.img[self.img > 0] = 10
+        np.testing.assert_equal(img, self.img)
+
+    def test_image_callable_fill(self):
+        """.__call__: image data, callable fill_value"""
+        self.roi.mask_origin = (0, 0)
+        img = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2)
+        self.img[self.img == 0] = 3
+        np.testing.assert_equal(img, self.img)
+
+    def test_image_callable_fill_invert(self):
+        """.__call__: image data, callable fill_value + invert"""
+        self.roi.mask_origin = (0, 0)
+        img = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2,
+                       invert=True)
+        self.img[self.img > 0] = 2
+        np.testing.assert_equal(img, self.img)
+
+    def test_image_origin(self):
+        """.__call__: image data, mask_origin != 0"""
+        img = self.roi(self.img)
+        self.img[
+            :self.top_left[1]+round(self.origin[1]/self.pixel_size), :] = 0
+        self.img[
+            :, :self.top_left[0]+round(self.origin[0]/self.pixel_size)] = 0
+        np.testing.assert_equal(img, self.img)
+
+    def test_pipeline(self):
+        """.__call__: image data, test pipeline capabilities"""
+        self.roi.mask_origin = (0, 0)
+        l = [self.img.copy()]*2
+        s = slicerator.Slicerator(l)
+        rimg = self.roi(s, fill_value=10)
+        self.img[self.img == 0] = 10
+        self.assertIsInstance(rimg, slicerator.Pipeline)
+        np.testing.assert_equal(list(rimg), [self.img]*2)
+
+    def test_dataframe_rel_origin(self):
+        """.__call__: localization data, rel. origin"""
+        np.testing.assert_equal(self.roi(self.loc, rel_origin=True).values,
+                                self.loc_roi - self.origin)
+
+    def assert_roi_equal(self, actual, desired):
+        np.testing.assert_equal([actual.top_left, actual.bottom_right],
+                                [desired.top_left, desired.bottom_right])
+
+    def test_yaml(self):
+        """: YAML saving/loading"""
+        buf = io.StringIO()
+        mask = np.zeros((3, 3), dtype=bool)
+        mask[1, 1] = True
+        self.roi.mask = mask
+        yaml.safe_dump(self.roi, buf)
+        buf.seek(0)
+        roi2 = yaml.safe_load(buf)
+        self.assert_roi_equal(roi2, self.roi)
+
+    def test_size(self):
+        """.size attribute"""
+        pass
+
+    def test_area(self):
+        """.area attribute"""
+        a = ((self.bottom_right[0] - self.top_left[0]) *
+             (self.bottom_right[1] - self.top_left[1]))
+        self.assertAlmostEqual(self.roi.area, a * self.pixel_size**2)
+
+    def assert_roi_equal(self, actual, desired):
+        np.testing.assert_equal(actual.mask, desired.mask)
+        np.testing.assert_equal(actual.mask_origin, desired.mask_origin)
+        np.testing.assert_equal(actual.pixel_size, desired.pixel_size)
 
 
 class TestImagej(unittest.TestCase):

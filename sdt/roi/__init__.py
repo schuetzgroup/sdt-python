@@ -8,6 +8,8 @@ molecule and image data) to a region of interest (ROI). One can specify
 - arbitrarily shaped ROIs with subpixel accuracy using :py:class:`PathROI` or
   one of its subclasses (:py:class:`RectangleROI`, :py:class:`EllipseROI`) for
   convenience.
+- ROIs defined by boolean arrays, which are interpreted as masks
+  (:py:class:`MaskROI`).
 
 Note that only the :py:class:`ROI` class ensures accurate cropping of images.
 The :py:class:`PathROI`-derivied classes will crop an image to the
@@ -85,10 +87,17 @@ Arbitrary ROIs with subpixel accuracy
 .. autoclass:: RectangleROI
 .. autoclass:: EllipseROI
 
+Boolean mask ROIs
+-----------------
+.. autoclass:: MaskROI
+  :members:
+  :special-members: __call__
+
 ImageJ ROI file loading
 -----------------------
 .. autofunction:: load_imagej
 .. autofunction:: load_imagej_zip
 """
 from .roi import *
+from .mask_roi import *
 from .imagej import *
