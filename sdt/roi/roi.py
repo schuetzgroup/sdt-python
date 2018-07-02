@@ -9,6 +9,7 @@ import matplotlib as mpl
 from slicerator import pipeline
 
 from .. import spatial, config
+from .mask_roi import MaskROI
 
 
 class ROI(object):
@@ -256,23 +257,24 @@ class PathROI(object):
 
         # Draw ROI path, but only in the bounding box of the polygon, for
         # performance reasons
-        mask_size = self.bounding_box_int[1] - self.bounding_box_int[0]
+        mask_shape = self.bounding_box_int[1] - self.bounding_box_int[0]
+        mask_shape = mask_shape[::-1]
         # Move polygon to the top left, subtract another half pixel so that
         # coordinates are pixel centers
         trans = mpl.transforms.Affine2D().translate(
             *(-self.bounding_box_int[0] - 0.5))
         # Checking a lot of points if they are inside the polygon,
         # this is rather slow
-        idx = np.indices(mask_size).reshape((2, -1))
+        idx = np.indices(mask_shape).reshape((2, -1))[::-1]
         # Using 2 * buffer seems to give the expected result (enlarge the
         # path by about `buffer` units)
         self.image_mask = self.path.contains_points(
             idx.T, trans, 2 * self.buffer_sign * self.buffer)
-        self.image_mask = self.image_mask.reshape(mask_size)
+        self.image_mask = self.image_mask.reshape(mask_shape)
 
     @config.set_columns
     def __call__(self, data, rel_origin=True, fill_value=0, invert=False,
-                 columns={}, **kwargs):
+                 crop=True, columns={}, **kwargs):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -293,12 +295,17 @@ class PathROI(object):
             rectangle will be subtracted off all feature coordinates, i. e.
             the top-left corner will be the new origin. Only valid if `invert`
             is False. Defaults to True.
-        fill_value : "mean" or number, optional
+        fill_value : number or callable, optional
             Fill value for pixels that are not contained in the path. If
-            "mean", use the mean of the array in the ROI. Defaults to 0
+            callable, it should take the array of pixels within the mask as its
+            argument and return a scalar that is used as the fill value. Not
+            applicable for single molecule data. Defaults to 0.
         invert : bool, optional
-            If True, only datapoints outside the ROI are selected. Works only
-            if `data` is a :py:class:`pandas.DataFrame`. Defaults to `False`.
+            If True, only datapoints/pixels outside the path are selected.
+            Defaults to `False`.
+        crop : bool, optional
+            If True, crop image data to the (integer) bounding box of the
+            path. Defaults to True.
 
         Returns
         -------
@@ -350,27 +357,16 @@ class PathROI(object):
                 raise ValueError("Cannot crop image since no image mask "
                                  "was created during construction.")
 
-            @pipeline
-            def crop(img):
-                img = img.copy().T
+            mask_roi = MaskROI(self.image_mask, self.bounding_box_int[0])
+            masked = mask_roi(data, fill_value=fill_value, invert=invert)
 
-                bb_i = self.bounding_box_int
-                tl_shift = np.maximum(np.subtract((0, 0), bb_i[0]), 0)
-                br_shift = np.minimum(np.subtract(img.shape, bb_i[1]), 0)
-                tl = bb_i[0] + tl_shift
-                br = bb_i[1] + br_shift
-
-                img = img[tl[0]:br[0], tl[1]:br[1]]
-                mask = self.image_mask[tl_shift[0] or None:br_shift[0] or None,
-                                       tl_shift[1] or None:br_shift[1] or None]
-
-                if isinstance(fill_value, str):
-                    fv = np.mean(img[mask])
-                else:
-                    fv = fill_value
-                img[~mask] = fv
-                return img.T
-            return crop(data)
+            if crop:
+                tl = np.max([self.bounding_box_int[0], [0, 0]], axis=0)
+                br = self.bounding_box_int[1]
+                crop_roi = ROI(tl, br)
+                return crop_roi(masked)
+            else:
+                return masked
 
     @config.set_columns
     def reset_origin(self, data, columns={}):

@@ -134,7 +134,7 @@ class TestPathRoi(TestRoi):
                                  dtype=float) + 0.7
         self.bbox = np.array([self.vertices[0], self.vertices[2]])
         self.bbox_int = np.array([[10, 10], [91, 71]])
-        self.mask = np.zeros((81, 61), dtype=bool)
+        self.mask = np.zeros((61, 81), dtype=bool)
         self.mask[1:, 1:] = True
         self.buffer = 0
         self.roi = roi.PathROI(self.vertices)
@@ -176,7 +176,43 @@ class TestPathRoi(TestRoi):
 
     def test_image(self):
         """.__call__: image data"""
-        np.testing.assert_equal(self.roi(self.img), self.mask.astype(float).T)
+        img = self.mask.astype(float)
+        img[~self.mask] = 10
+        np.testing.assert_equal(self.roi(self.img, fill_value=10), img)
+
+    def test_image_invert(self):
+        """.__call__: image data, invert=True"""
+        img = self.mask.astype(float)
+        img[self.mask] = 10
+        img[~self.mask] = 1
+        np.testing.assert_equal(self.roi(self.img, fill_value=10, invert=True),
+                                img)
+
+    def test_image_callable_fill(self):
+        """.__call__: image data, callable fill_value"""
+        img = self.mask.astype(float)
+        img[~self.mask] = 3
+        rimg = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2)
+        np.testing.assert_equal(img, img)
+
+    def test_image_callable_fill_invert(self):
+        """.__call__: image data, callable fill_value + invert"""
+        img = self.mask.astype(float)
+        img[self.mask] = 3
+        img[~self.mask] = 1
+        rimg = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2,
+                        invert=True)
+        np.testing.assert_equal(rimg, img)
+
+    def test_image_no_crop(self):
+        """.__call__: image data, crop=False"""
+        nz = np.nonzero(self.mask)
+        for n, o in zip(nz, self.bbox_int[0, ::-1]):
+            n += o
+        img = np.full_like(self.img, 10)
+        img[nz] = self.img[nz]
+        np.testing.assert_equal(self.roi(self.img, fill_value=10, crop=False),
+                                img)
 
     def test_image_subtype(self):
         """.__call__: image data, check return subtype"""
@@ -188,7 +224,7 @@ class TestPathRoi(TestRoi):
         l = [self.img]*2
         s = slicerator.Slicerator(l)
         np.testing.assert_equal(list(self.roi(s)),
-                                [self.mask.astype(float).T]*2)
+                                [self.mask.astype(float)]*2)
 
     def test_dataframe_rel_origin(self):
         """.__call__: localization data, rel. origin"""
@@ -215,7 +251,28 @@ class TestNoImagePathRoi(TestPathRoi):
     def test_image(self):
         """.__call__: image data"""
         with self.assertRaises(ValueError):
-            self.roi(self.img)
+            self.roi(self.img, fill_value=10)
+
+    def test_image_invert(self):
+        """.__call__: image data, invert=True"""
+        with self.assertRaises(ValueError):
+            self.roi(self.img, fill_value=10, invert=True)
+
+    def test_image_callable_fill(self):
+        """.__call__: image data, callable fill_value"""
+        with self.assertRaises(ValueError):
+            self.roi(self.img, fill_value=lambda x: np.mean(x) + 2)
+
+    def test_image_callable_fill_invert(self):
+        """.__call__: image data, callable fill_value + invert"""
+        with self.assertRaises(ValueError):
+            self.roi(self.img, fill_value=lambda x: np.mean(x) + 2,
+                     invert=True)
+
+    def test_image_no_crop(self):
+        """.__call__: image data, crop=False"""
+        with self.assertRaises(ValueError):
+            self.roi(self.img, fill_value=10, crop=False)
 
     def test_image_subtype(self):
         """.__call__: image data, check return subtype"""
@@ -241,7 +298,7 @@ class TestBufferedPathRoi(TestPathRoi):
         self.bbox = np.array([self.vertices[0] - self.buffer,
                               self.vertices[2] + self.buffer])
         self.bbox_int = np.array([[10, 10], [91, 71]])
-        self.mask = np.zeros((81, 61), dtype=bool)
+        self.mask = np.zeros((61, 81), dtype=bool)
         self.mask[1:, 1:] = True
 
         self.loc = pd.DataFrame([[3, 3], [12, 12], [30, 30], [100, 80]],
@@ -272,7 +329,7 @@ class TestNonOverlappingPathRoi(TestPathRoi):
         self.vertices = np.array([[-30, -30], [-30, 20], [20, 20], [20, -30]],
                                  dtype=float)
         self.bbox = np.array([self.vertices[0], self.vertices[2]])
-        self.bbox_int = self.bbox
+        self.bbox_int = self.bbox.astype(int)
         self.mask = np.ones((50, 50), dtype=bool)
         self.roi = roi.PathROI(self.vertices)
         self.loc = pd.DataFrame([[3, 3], [30, 30], [100, 80]],
@@ -283,7 +340,31 @@ class TestNonOverlappingPathRoi(TestPathRoi):
     def test_image(self):
         """.__call__: image data"""
         np.testing.assert_equal(self.roi(self.img),
-                                self.mask.astype(float).T[:20, :20])
+                                self.mask.astype(float)[:20, :20])
+
+    def test_image_invert(self):
+        """.__call__: image data, invert=True"""
+        img = self.mask.astype(float)
+        img[self.mask] = 10
+        img[~self.mask] = 1
+        np.testing.assert_equal(self.roi(self.img, fill_value=10, invert=True),
+                                img[:20, :20])
+
+    def test_image_callable_fill_invert(self):
+        """.__call__: image data, callable fill_value + invert"""
+        img = self.mask.astype(float)
+        img[self.mask] = 3
+        img[~self.mask] = 1
+        rimg = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2,
+                        invert=True)
+        np.testing.assert_equal(rimg, img[:20, :20])
+
+    def test_image_no_crop(self):
+        """.__call__: image data, crop=False"""
+        img = np.full_like(self.img, 10)
+        img[:20, :20] = self.img[:20, :20]
+        np.testing.assert_equal(self.roi(self.img, fill_value=10, crop=False),
+                                img)
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
@@ -324,7 +405,7 @@ class TestEllipseRoi(TestPathRoi):
 
         self.bbox = self.bbox_int = np.array([[0, 10], [60, 90]])
         with np.load(data_path / "ellipse_roi.npz") as orig:
-            self.mask = orig["image_mask"]
+            self.mask = orig["image_mask"].T
             self.vertices = orig["vertices"]
             self.codes = orig["codes"]
 
@@ -347,7 +428,35 @@ class TestEllipseRoi(TestPathRoi):
         """.__call__: image data"""
         # bottom ten rows get chopped off due to small self.img size
         np.testing.assert_equal(self.roi(self.img),
-                                self.mask.astype(float).T[:70, :])
+                                self.mask.astype(float)[:70, :])
+
+    def test_image_invert(self):
+        """.__call__: image data, invert=True"""
+        img = self.mask.astype(float)
+        img[self.mask] = 10
+        img[~self.mask] = 1
+        np.testing.assert_equal(self.roi(self.img, fill_value=10, invert=True),
+                                img[:70, :])
+
+    def test_image_callable_fill_invert(self):
+        """.__call__: image data, callable fill_value + invert"""
+        img = self.mask.astype(float)
+        img[self.mask] = 3
+        img[~self.mask] = 1
+        rimg = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2,
+                        invert=True)
+        np.testing.assert_equal(rimg, img[:70, :])
+
+    def test_image_no_crop(self):
+        """.__call__: image data, crop=False"""
+        nz = np.nonzero(self.mask)
+        nz = tuple(n[nz[0] < 70] for n in nz)
+        for n, o in zip(nz, self.bbox_int[0, ::-1]):
+            n += o
+        img = np.full_like(self.img, 10)
+        img[nz] = self.img[nz]
+        np.testing.assert_equal(self.roi(self.img, fill_value=10, crop=False),
+                                img)
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
@@ -355,7 +464,7 @@ class TestEllipseRoi(TestPathRoi):
         s = slicerator.Slicerator(l)
         # bottom ten rows get chopped off due to small self.img size
         np.testing.assert_equal(list(self.roi(s)),
-                                [self.mask.astype(float).T[:70, :]]*2)
+                                [self.mask.astype(float)[:70, :]]*2)
 
 
 class TestMaskRoi(TestRoi):

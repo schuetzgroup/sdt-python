@@ -69,8 +69,8 @@ class MaskROI:
             argument and return a scalar that is used as the fill value. Not
             applicable for single molecule data. Defaults to 0.
         invert : bool, optional
-            If True, only datapoints outside the mask are selected. Defaults to
-            `False`.
+            If True, only datapoints/pixels outside the mask are selected.
+            Defaults to `False`.
 
         Returns
         -------
@@ -115,7 +115,7 @@ class MaskROI:
 
                 # Use only indices that are in bounds of `data`
                 bounds_mask = np.ones(len(nz[0]), dtype=bool)
-                for n, o, s in zip(nz[::-1], self.mask_origin, img.shape):
+                for n, o, s in zip(nz, self.mask_origin[::-1], img.shape):
                     # Add scaled origin coordinates
                     n += np.round(o / self.pixel_size).astype(int)
                     # Check bounds
