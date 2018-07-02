@@ -8,7 +8,6 @@ import pandas as pd
 import numpy as np
 
 from sdt import fret, chromatic, image, changepoint, io
-from sdt.fret.sm_filter import _image_mask_single
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -476,14 +475,6 @@ class TestSmFretFilter(unittest.TestCase):
         self.filt.filter_particles("fret_a_mass > 0", 0)
         pd.testing.assert_frame_equal(
             self.filt.tracks, data[data["fret", "particle"] == 2])
-
-    def test_image_mask_single(self):
-        """fret.sm_filter._image_mask_single"""
-        mask = np.zeros((200, 200), dtype=bool)
-        mask[50:100, 30:60] = True
-        t = _image_mask_single(self.data, mask, "donor", ["x", "y"])
-        pd.testing.assert_frame_equal(
-            t, self.data[self.data["fret", "particle"] == 0])
 
     def test_image_mask(self):
         """fret.SmFretFilter.image_mask: single mask"""

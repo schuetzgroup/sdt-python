@@ -7,42 +7,7 @@ import numpy as np
 import pandas as pd
 
 from .sm_track import SmFretTracker
-from .. import helper, changepoint, config
-
-
-def _image_mask_single(tracks, mask, channel, pos_columns):
-    """Filter using a boolean mask image (helper accepting only a single mask)
-
-    Remove all lines where coordinates lie in a region where `mask` is
-    `False`. This is doing the work for :py:meth:`SmFretFilter.image_mask`.
-
-    Parameters
-    ----------
-    tracks : pandas.DataFrame
-        smFRET tracking data to be filtered
-    mask : numpy.ndarray, dtype(bool)
-        Mask image(s).
-    channel : {"donor", "acceptor"}
-        Channel to use for the filtering
-    pos_columns : list of str
-        Names of the columns describing the coordinates of the features in
-        :py:class:`pandas.DataFrames`.
-
-    Returns
-    -------
-    pandas.DataFrame
-        Filtered data.
-    """
-    cols = [(channel, c) for c in pos_columns]
-    pos = tracks.loc[:, cols].values
-    pos = np.round(pos).astype(int)
-
-    in_bounds = np.ones(len(pos), dtype=bool)
-    for p, bd in zip(pos.T, mask.shape[::-1]):
-        in_bounds &= p >= 0
-        in_bounds &= p < bd
-
-    return tracks[mask[tuple(p for p in pos[in_bounds, ::-1].T)]]
+from .. import helper, changepoint, config, roi
 
 
 class SmFretFilter:
@@ -307,15 +272,17 @@ class SmFretFilter:
         ...          for i in range(1, 11)]
         >>> filt.image_mask(masks, "donor")
         """
+        cols = {"coords": [(channel, c) for c in self.columns["coords"]]}
+
         if isinstance(mask, np.ndarray):
-            self.tracks = _image_mask_single(self.tracks, mask, channel,
-                                             self.columns["coords"])
+            r = roi.MaskROI(mask)
+            self.tracks = r(self.tracks, columns=cols)
         else:
             ret = []
             for k, v in mask:
                 try:
-                    m = _image_mask_single(self.tracks.loc[k], v, channel,
-                                           self.columns["coords"])
+                    r = roi.MaskROI(v)
+                    m = r(self.tracks.loc[k], columns=cols)
                 except KeyError:
                     # No tracking data for the current image
                     continue
