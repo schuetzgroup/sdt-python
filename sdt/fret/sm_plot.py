@@ -230,9 +230,9 @@ def draw_track(tracks, track_no, donor_img, acceptor_img, size, n_cols=8,
 
     trc = tracks[tracks["fret", "particle"] == track_no]
     don_px = loc.get_raw_features(trc["donor"], donor_img, size,
-                                  columns["coords"])
+                                  columns=columns)
     acc_px = loc.get_raw_features(trc["acceptor"], acceptor_img, size,
-                                  columns["coords"])
+                                  columns=columns)
 
     rows = int(np.ceil(len(trc)/n_cols))
     gs = mpl.gridspec.GridSpec(rows*3, n_cols+1, wspace=0.1, hspace=0.1)
