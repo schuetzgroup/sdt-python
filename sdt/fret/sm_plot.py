@@ -53,7 +53,7 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
     fig, ax = plt.subplots(rows, columns, sharex=True, sharey=True,
                            squeeze=False, figsize=(columns*size, rows*size))
 
-    for (k, f), a in zip(track_data.items(), ax.T.flatten()):
+    for (k, f), a in zip(track_data.items(), ax.flatten()):
         if frame is not None:
             f = f[f["donor", "frame"] == frame]
         x = f[xdata].values.astype(float)
@@ -67,7 +67,7 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
             a.scatter(x, y, **scatter_args)
         a.set_title(k)
 
-    for a in ax.T.flatten()[len(track_data):]:
+    for a in ax.flatten()[len(track_data):]:
         a.axis("off")
 
     xlabel = xlabel if xlabel is not None else " ".join(xdata)
@@ -131,7 +131,7 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
     hist_args.setdefault("bins", np.linspace(-0.5, 1.5, 50))
     hist_args.setdefault("density", False)
 
-    for (k, f), a in zip(track_data.items(), ax.T.flatten()):
+    for (k, f), a in zip(track_data.items(), ax.flatten()):
         if frame is not None:
             f = f[f["donor", "frame"] == frame]
         x = f[data].values.astype(float)
@@ -141,7 +141,7 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
         a.hist(x, **hist_args)
         a.set_title(k)
 
-    for a in ax.T.flatten()[len(track_data):]:
+    for a in ax.flatten()[len(grouped):]:
         a.axis("off")
 
     xlabel = xlabel if xlabel is not None else " ".join(data)
