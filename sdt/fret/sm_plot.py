@@ -1,4 +1,6 @@
 import math
+import re
+from collections import OrderedDict
 
 import numpy as np
 import pandas as pd
@@ -90,7 +92,7 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
 
 def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
                 size=5, xlim=(None, None), xlabel=None, ylabel=None,
-                hist_args={}):
+                group_re=None, hist_args={}):
     """Make histogram plots of multiple smFRET datasets
 
     Parameters
@@ -124,22 +126,43 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
     ax : numpy.ndarray of mpl.axes.Axes
         axes objects of the plots
     """
-    rows = math.ceil(len(track_data) / columns)
+    if group_re is not None:
+        g_re = group_re[0]
+        if isinstance(g_re, str):
+            g_re = re.compile(g_re)
+
+        grouped = OrderedDict()
+        for trc_key, trc in track_data.items():
+            m = g_re.search(trc_key)
+            grp = m.group(group_re[1])
+            key = m.group(group_re[2])
+            grouped.setdefault(grp, []).append((key, trc))
+    else:
+        grouped = OrderedDict([(k, [(None, v)])
+                               for k, v in track_data.items()])
+
+    rows = math.ceil(len(grouped) / columns)
     fig, ax = plt.subplots(rows, columns, squeeze=False, sharex=True,
                            figsize=(columns*size, rows*size))
 
     hist_args.setdefault("bins", np.linspace(-0.5, 1.5, 50))
     hist_args.setdefault("density", False)
 
-    for (k, f), a in zip(track_data.items(), ax.flatten()):
-        if frame is not None:
-            f = f[f["donor", "frame"] == frame]
-        x = f[data].values.astype(float)
-        m = np.isfinite(x)
-        x = x[m]
+    for (g_key, items), a in zip(grouped.items(), ax.flatten()):
+        show_legend = False
+        for label, f in items:
+            if frame is not None:
+                f = f[f["donor", "frame"] == frame]
+            x = f[data].values.astype(float)
+            m = np.isfinite(x)
+            x = x[m]
 
-        a.hist(x, **hist_args)
-        a.set_title(k)
+            a.hist(x, label=label, **hist_args)
+            if label:
+                show_legend = True
+        a.set_title(g_key)
+        if show_legend:
+            a.legend(loc=0)
 
     for a in ax.flatten()[len(grouped):]:
         a.axis("off")
