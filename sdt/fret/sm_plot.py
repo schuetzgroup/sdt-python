@@ -115,6 +115,12 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
     xlabel, ylabel : str or None, optional
         Label for x (y) axis. If `None`, use `data` for the x axis and
         ``"# events"`` on the y axis. Defaults to `None`.
+    group_re : tuple(str, int, int) or None, optional
+        The first entry in the tuple should be a regular expression with at
+        least two groups. Datasets from `track_data` will be plotted in the
+        same plot if whichever regex group is specified by the second entry in
+        the tuple is the same. The third entry identifies the label of the
+        dataset in the plot. If None, do no grouping. Defaults to None.
     hist_args : dict, optional
         Further arguments to pass as keyword arguments to the histogram
         plotting function. Defaults to {}.
