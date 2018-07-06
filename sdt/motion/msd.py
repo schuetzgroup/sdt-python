@@ -487,8 +487,9 @@ def msd_func(t, d, pa, alpha=1, exposure_time=0):
     return 4 * d * t_corr **alpha + 4 * pa**2
 
 
-def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
-             exposure_time=0.):
+def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
+             exposure_time=0., alpha=1., fit_max_lagtime=2,
+             fit_model="brownian"):
     """Plot lag time vs. MSD and the fit as calculated by `fit_msd`.
 
     Parameters
@@ -496,10 +497,12 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
     emsd : DataFrame([lagt, msd, stderr])
         MSD data as computed by `emsd`. If the stderr column is not present,
         no error bars will be plotted.
-    d : float
-        Diffusion coefficient (see `fit_msd`)
+    d : float or None, optional
+        Diffusion coefficient (see :py:func:`fit_msd`). If `None`, use
+        :py:func:`fit_msd` to calculate it.
     pa : float
-        Positional accuracy (see `fit_msd`)
+        Positional accuracy (see :py:func:`fit_msd`) If `None`, use
+        :py:func:`fit_msd` to calculate it.
     max_lagtime : int, optional
         Maximum number of lag times to plot. Defaults to 100.
     show_legend : bool, optional
@@ -512,11 +515,36 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
         Correct positional accuracy for motion during exposure. Settings to 0
         turns this off. This has to match the exposure time of the
         :py:func:`fit_msd` call. Defaults to 0.
+    alpha : float, optional
+        Anomalous diffusion exponent. Defaults to 1.
+    fit_max_lagtime : int
+        Passed as `max_lagtime` parameter to :py:fun:`fit_msd` if either `d`
+        or `pa` is `None`. Defaults to 2.
+    fit_model : str
+        Passed as `model` parameter to :py:fun:`fit_msd` if either `d`
+        or `pa` is `None`. Defaults to "brownian".
+
+    Returns
+    -------
+    d : float
+        Diffusion coefficient
+    pa : float
+        Positional accuracy. If this is negative, the fitted graph's
+        intercept was negative (i. e. not meaningful).
+    alpha : float
+        Anomalous diffusion exponent.
     """
     import matplotlib as mpl
     import matplotlib.pyplot as plt
     if ax is None:
         ax = plt.gca()
+
+    if d is None or pa is None:
+        r = fit_msd(emsd, fit_max_lagtime, exposure_time, fit_model)
+        if len(r) == 2:
+            d, pa = r
+        else:
+            d, pa, alpha = r
 
     emsd = emsd.iloc[:int(max_lagtime)]
     ax.set_xlabel("lag time [s]")
@@ -527,12 +555,8 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
     else:
         ax.plot(emsd["lagt"], emsd["msd"], linestyle="none", marker="o")
 
-    k = 4*d
-    ic = 4*pa**2
-    if pa < 0:
-        ic *= -1
-    x = np.linspace(0, emsd["lagt"].max(), num=2)
-    y = k*(x - exposure_time/3.) + ic
+    x = np.linspace(0, emsd["lagt"].max(), 100)
+    y = msd_func(x, d, pa, alpha, exposure_time)
     ax.plot(x, y)
 
     if show_legend:
@@ -541,3 +565,5 @@ def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
         ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$/s".format(float(d)),
                                     "PA: {:.0f} nm".format(float(pa*1000))],
                   loc=0)
+
+    return d, pa, alpha
