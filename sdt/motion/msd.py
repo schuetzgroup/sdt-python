@@ -451,6 +451,43 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0, model="brownian"):
         raise ValueError("Unrecognized model")
 
 
+def msd_func(t, d, pa, alpha=1, exposure_time=0):
+    """Calculate theoretical MSDs for different lag times
+
+    Calculate :math:`msd(t) = 4*D*t^\alpha + 4*pa**2`
+
+    Parameters
+    ----------
+    t : array-like or scalar
+        Lag times
+    d : float
+        Diffusion coefficient
+    pa : float
+        Positional accuracy.
+    alpha : float
+        Anomalous diffusion exponent.
+
+    Returns
+    -------
+    numpy.ndarray or scalar
+        Calculated theoretical MSDs
+    """
+    ic = 4 * pa**2
+    if pa < 0:
+        ic *= -1
+
+    if exposure_time == 0:
+        t_corr = t
+    elif alpha == 1:
+        t_corr = t - exposure_time / 3
+    else:
+        # TODO: do correction numerically
+        raise ValueError(
+            "Exposure time correction not supported for alpha != 0.")
+
+    return 4 * d * t_corr **alpha + 4 * pa**2
+
+
 def plot_msd(emsd, d, pa, max_lagtime=100, show_legend=True, ax=None,
              exposure_time=0.):
     """Plot lag time vs. MSD and the fit as calculated by `fit_msd`.
