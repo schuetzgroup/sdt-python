@@ -394,7 +394,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
 def fit_msd(emsd, max_lagtime=2, exposure_time=0, model="brownian"):
     """Get the diffusion coefficient and positional accuracy from MSDs
 
-    Fit a linear function :math:`msd(t) = 4*D*t^\alpha + 4*pa**2` to the
+    Fit a function :math:`msd(t) = 4*D*t^\alpha + 4*pa**2` to the
     tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient and
     :math:`pa` is the positional accuracy (uncertainty) and :math:`alpha`
     the anomalous diffusion exponent.
@@ -442,10 +442,9 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0, model="brownian"):
 
         return D, pa
     elif model == "anomalous":
-        def an_diff(t, d, pa, alpha):
-            return 4 * d * t**alpha + 4 * pa**2
-        d, pa, alpha = scipy.optimize.curve_fit(an_diff, emsd["lagt"],
-                                                emsd["msd"])[0]
+        d, pa, alpha = scipy.optimize.curve_fit(
+            msd_func, emsd["lagt"], emsd["msd"],
+            exposure_time=exposure_time)[0]
         return d, pa, alpha
     else:
         raise ValueError("Unrecognized model")
