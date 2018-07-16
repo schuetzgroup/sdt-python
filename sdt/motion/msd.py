@@ -443,17 +443,19 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0, model="brownian"):
         return D, pa
     elif model == "anomalous":
         d, pa, alpha = scipy.optimize.curve_fit(
-            msd_func, emsd["lagt"], emsd["msd"],
-            exposure_time=exposure_time)[0]
+            lambda t, d, pa, a: msd_theoretic(t, d, pa, a, exposure_time),
+            emsd["lagt"], emsd["msd"])[0]
         return d, pa, alpha
     else:
         raise ValueError("Unrecognized model")
 
 
-def msd_func(t, d, pa, alpha=1, exposure_time=0):
-    """Calculate theoretical MSDs for different lag times
+def msd_theoretic(t, d, pa, alpha=1, exposure_time=0):
+    r"""Calculate theoretical MSDs for different lag times
 
-    Calculate :math:`msd(t) = 4*D*t^\alpha + 4*pa**2`
+    Calculate :math:`msd(t) = 4 D t_\text{app}^\alpha + 4 pa^2`,
+    where :math:`t_\text{app}` is the apparent time lag which takes into
+    account particle motion during exposure; see :py:func:`exposure_time_corr`.
 
     Parameters
     ----------
@@ -463,8 +465,10 @@ def msd_func(t, d, pa, alpha=1, exposure_time=0):
         Diffusion coefficient
     pa : float
         Positional accuracy.
-    alpha : float
-        Anomalous diffusion exponent.
+    alpha : float, optional
+        Anomalous diffusion exponent. Defaults to 1.
+    exposure_time : float, optional
+        Exposure time. Defaults to 0.
 
     Returns
     -------
@@ -474,17 +478,64 @@ def msd_func(t, d, pa, alpha=1, exposure_time=0):
     ic = 4 * pa**2
     if pa < 0:
         ic *= -1
+    t_corr = exposure_time_corr(t, alpha, exposure_time)
 
-    if exposure_time == 0:
-        t_corr = t
-    elif alpha == 1:
-        t_corr = t - exposure_time / 3
-    else:
-        # TODO: do correction numerically
-        raise ValueError(
-            "Exposure time correction not supported for alpha != 0.")
+    return 4 * d * t_corr**alpha + ic
 
-    return 4 * d * t_corr **alpha + 4 * pa**2
+
+def exposure_time_corr(t, alpha, exposure_time, n=100, force_numeric=False):
+    r"""Correct lag times for the movement of particles during exposure
+
+    When particles move during exposure, it appears as if the lag times change
+    according to
+
+    .. math:: t_\text{app}^\alpha = \lim_{n\rightarrow\infty} \frac{1}{n^2}
+        \sum_{m_1 = 0}^{n-1} \sum_{m_2 = 0}^{n-1} |t +
+        \frac{t_\text{exp}}{n}(m_1 - m_2)|^\alpha -
+        |\frac{t_\text{exp}}{n}(m_1 - m_2)|^\alpha.
+
+    For :math:`\alpha=1`, :math:`t_\text{app} = t - t_\text{exp} / 3`. For
+    :math:`t_\text{exp} = 0` or :math:`\alpha = 2`, :math:`t_\text{app} = t`.
+    For other parameter values, the equation is solved numerically using a
+    sufficiently large `n` (100 by default).
+
+    See [Goul2000]_ for details.
+
+    Parameters
+    ----------
+    t : numpy.ndarray
+        Lag times
+    alpha : float
+        Anomalous diffusion exponent
+    exposure_time : float
+        Exposure time
+    n : int, optional
+        Number of iterations for the numeric calculation. The algorithm is
+        O(n²). Defaults to 100.
+
+    Returns
+    -------
+    numpy.ndarray
+        Apparent lag times that account for diffusion during exposure
+
+    Other parameters
+    ----------------
+    force_numeric : bool, optional
+        If True, do not return the analytical solutions for
+        :math:`\alpha \in \{1, 2\}` and :math:`t_\text{exp} = 0`, but calculate
+        numerically. Useful for testing.
+    """
+    if not force_numeric:
+        if exposure_time == 0 or alpha == 2:
+            return t
+        elif alpha == 1:
+            return t - exposure_time / 3
+
+    m = np.arange(n)
+    m_diff = exposure_time / n * (m[:, None] - m[None, :])
+    s = (np.abs(t[:, None, None] + m_diff[None, ...])**alpha -
+         np.abs(m_diff[None, ...])**alpha)
+    return (np.sum(s, axis=(1, 2)) / n**2)**(1/alpha)
 
 
 def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
@@ -518,10 +569,10 @@ def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
     alpha : float, optional
         Anomalous diffusion exponent. Defaults to 1.
     fit_max_lagtime : int
-        Passed as `max_lagtime` parameter to :py:fun:`fit_msd` if either `d`
+        Passed as `max_lagtime` parameter to :py:func:`fit_msd` if either `d`
         or `pa` is `None`. Defaults to 2.
     fit_model : str
-        Passed as `model` parameter to :py:fun:`fit_msd` if either `d`
+        Passed as `model` parameter to :py:func:`fit_msd` if either `d`
         or `pa` is `None`. Defaults to "brownian".
 
     Returns
@@ -543,6 +594,7 @@ def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
         r = fit_msd(emsd, fit_max_lagtime, exposure_time, fit_model)
         if len(r) == 2:
             d, pa = r
+            alpha = 1
         else:
             d, pa, alpha = r
 
@@ -556,7 +608,7 @@ def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
         ax.plot(emsd["lagt"], emsd["msd"], linestyle="none", marker="o")
 
     x = np.linspace(0, emsd["lagt"].max(), 100)
-    y = msd_func(x, d, pa, alpha, exposure_time)
+    y = msd_theoretic(x, d, pa, alpha, exposure_time)
     ax.plot(x, y)
 
     if show_legend:

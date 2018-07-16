@@ -106,72 +106,6 @@ class TestMotion(unittest.TestCase):
         msd = motion.msd(self.traj1[self.traj1["particle"] == 0], 0.16, 100)
         np.testing.assert_allclose(msd, orig)
 
-    def test_fit_msd_matlab(self):
-        # compare results to MATLAB msdplot results
-        # 2 lags
-        orig_D_2 = 0.523933764304220
-        orig_pa_2 = -np.sqrt(0.242600359795181/4)
-        # 5 lags
-        orig_D_5 = 0.530084611225235
-        orig_pa_5 = -np.sqrt(0.250036294078863/4)
-
-        emsd = pd.read_hdf(os.path.join(data_path, "emsd.h5"), "emsd")
-
-        D_2, pa_2 = motion.fit_msd(emsd, max_lagtime=2)
-        D_5, pa_5 = motion.fit_msd(emsd, max_lagtime=5)
-
-        np.testing.assert_allclose(D_2, orig_D_2, rtol=1e-5)
-        np.testing.assert_allclose(pa_2, orig_pa_2, rtol=1e-5)
-        np.testing.assert_allclose(D_5, orig_D_5, rtol=1e-5)
-        np.testing.assert_allclose(pa_5, orig_pa_5, rtol=1e-5)
-
-    def test_fit_msd(self):
-        """Test `motion.fit_msd` with simple data"""
-        lagts = np.arange(1, 11)
-        msds = np.arange(2, 12)
-        d_exp, pa_exp = 0.25, 0.5
-        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
-        d2, pa2 = motion.fit_msd(emsd, max_lagtime=2)
-        d5, pa5 = motion.fit_msd(emsd, max_lagtime=5)
-        np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
-        np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
-
-    def test_fit_msd_anomalous(self):
-        """motion.fit_msd: anomalous diffusion"""
-        t = np.arange(0.01, 0.205, 0.01)
-        d_e = 0.7
-        pa_e = 0.03
-        alpha_e = 1.1
-        msd = 4 * d_e * t**alpha_e + 4 * pa_e**2
-        emsd = pd.DataFrame({"lagt": t, "msd": msd})
-
-        d, pa, a = motion.fit_msd(emsd, model="anomalous")
-
-        np.testing.assert_allclose([d, pa, a], [d_e, pa_e, alpha_e])
-
-    def test_fit_msd_neg(self):
-        """Test `motion.fit_msd` with simple data (negative intercept)"""
-        lagts = np.arange(1, 11)
-        msds = np.arange(0, 10)
-        d_exp, pa_exp = 0.25, -0.5
-        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
-        d2, pa2 = motion.fit_msd(emsd, max_lagtime=2)
-        d5, pa5 = motion.fit_msd(emsd, max_lagtime=5)
-        np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
-        np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
-
-    def test_fit_msd_exposure_corr(self):
-        """Test exporsure time correction in `motion.fit_msd`"""
-        lagts = np.arange(1, 11)
-        msds = np.arange(1, 11)
-        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
-        t = 0.3
-        d_exp = 0.25
-        pa_exp = np.sqrt(0.1/4)  # shift by t/3 to the left with slope 1
-        d, pa = motion.fit_msd(emsd, exposure_time=t)
-
-        np.testing.assert_allclose([d, pa], [d_exp, pa_exp])
-
     def test_emsd_from_square_displacements_cdf(self):
         # From a test run
         orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1")
@@ -239,6 +173,177 @@ class TestMotion(unittest.TestCase):
                                  method="weighted-lsq")
         np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-4)
         np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-4)
+
+
+class TestFitMsd(unittest.TestCase):
+    def test_fit_msd_matlab(self):
+        """motion.fit_msd: Regression test against MATLAB msdplot"""
+        # 2 lags
+        orig_D_2 = 0.523933764304220
+        orig_pa_2 = -np.sqrt(0.242600359795181/4)
+        # 5 lags
+        orig_D_5 = 0.530084611225235
+        orig_pa_5 = -np.sqrt(0.250036294078863/4)
+
+        emsd = pd.read_hdf(os.path.join(data_path, "emsd.h5"), "emsd")
+
+        D_2, pa_2 = motion.fit_msd(emsd, max_lagtime=2)
+        D_5, pa_5 = motion.fit_msd(emsd, max_lagtime=5)
+
+        np.testing.assert_allclose(D_2, orig_D_2, rtol=1e-5)
+        np.testing.assert_allclose(pa_2, orig_pa_2, rtol=1e-5)
+        np.testing.assert_allclose(D_5, orig_D_5, rtol=1e-5)
+        np.testing.assert_allclose(pa_5, orig_pa_5, rtol=1e-5)
+
+    def test_fit_msd(self):
+        """motion.fit_msd: simple data"""
+        lagts = np.arange(1, 11)
+        msds = np.arange(2, 12)
+        d_exp, pa_exp = 0.25, 0.5
+        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
+        d2, pa2 = motion.fit_msd(emsd, max_lagtime=2)
+        d5, pa5 = motion.fit_msd(emsd, max_lagtime=5)
+        np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
+        np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
+
+    def test_fit_msd_neg(self):
+        """motion.fit_msd: simple data, negative intercept"""
+        lagts = np.arange(1, 11)
+        msds = np.arange(0, 10)
+        d_exp, pa_exp = 0.25, -0.5
+        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
+        d2, pa2 = motion.fit_msd(emsd, max_lagtime=2)
+        d5, pa5 = motion.fit_msd(emsd, max_lagtime=5)
+        np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
+        np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
+
+    def test_fit_msd_anomalous(self):
+        """motion.fit_msd: anomalous diffusion"""
+        t = np.arange(0.01, 0.205, 0.01)
+        d_e = 0.7
+        pa_e = 0.03
+        alpha_e = 1.1
+        msd = 4 * d_e * t**alpha_e + 4 * pa_e**2
+        emsd = pd.DataFrame({"lagt": t, "msd": msd})
+
+        d, pa, a = motion.fit_msd(emsd, model="anomalous")
+
+        np.testing.assert_allclose([d, pa, a], [d_e, pa_e, alpha_e])
+
+    def test_fit_msd_anomalous_neg(self):
+        """motion.fit_msd: anomalous diffusion, negative intercept"""
+        t = np.arange(0.01, 0.205, 0.01)
+        d_e = 0.7
+        pa_e = 0.03
+        alpha_e = 1.1
+        msd = 4 * d_e * t**alpha_e - 4 * pa_e**2
+        emsd = pd.DataFrame({"lagt": t, "msd": msd})
+
+        d, pa, a = motion.fit_msd(emsd, model="anomalous")
+
+        np.testing.assert_allclose([d, pa, a], [d_e, -pa_e, alpha_e])
+
+    def test_fit_msd_anomalous_texp(self):
+        """motion.fit_msd: anomalous diffusion, exposure time correction"""
+        t = np.arange(0.01, 0.205, 0.01)
+        d_e = 0.7
+        pa_e = 0.03
+        alpha_e = 1.1
+        t_exp = 0.003
+
+        t_app = motion.exposure_time_corr(t, alpha_e, t_exp)
+        msd = 4 * d_e * t_app**alpha_e + 4 * pa_e**2
+        emsd = pd.DataFrame({"lagt": t, "msd": msd})
+
+        d, pa, a = motion.fit_msd(emsd, exposure_time=t_exp, model="anomalous")
+
+        np.testing.assert_allclose([d, pa, a], [d_e, pa_e, alpha_e])
+
+    def test_fit_msd_exposure_corr(self):
+        """motion.fit_msd: exposure time correction"""
+        lagts = np.arange(1, 11)
+        msds = np.arange(1, 11)
+        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
+        t = 0.3
+        d_exp = 0.25
+        pa_exp = np.sqrt(0.1/4)  # shift by t/3 to the left with slope 1
+        d, pa = motion.fit_msd(emsd, exposure_time=t)
+
+        np.testing.assert_allclose([d, pa], [d_exp, pa_exp])
+
+
+class TestExposureTimeCorr(unittest.TestCase):
+    def setUp(self):
+        self.t = np.linspace(0.01, 0.1, 10)
+
+    def test_numeric_alpha1(self):
+        """motion.exposure_time_corr: alpha = 1, numeric"""
+        for t_exp in (1e-3, 2e-3, 5e-3, 1e-2):
+            t_app = motion.exposure_time_corr(self.t, 1, t_exp,
+                                              force_numeric=True)
+            np.testing.assert_allclose(t_app, self.t - t_exp / 3, rtol=1e-4)
+
+    def test_analytic_alpha1(self):
+        """motion.exposure_time_corr: alpha = 1, analytic"""
+        for t_exp in (1e-3, 2e-3, 5e-3, 1e-2):
+            t_app = motion.exposure_time_corr(self.t, 1, t_exp,
+                                              force_numeric=False)
+            np.testing.assert_allclose(t_app, self.t - t_exp / 3)
+
+    def test_numeric_alpha2(self):
+        """motion.exposure_time_corr: alpha = 2, numeric"""
+        for t_exp in (1e-3, 2e-3, 5e-3, 1e-2):
+            t_app = motion.exposure_time_corr(self.t, 2, t_exp,
+                                              force_numeric=True)
+            np.testing.assert_allclose(t_app, self.t)
+
+    def test_analytic_alpha2(self):
+        """motion.exposure_time_corr: alpha = 2, analytic"""
+        for t_exp in (1e-3, 2e-3, 5e-3, 1e-2):
+            t_app = motion.exposure_time_corr(self.t, 2, t_exp,
+                                              force_numeric=False)
+            np.testing.assert_allclose(t_app, self.t)
+
+    def test_numeric_texp0(self):
+        """motion.exposure_time_corr: exposure_time = 0, numeric"""
+        for a in np.linspace(0.1, 2., 20):
+            t_app = motion.exposure_time_corr(self.t, a, 0, force_numeric=True)
+            np.testing.assert_allclose(t_app, self.t)
+
+    def test_analytic_texp0(self):
+        """motion.exposure_time_corr: exposure_time = 0, analytic"""
+        for a in np.linspace(0.1, 2., 20):
+            t_app = motion.exposure_time_corr(self.t, a, 0,
+                                              force_numeric=False)
+            np.testing.assert_allclose(t_app, self.t)
+
+    def test_alpha05(self):
+        """motion.exposure_time_corr: alpha = 0.5"""
+        t_app = motion.exposure_time_corr(self.t, 0.5, 0.005)
+        # Result comes from a very simple implemenation which should not be
+        # wrong
+        r = [0.061779853782074214, 0.10355394844441726, 0.13542268602111515,
+             0.1622529550167944, 0.18587833963804673, 0.2072316891474639,
+             0.22686517396545597, 0.24513786608867294, 0.2622988847186261,
+             0.27852947267829076]
+        r = np.array(r)**2
+        np.testing.assert_allclose(t_app, r)
+
+
+class TestMsdTheoretic(unittest.TestCase):
+    def setUp(self):
+        self.t = np.linspace(0.01, 0.1, 10)
+
+    def test_call(self):
+        """motion.msd_theoretic"""
+        d = 0.1
+        alpha = 1
+        t_exp = 0.003
+        pa = 0.05
+        for f in (-1, 1):
+            m = motion.msd_theoretic(self.t, d, f * pa, exposure_time=t_exp)
+            np.testing.assert_allclose(
+                m, 4 * d * (self.t - t_exp/3) + f * 4 * pa**2)
 
 
 class TestFindImmobilizations(unittest.TestCase):

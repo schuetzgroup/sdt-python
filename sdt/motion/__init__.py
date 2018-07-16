@@ -139,10 +139,18 @@ Lower level helper functions
 
 These functions are used by to implement the functionality documented above.
 
+.. autofunction:: msd_theoretic
+.. autofunction:: exposure_time_corr
 .. autofunction:: all_displacements
 .. autofunction:: all_square_displacements
 .. autofunction:: emsd_from_square_displacements
 .. autofunction:: emsd_from_square_displacements_cdf
+
+
+References
+----------
+.. [Goul2000] Goulian, M. & Simon, S. M.: "Tracking Single Proteins within
+    Cells", Biophysical Journal, Elsevier BV, 2000, 79, 2188–2198
 """
 from .msd import *
 from .msd_cdf import *
