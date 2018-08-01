@@ -8,12 +8,15 @@ from sdt.loc.daostorm_3d import fit_numba
 from sdt.loc.daostorm_3d import fit_numba_impl
 from sdt.loc.daostorm_3d.data import feat_status, col_nums
 
+from sdt.helper import numba
+
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_fit")
 img_path = os.path.join(path, "data_find")
 
 
+@unittest.skipUnless(numba.numba_available, "numba not available")
 class FitterTest(unittest.TestCase):
     def setUp(self):
         self.peaks = np.array([[400., 10., 2., 12., 2.5, 102., 0., 0., 0.],
@@ -241,6 +244,7 @@ class FitterTest(unittest.TestCase):
         np.testing.assert_allclose(f.residual, orig["residual"])
 
 
+@unittest.skipUnless(numba.numba_available, "numba not available")
 class TestEqnSolver(unittest.TestCase):
     def setUp(self):
         # example from the Wikipedia Cholesky decomposition article

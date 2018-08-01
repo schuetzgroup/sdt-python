@@ -9,6 +9,12 @@ import numpy as np
 
 from sdt import fret, chromatic, image, changepoint, io
 
+try:
+    import trackpy
+    trackpy_available = True
+except ImportError:
+    trackpy_available = False
+
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_data")
@@ -95,6 +101,7 @@ class TestSmFretTracker(unittest.TestCase):
         np.testing.assert_equal(f["d"], [1, 2, 3, 4])
         np.testing.assert_equal(f["a"], [5])
 
+    @unittest.skipUnless(trackpy_available, "trackpy not available")
     def test_track(self):
         """fret.SmFretTracker.track: no interpolation"""
         # Remove brightness-related cols to see if they get added
@@ -111,6 +118,7 @@ class TestSmFretTracker(unittest.TestCase):
         pd.testing.assert_frame_equal(fret_data, exp,
                                       check_dtype=False, check_like=True)
 
+    @unittest.skipUnless(trackpy_available, "trackpy not available")
     def test_track_interpolate(self):
         """fret.SmFretTracker.track: interpolation"""
         # Remove brightness-related cols to see if they get added
@@ -128,6 +136,7 @@ class TestSmFretTracker(unittest.TestCase):
         pd.testing.assert_frame_equal(fret_data, self.fret_data,
                                       check_dtype=False, check_like=True)
 
+    @unittest.skipUnless(trackpy_available, "trackpy not available")
     def test_track_d_mass(self):
         """fret.SmFretTracker.track: d_mass=True"""
         fret_data = self.tracker.track(self.don_img, self.acc_img,

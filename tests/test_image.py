@@ -19,7 +19,8 @@ def mkimg():
     width = 60
     height = 50
 
-    img = sdt.sim.simulate_gauss((width, height), pos, amp, sigma)
+    img = sdt.sim.simulate_gauss((width, height), pos, amp, sigma,
+                                 engine="python")
 
     m = np.meshgrid(np.arange(-width//2, width//2),
                     np.arange(-height//2, height//2))

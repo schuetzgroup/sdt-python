@@ -8,6 +8,7 @@ import numpy as np
 
 from sdt import image
 from sdt.loc import z_fit, raw_features
+from sdt.helper import numba
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -45,6 +46,7 @@ class TestParameters(unittest.TestCase):
         s = self.parameters.sigma_from_z(self.z)
         np.testing.assert_allclose(s, self.sigma_z)
 
+    @unittest.skipUnless(numba.numba_available, "numba not numba_available")
     def test_numba_sigma_from_z(self):
         res = np.empty((len(self.z), 2))
         for z, r in zip(self.z, res):
@@ -56,6 +58,7 @@ class TestParameters(unittest.TestCase):
         s = self.parameters.exp_factor_from_z(self.z)
         np.testing.assert_allclose(s, 1/(2*self.sigma_z**2))
 
+    @unittest.skipUnless(numba.numba_available, "numba not numba_available")
     def test_numba_exp_factor_from_z(self):
         res = np.empty((len(self.z), 2))
         for z, r in zip(self.z, res):
@@ -71,6 +74,7 @@ class TestParameters(unittest.TestCase):
         np.testing.assert_allclose(self.parameters.exp_factor_der(self.z),
                                    ds_orig[:, idx], atol=1e-3)
 
+    @unittest.skipUnless(numba.numba_available, "numba not numba_available")
     def test_numba_exp_factor_der(self):
         ds_orig = self.parameters.exp_factor_der(self.z).T
         s_orig = self.parameters.exp_factor_from_z(self.z).T

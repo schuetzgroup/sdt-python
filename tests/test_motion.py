@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 
 from sdt import motion, io
+from sdt.helper import numba
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -377,6 +378,7 @@ class TestFindImmobilizations(unittest.TestCase):
         np.seterr(**old_err)
         np.testing.assert_allclose(res, self.count)
 
+    @unittest.skipUnless(numba.numba_available, "numba not numba_available")
     def test_count_immob_numba(self):
         # Test the _count_immob_numba function
         loc = self.tracks.loc[self.tracks["particle"] == 0, ["x", "y"]]
@@ -499,6 +501,7 @@ class TestLabelMobile(unittest.TestCase):
         motion.immobilization._label_mob_python(self.immob, -2)
         np.testing.assert_equal(self.immob, self.expected)
 
+    @unittest.skipUnless(numba.numba_available, "numba not numba_available")
     def test_label_mob_numba(self):
         # Test the `_label_mob_python` function
         motion.immobilization._label_mob_numba(self.immob, -2)

@@ -1,7 +1,7 @@
 """Numba accelerated version of the :py:mod:`fit` module"""
-import numba
 import numpy as np
 
+from ...helper import numba
 from . import fit
 from .data import peak_params, col_nums, feat_status
 

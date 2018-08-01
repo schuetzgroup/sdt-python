@@ -52,8 +52,11 @@ class TestBayesOfflineObs(unittest.TestCase):
         This is a regression test against the output of the original
         implementation.
         """
-        cls = (offline.GaussianObsLikelihood,
-               offline.GaussianObsLikelihoodNumba)
+        if numba.numba_available:
+            cls = (offline.GaussianObsLikelihood,
+                   offline.GaussianObsLikelihoodNumba)
+        else:
+            cls = (offline.GaussianObsLikelihood,)
         self._test_univ(cls, -7011.825860906335)
         self._test_multiv(cls, -16386.465097707242)
 
@@ -67,7 +70,10 @@ class TestBayesOfflineObs(unittest.TestCase):
         This is a regression test against the output of the original
         implementation.
         """
-        cls = (offline.IfmObsLikelihood, offline.IfmObsLikelihoodNumba)
+        if numba.numba_available:
+            cls = (offline.IfmObsLikelihood, offline.IfmObsLikelihoodNumba)
+        else:
+            cls = (offline.IfmObsLikelihood,)
         self._test_univ(cls, -7716.5452917994835)
         self._test_multiv(cls, -16808.615307987133)
 
@@ -81,7 +87,11 @@ class TestBayesOfflineObs(unittest.TestCase):
         This is a regression test against the output of the original
         implementation.
         """
-        cls = (offline.FullCovObsLikelihood, offline.FullCovObsLikelihoodNumba)
+        if numba.numba_available:
+            cls = (offline.FullCovObsLikelihood,
+                   offline.FullCovObsLikelihoodNumba)
+        else:
+            cls = (offline.FullCovObsLikelihood,)
         self._test_univ(cls, -7716.5452917994835)
         self._test_multiv(cls, -13028.349084233618)
 
@@ -93,14 +103,24 @@ class TestBayesOfflineObs(unittest.TestCase):
 class TestBayesOfflinePriors(unittest.TestCase):
     def test_const_prior(self):
         """changepoint.bayes_offline.ConstPrior{,Numba}"""
-        for cls in (offline.ConstPrior, offline.ConstPriorNumba):
+        if numba.numba_available:
+            classes = (offline.ConstPrior, offline.ConstPriorNumba)
+        else:
+            classes = (offline.ConstPrior,)
+
+        for cls in classes:
             c = cls()
             c.set_data(np.empty((99, 1)))
             self.assertAlmostEqual(c.prior(4), 0.01)
 
     def test_geometric_prior(self):
         """changepoint.bayes_offline.GeometricPrior{,Numba}"""
-        for cls in (offline.GeometricPrior, offline.GeometricPriorNumba):
+        if numba.numba_available:
+            classes = (offline.GeometricPrior, offline.GeometricPriorNumba)
+        else:
+            classes = (offline.GeometricPrior,)
+
+        for cls in classes:
             c = cls(0.1)
             self.assertAlmostEqual(c.prior(4), 0.9**3 * 0.1)
 
@@ -207,7 +227,12 @@ class TestBayesOnlineHazard(unittest.TestCase):
         """changepoint.bayes_online.ConstHazard"""
         lam = 2
         a = np.arange(10).reshape((2, -1))
-        for cls in (online.ConstHazard, online.ConstHazardNumba):
+        if numba.numba_available:
+            classes = (online.ConstHazard, online.ConstHazardNumba)
+        else:
+            classes = (online.ConstHazard,)
+
+        for cls in classes:
             c = cls(lam)
             h = c.hazard(a)
             np.testing.assert_allclose(h, 1/lam * np.ones_like(a))

@@ -2,9 +2,9 @@
 
 For documentation, look at :py:mod:`fit_impl`
 """
-import numba
 import numpy as np
 
+from ...helper import numba
 from . import fit_numba
 from .fit_numba import (col_amp, col_x, col_wx, col_y, col_wy, col_bg, col_z,
                         col_stat, col_err, num_peak_params, stat_run,

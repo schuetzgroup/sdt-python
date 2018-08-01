@@ -8,6 +8,7 @@ from scipy.stats import norm
 
 import sdt.brightness
 from sdt import brightness, image
+from sdt.helper import numba
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -204,6 +205,7 @@ class TestFromRawImage(unittest.TestCase):
         np.testing.assert_allclose(data, expected)
 
 
+@unittest.skipUnless(numba.numba_available, "numba not available")
 class TestFromRawImageNumba(TestFromRawImage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -276,12 +278,13 @@ class TestFromRawImageNumba(TestFromRawImage):
 
 
 class TestDistribution(unittest.TestCase):
+    engine = "python"
+
     def setUp(self):
         self.masses = np.array([1000, 1000, 2000])
         self.most_probable = 1000
         self.peak_data = pd.DataFrame([[10, 10]]*3, columns=["x", "y"])
         self.peak_data["mass"] = self.masses
-        self.engine = "python"
 
     def _calc_graph(self, smooth):
         absc = 5000
@@ -316,7 +319,7 @@ class TestDistribution(unittest.TestCase):
         # This assumes that the numba array version works
         absc = 5000
         bd1 = brightness.Distribution(self.peak_data, absc, engine=self.engine)
-        bd2 = brightness.Distribution(self.masses, absc, engine="numba")
+        bd2 = brightness.Distribution(self.masses, absc, engine=self.engine)
         np.testing.assert_allclose(bd1.graph, bd2.graph)
 
     def test_init_list(self):
@@ -326,13 +329,14 @@ class TestDistribution(unittest.TestCase):
         absc = 5000
         np.testing.assert_allclose(
             brightness.Distribution(l, absc, engine=self.engine).graph,
-            brightness.Distribution(self.masses, absc, engine="numba").graph)
+            brightness.Distribution(self.masses, absc,
+                                    engine=self.engine).graph)
 
     def test_init_abscissa_float(self):
         """brightness.Distribution.__init__: Python, float abscissa"""
         d1 = brightness.Distribution(self.masses, 5000, engine=self.engine)
         d2 = brightness.Distribution(self.masses, np.arange(100, 5001),
-                                     engine="numba")
+                                     engine=self.engine)
         np.testing.assert_allclose(d1.graph[:, 100:], d2.graph)
 
     def test_init_abscissa_none(self):
@@ -341,7 +345,8 @@ class TestDistribution(unittest.TestCase):
         d1 = brightness.Distribution(self.masses, None, bw=smth,
                                      engine=self.engine)
         a = np.max(self.masses) + 2 * smth * np.sqrt(np.max(self.masses)) - 1
-        d2 = brightness.Distribution(self.masses, a, bw=smth, engine="numba")
+        d2 = brightness.Distribution(self.masses, a, bw=smth,
+                                     engine=self.engine)
         np.testing.assert_allclose(d1.graph, d2.graph)
 
     def test_init_cam_eff(self):
@@ -351,7 +356,7 @@ class TestDistribution(unittest.TestCase):
         d1 = brightness.Distribution(self.masses, absc, cam_eff=eff,
                                      engine=self.engine)
         d2 = brightness.Distribution(self.masses/eff, absc, cam_eff=1,
-                                     engine="numba")
+                                     engine=self.engine)
         np.testing.assert_allclose(d1. graph, d2.graph)
 
     def test_mean(self):
@@ -371,14 +376,13 @@ class TestDistribution(unittest.TestCase):
     def test_most_probable(self):
         """brightness.Distribution.most_probable: Python"""
         absc = 5000
-        d = brightness.Distribution(self.masses, absc)
+        d = brightness.Distribution(self.masses, absc, engine=self.engine)
         np.testing.assert_allclose(d.most_probable(), self.most_probable)
 
 
+@unittest.skipUnless(numba.numba_available, "numba not available")
 class TestDistributionNumba(TestDistribution):
-    def setUp(self):
-        super().setUp()
-        self.engine = "numba"
+    engine = "numba"
 
     def test_init_array(self):
         """brightness.Distribution.__init__: Numba, full kernel, ndarray"""

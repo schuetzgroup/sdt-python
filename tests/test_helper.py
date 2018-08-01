@@ -66,6 +66,7 @@ class TestFlattenMultiindex(unittest.TestCase):
         pd.testing.assert_index_equal(res, idx)
 
 
+@unittest.skipUnless(numba.numba_available, "numba not numba_available")
 class TestNumba(unittest.TestCase):
     def test_logsumexp_numba(self):
         """helper.numba.logsumexp"""

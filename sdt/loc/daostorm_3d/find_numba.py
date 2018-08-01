@@ -4,9 +4,9 @@ This module provides a numba accelerated :py:class:`Finder` class, which
 implements local maximum detection and filtering.
 """
 import numpy as np
-import numba
 
 from . import find
+from ...helper import numba
 
 
 class Finder(find.Finder):

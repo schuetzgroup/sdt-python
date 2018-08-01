@@ -27,6 +27,12 @@ except ImportError:
 
     numba_available = False
 
+    class FakeType:
+        def __getitem__(self, key):
+            pass
+
+    int32 = int64 = float32 = float64 = FakeType()
+
 
 @jit(nopython=True, nogil=True, cache=True)
 def logsumexp(a):

@@ -4,6 +4,7 @@ import os
 import numpy as np
 
 from sdt.loc.fast_peakposition import locate
+from sdt.helper import numba
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -27,6 +28,7 @@ class TestLocate(unittest.TestCase):
                        engine="python")
         np.testing.assert_allclose(peaks, self.orig)
 
+    @unittest.skipUnless(numba.numba_available, "numba not available")
     def test_locate_numba(self):
         peaks = locate(self.frame, self.radius, self.threshold, self.im_size,
                        engine="numba")

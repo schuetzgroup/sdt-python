@@ -7,11 +7,14 @@ from sdt.loc import bg_estimator
 from sdt.loc.daostorm_3d import find_numba as find
 from sdt.loc.daostorm_3d.data import col_nums
 
+from sdt.helper import numba
+
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_find")
 
 
+@unittest.skipUnless(numba.numba_available, "numba not available")
 class TestFinder(unittest.TestCase):
     def setUp(self):
         self.frame = np.load(os.path.join(data_path, "bead_img.npz"))["img"]
