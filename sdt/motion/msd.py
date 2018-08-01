@@ -6,50 +6,19 @@ import warnings
 
 import scipy.optimize
 
-from .. import config
+from .. import config, helper
 
 
-@config.set_columns
-def _prepare_traj(data, columns={}):
-    """Prepare data for use with :func:`_displacements`
-
-    Does sorting according to the frame number and also sets the frame number
-    as index of the DataFrame. This is not included in `_displacements`, since
-    it can be called on the whole tracking DataFrame and does not have to be
-    called for each single trajectory (yielding a performance increase).
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Tracking data
-
-    Returns
-    -------
-    pandas.DataFrame
-        `data` ready to use for :func:`_displacements` (one has to split the
-        data into single trajectories, though).
-    """
-    # do not work on the original data
-    data = data.copy()
-    # sort here, not in loop
-    data.sort_values(columns["time"], inplace=True)
-    # set the index, needed later for reindexing, but do not do the loop
-    fnos = data[columns["time"]].astype(int)
-    data.set_index(fnos, inplace=True)
-    return data
-
-
-@config.set_columns
-def _displacements(particle_data, max_lagtime, disp_dict=None, columns={}):
+def _displacements(particle_data, max_lagtime, disp_dict=None):
     """Do the actual calculation of displacements
 
     Calculate all possible displacements for each lag time for one particle.
 
     Parameters
     ----------
-    particle_data : pandas.DataFrame
-        Tracking data of one single particle/trajectory that has been prepared
-        with `_prepare_traj`.
+    particle_data : numpy.ndarray
+        First column is the frame number, the other columns are particle
+        coordinates.
     max_lagtime : int
         Maximum number of time lags to consider.
     disp_dict : None or dict, optional
@@ -77,13 +46,14 @@ def _displacements(particle_data, max_lagtime, disp_dict=None, columns={}):
         This means, if your DataFrame has coordinate columns "x" and "z", set
         ``columns={"coords": ["x", "z"]}``.
     """
+    ndim = particle_data.shape[1] - 1
+
     # fill gaps with NaNs
-    idx = particle_data.index
-    start_frame = idx[0]
-    end_frame = idx[-1]
-    frame_list = list(range(start_frame, end_frame + 1))
-    pdata = particle_data.reindex(frame_list)
-    pdata = pdata[columns["coords"]].values
+    frames = np.round(particle_data[:, 0]).astype(int)
+    start = frames[0]
+    end = frames[-1]
+    pdata = np.full((end - start + 1, ndim), np.NaN)
+    pdata[frames - start] = particle_data[:, 1:]
 
     # there can be at most len(pdata) - 1 steps
     max_lagtime = round(min(len(pdata)-1, max_lagtime))
@@ -98,12 +68,10 @@ def _displacements(particle_data, max_lagtime, disp_dict=None, columns={}):
             except KeyError:
                 disp_dict[i] = [disp]
     else:
-        ret = np.empty((max_lagtime, len(pdata)-1, len(columns["coords"])))
+        ret = np.full((max_lagtime, len(pdata) - 1, ndim), np.NaN)
         for i in range(1, max_lagtime+1):
-            # calculate coordinate differences for each time lag
-            padding = np.full((i-1, len(columns["coords"])), np.nan)
             # append to output structure
-            ret[i-1] = np.vstack((pdata[i:] - pdata[:-i], padding))
+            ret[i-1, :max_lagtime-i+1] = pdata[i:] - pdata[:-i]
 
         return ret
 
@@ -152,8 +120,9 @@ def msd(traj, pixel_size, fps, max_lagtime=100, columns={}):
         return pd.DataFrame(columns=cols)
 
     # calculate displacements
-    traj = _prepare_traj(traj, columns=columns)
-    disp = _displacements(traj, max_lagtime, columns=columns)
+    traj_arr = traj.sort_values(columns["time"])
+    traj_arr = traj_arr[[columns["time"]] + columns["coords"]].values
+    disp = _displacements(traj_arr, max_lagtime)
 
     # time lag steps
     idx = np.arange(1, disp.shape[0] + 1)
@@ -208,15 +177,18 @@ def imsd(data, pixel_size, fps, max_lagtime=100, columns={}):
         the time column "alt_frame", set ``columns={"coords": ["x", "z"],
         "time": "alt_frame"}``.
     """
-    # check if traj is empty
+    # check if data is empty
     if not len(data):
         return pd.DataFrame()
 
-    traj = _prepare_traj(data, columns=columns)
-    traj_grouped = traj.groupby(columns["particle"])
+    traj_sorted = data.sort_values([columns["particle"], columns["time"]])
+    traj_split = helper.split_dataframe(
+        traj_sorted, columns["particle"],
+        [columns["time"]] + columns["coords"], sort=False)
+
     disps = []
-    for pn, pdata in traj_grouped:
-        disp = _displacements(pdata, max_lagtime, columns=columns)
+    for pn, pdata in traj_split:
+        disp = _displacements(pdata, max_lagtime)
         sds = np.sum(disp**2 * pixel_size**2, axis=2)
         with warnings.catch_warnings():
             # nanmean raises a RuntimeWarning if all entries are NaNs.
@@ -227,7 +199,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, columns={}):
         disps.append(msds)
 
     ret = pd.DataFrame(disps).T
-    ret.columns = traj_grouped.groups.keys()
+    ret.columns = [pn for pn, _ in traj_split]
     ret.columns.name = columns["particle"]
     ret.index = pd.Index(np.arange(1, len(ret)+1)/fps, name="lagt")
     return ret
@@ -274,12 +246,13 @@ def all_displacements(data, max_lagtime=100, columns={}):
         if not len(traj):
             continue
 
-        traj = _prepare_traj(traj, columns=columns)
-        traj_grouped = traj.groupby(columns["particle"])
+        traj_sorted = traj.sort_values([columns["particle"], columns["time"]])
+        traj_split = helper.split_dataframe(
+            traj_sorted, columns["particle"],
+            [columns["time"]] + columns["coords"], sort=False)
 
-        for pn, pdata in traj_grouped:
-            _displacements(pdata, max_lagtime, columns=columns,
-                           disp_dict=disp_dict)
+        for pn, pdata in traj_split:
+            _displacements(pdata, max_lagtime, disp_dict=disp_dict)
 
     return disp_dict
 
