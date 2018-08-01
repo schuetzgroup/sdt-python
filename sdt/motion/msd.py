@@ -616,6 +616,6 @@ def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
         fake_artist = mpl.lines.Line2D([0], [0], linestyle="none")
         ax.legend([fake_artist]*2, ["D: {:.3} $\mu$m$^2$/s".format(float(d)),
                                     "PA: {:.0f} nm".format(float(pa*1000))],
-                  loc=0)
+                  loc=0, handlelength=0, numpoints=1)
 
     return d, pa, alpha
