@@ -37,14 +37,6 @@ def _displacements(particle_data, max_lagtime, disp_dict=None):
         The first index is the lag time (index 0 means 1st lag time etc.),
         the second index the displacement data set index and the third the
         coordinate index.
-
-    Other parameters
-    ----------------
-    columns : dict, optional
-        Override default column names as defined in :py:attr:`config.columns`.
-        The only relevant name is `coords`.
-        This means, if your DataFrame has coordinate columns "x" and "z", set
-        ``columns={"coords": ["x", "z"]}``.
     """
     ndim = particle_data.shape[1] - 1
 
