@@ -9,6 +9,7 @@ import pandas as pd
 import yaml
 import pims
 import slicerator
+from matplotlib.transforms import Affine2D
 
 from sdt import roi
 from sdt.io import yaml
@@ -235,6 +236,100 @@ class TestPathRoi(TestRoi):
         np.testing.assert_allclose(actual.path.vertices, desired.path.vertices)
         np.testing.assert_equal(actual.path.codes, desired.path.codes)
         np.testing.assert_allclose(actual.buffer, desired.buffer)
+
+
+class TestPathRoiTransform(unittest.TestCase):
+    def setUp(self):
+        self.roi = roi.PathROI([[0, 0], [1, 0], [1, 1], [0, 1]],
+                               buffer=1.5)
+
+    def test_transform(self):
+        """roi.PathROI.transform: Affine2D arg"""
+        t = Affine2D([[2, 0, 1], [0, 3, 2], [0, 0, 1]])
+        # linear and trans args should be ignored
+        roi2 = self.roi.transform(t, linear="bla", trans="blub")
+
+        v = self.roi.path.vertices.copy()
+        v[:, 0] *= 2
+        v[:, 1] *= 3
+        v[:, 0] += 1
+        v[:, 1] += 2
+
+        self.assertIsInstance(roi2, roi.PathROI)
+        np.testing.assert_allclose(roi2.path.vertices, v)
+        self.assertEqual(self.roi.buffer, roi2.buffer)
+        self.assertIsInstance(roi2.image_mask, np.ndarray)
+
+    def test_array(self):
+        """roi.PathROI.transform: array arg"""
+        t = np.array([[2, 0, 1], [0, 3, 2], [0, 0, 1]])
+        # linear and trans args should be ignored
+        roi2 = self.roi.transform(t, linear="bla", trans="blub")
+
+        v = self.roi.path.vertices.copy()
+        v[:, 0] *= 2
+        v[:, 1] *= 3
+        v[:, 0] += 1
+        v[:, 1] += 2
+
+        self.assertIsInstance(roi2, roi.PathROI)
+        np.testing.assert_allclose(roi2.path.vertices, v)
+        self.assertEqual(self.roi.buffer, roi2.buffer)
+        self.assertIsInstance(roi2.image_mask, np.ndarray)
+
+    def test_linear(self):
+        """roi.PathROI.transform: linear arg"""
+        t = np.array([[2, 0,], [0, 3]])
+        roi2 = self.roi.transform(linear=t)
+
+        v = self.roi.path.vertices.copy()
+        v[:, 0] *= 2
+        v[:, 1] *= 3
+
+        self.assertIsInstance(roi2, roi.PathROI)
+        np.testing.assert_allclose(roi2.path.vertices, v)
+        self.assertEqual(self.roi.buffer, roi2.buffer)
+        self.assertIsInstance(roi2.image_mask, np.ndarray)
+
+    def test_trans(self):
+        """roi.PathROI.transform: trans arg"""
+        t = np.array([1, 2])
+        roi2 = self.roi.transform(trans=t)
+
+        v = self.roi.path.vertices.copy()
+        v[:, 0] += 1
+        v[:, 1] += 2
+
+        self.assertIsInstance(roi2, roi.PathROI)
+        np.testing.assert_allclose(roi2.path.vertices, v)
+        self.assertEqual(self.roi.buffer, roi2.buffer)
+        self.assertIsInstance(roi2.image_mask, np.ndarray)
+
+    def test_lin_trans(self):
+        """roi.PathROI.transform: array arg"""
+        l = np.array([[2, 0], [0, 3]])
+        t = np.array([1, 2])
+        # linear and trans args should be ignored
+        roi2 = self.roi.transform(linear=l, trans=t)
+
+        v = self.roi.path.vertices.copy()
+        v[:, 0] *= 2
+        v[:, 1] *= 3
+        v[:, 0] += 1
+        v[:, 1] += 2
+
+        self.assertIsInstance(roi2, roi.PathROI)
+        np.testing.assert_allclose(roi2.path.vertices, v)
+        self.assertEqual(self.roi.buffer, roi2.buffer)
+        self.assertIsInstance(roi2.image_mask, np.ndarray)
+
+    def test_no_mask(self):
+        """roi.PathROI.transform: no_image=True"""
+        r = roi.PathROI([[1, 1], [2, 2]], buffer=1.5, no_image=True)
+        roi2 = r.transform()
+        self.assertIsInstance(roi2, roi.PathROI)
+        self.assertEqual(r.buffer, roi2.buffer)
+        self.assertIs(roi2.image_mask, None)
 
 
 class TestNoImagePathRoi(TestPathRoi):

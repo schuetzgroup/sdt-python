@@ -5,6 +5,7 @@ import warnings
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
+from matplotlib.transforms import Affine2D
 
 from slicerator import pipeline
 
@@ -390,6 +391,52 @@ class PathROI(object):
             ``columns={"coords": ["x", "z"]}``.
         """
         data[columns["coords"]] += self.bounding_box_int[0]
+
+    def transform(self, trafo=None, linear=None, trans=None):
+        """Create a new PathROI instance with a transformed path
+
+        Parameters
+        ----------
+        trafo : matplotlib.transforms.Transform or numpy.ndarray, shape(3, 3), optional
+            Full transform. If given as a matrix, it has to have the form
+
+            .. code-block:: text
+
+                a c e
+                b d f
+                0 0 1,
+
+            where a, b, c, d give the linear part of the transform (see
+            `linear` below) and e, f give the translation part (see `trans`
+            below).
+        linear : numpy.ndarray, shape(2, 2), optional
+            Linear part (rotation, scaling, shear) of the transform. Only used
+            if `trafo` is not given.
+        trans : numpy.ndarray, shape(2), optional
+            Translation. Only used if `trafo` is not given.
+
+        Returns
+        -------
+        PathROI
+            ROI with transformed path and same :py:attr:`buffer`. The image
+            mask is only created if this instance has an image mask.
+        """
+        if trafo is not None:
+            if isinstance(trafo, np.ndarray):
+                t = Affine2D(trafo)
+            else:
+                # Assume it is already a Transform object
+                t = trafo
+        else:
+            trafo = np.eye(3)
+            if linear is not None:
+                trafo[:2, :2] = linear
+            if trans is not None:
+                trafo[:2, 2] = trans
+            t = Affine2D(trafo)
+
+        return PathROI(self.path.transformed(t), self.buffer,
+                       self.image_mask is None)
 
     @classmethod
     def to_yaml(cls, dumper, data):
