@@ -105,14 +105,9 @@ def find_closest_pairs(coords1, coords2, max_dist):
     t2 = cKDTree(coords2)
     d = t1.sparse_distance_matrix(t2, max_dist, output_type="ndarray")
 
-    # convert structured array to normal arrays for speed
-    v = d["v"]
-    i1 = d["i"]
-    i2 = d["j"]
-
     # Sort w.r.t. distance between partners so that pairs with smallest
     # distances will be found first
-    sort_idx = np.argsort(v)
+    sort_idx = np.argsort(d["v"])
     i1 = d["i"][sort_idx]
     i2 = d["j"][sort_idx]
 
