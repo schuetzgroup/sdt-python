@@ -56,6 +56,7 @@ Programming reference
 ---------------------
 
 .. autofunction:: find_colocalizations
+.. autofunction:: calc_pair_distance
 .. autofunction:: find_codiffusion
 .. autofunction:: plot_codiffusion
 .. autofunction:: merge_channels
@@ -457,6 +458,41 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
 
 
 @config.set_columns
+def calc_pair_distance(data, channel_names=None, columns={}):
+    """Calculate distances between colocalized features
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Colocalized feature data, e.g. output of
+        :py:func:`find_colocalizations`.
+
+    Returns
+    -------
+    pandas.Series
+        Distances between colocalized features. The series' index is the
+        same as in the input DataFrame.
+
+    Other parameters
+    ----------------
+    channel_names : list of str or None, optional
+        Names of the channels. If None, use the first two entries of teh top
+        level of `data`'s MultiIndex. Defaults to None.
+    columns : dict, optional
+        Override default column names as defined in :py:attr:`config.columns`.
+        The only relevant name is `coords. This means,
+        if your DataFrame has coordinate columns "x" and "z", set
+        ``columns={"coords": ["x", "z"]}``.
+    """
+    if channel_names is None:
+        channel_names = data.columns.remove_unused_levels().levels[0][:2]
+
+    d = (data[channel_names[0]][columns["coords"]] -
+         data[channel_names[1]][columns["coords"]])**2
+    return np.sqrt(np.sum(d, axis=1))
+
+
+@config.set_columns
 def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
                      legend_loc=0, linestyles=["-", "--", ":", "-."],
                      channel_names=None, columns={}):
@@ -517,7 +553,7 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
     col = getattr(data, "columns", None)
     if channel_names is None:
         if isinstance(col, pd.MultiIndex):
-            channel_names = col.levels[0][:2]
+            channel_names = col.remove_unused_levels().levels[0][:2]
         else:
             channel_names = _channel_names
 

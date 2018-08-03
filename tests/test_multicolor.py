@@ -159,6 +159,37 @@ class TestFindColocalizations(unittest.TestCase):
         pd.testing.assert_frame_equal(pairs, exp)
 
 
+class TestCalcPairDistance(unittest.TestCase):
+    def setUp(self):
+        cols = pd.MultiIndex.from_product([("ch1", "ch2", "ch3"),
+                                           ("x", "y", "z")])
+        self.data = pd.DataFrame([[10, 20, 30, 10, 20, 30, 10, 20, 30],
+                                  [10, 20, 30, 11, 21, 31, 10, 20, 30],
+                                  [10, 20, 30, 13, 24, 42, 10, 20, 30]],
+                                 columns=cols)
+
+    def test_call(self):
+        """multicolor.calc_pair_distance: simple call"""
+        d = sdt.multicolor.calc_pair_distance(self.data)
+        np.testing.assert_array_equal(d.index, self.data.index)
+        np.testing.assert_allclose(d.values, [0, np.sqrt(2), 5])
+
+    def test_channel_names(self):
+        """multicolor.calc_pair_distance: channel_names arg"""
+        d = sdt.multicolor.calc_pair_distance(self.data,
+                                              channel_names=["ch1", "ch3"])
+        np.testing.assert_array_equal(d.index, self.data.index)
+        np.testing.assert_allclose(d.values, 0)
+
+    def test_3d(self):
+        """multicolor.calc_pair_distance: 3d data"""
+        d = sdt.multicolor.calc_pair_distance(
+            self.data, columns={"coords": ["x", "y", "z"]})
+        np.testing.assert_array_equal(d.index, self.data.index)
+        np.testing.assert_allclose(d.values, [0, np.sqrt(3), 13])
+
+
+
 class TestFindCodiffusion(unittest.TestCase):
     def setUp(self):
         c = np.repeat([[10, 10, 1, 1]], 10, axis=0)
