@@ -1,7 +1,7 @@
 """Tools for finding immobilizations in tracking data"""
 import numpy as np
 
-from .. import config
+from .. import config, helper
 from ..helper import numba
 
 
@@ -92,10 +92,6 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
     # New column for `tracks` that holds the immobilization number
     immob_column = []
 
-    t_arr = tracks[columns["coords"] +
-                   [columns["time"], columns["particle"]]].values
-    particles = np.unique(t_arr[:, -1])
-
     if engine == "numba" and numba.numba_available:
         count_immob_func = _count_immob_numba
         label_mob_func = _label_mob_numba
@@ -103,16 +99,13 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
         count_immob_func = _count_immob_python
         label_mob_func = _label_mob_python
 
-    # We will divide by zero below (in immob = ((1 - count/num_locs ...),
-    # also in _count_immob_python (cm /= num_locs[np.newaxis, ...])
-    old_err = np.seterr(invalid="ignore")
-
-    for p in particles:
-        t = t_arr[t_arr[:, -1] == p]  # get current particle
-        t = t[np.argsort(t[:, -2])]  # sort by frame
-
-        coords = t[:, :-2].T  # coordinates
-        frames = t[:, -2].astype(int)
+    t_sorted = tracks.sort_values([columns["particle"], columns["time"]])
+    t_split = helper.split_dataframe(t_sorted, columns["particle"],
+                                     columns["coords"] + [columns["time"]],
+                                     sort=False)
+    for pn, t in t_split:
+        coords = t[:, :-1].T  # coordinates
+        frames = t[:, -1].astype(int)
         # To be appended to immob_column
         icol = np.full(len(t), -1, dtype=int)
 
@@ -120,13 +113,17 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
         # center of mass.
         # This is computationally expensive.
         count = count_immob_func(coords, max_dist)
-        # Number of localizations in sub-track (only valid for upper triangle)
-        num_locs = (np.arange(1, coords.shape[1]+1)[np.newaxis, :] -
-                    np.arange(coords.shape[1])[:, np.newaxis])
 
-        # Find immobilizations within tolerance limits
-        immob = ((1 - count/num_locs <= rtol) &
-                 (num_locs - count <= atol))
+        # We will divide by zero below
+        with np.errstate(invalid="ignore"):
+            # Number of localizations in sub-track (only valid for upper
+            # triangle)
+            num_locs = (np.arange(1, coords.shape[1]+1)[np.newaxis, :] -
+                        np.arange(coords.shape[1])[:, np.newaxis])
+
+            # Find immobilizations within tolerance limits
+            immob = ((1 - count/num_locs <= rtol) &
+                     (num_locs - count <= atol))
 
         # Get longest possible immobilizations
         duration = frames[np.newaxis, :] - frames[:, np.newaxis]
@@ -161,9 +158,6 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
             mob_counter = label_mob_func(icol, mob_counter)
 
         immob_column.append(icol)
-
-    # Restore
-    np.seterr(**old_err)
 
     tracks["immob"] = np.hstack(immob_column)
     return tracks
@@ -335,15 +329,14 @@ def find_immobilizations_int(tracks, max_dist, min_duration, label_mobile=True,
     #  new column for `tracks` that holds the immobilization number
     immob_column = []
 
-    t_arr = tracks[columns["coords"] +
-                   [columns["time"], columns["particle"]]].values
-    particles = np.unique(t_arr[:, -1])
+    t_sorted = tracks.sort_values([columns["particle"], columns["time"]])
+    t_split = helper.split_dataframe(t_sorted, columns["particle"],
+                                     columns["coords"] + [columns["time"]],
+                                     sort=False)
 
-    for p in particles:
-        t = t_arr[t_arr[:, -1] == p]
-        t = t[np.argsort(t[:, -2])]
-        pos = t[:, :-2]
-        frames = t[:, -2].astype(int)
+    for pn, t in t_split:
+        pos = t[:, :-1]  # coordinates
+        frames = t[:, -1].astype(int)
         # to be appended to immob_column
         icol = np.full(len(t), -1, dtype=int)
 
