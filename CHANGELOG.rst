@@ -7,6 +7,21 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+13.2
+----
+
+- Add :py:class:`roi.MaskROI` supporting ROIs from boolean image arrays
+- Improvements to plotting functions in the :py:mod:`fret` module
+- :py:func:`motion.fit_msd`: Support anomalous diffusion (with exposure time
+  correction).
+- Add :py:meth:`transform` method to :py:class:`roi.PathROI`
+- Add :py:func:`calc_pair_distance`
+- Greatly speed up (M)SD calculation functions in :py:mod:`motion` for large
+  datasets
+- Speed up :py:func:`motion.find_immobilizations` and
+  :py:func:`motion.find_immobilizations_int`
+
+
 13.1
 ----
 
