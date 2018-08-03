@@ -26,7 +26,7 @@ def save_as_tiff(frames, filename):
     filename : str
         Name of the output file
     """
-    with tifffile.TiffWriter(filename, software="sdt.io") as tw:
+    with tifffile.TiffWriter(filename) as tw:
         for f in frames:
             desc = None
             dt = None
@@ -40,7 +40,10 @@ def save_as_tiff(frames, filename):
                         "{}: Failed to serialize metadata to YAML".format(
                             filename))
 
-            tw.save(f, description=desc, datetime=dt)
+            try:
+                tw.save(f, description=desc, datetime=dt, software="sdt.io")
+            except TypeError:
+                tw.save(f, description=desc, datetime=dt)
 
 
 try:
