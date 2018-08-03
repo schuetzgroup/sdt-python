@@ -52,7 +52,7 @@ test:
         - trackpy
 
     commands:
-        - nosetests -v
+        - nosetests -v -w tests
 
     source_files:
         - tests
