@@ -8,9 +8,10 @@ source:
 build:
     number: 0
     script: python setup.py install
+    noarch: python
 
 requirements:
-    build:
+    host:
         - nomkl  # [unix]
         - python
         - setuptools
