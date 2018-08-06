@@ -42,7 +42,7 @@ class TestFinder(unittest.TestCase):
     def test_peak_count(self):
         peaks = self.finder.find(self.frame, self.threshold)
         pc = np.zeros(self.frame.shape)
-        pc[peaks[:, [col_nums.y, col_nums.x]].astype(int).T.tolist()] = 1
+        pc[tuple(peaks[:, [col_nums.y, col_nums.x]].astype(int).T)] = 1
         np.testing.assert_equal(pc, self.finder.peak_count)
 
     def test_peak_count_excessive(self):

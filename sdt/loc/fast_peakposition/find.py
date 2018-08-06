@@ -153,5 +153,5 @@ class Finder(object):
             is_max[cnt] = (not ((roi[mask_gt] > image[i, j]).any() |
                                 (roi[mask_ge] >= image[i, j]).any()))
         maxima = candidates[is_max]
-        max_idx = maxima.T.tolist()
+        max_idx = tuple(maxima.T)
         return maxima, mass_img_corr[max_idx], bg_img[max_idx]

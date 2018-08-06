@@ -76,10 +76,10 @@ class Finder(object):
         bg = self.bg_estimator(image)
         image_wo_bg = image - bg
         coords = self.local_maxima(self.pre_filter(image_wo_bg), threshold)
-        non_excessive_count_mask = (self.peak_count[coords.T.tolist()] <
+        non_excessive_count_mask = (self.peak_count[tuple(coords.T)] <
                                     self.max_peak_count)
         ne_coords = coords[non_excessive_count_mask, :]
-        ne_coords_list = ne_coords.T.tolist()
+        ne_coords_list = tuple(ne_coords.T)
         self.peak_count[ne_coords_list] += 1
         ne_coords_bg = bg[ne_coords_list]
 

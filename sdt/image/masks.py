@@ -23,7 +23,7 @@ class RectMask(np.ndarray):
             margin = max(0, (s - e) // 2)
             m_slices.append(slice(margin, margin + e))
 
-        obj[m_slices] = 1
+        obj[tuple(m_slices)] = 1
 
         return obj
 
@@ -78,7 +78,7 @@ class CircleMask(np.ndarray):
                 margin = max(0, (s - e) // 2)
                 m_slices.append(slice(margin, margin + e))
 
-            ret[m_slices] = obj
+            ret[tuple(m_slices)] = obj
             obj = ret
 
         return obj

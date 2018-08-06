@@ -266,7 +266,8 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator,
 
     ret = np.empty((len(pos), 4))
     for i in range(len(ret)):
-        feat_slice = [slice(s, e) for s, e in zip(feat_start[i], feat_end[i])]
+        feat_slice = tuple(
+            slice(s, e) for s, e in zip(feat_start[i], feat_end[i]))
         feat_region = frame[feat_slice]
 
         if feat_region.shape != feat_mask.shape:
@@ -278,9 +279,10 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator,
         feat_pixels = feat_region[feat_mask]
 
         if not global_bg:
-            bg_slice = [slice(s, e) for s, e in zip(bg_start[i], bg_end[i])]
-            bg_mask_slice = [slice(s, e) for s, e in zip(bg_mask_start[i],
-                                                         bg_mask_end[i])]
+            bg_slice = tuple(
+                slice(s, e) for s, e in zip(bg_start[i], bg_end[i]))
+            bg_mask_slice = tuple(
+                slice(s, e) for s, e in zip(bg_mask_start[i], bg_mask_end[i]))
             bg_mask_with_feat = bg_mask[bg_mask_slice] & mask_img[bg_slice]
             bg_pixels = frame[bg_slice][bg_mask_with_feat]
 

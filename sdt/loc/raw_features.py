@@ -52,6 +52,6 @@ def get_raw_features(loc_data, img_data, size, columns={}):
 
             pos = np.round(a[-len(columns["coords"]):].astype(float))
             pos = pos.astype(int)
-            sl = [slice(p - size, p + size + 1) for p in pos[::-1]]
+            sl = tuple(slice(p - size, p + size + 1) for p in pos[::-1])
             ret[i] = img[sl]
     return ret

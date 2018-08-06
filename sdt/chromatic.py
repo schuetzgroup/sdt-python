@@ -603,7 +603,7 @@ class Corrector(object):
         # now deal with ambiguities, i. e. if one feature has two similarly
         # likely partners
         # For each feature, calculate the threshold.
-        amb_thresh = score[indices.tolist()] * ambiguity_factor
+        amb_thresh = score[tuple(indices)] * ambiguity_factor
         # look for high scorers along the 0 axis (rows)
         amb0 = (score[indices[0], :] > amb_thresh[:, np.newaxis])
         amb0 = (np.sum(amb0, axis=1) > 1)
@@ -616,7 +616,7 @@ class Corrector(object):
         # get rid of indices with low scores
         # TODO: Can this be gotten rid of now that the ambiguity stuff works?
         score_cutoff *= score.max()
-        cutoff_mask = (score[indices.tolist()] >= score_cutoff)
+        cutoff_mask = (score[tuple(indices)] >= score_cutoff)
         indices = indices[:, cutoff_mask]
 
         pair_matrix = np.hstack((

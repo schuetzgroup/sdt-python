@@ -88,7 +88,7 @@ def local_maxima(image, search_radius, threshold):
 
     # remove spurious maxima which result from flat peaks
     is_max = np.zeros(len(candidates), dtype=np.bool)
-    candidate_list = candidates.T.tolist()
+    candidate_list = tuple(candidates.T)
     max_img = np.zeros(image.shape)
     max_img[candidate_list] = image[candidate_list]
 

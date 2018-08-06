@@ -118,7 +118,7 @@ def guess_parameters(data, *indep_vars):
         # FIXME: This works only for sorted data
         interior_slice = slice(1, -1)
         edge_mask = np.ones(data.shape, dtype=np.bool)
-        edge_mask[[interior_slice]*data.ndim] = False
+        edge_mask[(interior_slice,) * data.ndim] = False
         bg = np.median(data[edge_mask])
 
     # subtract background for calculation of moments, mask negative values
