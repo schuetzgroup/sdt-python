@@ -12,6 +12,7 @@ import os
 import collections
 import logging
 from pathlib import Path
+import re
 
 import scipy.io as sp_io
 import pandas as pd
@@ -36,12 +37,13 @@ def load(filename, typ="auto", fmt="auto", color="red"):
 
     Supported file types:
 
+    - HDF5 files (\*.h5)
+    - ThunderSTORM CSV files (\*.csv)
     - particle_tracking_2D positions (\*_positions.mat)
     - particle_tracking_2D tracks (\*_tracks.mat)
     - pkc files (\*.pkc)
     - pks files (\*.pks)
     - trc files (\*.trc)
-    - HDF5 files (\*.h5)
 
     Arguments
     ---------
@@ -53,7 +55,7 @@ def load(filename, typ="auto", fmt="auto", color="red"):
         if that fails, try to read "features".
         If the file is in particle_tracker format, this can be either "auto",
         "features" or "tracks". Defaults to "auto".
-    fmt : {"auto", "hdf5", "particle_tracker", "pkc", "pks", "trc"}, optional
+    fmt : {"auto", "hdf5", "particle_tracker", "pkc", "pks", "trc", "csv"}, optional
         Output format. If "auto", infer the format from `filename`. Otherwise,
         write the given format.
     color : {"red", "green"}, optional
@@ -84,6 +86,8 @@ def load(filename, typ="auto", fmt="auto", color="red"):
             fmt = "pks"
         elif p.suffix == ".trc":
             fmt = "trc"
+        elif p.suffix == ".csv":
+            fmt = "csv"
         else:
             raise ValueError("Could not determine format from file name " +
                              filename + ".")
@@ -103,6 +107,8 @@ def load(filename, typ="auto", fmt="auto", color="red"):
         return load_pks(p)
     if fmt == "trc":
         return load_trc(p)
+    if fmt == "csv":
+        return load_csv(p)
 
     raise ValueError('Unknown format "{}"'.format(fmt))
 
@@ -314,6 +320,44 @@ def load_trc(filename):
             df[c] -= 1
 
     return df[_trc_ret_col_names]
+
+
+_thunderstorm_name_map = {
+    "sigma": "size",
+    "intensity": "mass",
+    "offset": "bg",
+    "bkgstd": "bg_std"}
+
+
+def load_csv(filename):
+    """Load localization data from a CSV file created by ThunderSTORM
+
+    Parameters
+    ----------
+    filename : str or pathlib.Path
+        Name of the file to load
+
+    Returns
+    -------
+    pandas.DataFrame
+        Single molecule data
+    """
+    df = pd.read_csv(filename)
+
+    cols = []
+    # ThunderSTORM column names are "<name> [<unit>]"
+    # Get the name and translate it to the "standard" name if possible
+    unit_re = re.compile(r"^(\w+) \[(\w+)\]$")
+    for c in df.columns:
+        m = unit_re.search(c)
+        if m:
+            key = m.group(1)
+            cols.append(_thunderstorm_name_map.get(key, key))
+        else:
+            cols.append(c)
+    df.columns = cols
+
+    return df
 
 
 _msd_column_names = ["lagt", "msd", "stderr", "qianerr"]

@@ -124,6 +124,19 @@ class TestSm(unittest.TestCase):
                       sdt.io.load,
                       os.path.join(data_path, self.fname + ".pks"))
 
+    def test_load_csv(self):
+        """io.load_csv"""
+        self._do_load(os.path.join(data_path, "orig_thunderstorm.h5"),
+                      "features", sdt.io.load_csv,
+                      os.path.join(data_path, "thunderstorm.csv"))
+
+    def test_load_auto_csv(self):
+        """io.load: csv, autodetect"""
+        self._do_load(os.path.join(data_path, "orig_thunderstorm.h5"),
+                      "features", sdt.io.load,
+                      os.path.join(data_path, "thunderstorm.csv"))
+
+
     def test_load_msdplot_mat(self):
         """io.load_msdplot"""
         d = 1.1697336431747631
