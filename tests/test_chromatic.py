@@ -92,6 +92,39 @@ class TestChromaticCorrector(unittest.TestCase):
         np.testing.assert_allclose(corrector2.pairs,
                                    pd.concat((self.corrector.pairs,)*2))
 
+    def test_pairs_flip_int(self):
+        """chromatic.corrector.determine_parameters: int flip_axes"""
+        rs = np.random.RandomState(10)
+        loc = pd.DataFrame(rs.rand(10, 2)*100, columns=["x", "y"])
+        loc2 = loc.copy()
+        loc2["y"] = 100 - loc["y"]
+
+        cc = chromatic.Corrector(loc, loc2)
+        cc.determine_parameters(flip_axes=1)
+
+        pairs = pd.concat([loc, loc2], keys=["channel1", "channel2"],
+                          axis=1)
+        pd.testing.assert_frame_equal(cc.pairs, pairs)
+        trafo = np.array([[1, 0, 0], [0, -1, 100], [0, 0, 1]])
+        np.testing.assert_allclose(cc.parameters1, trafo, atol=1e-10)
+
+    def test_pairs_flip_list(self):
+        """chromatic.corrector.determine_parameters: list flip_axes"""
+        rs = np.random.RandomState(10)
+        loc = pd.DataFrame(rs.rand(10, 2)*100, columns=["x", "y"])
+        loc2 = loc.copy()
+        loc2["x"] = 80 - loc["x"]
+        loc2["y"] = 100 - loc["y"]
+
+        cc = chromatic.Corrector(loc, loc2)
+        cc.determine_parameters(flip_axes=[0, 1])
+
+        pairs = pd.concat([loc, loc2], keys=["channel1", "channel2"],
+                          axis=1)
+        pd.testing.assert_frame_equal(cc.pairs, pairs)
+        trafo = np.array([[-1, 0, 80], [0, -1, 100], [0, 0, 1]])
+        np.testing.assert_allclose(cc.parameters1, trafo, atol=1e-10)
+
     def test_call_dataframe(self):
         """chromatic.Corrector.__call__: DataFrame arg"""
         self.corrector.determine_parameters()

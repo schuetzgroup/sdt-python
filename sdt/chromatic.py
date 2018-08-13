@@ -167,7 +167,7 @@ class Corrector(object):
         """
 
     def determine_parameters(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
-                             ambiguity_factor=0.8):
+                             ambiguity_factor=0.8, flip_axes=[]):
         """Determine the parameters for the affine transformation
 
         This takes the localizations of :py:attr:`feat1` and tries to match
@@ -197,8 +197,13 @@ class Corrector(object):
             score of the lower scoring one is larger than `ambiguity_factor`
             times the score of the higher scorer, the pairs are considered
             ambiguous and therefore discarded. Defaults to 0.8.
+        flip_axes : int or list of int, optional
+            Axes with respect to which the channels are flipped. E.g. if
+            channel 2 is upside done w.r.t channel 1, set ``flip_axes=1``,
+            if it is mirrored left-to-right, set ``flip_axes=0``.
         """
-        self.find_pairs(tol_rel, tol_abs, score_cutoff, ambiguity_factor)
+        self.find_pairs(tol_rel, tol_abs, score_cutoff, ambiguity_factor,
+                        flip_axes)
         self.fit_parameters()
 
     @config.set_columns
@@ -405,7 +410,7 @@ class Corrector(object):
         return corr
 
     def find_pairs(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
-                   ambiguity_factor=0.8):
+                   ambiguity_factor=0.8, flip_axes=[]):
         """Match features of `feat1` with features of `feat2`
 
         This is done by calculating the vectors from every
@@ -432,6 +437,10 @@ class Corrector(object):
             score of the lower scoring one is larger than `ambiguity_factor`
             times the score of the higher scorer, the pairs are considered
             ambiguous and therefore discarded. Defaults to 0.8.
+        flip_axes : int or list of int, optional
+            Axes with respect to which the channels are flipped. E.g. if
+            channel 2 is upside done w.r.t channel 1, set ``flip_axes=1``,
+            if it is mirrored left-to-right, set ``flip_axes=0``.
         """
         p = []
         for f1, f2 in zip(self.feat1, self.feat2):
@@ -450,6 +459,13 @@ class Corrector(object):
                     continue
                 v1 = self._vectors_cartesian(f1_frame_data)
                 v2 = self._vectors_cartesian(f2_frame_data)
+
+                if isinstance(flip_axes, int):
+                    flip_axes = [flip_axes]
+                else:
+                    flip_axes = list(flip_axes)
+                v2[flip_axes] *= -1
+
                 s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
                 p.append(self._pairs_from_score(
                     f1_frame_data, f2_frame_data, s, score_cutoff,
