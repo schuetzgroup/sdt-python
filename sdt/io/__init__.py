@@ -122,6 +122,7 @@ Specific functions
 .. autofunction:: load_pkmatrix
 .. autofunction:: load_pks
 .. autofunction:: load_trc
+.. autofunction:: load_csv
 
 .. autofunction:: save_pt2d
 .. autofunction:: save_trc
