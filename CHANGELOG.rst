@@ -7,6 +7,14 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+13.3
+----
+
+- Fix numpy 1.15 warnings
+- Add support for loading ThunderSTORM CSV files
+- Support flipped/mirrored channels in :py:class:`chromatic.Corrector`
+
+
 13.2
 ----
 
