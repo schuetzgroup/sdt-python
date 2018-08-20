@@ -17,16 +17,13 @@ class SmFretFilter:
     attribute.
     """
     @config.set_columns
-    def __init__(self, tracks, cp_detector=None, columns={}):
+    def __init__(self, tracks, columns={}):
         """Parameters
         ----------
         tracks : pandas.DataFrame
             smFRET tracking data as produced by :py:class:`SmFretTracker` by
             running its :py:meth:`SmFretTracker.track` and
             :py:meth:`SmFretTracker.analyze` methods.
-        cp_detector : changepoint detector or None, optional
-            If `None`, create a :py:class:`changepoint.Pelt` instance with
-            ``model="l2"``, ``min_size=1``, and ``jump=1``.
 
         Other parameters
         ----------------
@@ -38,12 +35,6 @@ class SmFretFilter:
             ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This
             parameters sets the :py:attr:`columns` attribute.
         """
-        if cp_detector is None:
-            cp_detector = changepoint.Pelt("l2", min_size=1, jump=1)
-        self.cp_detector = cp_detector
-        """Changepoint detector class instance used to perform acceptor
-        bleaching detection
-        """
         self.tracks = tracks.copy()
         """Filtered smFRET tracking data"""
         self.tracks_orig = tracks.copy()
@@ -53,11 +44,15 @@ class SmFretFilter:
         :py:attr:`config.columns`.
         """
 
-    def acceptor_bleach_step(self, brightness_thresh, truncate=True, **kwargs):
+    def acceptor_bleach_step(self, brightness_thresh, truncate=True):
         """Find tracks where the acceptor bleaches in a single step
 
-        Changepoint detection is run on the acceptor brightness time trace.
-        If the median brightness for each but the first step is below
+        After acceptor mass changepoint detection has been performed (see
+        :py:meth:`SmFretAnalyzer.segment_a_mass`), this method can be used
+        to filter out any trajectories where the acceptor does not bleach in
+        a single step.
+
+        Only if the median brightness for each but the first step is below
         `brightness_thresh`, accept the track.
 
         Parameters
@@ -67,57 +62,44 @@ class SmFretFilter:
             is below this value.
         truncate : bool, optional
             If `True`, remove data after the bleach step.
-        **kwargs
-            Keyword arguments to pass to :py:attr:`cp_detector`
-            `find_changepoints` method.
 
         Examples
         --------
         Consider acceptors with a brightness ("fret", "a_mass") of less than
-        500 counts bleached; pass ``penalty=1e6`` to the changepoint
-        detector's ``find_changepoints`` method.
+        500 counts bleached.
 
-        >>> filt.acceptor_bleach_step(500, penalty=1e6)
+        >>> filt.acceptor_bleach_step(500)
         """
         time_col = ("donor", self.columns["time"])
-        trc = self.tracks.sort_values([("fret", "particle"), time_col])
+        self.tracks.sort_values([("fret", "particle"), time_col], inplace=True)
         trc_split = helper.split_dataframe(
-            trc, ("fret", "particle"),
-            [("fret", "a_mass"), time_col, ("fret", "exc_type")],
+            self.tracks, ("fret", "particle"),
+            [("fret", "a_mass"), ("fret", "exc_type"), ("fret", "a_seg")],
             type="array", sort=False)
 
-        good = np.zeros(len(trc), dtype=bool)
-        good_pos = 0
+        acc_exc_num = SmFretTracker.exc_type_nums["a"]
+
+        good = []
         for p, trc_p in trc_split:
-            good_slice = slice(good_pos, good_pos + len(trc_p))
-            good_pos += len(trc_p)
-
-            acc_mask = trc_p[:, 2] == SmFretTracker.exc_type_nums["a"]
-            m_a = trc_p[acc_mask, 0]
-            f_a = trc_p[acc_mask, 1]
-
-            # Find changepoints if there are no NaNs
-            if np.any(~np.isfinite(m_a)):
-                continue
-            cp = self.cp_detector.find_changepoints(m_a, **kwargs)
-            if not len(cp):
-                continue
-
             # Make step function
-            s = np.array_split(m_a, cp)
-            s = [np.median(s_) for s_ in s]
+            cps = np.nonzero(np.diff(trc_p[:, 2]))[0] + 1  # changepoints
+            split = np.array_split(trc_p[:, (0, 1)], cps)
+            med = [np.median(s[s[:, 1] == acc_exc_num, 0]) for s in split]
 
             # See if only the first step is above brightness_thresh
-            if not all(s_ < brightness_thresh for s_ in s[1:]):
-                continue
-
-            if truncate:
-                # Add data before bleach step
-                good[good_slice] = trc_p[:, 1] <= f_a[max(0, cp[0] - 1)]
+            if len(med) > 1 and all(m < brightness_thresh for m in med[1:]):
+                if truncate:
+                    # Add data before bleach step
+                    g = np.zeros(len(trc_p), dtype=bool)
+                    g[:cps[0]] = True
+                else:
+                    g = np.ones(len(trc_p), dtype=bool)
             else:
-                good[good_slice] = True
+                g = np.zeros(len(trc_p), dtype=bool)
 
-        self.tracks = trc[good]
+            good.append(g)
+
+        self.tracks = self.tracks[np.concatenate(good)]
 
     def eval(self, expr, mi_sep="_"):
         """Call ``eval(expr)`` for `tracks`

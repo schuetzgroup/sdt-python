@@ -312,6 +312,35 @@ class TestSmFretTracker(unittest.TestCase):
         np.testing.assert_equal(self.fret_data["fret", "exc_type"].values,
                                 exc)
 
+    def test_segment_a_mass(self):
+        """fret.SmFretTracker.segment_a_mass"""
+        # NaNs cause bogus changepoints using Pelt; if segment_a_mass
+        # does not ignore donor frames, we should see that.
+        a_mass = ([12000, 12000, 12000, 6000, 6000] * 5 +
+                  [6000, 6000, 6000, 0, 0] * 4 +
+                  [np.NaN, np.NaN, np.NaN, 6000, 6000] * 3)
+        segs = [0] * 5 * 5 + [1] * 5 * 4 + [2] * 5 * 3
+        frame = np.arange(len(a_mass))
+        e_type = [0, 0, 0, 1, 1] * (len(a_mass) // 5)
+        fd = pd.DataFrame({("fret", "a_mass"): a_mass,
+                           ("fret", "exc_type"): e_type,
+                           ("donor", "frame"): frame,
+                           ("acceptor", "frame"): frame}, dtype=float)
+        fd["fret", "particle"] = 0
+        fd2 = fd.copy()
+        fd2["fret", "particle"] = 1
+
+        fret_data = pd.concat([fd, fd2], ignore_index=True)
+        # shuffle
+        fret_data = pd.concat([fret_data.iloc[::2], fret_data.iloc[1::2]],
+                              ignore_index=True)
+
+        t = fret.SmFretTracker("dddaa", cp_detector=changepoint.Pelt(
+            "l2", min_size=1, jump=1, engine="python"))
+        t.segment_a_mass(fret_data, penalty=1e7)
+        self.assertIn(("fret", "a_seg"), fret_data.columns)
+        np.testing.assert_equal(fret_data["fret", "a_seg"].values, segs * 2)
+
     @unittest.skipUnless(hasattr(io, "yaml"), "YAML not found")
     def test_yaml(self):
         """fret.SmFretTracker: save to/load from YAML"""
@@ -349,14 +378,16 @@ class TestSmFretFilter(unittest.TestCase):
             columns=["x", "y", "frame"])
         fret1 = pd.DataFrame(
             np.array([[3000] * 3 + [1500] * 3 + [100] * 4,
+                      [0] * 3 + [1] * 3 + [2] * 4,
                       [0] * 10, [1] * 10], dtype=float).T,
-            columns=["a_mass", "particle", "exc_type"])
+            columns=["a_mass", "a_seg", "particle", "exc_type"])
         self.data1 = pd.concat([loc1, loc1, fret1], axis=1,
                                keys=["donor", "acceptor", "fret"])
         loc2 = loc1.copy()
         loc2[["x", "y"]] = [20, 10]
         fret2 = fret1.copy()
         fret2["a_mass"] = [1600] * 5 + [150] * 5
+        fret2["a_seg"] = [0] * 5 + [1] * 5
         fret2["particle"] = 1
         self.data2 = pd.concat([loc2, loc2, fret2], axis=1,
                                keys=["donor", "acceptor", "fret"])
@@ -364,6 +395,7 @@ class TestSmFretFilter(unittest.TestCase):
         loc3[["x", "y"]] = [120, 30]
         fret3 = fret2.copy()
         fret3["a_mass"] = [3500] * 5 + [1500] * 5
+        fret3["a_seg"] = [0] * 5 + [1] * 5
         fret3["particle"] = 2
         self.data3 = pd.concat([loc3, loc3, fret3], axis=1,
                                keys=["donor", "acceptor", "fret"])
@@ -371,22 +403,19 @@ class TestSmFretFilter(unittest.TestCase):
         self.data = pd.concat([self.data1, self.data2, self.data3],
                               ignore_index=True)
 
-        self.filt = fret.SmFretFilter(
-            self.data,
-            changepoint.Pelt("l2", min_size=1, jump=1, engine="python"))
+        self.filt = fret.SmFretFilter(self.data)
 
     def test_acceptor_bleach_step(self):
         """fret.SmFretFilter.acceptor_bleach_step: truncate=False"""
-        self.filt.acceptor_bleach_step(500, truncate=False, penalty=1e6)
+        self.filt.acceptor_bleach_step(500, truncate=False)
         pd.testing.assert_frame_equal(
             self.filt.tracks, self.data[self.data["fret", "particle"] == 1])
 
     def test_acceptor_bleach_step_trunc(self):
         """fret.SmFretFilter.acceptor_bleach_step: truncate=True"""
-        self.filt.acceptor_bleach_step(500, truncate=True, penalty=1e6)
+        self.filt.acceptor_bleach_step(500, truncate=True)
         exp = self.data[(self.data["fret", "particle"] == 1) &
                         (self.data["fret", "a_mass"] > 500)]
-        print(self.filt.tracks)
         pd.testing.assert_frame_equal(self.filt.tracks, exp)
 
     def test_acceptor_bleach_step_alex(self):
@@ -396,14 +425,21 @@ class TestSmFretFilter(unittest.TestCase):
         data["donor", "frame"] = data["acceptor", "frame"] = \
             list(range(len(data) // 3)) * 3
         data.loc[::2, ("fret", "exc_type")] = 0
-        # NaNs cause bogus changepoints using Pelt; if acceptor_bleach_step
-        # does not ignore donor frames, we should see that.
-        data.loc[::2, ("fret", "a_mass")] = np.NaN
-        filt = fret.SmFretFilter(data, self.filt.cp_detector)
-        filt.acceptor_bleach_step(500, truncate=True, penalty=1e6)
+
+        filt = fret.SmFretFilter(data)
+        filt.acceptor_bleach_step(500, truncate=True)
         exp = data[(data["fret", "particle"] == 1) &
                    (data["donor", "frame"] < 10)]
         pd.testing.assert_frame_equal(filt.tracks, exp)
+
+    def test_acceptor_bleach_step_nocp(self):
+        """fret.SmFretFilter.acceptor_bleach_step: no changepoint"""
+        self.filt.tracks.loc[self.filt.tracks["fret", "particle"] == 1,
+                             ("fret", "a_seg")] = 0
+        self.filt.acceptor_bleach_step(1600, truncate=False)
+        pd.testing.assert_frame_equal(
+            self.filt.tracks,
+            self.data[self.data["fret", "particle"].isin({0, 2})])
 
     def test_eval(self):
         """fret.SmFretFilter.eval"""

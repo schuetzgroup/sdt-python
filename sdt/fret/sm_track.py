@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 
-from .. import multicolor, spatial, brightness, config, helper
+from .. import multicolor, spatial, brightness, config, helper, changepoint
 
 try:
     import trackpy
@@ -46,7 +46,7 @@ class SmFretTracker:
                  bg_estimator="mean", neighbor_radius="auto", interpolate=True,
                  coloc_dist=2., acceptor_channel=2, a_mass_interp="linear",
                  invalid_nan=True, link_quiet=True, link_options={},
-                 columns={}):
+                 cp_detector=None, columns={}):
         """Parameters
         ----------
         excitation_seq : str or list-like of characters
@@ -107,6 +107,9 @@ class SmFretTracker:
             `link_radius` and `link_mem` parameters. Defaults to {}.
         link_quiet : bool, optional
             If `True, call :py:func:`trackpy.quiet`. Defaults to `True`.
+        cp_detector : changepoint detector or None, optional
+            If `None`, create a :py:class:`changepoint.Pelt` instance with
+            ``model="l2"``, ``min_size=1``, and ``jump=1``.
 
         Other parameters
         ----------------
@@ -151,6 +154,12 @@ class SmFretTracker:
         self.acceptor_channel = acceptor_channel
         """Can be either 1 or 2, depending the acceptor is the first or the
         second channel in :py:attr:`chromatic_corr`.
+        """
+        if cp_detector is None:
+            cp_detector = changepoint.Pelt("l2", min_size=1, jump=1)
+        self.cp_detector = cp_detector
+        """Changepoint detector class instance used to perform acceptor
+        bleaching detection.
         """
         self.columns = columns
         """dict of column names in DataFrames. Defaults are taken from
@@ -532,6 +541,69 @@ class SmFretTracker:
                 self.excitation_frames[t])
             exc_type[mask] = self.exc_type_nums[t]
         tracks["fret", "exc_type"] = exc_type
+
+    def segment_a_mass(self, tracks, **kwargs):
+        """Segment tracks by changepoint detection in the acceptor mass
+
+        Changepoint detection is run on the acceptor brightness time trace.
+        This appends `tracks` with a ``("fret", "a_seg")`` column. For each
+        localization, this holds the number of the segment it belongs to.
+
+        **`tracks` will be sorted according to ``("fret", "particle")`` and
+        ``("donor", self.columns["time"])`` in the process.**
+
+        Parameters
+        ----------
+        tracks : pandas.DataFrame
+            FRET tracking data as e. g. produced by :py:meth:`track`. This
+            method appends the resulting column.
+        **kwargs
+            Keyword arguments to pass to :py:attr:`cp_detector`
+            `find_changepoints` method.
+
+        Examples
+        --------
+        Pass ``penalty=1e6`` to the changepoint detector's
+        ``find_changepoints`` method.
+
+        >>> tracker.segment_a_mass(tracks, penalty=1e6)
+        """
+        time_col = ("donor", self.columns["time"])
+        tracks.sort_values([("fret", "particle"), time_col], inplace=True)
+        trc_split = helper.split_dataframe(
+            tracks, ("fret", "particle"),
+            [("fret", "a_mass"), time_col, ("fret", "exc_type")],
+            type="array", sort=False)
+
+        segments = []
+        for p, trc_p in trc_split:
+            acc_mask = trc_p[:, 2] == self.exc_type_nums["a"]
+            m_a = trc_p[acc_mask, 0]
+            m_a_pos = np.nonzero(acc_mask)[0]
+
+            # Find changepoints if there are no NaNs
+            if np.any(~np.isfinite(m_a)):
+                segments.append(np.full(len(trc_p), -1))
+                continue
+            cp = self.cp_detector.find_changepoints(m_a, **kwargs)
+            if not len(cp):
+                segments.append(np.zeros(len(trc_p)))
+                continue
+
+            # Number the segments
+            seg = np.empty(len(trc_p), dtype=int)
+            # Move changepoint forward to right after the previous acceptor
+            # frame, meaning all donor frames between that and the changepoint
+            # alreadey belong to the new segment.
+            cp_pos = m_a_pos[np.maximum(np.add(cp, -1), 0)] + 1
+            for i, s, e in zip(itertools.count(),
+                               itertools.chain([0], cp_pos),
+                               itertools.chain(cp_pos, [len(trc_p)])):
+                seg[s:e] = i
+
+            segments.append(seg)
+
+        tracks["fret", "a_seg"] = np.concatenate(segments)
 
     @classmethod
     def to_yaml(cls, dumper, data):
