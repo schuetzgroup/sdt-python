@@ -5,3 +5,4 @@ __pycache__
 *.egg-info
 .spyproject
 *.kdev4
+.pytest_cache

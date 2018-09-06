@@ -1,48 +1,7 @@
-"""Simulation of fluorescence microscopy images
-============================================
-
-Each fluorophore appears in the microscope as a diffraction limited spot. The
-whole image is made up by the superposition of such spots. The
-:py:mod:`sdt.sim` module provides functions to simulate images like that.
-
-
-Examples
---------
-
-First, create some data:
-
->>> shape = (120, 120)  # shape of the simulated image
->>> coords = numpy.array([np.arange(10, 101, 10)]*2).T  # create some data
->>> amplitudes = numpy.arange(100, 1001, 100)
->>> sigmas = numpy.arange(1, 11, 1)
-
-Now, use the data to simulate the image (ideal case, no noise) using
-:py:func:`simulate_gauss`:
-
->>> img = simulate_gauss(shape, coords, amplitudes, sigmas)
-
-Finally, shot noise (Poissonian) and camera noise (Gaussian) can be added:
-
->>> img_noisy = numpy.random.poisson(img)  # shot noise
->>> img_noisy += numpy.random.normal(200, 20, img_noisy.shape)  # camera noise
-
-
-Programming reference
----------------------
-
-.. autofunction:: simulate_gauss
-
-
-Low level simulation functions
-------------------------------
-
-.. autofunction:: gauss_psf_full
-.. autofunction:: gauss_psf
-.. autofunction:: gauss_psf_numba
-"""
+"""Simulation of fluorescence microscopy images"""
 import numpy as np
 
-from .helper.numba import jit
+from ..helper.numba import jit
 
 
 def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5., mass=False,
