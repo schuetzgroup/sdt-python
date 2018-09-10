@@ -326,7 +326,7 @@ _thunderstorm_name_map = {
     "sigma": "size",
     "intensity": "mass",
     "offset": "bg",
-    "bkgstd": "bg_std"}
+    "bkgstd": "bg_dev"}
 
 
 def load_csv(filename):
@@ -356,6 +356,9 @@ def load_csv(filename):
         else:
             cols.append(c)
     df.columns = cols
+
+    if "frame" in df.columns:
+        df["frame"] -= 1
 
     return df
 
