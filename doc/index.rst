@@ -44,8 +44,10 @@ Overview
   position of features from astigmatism.
 - The :py:mod:`sdt.nbui` module contains GUIs to embed into Jupyter
   notebooks.
-- With help of the :py:mod:`sdt.sim` module, fluorescence microscopy images
+- With help of the :py:mod:`sdt.sim` module, fluorescence microscopy data
   can be simulated.
+- The :py:mod:`sdt.funcs` module contains classes for creation of step
+  functions and eCDFs.
 - Plot data with methods from :py:mod:`sdt.plot`.
 
 There are also some helper modules that contain helpful functions and that
@@ -86,6 +88,7 @@ Table of contents
   loc
   nbui
   sim
+  funcs
   plot
   exp_fit
   gaussian_fit

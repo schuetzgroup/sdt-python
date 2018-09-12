@@ -1,0 +1,1 @@
+.. automodule:: sdt.funcs
