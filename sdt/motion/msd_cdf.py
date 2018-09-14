@@ -3,13 +3,13 @@ import collections
 
 import numpy as np
 import pandas as pd
-import lmfit
+from scipy import optimize
 
 from .msd import all_displacements, all_square_displacements, fit_msd
 from .. import exp_fit, config
 
 
-def _fit_cdf_model_prony(x, y, num_exp, poly_order, initial_guess=None):
+def _fit_cdf_prony(x, y, num_exp, poly_order, initial_guess=None):
     r"""Variant of `exp_fit.fit` for the model of the CDF
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
@@ -73,8 +73,8 @@ def _fit_cdf_model_prony(x, y, num_exp, poly_order, initial_guess=None):
         x, y, num_exp, poly_order, initial_guess)
 
     if num_exp < 2:
-        # for only on exponential, the mantissa coefficient is -1
-        return np.array([-1.]), exp_coeff, ode_coeff
+        # for only one exponential, the mantissa coefficient is -1
+        return np.array([-1.]), exp_coeff
 
     # Solve the equivalent linear lsq problem (see notes section of the
     # docstring).
@@ -86,11 +86,10 @@ def _fit_cdf_model_prony(x, y, num_exp, poly_order, initial_guess=None):
     # Also recover the last mantissa coefficient from the constraint
     mant_coeff = np.hstack((lsq, -1 - lsq.sum()))
 
-    return mant_coeff, exp_coeff, ode_coeff
+    return mant_coeff, exp_coeff
 
 
-def _fit_cdf_model_lsq(x, y, num_exp, weighted=True, initial_b=None,
-                       initial_l=None):
+def _fit_cdf_lsq(x, y, num_exp, weighted=True, initial_b=None, initial_l=None):
     r"""Fit CDF by least squares fitting
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
@@ -123,29 +122,23 @@ def _fit_cdf_model_lsq(x, y, num_exp, weighted=True, initial_b=None,
     exp_coeff : numpy.ndarray
         List of exponential coefficients (:math:`\lambda_k`)
     """
-    p_b_names = []
-    p_l_names = []
-    for i in range(num_exp):
-        p_b_names.append("b{}".format(i))
-        p_l_names.append("l{}".format(i))
-    m = lmfit.Model(exp_fit.exp_sum_lmfit)
+    def constrained_func(t, *args):
+        l = args[num_exp-1:]
+        b = np.zeros_like(l)
+        b[:-1] = args[:num_exp-1]
+        b[-1] = -1 - b.sum()
+        return exp_fit.exp_sum(t, 1, b, l)
+
+    bounds_low = np.array([-1] * (num_exp - 1) + [-np.inf] * num_exp)
+    bounds_high = np.array([0] * (num_exp - 1) + [0] * num_exp)
 
     # initial guesses
     if initial_b is None:
-        initial_b = np.logspace(-num_exp, 0, num_exp-1, base=2, endpoint=False)
+        initial_b = -np.logspace(-num_exp, 0, num_exp-1, base=2,
+                                 endpoint=False)
     if initial_l is None:
-        initial_l = np.logspace(-num_exp, 0, num_exp)
-
-    # set up parameter ranges, initial values, and constraints
-    m.set_param_hint("a", value=1., vary=False)
-    if num_exp > 1:
-        m.set_param_hint(p_b_names[-1], expr="-1 - "+"-".join(p_b_names[:-1]))
-        for b, v in zip(p_b_names[:-1], initial_b):
-            m.set_param_hint(b, min=-1., max=0., value=-v)
-    else:
-        m.set_param_hint("b0", value=-1, vary=False)
-    for l, v in zip(p_l_names, initial_l):
-        m.set_param_hint(l, max=0., value=-1./v)
+        initial_l = -1 / np.logspace(-num_exp, 0, num_exp)
+    p0 = np.concatenate([initial_b, initial_l])
 
     # fit
     if weighted:
@@ -153,17 +146,18 @@ def _fit_cdf_model_lsq(x, y, num_exp, weighted=True, initial_b=None,
         w[1:] = x[1:] - x[:-1]
         w[0] = w[1]
         w /= w.max()
-        w = np.sqrt(w)  # since residual is squared, use sqrt
+        w = 1/np.sqrt(w)  # since residual is squared, use sqrt
     else:
         w = None
-    p = m.make_params()
-    f = m.fit(y, params=p, weights=w, t=x)
 
-    # return in the correct format
-    fd = f.best_values
-    mant_coeff = [fd[b] for b in p_b_names]
-    exp_coeff = [fd[l] for l in p_l_names]
-    return np.array(mant_coeff), np.array(exp_coeff)
+    popt, pcov = optimize.curve_fit(constrained_func, x, y, p0,
+                                    bounds=(bounds_low, bounds_high),
+                                    sigma=w)
+
+    b = np.zeros(num_exp, dtype=float)
+    b[:-1] = popt[:num_exp-1]
+    b[-1] = -1 - b.sum()
+    return b, popt[num_exp-1:]
 
 
 def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, method="prony",
@@ -212,11 +206,11 @@ def emsd_from_square_displacements_cdf(sd_dict, num_frac=2, method="prony",
         s = np.sort(s)
 
         if method == "prony":
-            b, l, _ = _fit_cdf_model_prony(s, y, num_frac, poly_order)
+            b, l = _fit_cdf_prony(s, y, num_frac, poly_order)
         elif method == "lsq":
-            b, l = _fit_cdf_model_lsq(s, y, num_frac, weighted=False)
+            b, l = _fit_cdf_lsq(s, y, num_frac, weighted=False)
         elif method == "weighted-lsq":
-            b, l = _fit_cdf_model_lsq(s, y, num_frac, weighted=True)
+            b, l = _fit_cdf_lsq(s, y, num_frac, weighted=True)
         else:
             raise ValueError("Unknown method")
         lagt.append(tl)

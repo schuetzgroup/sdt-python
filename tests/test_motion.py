@@ -4,8 +4,10 @@ import pickle
 
 import pandas as pd
 import numpy as np
+import pytest
 
-from sdt import motion, io
+from sdt import motion, io, testing
+from sdt.motion import msd_cdf
 from sdt.helper import numba
 
 
@@ -107,73 +109,73 @@ class TestMotion(unittest.TestCase):
         msd = motion.msd(self.traj1[self.traj1["particle"] == 0], 0.16, 100)
         np.testing.assert_allclose(msd, orig)
 
-    def test_emsd_from_square_displacements_cdf(self):
-        # From a test run
-        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1")
-        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2")
 
-        with open(os.path.join(data_path, "all_sd_cdf.pkl"), "rb") as f:
-            sd_dict = pickle.load(f)
+@pytest.fixture(params=["lsq", "weighted-lsq", "prony"])
+def cdf_fit_method_name(request):
+    return request.param
 
-        e1, e2 = motion.emsd_from_square_displacements_cdf(sd_dict)
-        np.testing.assert_allclose(e1.values, orig1.values)
-        np.testing.assert_allclose(e2.values, orig2.values)
 
-    def test_emsd_from_square_displacements_cdf_lsq(self):
-        # From a test run
-        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1_lsq")
-        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2_lsq")
+@pytest.fixture(params=["lsq", "weighted-lsq", "prony"])
+def cdf_fit_function(request):
+    if request.param == "lsq":
+        return msd_cdf._fit_cdf_lsq, {"weighted": False}
+    if request.param == "weighted-lsq":
+        return msd_cdf._fit_cdf_lsq, {"weighted": True}
+    if request.param == "prony":
+        return msd_cdf._fit_cdf_prony, {"poly_order": 30}
 
-        with open(os.path.join(data_path, "all_sd_cdf.pkl"), "rb") as f:
-            sd_dict = pickle.load(f)
 
-        e1, e2 = motion.emsd_from_square_displacements_cdf(
-            sd_dict, method="lsq")
-        np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-5)
-        np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-5)
+class TestMsdCdf:
+    msds = np.array([0.02, 0.08])
+    t_max = 0.5
+    f = 2 / 3
+    lagt = 0.01
 
-    def test_emsd_from_square_displacements_cdf_wlsq(self):
-        # From a test run
-        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1_wlsq")
-        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2_wlsq")
+    def pdf(self, x):
+        return (self.f / self.msds[0] * np.exp(-x / self.msds[0]) +
+                (1 - self.f) / self.msds[1] * np.exp(-x / self.msds[1]))
 
-        with open(os.path.join(data_path, "all_sd_cdf.pkl"), "rb") as f:
-            sd_dict = pickle.load(f)
+    def cdf(self, x):
+        return (1 - self.f * np.exp(-x / self.msds[0]) -
+                (1 - self.f) * np.exp(-x / self.msds[1]))
 
-        e1, e2 = motion.emsd_from_square_displacements_cdf(
-            sd_dict, method="weighted-lsq")
-        np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-4)
-        np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-4)
+    def test_fit_cdf(self, cdf_fit_function):
+        x = np.logspace(-5, 0.5, 100)
+        b, l = cdf_fit_function[0](x, self.cdf(x), 2, **(cdf_fit_function[1]))
 
-    def test_emsd_cdf_prony(self):
-        # From a test run
-        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1")
-        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2")
+        np.testing.assert_allclose(sorted(b), sorted([-self.f, -1 + self.f]),
+                                   atol=5e-3)
+        np.testing.assert_allclose(sorted(-1/l), sorted(self.msds),
+                                   atol=2e-3)
 
-        e1, e2 = motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
-                                 method="prony")
-        np.testing.assert_allclose(e1.values, orig1.values)
-        np.testing.assert_allclose(e2.values, orig2.values)
+    def test_emsd_from_square_displacements_cdf(self, cdf_fit_method_name):
+        """motion.emsd_from_square_displacements_cdf"""
+        sd_dict = {self.lagt: testing.dist_sample(self.pdf, (0, self.t_max),
+                                                  10000)}
+        e = motion.emsd_from_square_displacements_cdf(
+            sd_dict, method=cdf_fit_method_name)
+        for e_, m, f_ in zip(e, self.msds, [self.f, (1 - self.f)]):
+            assert e_.loc[self.lagt, "lagt"] == self.lagt
+            assert e_.loc[self.lagt, "msd"] == pytest.approx(m, abs=0.003)
+            assert e_.loc[self.lagt, "fraction"] == pytest.approx(f_, abs=0.02)
 
-    def test_emsd_cdf_lsq(self):
-        # From a test run
-        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1_lsq")
-        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2_lsq")
+    def test_emsd_cdf(self, cdf_fit_method_name):
+        px_size = 0.1
+        msds = testing.dist_sample(self.pdf, (0, self.t_max), 10000)
+        trc = pd.DataFrame(np.cumsum(np.sqrt(msds))[:, None], columns=["x"])
+        trc["x"] /= px_size
+        trc["y"] = 0
+        trc["frame"] = np.arange(len(trc))
+        trc["particle"] = 0
 
-        e1, e2 = motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
-                                 method="lsq")
-        np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-5)
-        np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-5)
+        e = motion.emsd_cdf(trc, px_size, 1/self.lagt,
+                            method=cdf_fit_method_name)
 
-    def test_emsd_cdf_wlsq(self):
-        # From a test run
-        orig1 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd1_wlsq")
-        orig2 = pd.read_hdf(os.path.join(data_path, "cdf.h5"), "emsd2_wlsq")
+        for e_, m, f_ in zip(e, self.msds, [self.f, (1 - self.f)]):
+            assert e_.loc[self.lagt, "lagt"] == self.lagt
+            assert e_.loc[self.lagt, "msd"] == pytest.approx(m, abs=0.003)
+            assert e_.loc[self.lagt, "fraction"] == pytest.approx(f_, abs=0.02)
 
-        e1, e2 = motion.emsd_cdf([self.traj2], 0.16, 100, 2, 1,
-                                 method="weighted-lsq")
-        np.testing.assert_allclose(e1.values, orig1.values, rtol=1e-4)
-        np.testing.assert_allclose(e2.values, orig2.values, rtol=1e-4)
 
 
 class TestFitMsd(unittest.TestCase):
