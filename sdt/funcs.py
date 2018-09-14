@@ -159,7 +159,7 @@ class ECDF:
 
         self._interp = interpolate.interp1d(
             obs, np.linspace(1/n, 1, n), fill_value=(0, 1), bounds_error=False,
-            kind=interp or "previous", assume_sorted=True)
+            kind="previous" if interp is None else interp, assume_sorted=True)
 
     def __call__(self, x):
         """Get eCDF value(s) at `x`
