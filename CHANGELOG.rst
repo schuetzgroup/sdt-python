@@ -7,6 +7,22 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+13.4
+----
+
+- Add a function to simulate Brownian motion to :py:mod:`sim`
+- Fix frame numbers (off by 1) and column names when loading ThunderSTORM
+  single molecule data from CSV files
+- Add the :py:mod:`funcs` module, which implement step functions and eCDFs
+- Make the `lmfit` package an optional dependency
+- :py:func:`gaussian_fit.gaussian_2d`: Rotate mathematically positive
+- :py:class:`roi.PathROI`: Make sure that relative origin is not negative.
+  Otherwise localization data will not fit the image data anymore, since
+  for the latter the origin can never be negative. Fixes e.g. an issue with
+  shifted localizations if the ROI in ``gui.locator`` is close to the image
+  boundaries.
+
+
 13.3
 ----
 
