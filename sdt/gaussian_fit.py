@@ -69,8 +69,10 @@ Auxiliary functions
 .. autofunction:: gaussian_1d
 .. autofunction:: gaussian_2d
 """
+from contextlib import suppress
+from collections import OrderedDict
+
 import numpy as np
-import lmfit
 
 
 def guess_parameters(data, *indep_vars):
@@ -93,7 +95,7 @@ def guess_parameters(data, *indep_vars):
 
     Returns
     -------
-    dict
+    collections.OrderedDict
         This dict has the follwing keys:
 
         - "amplitude" (float)
@@ -103,8 +105,9 @@ def guess_parameters(data, *indep_vars):
         - "rotation" (float): guessed angle of rotation. Works (currently) only
           for 2D data.
 
-        The keys match the arguments of `gaussian` so that the dict can be
-        passed directly to the function.
+        The keys match the arguments of :py:func:`gaussian_1d` and
+        :py:func:`gaussian_2d` so that the dict can be passed directly to the
+        function.
     """
     data = np.asarray(data)
     ndim = len(indep_vars)
@@ -142,7 +145,8 @@ def guess_parameters(data, *indep_vars):
                 m[j, i] = m[i, j]
     sigma = np.sqrt(m.diagonal())
 
-    ret = dict(amplitude=amp, center=center, sigma=sigma, offset=bg)
+    ret = OrderedDict([("amplitude", amp), ("center", center),
+                       ("sigma", sigma), ("offset", bg)])
     if ndim == 2:
         ret["rotation"] = 0.5 * np.arctan(2*m[0, 1] / (m[0, 0] - m[1, 1]))
 
@@ -175,8 +179,8 @@ def gaussian_1d(x, amplitude=1., center=0., sigma=1., offset=0.):
     return amplitude * np.exp(-((x - center)/sigma)**2/2.) + offset
 
 
-def gaussian_2d(x, y, amplitude=1., centerx=0., sigmax=1., centery=0.,
-                sigmay=1., offset=0., rotation=0.):
+def gaussian_2d(x, y, amplitude=1., center=(0., 0.), sigma=(1., 1.),
+                offset=0., rotation=0.):
     r"""2D gaussian
 
     .. math:: A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}
@@ -208,62 +212,72 @@ def gaussian_2d(x, y, amplitude=1., centerx=0., sigmax=1., centery=0.,
     cs = np.cos(rotation)
     sn = np.sin(rotation)
 
-    xc_r = centerx*cs - centery*sn  # rotate center coordinates
-    yc_r = centerx*sn + centery*cs
+    xc_r = center[0] * cs - center[1] * sn  # rotate center coordinates
+    yc_r = center[0] * sn + center[1] * cs
 
-    x_r = x*cs - y*sn  # rotate independent variable
-    y_r = x*sn + y*cs
+    x_r = x * cs - y * sn  # rotate independent variable
+    y_r = x * sn + y * cs
 
-    arg = ((x_r - xc_r)/sigmax)**2 + ((y_r - yc_r)/sigmay)**2
+    arg = ((x_r - xc_r) / sigma[0])**2 + ((y_r - yc_r) / sigma[1])**2
     return amplitude * np.exp(-arg/2.) + offset
 
 
-class Gaussian1DModel(lmfit.Model):
-    """Model class for fitting a 1D Gaussian
-
-    Derives from :class:`lmfit.Model`.
-
-    Parameters are `amplitude`, `center`, `sigma`, `offset`.
-    """
-    def __init__(self, *args, **kwargs):
-        """Constructor""" + lmfit.models.COMMON_DOC
-        super().__init__(gaussian_1d, *args, **kwargs)
-        self.set_param_hint("sigma", min=0.)
-
-    def guess(self, data, x, **kwargs):
-        """Make an initial guess using :func:`guess_parameters`"""
-        pdict = guess_parameters(data, x)
-        pars = self.make_params(amplitude=pdict["amplitude"],
-                                center=pdict["center"][0],
-                                sigma=pdict["sigma"][0],
-                                offset=pdict["offset"])
-        return lmfit.models.update_param_vals(pars, self.prefix, **kwargs)
+with suppress(ImportError):
+    import lmfit
 
 
-class Gaussian2DModel(lmfit.Model):
-    """Model class for fitting a 2D Gaussian
+    class Gaussian1DModel(lmfit.Model):
+        """Model class for fitting a 1D Gaussian
 
-    Derives from :class:`lmfit.Model`.
+        Derives from :class:`lmfit.Model`.
 
-    Parameters are `amplitude`, `centerx`, `sigmax`, `centery`, `sigmay`,
-    `offset`, `rotation`.
-    """
-    def __init__(self, *args, **kwargs):
-        """Constructor""" + lmfit.models.COMMON_DOC
-        super().__init__(gaussian_2d, independent_vars=["x", "y"],
-                         *args, **kwargs)
-        self.set_param_hint("sigmax", min=0.)
-        self.set_param_hint("sigmay", min=0.)
-        self.set_param_hint("rotation", min=-np.pi, max=np.pi)
+        Parameters are `amplitude`, `center`, `sigma`, `offset`.
+        """
+        def __init__(self, *args, **kwargs):
+            """Constructor""" + lmfit.models.COMMON_DOC
+            super().__init__(gaussian_1d, *args, **kwargs)
+            self.set_param_hint("sigma", min=0.)
 
-    def guess(self, data, x, y, **kwargs):
-        """Make an initial guess using :func:`guess_parameters`"""
-        pdict = guess_parameters(data, x, y)
-        pars = self.make_params(amplitude=pdict["amplitude"],
-                                centerx=pdict["center"][0],
-                                sigmax=pdict["sigma"][0],
-                                centery=pdict["center"][1],
-                                sigmay=pdict["sigma"][1],
-                                offset=pdict["offset"],
-                                rotation=pdict["rotation"])
-        return lmfit.models.update_param_vals(pars, self.prefix, **kwargs)
+        def guess(self, data, x, **kwargs):
+            """Make an initial guess using :func:`guess_parameters`"""
+            pdict = guess_parameters(data, x)
+            pars = self.make_params(amplitude=pdict["amplitude"],
+                                    center=pdict["center"][0],
+                                    sigma=pdict["sigma"][0],
+                                    offset=pdict["offset"])
+            return lmfit.models.update_param_vals(pars, self.prefix, **kwargs)
+
+
+    def _g2d_adaptor(x, y, amplitude=1., center0=0., center1=0., sigma0=1.,
+                     sigma1=1., offset=0., rotation=0):
+        return gaussian_2d(x, y, amplitude, (center0, center1),
+                           (sigma0, sigma1), offset, rotation)
+
+
+    class Gaussian2DModel(lmfit.Model):
+        """Model class for fitting a 2D Gaussian
+
+        Derives from :class:`lmfit.Model`.
+
+        Parameters are `amplitude`, `centerx`, `sigmax`, `centery`, `sigmay`,
+        `offset`, `rotation`.
+        """
+        def __init__(self, *args, **kwargs):
+            """Constructor""" + lmfit.models.COMMON_DOC
+            super().__init__(_g2d_adaptor, independent_vars=["x", "y"],
+                             *args, **kwargs)
+            self.set_param_hint("sigma0", min=0.)
+            self.set_param_hint("sigma1", min=0.)
+            self.set_param_hint("rotation", min=-np.pi, max=np.pi)
+
+        def guess(self, data, x, y, **kwargs):
+            """Make an initial guess using :func:`guess_parameters`"""
+            pdict = guess_parameters(data, x, y)
+            pars = self.make_params(amplitude=pdict["amplitude"],
+                                    center0=pdict["center"][0],
+                                    center1=pdict["center"][1],
+                                    sigma0=pdict["sigma"][0],
+                                    sigma1=pdict["sigma"][1],
+                                    offset=pdict["offset"],
+                                    rotation=pdict["rotation"])
+            return lmfit.models.update_param_vals(pars, self.prefix, **kwargs)
