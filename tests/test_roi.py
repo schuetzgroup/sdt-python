@@ -229,8 +229,8 @@ class TestPathRoi(TestRoi):
 
     def test_dataframe_rel_origin(self):
         """.__call__: localization data, rel. origin"""
-        np.testing.assert_equal(self.roi(self.loc, rel=True).values,
-                                self.loc_roi - self.bbox_int[0])
+        np.testing.assert_equal(self.roi(self.loc, rel_origin=True).values,
+                                self.loc_roi - np.maximum(self.bbox_int[0], 0))
 
     def assert_roi_equal(self, actual, desired):
         np.testing.assert_allclose(actual.path.vertices, desired.path.vertices)

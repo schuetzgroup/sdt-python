@@ -125,6 +125,9 @@ class ROI(object):
                     "removed in the future. Use `rel_origin` instead.",
                     np.VisibleDeprecationWarning)
                 rel_origin = kwargs["reset_origin"]
+            elif kwargs:
+                raise TypeError("Unexpected keyword argument '{}'".format(
+                    tuple(kwargs)[0]))
 
             if rel_origin and not invert:
                 roi_data[columns["coords"]] -= self.top_left
@@ -294,8 +297,12 @@ class PathROI(object):
         rel_origin : bool, optional
             If True, the top-left corner coordinates of the path's bounding
             rectangle will be subtracted off all feature coordinates, i. e.
-            the top-left corner will be the new origin. Only valid if `invert`
-            is False. Defaults to True.
+            the top-left corner will be the new origin. If a coordinate of the
+            bounding rectangle is negative, 0 will be used as the origin
+            instead. This is necessary to ensure that localization data to
+            which the ROI is applied is consistent with image data to which
+            the ROI is applied. Only valid if `invert` is False. Defaults to
+            `True`.
         fill_value : number or callable, optional
             Fill value for pixels that are not contained in the path. If
             callable, it should take the array of pixels within the mask as its
@@ -348,9 +355,13 @@ class PathROI(object):
                     "removed in the future. Use `rel_origin` instead.",
                     np.VisibleDeprecationWarning)
                 rel_origin = kwargs["reset_origin"]
+            elif kwargs:
+                raise TypeError("Unexpected keyword argument '{}'".format(
+                    tuple(kwargs)[0]))
 
             if rel_origin and not invert:
-                roi_data.loc[:, columns["coords"]] -= self.bounding_box_int[0]
+                roi_data.loc[:, columns["coords"]] -= \
+                    np.maximum(self.bounding_box_int[0], 0)
             return roi_data
 
         else:
@@ -390,7 +401,7 @@ class PathROI(object):
             means, if your DataFrame has coordinate columns "x" and "z", set
             ``columns={"coords": ["x", "z"]}``.
         """
-        data[columns["coords"]] += self.bounding_box_int[0]
+        data[columns["coords"]] += np.maximum(self.bounding_box_int[0], 0)
 
     def transform(self, trafo=None, linear=None, trans=None):
         """Create a new PathROI instance with a transformed path
