@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import unittest
 import os
 
@@ -19,6 +18,8 @@ class TestCorrector(unittest.TestCase):
         self.amp = 2
 
         self.img = self._make_gauss(self.x, self.y)
+        self.fit_result = dict(amplitude=self.amp, center=(self.xc, self.yc),
+                               sigma=(self.wx, self.wy), offset=0, rotation=0)
 
     def _make_gauss(self, x, y):
         argx = -(x - self.xc)**2 / (2 * self.wx**2)
@@ -33,7 +34,7 @@ class TestCorrector(unittest.TestCase):
             imgs.append(img)
 
         corr = flatfield.Corrector(imgs, gaussian_fit=False)
-        np.testing.assert_allclose(corr.avg_img, self.img / self.img.max())
+        np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
         self.assertFalse(corr.fit_result)
 
@@ -43,7 +44,7 @@ class TestCorrector(unittest.TestCase):
         imgs = [self.img + bg] * 3
 
         corr = flatfield.Corrector(imgs, bg=bg, gaussian_fit=False)
-        np.testing.assert_allclose(corr.avg_img, self.img / self.img.max())
+        np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
         self.assertFalse(corr.fit_result)
 
@@ -54,7 +55,7 @@ class TestCorrector(unittest.TestCase):
         imgs = [self.img + bg] * 3
 
         corr = flatfield.Corrector(imgs, bg=bg, gaussian_fit=False)
-        np.testing.assert_allclose(corr.avg_img, self.img / self.img.max())
+        np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
         self.assertFalse(corr.fit_result)
 
@@ -63,9 +64,7 @@ class TestCorrector(unittest.TestCase):
         for k in expected:
             i = res[k]
             e = expected[k]
-            self.assertAlmostEqual(
-                i, e, 2,
-                msg="{} mismatch: expected {}, got {}".format(k, e, i))
+            np.testing.assert_allclose(i, e, atol=1e-10)
 
     def test_init_img_fit(self):
         """flatfield.Corrector.__init__: image data, fit"""
@@ -78,9 +77,9 @@ class TestCorrector(unittest.TestCase):
         np.testing.assert_allclose(corr.avg_img, self.img / self.img.max())
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
 
-        expected = dict(amplitude=1, centerx=self.xc, sigmax=self.wx,
-                        centery=self.yc, sigmay=self.wy, offset=0, rotation=0)
-        self._check_fit_result(corr.fit_result.best_values, expected)
+        expected = self.fit_result.copy()
+        expected["amplitude"] = 1
+        self._check_fit_result(corr.fit_result, expected)
 
     def test_init_list(self):
         """flatfield.Corrector.__init__: list of data points, not weighted"""
@@ -98,9 +97,7 @@ class TestCorrector(unittest.TestCase):
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max(),
                                    rtol=1e-5)
 
-        expected = dict(amplitude=self.amp, centerx=self.xc, sigmax=self.wx,
-                        centery=self.yc, sigmay=self.wy, offset=0, rotation=0)
-        self._check_fit_result(corr.fit_result.best_values, expected)
+        self._check_fit_result(corr.fit_result, self.fit_result)
 
     def test_init_list_weighted(self):
         """flatfield.Corrector.__init__: list of data points, weighted"""
@@ -118,9 +115,7 @@ class TestCorrector(unittest.TestCase):
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max(),
                                    rtol=1e-5)
 
-        expected = dict(amplitude=self.amp, centerx=self.xc, sigmax=self.wx,
-                        centery=self.yc, sigmay=self.wy, offset=0, rotation=0)
-        self._check_fit_result(corr.fit_result.best_values, expected)
+        self._check_fit_result(corr.fit_result, self.fit_result)
 
     def test_feature_correction(self):
         """flatfield.Corrector.__call__: single molecule data correction"""

@@ -51,12 +51,31 @@ Programming reference
 import pandas as pd
 import numpy as np
 import scipy.interpolate as sp_int
-from scipy import stats
+from scipy import stats, optimize
 
 import slicerator
 
 from . import config
 from . import gaussian_fit as gfit
+
+
+def _do_fit_g2d(mass, x, y, weights=1):
+    g = gfit.guess_parameters(mass, x, y)
+    p = ((g["amplitude"],) + tuple(g["center"]) + tuple(g["sigma"]) +
+            (g["rotation"],))
+
+    def r_gaussian_2d(params):
+        a, cx, cy, sx, sy, r = params
+        return np.ravel((mass - gfit.gaussian_2d(x, y, a, (cx, cy), (sx, sy), 0,
+                                                 r)) * weights)
+
+    r = optimize.least_squares(
+        r_gaussian_2d, p,
+        bounds=([0, -np.inf, 0, -np.inf, 0, -np.inf], np.inf))
+
+    return dict(amplitude=r.x[0], center=r.x[1:3], sigma=r.x[3:5], offset=0,
+                rotation=r.x[5])
+
 
 
 class Corrector(object):
@@ -151,46 +170,44 @@ class Corrector(object):
 
             if density_weight:
                 weights = stats.gaussian_kde([x, y])([x, y])
-                weights = weights.max() / weights
+                weights = np.sqrt(weights.max() / weights)
             else:
-                weights = None
+                weights = 1.
 
-            m = gfit.Gaussian2DModel()
-            g = m.guess(mass, x, y)
-            g["offset"].set(value=0., vary=False)
-            self.fit_result = m.fit(mass, params=g, weights=weights, x=x, y=y)
+            self.fit_result = _do_fit_g2d(mass, x, y, weights)
+
             if shape is None:
                 self.avg_img = None
                 self.corr_img = None
             else:
                 y, x = np.indices(shape)
-                self.avg_img = self.fit_result.eval(x=x, y=y)
+                self.avg_img = gfit.gaussian_2d(x, y, **self.fit_result)
                 self.avg_img /= self.avg_img.max()
                 self.corr_img = self.avg_img
         else:
             # calculate the average profile image
             self.avg_img = np.zeros(data[0][0].shape, dtype=np.float)
+            cnt = 0
             for stack in data:
                 for img in stack:
                     # divide by max so that intensity fluctuations don't affect
                     # the results
-                    self.avg_img += (img - self.bg) / img.max()
-            self.avg_img /= self.avg_img.max()
+                    i2 = img - self.bg
+                    self.avg_img += i2 / i2.max()
+                    cnt += 1
+            self.avg_img /= cnt
 
             if gaussian_fit:
                 # do the fitting
-                m = gfit.Gaussian2DModel()
                 y, x = np.indices(self.avg_img.shape)
-                g = m.guess(self.avg_img, x, y)
-                g["offset"].set(value=0., vary=False)
-                self.fit_result = m.fit(self.avg_img, params=g, x=x, y=y)
+                self.fit_result = _do_fit_g2d(self.avg_img, x, y)
 
                 # normalization factor so that the maximum of the Gaussian is 1
-                gparm = self.fit_result.best_values
-                self.corr_img = self.fit_result.best_fit / gparm["amplitude"]
+                self.corr_img = gfit.gaussian_2d(x, y, **self.fit_result)
+                self.corr_img /= self.corr_img.max()
             else:
-                self.fit_result = None
-                self.corr_img = self.avg_img
+                self.fit_result = {}
+                self.corr_img = self.avg_img / self.avg_img.max()
                 self.interp = sp_int.RegularGridInterpolator(
                     [np.arange(i) for i in self.corr_img.shape], self.corr_img)
 
@@ -268,8 +285,8 @@ class Corrector(object):
         numpy.ndarray
             A list of correction factors corresponding to the features
         """
-        if self.fit_result is not None:
-            gparm = self.fit_result.best_values
-            return 1. / (self.fit_result.eval(x=x, y=y) / gparm["amplitude"])
+        if self.fit_result:
+            return 1. / (gfit.gaussian_2d(x, y, **self.fit_result) /
+                         self.fit_result["amplitude"])
         else:
             return np.transpose(1. / self.interp(np.array([y, x]).T))
