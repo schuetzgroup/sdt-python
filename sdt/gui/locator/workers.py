@@ -156,7 +156,7 @@ def _previewWorkerFunc(frame, options, method, roi_list):
     algoDesc = algorithms.desc[method]
 
     if len(roi_list) > 2:
-        return algoDesc.locate_roi(frame, roi_list, reset_origin=False,
+        return algoDesc.locate_roi(frame, roi_list, rel_origin=False,
                                    **options)
     else:
         return algoDesc.locate(frame, **options)
