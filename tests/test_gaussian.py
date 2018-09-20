@@ -31,7 +31,7 @@ class TestGaussianFit(unittest.TestCase):
         # Along first rotated axis
         x1 = self.params_2d["center"]
         x1 += (np.linspace(-50, 50, 101)[:, None] *
-               [-np.cos(self.params_2d["rotation"]),
+               [np.cos(self.params_2d["rotation"]),
                 np.sin(self.params_2d["rotation"])])
 
         gauss = sdt.gaussian_fit.gaussian_2d(*x1.T, **self.params_2d)
@@ -46,7 +46,7 @@ class TestGaussianFit(unittest.TestCase):
         x1 = self.params_2d["center"]
         x1 += (np.linspace(-50, 50, 101)[:, None] *
                [np.sin(self.params_2d["rotation"]),
-                np.cos(self.params_2d["rotation"])])
+                -np.cos(self.params_2d["rotation"])])
 
         gauss = sdt.gaussian_fit.gaussian_2d(*x1.T, **self.params_2d)
 

@@ -212,11 +212,11 @@ def gaussian_2d(x, y, amplitude=1., center=(0., 0.), sigma=(1., 1.),
     cs = np.cos(rotation)
     sn = np.sin(rotation)
 
-    xc_r = center[0] * cs - center[1] * sn  # rotate center coordinates
-    yc_r = center[0] * sn + center[1] * cs
+    xc_r = center[0] * cs + center[1] * sn  # rotate center coordinates
+    yc_r = -center[0] * sn + center[1] * cs
 
-    x_r = x * cs - y * sn  # rotate independent variable
-    y_r = x * sn + y * cs
+    x_r = x * cs + y * sn  # rotate independent variable
+    y_r = -x * sn + y * cs
 
     arg = ((x_r - xc_r) / sigma[0])**2 + ((y_r - yc_r) / sigma[1])**2
     return amplitude * np.exp(-arg/2.) + offset
