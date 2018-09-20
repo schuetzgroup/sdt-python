@@ -35,7 +35,6 @@ setup(
                       "pyyaml",
                       "pims>=0.3.0",
                       "slicerator>=0.9.8",
-                      "lmfit",
                       "matplotlib",
                       "pywavelets>=0.3.0",],
                       #"micro-helpers>=0.7"],

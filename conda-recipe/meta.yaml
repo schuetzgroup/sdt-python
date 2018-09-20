@@ -25,7 +25,6 @@ requirements:
         - slicerator >=0.9.8
         - qtpy >=1.1
         - matplotlib
-        - lmfit
         - pywavelets >=0.3.0
         - micro-helpers >=0.7
 
@@ -42,18 +41,18 @@ requirements:
         - numba
         - qtpy >=1.1
         - matplotlib
-        - lmfit
         - pywavelets >=0.3.0
         - micro-helpers >=0.7
 
 test:
     requires:
         - nomkl  # [unix]
-        - nose
+        - pytest
         - trackpy
+        - lmfit
 
     commands:
-        - nosetests -v -w tests
+        - pytest -v tests
 
     source_files:
         - tests
