@@ -177,7 +177,6 @@ class TestMsdCdf:
             assert e_.loc[self.lagt, "fraction"] == pytest.approx(f_, abs=0.02)
 
 
-
 class TestFitMsd(unittest.TestCase):
     def test_fit_msd_matlab(self):
         """motion.fit_msd: Regression test against MATLAB msdplot"""
