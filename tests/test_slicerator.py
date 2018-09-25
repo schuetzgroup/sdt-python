@@ -1,16 +1,13 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 import os
 import numpy as np
 import random
 import types
 import nose
-from six import BytesIO
+from io import BytesIO
 import pickle
 from nose.tools import assert_true, assert_false, assert_equal, assert_raises
 from numpy.testing import assert_array_equal
-from slicerator import Slicerator, Pipeline, pipeline, index_attr, propagate_attr
+from sdt.helper.slicerator import Slicerator, Pipeline, pipeline, index_attr, propagate_attr
 
 path, _ = os.path.split(os.path.abspath(__file__))
 path = os.path.join(path, 'data')
