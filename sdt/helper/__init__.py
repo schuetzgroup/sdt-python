@@ -96,3 +96,4 @@ Programming reference
 """
 from .singleton import Singleton, ThreadSafeSingleton
 from .pandas import *
+from .slicerator import Slicerator, Pipeline, pipeline

@@ -1,23 +1,21 @@
-import os
-import numpy as np
 import random
 import types
-import nose
 from io import BytesIO
 import pickle
-from nose.tools import assert_true, assert_false, assert_equal, assert_raises
-from numpy.testing import assert_array_equal
-from sdt.helper.slicerator import Slicerator, Pipeline, pipeline, index_attr, propagate_attr
 
-path, _ = os.path.split(os.path.abspath(__file__))
-path = os.path.join(path, 'data')
+import numpy as np
+from numpy.testing import assert_array_equal
+import pytest
+
+from sdt.helper.slicerator import (Slicerator, Pipeline, pipeline, index_attr,
+                                   propagate_attr)
 
 
 def assert_letters_equal(actual, expected):
     # check if both lengths are equal
-    assert_equal(len(actual), len(expected))
+    assert len(actual) == len(expected)
     for actual_, expected_ in zip(actual, expected):
-        assert_equal(actual_, expected_)
+        assert actual_ == expected_
 
 
 def compare_slice_to_list(actual, expected):
@@ -131,11 +129,11 @@ def test_slice_with_generator():
     compare_slice_to_list(slice1, list('bcdefghij'))
     slice2 = slice1[(i for i in range(2, 5))]
     assert_letters_equal(list(slice2), list('def'))
-    assert_true(isinstance(slice2, types.GeneratorType))
+    assert isinstance(slice2, types.GeneratorType)
 
 
 def test_no_len_raises():
-    with assert_raises(ValueError):
+    with pytest.raises(ValueError):
         Slicerator((i for i in range(5)), (i for i in range(5)))
 
 def test_from_func():
@@ -171,8 +169,8 @@ def test_inplace_pipeline():
     n_mutable = Slicerator([list([i]) for i in range(10)])
     appended = append_zero_inplace(n_mutable)
 
-    assert_equal(appended[5], [5, 0])  # execute the function
-    assert_equal(n_mutable[5], [5])    # check the original
+    assert appended[5] == [5, 0]  # execute the function
+    assert n_mutable[5] == [5]    # check the original
 
 
 def test_pipeline_simple():
@@ -228,12 +226,12 @@ def test_getattr():
 
     a = Slicerator(MyList('abcdefghij'), propagate_attrs=['attr1', 's'])
     assert_letters_equal(a, list('abcdefghij'))
-    assert_true(hasattr(a, 'attr1'))
-    assert_false(hasattr(a, 'attr2'))
-    assert_true(hasattr(a, 's'))
-    assert_false(hasattr(a, 'close'))
-    assert_equal(a.attr1, 'hello')
-    with assert_raises(AttributeError):
+    assert hasattr(a, 'attr1')
+    assert not hasattr(a, 'attr2')
+    assert hasattr(a, 's')
+    assert not hasattr(a, 'close')
+    assert a.attr1 == 'hello'
+    with pytest.raises(AttributeError):
         a[:5].nonexistent_attr
 
     compare_slice_to_list(list(a.s), list('ABCDEFGHIJ'))
@@ -243,12 +241,12 @@ def test_getattr():
     capitalize = pipeline(_capitalize)
     b = capitalize(a)
     assert_letters_equal(b, list('ABCDEFGHIJ'))
-    assert_true(hasattr(b, 'attr1'))
-    assert_false(hasattr(b, 'attr2'))
-    assert_true(hasattr(b, 's'))
-    assert_false(hasattr(b, 'close'))
-    assert_equal(b.attr1, 'hello')
-    with assert_raises(AttributeError):
+    assert hasattr(b, 'attr1')
+    assert not hasattr(b, 'attr2')
+    assert hasattr(b, 's')
+    assert not hasattr(b, 'close')
+    assert b.attr1 == 'hello'
+    with pytest.raises(AttributeError):
         b[:5].nonexistent_attr
 
     compare_slice_to_list(list(b.s), list('ABCDEFGHIJ'))
@@ -296,35 +294,35 @@ def test_getattr_subclass():
 
     dummy = Dummy()
     subclass = SubClass()
-    assert_true(hasattr(dummy, 'attr1'))
-    assert_true(hasattr(dummy, 'attr2'))
-    assert_true(hasattr(dummy, 'attr3'))
-    assert_false(hasattr(dummy, 'attr4'))
+    assert hasattr(dummy, 'attr1')
+    assert hasattr(dummy, 'attr2')
+    assert hasattr(dummy, 'attr3')
+    assert not hasattr(dummy, 'attr4')
 
-    assert_true(hasattr(dummy[1:], 'attr1'))
-    assert_true(hasattr(dummy[1:], 'attr2'))
-    assert_false(hasattr(dummy[1:], 'attr3'))
-    assert_false(hasattr(dummy[1:], 'attr4'))
+    assert hasattr(dummy[1:], 'attr1')
+    assert hasattr(dummy[1:], 'attr2')
+    assert not hasattr(dummy[1:], 'attr3')
+    assert not hasattr(dummy[1:], 'attr4')
 
-    assert_true(hasattr(dummy[1:][1:], 'attr1'))
-    assert_true(hasattr(dummy[1:][1:], 'attr2'))
-    assert_false(hasattr(dummy[1:][1:], 'attr3'))
-    assert_false(hasattr(dummy[1:][1:], 'attr4'))
+    assert hasattr(dummy[1:][1:], 'attr1')
+    assert hasattr(dummy[1:][1:], 'attr2')
+    assert not hasattr(dummy[1:][1:], 'attr3')
+    assert not hasattr(dummy[1:][1:], 'attr4')
 
-    assert_true(hasattr(subclass, 'attr1'))
-    assert_true(hasattr(subclass, 'attr2'))
-    assert_true(hasattr(subclass, 'attr3'))
-    assert_true(hasattr(subclass, 'attr4'))
+    assert hasattr(subclass, 'attr1')
+    assert hasattr(subclass, 'attr2')
+    assert hasattr(subclass, 'attr3')
+    assert hasattr(subclass, 'attr4')
 
-    assert_false(hasattr(subclass[1:], 'attr1'))
-    assert_true(hasattr(subclass[1:], 'attr2'))
-    assert_false(hasattr(subclass[1:], 'attr3'))
-    assert_true(hasattr(subclass[1:], 'attr4'))
+    assert not hasattr(subclass[1:], 'attr1')
+    assert hasattr(subclass[1:], 'attr2')
+    assert not hasattr(subclass[1:], 'attr3')
+    assert hasattr(subclass[1:], 'attr4')
 
-    assert_false(hasattr(subclass[1:][1:], 'attr1'))
-    assert_true(hasattr(subclass[1:][1:], 'attr2'))
-    assert_false(hasattr(subclass[1:][1:], 'attr3'))
-    assert_true(hasattr(subclass[1:][1:], 'attr4'))
+    assert not hasattr(subclass[1:][1:], 'attr1')
+    assert hasattr(subclass[1:][1:], 'attr2')
+    assert not hasattr(subclass[1:][1:], 'attr3')
+    assert hasattr(subclass[1:][1:], 'attr4')
 
 
 def test_pipeline_with_args():
@@ -549,8 +547,3 @@ def test_pipeline_propagate_attrs():
         pass
     else:
         raise AssertionError("attr2 should not exist")
-
-
-if __name__ == '__main__':
-    nose.runmodule(argv=[__file__, '-vvs', '-x', '--pdb', '--pdb-failure'],
-                   exit=False)
