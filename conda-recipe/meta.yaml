@@ -22,7 +22,6 @@ requirements:
         - tifffile >=0.14.0
         - pyyaml
         - pims >=0.3.0
-        - slicerator >=0.9.8
         - qtpy >=1.1
         - matplotlib
         - pywavelets >=0.3.0
@@ -37,7 +36,6 @@ requirements:
         - tifffile >=0.14.0
         - pyyaml
         - pims >=0.3.0
-        - slicerator >=0.9.8
         - numba
         - qtpy >=1.1
         - matplotlib

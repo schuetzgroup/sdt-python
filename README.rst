@@ -22,14 +22,12 @@ Extensive documentation can be found at https://hal.iap.tuwien.ac.at/py_sdt_doc/
 
 Requirements
 ------------
-- Python >= 3.4
+- Python >= 3.5
 - numpy >= 1.10
 - pandas
 - pims >= 0.3.0
-- slicerator >= 0.9.7
 - tifffile >= 0.7.0
 - pyyaml
-- lmfit
 - pywavelets >= 0.3.0
 
 

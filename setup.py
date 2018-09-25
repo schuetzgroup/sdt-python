@@ -34,7 +34,6 @@ setup(
                       "tifffile>=0.14.0",
                       "pyyaml",
                       "pims>=0.3.0",
-                      "slicerator>=0.9.8",
                       "matplotlib",
                       "pywavelets>=0.3.0",],
                       #"micro-helpers>=0.7"],
