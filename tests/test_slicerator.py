@@ -478,22 +478,17 @@ def test_pipeline_multi_input():
     o = 100
 
     res = sum_offset(p1, p2, o)
-    assert(isinstance(res, Pipeline))
+    assert isinstance(res, Pipeline)
     assert_array_equal(res, list(range(110, 129, 2)))
-    assert(len(res) == len(p1))
+    assert len(res) == len(p1)
 
     resi = sum_offset(1, 2, 3)
     assert(isinstance(resi, int))
     assert(resi == 6)
 
     p3 = Slicerator(list(range(20)))
-    try:
+    with pytest.raises(ValueError):
         sum_offset(p1, p3)
-    except ValueError:
-        pass
-    else:
-        raise AssertionError("Should be unable to create pipeline with "
-                             "ancestors having different lengths.")
 
 
 def test_pipeline_propagate_attrs():
@@ -505,45 +500,63 @@ def test_pipeline_propagate_attrs():
 
     p1 = Pipeline(lambda x, y: x + y, a1, a2,
                   propagate_attrs={"attr1", "attr2"}, propagate_how=0)
-    assert(p1.attr1 == 10)
-    try:
-        p1.attr2
-    except AttributeError:
-        pass
-    else:
-        raise AssertionError("attr2 should not exist")
+    assert p1.attr1 == 10
+    assert hasattr(p1, "attr2")
 
     p2 = Pipeline(lambda x, y: x + y, a1, a2,
                   propagate_attrs={"attr1", "attr2"}, propagate_how=1)
-    assert(p2.attr1 == 20)
-    assert(p2.attr2 == 30)
+    assert p2.attr1 == 20
+    assert p2.attr2 == 30
 
     p3 = Pipeline(lambda x, y: x + y, a1, a2,
                   propagate_attrs={"attr1", "attr2"}, propagate_how="first")
-    assert(p3.attr1 == 10)
-    assert(p3.attr2 == 30)
+    assert p3.attr1 == 10
+    assert p3.attr2 == 30
 
     p4 = Pipeline(lambda x, y: x + y, a1, a2,
                   propagate_attrs={"attr1", "attr2"}, propagate_how="last")
-    assert(p4.attr1 == 20)
-    assert(p4.attr2 == 30)
+    assert p4.attr1 == 20
+    assert p4.attr2 == 30
 
     a1.attr3 = 40
     a1.attr4 = 50
     a1._propagate_attrs = {"attr3"}
     a1.propagate_attrs = {"attr4"}
     p5 = Pipeline(lambda x, y: x + y, a1, a2, propagate_how="first")
-    assert(p5.attr3 == 40)
-    assert(p5.attr4 == 50)
-    try:
-        p5.attr1
-    except AttributeError:
-        pass
-    else:
-        raise AssertionError("attr1 should not exist")
-    try:
-        p5.attr2
-    except AttributeError:
-        pass
-    else:
-        raise AssertionError("attr2 should not exist")
+    assert p5.attr3 == 40
+    assert p5.attr4 == 50
+    assert not hasattr(p5, "attr1")
+    assert not hasattr(p5, "attr2")
+
+
+# Based on https://github.com/soft-matter/slicerator
+# Original copyright and license information:
+#
+# Copyright (c) 2015, Daniel B. Allan
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the matplotlib project nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.

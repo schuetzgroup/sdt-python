@@ -1,3 +1,8 @@
+"""A lazy-loading, fancy-slicable iterable
+
+forked from https://github.com/soft-matter/slicerator (originally released
+under MIT license).
+"""
 import collections
 import itertools
 from functools import wraps
@@ -14,25 +19,25 @@ def _iter_attr(obj):
         return  # obj has no __dict__
 
 
-class Slicerator(object):
+class Slicerator:
+    """A generator that supports fancy indexing
+
+    When sliced using any iterable with a known length, it returns another
+    object like itself, a Slicerator. When sliced with an integer,
+    it returns the data payload.
+
+    Also, the attributes of the parent object can be propagated, exposed
+    through the child Slicerators. By default, no attributes are
+    propagated. Attributes can be white-listed by using the optional
+    parameter `propagated_attrs`.
+
+    Methods taking an index will be remapped if they are decorated
+    with `index_attr`. They also have to be present in the
+    `propagate_attrs` list.
+    """
     def __init__(self, ancestor, indices=None, length=None,
                  propagate_attrs=None):
-        """A generator that supports fancy indexing
-
-        When sliced using any iterable with a known length, it returns another
-        object like itself, a Slicerator. When sliced with an integer,
-        it returns the data payload.
-
-        Also, the attributes of the parent object can be propagated, exposed
-        through the child Slicerators. By default, no attributes are
-        propagated. Attributes can be white_listed by using the optional
-        parameter `propagated_attrs`.
-
-        Methods taking an index will be remapped if they are decorated
-        with `index_attr`. They also have to be present in the
-        `propagate_attrs` list.
-
-        Parameters
+        """Parameters
         ----------
         ancestor : object
         indices : iterable
@@ -47,7 +52,8 @@ class Slicerator(object):
 
         Examples
         --------
-        # Slicing on a Slicerator returns another Slicerator...
+        Slicing on a Slicerator returns another Slicerator:
+
         >>> v = Slicerator([0, 1, 2, 3], range(4), 4)
         >>> v1 = v[:2]
         >>> type(v[:2])
@@ -57,8 +63,10 @@ class Slicerator(object):
         Slicerator
         >>> v2[0]
         0
-        # ...unless the slice itself has an unknown length, which makes
-        # slicing impossible.
+
+        Unless the slice itself has an unknown length, which makes slicing
+        impossible:
+
         >>> v3 = v2((i for i in [0]))  # argument is a generator
         >>> type(v3)
         generator
@@ -107,7 +115,7 @@ class Slicerator(object):
 
         Parameters
         ----------
-        func : callback
+        func : callable
             callable that accepts an integer as its argument
         length : int
             number of elements; used to supposed revserse slicing like [-1]
@@ -115,7 +123,6 @@ class Slicerator(object):
             list of attributes to be propagated into Slicerator
         """
         class Dummy:
-
             def __getitem__(self, i):
                 return func(i)
 
@@ -126,7 +133,7 @@ class Slicerator(object):
 
     @classmethod
     def from_class(cls, some_class, propagate_attrs=None):
-        """Make an existing class support fancy indexing via Slicerator objects.
+        """Make an existing class support fancy indexing via Slicerator objects
 
         When sliced using any iterable with a known length, it returns a
         Slicerator. When sliced with an integer, it returns the data payload.
@@ -138,7 +145,8 @@ class Slicerator(object):
         1. using the optional parameter `propagate_attrs`; the contents of this
            list will overwrite any other list of propagated attributes
         2. using the @propagate_attr decorator inside the class definition
-        3. using a `propagate_attrs` class attribute inside the class definition
+        3. using a `propagate_attrs` class attribute inside the class
+           definition
 
         The difference between options 2 and 3 appears when subclassing. As
         option 2 is bound to the method, the method will always be propagated.
@@ -149,17 +157,18 @@ class Slicerator(object):
         with `index_attr`. This decorator does not ensure that the method is
         propagated.
 
-        The existing class should support indexing (method __getitem__) and
-        it should define a length (method __len__).
+        The existing class should support indexing (:py:meth:`__getitem__`
+        method) and it should define a length (:py:meth:`__len__`).
 
-        The result will look exactly like the existing class (__name__, __doc__,
-        __module__, __repr__ will be propagated), but the __getitem__ will be
-        renamed to _get and __getitem__ will produce a Slicerator object
-        when sliced.
+        The result will look exactly like the existing class
+        (:py:attr:`__name__`, :py:attr:`__doc__`, :py:attr:`__module__`,
+        :py:meth:`__repr__` will be propagated), but :py:meth:`__getitem__`
+        will be renamed to :py:meth:`_get` and :py:meth:`__getitem__` will
+        produce a :py:class:`Slicerator` object when sliced.
 
         Parameters
         ----------
-        some_class : class
+        some_class : type
         propagated_attrs : list, optional
             list of attributes to be propagated into Slicerator
             this will overwrite any other propagation list
@@ -351,17 +360,17 @@ def _index_generator(new_indices, old_indices):
                 continue
 
 
-class Pipeline(object):
+class Pipeline:
+    """A class to support lazy function evaluation on an iterable.
+
+    When a :py:class:`Pipeline` object is indexed, it returns an element of its
+    ancestor modified with a process function.
+    """
     def __init__(self, proc_func, *ancestors, propagate_attrs=None,
                  propagate_how="first"):
-        """A class to support lazy function evaluation on an iterable.
-
-        When a ``Pipeline`` object is indexed, it returns an element of its
-        ancestor modified with a process function.
-
-        Parameters
+        """Parameters
         ----------
-        proc_func : function
+        proc_func : callable
             function that processes data returned by Slicerator. The function
             acts element-wise and is only evaluated when data is actually
             returned
@@ -382,12 +391,15 @@ class Pipeline(object):
         Example
         -------
         Construct the pipeline object that multiplies elements by two:
+
         >>> ancestor = [0, 1, 2, 3, 4]
         >>> times_two = Pipeline(lambda x: 2*x, ancestor)
 
         Whenever the pipeline object is indexed, it takes the correct element
         from its ancestor, and then applies the process function.
-        >>> times_two[3]  # returns 6
+
+        >>> times_two[3]
+        6
 
         See also
         --------
@@ -525,8 +537,6 @@ def pipeline(func=None, **kwargs):
     >>> @pipeline
     ...  def color_channel(image, channel):
     ...      return image[channel, :, :]
-    ...
-
 
     In order to preserve the original function's doc string (i. e. do not add
     a note saying that it was made lazy), use the decorator like so:
@@ -535,7 +545,6 @@ def pipeline(func=None, **kwargs):
     ... def color_channel(image, channel):
     ...     '''This doc string will not be changed'''
     ...     return image[channel, :, :]
-
 
     Passing a Slicerator the function returns a Pipeline
     that "lazily" applies the function when the images come out. Different
@@ -549,8 +558,7 @@ def pipeline(func=None, **kwargs):
 
     >>> @pipeline
     ... def rescale(image):
-    ... return (image - image.min())/image.ptp()
-    ...
+    ...     return (image - image.min())/image.ptp()
     >>> rescale(color_channel(images, 0))
 
     The function can still be applied to ordinary images. The decorator
@@ -747,3 +755,36 @@ class SliceableAttribute(object):
 
     def __getitem__(self, key):
         return self(key)
+
+
+# Based on https://github.com/soft-matter/slicerator
+# Original copyright and license information:
+#
+# Copyright (c) 2015, Daniel B. Allan
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the matplotlib project nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
