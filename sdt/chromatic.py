@@ -80,9 +80,8 @@ import scipy.stats
 import scipy.ndimage
 import matplotlib as mpl
 
-import slicerator
-
 from . import roi, config
+from .helper import pipeline
 
 
 def _affine_trafo(params, loc):
@@ -218,9 +217,9 @@ class Corrector(object):
         ----------
         data : pandas.DataFrame or slicerator.Slicerator or array-like
             data to be processed. If a pandas.Dataframe, the feature
-            coordinates will be corrected. Otherwise, `slicerator.pipeline` is
-            used to correct image data using an affine transformation (if
-            available)
+            coordinates will be corrected. Otherwise,
+            :py:class:`sdt.helper.Pipeline` is used to correct image data using
+            an affine transformation.
         channel : int, optional
             If `features` are in the first channel (corresponding to the
             `feat1` arg of the constructor), set to 1. If features are in the
@@ -273,7 +272,7 @@ class Corrector(object):
             parms = getattr(
                 self, "parameters{}".format(2 if channel == 1 else 1))
 
-            @slicerator.pipeline
+            @pipeline
             def corr(img):
                 # transpose image since matrix axes are reversed compared to
                 # coordinate axes
