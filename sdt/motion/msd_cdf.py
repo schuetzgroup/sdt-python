@@ -260,7 +260,7 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10,
         Which fit method to use. "prony" is a modified Prony's method, "lsq"
         is least squares fitting, and "weighted-lsq" is weighted least squares
         fitting to account for the fact that the CDF data are concentrated
-        at x=0. Defaults to "prony".
+        at x=0. Defaults to "lsq".
 
     Returns
     -------
