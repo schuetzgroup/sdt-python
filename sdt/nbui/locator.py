@@ -118,7 +118,7 @@ class D3DOptions(VBox):
 
         if o["find_filter"] == "Gaussian":
             self._filter_sel.value = "Gaussian"
-            self._filter_gauss_sigma_sel = o["find_filter_opts"]["sigma"]
+            self._filter_gauss_sigma_sel.value = o["find_filter_opts"]["sigma"]
         elif o["find_filter"] == "Cg":
             self._filter_sel.value = "Crocker-Grier"
             self._filter_cg_size_sel.value = \
@@ -130,7 +130,7 @@ class D3DOptions(VBox):
             self._min_dist_check.value = False
         else:
             self._min_dist_check.value = True
-            self._min_dist_sel = o["min_distance"]
+            self._min_dist_sel.value = o["min_distance"]
 
         if o["size_range"] is None:
             self._size_check.value = False
@@ -265,7 +265,7 @@ class Locator(VBox, traitlets.HasTraits):
     >>> data = locator.batch_func(img_files[0], **par)  # loc.daostorm_3d.batch
     """
 
-    def __init__(self, images, cmap="gray", figsize=None):
+    def __init__(self, images=[], cmap="gray", figsize=None):
         """Parameters
         ----------
         images : list of str or dict of str: list-like of numpy.ndarray
@@ -281,7 +281,7 @@ class Locator(VBox, traitlets.HasTraits):
                           "is not compatible with this.")
             plt.ioff()
 
-        self._files = images
+        self.files = images
 
         self._cur_img_seq = None
         self._cur_img = None
@@ -329,21 +329,23 @@ class Locator(VBox, traitlets.HasTraits):
 
         self.observe(self._update, "options")
         self.observe(self._options_trait_changed, "options")
-        self._file_sel.observe(self._file_changed, names="value")
+        self._file_sel.observe(self._cur_file_changed, names="value")
         self._frame_sel.observe(self._frame_changed, names="value")
-        self._auto_scale_button.on_click(self._auto_scale)
+        self._auto_scale_button.on_click(self.auto_scale)
         self._img_scale_sel.observe(self._redraw_image, names="value")
         self._show_loc_check.observe(self._update, "value")
+        self.observe(self._files_trait_changed, "files")
 
         self._algo_selected()
         self._options_changed()
-        self._file_changed()
-        self._auto_scale()
+        self._cur_file_changed()
+        self.auto_scale()
 
     algorithm = traitlets.Enum(values=[A.name for A in algorithms])
     """Name of the algorithm"""
     options = traitlets.Dict()
     """dict of options to the localizing function"""
+    files = traitlets.Union([traitlets.List(), traitlets.Dict()])
 
     @property
     def locate_func(self):
@@ -380,10 +382,27 @@ class Locator(VBox, traitlets.HasTraits):
         """Algorithm selection was changed using `algorithm` traitlet"""
         self._algo_sel.value = self.algorithm
 
-    def _file_changed(self, change=None):
+    def _files_trait_changed(self, change=None):
+        """`files` traitlet changed"""
+        self._file_sel.options = self.files
+
+    def _cur_file_changed(self, change=None):
         """Currently selected file has changed"""
-        if isinstance(self._files, dict):
-            self._cur_img_seq = self._files[self._file_selector.value]
+        if self._file_sel.value is None:
+            if self._im_artist is not None:
+                self._im_artist.remove()
+                self._im_artist = None
+            if self._scatter_artist is not None:
+                self._scatter_artist.remove()
+                self._scatter_artist = None
+
+            self._frame_sel.max = 0
+            self._cur_img_seq = None
+
+            return
+
+        if isinstance(self.files, dict):
+            self._cur_img_seq = self._file_sel.value
         else:
             if self._cur_img_seq is not None:
                 self._cur_img_seq.close()
@@ -409,7 +428,7 @@ class Locator(VBox, traitlets.HasTraits):
                                           vmin=scale[0], vmax=scale[1])
         self._fig.canvas.draw()
 
-    def _auto_scale(self, b=None):
+    def auto_scale(self, b=None):
         """Auto-scale check box was toggled"""
         if self._cur_img is None:
             return
@@ -436,3 +455,17 @@ class Locator(VBox, traitlets.HasTraits):
     def _options_trait_changed(self, change=None):
         """Update current algorithm's options with `options` traitlet"""
         self._loc_options[self._algo_sel.index].options = self.options
+
+    def get_settings(self):
+        return {"algorithm": self.algorithm, "options": self.options}
+
+    def set_settings(self, s):
+        algo = s.get("algorithm", "3D-DAOSTORM")
+        if algo == "daostorm_3d":
+            algo = "3D-DAOSTORM"
+        elif algo == "cg":
+            algo = "Crocker-Grier"
+        self.algorithm = algo
+
+        if "options" in s:
+            self.options = s
