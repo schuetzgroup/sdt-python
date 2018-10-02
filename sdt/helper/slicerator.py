@@ -8,6 +8,7 @@ import itertools
 from functools import wraps
 from copy import copy
 import inspect
+from contextlib import suppress
 
 
 def _iter_attr(obj):
@@ -17,6 +18,9 @@ def _iter_attr(obj):
                 yield ns.__dict__[attr]
     except AttributeError:
         return  # obj has no __dict__
+
+
+
 
 
 class Slicerator:
@@ -35,6 +39,8 @@ class Slicerator:
     with `index_attr`. They also have to be present in the
     `propagate_attrs` list.
     """
+    _slicerator_flag = True
+
     def __init__(self, ancestor, indices=None, length=None,
                  propagate_attrs=None):
         """Parameters
@@ -366,6 +372,8 @@ class Pipeline:
     When a :py:class:`Pipeline` object is indexed, it returns an element of its
     ancestor modified with a process function.
     """
+    _slicerator_flag = True
+
     def __init__(self, proc_func, *ancestors, propagate_attrs=None,
                  propagate_how="first"):
         """Parameters
@@ -498,6 +506,17 @@ class Pipeline:
         return self.__init__(lambda x: x, data_as_list)
 
 
+_pipeline_types = (Slicerator, Pipeline)
+
+
+with suppress(ImportError):
+    # Also support the pipeline decorator for the original slicerator's
+    # `Pipeline` and `Slicerator` classes
+    import slicerator as slc
+    _pipeline_types = _pipeline_types + (slc.Slicerator, slc.Pipeline)
+    del slc
+
+
 def pipeline(func=None, **kwargs):
     """Decorator to enable lazy evaluation of a function.
 
@@ -621,8 +640,7 @@ def _pipeline_fromclass(cls, retain_doc=False, ancestor_count=1):
         ancestors = args[:ancestor_count]
         args = args[ancestor_count:]
         all_pipe = all(hasattr(a, '_slicerator_flag') or
-                       isinstance(a, Slicerator) or
-                       isinstance(a, Pipeline) for a in ancestors)
+                       isinstance(a, _pipeline_types) for a in ancestors)
         if all_pipe:
             return cls(*(ancestors + args), **kwargs)
         else:
@@ -668,8 +686,7 @@ def _pipeline_fromfunc(func, retain_doc=False, ancestor_count=1):
         ancestors = args[:ancestor_count]
         args = args[ancestor_count:]
         all_pipe = all(hasattr(a, '_slicerator_flag') or
-                       isinstance(a, Slicerator) or
-                       isinstance(a, Pipeline) for a in ancestors)
+                       isinstance(a, _pipeline_types) for a in ancestors)
         if all_pipe:
             def proc_func(*x):
                 return func(*(x + args), **kwargs)
