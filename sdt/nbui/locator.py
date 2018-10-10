@@ -262,7 +262,7 @@ class Locator(VBox, traitlets.HasTraits):
     ``**par`` can be passed directly to :py:attr:`locate_func` and
     :py:attr:`batch_func`:
 
-    >>> data = locator.batch_func(img_files[0], **par)  # loc.daostorm_3d.batch
+    >>> data = locator.batch_func(img_files, **par)  # loc.daostorm_3d.batch
     """
 
     def __init__(self, images=[], cmap="gray", figsize=None):
