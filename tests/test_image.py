@@ -3,9 +3,11 @@ import os
 
 import numpy as np
 import slicerator
+import pytest
 
 from sdt.image import filters, masks
 import sdt.sim
+from sdt import image
 
 
 path, f = os.path.split(os.path.abspath(__file__))
@@ -168,5 +170,21 @@ class TestMasks(unittest.TestCase):
         np.testing.assert_equal(masks.RectMask((5, 7), shape=(11, 9)), e)
 
 
-if __name__ == "__main__":
-    unittest.main()
+class TestFillGamut:
+    img = np.linspace(-0.25, 0.25, 11)
+
+    def test_uint8(self):
+        res = image.fill_gamut(self.img, np.uint8)
+        np.testing.assert_allclose(res, np.linspace(0, 255, len(self.img),
+                                                    dtype=np.uint8))
+
+    def test_int16(self):
+        res = image.fill_gamut(self.img, np.int16)
+        np.testing.assert_allclose(res, np.linspace(0, (1 << 15) - 1,
+                                                    len(self.img),
+                                                    dtype=np.int16))
+
+    def test_float64(self):
+        res = image.fill_gamut(self.img, np.float64)
+        np.testing.assert_allclose(res, np.linspace(0, 1, len(self.img),
+                                                    dtype=np.float64))

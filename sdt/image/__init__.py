@@ -55,6 +55,10 @@ Masks
 .. autoclass:: RectMask
 .. autoclass:: CircleMask
 
+Utilities
+---------
+.. autofunction:: fill_gamut
+
 
 References
 ----------
@@ -64,6 +68,8 @@ References
 """
 from . import filters
 from . import masks
+from . import utils
 
 from .filters import *
 from .masks import *
+from .utils import *
