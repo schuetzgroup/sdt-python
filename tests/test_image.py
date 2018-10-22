@@ -188,3 +188,27 @@ class TestFillGamut:
         res = image.fill_gamut(self.img, np.float64)
         np.testing.assert_allclose(res, np.linspace(0, 1, len(self.img),
                                                     dtype=np.float64))
+
+
+@pytest.mark.skipif(not hasattr(image, "threshold"),
+                    reason="`threshold` submodule not available "
+                        "(missing OpenCV?)")
+class TestThresh:
+    img = np.array([[0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0, 0],
+                    [0, 1, 1, 1, 0, 0],
+                    [0, 1, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0]], dtype=float)
+
+    def test_adaptive(self):
+        mask = image.adaptive_thresh(self.img, 2, 0, 1)
+        np.testing.assert_array_equal(mask, self.img.astype(bool))
+
+    def test_otsu(self):
+        mask = image.otsu_thresh(self.img, 1, 1)
+        np.testing.assert_array_equal(mask, self.img.astype(bool))
+
+    def test_percentile(self):
+        mask = image.percentile_thresh(self.img, 50, 1)
+        np.testing.assert_array_equal(mask, self.img.astype(bool))

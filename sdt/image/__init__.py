@@ -9,9 +9,13 @@ The :py:mod:`sdt.image` module contains filters for image data:
   subtraction: :py:func:`cg` and :py:func:`cg_bg`
 - a gaussian blur filter: :py:func:`gaussian_filter`
 
-All filters make use of the :py:func:`slicerator.pipeline` mechanism, meaning
+All filters make use of the :py:func:`sdt.helper.pipeline` mechanism, meaning
 that they will only by applied to image data (if it is of the right type,
 e.g. a :py:class:`pims.FramesSequence`) as needed.
+
+If `OpenCV` is available, the functions :py:func:`adaptive_thresh`,
+:py:func:`otsu_thresh`, and :py:func:`percentile_thresh` provide ways
+generating binary mask from images by thresholding.
 
 Furthermore, the module supports easy creation of boolean image masks. There
 are classes for producing rectangular (:py:class:`RectMask`) and circular
@@ -50,6 +54,12 @@ Filters
 .. autofunction:: wavelet_bg
 .. autofunction:: gaussian_filter
 
+Thresholding
+------------
+.. autofunction:: adaptive_thresh
+.. autofunction:: otsu_thresh
+.. autofunction:: percentile_thresh
+
 Masks
 -----
 .. autoclass:: RectMask
@@ -73,3 +83,8 @@ from . import utils
 from .filters import *
 from .masks import *
 from .utils import *
+
+from contextlib import suppress
+with suppress(ImportError):
+    from . import threshold
+    from .threshold import *
