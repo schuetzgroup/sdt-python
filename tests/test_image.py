@@ -189,6 +189,12 @@ class TestFillGamut:
         np.testing.assert_allclose(res, np.linspace(0, 1, len(self.img),
                                                     dtype=np.float64))
 
+    def test_none(self):
+        res = image.fill_gamut(self.img, None)
+        assert res.dtype == self.img.dtype
+        np.testing.assert_allclose(res, np.linspace(0, 1, len(self.img),
+                                                    dtype=np.float64))
+
 
 @pytest.mark.skipif(not hasattr(image, "threshold"),
                     reason="`threshold` submodule not available "
