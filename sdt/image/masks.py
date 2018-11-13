@@ -71,7 +71,7 @@ class CircleMask(np.ndarray):
         obj = (obj[np.newaxis, :] + obj[:, np.newaxis]) <= (radius + extra)**2
 
         if shape is not None:
-            ret = np.zeros(shape)
+            ret = np.zeros(shape, dtype=bool)
 
             m_slices = []
             for s, e in zip(shape, obj.shape):
