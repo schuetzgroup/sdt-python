@@ -20,9 +20,6 @@ def _iter_attr(obj):
         return  # obj has no __dict__
 
 
-
-
-
 class Slicerator:
     """A generator that supports fancy indexing
 
