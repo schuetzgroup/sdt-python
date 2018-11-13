@@ -5,10 +5,10 @@ import numpy as np
 import scipy.signal
 import scipy.ndimage
 import pywt
-from slicerator import pipeline
 
 from .masks import CircleMask
 from ..exceptions import NoConvergence
+from ..helper import pipeline
 
 
 @pipeline(retain_doc=True)
@@ -25,9 +25,9 @@ def wavelet_bg(image, feat_thresh, feat_mask=None, wtype="db4", wlevel=3,
     A :py:class:`NoConvergence` exception is raised if the estimate does not
     converge within `max_iterations`.
 
-    This is a :py:func:`slicerator.pipeline`, meaning that it can be applied
+    This is a :py:func:`sdt.helper.pipeline`, meaning that it can be applied
     to single images or image sequences (as long as they are of type
-    :py:class:`slicerator.Slicerator`).
+    :py:class:`sdt.helper.Slicerator`).
 
     .. [Galloway2009] Galloway, C. M. et al.: "An iterative algorithm for
         background removal in spectroscopy by wavelet transforms". Appl
@@ -165,9 +165,9 @@ def wavelet(image, *args, **kwargs):
     This returns ``image - wavelet_bg(image, *args, **kwargs)``. See
     the :py:func:`wavelet_bg` documentation for details.
 
-    This is a :py:func:`slicerator.pipeline`, meaning that it can be applied
+    This is a :py:func:`sdt.helper.pipeline`, meaning that it can be applied
     to single images or image sequences (as long as they are of type
-    :py:class:`slicerator.Slicerator`).
+    :py:class:`sdt.helper.Slicerator`).
     """
     return image - wavelet_bg(image, *args, **kwargs)
 
@@ -247,9 +247,9 @@ def cg_bg(image, *args, **kwargs):
     This returns ``image - cg(image, *args, **kwargs)``. See
     the :py:func:`cg` documentation for details.
 
-    This is a :py:func:`slicerator.pipeline`, meaning that it can be applied
+    This is a :py:func:`sdt.helper.pipeline`, meaning that it can be applied
     to single images or image sequences (as long as they are of type
-    :py:class:`slicerator.Slicerator`).
+    :py:class:`sdt.helper.Slicerator`).
     """
     return image - cg(image, *args, **kwargs)
 
