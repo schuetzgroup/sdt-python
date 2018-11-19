@@ -3,6 +3,7 @@ import os
 
 import pandas as pd
 import numpy as np
+from scipy import ndimage
 
 from sdt import flatfield
 
@@ -37,6 +38,21 @@ class TestCorrector(unittest.TestCase):
         np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
         self.assertFalse(corr.fit_result)
+
+    def test_init_img_smooth(self):
+        """flatfield.Corrector.__init__: image data, smoothing"""
+        imgs = []
+        for amp in range(3, 0, -1):
+            img = amp * self.img
+            imgs.append(img)
+
+        corr = flatfield.Corrector(imgs, gaussian_fit=False, smooth_sigma=1.)
+        np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
+        exp_corr_img = ndimage.gaussian_filter(self.img / self.img.max(),
+                                               sigma=1.)
+        np.testing.assert_allclose(corr.corr_img, exp_corr_img)
+        self.assertFalse(corr.fit_result)
+
 
     def test_init_bg_scalar(self):
         """flatfield.Corrector.__init__: scalar `bg` parameter"""

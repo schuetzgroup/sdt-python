@@ -51,7 +51,7 @@ Programming reference
 import pandas as pd
 import numpy as np
 import scipy.interpolate as sp_int
-from scipy import stats, optimize
+from scipy import stats, optimize, ndimage
 
 import slicerator
 
@@ -108,7 +108,7 @@ class Corrector(object):
     """
     @config.set_columns
     def __init__(self, *data, bg=0., gaussian_fit=True, shape=None,
-                 density_weight=False, columns={}):
+                 density_weight=False, smooth_sigma=0., columns={}):
         """Parameters
         ----------
         *data : iterables of image data or pandas.DataFrames
@@ -130,6 +130,9 @@ class Corrector(object):
             If `data` is single molecule data, weigh data points inversely to
             their density for fitting so that areas with higher densities don't
             have a higher impact on the result. Defaults to False.
+        smooth_sigma : float, optional
+            If > 0, smooth the image used for flatfield correction. Only
+            applicable if ``gaussian_fit=False``. Defaults to 0.
 
         Other parameters
         ----------------
@@ -208,6 +211,9 @@ class Corrector(object):
             else:
                 self.fit_result = {}
                 self.corr_img = self.avg_img / self.avg_img.max()
+                if smooth_sigma:
+                    self.corr_img = ndimage.gaussian_filter(self.corr_img,
+                                                            smooth_sigma)
                 self.interp = sp_int.RegularGridInterpolator(
                     [np.arange(i) for i in self.corr_img.shape], self.corr_img)
 
