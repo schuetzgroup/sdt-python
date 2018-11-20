@@ -53,7 +53,6 @@ class TestCorrector(unittest.TestCase):
         np.testing.assert_allclose(corr.corr_img, exp_corr_img)
         self.assertFalse(corr.fit_result)
 
-
     def test_init_bg_scalar(self):
         """flatfield.Corrector.__init__: scalar `bg` parameter"""
         bg = 200.
@@ -145,6 +144,7 @@ class TestCorrector(unittest.TestCase):
         mass = mass_orig * self._make_gauss(x, y) / self.amp
         pdata = pd.DataFrame(dict(x=x, y=y, mass=mass))
         pdata1 = pdata.copy()
+        pdata2 = pdata.copy()
 
         corr_img = flatfield.Corrector([self.img], gaussian_fit=False)
         corr_img(pdata, inplace=True)
@@ -153,6 +153,12 @@ class TestCorrector(unittest.TestCase):
         corr_gauss = flatfield.Corrector([self.img], gaussian_fit=True)
         pdata1 = corr_gauss(pdata1)
         np.testing.assert_allclose(pdata1["mass"].tolist(), mass_orig,
+                                   rtol=1e-5)
+
+        pdata2["alt_mass"] = pdata2["mass"]
+        corr_img(pdata2, inplace=True, columns={"corr": ["mass", "alt_mass"]})
+        np.testing.assert_allclose(pdata2["mass"].values, mass_orig, rtol=1e-5)
+        np.testing.assert_allclose(pdata2["alt_mass"].values, mass_orig,
                                    rtol=1e-5)
 
     def test_image_correction_with_img(self):

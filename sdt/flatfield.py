@@ -215,7 +215,8 @@ class Corrector(object):
                     self.corr_img = ndimage.gaussian_filter(self.corr_img,
                                                             smooth_sigma)
                 self.interp = sp_int.RegularGridInterpolator(
-                    [np.arange(i) for i in self.corr_img.shape], self.corr_img)
+                    [np.arange(i) for i in self.corr_img.shape], self.corr_img,
+                    bounds_error=False, fill_value=np.NaN)
 
     @config.set_columns
     def __call__(self, data, inplace=False, bg=None, columns={}):
@@ -251,16 +252,21 @@ class Corrector(object):
             `mass`. That means, if the DataFrames have coordinate columns "x"
             and "z" and a mass column "alt_mass", set
             ``columns={"coords": ["x", "z"], "mass": "alt_mass"}``.
+            It is also possible to give a list of columns to correct by adding
+            the "corr" key, e.g. ``columns={"corr": ["mass", "alt_mass"]}``.
         """
         if isinstance(data, pd.DataFrame):
             x, y = columns["coords"]
             if not inplace:
                 data = data.copy()
             factors = self.get_factors(data[x], data[y])
-            if columns["mass"] in data.columns:
-                data[columns["mass"]] *= factors
-            if columns["signal"] in data.columns:
-                data[columns["signal"]] *= factors
+
+            corr_cols = columns.get("corr",
+                                    [columns["mass"], columns["signal"]])
+            for cc in corr_cols:
+                if cc in data.columns:
+                    data[cc] *= factors
+
             if not inplace:
                 # copied previously, now return
                 return data
