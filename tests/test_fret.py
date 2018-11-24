@@ -147,6 +147,23 @@ class TestSmFretTracker(unittest.TestCase):
                                    self.tracker.chromatic_corr.parameters2)
 
 
+def test_numeric_exc_type():
+    col = pd.Series(["d", "a", "d", "a"], dtype="category")
+    df = pd.DataFrame({("fret", "exc_type"): col.copy()})
+
+    df_before = df.copy()
+
+    with fret.numeric_exc_type(df) as exc_types:
+        assert set(exc_types) == {"d", "a"}
+        assert df["fret", "exc_type"].dtype == np.dtype(int)
+        assert len(df) == len(col)
+        for i in (0, 1):
+            assert np.all((df["fret", "exc_type"] == i).values ==
+                          (col == exc_types[i]).values)
+
+    pd.testing.assert_frame_equal(df, df_before)
+
+
 @pytest.fixture
 def ana1():
     """SmFretAnalyzer used in some tests"""
