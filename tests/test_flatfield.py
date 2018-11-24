@@ -1,15 +1,15 @@
-import unittest
 import os
 
 import pandas as pd
 import numpy as np
 from scipy import ndimage
+import pytest
 
 from sdt import flatfield
 
 
-class TestCorrector(unittest.TestCase):
-    def setUp(self):
+class TestCorrector:
+    def setup_method(self):
         self.img_shape = (100, 150)
         self.y, self.x = np.indices(self.img_shape)
         self.xc = 20
@@ -37,7 +37,7 @@ class TestCorrector(unittest.TestCase):
         corr = flatfield.Corrector(imgs, gaussian_fit=False)
         np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
-        self.assertFalse(corr.fit_result)
+        assert corr.fit_result is None
 
     def test_init_img_smooth(self):
         """flatfield.Corrector.__init__: image data, smoothing"""
@@ -51,7 +51,7 @@ class TestCorrector(unittest.TestCase):
         exp_corr_img = ndimage.gaussian_filter(self.img / self.img.max(),
                                                sigma=1.)
         np.testing.assert_allclose(corr.corr_img, exp_corr_img)
-        self.assertFalse(corr.fit_result)
+        assert corr.fit_result is None
 
     def test_init_bg_scalar(self):
         """flatfield.Corrector.__init__: scalar `bg` parameter"""
@@ -61,7 +61,7 @@ class TestCorrector(unittest.TestCase):
         corr = flatfield.Corrector(imgs, bg=bg, gaussian_fit=False)
         np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
-        self.assertFalse(corr.fit_result)
+        assert corr.fit_result is None
 
     def test_init_bg_array(self):
         """flatfield.Corrector.__init__: array `bg` parameter"""
@@ -72,10 +72,10 @@ class TestCorrector(unittest.TestCase):
         corr = flatfield.Corrector(imgs, bg=bg, gaussian_fit=False)
         np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
         np.testing.assert_allclose(corr.corr_img, self.img / self.img.max())
-        self.assertFalse(corr.fit_result)
+        assert corr.fit_result is None
 
     def _check_fit_result(self, res, expected):
-        self.assertEqual(res.keys(), expected.keys())
+        assert res.keys() == expected.keys()
         for k in expected:
             i = res[k]
             e = expected[k]
@@ -202,6 +202,12 @@ class TestCorrector(unittest.TestCase):
         np.testing.assert_allclose(1 / fact, self.img / self.img.max(),
                                    rtol=1e-5)
 
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_save_load(self, tmp_path):
+        """flatfield.Corrector: save() and load()"""
+        corr = flatfield.Corrector([self.img], gaussian_fit=True, bg=1)
+        corr.save(tmp_path / "fc.npz", key="myff")
+        corr2 = flatfield.Corrector.load(tmp_path / "fc.npz", key="myff")
+        np.testing.assert_array_equal(corr.avg_img, corr2.avg_img)
+        np.testing.assert_array_equal(corr.corr_img, corr2.corr_img)
+        self._check_fit_result(corr.fit_result, corr2.fit_result)
+        assert corr.bg == corr2.bg

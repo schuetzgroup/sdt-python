@@ -144,11 +144,11 @@ class Corrector(object):
             and a mass column "alt_mass", set
             ``columns={"coords": ["x", "z"], "mass": "alt_mass"}``.
         """
-        self.avg_img = np.array([])
+        self.avg_img = np.empty((0, 0))
         """Pixel-wise average image from `data` argument to
         :py:meth:`__init__`.
         """
-        self.corr_img = np.array([])
+        self.corr_img = np.empty((0, 0))
         """Pixel data used for correction of images. Any image to be corrected
         is divided pixel-wise by `corr_img`.
         """
@@ -209,7 +209,6 @@ class Corrector(object):
                 self.corr_img = gfit.gaussian_2d(x, y, **self.fit_result)
                 self.corr_img /= self.corr_img.max()
             else:
-                self.fit_result = {}
                 self.corr_img = self.avg_img / self.avg_img.max()
                 if smooth_sigma:
                     self.corr_img = ndimage.gaussian_filter(self.corr_img,
@@ -302,3 +301,43 @@ class Corrector(object):
                          self.fit_result["amplitude"])
         else:
             return np.transpose(1. / self.interp(np.array([y, x]).T))
+
+    def save(self, file, key="flatfield"):
+        """Save instance to disk
+
+        Parameters
+        ----------
+        file : str or file-like object
+            Where to save. If `str`, the extension ".npz" will be appended if
+            it is not present.
+        key : str, optional
+            Specify a key which allows for saving multiple instances in one
+            file.
+        """
+        d = {key + "_avg_img": self.avg_img, key + "_corr_img": self.corr_img,
+             key + "_fit_result": self.fit_result, key + "_bg": self.bg}
+        np.savez_compressed(file, **d)
+
+    @classmethod
+    def load(cls, file, key="flatfield"):
+        """Load from disk
+
+        Parameters
+        ----------
+        file : str or file-like
+            Where to load from
+        key : str, optional
+            Specify key. This has to match the `key` parameter passed to
+            :py:meth:`save`.
+
+        Returns
+        -------
+        sdt.flatfield.Corrector
+            Loaded instance
+        """
+        with np.load(file) as ld:
+            ret = cls([ld[key + "_avg_img"]])
+            ret.corr_img = ld[key + "_corr_img"]
+            ret.fit_result = np.asscalar(ld[key + "_fit_result"])
+            ret.bg = np.asscalar(ld[key + "_bg"])
+        return ret
