@@ -302,7 +302,7 @@ class Corrector(object):
         else:
             return np.transpose(1. / self.interp(np.array([y, x]).T))
 
-    def save(self, file, key="flatfield"):
+    def save(self, file):
         """Save instance to disk
 
         Parameters
@@ -310,25 +310,19 @@ class Corrector(object):
         file : str or file-like object
             Where to save. If `str`, the extension ".npz" will be appended if
             it is not present.
-        key : str, optional
-            Specify a key which allows for saving multiple instances in one
-            file.
         """
-        d = {key + "_avg_img": self.avg_img, key + "_corr_img": self.corr_img,
-             key + "_fit_result": self.fit_result, key + "_bg": self.bg}
-        np.savez_compressed(file, **d)
+        np.savez_compressed(
+            file, avg_img=self.avg_img, corr_img=self.corr_img,
+            fit_result=self.fit_result, bg=self.bg)
 
     @classmethod
-    def load(cls, file, key="flatfield"):
+    def load(cls, file):
         """Load from disk
 
         Parameters
         ----------
         file : str or file-like
             Where to load from
-        key : str, optional
-            Specify key. This has to match the `key` parameter passed to
-            :py:meth:`save`.
 
         Returns
         -------
@@ -336,8 +330,8 @@ class Corrector(object):
             Loaded instance
         """
         with np.load(file) as ld:
-            ret = cls([ld[key + "_avg_img"]])
-            ret.corr_img = ld[key + "_corr_img"]
-            ret.fit_result = np.asscalar(ld[key + "_fit_result"])
-            ret.bg = np.asscalar(ld[key + "_bg"])
+            ret = cls([ld["avg_img"]])
+            ret.corr_img = ld["corr_img"]
+            ret.fit_result = np.asscalar(ld["fit_result"])
+            ret.bg = np.asscalar(ld["bg"])
         return ret

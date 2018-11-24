@@ -205,8 +205,8 @@ class TestCorrector:
     def test_save_load(self, tmp_path):
         """flatfield.Corrector: save() and load()"""
         corr = flatfield.Corrector([self.img], gaussian_fit=True, bg=1)
-        corr.save(tmp_path / "fc.npz", key="myff")
-        corr2 = flatfield.Corrector.load(tmp_path / "fc.npz", key="myff")
+        corr.save(tmp_path / "fc.npz")
+        corr2 = flatfield.Corrector.load(tmp_path / "fc.npz")
         np.testing.assert_array_equal(corr.avg_img, corr2.avg_img)
         np.testing.assert_array_equal(corr.corr_img, corr2.corr_img)
         self._check_fit_result(corr.fit_result, corr2.fit_result)
