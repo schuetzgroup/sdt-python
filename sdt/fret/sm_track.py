@@ -1,13 +1,11 @@
 """Module containing a class for tracking smFRET data """
 import itertools
-from collections import defaultdict
 from contextlib import suppress
 
 import numpy as np
 import pandas as pd
-from scipy.interpolate import interp1d
 
-from .. import multicolor, spatial, brightness, config, helper, changepoint
+from .. import multicolor, spatial, brightness, config
 
 try:
     import trackpy
@@ -25,37 +23,16 @@ class SmFretTracker:
     yaml_tag = "!SmFretTracker"
     _yaml_keys = ("chromatic_corr", "link_options", "min_length",
                   "brightness_options", "interpolate", "coloc_dist",
-                  "acceptor_channel", "neighbor_radius", "a_mass_interp",
-                  "invalid_nan")
-
-    exc_type_nums = defaultdict(lambda: -1, dict(d=0, a=1))
-    """Map of excitation types to integers as written into the ``(fret,
-    exc_type)`` column of tracking DataFrames by
-    :py:func:`flag_excitation_type` and :py:meth:`SmFretTracker.analyze`.
-
-    Values are
-
-    - "d" -> 0
-    - "a" -> 1
-    - others -> -1
-    """
+                  "acceptor_channel", "neighbor_radius")
 
     @config.set_columns
-    def __init__(self, excitation_seq, chromatic_corr=None, link_radius=5,
+    def __init__(self, chromatic_corr=None, link_radius=5,
                  link_mem=1, min_length=1, feat_radius=4, bg_frame=2,
                  bg_estimator="mean", neighbor_radius="auto", interpolate=True,
-                 coloc_dist=2., acceptor_channel=2, a_mass_interp="linear",
-                 invalid_nan=True, link_quiet=True, link_options={},
-                 cp_detector=None, columns={}):
+                 coloc_dist=2., acceptor_channel=2, link_quiet=True,
+                 link_options={}, columns={}):
         """Parameters
         ----------
-        excitation_seq : str or list-like of characters
-            Excitation sequence. "d" stands for donor, "a" for acceptor,
-            anything else describes other kinds of frames which are to be
-            ignored.
-
-            One needs only specify the shortest sequence that is repeated,
-            i. e. "ddddaddddadddda" is the same as "dddda".
         chromatic_corr : chromatic.Corrector or None, optional
             Corrector used to overlay channels. If `None`, create a Corrector
             with the identity transform. Defaults to `None`.
@@ -94,22 +71,12 @@ class SmFretTracker:
         acceptor_channel : {1, 2}, optional
             Whether the acceptor channel is number 1 or 2 in `chromatic_corr`.
             Defaults to 2
-        a_mass_interp : {"linear", "nearest"}, optional
-            How to interpolate the acceptor mass upon direct excitation in
-            donor excitation frames. Defaults to "linear".
-        invalid_nan : bool, optional
-            If True, all "d_mass", "eff", and "stoi" values for excitation
-            types other than donor excitation are set to NaN, since the values
-            don't make sense. Defaults to True.
         link_options : dict, optional
             Specify additional options to :py:func:`trackpy.link_df`.
             "search_range" and "memory" will be overwritten by the
             `link_radius` and `link_mem` parameters. Defaults to {}.
         link_quiet : bool, optional
             If `True, call :py:func:`trackpy.quiet`. Defaults to `True`.
-        cp_detector : changepoint detector or None, optional
-            If `None`, create a :py:class:`changepoint.Pelt` instance with
-            ``model="l2"``, ``min_size=1``, and ``jump=1``.
 
         Other parameters
         ----------------
@@ -155,12 +122,6 @@ class SmFretTracker:
         """Can be either 1 or 2, depending the acceptor is the first or the
         second channel in :py:attr:`chromatic_corr`.
         """
-        if cp_detector is None:
-            cp_detector = changepoint.Pelt("l2", min_size=1, jump=1)
-        self.cp_detector = cp_detector
-        """Changepoint detector class instance used to perform acceptor
-        bleaching detection.
-        """
         self.columns = columns
         """dict of column names in DataFrames. Defaults are taken from
         :py:attr:`config.columns`.
@@ -178,45 +139,6 @@ class SmFretTracker:
 
         if link_quiet and trackpy_available:
             trackpy.quiet()
-
-        self.excitation_seq = np.array(list(excitation_seq))
-
-        self.a_mass_interp = a_mass_interp
-        """How to interpolate the acceptor mass upon direct excitation in
-        donor excitation frames. This can be either "nearest" or "linear" and
-        is relevant to :py:meth:`analyze`.
-        """
-        self.invalid_nan = invalid_nan
-        """If True, all "d_mass", "eff", and "stoi" values for excitation
-        types other than donor excitation are set to NaN, since the values
-        don't make sense. This is relevant to :py:meth:`analyze`.
-        """
-
-    @property
-    def excitation_seq(self):
-        """numpy.ndarray of dtype("<U1") describing the excitation sequence.
-        Typically, "d" would stand for donor, "a" for
-        acceptor.
-
-        One needs only specify the shortest sequence that is repeated,
-        i. e. "ddddaddddadddda" is the same as "dddda".
-        """
-        return self._exc_seq
-
-    @property
-    def excitation_frames(self):
-        """dict mapping the excitation types in :py:attr:`excitation_seq` to
-        the corresponding frame numbers (modulo the length of
-        py:attr:`excitation_seq`).
-        """
-        return self._exc_frames
-
-    @excitation_seq.setter
-    def excitation_seq(self, v):
-        self._exc_seq = np.array(list(v))
-        self._exc_frames = defaultdict(list,
-                                       {k: np.nonzero(self._exc_seq == k)[0]
-                                        for k in np.unique(self._exc_seq)})
 
     def track(self, donor_img, acceptor_img, donor_loc, acceptor_loc,
               d_mass=False):
@@ -392,219 +314,6 @@ class SmFretTracker:
 
         return ret.reset_index(drop=True)
 
-    def analyze(self, tracks, keep_d_mass=False):
-        r"""Calculate FRET-related values
-
-        This includes apparent FRET efficiencies, FRET stoichiometries,
-        the total brightness (mass) upon donor excitation, and the acceptor
-        brightness (mass) upon direct excitation, which is interpolated for
-        donor excitation datapoints in order to allow for calculation of
-        stoichiometries.
-
-        A column specifying whether the entry originates from donor or
-        acceptor excitation is also added: ("fret", "exc_type"). It is 0
-        for donor and 1 for acceptor excitation; see the
-        :py:meth:`flag_excitation_type` method and
-        :py:attr:`exc_type_nums`.
-
-        For each localization in `tracks`, the total brightness upon donor
-        excitation is calculated by taking the sum of ``("donor", "mass")``
-        and ``("acceptor", "mass")`` values. It is added as a
-        ``("fret", "d_mass")`` column to the `tracks` DataFrame. The
-        apparent FRET efficiency (acceptor brightness (mass) divided by sum of
-        donor and acceptor brightnesses) is added as a
-        ``("fret", "eff")`` column to the `tracks` DataFrame.
-
-        The stoichiometry value :math:`S` is given as
-
-        .. math:: S = \frac{F_{DD} + F_{DA}}{F_{DD} + F_{DA} + F_{AA}}
-
-        as in [Upho2010]_. :math:`F_{DD}` is the donor brightness upon donor
-        excitation, :math:`F_{DA}` is the acceptor brightness upon donor
-        excitation, and :math:`F_{AA}` is the acceptor brightness upon
-        acceptor excitation. The latter is calculated by interpolation for
-        frames with donor excitation.
-
-        :math:`F_{AA}` is append as a ``("fret", "a_mass")`` column.
-        The stoichiometry value is added in the ``("fret", "stoi")`` column.
-
-        Parameters
-        ----------
-        tracks : pandas.DataFrame
-            smFRET tracking data as produced by the
-            :py:meth:`SmFretTracker.track`
-        keep_d_mass : bool, optional
-            If a ``("fret", "d_mass")`` column is already present in `tracks`,
-            use that instead of overwriting it with the sum of
-            ``("donor", "mass")`` and ``("acceptor", "mass")`` values. Useful
-            if :py:meth:`track` was called with ``d_mass=True``.
-        """
-        tracks.sort_values(
-            [("fret", "particle"), ("donor", self.columns["time"])],
-            inplace=True)
-
-        # Excitation type, needed below
-        self.flag_excitation_type(tracks)
-
-        a_mass = []
-
-        # Calculate brightness upon acceptor excitation. This requires
-        # interpolation
-        cols = [("donor", self.columns["mass"]),
-                ("acceptor", self.columns["mass"]),
-                ("donor", self.columns["time"]),
-                ("fret", "exc_type")]
-        if ("fret", "has_neighbor") in tracks.columns:
-            cols.append(("fret", "has_neighbor"))
-            has_nn = True
-        else:
-            has_nn = False
-
-        for p, t in helper.split_dataframe(tracks, ("fret", "particle"), cols,
-                                           sort=False):
-            # Direct acceptor excitation
-            ad_p_mask = (t[:, 3] == self.exc_type_nums["a"])
-            # Locs without neighbors
-            if has_nn:
-                nn_p_mask = ~t[:, -1].astype(bool)
-            else:
-                nn_p_mask = np.ones(len(t), dtype=bool)
-            # Only use locs with direct accept ex and no neighbors
-            a_direct = t[ad_p_mask & nn_p_mask, 1:3]
-
-            if len(a_direct) == 0:
-                # No direct acceptor excitation, cannot do anything
-                a_mass.append(np.full(len(t), np.NaN))
-                continue
-            elif len(a_direct) == 1:
-                # Only one direct acceptor excitation; use this value for
-                # all data points of this particle
-                a_mass.append(np.full(len(t), a_direct[0, 0]))
-                continue
-            else:
-                # Enough direct acceptor excitations for interpolation
-                # Values are sorted.
-                y, x = a_direct.T
-                a_mass_func = interp1d(x, y, self.a_mass_interp, copy=False,
-                                       fill_value=(y[0], y[-1]),
-                                       assume_sorted=True, bounds_error=False)
-                # Calculate (interpolated) mass upon direct acceptor excitation
-                a_mass.append(a_mass_func(t[:, 2]))
-
-        # Total mass upon donor excitation
-        if keep_d_mass and ("fret", "d_mass") in tracks.columns:
-            d_mass = tracks["fret", "d_mass"].copy()
-        else:
-            d_mass = (tracks["donor", self.columns["mass"]] +
-                      tracks["acceptor", self.columns["mass"]])
-        # Total mass upon acceptor excitation
-        a_mass = np.concatenate(a_mass)
-
-        with np.errstate(divide="ignore", invalid="ignore"):
-            # ignore divide by zero and 0 / 0
-            # FRET efficiency
-            eff = tracks["acceptor", self.columns["mass"]] / d_mass
-            # FRET stoichiometry
-            stoi = d_mass / (d_mass + a_mass)
-
-        if self.invalid_nan:
-            # For direct acceptor excitation, FRET efficiency and stoichiometry
-            # are not sensible
-            nd_mask = (tracks["fret", "exc_type"] != self.exc_type_nums["d"])
-            eff[nd_mask] = np.NaN
-            stoi[nd_mask] = np.NaN
-            d_mass[nd_mask] = np.NaN
-
-        tracks["fret", "eff"] = eff
-        tracks["fret", "stoi"] = stoi
-        tracks["fret", "d_mass"] = d_mass
-        tracks["fret", "a_mass"] = a_mass
-        tracks.reindex(columns=tracks.columns.sortlevel(0)[0])
-
-    def flag_excitation_type(self, tracks):
-        """Add a column indicating excitation type (donor/acceptor)
-
-        Add  ("fret", "exc_type") column. Entries are 0 for donor, 1 for
-        acceptor excitation, and -1 for everything else. See also
-        :py:attr:`exc_type_nums`.
-
-        Parameters
-        ----------
-        tracks : pandas.DataFrame
-            FRET tracking data as e. g. produced by :py:meth:`track`. This
-            method appends the resulting column.
-        """
-        exc_type = np.full(len(tracks), -1)
-        frames = tracks["acceptor", self.columns["time"]]
-        for t in self.exc_type_nums:
-            mask = (frames % len(self.excitation_seq)).isin(
-                self.excitation_frames[t])
-            exc_type[mask] = self.exc_type_nums[t]
-        tracks["fret", "exc_type"] = exc_type
-
-    def segment_a_mass(self, tracks, **kwargs):
-        """Segment tracks by changepoint detection in the acceptor mass
-
-        Changepoint detection is run on the acceptor brightness time trace.
-        This appends `tracks` with a ``("fret", "a_seg")`` column. For each
-        localization, this holds the number of the segment it belongs to.
-
-        **`tracks` will be sorted according to ``("fret", "particle")`` and
-        ``("donor", self.columns["time"])`` in the process.**
-
-        Parameters
-        ----------
-        tracks : pandas.DataFrame
-            FRET tracking data as e. g. produced by :py:meth:`track`. This
-            method appends the resulting column.
-        **kwargs
-            Keyword arguments to pass to :py:attr:`cp_detector`
-            `find_changepoints` method.
-
-        Examples
-        --------
-        Pass ``penalty=1e6`` to the changepoint detector's
-        ``find_changepoints`` method.
-
-        >>> tracker.segment_a_mass(tracks, penalty=1e6)
-        """
-        time_col = ("donor", self.columns["time"])
-        tracks.sort_values([("fret", "particle"), time_col], inplace=True)
-        trc_split = helper.split_dataframe(
-            tracks, ("fret", "particle"),
-            [("fret", "a_mass"), time_col, ("fret", "exc_type")],
-            type="array", sort=False)
-
-        segments = []
-        for p, trc_p in trc_split:
-            acc_mask = trc_p[:, 2] == self.exc_type_nums["a"]
-            m_a = trc_p[acc_mask, 0]
-            m_a_pos = np.nonzero(acc_mask)[0]
-
-            # Find changepoints if there are no NaNs
-            if np.any(~np.isfinite(m_a)):
-                segments.append(np.full(len(trc_p), -1))
-                continue
-            cp = self.cp_detector.find_changepoints(m_a, **kwargs)
-            if not len(cp):
-                segments.append(np.zeros(len(trc_p)))
-                continue
-
-            # Number the segments
-            seg = np.empty(len(trc_p), dtype=int)
-            # Move changepoint forward to right after the previous acceptor
-            # frame, meaning all donor frames between that and the changepoint
-            # alreadey belong to the new segment.
-            cp_pos = m_a_pos[np.maximum(np.add(cp, -1), 0)] + 1
-            for i, s, e in zip(itertools.count(),
-                               itertools.chain([0], cp_pos),
-                               itertools.chain(cp_pos, [len(trc_p)])):
-                seg[s:e] = i
-
-            segments.append(seg)
-
-        tracks["fret", "a_seg"] = np.concatenate(segments)
-
     @classmethod
     def to_yaml(cls, dumper, data):
         """Dump as YAML
@@ -613,7 +322,6 @@ class SmFretTracker:
         :py:meth:`yaml.Dumper.add_representer`
         """
         m = {k: getattr(data, k) for k in cls._yaml_keys}
-        m["excitation_seq"] = "".join(data.excitation_seq)
         return dumper.represent_mapping(cls.yaml_tag, m)
 
     @classmethod
@@ -624,7 +332,7 @@ class SmFretTracker:
         :py:meth:`yaml.Loader.add_constructor`
         """
         m = loader.construct_mapping(node)
-        ret = cls(m["excitation_seq"])
+        ret = cls()
         for k in cls._yaml_keys:
             setattr(ret, k, m[k])
         return ret
