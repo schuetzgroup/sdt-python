@@ -457,9 +457,26 @@ class Locator(VBox, traitlets.HasTraits):
         self._loc_options[self._algo_sel.index].options = self.options
 
     def get_settings(self):
+        """Get all settings (algorithm and options)
+
+        Returns
+        -------
+        dict
+            :py:attr:`algorithm` and :py:attr:`options` attributes are
+            accessible via the "algorithm" and "options" keys, respectively.
+        """
         return {"algorithm": self.algorithm, "options": self.options}
 
     def set_settings(self, s):
+        """Set all settings (algorithm and options)
+
+        Parameters
+        -------
+        s : dict
+            New values for the :py:attr:`algorithm` and :py:attr:`options`
+            attributes should be accessible via the "algorithm" and "options"
+            keys, respectively.
+        """
         algo = s.get("algorithm", "3D-DAOSTORM")
         if algo == "daostorm_3d":
             algo = "3D-DAOSTORM"
@@ -468,4 +485,4 @@ class Locator(VBox, traitlets.HasTraits):
         self.algorithm = algo
 
         if "options" in s:
-            self.options = s
+            self.options = s["options"]
