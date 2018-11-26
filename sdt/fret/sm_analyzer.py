@@ -1,5 +1,5 @@
 """Module containing a class for analyzing and filtering smFRET data"""
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import functools
 import numbers
 import itertools
@@ -59,6 +59,32 @@ def numeric_exc_type(df):
         df["fret", "exc_type"] = exc_types
 
 
+def gaussian_mixture_split(data, n_components, x=("fret", "eff_app"),
+                           y=("fret", "stoi_app")):
+    from sklearn.mixture import GaussianMixture
+
+    d = data.loc[:, [x, y]].values
+    valid = np.all(np.isfinite(d), axis=1)
+    d = d[valid]
+    gmm = GaussianMixture(n_components=n_components).fit(d)
+    labels = gmm.predict(d)
+    sorter = np.argsort(np.argsort(gmm.means_[:, 0])[::-1])
+    labels = sorter[labels]  # sort according to descending mean
+
+    data = data[valid].copy()
+    data["__gmm_labels__"] = labels
+
+    split = OrderedDict([(l, []) for l in np.sort(np.unique(labels))])
+
+    for p, t in helper.split_dataframe(data, ("fret", "particle"),
+                                       ["__gmm_labels__"], type="array"):
+        component, count = np.unique(t[:, 0], return_counts=True)
+        predominant_component = component[np.argmax(count)]
+        split[predominant_component].append(p)
+
+    return [v for v in split.values() if len(v)]
+
+
 class SmFretAnalyzer:
     """Class for analyzing and filtering of smFRET data
 
@@ -111,6 +137,11 @@ class SmFretAnalyzer:
         :py:attr:`config.columns`.
         """
 
+        self.leakage = 0.
+        self.direct_excitation = 0.
+        self.detection_eff = 1.
+        self.excitation_eff = 1.
+
     @property
     def excitation_seq(self):
         """pandas.Series of CategoricalDtype describing the excitation
@@ -137,8 +168,8 @@ class SmFretAnalyzer:
             {k: np.nonzero(self._exc_seq == k)[0]
              for k in self._exc_seq.dtype.categories})
 
-    def analyze(self, keep_d_mass=False, invalid_nan=True,
-                a_mass_interp="linear"):
+    def calc_fret_values(self, keep_d_mass=False, invalid_nan=True,
+                         a_mass_interp="linear"):
         r"""Calculate FRET-related values
 
         This includes apparent FRET efficiencies, FRET stoichiometries,
@@ -269,8 +300,8 @@ class SmFretAnalyzer:
             stoi[nd_mask] = np.NaN
             d_mass[nd_mask] = np.NaN
 
-        self.tracks["fret", "eff"] = eff
-        self.tracks["fret", "stoi"] = stoi
+        self.tracks["fret", "eff_app"] = eff
+        self.tracks["fret", "stoi_app"] = stoi
         self.tracks["fret", "d_mass"] = d_mass
         self.tracks["fret", "a_mass"] = a_mass
         self.tracks.reindex(columns=self.tracks.columns.sortlevel(0)[0])
@@ -586,3 +617,105 @@ class SmFretAnalyzer:
         Reset :py:attr:`tracks` to the initial state.
         """
         self.tracks = self.tracks_orig.copy()
+
+    def flatfield_correction(self, donor_corr, acceptor_corr):
+        corr_cols = list(itertools.product(
+            ("donor", "acceptor"),
+            (self.columns["mass"], self.columns["signal"])))
+
+        for chan, corr in (("donor", donor_corr), ("acceptor", acceptor_corr)):
+            typ = chan[0]
+            coord_cols = [(chan, col) for col in self.columns["coords"]]
+
+            sel = self.tracks["fret", "exc_type"] == typ
+            c = corr(self.tracks[sel], columns={"coords": coord_cols,
+                                                "corr": corr_cols})
+            self.tracks.loc[sel, corr_cols] = c[corr_cols]
+
+    def calc_leakage(self):
+        raise NotImplementedError("leakage calculation not yet implemented.")
+
+    def calc_direct_excitation(self):
+        raise NotImplementedError("direct excitation calculation not yet "
+                                  "implemented.")
+
+    def calc_detection_eff(self, min_part_len=5, how="individual"):
+        trc = self.tracks[self.tracks["fret", "exc_type"] == "d"].sort_values(
+            [("fret", "particle"), ("donor", "frame")])
+        trc_split = helper.split_dataframe(
+            trc, ("fret", "particle"),
+            [("donor", "mass"), ("acceptor", "mass"), ("fret", "a_seg")],
+            type="array", sort=False)
+
+        gammas = OrderedDict()
+        for p, t in trc_split:
+            pre = t[t[:, -1] == 0]
+            # Skip first, which may still be bleaching-in-progress
+            post = t[t[:, -1] != 0][1:]
+
+            if len(pre) < min_part_len or len(post) < min_part_len:
+                gammas[p] = np.NaN
+                continue
+
+            i_dd_pre = pre[:, 0]
+            i_dd_post = post[:, 0]
+            i_da_pre = pre[:, 1]
+            i_da_post = post[:, 1]
+            i_aa_pre = pre[:, 2]
+
+            gammas[p] = ((np.mean(i_da_pre) - np.mean(i_da_post)) /
+                         (np.mean(i_dd_post) - np.mean(i_dd_pre)))
+
+        if how == "individual":
+            self.detection_eff = pd.Series(gammas)
+        elif callable(how):
+            self.detection_eff = how(np.array(list(gammas.values())))
+        else:
+            raise ValueError("`how` must be \"individual\" or a function "
+                             "accepting an array as its argument.")
+
+    def calc_excitation_eff(self, n_components=1, component=0):
+        trc = self.tracks[(self.tracks["fret", "exc_type"] == "d") &
+                          (self.tracks["fret", "a_seg"] == 0)]
+
+        if n_components > 1:
+            from sklearn.mixture import GaussianMixture
+
+            split = gaussian_mixture_split(trc, n_components)
+            trc = trc[trc["fret", "particle"].isin(split[component])]
+
+        i_da = trc["acceptor", "mass"]
+        i_dd = trc["donor", "mass"]
+        i_aa = trc["fret", "a_mass"]
+        f_da = i_da - self.leakage * i_dd - self.direct_excitation * i_aa
+
+        if isinstance(self.detection_eff, pd.Series):
+            gamma = self.detection_eff.reindex(trc["fret", "particle"]).values
+        else:
+            gamma = self.detection_eff
+
+        f_dd = gamma * i_da
+
+        s_gamma = np.nanmean((f_dd + f_da) / (f_dd + f_da + i_aa))
+        self.excitation_eff = (1 - s_gamma) / s_gamma
+
+    def fret_correction(self):
+        if isinstance(self.detection_eff, pd.Series):
+            gamma = self.detection_eff.reindex(self.tracks["fret", "particle"])
+            gamma = gamma.values
+        else:
+            gamma = self.detection_eff
+
+        i_da = self.tracks["acceptor", "mass"]
+        i_dd = self.tracks["donor", "mass"]
+        i_aa = self.tracks["fret", "a_mass"]
+
+        f_da = i_da - self.leakage * i_dd - self.direct_excitation * i_aa
+        f_dd = i_dd * gamma
+        f_aa = i_aa / self.excitation_eff
+
+        self.tracks["fret", "f_da"] = f_da
+        self.tracks["fret", "f_dd"] = f_dd
+        self.tracks["fret", "f_aa"] = f_aa
+        self.tracks["fret", "eff"] = f_da / (f_dd + f_da)
+        self.tracks["fret", "stoi"] = (f_dd + f_da) / (f_dd + f_da + f_aa)
