@@ -326,15 +326,15 @@ class TestSmFretAnalyzer:
         assert np.all(t.loc[~(fr_mod).isin({0, 5}), ("fret", "exc_type")] ==
                       "d")
 
-    def test_analyze_fret_eff(self, ana2):
-        """fret.SmFretAnalyzer.analyze: FRET efficiency"""
+    def test_calc_fret_values_eff(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: FRET efficiency"""
         don_mass = np.ones(len(ana2.tracks)) * 1000
         acc_mass = (np.arange(len(ana2.tracks), dtype=float) + 1) * 1000
         ana2.tracks["donor", "mass"] = don_mass
         ana2.tracks["acceptor", "mass"] = acc_mass
 
         ana2.excitation_seq = "da"
-        ana2.analyze()
+        ana2.calc_fret_values()
 
         d_mass = don_mass + acc_mass
         eff = acc_mass / d_mass
@@ -344,16 +344,16 @@ class TestSmFretAnalyzer:
         eff[acc_dir] = np.NaN
         d_mass[acc_dir] = np.NaN
 
-        np.testing.assert_allclose(ana2.tracks["fret", "eff"], eff)
+        np.testing.assert_allclose(ana2.tracks["fret", "eff_app"], eff)
         np.testing.assert_allclose(ana2.tracks["fret", "d_mass"], d_mass)
 
-    def test_analyze_exc_type(self, ana2):
-        """fret.SmFretAnalyzer.analyze: excitation type"""
+    def test_calc_fret_values_exc_type(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: excitation type"""
         ana2.tracks["donor", "mass"] = 0
         ana2.tracks["acceptor", "mass"] = 0
         ana2.excitation_seq = "odddda"
 
-        ana2.analyze()
+        ana2.calc_fret_values()
 
         t = ana2.tracks
         fr_mod = t["donor", "frame"] % len(ana2.excitation_seq)
@@ -362,8 +362,8 @@ class TestSmFretAnalyzer:
         assert np.all(t.loc[~(fr_mod).isin({0, 5}), ("fret", "exc_type")] ==
                       "d")
 
-    def test_analyze_stoi_linear(self, ana2):
-        """fret.SmFretAnalyzer.analyze: stoichiometry, linear interp."""
+    def test_calc_fret_values_stoi_linear(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: stoi., linear interp."""
         direct_acc = (ana2.tracks["donor", "frame"] %
                       len(ana2.excitation_seq)).isin(
                           ana2.excitation_frames["a"])
@@ -382,14 +382,14 @@ class TestSmFretAnalyzer:
         stoi = (mass + mass) / (mass + mass + linear_mass)
         stoi[direct_acc] = np.NaN
 
-        ana2.analyze()
+        ana2.calc_fret_values()
 
-        assert(("fret", "stoi") in ana2.tracks.columns)
-        np.testing.assert_allclose(ana2.tracks["fret", "stoi"], stoi)
+        assert(("fret", "stoi_app") in ana2.tracks.columns)
+        np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], stoi)
         np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], linear_mass)
 
-    def test_analyze_stoi_nearest(self, ana2):
-        """fret.SmFretAnalyzer.analyze: stoichiometry, nearest interp."""
+    def test_calc_fret_values_stoi_nearest(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: stoi., nearest interp."""
         seq_len = len(ana2.excitation_seq)
         trc = ana2.tracks.iloc[:2*seq_len].copy()  # Assume sorted
         mass = 1000
@@ -417,14 +417,14 @@ class TestSmFretAnalyzer:
         near_mass[near2] = mass_acc2
 
         ana2.tracks = trc
-        ana2.analyze(a_mass_interp="nearest")
+        ana2.calc_fret_values(a_mass_interp="nearest")
 
-        assert(("fret", "stoi") in ana2.tracks.columns)
-        np.testing.assert_allclose(ana2.tracks["fret", "stoi"], stoi)
+        assert(("fret", "stoi_app") in ana2.tracks.columns)
+        np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], stoi)
         np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], near_mass)
 
-    def test_analyze_stoi_single(self, ana2):
-        """fret.SmFretAnalyzer.analyze: stoichiometry, single acc."""
+    def test_calc_fret_values_stoi_single(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: stoichiometry, single acc."""
         direct_acc = (ana2.tracks["donor", "frame"] %
                       len(ana2.excitation_seq)).isin(
                           ana2.excitation_frames["a"])
@@ -442,40 +442,40 @@ class TestSmFretAnalyzer:
         single_mass = np.full(len(trc), mass_acc)
 
         ana2.tracks = trc
-        ana2.analyze()
+        ana2.calc_fret_values()
 
-        assert ("fret", "stoi") in ana2.tracks.columns
-        np.testing.assert_allclose(ana2.tracks["fret", "stoi"], stoi)
+        assert ("fret", "stoi_app") in ana2.tracks.columns
+        np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], stoi)
         np.testing.assert_allclose(ana2.tracks["fret", "a_mass"],
                                    single_mass)
 
-    def test_analyze_invalid_nan(self, ana2):
-        """fret.SmFretAnalyzer.analyze: invalid_nan=False"""
+    def test_calc_fret_values_invalid_nan(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: invalid_nan=False"""
         don_mass = np.ones(len(ana2.tracks)) * 1000
         acc_mass = (np.arange(len(ana2.tracks), dtype=float) + 1) * 1000
         ana2.tracks["donor", "mass"] = don_mass
         ana2.tracks["acceptor", "mass"] = acc_mass
 
-        ana2.analyze(invalid_nan=False)
-        for key in ("eff", "stoi", "d_mass"):
+        ana2.calc_fret_values(invalid_nan=False)
+        for key in ("eff_app", "stoi_app", "d_mass"):
             np.testing.assert_equal(np.isfinite(ana2.tracks["fret", key]),
                                     np.ones(len(ana2.tracks), dtype=bool))
 
-    def test_analyze_keep_d_mass_true(self, ana2):
-        """fret.SmFretAnalyzer.analyze: keep_d_mass=True"""
+    def test_calc_fret_values_keep_d_mass_true(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: keep_d_mass=True"""
         dm = np.arange(len(ana2.tracks), dtype=float)
         ana2.tracks["fret", "d_mass"] = dm
         dm[~(ana2.tracks["donor", "frame"] %
              len(ana2.excitation_seq)).isin(
                  ana2.excitation_frames["d"])] = np.NaN
 
-        ana2.analyze(keep_d_mass=True)
+        ana2.calc_fret_values(keep_d_mass=True)
 
         assert ("fret", "d_mass") in ana2.tracks
         np.testing.assert_allclose(ana2.tracks["fret", "d_mass"], dm)
 
-    def test_analyze_keep_d_mass_false(self, ana2):
-        """fret.SmFretAnalyzer.analyze: keep_d_mass=False"""
+    def test_calc_fret_values_keep_d_mass_false(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: keep_d_mass=False"""
         dm = np.arange(len(ana2.tracks))
         ana2.tracks["donor", "mass"] = 100 * np.arange(len(ana2.tracks))
         ana2.tracks["acceptor", "mass"] = 200 * np.arange(len(ana2.tracks))
@@ -486,13 +486,15 @@ class TestSmFretAnalyzer:
 
         ana2.tracks["fret", "d_mass"] = dm
 
-        ana2.analyze(keep_d_mass=False)
+        ana2.calc_fret_values(keep_d_mass=False)
 
         assert ("fret", "d_mass") in ana2.tracks
         np.testing.assert_allclose(ana2.tracks["fret", "d_mass"], dm_orig)
 
-    def test_analyze_keep_d_mass_missing(self, ana2):
-        """fret.SmFretAnalyzer.analyze: keep_d_mass=True, missing column"""
+    def test_calc_fret_values_keep_d_mass_missing(self, ana2):
+        """fret.SmFretAnalyzer.calc_fret_values: keep_d_mass=True, missing
+        column
+        """
         ana2.tracks["donor", "mass"] = 100 * np.arange(len(ana2.tracks))
         ana2.tracks["acceptor", "mass"] = 200 * np.arange(len(ana2.tracks))
         dm_orig = 300 * np.arange(len(ana2.tracks), dtype=float)
@@ -500,7 +502,7 @@ class TestSmFretAnalyzer:
                   len(ana2.excitation_seq)).isin(
                       ana2.excitation_frames["d"])] = np.NaN
 
-        ana2.analyze(keep_d_mass=True)
+        ana2.calc_fret_values(keep_d_mass=True)
 
         assert ("fret", "d_mass") in ana2.tracks
         np.testing.assert_allclose(ana2.tracks["fret", "d_mass"], dm_orig)
