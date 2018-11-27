@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from sdt import fret, chromatic, image, changepoint, io
+from sdt import fret, chromatic, image, changepoint, io, flatfield
 
 try:
     import trackpy
@@ -625,6 +625,34 @@ class TestSmFretAnalyzer:
         ana1.tracks = pd.DataFrame()
         ana1.reset()
         pd.testing.assert_frame_equal(ana1.tracks, d)
+
+    def test_flatfield_correction(self):
+        """fret.SmFretAnalyzer.flatfield_correction"""
+        img1 = np.hstack([np.full((4, 2), 1), np.full((4, 2), 2)])
+        corr1 = flatfield.Corrector([img1], gaussian_fit=False)
+        img2 = np.hstack([np.full((4, 2), 1), np.full((4, 2), 3)]).T
+        corr2 = flatfield.Corrector([img2], gaussian_fit=False)
+
+        d = np.array([[1, 1, 3, 3], [1, 3, 3, 1]]).T
+        d = pd.DataFrame(d, columns=["x", "y"])
+        d = pd.concat([d, d], axis=1, keys=["donor", "acceptor"])
+        d["donor", "mass"] = [10, 20, 30, 40]
+        d["donor", "signal"] = d["donor", "mass"] / 10
+        d["acceptor", "mass"] = [20, 30, 40, 50]
+        d["acceptor", "signal"] = d["acceptor", "mass"] / 5
+        d["fret", "exc_type"] = pd.Series(list("dada"), dtype="category")
+
+        ana = fret.SmFretAnalyzer(d, "da")
+        ana.flatfield_correction(corr1, corr2)
+
+        np.testing.assert_allclose(ana.tracks["donor", "mass"],
+                                   [20, 20, 30, 120])
+        np.testing.assert_allclose(ana.tracks["donor", "signal"],
+                                   ana.tracks["donor", "mass"] / 10)
+        np.testing.assert_allclose(ana.tracks["acceptor", "mass"],
+                                   [40, 30, 40, 150])
+        np.testing.assert_allclose(ana.tracks["acceptor", "signal"],
+                                   ana.tracks["acceptor", "mass"] / 5)
 
 
 class TestFretImageSelector(unittest.TestCase):

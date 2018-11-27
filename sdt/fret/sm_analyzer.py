@@ -641,6 +641,16 @@ class SmFretAnalyzer:
         self.tracks = self.tracks_orig.copy()
 
     def flatfield_correction(self, donor_corr, acceptor_corr):
+        """Apply flatfield correction to donor and acceptor localization data
+
+        This affects only the donor and acceptor "mass" and "signal" columns.
+        Any values derived from those need to be recalculated manually.
+
+        Parameters
+        ----------
+        donor_corr, acceptor_corr : flatfield.Corrector
+            Corrector instances for donor and acceptor channel, respectivey.
+        """
         corr_cols = list(itertools.product(
             ("donor", "acceptor"),
             (self.columns["mass"], self.columns["signal"])))
