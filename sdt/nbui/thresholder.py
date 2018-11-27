@@ -25,7 +25,7 @@ class AdaptiveOptions(HBox):
         """
         self._block_size_sel = IntText(value=65, description="block size")
         self._c_sel = FloatText(value=-5, description="const offset")
-        self._smoothing_sel = FloatText(value=1.5, description="smoothing",
+        self._smoothing_sel = FloatText(value=1.5, description="smooth",
                                         step=0.1)
         self._method_sel = Dropdown(options=["mean", "gaussian"],
                                     description="adaptive method")
@@ -78,7 +78,7 @@ class OtsuOptions(HBox):
             children
         """
         self._factor_sel = FloatText(value=1, step=0.1, description="mult.")
-        self._smoothing_sel = FloatText(value=1.5, description="smoothing",
+        self._smoothing_sel = FloatText(value=1.5, description="smooth",
                                         step=0.1)
         super(HBox, self).__init__([self._factor_sel, self._smoothing_sel],
                                    *args, **kwargs)
@@ -124,7 +124,7 @@ class PercentileOptions(HBox):
             children
         """
         self._pct_sel = FloatText(value=75, description="percentile")
-        self._smoothing_sel = FloatText(value=1.5, description="smoothing",
+        self._smoothing_sel = FloatText(value=1.5, description="smooth",
                                         step=0.1)
         super().__init__([self._pct_sel, self._smoothing_sel],
                          *args, **kwargs)
