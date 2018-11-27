@@ -515,11 +515,12 @@ class SmFretAnalyzer:
         """
         self.tracks = self.tracks[self.eval(expr, mi_sep)].copy()
 
-    def filter_particles(self, expr, min_count=1, mi_sep="_"):
+    def query_particles(self, expr, min_abs=1, min_rel=0., mi_sep="_"):
         """Remove particles that don't fulfill `expr` enough times
 
-        Any particle that does not fulfill `expr` at least `min_count` times
-        is removed from :py:attr:`tracks`.
+        Any particle that does not fulfill `expr` at least `min_abs` times AND
+        during at least a fraction of `min_rel` of its length is removed from
+        :py:attr:`tracks`.
 
         The column MultiIndex is flattened for this purpose.
 
@@ -528,20 +529,30 @@ class SmFretAnalyzer:
         expr : str
             Filter expression. See :py:meth:`pandas.DataFrame.eval` for
             details.
-        min_count : int, optional
-            Minimum number of times a particle has to fulfill expr. If
+        min_abs : int, optional
+            Minimum number of times a particle has to fulfill `expr`. If
             negative, this means "all but ``abs(min_count)``". If 0, it has
             to be fulfilled in all frames.
+        min_rel : float, optional
+            Minimum fraction of data points that have to fulfill `expr` for a
+            particle not to be removed.
 
         Examples
         --------
         Remove any particles where not ("fret", "a_mass") > 500 at least twice
         from :py:attr:`tracks`.
 
-        >>> # acceptor mass has to be > 500 in at least 2 frames
         >>> filt.filter_particles("fret_a_mass > 500", 2)
-        >>> # acceptor mass may be <= 500 in no more than one frame
+
+        Remove any particles where ("fret", "a_mass") <= 500 in more than one
+        frame:
+
         >>> filt.filter_particles("fret_a_mass > 500", -1)
+
+        Remove any particle where not ("fret", "a_mass") > 500 for at least
+        75 % of the particle's data points, with a minimum of two data points:
+
+        >>> filt.filter_particles("fret_a_mass > 500", 2, min_rel=0.75)
 
         Other parameters
         ----------------
@@ -552,12 +563,23 @@ class SmFretAnalyzer:
         e = self.eval(expr, mi_sep)
         p = self.tracks.loc[e, ("fret", "particle")].values
         p, c = np.unique(p, return_counts=True)
-        if min_count <= 0:
+        p_sel = np.ones(len(p), dtype=bool)
+
+        if min_abs is not None:
+            if min_abs <= 0:
+                p2 = self.tracks.loc[self.tracks["fret", "particle"].isin(p),
+                                     ("fret", "particle")].values
+                min_abs = np.unique(p2, return_counts=True)[1] + min_abs
+            p_sel &= c >= min_abs
+        if min_rel:
             p2 = self.tracks.loc[self.tracks["fret", "particle"].isin(p),
                                  ("fret", "particle")].values
-            min_count = np.unique(p2, return_counts=True)[1] + min_count
-        good_p = p[c >= min_count]
-        self.tracks = self.tracks[self.tracks["fret", "particle"].isin(good_p)]
+            c2 = np.unique(p2, return_counts=True)[1]
+            p_sel &= (c / c2 >= min_rel)
+        good_p = p[p_sel]
+
+        self.tracks = self.tracks[
+            self.tracks["fret", "particle"].isin(good_p)].copy()
 
     def image_mask(self, mask, channel):
         """Filter using a boolean mask image

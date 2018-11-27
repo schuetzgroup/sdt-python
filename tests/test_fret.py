@@ -201,8 +201,8 @@ def ana1():
 
 
 @pytest.fixture
-def ana_filter_part(ana1):
-    """SmFretAnalyzer for filter_particles tests"""
+def ana_query_part(ana1):
+    """SmFretAnalyzer for query_particles tests"""
     d0 = ana1.tracks[ana1.tracks["fret", "particle"] == 0].copy()
     d0.loc[3, ("fret", "a_mass")] = -1
     d1 = ana1.tracks[ana1.tracks["fret", "particle"] == 1].copy()
@@ -554,27 +554,33 @@ class TestSmFretAnalyzer:
         # Make sure that data is not changed
         pd.testing.assert_frame_equal(ana1.tracks, d)
 
-    def test_filter_particles(self, ana_filter_part):
-        """fret.SmFretAnalyzer.filter_particles"""
-        expected = ana_filter_part.tracks[
-                ana_filter_part.tracks["fret", "particle"] == 1].copy()
-        ana_filter_part.filter_particles("fret_a_mass < 0", 2)
-        pd.testing.assert_frame_equal(ana_filter_part.tracks, expected)
+    def test_query_particles(self, ana_query_part):
+        """fret.SmFretAnalyzer.query_particles"""
+        expected = ana_query_part.tracks[
+            ana_query_part.tracks["fret", "particle"] == 1].copy()
+        ana_query_part.query_particles("fret_a_mass < 0", 2)
+        pd.testing.assert_frame_equal(ana_query_part.tracks, expected)
 
-    def test_filter_particles_neg_min_count(self, ana_filter_part):
-        """fret.SmFretAnalyzer.filter_particles: Negative min_count"""
-        expected = ana_filter_part.tracks[
-            ana_filter_part.tracks["fret", "particle"].isin([0, 2])].copy()
-        ana_filter_part.filter_particles("fret_a_mass > 0", -1)
-        pd.testing.assert_frame_equal(ana_filter_part.tracks, expected)
+    def test_query_particles_neg_min_abs(self, ana_query_part):
+        """fret.SmFretAnalyzer.query_particles: Negative min_abs"""
+        expected = ana_query_part.tracks[
+            ana_query_part.tracks["fret", "particle"].isin([0, 2])].copy()
+        ana_query_part.query_particles("fret_a_mass > 0", -1)
+        pd.testing.assert_frame_equal(ana_query_part.tracks, expected)
 
-    def test_filter_particles_zero_min_count(self, ana_filter_part):
-        """fret.SmFretAnalyzer.filter_particles: 0 min_count"""
-        expected = ana_filter_part.tracks[
-                ana_filter_part.tracks["fret", "particle"] == 2].copy()
-        ana_filter_part.filter_particles("fret_a_mass > 0", 0)
-        pd.testing.assert_frame_equal(ana_filter_part.tracks, expected)
+    def test_query_particles_zero_min_abs(self, ana_query_part):
+        """fret.SmFretAnalyzer.query_particles: 0 min_abs"""
+        expected = ana_query_part.tracks[
+            ana_query_part.tracks["fret", "particle"] == 2].copy()
+        ana_query_part.query_particles("fret_a_mass > 0", 0)
+        pd.testing.assert_frame_equal(ana_query_part.tracks, expected)
 
+    def test_query_particles_min_rel(self, ana_query_part):
+        """fret.SmFretAnalyzer.query_particles: min_rel"""
+        expected = ana_query_part.tracks[
+            ana_query_part.tracks["fret", "particle"] == 2].copy()
+        ana_query_part.query_particles("fret_a_mass > 1500", min_rel=0.49)
+        pd.testing.assert_frame_equal(ana_query_part.tracks, expected)
 
     def test_image_mask(self, ana1):
         """fret.SmFretAnalyzer.image_mask: single mask"""
