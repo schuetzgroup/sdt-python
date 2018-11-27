@@ -668,6 +668,20 @@ class TestSmFretAnalyzer:
         ana.calc_leakage()
         assert ana.leakage == pytest.approx(0.1)
 
+    def test_calc_direct_excitation(self):
+        """fret.SmFretAnalyzer.calc_direct_excitation"""
+        d = {("donor", "mass"): [0, 0, 0, 0, 0],
+             ("donor", "frame"): [0, 1, 2, 3, 4],
+             ("acceptor", "mass"): [3, 100, 3, 100, 3],
+             ("fret", "exc_type"): pd.Series(list("dadad"), dtype="category"),
+             ("fret", "has_neighbor"): [0, 0, 0, 0, 0],
+             ("fret", "particle"): [0, 0, 0, 0, 0]}
+        d = pd.DataFrame(d)
+        ana = fret.SmFretAnalyzer(d, "da")
+        ana.calc_fret_values()
+        ana.calc_direct_excitation()
+        assert ana.direct_excitation == pytest.approx(0.03)
+
 
 class TestFretImageSelector(unittest.TestCase):
     def setUp(self):

@@ -159,6 +159,8 @@ class SmFretAnalyzer:
         r"""Correction factor for donor leakage into the acceptor channel;
         :math:`\alpha` in [Hell2018]_"""
         self.direct_excitation = 0.
+        r"""Correction factor for direct acceptor excitation by the donor
+        laser; :math:`\delta` in [Hell2018]_"""
         self.detection_eff = 1.
         self.excitation_eff = 1.
 
@@ -713,8 +715,24 @@ class SmFretAnalyzer:
         self.leakage = m_eff / (1 - m_eff)
 
     def calc_direct_excitation(self):
-        raise NotImplementedError("direct excitation calculation not yet "
-                                  "implemented.")
+        r"""Calculate direct acceptor excitation
+
+        For this to work, :py:attr:`tracks` must be a dataset of acceptor-only
+        molecules. In this case, the direct acceptor excitation :math:`delta`
+        can be computed using the formula [Hell2018]_
+
+        .. math:: \alpha = \frac{\lange S_\text{app}\rangle}{1 -
+            \langle S_\text{app}\rangle},
+
+        where :math:`\langle ES\text{app}\rangle` is the mean apparent FRET
+        stoichiometry of an acceptor-only population.
+
+        This sets the :py:attr:`direct_excitation` attribute.
+        """
+        sel = ((self.tracks["fret", "exc_type"] == "d") &
+               (self.tracks["fret", "has_neighbor"] == 0))
+        m_stoi = self.tracks.loc[sel, ("fret", "stoi_app")].mean()
+        self.direct_excitation = m_stoi / (1 - m_stoi)
 
     def calc_detection_eff(self, min_part_len=5, how="individual"):
         trc = self.tracks[self.tracks["fret", "exc_type"] == "d"].sort_values(
