@@ -656,12 +656,12 @@ class TestSmFretAnalyzer:
 
     def test_calc_leakage(self):
         """fret.SmFretAnalyzer.calc_leakage"""
-        d = {("donor", "mass"): [1e3, 1e3, 1e6, 1e3],
-             ("donor", "frame"): [0, 1, 2, 3],
-             ("acceptor", "mass"): [1e2, 1e2, 1e2, 1e2],
-             ("fret", "exc_type"): pd.Series(list("dddd"), dtype="category"),
-             ("fret", "has_neighbor"): [0, 0, 1, 0],
-             ("fret", "particle"): [0, 0, 0, 0]}
+        d = {("donor", "mass"): [1e3, 1e3, 1e6, 1e3, np.NaN],
+             ("donor", "frame"): [0, 1, 2, 3, 4],
+             ("acceptor", "mass"): [1e2, 1e2, 1e2, 1e2, 1e5],
+             ("fret", "exc_type"): pd.Series(list("ddddd"), dtype="category"),
+             ("fret", "has_neighbor"): [0, 0, 1, 0, 0],
+             ("fret", "particle"): [0, 0, 0, 0, 0]}
         d = pd.DataFrame(d)
         ana = fret.SmFretAnalyzer(d, "d")
         ana.calc_fret_values()
