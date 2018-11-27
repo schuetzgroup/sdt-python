@@ -682,6 +682,45 @@ class TestSmFretAnalyzer:
         ana.calc_direct_excitation()
         assert ana.direct_excitation == pytest.approx(0.03)
 
+    def test_calc_detection_eff(self):
+        """fret.SmFretAnalyzer.calc_detection_eff"""
+        d1 = {("donor", "mass"): [0, 2, 0, 2, np.NaN, 6, 6, 6, 6, 9000],
+              ("acceptor", "mass"): [10, 12, 10, 12, 3000, 1, 1, 1, 1, 7000],
+              ("fret", "has_neighbor"): [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+              ("fret", "a_seg"): [0] * 5 + [1] * 5}
+        d1 = pd.DataFrame(d1)
+        d1["fret", "exc_type"] = pd.Series(["d"] * len(d1), dtype="category")
+        d1["fret", "particle"] = 0
+        d1["donor", "frame"] = np.arange(len(d1))
+
+        d2 = d1.copy()
+        d2["fret", "particle"] = 1
+        d2["fret", "a_seg"] = [0] * 2 + [1] * 8  # short pre
+
+        d3 = d1.copy()
+        d3["fret", "particle"] = 2
+        d3["fret", "a_seg"] = [0] * 8 + [1] * 2  # short post
+
+        d4 = d1.copy()
+        d4["fret", "particle"] = 3
+        d4["donor", "mass"] = [1] * 5 + [11] * 5
+        d4.loc[4, ("acceptor", "mass")] = 11
+
+        d5 = d1.copy()
+        d5["fret", "particle"] = 4
+        d5["donor", "mass"] = [np.NaN] * 5 + [10] * 5
+        d5["acceptor", "mass"] = [10] * 5 + [np.NaN] * 5
+
+        ana = fret.SmFretAnalyzer(pd.concat([d1, d2, d3, d4, d5]), "d")
+        ana.calc_detection_eff(3, "individual")
+
+        pd.testing.assert_series_equal(ana.detection_eff,
+                                       pd.Series([2., np.NaN, np.NaN, 1.,
+                                                  np.NaN]))
+
+        ana.calc_detection_eff(3, np.nanmean)
+        assert ana.detection_eff == pytest.approx(1.5)
+
 
 class TestFretImageSelector(unittest.TestCase):
     def setUp(self):

@@ -157,11 +157,20 @@ class SmFretAnalyzer:
 
         self.leakage = 0.
         r"""Correction factor for donor leakage into the acceptor channel;
-        :math:`\alpha` in [Hell2018]_"""
+        :math:`\alpha` in [Hell2018]_
+        """
         self.direct_excitation = 0.
         r"""Correction factor for direct acceptor excitation by the donor
-        laser; :math:`\delta` in [Hell2018]_"""
+        laser; :math:`\delta` in [Hell2018]_
+        """
         self.detection_eff = 1.
+        r"""Correction factor(s) for the detection efficiency difference
+        beteen donor and acceptor fluorophore; :math:`\gamma` in [Hell2018].
+
+        Can be a scalar for global correction or a :py:class:`pandas.Series`
+        for individual correction. In the latter case, the index is the
+        particle number and the value is the correction factor.
+        """
         self.excitation_eff = 1.
 
     @property
@@ -708,6 +717,8 @@ class SmFretAnalyzer:
         efficiency of a donor-only population.
 
         This sets the :py:attr:`leakage` attribute.
+        See :py:meth:`fret_correction` for how use this to calculate corrected
+        FRET values.
         """
         sel = ((self.tracks["fret", "exc_type"] == "d") &
                (self.tracks["fret", "has_neighbor"] == 0))
@@ -728,6 +739,8 @@ class SmFretAnalyzer:
         stoichiometry of an acceptor-only population.
 
         This sets the :py:attr:`direct_excitation` attribute.
+        See :py:meth:`fret_correction` for how use this to calculate corrected
+        FRET values.
         """
         sel = ((self.tracks["fret", "exc_type"] == "d") &
                (self.tracks["fret", "has_neighbor"] == 0))
@@ -735,15 +748,58 @@ class SmFretAnalyzer:
         self.direct_excitation = m_stoi / (1 - m_stoi)
 
     def calc_detection_eff(self, min_part_len=5, how="individual"):
-        trc = self.tracks[self.tracks["fret", "exc_type"] == "d"].sort_values(
-            [("fret", "particle"), ("donor", "frame")])
+        r"""Calculate detection efficiency ratio of dyes
+
+        The detection efficiency ratio is the ratio of decrease in acceptor
+        brightness to the increase in donor brightness upon acceptor
+        photobleaching [MacC2010]_:
+
+        .. math:: \gamma = \frac{\langle I_\text{DA}^\text{pre}\rangle -
+            \langle I_\text{DA}^\text{post}\rangle}{
+            \langle I_\text{DD}^\text{post}\rangle -
+            \langle I_\text{DD}^\text{pre}\rangle}
+
+        This needs molecules with exactly one donor and one acceptor
+        fluorophore to work. Tracks need to be segmented already (see
+        :py:meth:`segment_a_mass`).
+
+        The correction can be calculated for each track individually or some
+        statistic (e.g. the median) of the indivdual :math:`gamma` values can
+        be used as a global correction factor for all tracks.
+
+        This sets the :py:attr:`detection_eff` attribute.
+        See :py:meth:`fret_correction` for how use this to calculate corrected
+        FRET values.
+
+        Parameters
+        ----------
+        min_part_len : int, optional
+            How many data points need to be present before and after the
+            bleach step to ensure a reliable calculation of the mean
+            intensities. If there are fewer data points, a value of NaN will be
+            assigned. Defaults to 5.
+        how : "individual" or callable, optional
+            If "individual", the :math:`\gamma` value for each track will be
+            stored and used to correct the values individually when calling
+            :py:meth:`fret_correction`. If a function, apply this function
+            to the :math:`\gamma` array and its return value as a global
+            correction factor. A sensible example for such a function would be
+            :py:func:`numpy.nanmean`. Beware that some :math:`\gamma` may be
+            NaN. Defaults to "individual".
+        """
+        sel = ((self.tracks["fret", "exc_type"] == "d") &
+               (self.tracks["fret", "has_neighbor"] == 0))
+        trc = self.tracks[sel].sort_values(
+            [("fret", "particle"), ("donor", self.columns["time"])])
         trc_split = helper.split_dataframe(
             trc, ("fret", "particle"),
-            [("donor", "mass"), ("acceptor", "mass"), ("fret", "a_seg")],
+            [("donor", self.columns["mass"]),
+             ("acceptor", self.columns["mass"]), ("fret", "a_seg")],
             type="array", sort=False)
 
         gammas = OrderedDict()
         for p, t in trc_split:
+            t = t[np.isfinite(t[:, 0]) & np.isfinite(t[:, 1])]
             pre = t[t[:, -1] == 0]
             # Skip first, which may still be bleaching-in-progress
             post = t[t[:, -1] != 0][1:]
@@ -756,7 +812,6 @@ class SmFretAnalyzer:
             i_dd_post = post[:, 0]
             i_da_pre = pre[:, 1]
             i_da_post = post[:, 1]
-            i_aa_pre = pre[:, 2]
 
             gammas[p] = ((np.mean(i_da_pre) - np.mean(i_da_post)) /
                          (np.mean(i_dd_post) - np.mean(i_dd_pre)))
