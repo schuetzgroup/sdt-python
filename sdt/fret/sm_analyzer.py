@@ -172,17 +172,21 @@ class SmFretAnalyzer:
                          a_mass_interp="linear"):
         r"""Calculate FRET-related values
 
-        This includes apparent FRET efficiencies, FRET stoichiometries,
+        This needs to be called before the filtering methods and before
+        calculating the true FRET efficiencies and stoichiometries. However,
+        any corrections to the donor and acceptor localization data (such as
+        :py:meth:`flatfield_correction`) need to be done before this.
+
+        Calculated values apparent FRET efficiencies and stoichiometries,
         the total brightness (mass) upon donor excitation, and the acceptor
         brightness (mass) upon direct excitation, which is interpolated for
         donor excitation datapoints in order to allow for calculation of
         stoichiometries.
 
         A column specifying whether the entry originates from donor or
-        acceptor excitation is also added: ("fret", "exc_type"). It is 0
-        for donor and 1 for acceptor excitation; see the
-        :py:meth:`flag_excitation_type` method and
-        :py:attr:`exc_type_nums`.
+        acceptor excitation is also added: ("fret", "exc_type"). It is "d"
+        for donor and "a" for acceptor excitation; see the
+        :py:meth:`flag_excitation_type` method.
 
         For each localization in `tracks`, the total brightness upon donor
         excitation is calculated by taking the sum of ``("donor", "mass")``
@@ -190,20 +194,21 @@ class SmFretAnalyzer:
         ``("fret", "d_mass")`` column to the `tracks` DataFrame. The
         apparent FRET efficiency (acceptor brightness (mass) divided by sum of
         donor and acceptor brightnesses) is added as a
-        ``("fret", "eff")`` column to the `tracks` DataFrame.
+        ``("fret", "eff_app")`` column to the `tracks` DataFrame.
 
-        The stoichiometry value :math:`S` is given as
+        The apparent stoichiometry value :math:`S_\text{app}` is given as
 
-        .. math:: S = \frac{F_{DD} + F_{DA}}{F_{DD} + F_{DA} + F_{AA}}
+        .. math:: S_\text{app} = \frac{I_{DD} + I_{DA}}{I_{DD} + I_{DA} +
+            I_{AA}}
 
-        as in [Upho2010]_. :math:`F_{DD}` is the donor brightness upon donor
-        excitation, :math:`F_{DA}` is the acceptor brightness upon donor
-        excitation, and :math:`F_{AA}` is the acceptor brightness upon
+        as in [Hell2018]_. :math:`I_{DD}` is the donor brightness upon donor
+        excitation, :math:`I_{DA}` is the acceptor brightness upon donor
+        excitation, and :math:`I_{AA}` is the acceptor brightness upon
         acceptor excitation. The latter is calculated by interpolation for
         frames with donor excitation.
 
-        :math:`F_{AA}` is append as a ``("fret", "a_mass")`` column.
-        The stoichiometry value is added in the ``("fret", "stoi")`` column.
+        :math:`I_{AA}` is append as a ``("fret", "a_mass")`` column.
+        The stoichiometry value is added in the ``("fret", "stoi_app")`` column.
 
         Parameters
         ----------
