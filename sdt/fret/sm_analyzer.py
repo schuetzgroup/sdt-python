@@ -88,8 +88,26 @@ def gaussian_mixture_split(data, n_components, x=("fret", "eff_app"),
 class SmFretAnalyzer:
     """Class for analyzing and filtering of smFRET data
 
-    This provides various analysis filtering methods which act on the
+    This provides various analysis and filtering methods which act on the
     :py:attr:`tracks` attribute.
+
+    Correction of FRET efficiencies and stoichiometries for donor leakage and
+    direct acceptor excitation is implemented according to [Hell2018]_,
+    while different detection efficiencies for the different
+    fluorophores are accounted for as described in [MacC2010]_ as well
+    the different excitation efficiencies according to [Lee2005]_.
+
+    References
+    ----------
+    .. [Hell2018] Hellenkamp, B. et al.: "Precision and accuracy of
+        single-molecule FRET measurements—a multi-laboratory benchmark study",
+        Nature methods, Nature Publishing Group, 2018, 15, 669
+    .. [MacC2010] McCann, J. J. et al.: "Optimizing Methods to Recover Absolute
+        FRET Efficiency from Immobilized Single Molecules" Biophysical Journal,
+        Elsevier BV, 2010, 99, 961–970
+    .. [Lee2005] Lee, N. et al.: "Accurate FRET Measurements within Single
+        Diffusing Biomolecules Using Alternating-Laser Excitation", Biophysical
+        Journal, Elsevier BV, 2005, 88, 2939–2953
     """
     @config.set_columns
     def __init__(self, tracks, excitation_seq, cp_detector=None, columns={}):
@@ -138,6 +156,8 @@ class SmFretAnalyzer:
         """
 
         self.leakage = 0.
+        r"""Correction factor for donor leakage into the acceptor channel;
+        :math:`\alpha` in [Hell2018]_"""
         self.direct_excitation = 0.
         self.detection_eff = 1.
         self.excitation_eff = 1.
@@ -670,7 +690,24 @@ class SmFretAnalyzer:
             self.tracks.loc[sel, corr_cols] = c[corr_cols]
 
     def calc_leakage(self):
-        raise NotImplementedError("leakage calculation not yet implemented.")
+        r"""Calculate donor leakage (bleed-through) into the acceptor channel
+
+        For this to work, :py:attr:`tracks` must be a dataset of donor-only
+        molecules. In this case, the leakage :math:`alpha` can be
+        computed using the formula [Hell2018]_
+
+        .. math:: \alpha = \frac{\lange E_\text{app}\rangle}{1 -
+            \langle E_\text{app}\rangle},
+
+        where :math:`\langle E_\text{app}\rangle` is the mean apparent FRET
+        efficiency of a donor-only population.
+
+        This sets the :py:attr:`leakage` attribute.
+        """
+        sel = ((self.tracks["fret", "exc_type"] == "d") &
+               (self.tracks["fret", "has_neighbor"] == 0))
+        m_eff = self.tracks.loc[sel, ("fret", "eff_app")].mean()
+        self.leakage = m_eff / (1 - m_eff)
 
     def calc_direct_excitation(self):
         raise NotImplementedError("direct excitation calculation not yet "
