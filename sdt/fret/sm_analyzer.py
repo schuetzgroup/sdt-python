@@ -438,7 +438,7 @@ class SmFretAnalyzer:
 
                 good.append(g)
 
-        self.tracks = self.tracks[np.concatenate(good)]
+        self.tracks = self.tracks[np.concatenate(good)].copy()
 
     def eval(self, expr, mi_sep="_"):
         """Call ``eval(expr)`` for `tracks`
@@ -513,7 +513,7 @@ class SmFretAnalyzer:
             Use this to separate levels when flattening the column
             MultiIndex. Defaults to "_".
         """
-        self.tracks = self.tracks[self.eval(expr, mi_sep)]
+        self.tracks = self.tracks[self.eval(expr, mi_sep)].copy()
 
     def filter_particles(self, expr, min_count=1, mi_sep="_"):
         """Remove particles that don't fulfill `expr` enough times
