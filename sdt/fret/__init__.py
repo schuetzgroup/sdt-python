@@ -6,7 +6,7 @@ molecule FRET data. This includes
 
 - tracking and measurement of FRET-related quantities using the
   :py:class:`SmFretTracker` class.
-- filtering of the data with help of :py:class:`SmFretFilter`.
+- analyzing and filtering of the data with help of :py:class:`SmFretAnalyzer`.
 - functions for plotting results, such as :py:func:`smfret_scatter`,
   :py:func:`smfret_hist`, and :py:func:`draw_track`.
 - selection of images in a FRET sequence according to excitation type using
