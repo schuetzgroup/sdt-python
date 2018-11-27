@@ -339,7 +339,7 @@ class SmFretAnalyzer:
 
         Add  ("fret", "exc_type") column. It is of "category" type.
         """
-        frames = self.tracks["acceptor", self.columns["time"]]
+        frames = self.tracks["donor", self.columns["time"]]
         self.tracks["fret", "exc_type"] = self.excitation_seq[
              frames % len(self.excitation_seq)].values
 
