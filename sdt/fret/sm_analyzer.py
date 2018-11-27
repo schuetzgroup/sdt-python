@@ -268,40 +268,43 @@ class SmFretAnalyzer:
             has_nn = False
 
         a_mass = []
-        with numeric_exc_type(self.tracks) as exc_cats:
-            for p, t in helper.split_dataframe(
-                    self.tracks, ("fret", "particle"), cols, sort=False):
-                # Direct acceptor excitation
-                ad_p_mask = (t[:, 3] == np.nonzero(exc_cats == "a")[0])
-                # Locs without neighbors
-                if has_nn:
-                    nn_p_mask = ~t[:, -1].astype(bool)
-                else:
-                    nn_p_mask = np.ones(len(t), dtype=bool)
-                # Only use locs with direct accept ex and no neighbors
-                a_direct = t[ad_p_mask & nn_p_mask, 1:3]
+        if "a" in self.tracks["fret", "exc_type"].cat.categories:
+            # Calculate direct acceptor excitation
+            with numeric_exc_type(self.tracks) as exc_cats:
+                for p, t in helper.split_dataframe(
+                        self.tracks, ("fret", "particle"), cols, sort=False):
+                    ad_p_mask = (t[:, 3] == np.nonzero(exc_cats == "a")[0])
+                    # Locs without neighbors
+                    if has_nn:
+                        nn_p_mask = ~t[:, -1].astype(bool)
+                    else:
+                        nn_p_mask = np.ones(len(t), dtype=bool)
+                    # Only use locs with direct accept ex and no neighbors
+                    a_direct = t[ad_p_mask & nn_p_mask, 1:3]
 
-                if len(a_direct) == 0:
-                    # No direct acceptor excitation, cannot do anything
-                    a_mass.append(np.full(len(t), np.NaN))
-                    continue
-                elif len(a_direct) == 1:
-                    # Only one direct acceptor excitation; use this value for
-                    # all data points of this particle
-                    a_mass.append(np.full(len(t), a_direct[0, 0]))
-                    continue
-                else:
-                    # Enough direct acceptor excitations for interpolation
-                    # Values are sorted.
-                    y, x = a_direct.T
-                    a_mass_func = interp1d(
-                        x, y, a_mass_interp, copy=False,
-                        fill_value=(y[0], y[-1]), assume_sorted=True,
-                        bounds_error=False)
-                    # Calculate (interpolated) mass upon direct acceptor
-                    # excitation
-                    a_mass.append(a_mass_func(t[:, 2]))
-        a_mass = np.concatenate(a_mass)
+                    if len(a_direct) == 0:
+                        # No direct acceptor excitation, cannot do anything
+                        a_mass.append(np.full(len(t), np.NaN))
+                        continue
+                    elif len(a_direct) == 1:
+                        # Only one direct acceptor excitation; use this value
+                        # for all data points of this particle
+                        a_mass.append(np.full(len(t), a_direct[0, 0]))
+                        continue
+                    else:
+                        # Enough direct acceptor excitations for interpolation
+                        # Values are sorted.
+                        y, x = a_direct.T
+                        a_mass_func = interp1d(
+                            x, y, a_mass_interp, copy=False,
+                            fill_value=(y[0], y[-1]), assume_sorted=True,
+                            bounds_error=False)
+                        # Calculate (interpolated) mass upon direct acceptor
+                        # excitation
+                        a_mass.append(a_mass_func(t[:, 2]))
+            a_mass = np.concatenate(a_mass)
+        else:
+            a_mass = np.full(len(self.tracks), np.NaN)
 
         # Total mass upon donor excitation
         if keep_d_mass and ("fret", "d_mass") in self.tracks.columns:
