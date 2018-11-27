@@ -213,9 +213,12 @@ class Corrector(object):
                 if smooth_sigma:
                     self.corr_img = ndimage.gaussian_filter(self.corr_img,
                                                             smooth_sigma)
-                self.interp = sp_int.RegularGridInterpolator(
-                    [np.arange(i) for i in self.corr_img.shape], self.corr_img,
-                    bounds_error=False, fill_value=np.NaN)
+                self._make_interp()
+
+    def _make_interp(self):
+        self.interp = sp_int.RegularGridInterpolator(
+            [np.arange(i) for i in self.corr_img.shape], self.corr_img,
+            bounds_error=False, fill_value=np.NaN)
 
     @config.set_columns
     def __call__(self, data, inplace=False, bg=None, columns={}):
@@ -330,8 +333,10 @@ class Corrector(object):
             Loaded instance
         """
         with np.load(file) as ld:
-            ret = cls([ld["avg_img"]])
+            ret = cls([ld["avg_img"]], gaussian_fit=False)
             ret.corr_img = ld["corr_img"]
             ret.fit_result = np.asscalar(ld["fit_result"])
-            ret.bg = np.asscalar(ld["bg"])
+            bg = ld["bg"]
+            ret.bg = bg if bg.size > 1 else np.asscalar(bg)
+            ret._make_interp()
         return ret
