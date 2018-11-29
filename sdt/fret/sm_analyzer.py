@@ -935,23 +935,62 @@ class SmFretAnalyzer:
         s_gamma = np.nanmean((f_dd + f_da) / (f_dd + f_da + i_aa))
         self.excitation_eff = (1 - s_gamma) / s_gamma
 
-    def fret_correction(self):
+    def fret_correction(self, invalid_nan=True):
+        r"""Apply corrections to calculate real FRET-related values
+
+        By correcting the measured acceptor and donor intensities upon
+        donor excitation (:math:`I_\text{DA}` and :math:`I_\text{DD}`) and
+        acceptor intensity upon acceptor excitation (:math:`I_\text{AA}`) for
+        donor leakage into the acceptor channel :math:`\alpha`, acceptor
+        excitation by the donor laser :math:`\delta`, detection efficiencies
+        :math:`\gamma`, and excitation efficiencies :math:`\beta`
+        using [Hell2018]_
+
+        .. math:: F_\text{DA} = I_\text{DA} - \alpha I_\text{DD} - \delta
+            I_\text{AA} \\
+            F_\text{DD} = \gamma I_\text{DD} \\
+            F_\text{AA} = I_\text{AA} / \beta
+
+        the real FRET efficiency and stoichiometry values can be calculated:
+
+        .. math:: E = \frac{F_\text{DA}}{F_\text{DA} + F_\text{DD} \\
+            S =  \frac{F_\text{DA} + F_\text{DD}{F_\text{DA} + F_\text{DD +
+            F_\text{AA}}
+
+        :math:`F_\text{DA}` will be appended to :py:attr:`tracks` as the
+        ("fret", "f_da") column; :math:`F_\text{DD}` as ("fret", "f_dd");
+        :math:`F_\text{DA}` as ("fret", "f_aa"); :math:`E` as ("fret", "eff");
+        and :math:`S` as ("fret", "stoi").
+
+        Parameters
+        ----------
+        invalid_nan : bool, optional
+            If True, all "eff", and "stoi" values for excitation
+            types other than donor excitation are set to NaN, since the values
+            don't make sense. Defaults to True.
+        """
         if isinstance(self.detection_eff, pd.Series):
             gamma = self.detection_eff.reindex(self.tracks["fret", "particle"])
             gamma = gamma.values
         else:
             gamma = self.detection_eff
 
-        i_da = self.tracks["acceptor", "mass"]
-        i_dd = self.tracks["donor", "mass"]
+        i_da = self.tracks["acceptor", self.columns["mass"]]
+        i_dd = self.tracks["donor", self.columns["mass"]]
         i_aa = self.tracks["fret", "a_mass"]
 
         f_da = i_da - self.leakage * i_dd - self.direct_excitation * i_aa
         f_dd = i_dd * gamma
         f_aa = i_aa / self.excitation_eff
 
+        if invalid_nan:
+            sel = self.tracks["fret", "exc_type"] != "d"
+            f_da[sel] = np.NaN
+            f_dd[sel] = np.NaN
+
         self.tracks["fret", "f_da"] = f_da
         self.tracks["fret", "f_dd"] = f_dd
         self.tracks["fret", "f_aa"] = f_aa
+
         self.tracks["fret", "eff"] = f_da / (f_dd + f_da)
         self.tracks["fret", "stoi"] = (f_dd + f_da) / (f_dd + f_da + f_aa)

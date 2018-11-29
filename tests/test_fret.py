@@ -758,6 +758,7 @@ class TestSmFretAnalyzer:
 
     @pytest.mark.skipif(not sklearn_available, reason="sklearn not available")
     def test_calc_excitation_eff_split(self):
+        """fret.SmFretAnalyzer.calc_excitation_eff: Gaussian mixture"""
         sz1 = 10
         sz2 = 20
         i_da = np.array([700.] * sz1 + [0.] * sz2)
@@ -801,9 +802,46 @@ class TestSmFretAnalyzer:
         i_aa = 1000
         assert ana.excitation_eff == pytest.approx(i_aa / (f_dd + f_da))
 
+    def test_fret_correction(self):
+        """fret.SmFretAnalyzer.fret_correction"""
+        d = pd.DataFrame({("donor", "mass"): [1000, 0, 500, 0],
+                          ("acceptor", "mass"): [2000, 3000, 2500, 2000],
+                          ("fret", "a_mass"): [3000, 3000, 2000, 2000],
+                          ("fret", "exc_type"): pd.Series(["d", "a"] * 2,
+                                                          dtype="category")})
+        ana = fret.SmFretAnalyzer(d, "da")
+        ana.leakage = 0.1
+        ana.direct_excitation = 0.2
+        ana.detection_eff = 0.9
+        ana.excitation_eff = 0.8
+
+        for invalid_nan in (True, False):
+            ana.fret_correction(invalid_nan=invalid_nan)
+
+            for c in ("f_da", "f_dd", "f_aa", "eff", "stoi"):
+                assert ("fret", c) in ana.tracks.columns
+
+            f_da = np.array([1300, 2400, 2050, 1600], dtype=float)
+            f_dd = np.array([900, 0, 450, 0], dtype=float)
+            f_aa = np.array([3750, 3750, 2500, 2500], dtype=float)
+
+            if invalid_nan:
+                f_da[1::2] = np.NaN
+                f_dd[1::2] = np.NaN
+
+            np.testing.assert_allclose(ana.tracks["fret", "f_da"], f_da)
+            np.testing.assert_allclose(ana.tracks["fret", "f_dd"], f_dd)
+            np.testing.assert_allclose(ana.tracks["fret", "f_aa"], f_aa)
+            np.testing.assert_allclose(ana.tracks["fret", "eff"],
+                                    f_da / (f_da + f_dd))
+            np.testing.assert_allclose(ana.tracks["fret", "stoi"],
+                                    (f_da + f_dd) / (f_da + f_dd + f_aa))
+            ana.fret_correction()
+
 
 @pytest.mark.skipif(not sklearn_available, reason="sklearn not available")
 def test_gaussian_mixture_split():
+    """fret.gaussian_mixture_split"""
     rnd = np.random.RandomState(0)
     c1 = rnd.normal((0.1, 0.8), 0.1, (20, 2))
     c2 = rnd.normal((0.9, 0.5), 0.1, (20, 2))
