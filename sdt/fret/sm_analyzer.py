@@ -14,10 +14,11 @@ from .. import helper, changepoint, config, roi
 
 @contextmanager
 def numeric_exc_type(df):
-    """Temporarily turn ("fret", "exc_type") column from categorical to int
+    """Context manager temporarily turning ("fret", "exc_type") column to int
 
     This is useful e.g. in :py:func:`helper.split_dataframe` so that the
-    resulting split array does not have `object` dtype.
+    resulting split array does not have `object` dtype due to
+    ("fret", "exc_type") being categorical.
 
     Expample
     --------
@@ -120,18 +121,6 @@ class SmFretAnalyzer:
     while different detection efficiencies for the different
     fluorophores are accounted for as described in [MacC2010]_ as well
     the different excitation efficiencies according to [Lee2005]_.
-
-    References
-    ----------
-    .. [Hell2018] Hellenkamp, B. et al.: "Precision and accuracy of
-        single-molecule FRET measurements—a multi-laboratory benchmark study",
-        Nature methods, Nature Publishing Group, 2018, 15, 669
-    .. [MacC2010] McCann, J. J. et al.: "Optimizing Methods to Recover Absolute
-        FRET Efficiency from Immobilized Single Molecules" Biophysical Journal,
-        Elsevier BV, 2010, 99, 961–970
-    .. [Lee2005] Lee, N. et al.: "Accurate FRET Measurements within Single
-        Diffusing Biomolecules Using Alternating-Laser Excitation", Biophysical
-        Journal, Elsevier BV, 2005, 88, 2939–2953
     """
     @config.set_columns
     def __init__(self, tracks, excitation_seq, cp_detector=None, columns={}):

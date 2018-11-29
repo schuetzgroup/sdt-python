@@ -91,12 +91,22 @@ Image selection
     :members:
     :special-members: __call__
 
+Helpers
+-------
+.. autofunction:: numeric_exc_type
+.. autofunction:: gaussian_mixture_split
 
 References
 ----------
-
-.. [Upho2010] Uphoff, S. et al.: "Monitoring multiple distances within a
-    single molecule using switchable FRET". Nat Meth, 2010, 7, 831–836
+.. [Hell2018] Hellenkamp, B. et al.: "Precision and accuracy of
+    single-molecule FRET measurements—a multi-laboratory benchmark study",
+    Nature methods, Nature Publishing Group, 2018, 15, 669
+.. [MacC2010] McCann, J. J. et al.: "Optimizing Methods to Recover Absolute
+    FRET Efficiency from Immobilized Single Molecules" Biophysical Journal,
+    Elsevier BV, 2010, 99, 961–970
+.. [Lee2005] Lee, N. et al.: "Accurate FRET Measurements within Single
+    Diffusing Biomolecules Using Alternating-Laser Excitation", Biophysical
+    Journal, Elsevier BV, 2005, 88, 2939–2953
 """
 from .image_utils import *
 from .sm_track import *
