@@ -16,6 +16,12 @@ try:
 except ImportError:
     trackpy_available = False
 
+try:
+    import sklearn
+    sklearn_available = True
+except ImportError:
+    sklearn_available = False
+
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_data")
@@ -721,7 +727,82 @@ class TestSmFretAnalyzer:
         ana.calc_detection_eff(3, np.nanmean)
         assert ana.detection_eff == pytest.approx(1.5)
 
+    def test_calc_excitation_eff(self):
+        """fret.SmFretAnalyzer.calc_excitation_eff"""
+        sz1 = 10
+        sz2 = 20
+        i_da = np.array([700.] * sz1 + [0.] * sz2)
+        i_dd = np.array([300.] * sz1 + [1000.] * sz2)
+        i_aa = np.array([1000.] * sz1 + [0.] * sz2)
+        et = pd.Series(["d"] * (sz1 + sz2), dtype="category")
+        hn = np.zeros(sz1 + sz2, dtype=int)
+        a = np.array([0] * sz1 + [1] * sz2)
+        data = pd.DataFrame({("donor", "mass"): i_dd,
+                             ("acceptor", "mass"): i_da,
+                             ("fret", "a_mass"): i_aa,
+                             ("fret", "exc_type"): et,
+                             ("fret", "has_neighbor"): hn,
+                             ("fret", "a_seg"): a,
+                             ("fret", "particle"): 0})
+        ana = fret.SmFretAnalyzer(data, "d")
+        ana.leakage = 0.2
+        ana.direct_excitation = 0.1
+        ana.detection_eff = 0.5
 
+        ana.calc_excitation_eff()
+
+        f_da = 700 - 300 * 0.2 - 1000 * 0.1
+        f_dd = 300 * 0.5
+        i_aa = 1000
+        assert ana.excitation_eff == pytest.approx(i_aa / (f_dd + f_da))
+
+    @pytest.mark.skipif(not sklearn_available, reason="sklearn not available")
+    def test_calc_excitation_eff_split(self):
+        sz1 = 10
+        sz2 = 20
+        i_da = np.array([700.] * sz1 + [0.] * sz2)
+        i_dd = np.array([300.] * sz1 + [1000.] * sz2)
+        i_aa = np.array([1000.] * sz1 + [0.] * sz2)
+        et = pd.Series(["d"] * (sz1 + sz2), dtype="category")
+        hn = np.zeros(sz1 + sz2, dtype=int)
+        a = np.array([0] * sz1 + [1] * sz2)
+        data = pd.DataFrame({("donor", "mass"): i_dd,
+                             ("acceptor", "mass"): i_da,
+                             ("fret", "a_mass"): i_aa,
+                             ("fret", "exc_type"): et,
+                             ("fret", "has_neighbor"): hn,
+                             ("fret", "a_seg"): a,
+                             ("fret", "particle"): 0})
+
+        data2 = data.copy()
+        data2["fret", "particle"] = 1
+        data2["fret", "a_mass"] = 1e6
+
+        data_all = pd.concat([data, data2])
+
+        # Construct eff_app and stoi_app such that particle 2 is removed
+        rnd = np.random.RandomState(0)
+        sz = sz1 + sz2
+        c1 = rnd.normal((0.9, 0.5), 0.1, (sz, 2))
+        c2 = rnd.normal((0.1, 0.8), 0.1, (sz, 2))
+        d = np.concatenate([c1, c2])
+        data_all["fret", "eff_app"] = d[:, 0]
+        data_all["fret", "stoi_app"] = d[:, 1]
+
+        ana = fret.SmFretAnalyzer(data_all, "d")
+        ana.leakage = 0.2
+        ana.direct_excitation = 0.1
+        ana.detection_eff = 0.5
+
+        ana.calc_excitation_eff(n_components=2)
+
+        f_da = 700 - 300 * 0.2 - 1000 * 0.1
+        f_dd = 300 * 0.5
+        i_aa = 1000
+        assert ana.excitation_eff == pytest.approx(i_aa / (f_dd + f_da))
+
+
+@pytest.mark.skipif(not sklearn_available, reason="sklearn not available")
 def test_gaussian_mixture_split():
     rnd = np.random.RandomState(0)
     c1 = rnd.normal((0.1, 0.8), 0.1, (20, 2))

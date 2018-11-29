@@ -740,6 +740,13 @@ class SmFretAnalyzer:
         where :math:`\langle E_\text{app}\rangle` is the mean apparent FRET
         efficiency of a donor-only population.
 
+        The leakage :math:`\alpha` together with the direct acceptor excitation
+        :math:`\delta` can be used to calculate the real fluorescence due to
+        FRET,
+
+        .. math:: F_\text{DA} = I_\text{DA} - \alpha I_\text{DD} - \delta
+            I_\text{AA}.
+
         This sets the :py:attr:`leakage` attribute.
         See :py:meth:`fret_correction` for how use this to calculate corrected
         FRET values.
@@ -750,7 +757,7 @@ class SmFretAnalyzer:
         self.leakage = m_eff / (1 - m_eff)
 
     def calc_direct_excitation(self):
-        r"""Calculate direct acceptor excitation
+        r"""Calculate direct acceptor excitation by the donor laser
 
         For this to work, :py:attr:`tracks` must be a dataset of acceptor-only
         molecules. In this case, the direct acceptor excitation :math:`delta`
@@ -761,6 +768,13 @@ class SmFretAnalyzer:
 
         where :math:`\langle ES\text{app}\rangle` is the mean apparent FRET
         stoichiometry of an acceptor-only population.
+
+        The leakage :math:`\alpha` together with the direct acceptor excitation
+        :math:`\delta` can be used to calculate the real fluorescence due to
+        FRET,
+
+        .. math:: F_\text{DA} = I_\text{DA} - \alpha I_\text{DD} - \delta
+            I_\text{AA}.
 
         This sets the :py:attr:`direct_excitation` attribute.
         See :py:meth:`fret_correction` for how use this to calculate corrected
@@ -790,6 +804,11 @@ class SmFretAnalyzer:
         The correction can be calculated for each track individually or some
         statistic (e.g. the median) of the indivdual :math:`gamma` values can
         be used as a global correction factor for all tracks.
+
+        The detection efficiency :math:`\gamma` can be used to calculate the
+        real fluorescence of the donor fluorophore,
+
+        .. math:: F_\text{DD} = \gamma I_\text{DD}.
 
         This sets the :py:attr:`detection_eff` attribute.
         See :py:meth:`fret_correction` for how use this to calculate corrected
@@ -849,17 +868,60 @@ class SmFretAnalyzer:
                              "accepting an array as its argument.")
 
     def calc_excitation_eff(self, n_components=1, component=0):
+        r"""Calculate excitation efficiency ratio of dyes
+
+        This is a measure of how efficient the direct acceptor excitation is
+        compared to the donor excitation. It depends on the fluorophores and
+        also on the excitation laser intensities.
+
+        It can be calculated using the formula [Lee2005]_
+
+        .. math:: \beta = \frac{1 - \langle S_\gamma \rangle}{
+            \langle S_\gamma\range},
+
+        where :math:`S_\gamma` is the like the apparent stoichiometry, but
+        with the donor and acceptor fluorescence upon donor excitation
+        already corrected using the leakage, direct excitation, and
+        detection efficiency factors.
+
+        This needs molecules with exactly one donor and one acceptor
+        fluorophore to work. Tracks need to be segmented already (see
+        :py:meth:`segment_a_mass`). The :py:attr:`leakage`,
+        :py:attr:`direct_excitation`, and :py:attr:`detection_eff` attributes
+        need to be set correctly.
+
+        The excitation efficiency :math:`\beta` can be used to correct the
+        acceptor fluorescence upon acceptor excitation,
+
+        .. math:: F_\text{AA} = I_\text{AA} / \beta.
+
+        This sets the :py:attr:`excitation_eff` attribute.
+        See :py:meth:`fret_correction` for how use this to calculate corrected
+        FRET values.
+
+        Parameters
+        ----------
+        n_components : int, optional
+            If > 1, perform a Gaussian mixture fit on the 2D apparent
+            efficiency-vs.-stoichiomtry dataset. This helps to choose only the
+            correct component with one donor and one acceptor. Defaults to 1.
+        component : int, optional
+            If n_components > 1, use this to choos the component number.
+            Components are ordered according to decreasing mean apparent FRET
+            efficiency. :py:func:`gaussian_mixture_split` can be used to
+            check which component is the desired one. Defaults to 0.
+        """
         trc = self.tracks[(self.tracks["fret", "exc_type"] == "d") &
+                          (self.tracks["fret", "has_neighbor"] == 0) &
                           (self.tracks["fret", "a_seg"] == 0)]
 
         if n_components > 1:
             from sklearn.mixture import GaussianMixture
-
             split = gaussian_mixture_split(trc, n_components)
             trc = trc[trc["fret", "particle"].isin(split[component])]
 
-        i_da = trc["acceptor", "mass"]
-        i_dd = trc["donor", "mass"]
+        i_da = trc["acceptor", self.columns["mass"]]
+        i_dd = trc["donor", self.columns["mass"]]
         i_aa = trc["fret", "a_mass"]
         f_da = i_da - self.leakage * i_dd - self.direct_excitation * i_aa
 
@@ -868,7 +930,7 @@ class SmFretAnalyzer:
         else:
             gamma = self.detection_eff
 
-        f_dd = gamma * i_da
+        f_dd = gamma * i_dd
 
         s_gamma = np.nanmean((f_dd + f_da) / (f_dd + f_da + i_aa))
         self.excitation_eff = (1 - s_gamma) / s_gamma
