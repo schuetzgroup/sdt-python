@@ -722,6 +722,21 @@ class TestSmFretAnalyzer:
         assert ana.detection_eff == pytest.approx(1.5)
 
 
+def test_gaussian_mixture_split():
+    rnd = np.random.RandomState(0)
+    c1 = rnd.normal((0.1, 0.8), 0.1, (20, 2))
+    c2 = rnd.normal((0.9, 0.5), 0.1, (20, 2))
+    d = np.concatenate([c1[:15], c2[:5], c1[15:], c2[5:]])
+    d = pd.DataFrame({("fret", "particle"): [0] * 20 + [1] * 20,
+                      ("fret", "eff_app"): d[:, 0],
+                      ("fret", "stoi_app"): d[:, 1]})
+
+    split = fret.gaussian_mixture_split(d, 2)
+    assert len(split) == 2
+    assert split[0] == [1]
+    assert split[1] == [0]
+
+
 class TestFretImageSelector(unittest.TestCase):
     def setUp(self):
         self.desc = "dddda"

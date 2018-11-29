@@ -59,11 +59,35 @@ def numeric_exc_type(df):
         df["fret", "exc_type"] = exc_types
 
 
-def gaussian_mixture_split(data, n_components, x=("fret", "eff_app"),
-                           y=("fret", "stoi_app")):
+def gaussian_mixture_split(data, n_components, columns=[("fret", "eff_app"),
+                                                        ("fret", "stoi_app")]):
+    """Fit Gaussian mixture model and predict component for each particle
+
+    First, all datapoints are used to fit a Gaussian mixture model. Then each
+    particle is assigned the component in which most of its datapoints lie.
+
+    This requires scikit-learn (sklearn).
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Single molecule FRET data
+    n_components : int
+        Number of components in the mixture
+    columns : list of column names, optional
+        Which columns to fit. Defaults to ``[("fret", "eff_app"),
+        ("fret", "stoi_app")]``.
+
+    Returns
+    -------
+    list of lists
+        Each entry is a list of particle number belonging to the same
+        mixture component. The components are in descending order w.r.t. their
+        mean ``columns[0]`` value.
+    """
     from sklearn.mixture import GaussianMixture
 
-    d = data.loc[:, [x, y]].values
+    d = data.loc[:, columns].values
     valid = np.all(np.isfinite(d), axis=1)
     d = d[valid]
     gmm = GaussianMixture(n_components=n_components).fit(d)
