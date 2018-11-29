@@ -276,9 +276,9 @@ class SmFretAnalyzer:
             ``("donor", "mass")`` and ``("acceptor", "mass")`` values. Useful
             if :py:meth:`track` was called with ``d_mass=True``.
         invalid_nan : bool, optional
-            If True, all "d_mass", "eff", and "stoi" values for excitation
-            types other than donor excitation are set to NaN, since the values
-            don't make sense. Defaults to True.
+            If True, all "d_mass", "eff_app", and "stoi_app" values for
+            excitation types other than donor excitation are set to NaN, since
+            the values don't make sense. Defaults to True.
         a_mass_interp : {"linear", "nearest"}, optional
             How to interpolate the acceptor mass upon direct excitation in
             donor excitation frames. Defaults to "linear".
