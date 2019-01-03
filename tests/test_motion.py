@@ -8,11 +8,90 @@ import pytest
 
 from sdt import motion, io, testing
 from sdt.motion import msd_cdf
+from sdt.motion.msd import _displacements
 from sdt.helper import numba
 
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_motion")
+
+
+class TestDisplacements:
+    """motion.msd._displacements"""
+    @pytest.fixture
+    def trc(self):
+        frames = np.arange(20)
+        dx = frames + 1
+        dy = 2 * dx + 1
+        ret = np.array([frames, np.cumsum(dx), np.cumsum(dy)]).T
+        return ret
+
+    @pytest.fixture
+    def trc_disp_array(self):
+        ret = np.full((19, 19, 2), np.NaN)
+        for n in range(1, ret.shape[0] + 1):
+            num_steps = ret.shape[1] - n + 1
+            # First entry (Gaussian sum formula) - 1
+            s = (n + 1) * (n + 2) // 2 - 1
+            # Last entry
+            l = s + (num_steps - 1) * n
+            dx = np.linspace(s, l, num_steps)
+            dy = 2 * dx + n
+            ret[n - 1, :num_steps, 0] = dx
+            ret[n - 1, :num_steps, 1] = dy
+        return ret
+
+    def test_displacements(self, trc, trc_disp_array):
+        """Return array"""
+        res = _displacements(trc, np.inf)
+        np.testing.assert_allclose(res, trc_disp_array)
+
+    def test_displacements_dict(self, trc, trc_disp_array):
+        """Update dict"""
+        prev_arr = np.array([1, 2, 3])
+        disp_dict = {3: [prev_arr]}
+        _displacements(trc, np.inf, disp_dict)
+
+        np.testing.assert_equal(sorted(disp_dict.keys()),
+                                np.arange(1, len(trc)))
+        for k, v in disp_dict.items():
+            if k == 3:
+                assert len(v) == 2
+                assert v[0] is prev_arr
+            else:
+                assert len(v) == 1
+
+            np.testing.assert_allclose(
+                v[-1],
+                trc_disp_array[k-1, :trc_disp_array.shape[1] - k + 1, :])
+
+    def test_gap(self, trc, trc_disp_array):
+        """Missing frame"""
+        trc = trc[trc[:, 0] != 3]
+        res = _displacements(trc, np.inf)
+        trc_disp_array[:, 3, :] = np.NaN
+        trc_disp_array[0, 2, :] = np.NaN
+        trc_disp_array[1, 1, :] = np.NaN
+        trc_disp_array[2, 0, :] = np.NaN
+        np.testing.assert_allclose(res, trc_disp_array)
+
+    def test_max_lagtime(self, trc, trc_disp_array):
+        """`max_lagtime` parameter, return array"""
+        m = len(trc) // 2
+        res = _displacements(trc, m)
+        np.testing.assert_allclose(res, trc_disp_array[:m, ...])
+
+    def test_max_lagtime_dict(self, trc, trc_disp_array):
+        """`max_lagtime` parameter, update dict"""
+        disp_dict = dict()
+        m = len(trc) // 2
+        _displacements(trc, m, disp_dict)
+
+        np.testing.assert_equal(sorted(disp_dict.keys()), np.arange(1, m + 1))
+        for k, v in disp_dict.items():
+            np.testing.assert_allclose(
+                v[0],
+                trc_disp_array[k-1, :trc_disp_array.shape[1] - k + 1, :])
 
 
 class TestMotion(unittest.TestCase):
@@ -30,7 +109,7 @@ class TestMotion(unittest.TestCase):
         np.testing.assert_equal(max(disp_dict.keys()), max_lagt)
 
         for lagt in range(1, max_lagt + 1):
-            o = -orig[orig[:, 0] == lagt]  # get_msd uses different sign
+            o = orig[orig[:, 0] == lagt]  # get_msd uses different sign
             o = np.sort(o[:, [1, 2]])  # get coordinate colmuns
             d = np.concatenate(disp_dict[lagt])
             d = d[~(np.isnan(d[:, 0]) | np.isnan(d[:, 1]))]  # remove NaNs
@@ -47,7 +126,7 @@ class TestMotion(unittest.TestCase):
         np.testing.assert_equal(len(disp_dict.keys()), max_lagt)
 
         for lagt in range(1, max_lagt + 1):
-            o = -orig[orig[:, 0] == lagt]  # get_msd uses different sign
+            o = orig[orig[:, 0] == lagt]  # get_msd uses different sign
             o = np.sort(o[:, [1, 2]])  # get coordinate colmuns
             d = np.concatenate(disp_dict[lagt])
             d = d[~(np.isnan(d[:, 0]) | np.isnan(d[:, 1]))]  # remove NaNs

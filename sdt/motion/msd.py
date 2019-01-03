@@ -50,21 +50,23 @@ def _displacements(particle_data, max_lagtime, disp_dict=None):
     # there can be at most len(pdata) - 1 steps
     max_lagtime = round(min(len(pdata)-1, max_lagtime))
 
-    if isinstance(disp_dict, dict):
-        for i in range(1, max_lagtime+1):
-            # calculate coordinate differences for each time lag
-            disp = pdata[:-i] - pdata[i:]
-            # append to output structure
+    update_dict = isinstance(disp_dict, dict)
+    if not update_dict:
+        ret = np.full((max_lagtime, len(pdata) - 1, ndim), np.NaN)
+
+    for i in range(1, max_lagtime+1):
+        # calculate coordinate differences for each time lag
+        disp = pdata[i:] - pdata[:-i]
+
+        if update_dict:
             try:
                 disp_dict[i].append(disp)
             except KeyError:
                 disp_dict[i] = [disp]
-    else:
-        ret = np.full((max_lagtime, len(pdata) - 1, ndim), np.NaN)
-        for i in range(1, max_lagtime+1):
-            # append to output structure
-            ret[i-1, :max_lagtime-i+1] = pdata[i:] - pdata[:-i]
+        else:
+            ret[i-1, :len(disp)] = disp
 
+    if not update_dict:
         return ret
 
 
