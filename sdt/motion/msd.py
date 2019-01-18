@@ -18,7 +18,7 @@ def _displacements(particle_data, max_lagtime, disp_dict=None):
     ----------
     particle_data : numpy.ndarray
         First column is the frame number, the other columns are particle
-        coordinates.
+        coordinates. Has to be sorted according to ascending frame number.
     max_lagtime : int
         Maximum number of time lags to consider.
     disp_dict : None or dict, optional
