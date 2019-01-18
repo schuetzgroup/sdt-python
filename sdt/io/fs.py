@@ -2,7 +2,7 @@
 import os
 import re
 import contextlib
-import ast
+import sys
 
 
 @contextlib.contextmanager
@@ -30,16 +30,17 @@ def chdir(path):
 
 
 def get_files(pattern, subdir=os.curdir):
-    """Get all files matching a regular expression
+    r"""Get all files matching a regular expression
 
     Parameters
     ----------
-    pattern : str or pathlib.Path
+    pattern : str
         Regular expression to search in the file name. Search is performed
         on the path relative to `subdir`. One can also define groups (using
         parenthesis), which will be returned in addition to the matching
-        file names
-    subdir : str, optional
+        file names. **A note to Windows users: Use a forward slash (/) for
+        subdirectories.**
+    subdir : str or pathlib.Path, optional
         Any regular expression matching will be performed relative to `subdir`.
         Defaults to ``os.curdir``.
 
@@ -54,11 +55,11 @@ def get_files(pattern, subdir=os.curdir):
 
     Examples
     --------
-    >>> names, ids = get_files(r"^image_.*_(\d{3}).tif$", "subdir")
+    >>> names, ids = get_files(r"^image_(.*)_(\d{3}).tif$", "subdir")
     >>> names
     ['image_xxx_001.tif', 'image_xxx_002.tif', 'image_yyy_003.tif']
     >>> ids
-    [(1,), (2,), (3,)]
+    [('xxx', 1), ('xxx', 2), ('yyy', 3)]
     """
     r = re.compile(str(pattern))
     flist = []
@@ -67,6 +68,8 @@ def get_files(pattern, subdir=os.curdir):
     for dp, dn, fn in os.walk(sd):
         for f in fn:
             relp = os.path.relpath(os.path.join(dp, f), sd)
+            if sys.platform == "win32":
+                relp = relp.replace("\\", "/")
             m = r.search(relp)
             if m is None:
                 continue
