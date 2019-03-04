@@ -63,8 +63,10 @@ class TestCorrector:
         np.testing.assert_allclose(corr.avg_img, self.img / self.amp)
         exp_corr_img = ndimage.gaussian_filter(self.img / self.img.max(),
                                                sigma=1.)
-        np.testing.assert_allclose(corr.corr_img, exp_corr_img)
+        np.testing.assert_allclose(corr.corr_img,
+                                   exp_corr_img / exp_corr_img.max())
         assert corr.fit_result is None
+        assert corr.corr_img.max() == pytest.approx(1)
 
     def test_init_bg_scalar(self, corr_factory):
         """flatfield.Corrector.__init__: scalar `bg` parameter"""

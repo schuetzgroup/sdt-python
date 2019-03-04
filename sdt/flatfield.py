@@ -209,10 +209,12 @@ class Corrector(object):
                 self.corr_img = gfit.gaussian_2d(x, y, **self.fit_result)
                 self.corr_img /= self.corr_img.max()
             else:
-                self.corr_img = self.avg_img / self.avg_img.max()
                 if smooth_sigma:
-                    self.corr_img = ndimage.gaussian_filter(self.corr_img,
+                    self.corr_img = ndimage.gaussian_filter(self.avg_img,
                                                             smooth_sigma)
+                    self.corr_img /= self.corr_img.max()
+                else:
+                    self.corr_img = self.avg_img / self.avg_img.max()
                 self._make_interp()
 
     def _make_interp(self):
