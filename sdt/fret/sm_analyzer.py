@@ -367,11 +367,13 @@ class SmFretAnalyzer:
         self.tracks["fret", "exc_type"] = self.excitation_seq[
              frames % len(self.excitation_seq)].values
 
-    def segment_a_mass(self, **kwargs):
-        """Segment tracks by changepoint detection in the acceptor mass
+    def segment_mass(self, channel, **kwargs):
+        """Segment tracks by changepoint detection in brightness
 
-        Changepoint detection is run on the acceptor brightness time trace.
-        This appends py:attr:`tracks` with a ``("fret", "a_seg")`` column. For
+        Changepoint detection is run on the donor or acceptor brightness time
+        trace, depending on the `channels` argument.
+        This appends py:attr:`tracks` with a ``("fret", "d_seg")`` or
+        `("fret", "a_seg")`` column for donor or acceptor, resp. For
         each localization, this holds the number of the segment it belongs to.
 
         **:py:attr:`tracks` will be sorted according to
@@ -380,6 +382,8 @@ class SmFretAnalyzer:
 
         Parameters
         ----------
+        channel : {"donor", "acceptor"}
+            In which channel to perform changepoint detection
         **kwargs
             Keyword arguments to pass to :py:attr:`cp_detector`
             `find_changepoints` method.
@@ -387,32 +391,44 @@ class SmFretAnalyzer:
         Examples
         --------
         Pass ``penalty=1e6`` to the changepoint detector's
-        ``find_changepoints`` method.
+        ``find_changepoints`` method, perform detection both channels:
 
-        >>> ana.segment_a_mass(penalty=1e6)
+        >>> ana.segment_mass("donor", penalty=1e6)
+        >>> ana.segment_mass("acceptor", penalty=1e6)
         """
         time_col = ("donor", self.columns["time"])
         self.tracks.sort_values([("fret", "particle"), time_col], inplace=True)
 
+        if channel.startswith("d"):
+            mass_col = "d_mass"
+            out_col = "d_seg"
+            e_type = "d"
+        elif channel.startswith("a"):
+            mass_col = "a_mass"
+            out_col = "a_seg"
+            e_type = "a"
+        else:
+            raise ValueError("`channel` has to be \"donor\" or \"acceptor\".")
+
         with numeric_exc_type(self.tracks) as exc_cats:
             trc_split = helper.split_dataframe(
                 self.tracks, ("fret", "particle"),
-                [("fret", "a_mass"), time_col, ("fret", "exc_type")],
+                [("fret", mass_col), time_col, ("fret", "exc_type")],
                 type="array", sort=False)
 
-            acc_exc_num = np.nonzero(exc_cats == "a")[0]
+            exc_num = np.nonzero(exc_cats == e_type)[0]
 
             segments = []
             for p, trc_p in trc_split:
-                acc_mask = trc_p[:, 2] == acc_exc_num
-                m_a = trc_p[acc_mask, 0]
-                m_a_pos = np.nonzero(acc_mask)[0]
+                mask = trc_p[:, 2] == exc_num
+                m = trc_p[mask, 0]
+                m_pos = np.nonzero(mask)[0]
 
                 # Find changepoints if there are no NaNs
-                if np.any(~np.isfinite(m_a)):
+                if np.any(~np.isfinite(m)):
                     segments.append(np.full(len(trc_p), -1))
                     continue
-                cp = self.cp_detector.find_changepoints(m_a, **kwargs)
+                cp = self.cp_detector.find_changepoints(m, **kwargs)
                 if not len(cp):
                     segments.append(np.zeros(len(trc_p)))
                     continue
@@ -422,41 +438,54 @@ class SmFretAnalyzer:
                 # Move changepoint forward to right after the previous acceptor
                 # frame, meaning all donor frames between that and the
                 # changepoint already belong to the new segment.
-                cp_pos = m_a_pos[np.maximum(np.add(cp, -1), 0)] + 1
+                cp_pos = m_pos[np.maximum(np.add(cp, -1), 0)] + 1
                 for i, s, e in zip(itertools.count(),
-                                itertools.chain([0], cp_pos),
-                                itertools.chain(cp_pos, [len(trc_p)])):
+                                   itertools.chain([0], cp_pos),
+                                   itertools.chain(cp_pos, [len(trc_p)])):
                     seg[s:e] = i
 
                 segments.append(seg)
 
-        self.tracks["fret", "a_seg"] = np.concatenate(segments)
+        self.tracks["fret", out_col] = np.concatenate(segments)
 
-    def acceptor_bleach_step(self, brightness_thresh, truncate=True):
-        """Find tracks where the acceptor bleaches in a single step
+    def bleach_step(self, donor_thresh, acceptor_thresh, truncate=True):
+        """Find tracks wwith acceptable fluorophore bleaching behavior
 
-        After acceptor mass changepoint detection has been performed (see
-        :py:meth:`SmFretAnalyzer.segment_a_mass`), this method can be used
-        to filter out any trajectories where the acceptor does not bleach in
+        "Acceptable" means that the acceptor bleaches to a value less than
+        `acceptor_thresh` in a single step and the donor shows either no
+        bleach step or bleaches to a value less than `donor_thresh` in
         a single step.
+
+        This works under the premise that the acceptor is susceptible to
+        bleaching and will bleach during recording the movie, while the
+        donor is more stable and may or may not bleach.
+
+        Both the ``("fret", "d_seg")`` and the `("fret", "a_seg")`` need to
+        be present for this to work, which can be achieved by performing
+        changepoint detection has to be performed in both channels using
+        :py:meth:`segment_mass`.
 
         Only if the median brightness for each but the first step is below
         `brightness_thresh`, accept the track.
 
         Parameters
         ----------
-        brightness_thresh : float
-            Consider acceptor bleached if brightness ("fret", "a_mass") median
-            is below this value.
+        donor_thresh, acceptor_thresh : float
+            Consider fluorophore bleached if its brightness
+            (``("fret", "d_mass")`` or ``("fret", "a_mass")``, respectively)
+            median is below this value.
         truncate : bool, optional
-            If `True`, remove data after the bleach step.
+            If `True`, remove data after the bleach step. Defaults to `True`.
 
         Examples
         --------
-        Consider acceptors with a brightness ("fret", "a_mass") of less than
-        500 counts bleached.
+        Consider acceptors with a brightness ``("fret", "a_mass")`` of less than
+        500 counts and donors with a brightness ``("fret", "d_mass")`` of less
+        than 800 counts bleached. Remove all tracks that don't show acceptable
+        bleaching behavior. Of the other tracks, only keep data from before
+        any bleaching.
 
-        >>> filt.acceptor_bleach_step(500)
+        >>> filt.acceptor_bleach_step(800, 500, truncate=True)
         """
         time_col = ("donor", self.columns["time"])
         self.tracks.sort_values([("fret", "particle"), time_col], inplace=True)
@@ -464,25 +493,43 @@ class SmFretAnalyzer:
         with numeric_exc_type(self.tracks) as exc_cats:
             trc_split = helper.split_dataframe(
                 self.tracks, ("fret", "particle"),
-                [("fret", "a_mass"), ("fret", "exc_type"), ("fret", "a_seg")],
+                [("fret", "d_mass"), ("fret", "d_seg"),
+                 ("fret", "a_mass"), ("fret", "a_seg"), ("fret", "exc_type")],
                 type="array", sort=False)
 
+            don_exc_num = np.nonzero(exc_cats == "d")[0]
             acc_exc_num = np.nonzero(exc_cats == "a")[0]
 
             good = []
             for p, trc_p in trc_split:
-                # Make step function
-                cps = np.nonzero(np.diff(trc_p[:, 2]))[0] + 1  # changepoints
-                split = np.array_split(trc_p[:, (0, 1)], cps)
-                med = [np.median(s[s[:, 1] == acc_exc_num, 0]) for s in split]
+                # Make step functions
+                cps_d = np.nonzero(np.diff(trc_p[:, 1]))[0] + 1  # changepoints
+                split_d = np.array_split(trc_p[:, (0, 4)], cps_d)
+                med_d = [np.median(s[s[:, 1] == don_exc_num, 0])
+                         for s in split_d]
 
-                # See if only the first step is above brightness_thresh
-                if len(med) > 1 and all(m < brightness_thresh
-                                        for m in med[1:]):
+                cps_a = np.nonzero(np.diff(trc_p[:, 3]))[0] + 1  # changepoints
+                split_a = np.array_split(trc_p[:, (2, 4)], cps_a)
+                med_a = [np.median(s[s[:, 1] == acc_exc_num, 0])
+                         for s in split_a]
+
+                # See if only the first step of the acceptor brightness is
+                # above acceptor_thresh and if there are either no steps in
+                # the donor mass or if only the first step in the donor
+                # brightness is above donor_thresh
+                is_good =  (len(med_a) > 1 and
+                            all(m < acceptor_thresh for m in med_a[1:]) and
+                            (len(med_d) == 1 or all(m < donor_thresh
+                                                    for m in med_d[1:])))
+                if is_good:
                     if truncate:
                         # Add data before bleach step
                         g = np.zeros(len(trc_p), dtype=bool)
-                        g[:cps[0]] = True
+                        if len(cps_d):
+                            stop = min(cps_d[0], cps_a[0])
+                        else:
+                            stop = cps_a[0]
+                        g[:stop] = True
                     else:
                         g = np.ones(len(trc_p), dtype=bool)
                 else:

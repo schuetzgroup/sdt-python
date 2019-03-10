@@ -173,37 +173,97 @@ def test_numeric_exc_type():
 @pytest.fixture
 def ana1():
     """SmFretAnalyzer used in some tests"""
+    sz = 20
+
+    # Two bleach steps in acceptor, none in donor
     loc1 = pd.DataFrame(
-        np.array([np.full(10, 50), np.full(10, 70), np.arange(10)],
+        np.array([np.full(sz, 50), np.full(sz, 70), np.arange(sz)],
                     dtype=float).T,
         columns=["x", "y", "frame"])
     fret1 = pd.DataFrame(
-        np.array([[3000] * 3 + [1500] * 3 + [100] * 4,
-                  [0] * 3 + [1] * 3 + [2] * 4,
-                  [0] * 10], dtype=float).T,
-        columns=["a_mass", "a_seg", "particle"])
-    fret1["exc_type"] = pd.Series(["a"] * 10, dtype="category")
+        np.array([[4000, 0] * (sz // 2),
+                  [3000] * 6 + [1500] * 6 + [100] * 8,
+                  [0] * sz,
+                  [0] * 6 + [1] * 6 + [2] * 8,
+                  [0] * sz], dtype=float).T,
+        columns=["d_mass", "a_mass", "d_seg", "a_seg", "particle"])
+    fret1["exc_type"] = pd.Series(["d", "a"] * (sz // 2), dtype="category")
     data1 = pd.concat([loc1, loc1, fret1], axis=1,
                        keys=["donor", "acceptor", "fret"])
+
+    # One bleach step in acceptor, none in donor
     loc2 = loc1.copy()
     loc2[["x", "y"]] = [20, 10]
     fret2 = fret1.copy()
-    fret2["a_mass"] = [1600] * 5 + [150] * 5
-    fret2["a_seg"] = [0] * 5 + [1] * 5
+    fret2["a_mass"] = [1600] * 10 + [150] * 10
+    fret2["a_seg"] = [0] * 10 + [1] * 10
     fret2["particle"] = 1
     data2 = pd.concat([loc2, loc2, fret2], axis=1,
                        keys=["donor", "acceptor", "fret"])
+
+    # One bleach step to non-zero in acceptor, none in donor
     loc3 = loc1.copy()
     loc3[["x", "y"]] = [120, 30]
     fret3 = fret2.copy()
-    fret3["a_mass"] = [3500] * 5 + [1500] * 5
-    fret3["a_seg"] = [0] * 5 + [1] * 5
+    fret3["a_mass"] = [3500] * 10 + [1500] * 10
+    fret3["a_seg"] = [0] * 10 + [1] * 10
     fret3["particle"] = 2
     data3 = pd.concat([loc3, loc3, fret3], axis=1,
                        keys=["donor", "acceptor", "fret"])
 
-    data = pd.concat([data1, data2, data3], ignore_index=True)
-    return fret.SmFretAnalyzer(data, "a")
+    # One bleach step in acceptor, one in donor before acceptor
+    loc4 = loc2.copy()
+    loc4[["x", "y"]] = [50, 60]
+    fret4 = fret2.copy()
+    fret4["d_mass"] = [3000, 0] * 3 + [600, 0] * 7
+    fret4["d_seg"] = [0] * 5 + [1] * 15
+    fret4["particle"] = 3
+    data4 = pd.concat([loc4, loc4, fret4], axis=1,
+                       keys=["donor", "acceptor", "fret"])
+
+    # One bleach step in acceptor, one in donor after acceptor
+    loc5 = loc4.copy()
+    loc5[["x", "y"]] = [60, 50]
+    fret5 = fret4.copy()
+    fret5["d_mass"] = [3000, 0] * 7 + [600, 0] * 3
+    fret5["d_seg"] = [0] * 13 + [1] * 7
+    fret5["particle"] = 4
+    data5 = pd.concat([loc5, loc5, fret5], axis=1,
+                       keys=["donor", "acceptor", "fret"])
+
+    # One bleach step in acceptor, one in donor to non-zero
+    loc6 = loc4.copy()
+    loc6[["x", "y"]] = [90, 70]
+    fret6 = fret4.copy()
+    fret6["d_mass"] = [5000, 0] * 7 + [2000, 0] * 3
+    fret6["d_seg"] = [0] * 13 + [1] * 7
+    fret6["particle"] = 5
+    data6 = pd.concat([loc6, loc6, fret6], axis=1,
+                       keys=["donor", "acceptor", "fret"])
+
+    # One bleach step in acceptor, two in donor
+    loc7 = loc4.copy()
+    loc7[["x", "y"]] = [100, 70]
+    fret7 = fret4.copy()
+    fret7["d_mass"] = [5000, 0] * 3 + [2000, 0] * 3 + [400, 0] * 4
+    fret7["d_seg"] = [0] * 5 + [1] * 6 + [2] * 9
+    fret7["particle"] = 6
+    data7 = pd.concat([loc7, loc7, fret7], axis=1,
+                       keys=["donor", "acceptor", "fret"])
+
+    # No bleach steps in either channel
+    loc8 = loc1.copy()
+    loc8[["x", "y"]] = [190, 70]
+    fret8 = fret1.copy()
+    fret8["a_mass"] = [2000] * sz
+    fret8["a_seg"] = [0] * sz
+    fret8["particle"] = 7
+    data8 = pd.concat([loc8, loc8, fret8], axis=1,
+                       keys=["donor", "acceptor", "fret"])
+
+    data = pd.concat([data1, data2, data3, data4, data5, data6, data7, data8],
+                     ignore_index=True)
+    return fret.SmFretAnalyzer(data, "da")
 
 
 @pytest.fixture
@@ -250,8 +310,8 @@ class TestSmFretAnalyzer:
         np.testing.assert_equal(f["d"], [1, 2, 3, 4])
         np.testing.assert_equal(f["a"], [5])
 
-    def test_segment_a_mass(self):
-        """fret.SmFretAnalyzer.segment_a_mass"""
+    def test_segment_mass(self):
+        """fret.SmFretAnalyzer.segment_mass"""
         # NaNs cause bogus changepoints using Pelt; if segment_a_mass
         # does not ignore donor frames, we should see that.
         a_mass = np.array([12000, 12000, 12000, 6000, 6000] * 5 +
@@ -274,50 +334,39 @@ class TestSmFretAnalyzer:
         fret_data = pd.concat([fret_data.iloc[::2], fret_data.iloc[1::2]],
                               ignore_index=True)
 
-        ana = fret.SmFretAnalyzer(
-            fret_data, "dddaa",
-            cp_detector=changepoint.Pelt(
-                "l2", min_size=1, jump=1, engine="python"))
-        ana.segment_a_mass(penalty=1e7)
+        cp_det = changepoint.Pelt("l2", min_size=1, jump=1, engine="python")
+
+        ana = fret.SmFretAnalyzer( fret_data, "dddaa", cp_detector=cp_det)
+        ana.segment_mass("acceptor", penalty=1e7)
         assert ("fret", "a_seg") in ana.tracks.columns
         np.testing.assert_equal(ana.tracks["fret", "a_seg"].values, segs * 2)
 
-    def test_acceptor_bleach_step(self, ana1):
-        """fret.SmFretAnalyzer.acceptor_bleach_step: truncate=False"""
-        expected = ana1.tracks[ana1.tracks["fret", "particle"] == 1].copy()
-        ana1.acceptor_bleach_step(500, truncate=False)
+        e_type2 = fret_data["fret", "exc_type"].copy()
+        e_type2[fret_data["fret", "exc_type"] == "d"] = "a"
+        e_type2[fret_data["fret", "exc_type"] == "a"] = "d"
+        fret_data["fret", "exc_type"] = e_type2
+
+        fret_data["fret", "d_mass"] = fret_data["fret", "a_mass"]
+
+        ana = fret.SmFretAnalyzer( fret_data, "aaddd", cp_detector=cp_det)
+        ana.segment_mass("donor", penalty=1e7)
+        assert ("fret", "d_seg") in ana.tracks.columns
+        np.testing.assert_equal(ana.tracks["fret", "d_seg"].values, segs * 2)
+
+    def test_bleach_step(self, ana1):
+        """fret.SmFretAnalyzer.bleach_step: truncate=False"""
+        exp_mask = ana1.tracks["fret", "particle"].isin([1, 3, 4])
+        expected = ana1.tracks[exp_mask].copy()
+        ana1.bleach_step(800, 500, truncate=False)
         pd.testing.assert_frame_equal(ana1.tracks, expected)
 
-    def test_acceptor_bleach_step_trunc(self, ana1):
-        """fret.SmFretAnalyzer.acceptor_bleach_step: truncate=True"""
-        expected = ana1.tracks[(ana1.tracks["fret", "particle"] == 1) &
-                               (ana1.tracks["fret", "a_mass"] > 500)].copy()
-        ana1.acceptor_bleach_step(500, truncate=True)
-        pd.testing.assert_frame_equal(ana1.tracks, expected)
-
-    def test_acceptor_bleach_step_alex(self, ana1):
-        """fret.SmFretAnalyzer.acceptor_bleach_step: alternating excitation"""
-        data = pd.DataFrame(np.repeat(ana1.tracks.values, 2, axis=0),
-                            columns=ana1.tracks.columns)
-        data["donor", "frame"] = data["acceptor", "frame"] = \
-            list(range(len(data) // 3)) * 3
-        data["fret", "exc_type"] = pd.Series(["d", "a"] * (len(data) // 2),
-                                             dtype="category")
-
-        ana = fret.SmFretAnalyzer(data.copy(), "da")
-        ana.acceptor_bleach_step(500, truncate=True)
-        exp = data[(data["fret", "particle"] == 1) &
-                   (data["donor", "frame"] < 10)]
-        pd.testing.assert_frame_equal(ana.tracks, exp)
-
-    def test_acceptor_bleach_step_nocp(self, ana1):
-        """fret.SmFretAnalyzer.acceptor_bleach_step: no changepoint"""
-        expected = ana1.tracks[ana1.tracks["fret", "particle"].isin({0, 2})]
-        expected = expected.copy()
-
-        ana1.tracks.loc[ana1.tracks["fret", "particle"] == 1,
-                        ("fret", "a_seg")] = 0
-        ana1.acceptor_bleach_step(1600, truncate=False)
+    def test_bleach_step_trunc(self, ana1):
+        """fret.SmFretAnalyzer.bleach_step: truncate=True"""
+        exp_mask = (ana1.tracks["fret", "particle"].isin([1, 3, 4]) &
+                    (ana1.tracks["fret", "a_seg"] == 0) &
+                    (ana1.tracks["fret", "d_seg"] == 0))
+        expected = ana1.tracks[exp_mask].copy()
+        ana1.bleach_step(800, 500, truncate=True)
         pd.testing.assert_frame_equal(ana1.tracks, expected)
 
     def test_flag_excitation_type(self, ana2):
@@ -595,7 +644,7 @@ class TestSmFretAnalyzer:
         d = ana1.tracks.copy()
         ana1.image_mask(mask, "donor")
         pd.testing.assert_frame_equal(ana1.tracks,
-                                      d[d["fret", "particle"] == 0])
+                                      d[d["fret", "particle"].isin([0, 3])])
 
     def test_image_mask_list(self, ana1):
         """fret.SmFretAnalyzer.image_mask: list of masks"""
@@ -605,23 +654,19 @@ class TestSmFretAnalyzer:
                      ("f3", np.ones_like(mask))]
 
         d = ana1.tracks
-        d.loc[d["fret", "particle"] == 0,
-              [("acceptor", "x"), ("acceptor", "y")]] = [20, 10]
-        d.loc[d["fret", "particle"] == 1,
-              [("acceptor", "x"), ("acceptor", "y")]] = [50, 70]
         d_conc = pd.concat([d]*3, keys=["f1", "f2", "f3"])
 
         ana1.tracks = d_conc.copy()
         ana1.image_mask(mask_list, "donor")
 
-        exp = pd.concat([d[d["fret", "particle"] == 0], d.iloc[:0], d],
+        exp = pd.concat([d[d["fret", "particle"].isin([0, 3])], d.iloc[:0], d],
                         keys=["f1", "f2", "f3"])
         pd.testing.assert_frame_equal(ana1.tracks, exp)
 
         ana1.tracks = d_conc.copy()
         ana1.image_mask(mask_list, "acceptor")
 
-        exp = pd.concat([d[d["fret", "particle"] == 1], d.iloc[:0], d],
+        exp = pd.concat([d[d["fret", "particle"].isin([0, 3])], d.iloc[:0], d],
                         keys=["f1", "f2", "f3"])
         pd.testing.assert_frame_equal(ana1.tracks, exp)
 
