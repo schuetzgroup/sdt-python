@@ -10,6 +10,8 @@ Currently, there is
   :py:mod:`sdt.loc` algorithms with visual feedback
 - the :py:class:`Thresholder` class for setting parameters for the
   thresholding algorithms in :py:mod:`sdt.image` with visual feedback
+- the :py:class:`ROISelector` class for choosing ROIs by drawing them on
+  images
 
 
 Programming reference
@@ -18,6 +20,9 @@ Programming reference
     :members:
 .. autoclass:: Thresholder
     :members:
+.. autoclass:: ROISelector
+    :members:
 """
 from .locator import Locator
+from .roi_selector import ROISelector
 from .thresholder import Thresholder
