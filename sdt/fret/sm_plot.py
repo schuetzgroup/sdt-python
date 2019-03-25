@@ -13,7 +13,7 @@ from .. import loc, config, plot
 def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
                    frame=None, columns=2, size=5, xlim=(None, None),
                    ylim=(None, None), xlabel=None, ylabel=None,
-                   scatter_args={}, grid=True):
+                   scatter_args={}, grid=True, ax=None):
     """Make scatter plots of multiple smFRET datasets
 
     Parameters
@@ -43,6 +43,9 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
         Defaults to {}.
     grid : bool, optional
         Whether to draw a grid in the plots. Defaults to True.
+    ax : array-like of matplotlib.axes.Axes or None, optional
+        Axes to use for plotting. If `None`, a new figure with axes is
+        created. Defaults to `None`.
 
     Returns
     -------
@@ -51,9 +54,15 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
     ax : numpy.ndarray of mpl.axes.Axes
         axes objects of the plots
     """
-    rows = math.ceil(len(track_data) / columns)
-    fig, ax = plt.subplots(rows, columns, sharex=True, sharey=True,
-                           squeeze=False, figsize=(columns*size, rows*size))
+    if ax is None:
+        rows = math.ceil(len(track_data) / columns)
+        fig, ax = plt.subplots(rows, columns, sharex=True, sharey=True,
+                               squeeze=False,
+                               figsize=(columns*size, rows*size),
+                               constrained_layout=True)
+    else:
+        ax = np.array(ax).reshape((-1, columns))
+        fig = ax.flatten()[0].figure
 
     for (k, f), a in zip(track_data.items(), ax.flatten()):
         if frame is not None:
@@ -86,13 +95,12 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
     for a in ax[:, 0]:
         a.set_ylabel(ylabel)
 
-    fig.tight_layout()
     return fig, ax
 
 
 def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
                 size=5, xlim=(None, None), xlabel=None, ylabel=None,
-                group_re=None, hist_args={}):
+                group_re=None, hist_args={}, ax=None):
     """Make histogram plots of multiple smFRET datasets
 
     Parameters
@@ -124,6 +132,9 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
     hist_args : dict, optional
         Further arguments to pass as keyword arguments to the histogram
         plotting function. Defaults to {}.
+    ax : array-like of matplotlib.axes.Axes or None, optional
+        Axes to use for plotting. If `None`, a new figure with axes is
+        created. Defaults to `None`.
 
     Returns
     -------
@@ -147,9 +158,14 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
         grouped = OrderedDict([(k, [(None, v)])
                                for k, v in track_data.items()])
 
-    rows = math.ceil(len(grouped) / columns)
-    fig, ax = plt.subplots(rows, columns, squeeze=False, sharex=True,
-                           figsize=(columns*size, rows*size))
+    if ax is None:
+        rows = math.ceil(len(grouped) / columns)
+        fig, ax = plt.subplots(rows, columns, squeeze=False, sharex=True,
+                               figsize=(columns*size, rows*size),
+                               constrained_layout=True)
+    else:
+        ax = np.array(ax).reshape((-1, columns))
+        fig = ax.flatten()[0].figure
 
     hist_args.setdefault("bins", np.linspace(-0.5, 1.5, 50))
     hist_args.setdefault("density", False)
@@ -182,7 +198,6 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
         a.grid()
         a.set_xlim(*xlim)
 
-    fig.tight_layout()
     return fig, ax
 
 
