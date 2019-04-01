@@ -153,5 +153,5 @@ References
     Cells", Biophysical Journal, Elsevier BV, 2000, 79, 2188–2198
 """
 from .msd import *
-from .msd_cdf import *
+#from .msd_cdf import *
 from .immobilization import *
