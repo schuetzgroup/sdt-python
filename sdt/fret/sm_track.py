@@ -91,13 +91,9 @@ class SmFretTracker:
             ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This
             parameters sets the :py:attr:`columns` attribute.
         """
-        self.excitation_seq = excitation_seq
-        """Excitation sequence. "d" stands for donor, "a" for acceptor,
-        anything else describes other kinds of frames which are irrelevant for
-        tracking.
-
-        One needs only specify the shortest sequence that is repeated,
-        i. e. "ddddaddddadddda" is the same as "dddda".
+        self.frame_selector = FrameSelector(excitation_seq)
+        """A :py:class:`FrameSelector` instance with the matching
+        :py:attr:`excitation_seq`.
         """
         self.chromatic_corr = chromatic_corr
         """chromatic.Corrector used to overlay channels"""
@@ -150,6 +146,21 @@ class SmFretTracker:
 
         if link_quiet and trackpy_available:
             trackpy.quiet()
+
+    @property
+    def excitation_seq(self):
+        """Excitation sequence. "d" stands for donor, "a" for acceptor,
+        anything else describes other kinds of frames which are irrelevant for
+        tracking.
+
+        One needs only specify the shortest sequence that is repeated,
+        i. e. "ddddaddddadddda" is the same as "dddda".
+        """
+        return self.frame_selector.excitation_seq
+
+    @excitation_seq.setter
+    def excitation_seq(self, seq):
+        self.frame_selector.excitation_seq = seq
 
     def track(self, donor_img, acceptor_img, donor_loc, acceptor_loc,
               d_mass=False):
@@ -237,8 +248,8 @@ class SmFretTracker:
         self.link_options["t_column"] = self.columns["time"]
 
         # Track only "d" and "a" frames. Renumber frames for that.
-        selector = FrameSelector(self.excitation_seq)
-        merged = selector(merged, "da", renumber=True, columns=self.columns)
+        merged = self.frame_selector(merged, "da", renumber=True,
+                                     columns=self.columns)
         track_merged = trackpy.link_df(merged, **self.link_options)
 
         if self.interpolate:
@@ -258,8 +269,8 @@ class SmFretTracker:
         # selector.__call__ above.
         # Do this after calling spatial.interpolate_coords, otherwise the
         # excluded frames will be interpolated!
-        selector.restore_frame_numbers(track_merged, "da",
-                                       columns=self.columns)
+        self.frame_selector.restore_frame_numbers(track_merged, "da",
+                                                  columns=self.columns)
 
         # Get non-interpolated colocalized features
         non_interp_mask = track_merged["interp"] == 0
@@ -344,6 +355,7 @@ class SmFretTracker:
         :py:meth:`yaml.Dumper.add_representer`
         """
         m = {k: getattr(data, k) for k in cls._yaml_keys}
+        m["excitation_seq"] = "".join(m["excitation_seq"])
         return dumper.represent_mapping(cls.yaml_tag, m)
 
     @classmethod

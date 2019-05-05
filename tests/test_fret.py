@@ -158,8 +158,8 @@ class TestSmFretTracker(unittest.TestCase):
                              self.tracker.brightness_options)
         res = {}
         orig = {}
-        for k in ("excitation_seq", "acceptor_channel", "coloc_dist",
-                  "interpolate"):
+        for k in ("acceptor_channel", "coloc_dist", "interpolate",
+                  "neighbor_radius"):
             res[k] = getattr(tracker, k)
             orig[k] = getattr(self.tracker, k)
         self.assertEqual(res, orig)
@@ -168,6 +168,8 @@ class TestSmFretTracker(unittest.TestCase):
                                    self.tracker.chromatic_corr.parameters1)
         np.testing.assert_allclose(tracker.chromatic_corr.parameters2,
                                    self.tracker.chromatic_corr.parameters2)
+        np.testing.assert_equal(tracker.excitation_seq,
+                                self.tracker.excitation_seq)
 
 
 def test_numeric_exc_type():
