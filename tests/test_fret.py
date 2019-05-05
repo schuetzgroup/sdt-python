@@ -117,6 +117,24 @@ class TestSmFretTracker(unittest.TestCase):
                                       check_dtype=False, check_like=True)
 
     @unittest.skipUnless(trackpy_available, "trackpy not available")
+    def test_track_skip_other_frames(self):
+        """fret.SmFretTracker.track: Skip non-donor-or-acceptor frames"""
+        self.tracker.excitation_seq = "cdada"
+        self.tracker.link_options["memory"] = 0
+        self.tracker.min_length = 8
+
+        # even with frames dropped we should still get both tracks since
+        # the dropped frames are not of "d" or "a" excitation type
+        fret_data = self.tracker.track(
+            self.don_img, self.acc_img, self.don_loc.drop([0, 5]),
+            self.acc_loc.drop([0, 5]))
+
+        # drop frames that are not of "d" or "a" type
+        expected = self.fret_data.drop([0, 5, 10, 15]).reset_index(drop=True)
+        pd.testing.assert_frame_equal(fret_data, expected,
+                                      check_dtype=False, check_like=True)
+
+    @unittest.skipUnless(trackpy_available, "trackpy not available")
     def test_track_d_mass(self):
         """fret.SmFretTracker.track: d_mass=True"""
         fret_data = self.tracker.track(self.don_img, self.acc_img,
@@ -140,7 +158,8 @@ class TestSmFretTracker(unittest.TestCase):
                              self.tracker.brightness_options)
         res = {}
         orig = {}
-        for k in ("acceptor_channel", "coloc_dist", "interpolate"):
+        for k in ("excitation_seq", "acceptor_channel", "coloc_dist",
+                  "interpolate"):
             res[k] = getattr(tracker, k)
             orig[k] = getattr(self.tracker, k)
         self.assertEqual(res, orig)

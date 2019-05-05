@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from .. import multicolor, spatial, brightness, config
+from .utils import FrameSelector
 
 try:
     import trackpy
@@ -21,9 +22,9 @@ class SmFretTracker:
     :py:mod:`sdt.io.yaml`.
     """
     yaml_tag = "!SmFretTracker"
-    _yaml_keys = ("chromatic_corr", "link_options", "min_length",
-                  "brightness_options", "interpolate", "coloc_dist",
-                  "acceptor_channel", "neighbor_radius")
+    _yaml_keys = ("excitation_seq", "chromatic_corr", "link_options",
+                  "min_length", "brightness_options", "interpolate",
+                  "coloc_dist", "acceptor_channel", "neighbor_radius")
 
     @config.set_columns
     def __init__(self, excitation_seq="da", chromatic_corr=None, link_radius=5,
@@ -33,6 +34,8 @@ class SmFretTracker:
                  link_options={}, columns={}):
         """Parameters
         ----------
+        excitation_seq : str or list-like of characters, optional
+            Set the :py:attr:`excitation_seq` attribute. Defaults to "da".
         chromatic_corr : chromatic.Corrector or None, optional
             Corrector used to overlay channels. If `None`, create a Corrector
             with the identity transform. Defaults to `None`.
@@ -87,6 +90,14 @@ class SmFretTracker:
             coordinate columns "x" and "z" and the time column "alt_frame", set
             ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This
             parameters sets the :py:attr:`columns` attribute.
+        """
+        self.excitation_seq = excitation_seq
+        """Excitation sequence. "d" stands for donor, "a" for acceptor,
+        anything else describes other kinds of frames which are irrelevant for
+        tracking.
+
+        One needs only specify the shortest sequence that is repeated,
+        i. e. "ddddaddddadddda" is the same as "dddda".
         """
         self.chromatic_corr = chromatic_corr
         """chromatic.Corrector used to overlay channels"""
@@ -224,6 +235,10 @@ class SmFretTracker:
 
         self.link_options["pos_columns"] = self.columns["coords"]
         self.link_options["t_column"] = self.columns["time"]
+
+        # Track only "d" and "a" frames. Renumber frames for that.
+        selector = FrameSelector(self.excitation_seq)
+        merged = selector(merged, "da", renumber=True, columns=self.columns)
         track_merged = trackpy.link_df(merged, **self.link_options)
 
         if self.interpolate:
@@ -238,6 +253,13 @@ class SmFretTracker:
         if self.neighbor_radius:
             spatial.has_near_neighbor(track_merged, self.neighbor_radius,
                                       self.columns)
+
+        # Restore original frame numbers that were changed when calling
+        # selector.__call__ above.
+        # Do this after calling spatial.interpolate_coords, otherwise the
+        # excluded frames will be interpolated!
+        selector.restore_frame_numbers(track_merged, "da",
+                                       columns=self.columns)
 
         # Get non-interpolated colocalized features
         non_interp_mask = track_merged["interp"] == 0
