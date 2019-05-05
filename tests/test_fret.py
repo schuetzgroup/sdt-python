@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from sdt import fret, chromatic, image, changepoint, io, flatfield
+from sdt import fret, chromatic, image, changepoint, io, flatfield, helper
 
 try:
     import trackpy
@@ -78,7 +78,7 @@ class TestSmFretTracker(unittest.TestCase):
                                    keys=["donor", "acceptor", "fret"], axis=1)
 
         self.tracker = fret.SmFretTracker(
-            self.corr, link_radius=4, link_mem=1, min_length=5,
+            "da", self.corr, link_radius=4, link_mem=1, min_length=5,
             feat_radius=self.feat_radius, neighbor_radius=7.5)
 
     @unittest.skipUnless(trackpy_available, "trackpy not available")
@@ -898,51 +898,82 @@ def test_gaussian_mixture_split():
     assert split[1] == [0]
 
 
-class TestFretImageSelector(unittest.TestCase):
-    def setUp(self):
-        self.desc = "dddda"
-        self.don = [0, 1, 2, 3]
-        self.acc = [4]
-        self.selector = fret.FretImageSelector(self.desc)
+class TestFrameSelector:
+    @pytest.fixture
+    def selector(self):
+        return fret.FrameSelector("cddddaa")
 
-    def test_init(self):
-        """fret.FretImageSelector.__init__"""
-        np.testing.assert_equal(self.selector.excitation_frames["d"], self.don)
-        np.testing.assert_equal(self.selector.excitation_frames["a"], self.acc)
+    @pytest.fixture
+    def call_results(self):
+        res = {"d": [1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18],
+               "a": [5, 6, 12, 13, 19, 20]}
+        res["da"] = sorted(res["d"] + res["a"])
+        return res
 
-    def test_call_array(self):
-        """fret.FretImageSelector.__call__: array arg
+    def test_init(self, selector):
+        """fret.FrameSelector.__init__"""
+        np.testing.assert_equal(selector.excitation_frames["c"], [0])
+        np.testing.assert_equal(selector.excitation_frames["d"], [1, 2, 3, 4])
+        np.testing.assert_equal(selector.excitation_frames["a"], [5, 6])
+
+    def test_call_array(self, selector, call_results):
+        """fret.FrameSelector.__call__: array arg
 
         Arrays support advanced indexing. Therefore, the return type should be
         an array again.
         """
-        ar = np.arange(12)
-        r = self.selector(ar, "d")
-        r2 = self.selector(ar, "a")
+        ar = np.arange(21)
+        for k, v in call_results.items():
+            r = selector(ar, k)
+            np.testing.assert_equal(r, v)
+            assert isinstance(r, type(ar))
 
-        np.testing.assert_equal(r, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
-        np.testing.assert_equal(r2, [4, 9])
-        self.assertIsInstance(r, type(ar))
-
-    def test_call_list(self):
-        """fret.FretImageSelector.__call__: list arg
+    def test_call_list(self, selector, call_results):
+        """fret.FrameSelector.__call__: list arg
 
         Lists do not support advanced indexing. Therefore, the return type
         should be a Slicerator.
         """
-        try:
-            from slicerator import Slicerator
-        except ImportError:
-            raise unittest.SkipTest("slicerator package not found.")
+        ar = list(range(21))
+        for k, v in call_results.items():
+            r = selector(ar, k)
+            np.testing.assert_equal(list(r), v)
+            assert isinstance(r, helper.Slicerator)
 
-        ar = list(range(12))
-        r = self.selector(ar, "d")
-        r2 = self.selector(ar, "a")
+    def test_call_dataframe(self, selector, call_results):
+        """fret.FrameSelector.__call__: DataFrame arg"""
+        df = pd.DataFrame(np.arange(21)[:, None], columns=["frame"])
+        for k, v in call_results.items():
+            r = selector(df, k)
+            pd.testing.assert_frame_equal(r, df.loc[v])
 
-        np.testing.assert_equal(list(r), [0, 1, 2, 3, 5, 6, 7, 8, 10, 11])
-        np.testing.assert_equal(list(r2), [4, 9])
-        self.assertIsInstance(r, Slicerator)
+    def test_call_dataframe_renumber(self, selector, call_results):
+        """fret.FrameSelector.__call__: DataFrame arg, renumber=True"""
+        df = pd.DataFrame(np.arange(21)[:, None], columns=["frame"])
 
+        # drop a frame which should leave a gap when renumbering
+        drop_frame = 3
+        df = df.drop(drop_frame)
 
-if __name__ == "__main__":
-    unittest.main()
+        for k, v in call_results.items():
+            r = selector(df, k, renumber=True)
+            data = np.arange(len(v))[:, None]
+
+            # deal with dropped frame
+            v = np.array(v)
+            mask = v != drop_frame
+            v = v[mask]
+            data = data[mask]
+
+            np.testing.assert_equal(r.index, v)
+            np.testing.assert_equal(r.to_numpy(), data)
+
+    def test_restore_frame_numbers(self, selector):
+        """fret.FrameSelector.restore_frame_numbers"""
+        ar = np.arange(12)
+        ar = ar[ar != 7]
+        df = pd.DataFrame(ar[:, None], columns=["frame"])
+        df2 = df.copy()
+        selector.restore_frame_numbers(df2, "da")
+        np.testing.assert_allclose(df2["frame"],
+                                   [1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13])

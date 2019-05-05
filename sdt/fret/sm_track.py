@@ -26,7 +26,7 @@ class SmFretTracker:
                   "acceptor_channel", "neighbor_radius")
 
     @config.set_columns
-    def __init__(self, chromatic_corr=None, link_radius=5,
+    def __init__(self, excitation_seq="da", chromatic_corr=None, link_radius=5,
                  link_mem=1, min_length=1, feat_radius=4, bg_frame=2,
                  bg_estimator="mean", neighbor_radius="auto", interpolate=True,
                  coloc_dist=2., acceptor_channel=2, link_quiet=True,
