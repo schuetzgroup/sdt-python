@@ -501,7 +501,7 @@ class TestSmFretAnalyzer:
         direct_acc = (ana2.tracks["donor", "frame"] %
                       len(ana2.excitation_seq)).isin(
                           ana2.excitation_frames["a"])
-        a = np.nonzero(direct_acc)[0][0]  # First acc; assume sorted
+        a = np.nonzero(direct_acc.to_numpy())[0][0]  # First acc; assume sorted
         trc = ana2.tracks.iloc[:a+1].copy()
         mass = 1000
         mass_acc = 2000

@@ -205,9 +205,10 @@ class SmFretAnalyzer:
     @excitation_seq.setter
     def excitation_seq(self, v):
         self._exc_seq = pd.Series(list(v), dtype="category")
+        exc_seq_np = self._exc_seq.to_numpy()
         self._exc_frames = defaultdict(
             lambda: np.empty(0, dtype=int),
-            {k: np.nonzero(self._exc_seq == k)[0]
+            {k: np.nonzero(exc_seq_np == k)[0]
              for k in self._exc_seq.dtype.categories})
 
     def calc_fret_values(self, keep_d_mass=False, invalid_nan=True,
