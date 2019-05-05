@@ -1,7 +1,5 @@
 """Module containing a class for analyzing and filtering smFRET data"""
 from collections import defaultdict, OrderedDict
-import functools
-import numbers
 import itertools
 from contextlib import contextmanager
 
@@ -208,7 +206,7 @@ class SmFretAnalyzer:
     def excitation_seq(self, v):
         self._exc_seq = pd.Series(list(v), dtype="category")
         self._exc_frames = defaultdict(
-            lambda : np.empty(0, dtype=int),
+            lambda: np.empty(0, dtype=int),
             {k: np.nonzero(self._exc_seq == k)[0]
              for k in self._exc_seq.dtype.categories})
 
@@ -252,7 +250,8 @@ class SmFretAnalyzer:
         frames with donor excitation.
 
         :math:`I_{AA}` is append as a ``("fret", "a_mass")`` column.
-        The stoichiometry value is added in the ``("fret", "stoi_app")`` column.
+        The stoichiometry value is added in the ``("fret", "stoi_app")``
+        column.
 
         Parameters
         ----------
@@ -479,11 +478,11 @@ class SmFretAnalyzer:
 
         Examples
         --------
-        Consider acceptors with a brightness ``("fret", "a_mass")`` of less than
-        500 counts and donors with a brightness ``("fret", "d_mass")`` of less
-        than 800 counts bleached. Remove all tracks that don't show acceptable
-        bleaching behavior. Of the other tracks, only keep data from before
-        any bleaching.
+        Consider acceptors with a brightness ``("fret", "a_mass")`` of less
+        than 500 counts and donors with a brightness ``("fret", "d_mass")`` of
+        less than 800 counts bleached. Remove all tracks that don't show
+        acceptable bleaching behavior. Of the other tracks, only keep data from
+        before any bleaching.
 
         >>> filt.acceptor_bleach_step(800, 500, truncate=True)
         """
@@ -517,10 +516,10 @@ class SmFretAnalyzer:
                 # above acceptor_thresh and if there are either no steps in
                 # the donor mass or if only the first step in the donor
                 # brightness is above donor_thresh
-                is_good =  (len(med_a) > 1 and
-                            all(m < acceptor_thresh for m in med_a[1:]) and
-                            (len(med_d) == 1 or all(m < donor_thresh
-                                                    for m in med_d[1:])))
+                is_good = (len(med_a) > 1 and
+                           all(m < acceptor_thresh for m in med_a[1:]) and
+                           (len(med_d) == 1 or all(m < donor_thresh
+                                                   for m in med_d[1:])))
                 if is_good:
                     if truncate:
                         # Add data before bleach step
@@ -952,7 +951,6 @@ class SmFretAnalyzer:
                           (self.tracks["fret", "a_seg"] == 0)]
 
         if n_components > 1:
-            from sklearn.mixture import GaussianMixture
             split = gaussian_mixture_split(trc, n_components)
             trc = trc[trc["fret", "particle"].isin(split[component])]
 
