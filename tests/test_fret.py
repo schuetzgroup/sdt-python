@@ -947,6 +947,28 @@ class TestFrameSelector:
             r = selector(df, k)
             pd.testing.assert_frame_equal(r, df.loc[v])
 
+    def test_renumber(self, selector, call_results):
+        """fret.FrameSelector._renumber: restore=False"""
+        drop_frame = 3
+        for k, v in call_results.items():
+            v = np.array(v)
+            mask = v != drop_frame
+            v = v[mask]
+
+            r = selector._renumber(v, k, restore=False)
+            np.testing.assert_equal(r, np.arange(len(mask))[mask])
+
+    def test_renumber_restore(self, selector, call_results):
+        """fret.FrameSelector._renumber: restore=True"""
+        drop_frame = 3
+        for k, v in call_results.items():
+            v = np.array(v)
+            mask = v != drop_frame
+            v = v[mask]
+
+            r = selector._renumber(np.arange(len(mask))[mask], k, restore=True)
+            np.testing.assert_equal(r, v)
+
     def test_call_dataframe_renumber(self, selector, call_results):
         """fret.FrameSelector.__call__: DataFrame arg, renumber=True"""
         df = pd.DataFrame(np.arange(21)[:, None], columns=["frame"])
