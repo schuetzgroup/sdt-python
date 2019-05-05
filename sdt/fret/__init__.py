@@ -108,7 +108,7 @@ References
     Diffusing Biomolecules Using Alternating-Laser Excitation", Biophysical
     Journal, Elsevier BV, 2005, 88, 2939–2953
 """
-from .image_utils import *
+from .utils import *
 from .sm_track import *
 from .sm_analyzer import *
 from .sm_plot import *
