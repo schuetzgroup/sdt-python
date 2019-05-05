@@ -1,7 +1,5 @@
 import unittest
 import os
-from collections import OrderedDict
-import warnings
 from io import StringIO
 
 import pandas as pd
@@ -178,7 +176,7 @@ def ana1():
     # Two bleach steps in acceptor, none in donor
     loc1 = pd.DataFrame(
         np.array([np.full(sz, 50), np.full(sz, 70), np.arange(sz)],
-                    dtype=float).T,
+                 dtype=float).T,
         columns=["x", "y", "frame"])
     fret1 = pd.DataFrame(
         np.array([[4000, 0] * (sz // 2),
@@ -189,7 +187,7 @@ def ana1():
         columns=["d_mass", "a_mass", "d_seg", "a_seg", "particle"])
     fret1["exc_type"] = pd.Series(["d", "a"] * (sz // 2), dtype="category")
     data1 = pd.concat([loc1, loc1, fret1], axis=1,
-                       keys=["donor", "acceptor", "fret"])
+                      keys=["donor", "acceptor", "fret"])
 
     # One bleach step in acceptor, none in donor
     loc2 = loc1.copy()
@@ -199,7 +197,7 @@ def ana1():
     fret2["a_seg"] = [0] * 10 + [1] * 10
     fret2["particle"] = 1
     data2 = pd.concat([loc2, loc2, fret2], axis=1,
-                       keys=["donor", "acceptor", "fret"])
+                      keys=["donor", "acceptor", "fret"])
 
     # One bleach step to non-zero in acceptor, none in donor
     loc3 = loc1.copy()
@@ -209,7 +207,7 @@ def ana1():
     fret3["a_seg"] = [0] * 10 + [1] * 10
     fret3["particle"] = 2
     data3 = pd.concat([loc3, loc3, fret3], axis=1,
-                       keys=["donor", "acceptor", "fret"])
+                      keys=["donor", "acceptor", "fret"])
 
     # One bleach step in acceptor, one in donor before acceptor
     loc4 = loc2.copy()
@@ -219,7 +217,7 @@ def ana1():
     fret4["d_seg"] = [0] * 5 + [1] * 15
     fret4["particle"] = 3
     data4 = pd.concat([loc4, loc4, fret4], axis=1,
-                       keys=["donor", "acceptor", "fret"])
+                      keys=["donor", "acceptor", "fret"])
 
     # One bleach step in acceptor, one in donor after acceptor
     loc5 = loc4.copy()
@@ -229,7 +227,7 @@ def ana1():
     fret5["d_seg"] = [0] * 13 + [1] * 7
     fret5["particle"] = 4
     data5 = pd.concat([loc5, loc5, fret5], axis=1,
-                       keys=["donor", "acceptor", "fret"])
+                      keys=["donor", "acceptor", "fret"])
 
     # One bleach step in acceptor, one in donor to non-zero
     loc6 = loc4.copy()
@@ -239,7 +237,7 @@ def ana1():
     fret6["d_seg"] = [0] * 13 + [1] * 7
     fret6["particle"] = 5
     data6 = pd.concat([loc6, loc6, fret6], axis=1,
-                       keys=["donor", "acceptor", "fret"])
+                      keys=["donor", "acceptor", "fret"])
 
     # One bleach step in acceptor, two in donor
     loc7 = loc4.copy()
@@ -249,7 +247,7 @@ def ana1():
     fret7["d_seg"] = [0] * 5 + [1] * 6 + [2] * 9
     fret7["particle"] = 6
     data7 = pd.concat([loc7, loc7, fret7], axis=1,
-                       keys=["donor", "acceptor", "fret"])
+                      keys=["donor", "acceptor", "fret"])
 
     # No bleach steps in either channel
     loc8 = loc1.copy()
@@ -259,7 +257,7 @@ def ana1():
     fret8["a_seg"] = [0] * sz
     fret8["particle"] = 7
     data8 = pd.concat([loc8, loc8, fret8], axis=1,
-                       keys=["donor", "acceptor", "fret"])
+                      keys=["donor", "acceptor", "fret"])
 
     data = pd.concat([data1, data2, data3, data4, data5, data6, data7, data8],
                      ignore_index=True)
@@ -285,11 +283,10 @@ def ana2():
     """SmFretAnalyzer used in some tests"""
     num_frames = 20
     seq = "dddda"
-    a_frames = [4]
     mass = 1000
 
     loc = np.column_stack([np.arange(len(seq), len(seq)+num_frames),
-                            np.full(num_frames, mass)])
+                           np.full(num_frames, mass)])
     df = pd.DataFrame(loc, columns=["frame", "mass"])
     df = pd.concat([df]*2, keys=["donor", "acceptor"], axis=1)
     df["fret", "particle"] = 0
@@ -336,7 +333,7 @@ class TestSmFretAnalyzer:
 
         cp_det = changepoint.Pelt("l2", min_size=1, jump=1, engine="python")
 
-        ana = fret.SmFretAnalyzer( fret_data, "dddaa", cp_detector=cp_det)
+        ana = fret.SmFretAnalyzer(fret_data, "dddaa", cp_detector=cp_det)
         ana.segment_mass("acceptor", penalty=1e7)
         assert ("fret", "a_seg") in ana.tracks.columns
         np.testing.assert_equal(ana.tracks["fret", "a_seg"].values, segs * 2)
@@ -348,7 +345,7 @@ class TestSmFretAnalyzer:
 
         fret_data["fret", "d_mass"] = fret_data["fret", "a_mass"]
 
-        ana = fret.SmFretAnalyzer( fret_data, "aaddd", cp_detector=cp_det)
+        ana = fret.SmFretAnalyzer(fret_data, "aaddd", cp_detector=cp_det)
         ana.segment_mass("donor", penalty=1e7)
         assert ("fret", "d_seg") in ana.tracks.columns
         np.testing.assert_equal(ana.tracks["fret", "d_seg"].values, segs * 2)
@@ -878,9 +875,9 @@ class TestSmFretAnalyzer:
             np.testing.assert_allclose(ana.tracks["fret", "f_dd"], f_dd)
             np.testing.assert_allclose(ana.tracks["fret", "f_aa"], f_aa)
             np.testing.assert_allclose(ana.tracks["fret", "eff"],
-                                    f_da / (f_da + f_dd))
+                                       f_da / (f_da + f_dd))
             np.testing.assert_allclose(ana.tracks["fret", "stoi"],
-                                    (f_da + f_dd) / (f_da + f_dd + f_aa))
+                                       (f_da + f_dd) / (f_da + f_dd + f_aa))
             ana.fret_correction()
 
 
@@ -907,8 +904,6 @@ class TestFretImageSelector(unittest.TestCase):
         self.don = [0, 1, 2, 3]
         self.acc = [4]
         self.selector = fret.FretImageSelector(self.desc)
-
-        num_frames = 20
 
     def test_init(self):
         """fret.FretImageSelector.__init__"""
