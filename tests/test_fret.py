@@ -970,10 +970,10 @@ class TestFrameSelector:
 
     def test_restore_frame_numbers(self, selector):
         """fret.FrameSelector.restore_frame_numbers"""
-        ar = np.arange(12)
+        ar = np.arange(14)
         ar = ar[ar != 7]
         df = pd.DataFrame(ar[:, None], columns=["frame"])
         df2 = df.copy()
         selector.restore_frame_numbers(df2, "da")
-        np.testing.assert_allclose(df2["frame"],
-                                   [1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13])
+        np.testing.assert_allclose(
+                df2["frame"], [1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 15, 16])

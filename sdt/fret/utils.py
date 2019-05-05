@@ -105,13 +105,29 @@ class FrameSelector:
         numpy.ndarray
             New frame numbers
         """
+        frame_nos = np.asanyarray(frame_nos, dtype=int)
         good_frame_mask = np.isin(self.excitation_seq, list(which))
         max_frame = np.max(frame_nos)
-        n_repeats = math.ceil(max_frame / len(self.excitation_seq))
+        if restore:
+            # f_map_inv needs at least max_frame + 1 entries (the domain of
+            # the restoring map is {0, 1, …, max_frame}), meaning
+            # good_frame_mask has to be chained (max_frame + 1) / num_true
+            # times, where num_true is the number of True entries in
+            # good_frame_mask
+            num_true = np.sum(good_frame_mask)
+            n_repeats = math.ceil((max_frame + 1) / num_true)
+        else:
+            # f_map needs at least max_frame + 1 entries (the domain of
+            # the frame number map is {0, 1, …, max_frame}). f_map_inv's values
+            # (which form the codomain of the map) need to go up to at least
+            # max_frame.
+            n_repeats = math.ceil(max_frame / len(self.excitation_seq))
+        # Calculate the restoring map
         f_map_inv = np.nonzero(np.tile(good_frame_mask, n_repeats))[0]
         if restore:
             return f_map_inv[frame_nos]
-        f_map = np.full(max_frame + 1, -1)
+        # Invert the restoring map
+        f_map = np.full(f_map_inv[-1] + 1, -1, dtype=int)
         f_map[f_map_inv] = np.arange(f_map_inv.size)
         return f_map[frame_nos]
 
@@ -167,7 +183,7 @@ class FrameSelector:
             frames = data[columns["time"]] % len(self.excitation_seq)
             ret = data[frames.isin(good_frames)]
 
-            if renumber:
+            if renumber and not ret.empty:
                 ret = ret.copy()
                 ret[columns["time"]] = self._renumber(
                     ret[columns["time"]].to_numpy(), which, False)
@@ -207,5 +223,6 @@ class FrameSelector:
             That means, if the DataFrame has frame number columns "frame2",
             set ``columns={"time": "frame2"}``.
         """
-        data[columns["time"]] = self._renumber(
-            data[columns["time"]].to_numpy(), which, True)
+        if not data.empty:
+            data[columns["time"]] = self._renumber(
+                data[columns["time"]].to_numpy(), which, True)
