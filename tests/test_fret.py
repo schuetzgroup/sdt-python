@@ -668,8 +668,10 @@ class TestSmFretAnalyzer:
         """fret.SmFretAnalyzer.image_mask: list of masks"""
         mask = np.zeros((200, 200), dtype=bool)
         mask[50:100, 30:60] = True
-        mask_list = [("f1", mask), ("f2", np.zeros_like(mask)),
-                     ("f3", np.ones_like(mask))]
+        mask_list = [{"key": "f1", "mask": mask, "start": 1, "stop": 7},
+                     {"key": "f1", "mask": ~mask, "start": 10},
+                     {"key": "f2", "mask": np.zeros_like(mask)},
+                     {"key": "f3", "mask": np.ones_like(mask)}]
 
         d = ana1.tracks
         d_conc = pd.concat([d]*3, keys=["f1", "f2", "f3"])
@@ -677,15 +679,20 @@ class TestSmFretAnalyzer:
         ana1.tracks = d_conc.copy()
         ana1.image_mask(mask_list, "donor")
 
-        exp = pd.concat([d[d["fret", "particle"].isin([0, 3])], d.iloc[:0], d],
-                        keys=["f1", "f2", "f3"])
+        d1 = pd.concat([
+            # First mask
+            d[d["fret", "particle"].isin([0, 3]) &
+              (d["donor", "frame"] >= 1) & (d["donor", "frame"] < 7)],
+            # Second mask
+            d[~d["fret", "particle"].isin([0, 3]) &
+              (d["donor", "frame"] >= 10)]])
+        exp = pd.concat([d1, d.iloc[:0], d], keys=["f1", "f2", "f3"])
+
         pd.testing.assert_frame_equal(ana1.tracks, exp)
 
         ana1.tracks = d_conc.copy()
         ana1.image_mask(mask_list, "acceptor")
 
-        exp = pd.concat([d[d["fret", "particle"].isin([0, 3])], d.iloc[:0], d],
-                        keys=["f1", "f2", "f3"])
         pd.testing.assert_frame_equal(ana1.tracks, exp)
 
     def test_reset(self, ana1):

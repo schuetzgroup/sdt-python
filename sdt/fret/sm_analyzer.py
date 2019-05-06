@@ -688,11 +688,19 @@ class SmFretAnalyzer:
 
         Parameters
         ----------
-        mask : numpy.ndarray, dtype(bool) or list of (key, numpy.ndarray)
+        mask : numpy.ndarray, dtype(bool) or list of dict
             Mask image(s). If this is a single array, apply it to the whole
-            :py:attr:`tracks` DataFrame. This can also be a list of
-            (key, mask), in which case each mask is applied separately to
-            ``self.tracks.loc[key]``.
+            :py:attr:`tracks` DataFrame.
+
+            This can also be a list of dicts, where each dict ``d`` has to have
+            a "key" and a "mask" (ndarray) entry. Then each ``d["mask"]`` is
+            applied separately to the corresponding
+            ``self.tracks.loc[d["key"]]``. Additionally, the dicts may also
+            have "start" and "stop" entries, in which case the mask will be
+            applied only to datapoints with frames greater or equal `start` and
+            less than `stop`; all others will be discarded. With this it is
+            possible to apply multiple masks to the same key depending on the
+            frame number.
         channel : {"donor", "acceptor"}
             Channel to use for the filtering
 
@@ -708,10 +716,17 @@ class SmFretAnalyzer:
         If :py:attr:`tracks` has a MultiIndex index, where e.g. the first
         level is "file1", "file2", … and different masks should be applied
         for each file, this is possible by passing a list of
-        (key, mask) pairs.
+        dicts. Furthermore, we can apply one mask to all frames up to 100 and
+        another to the rest:
 
-        >>> masks = [("file%i" % i, numpy.ones((10*i, 10*i), dtype=bool))
-        ...          for i in range(1, 11)]
+        >>> masks = []
+        >>> for i in range(1, 10):
+        >>>     masks.append({"key": "file%i" % i,
+        ...                   "mask": numpy.ones((10 * i, 10 * i), dtype=bool),
+        ...                   "stop": 100})
+        >>>     masks.append({"key": "file%i" % i,
+        ...                   "mask": numpy.ones((20 * i, 20 * i), dtype=bool),
+        ...                   "start": 100})
         >>> filt.image_mask(masks, "donor")
         """
         cols = {"coords": [(channel, c) for c in self.columns["coords"]]}
@@ -720,17 +735,31 @@ class SmFretAnalyzer:
             r = roi.MaskROI(mask)
             self.tracks = r(self.tracks, columns=cols)
         else:
-            ret = []
-            for k, v in mask:
+            ret = OrderedDict()
+            for m in mask:
+                r = roi.MaskROI(m["mask"])
                 try:
-                    r = roi.MaskROI(v)
-                    m = r(self.tracks.loc[k], columns=cols)
+                    filt = r(self.tracks.loc[m["key"]], columns=cols)
                 except KeyError:
                     # No tracking data for the current image
                     continue
-                ret.append((k, m))
-            self.tracks = pd.concat([r[1] for r in ret],
-                                    keys=[r[0] for r in ret])
+
+                t_col = (channel, self.columns["time"])
+                start = m.get("start", None)
+                if start is not None:
+                    filt = filt[filt[t_col] >= start]
+                stop = m.get("stop", None)
+                if stop is not None:
+                    filt = filt[filt[t_col] < stop]
+                if not filt.empty:
+                    try:
+                        ret[m["key"]].append(filt)
+                    except KeyError:
+                        ret[m["key"]] = [filt]
+
+            for k, v in ret.items():
+                ret[k] = pd.concat(v)
+            self.tracks = pd.concat(list(ret.values()), keys=list(ret.keys()))
 
     def reset(self):
         """Undo any filtering
