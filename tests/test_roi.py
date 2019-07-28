@@ -131,8 +131,8 @@ class TestPathRoi(TestRoi):
     msg_prefix = "roi.PathROI"
 
     def setUp(self):
-        self.vertices = np.array([[10, 10], [90, 10], [90, 70], [10, 70]],
-                                 dtype=float) + 0.7
+        self.vertices = np.array([[10, 10], [90, 10], [90, 70], [10, 70],
+                                  [10, 10]], dtype=float) + 0.7
         self.bbox = np.array([self.vertices[0], self.vertices[2]])
         self.bbox_int = np.array([[10, 10], [91, 71]])
         self.mask = np.zeros((61, 81), dtype=bool)
@@ -149,10 +149,19 @@ class TestPathRoi(TestRoi):
 
     def test_init(self):
         """.__init__"""
-        np.testing.assert_array_equal(self.roi.path.vertices, self.vertices)
+        np.testing.assert_array_equal(self.roi.path.vertices,
+                                      self.vertices)
         np.testing.assert_allclose(self.roi.bounding_box, self.bbox)
         np.testing.assert_allclose(self.roi.bounding_box_int, self.bbox_int)
         self.assertEqual(self.roi.buffer, self.buffer)
+
+    def test_init_open(self):
+        """.__init__: open path"""
+        r = roi.PathROI(self.vertices[:-1, :], buffer=self.buffer)
+        np.testing.assert_array_equal(r.path.vertices, self.vertices)
+        np.testing.assert_allclose(r.bounding_box, self.bbox)
+        np.testing.assert_allclose(r.bounding_box_int, self.bbox_int)
+        self.assertEqual(r.buffer, self.buffer)
 
     def test_size(self):
         """.size property"""
@@ -386,8 +395,8 @@ class TestBufferedPathRoi(TestPathRoi):
 
     def setUp(self):
         super().setUp()
-        self.vertices = np.array([[20, 20], [80, 20], [80, 60], [20, 60]],
-                                 dtype=float) + 0.7
+        self.vertices = np.array([[20, 20], [80, 20], [80, 60], [20, 60],
+                                  [20, 20]], dtype=float) + 0.7
         self.buffer = 10
         self.roi = roi.PathROI(self.vertices, buffer=self.buffer)
         self.bbox = np.array([self.vertices[0] - self.buffer,
@@ -421,8 +430,8 @@ class TestNonOverlappingPathRoi(TestPathRoi):
 
     def setUp(self):
         super().setUp()
-        self.vertices = np.array([[-30, -30], [-30, 20], [20, 20], [20, -30]],
-                                 dtype=float)
+        self.vertices = np.array([[-30, -30], [-30, 20], [20, 20], [20, -30],
+                                  [-30, -30]], dtype=float)
         self.bbox = np.array([self.vertices[0], self.vertices[2]])
         self.bbox_int = self.bbox.astype(int)
         self.mask = np.ones((50, 50), dtype=bool)
@@ -474,7 +483,6 @@ class TestRectangleRoi(TestPathRoi):
 
     def setUp(self):
         super().setUp()
-        self.vertices = np.vstack([self.vertices, [self.vertices[0]]])
         self.top_left = self.vertices[0]
         self.bottom_right = self.vertices[2]
         self.roi = roi.RectangleROI(self.top_left, self.bottom_right)
@@ -487,6 +495,10 @@ class TestRectangleRoi(TestPathRoi):
             self.top_left, size=tuple(b-t for t, b in zip(self.top_left,
                                                           self.bottom_right)))
         self.assert_roi_equal(r, self.roi)
+
+    def test_init_open(self):
+        """.__init__: open path"""
+        pass
 
 
 class TestEllipseRoi(TestPathRoi):
@@ -508,6 +520,10 @@ class TestEllipseRoi(TestPathRoi):
         """.__init__"""
         super().test_init()
         np.testing.assert_array_equal(self.roi.path.codes, self.codes)
+
+    def test_init_open(self):
+        """.__init__: open path"""
+        pass
 
     def assert_roi_equal(self, desired, actual):
         np.testing.assert_allclose([actual.center, actual.axes],
@@ -672,6 +688,8 @@ class TestImagej(unittest.TestCase):
         self.assertIsInstance(r, roi.ROI)
         np.testing.assert_equal(r.top_left, (169, 55))
         np.testing.assert_equal(r.bottom_right, (169 + 42, 55 + 13))
+        for c in r.top_left + r.bottom_right:
+            assert isinstance(c, int)
 
     def test_load_rect_roi(self):
         """roi.imagej._load: rectangular ROI"""
@@ -701,7 +719,7 @@ class TestImagej(unittest.TestCase):
         """roi.imagej._load: polygon ROI"""
         r = roi.imagej._load((data_path / "polygon.roi").read_bytes())
         self.assertIsInstance(r, roi.PathROI)
-        vert = [[131, 40], [117, 59], [152, 57]]
+        vert = [[131, 40], [117, 59], [152, 57], [131, 40]]
         np.testing.assert_equal(r.path.vertices, vert)
 
     def test_load_freehand_roi(self):
@@ -725,7 +743,7 @@ class TestImagej(unittest.TestCase):
         """
         r = roi.imagej._load((data_path / "traced.roi").read_bytes())
         self.assertIsInstance(r, roi.PathROI)
-        vert = [[80, 70], [25, 70], [25, 10], [80, 10]]
+        vert = [[80, 70], [25, 70], [25, 10], [80, 10], [80, 70]]
         np.testing.assert_equal(r.path.vertices, vert)
 
     def test_load_imagej_str(self):

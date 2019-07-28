@@ -223,7 +223,13 @@ class PathROI(object):
         if isinstance(path, mpl.path.Path):
             self.path = mpl.path.Path(path.vertices, path.codes)
         else:
-            self.path = mpl.path.Path(path)
+            if len(path) and np.allclose(path[0], path[-1]):
+                vert = path
+            else:
+                vert = np.empty((len(path) + 1, 2))
+                vert[:-1, :] = path
+                vert[-1, :] = path[0]
+            self.path = mpl.path.Path(vert, closed=True)
 
         self.buffer = buffer
         """Float giving the width of extra space around the path. Does not
