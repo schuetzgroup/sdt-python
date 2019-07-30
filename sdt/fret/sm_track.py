@@ -162,6 +162,14 @@ class SmFretTracker:
     def excitation_seq(self, seq):
         self.frame_selector.excitation_seq = seq
 
+    @property
+    def excitation_frames(self):
+        """dict mapping the excitation types in :py:attr:`excitation_seq` to
+        the corresponding frame numbers (modulo the length of
+        py:attr:`excitation_seq`).
+        """
+        return self.frame_selector.excitation_frames
+
     def track(self, donor_img, acceptor_img, donor_loc, acceptor_loc,
               d_mass=False):
         """Track smFRET data
