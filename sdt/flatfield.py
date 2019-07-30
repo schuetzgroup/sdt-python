@@ -59,10 +59,26 @@ from . import config
 from . import gaussian_fit as gfit
 
 
+def _fit_result_to_list(r, no_offset=False):
+    if r is None:
+        return []
+    ret = ([r["amplitude"]] + list(r["center"]) + list(r["sigma"]) +
+           [r["rotation"]])
+    if not no_offset:
+        ret.append(r["offset"])
+    return ret
+
+
+def _fit_result_from_list(a):
+    if not len(a):
+        return None
+    return {"amplitude": a[0], "center": a[1:3], "sigma": a[3:5],
+            "rotation": a[5], "offset": a[6] if len(a) > 6 else 0}
+
+
 def _do_fit_g2d(mass, x, y, weights=1):
     g = gfit.guess_parameters(mass, x, y)
-    p = ((g["amplitude"],) + tuple(g["center"]) + tuple(g["sigma"]) +
-            (g["rotation"],))
+    p = _fit_result_to_list(g, no_offset=True)
 
     def r_gaussian_2d(params):
         a, cx, cy, sx, sy, r = params
@@ -73,9 +89,7 @@ def _do_fit_g2d(mass, x, y, weights=1):
         r_gaussian_2d, p,
         bounds=([0, -np.inf, 0, -np.inf, 0, -np.inf], np.inf))
 
-    return dict(amplitude=r.x[0], center=r.x[1:3], sigma=r.x[3:5], offset=0,
-                rotation=r.x[5])
-
+    return _fit_result_from_list(r.x)
 
 
 class Corrector(object):
@@ -318,7 +332,7 @@ class Corrector(object):
         """
         np.savez_compressed(
             file, avg_img=self.avg_img, corr_img=self.corr_img,
-            fit_result=self.fit_result, bg=self.bg)
+            fit_result=_fit_result_to_list(self.fit_result), bg=self.bg)
 
     @classmethod
     def load(cls, file):
@@ -328,6 +342,7 @@ class Corrector(object):
         ----------
         file : str or file-like
             Where to load from
+        old_format : bool, optional
 
         Returns
         -------
@@ -337,8 +352,8 @@ class Corrector(object):
         with np.load(file) as ld:
             ret = cls([ld["avg_img"]], gaussian_fit=False)
             ret.corr_img = ld["corr_img"]
-            ret.fit_result = np.asscalar(ld["fit_result"])
+            ret.fit_result = _fit_result_from_list(ld["fit_result"])
             bg = ld["bg"]
-            ret.bg = bg if bg.size > 1 else np.asscalar(bg)
+            ret.bg = bg if bg.size > 1 else bg.item()
             ret._make_interp()
         return ret
