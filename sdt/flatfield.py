@@ -60,6 +60,25 @@ from . import gaussian_fit as gfit
 
 
 def _fit_result_to_list(r, no_offset=False):
+    """Flatten fit result dict to list
+
+    Parameters
+    ----------
+    r : dict or None
+        Fit results. If `None`, return empty list.
+    no_offset : bool, optional
+        Whether to exclude "offset" from the list. If `False`, it is put at the
+        end. Defaults to `False`.
+
+    Returns
+    -------
+    list
+        Dict values or empty list if `r` was `None`.
+
+    See also
+    --------
+    :py:func:`_fit_result_from_list`
+    """
     if r is None:
         return []
     ret = ([r["amplitude"]] + list(r["center"]) + list(r["sigma"]) +
@@ -70,6 +89,24 @@ def _fit_result_to_list(r, no_offset=False):
 
 
 def _fit_result_from_list(a):
+    """Create fit result dict from list
+
+    Inverts the action of :py:func:`_fit_result_to_list`.
+
+    Parameters
+    ----------
+    a : list-like
+        Fit results
+
+    Returns
+    -------
+    dict or None
+        Dict values if list is not empty, else `None`.
+
+    See also
+    --------
+    :py:func:`_fit_result_to_list`
+    """
     if not len(a):
         return None
     return {"amplitude": a[0], "center": a[1:3], "sigma": a[3:5],
@@ -77,6 +114,20 @@ def _fit_result_from_list(a):
 
 
 def _do_fit_g2d(mass, x, y, weights=1):
+    """Do the LSQ fitting of a 2D Gaussian
+
+    Parameters
+    ----------
+    mass, x, y : numpy.ndarray
+        Brightness values and corresponding x and y coordinates
+    weights : numpy.ndarray, optional
+        Weights of the data points. Defaults to 1.
+
+    Returns
+    -------
+    dict
+        Fit results
+    """
     g = gfit.guess_parameters(mass, x, y)
     p = _fit_result_to_list(g, no_offset=True)
 
