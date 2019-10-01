@@ -87,7 +87,7 @@ Plotting
 
 Image selection
 ---------------
-.. autoclass:: FretImageSelector
+.. autoclass:: FrameSelector
     :members:
     :special-members: __call__
 
