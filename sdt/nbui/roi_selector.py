@@ -137,7 +137,7 @@ class ROISelector(VBox):
             with self._img_sel.hold_trait_notifications():
                 self._img_sel.options = list(self.images)
                 self.rois = {c: {k: None for k in self.images}
-                            for c in self.categories}
+                             for c in self.categories}
 
     @traitlets.observe("rois")
     def _roi_trait_changed(self, change=None):
