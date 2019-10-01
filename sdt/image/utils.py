@@ -25,12 +25,10 @@ def fill_gamut(img, dtype=None):
     if dtype is None:
         dtype = img.dtype
 
-    if np.issubdtype(dtype, np.integer):
-        maxi = np.iinfo(dtype).max
-    else:
-        maxi = 1.
-
     scaled = img - img.min()
-    scaled = scaled / scaled.max() * maxi
+    scaled = scaled / scaled.max()
+
+    if np.issubdtype(dtype, np.integer):
+        scaled *= np.iinfo(dtype).max
 
     return scaled.astype(dtype)

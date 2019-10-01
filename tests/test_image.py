@@ -198,7 +198,7 @@ class TestFillGamut:
 
 @pytest.mark.skipif(not hasattr(image, "threshold"),
                     reason="`threshold` submodule not available "
-                        "(missing OpenCV?)")
+                           "(missing OpenCV?)")
 class TestThresh:
     img = np.array([[0, 0, 0, 0, 0, 0],
                     [0, 1, 1, 1, 0, 0],
