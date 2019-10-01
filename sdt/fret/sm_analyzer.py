@@ -742,7 +742,10 @@ class SmFretAnalyzer:
                     filt = r(self.tracks.loc[m["key"]], columns=cols)
                 except KeyError:
                     # No tracking data for the current image
-                    continue
+                    filt = self.tracks.iloc[:0]
+                    # Drop filename level, as it is dropped using
+                    # self.tracks.loc[m["key"]] as well.
+                    filt.index = filt.index.droplevel(0)
 
                 t_col = (channel, self.columns["time"])
                 start = m.get("start", None)
@@ -751,11 +754,11 @@ class SmFretAnalyzer:
                 stop = m.get("stop", None)
                 if stop is not None:
                     filt = filt[filt[t_col] < stop]
-                if not filt.empty:
-                    try:
-                        ret[m["key"]].append(filt)
-                    except KeyError:
-                        ret[m["key"]] = [filt]
+
+                try:
+                    ret[m["key"]].append(filt)
+                except KeyError:
+                    ret[m["key"]] = [filt]
 
             for k, v in ret.items():
                 ret[k] = pd.concat(v)

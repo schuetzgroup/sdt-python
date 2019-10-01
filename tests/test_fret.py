@@ -695,6 +695,19 @@ class TestSmFretAnalyzer:
 
         pd.testing.assert_frame_equal(ana1.tracks, exp)
 
+    def test_image_mask_list_empty(self, ana1):
+        """fret.SmFretAnalyzer.image_mask: list of masks, no matching data"""
+        mask = np.zeros((200, 200), dtype=bool)
+        mask_list = [{"key": "f1", "mask": mask},
+                     {"key": "f2", "mask": mask}]
+        d = ana1.tracks
+        d_conc = pd.concat([d]*2, keys=["f1", "f2"])
+
+        ana1.tracks = d_conc.copy()
+        ana1.image_mask(mask_list, "donor")
+
+        pd.testing.assert_frame_equal(ana1.tracks, d_conc.iloc[:0])
+
     def test_reset(self, ana1):
         """fret.SmFretAnalyzer.reset"""
         d = ana1.tracks.copy()
