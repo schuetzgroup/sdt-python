@@ -1,16 +1,24 @@
 import unittest
 import os
 import collections
-import types
+import functools
+import itertools
+from pathlib import Path
 import warnings
 
-import pandas as pd
+try:
+    import matplotlib as mpl
+    mpl.use("agg")
+    mpl_available = True
+except ImportError:
+    mpl_available = False
 import numpy as np
+import pandas as pd
 import pytest
 
-from sdt import motion, io, testing
-#from sdt.motion import msd_cdf
-from sdt.motion.msd import _displacements, _square_displacements
+from sdt import motion, io
+from sdt.motion import msd, msd_dist
+from sdt.motion.msd_base import _displacements, _square_displacements, MsdData
 from sdt.helper import numba
 
 
@@ -61,7 +69,7 @@ def trc_sd_list(trc_disp_list):
 
 
 class TestDisplacements:
-    """motion.msd._displacements"""
+    """motion.msd_base._displacements"""
     def test_call(self, trc, trc_disp_list):
         """Update list"""
         prev_arr = np.arange(6).reshape((-1, 2))
@@ -121,7 +129,7 @@ class TestDisplacements:
 
 
 class TestSquareDisplacements:
-    """motion.msd._square_displacements"""
+    """motion.msd_base._square_displacements"""
     def test_call(self):
         """2D data"""
         m = 10
@@ -153,6 +161,89 @@ class TestSquareDisplacements:
                                    ([14 * n**2 for n in range(m)] +
                                     [77 * n**2 for n in range(m)]))
         np.testing.assert_allclose(res[1], [194 * n**2 for n in range(m)])
+
+
+class TestMsdData:
+    """motion.msd_base.MsdData"""
+    def _assert_dict_allclose(self, d1, d2):
+        """Assert equal keys and numpy array values in a dict"""
+        assert sorted(d1) == sorted(d2)
+        for k, v in d1.items():
+            np.testing.assert_allclose(v, d2[k])
+
+    def test_init_noboot(self):
+        """__init__ without bootstrapping"""
+        d = {0: np.array([[1, 2, 3]]).T,
+             1: np.array([[4, 5, 6]]).T}
+        frate = 10
+
+        mdata = MsdData(frate, d)
+        assert mdata.frame_rate == frate
+        assert mdata.data == d
+        self._assert_dict_allclose(mdata.means,
+                                   {k: v[:, 0] for k, v in d.items()})
+        self._assert_dict_allclose(mdata.errors,
+                                   {k: np.full(v.shape[0], np.NaN)
+                                    for k, v in d.items()})
+
+    def test_init_boot(self):
+        """__init__ without bootstrapping"""
+        d = {0: np.array([[1, 2, 3], [2, 4, 6]]),
+             1: np.array([[4, 6, 8], [6, 7, 8]])}
+        frate = 10
+
+        mdata = MsdData(frate, d)
+        assert mdata.frame_rate == frate
+        assert mdata.data == d
+        self._assert_dict_allclose(mdata.means, {0: [2, 4], 1: [6, 7]})
+        self._assert_dict_allclose(mdata.errors, {0: [1, 2], 1: [2, 1]})
+
+    def test_init_mean_err(self):
+        """__init__ with mean and error"""
+        d = {0: np.array([[1, 2, 3]]).T,
+             1: np.array([[4, 5, 6]]).T}
+        frate = 10
+        m = {0: np.array([7, 8, 9]), 1: np.array([10, 11, 12])}
+        e = {0: np.array([1, 2, 3]), 1: np.array([4, 5, 6])}
+
+        mdata = MsdData(frate, d, means=m, errors=e)
+        assert mdata.frame_rate == frate
+        assert mdata.data == d
+        self._assert_dict_allclose(mdata.means, m)
+        self._assert_dict_allclose(mdata.errors, e)
+
+    def test_get_lagtimes(self):
+        """get_lagtimes"""
+        frate = 10
+        mdata = MsdData(frate, {}, {}, {})
+        n_lag = 15
+        ltimes = mdata.get_lagtimes(n_lag)
+        assert ltimes.shape == (n_lag,)
+        for i, lt in enumerate(ltimes):
+            assert lt == (i + 1) / frate
+
+    def test_make_dataframe(self):
+        """make_dataframe"""
+        # Use 0 and 1 as index as well as (0, 0) and (0, 1) (MultiIndex)
+        for idx in [(0, 1), ((0, 0), (0, 1))]:
+            n_lag = 3
+            m = {idx[0]: [1, 2, 3], idx[1]: [3, 4, 5]}
+            e = {idx[0]: [0, 1, 2], idx[1]: [10, 11, 12]}
+            frate = 10
+            mdata = MsdData(frate, {}, m, e)
+
+            msd = mdata.make_dataframe("means")
+            err = mdata.make_dataframe("errors")
+
+            for df in (msd, err):
+                if isinstance(idx[0], tuple):
+                    assert isinstance(df.index, pd.MultiIndex)
+                assert list(df.index) == list(m.keys())
+                assert np.all(df.columns == mdata.get_lagtimes(n_lag))
+            np.testing.assert_allclose(msd.to_numpy(),
+                                       np.array(list(m.values())))
+            np.testing.assert_allclose(err.to_numpy(),
+                                       np.array(list(e.values())))
 
 
 class NotReallyRandom:
@@ -190,12 +281,12 @@ class TestMsd:
     def _check_get_msd(self, m_cls):
         """Check output of Msd.get_msd()"""
         res = m_cls.get_msd()
-        msd_df = pd.DataFrame(m_cls._msds).T
-        err_df = pd.DataFrame(m_cls._err).T
+        msd_df = pd.DataFrame(m_cls._msd_data.means).T
+        err_df = pd.DataFrame(m_cls._msd_data.errors).T
 
         for r, e in zip(res, [msd_df, err_df]):
             # Check index
-            idx = pd.Index(m_cls._msds.keys())
+            idx = pd.Index(m_cls._msd_data.means.keys())
             if isinstance(idx, pd.MultiIndex):
                 assert r.index.names == ("file", "particle")
             else:
@@ -214,7 +305,8 @@ class TestMsd:
         trc, keys = inputs
         m_cls = motion.Msd(trc, frame_rate=10, n_boot=0, e_name="bla")
 
-        for t in (m_cls._msd_set, m_cls._msds, m_cls._err):
+        for t in (m_cls._msd_data.data, m_cls._msd_data.means,
+                  m_cls._msd_data.errors):
             assert len(t) == 1
             assert "bla" in t
 
@@ -227,9 +319,10 @@ class TestMsd:
         expected_msd = np.array(expected_msd)
         expected_err = np.array(expected_err)
 
-        np.testing.assert_allclose(m_cls._msd_set["bla"], expected_msd)
-        np.testing.assert_allclose(m_cls._msds["bla"], expected_msd[:, 0])
-        np.testing.assert_allclose(m_cls._err["bla"], expected_err)
+        np.testing.assert_allclose(m_cls._msd_data.data["bla"], expected_msd)
+        np.testing.assert_allclose(m_cls._msd_data.means["bla"],
+                                   expected_msd[:, 0])
+        np.testing.assert_allclose(m_cls._msd_data.errors["bla"], expected_err)
 
         self._check_get_msd(m_cls)
 
@@ -238,23 +331,24 @@ class TestMsd:
         trc, keys = inputs
         m_cls = motion.Msd(trc, frame_rate=10, n_boot=0, ensemble=False)
 
-        for t in (m_cls._msd_set, m_cls._msds, m_cls._err):
-            assert len(t) == len(keys)
+        for t in (m_cls._msd_data.data, m_cls._msd_data.means,
+                  m_cls._msd_data.errors):
             for k in keys:
                 assert k in t
 
         for n, k in enumerate(keys):
             expected_msd = np.array([[np.mean(sd * (n + 1)**2)]
                                      for sd in trc_sd_list])
-            np.testing.assert_allclose(m_cls._msd_set[k], expected_msd)
-            np.testing.assert_allclose(m_cls._msds[k], expected_msd[:, 0])
+            np.testing.assert_allclose(m_cls._msd_data.data[k], expected_msd)
+            np.testing.assert_allclose(m_cls._msd_data.means[k],
+                                       expected_msd[:, 0])
             expected_err = []
             for sd in trc_sd_list:
                 with warnings.catch_warnings():
                     warnings.simplefilter("ignore", RuntimeWarning)
                     expected_err.append(np.std(sd * (n + 1)**2, ddof=1) /
                                         np.sqrt(len(sd)))
-            np.testing.assert_allclose(m_cls._err[k], expected_err)
+            np.testing.assert_allclose(m_cls._msd_data.errors[k], expected_err)
 
         self._check_get_msd(m_cls)
 
@@ -264,7 +358,8 @@ class TestMsd:
         m_cls = motion.Msd(trc, frame_rate=10, n_boot=3, e_name="bla",
                            random_state=NotReallyRandom())
 
-        for t in (m_cls._msd_set, m_cls._msds, m_cls._err):
+        for t in (m_cls._msd_data.data, m_cls._msd_data.means,
+                  m_cls._msd_data.errors):
             assert len(t) == 1
             assert "bla" in t
 
@@ -277,9 +372,10 @@ class TestMsd:
         expected_msd = np.array(expected_msd)
         expected_err = np.array([np.std(m, ddof=1) for m in expected_msd])
 
-        np.testing.assert_allclose(m_cls._msd_set["bla"], expected_msd)
-        np.testing.assert_allclose(m_cls._msds["bla"], expected_msd[:, 1])
-        np.testing.assert_allclose(m_cls._err["bla"], expected_err)
+        np.testing.assert_allclose(m_cls._msd_data.data["bla"], expected_msd)
+        np.testing.assert_allclose(m_cls._msd_data.means["bla"],
+                                   expected_msd[:, 1])
+        np.testing.assert_allclose(m_cls._msd_data.errors["bla"], expected_err)
 
         self._check_get_msd(m_cls)
 
@@ -289,7 +385,8 @@ class TestMsd:
         m_cls = motion.Msd(trc, frame_rate=10, n_boot=3, ensemble=False,
                            random_state=NotReallyRandom())
 
-        for t in (m_cls._msd_set, m_cls._msds, m_cls._err):
+        for t in (m_cls._msd_data.data, m_cls._msd_data.means,
+                  m_cls._msd_data.errors):
             assert len(t) == len(keys)
             for k in keys:
                 assert k in t
@@ -303,19 +400,12 @@ class TestMsd:
             expected_msd = np.array(expected_msd)
             expected_err = np.array([np.std(m, ddof=1) for m in expected_msd])
 
-            np.testing.assert_allclose(m_cls._msd_set[k], expected_msd)
-            np.testing.assert_allclose(m_cls._msds[k], expected_msd[:, 1])
-            np.testing.assert_allclose(m_cls._err[k], expected_err)
+            np.testing.assert_allclose(m_cls._msd_data.data[k], expected_msd)
+            np.testing.assert_allclose(m_cls._msd_data.means[k],
+                                       expected_msd[:, 1])
+            np.testing.assert_allclose(m_cls._msd_data.errors[k], expected_err)
 
         self._check_get_msd(m_cls)
-
-    def test_get_lagtimes(self, trc_df):
-        for n in (1, 10, 100):
-            for frate in (0.1, 1, 10):
-                m_cls = motion.Msd(trc_df, frame_rate=frate, n_boot=0)
-                np.testing.assert_allclose(
-                        m_cls._get_lagtimes(n),
-                        np.linspace(1/frate, n/frate, n))
 
     def test_3d(self, trc_df, trc_disp_list):
         """3D data, ensemble, no bootstrapping"""
@@ -330,7 +420,8 @@ class TestMsd:
         m_cls = motion.Msd(trc_df, frame_rate=10, n_boot=0, e_name="bla",
                            columns={"coords": ["x", "y", "z"]})
 
-        for t in (m_cls._msd_set, m_cls._msds, m_cls._err):
+        for t in (m_cls._msd_data.data, m_cls._msd_data.means,
+                  m_cls._msd_data.errors):
             assert len(t) == 1
             assert "bla" in t
 
@@ -344,9 +435,10 @@ class TestMsd:
         expected_msd = np.array(expected_msd)
         expected_err = np.array(expected_err)
 
-        np.testing.assert_allclose(m_cls._msd_set["bla"], expected_msd)
-        np.testing.assert_allclose(m_cls._msds["bla"], expected_msd[:, 0])
-        np.testing.assert_allclose(m_cls._err["bla"], expected_err)
+        np.testing.assert_allclose(m_cls._msd_data.data["bla"], expected_msd)
+        np.testing.assert_allclose(m_cls._msd_data.means["bla"],
+                                   expected_msd[:, 0])
+        np.testing.assert_allclose(m_cls._msd_data.errors["bla"], expected_err)
 
 
 class TestAnomalousDiffusionStaticMethods:
@@ -491,8 +583,8 @@ class TestAnomalousDiffusion:
     n_lag = (5, 20)
 
     def make_fitter(self, msd_set, n_lag):
-        msd = types.SimpleNamespace(_msd_set=msd_set, frame_rate=100)
-        return motion.AnomalousDiffusion(msd, n_lag=n_lag)
+        m = MsdData(100, msd_set)
+        return motion.AnomalousDiffusion(m, n_lag=n_lag)
 
     def test_single_fit(self, msd_set, fit_results):
         """Test with a single set per particle (i.e. no bootstrapping)"""
@@ -517,12 +609,12 @@ class TestAnomalousDiffusion:
             assert list(f._err.keys()) == [0, 2]
 
             means0 = [np.mean(r) for r in fit_results[0]]
-            np.testing.assert_allclose(f._results[0], means0, rtol=1e-5)
+            np.testing.assert_allclose(f._results[0], means0, rtol=1e-4)
             stds0 = [np.std(r, ddof=1) for r in fit_results[0]]
-            np.testing.assert_allclose(f._err[0], stds0, rtol=1e-5)
+            np.testing.assert_allclose(f._err[0], stds0, rtol=1e-4)
 
             means2 = [np.mean(r) for r in fit_results[1]]
-            np.testing.assert_allclose(f._results[2], means2, rtol=1e-5)
+            np.testing.assert_allclose(f._results[2], means2, rtol=1e-4)
             stds2 = [np.std(r, ddof=1) for r in fit_results[1]]
             np.testing.assert_allclose(f._err[2], stds2, rtol=1e-4)
 
@@ -538,7 +630,7 @@ class TestAnomalousDiffusion:
         assert len(err) == 0
 
         np.testing.assert_allclose(res.values, fit_results[:, :, 1],
-                                   rtol=1.e-5)
+                                   rtol=1.e-4)
 
         f = self.make_fitter(msd_set, 20)
         res, err = f.get_results()
@@ -546,10 +638,10 @@ class TestAnomalousDiffusion:
         assert list(res.index) == list(err.index) == [0, 2]
 
         np.testing.assert_allclose(res.values, np.mean(fit_results, axis=2),
-                                   rtol=1.e-5)
+                                   rtol=1.e-4)
         np.testing.assert_allclose(err.values,
                                    np.std(fit_results, axis=2, ddof=1),
-                                   rtol=1.e-5)
+                                   rtol=1.e-4)
 
 
 class TestBrownianMotion(TestAnomalousDiffusion):
@@ -573,8 +665,8 @@ class TestBrownianMotion(TestAnomalousDiffusion):
     n_lag = (2, 20)
 
     def make_fitter(self, msd_set, n_lag, exposure_time=0):
-        msd = types.SimpleNamespace(_msd_set=msd_set, frame_rate=10)
-        return motion.BrownianMotion(msd, n_lag=n_lag,
+        m = MsdData(10, msd_set)
+        return motion.BrownianMotion(m, n_lag=n_lag,
                                      exposure_time=exposure_time)
 
     def test_single_fit(self, msd_set):
@@ -619,96 +711,401 @@ class TestBrownianMotion(TestAnomalousDiffusion):
             np.testing.assert_allclose(f._err[2], [5, np.std(pa2, ddof=1)])
 
 
-class TestMotion(unittest.TestCase):
-    def setUp(self):
-        self.traj1 = io.load(os.path.join(data_path, "B-1_000__tracks.mat"))
-        self.traj2 = io.load(os.path.join(data_path, "B-1_001__tracks.mat"))
+@pytest.fixture(params=["lsq", "weighted-lsq", "prony"])
+def cdf_fit_method_name(request):
+    return request.param
 
-    def test_emsd(self):
-        orig = pd.read_hdf(os.path.join(data_path, "emsd.h5"), "emsd")
+
+@pytest.fixture(params=["lsq", "weighted-lsq", "prony"])
+def cdf_fit_function(request):
+    if request.param == "lsq":
+        return functools.partial(msd_dist._fit_cdf_lsq, weighted=False)
+    if request.param == "weighted-lsq":
+        return functools.partial(msd_dist._fit_cdf_lsq, weighted=True)
+    if request.param == "prony":
+        return functools.partial(msd_dist._fit_cdf_prony, poly_order=30)
+
+
+def exp_sample(n, b):
+    """Generate an exponentially distributed sample
+
+    Parameters
+    ----------
+    n : int
+        Number of data points
+    b : float
+        Distribution parameter
+
+    Returns
+    -------
+    numpy.ndarray
+        Sample
+    """
+    y = np.linspace(0, 1, n, endpoint=False)
+    return -b * np.log(1 - y)
+
+
+class NoReplaceRS(np.random.RandomState):
+    """Do not replace when bootstrapping.
+
+    That way, always the same dataset  is generated.
+    """
+    def choice(self, a, size=None, replace=True, p=None):
+        return super().choice(a, size, False, p)
+
+
+class TestFitCdf:
+    """motion.msd_dist helper functions"""
+    msds = np.array([0.02, 0.08])
+    t_max = 0.5
+
+    def cdf(self, x, msds, f):
+        return (1 - f * np.exp(-x / msds[0]) -
+                (1 - f) * np.exp(-x / msds[1]))
+
+    def test_fit_cdf(self, cdf_fit_function):
+        """motion.msd_cdf._fit_cdf_* functions"""
+        f = 2 / 3
+        x = np.logspace(-5, 0.5, 100)
+        beta, lam = cdf_fit_function(x, self.cdf(x, self.msds, f), 2)
+
+        np.testing.assert_allclose(sorted(beta), sorted([-f, -1 + f]),
+                                   atol=5e-3)
+        np.testing.assert_allclose(sorted(-1/lam), sorted(self.msds),
+                                   atol=2e-3)
+
+    def test_msd_from_cdf_no_boot(self, cdf_fit_method_name):
+        """motion._msd_from_cdf, no bootstrapping"""
+        f = np.array([2/3, 3/4])
+        n = 10000
+        fn = np.round(f * n).astype(int)
+        sq_disp = [
+            np.concatenate([exp_sample(fn[0], self.msds[0]),
+                            exp_sample(n - fn[0], self.msds[1])]),
+            np.concatenate([exp_sample(fn[1], 2*self.msds[0]),
+                            exp_sample(n - fn[1], 2*self.msds[1])])
+        ]
+        msds, weights = msd_dist._msd_from_cdf(sq_disp, 2, cdf_fit_method_name,
+                                               0)
+        msds_exp = np.array([self.msds, 2*self.msds]).T
+        weights_exp = np.array([[f[0], f[1]],
+                                [1 - f[0], 1 - f[1]]])
+        np.testing.assert_allclose(msds, msds_exp[..., None], atol=1e-3)
+        np.testing.assert_allclose(weights, weights_exp[..., None], atol=2e-3)
+
+    def test_msd_from_cdf_boot(self, cdf_fit_method_name):
+        """motion._msd_from_cdf, bootstrapping"""
+        f = np.array([2/3, 3/4])
+        n = 10000
+        fn = np.round(f * n).astype(int)
+        n_boot = 10
+        sq_disp = [
+            np.concatenate([exp_sample(fn[0], self.msds[0]),
+                            exp_sample(n - fn[0], self.msds[1])]),
+            np.concatenate([exp_sample(fn[1], 2*self.msds[0]),
+                            exp_sample(n - fn[1], 2*self.msds[1])])
+        ]
+
+        msds, weights = msd_dist._msd_from_cdf(sq_disp, 2, cdf_fit_method_name,
+                                               n_boot, NoReplaceRS(0))
+        msds_exp = np.array([self.msds, 2*self.msds]).T
+        weights_exp = np.array([[f[0], f[1]],
+                                [1 - f[0], 1 - f[1]]])
+        np.testing.assert_allclose(msds, np.dstack([msds_exp] * n_boot),
+                                   atol=1e-3)
+        np.testing.assert_allclose(weights, np.dstack([weights_exp] * n_boot),
+                                   atol=2e-3)
+
+
+class TestMsdDist:
+    msds = np.array([0.02, 0.08])
+    f = 2 / 3
+
+    @pytest.fixture
+    def trc_df(self):
+        n = 10000
+        fn = round(self.f * n)
+        sq_disp = np.concatenate([exp_sample(fn, self.msds[0]),
+                                  exp_sample(n - fn, self.msds[1])])
+        x = np.cumsum(np.sqrt(sq_disp))
+        fr = np.arange(len(x))
+        trc = pd.DataFrame({"x": x, "y": 10, "frame": fr, "particle": 0})
+        return trc
+
+    @pytest.fixture(params=["DataFrame", "list", "dict"])
+    def inputs(self, request, trc_df):
+        trc = [trc_df, trc_df.copy()]
+        trc[1]["particle"] += trc_df["particle"].max() + 1
+        if request.param == "DataFrame":
+            trc = pd.concat(trc, ignore_index=True)
+            keys = np.unique(trc["particle"].values)
+        elif request.param == "list":
+            keys = [(i, j) for i, t in enumerate(trc)
+                    for j in t["particle"].unique()]
+        elif request.param == "dict":
+            trc = {f"file{i+1}": t for i, t in enumerate(trc)}
+            keys = [(i, j) for i, t in trc.items()
+                    for j in t["particle"].unique()]
+        return trc, keys
+
+    @pytest.fixture(params=[0, 3])
+    def n_boot(self, request):
+        return request.param
+
+    @pytest.fixture(params=[True, False])
+    def ensemble(self, request):
+        return request.param
+
+    def test_msd_calc(self, inputs, cdf_fit_method_name, n_boot, ensemble):
+        """motion.MsdDist: MSD calculation"""
+        n_lag = 2
+        trc, keys = inputs
+        frame_rate = 10
+        m_cls = motion.MsdDist(trc, n_components=2, frame_rate=frame_rate,
+                               n_boot=n_boot, n_lag=n_lag,
+                               fit_method=cdf_fit_method_name, e_name="bla",
+                               random_state=NoReplaceRS(), ensemble=ensemble)
+
+        if ensemble:
+            keys = ["bla"]
+
+        assert len(m_cls._msd_data) == len(self.msds)
+        for m in m_cls._msd_data:
+            for t in (m.data, m.means, m.errors):
+                assert list(t) == list(keys)
+
+        out_size = max(n_boot, 1)
+        for x in itertools.chain(m_cls._msd_data, m_cls._weight_data):
+            for k in keys:
+                assert x.data[k].shape == (n_lag, out_size)
+                assert x.means[k].shape == (n_lag,)
+                assert x.errors[k].shape == (n_lag,)
+
+        for m, e in zip(m_cls._msd_data, self.msds):
+            # Only check first entry since only single step MSDs were
+            # distributed exponentially
+            for k in keys:
+                np.testing.assert_allclose(m.data[k][0, :], e, atol=1e-3)
+                assert m.means[k][0] == pytest.approx(e, abs=1e-3)
+                if n_boot == 0:
+                    assert np.isnan(m.errors[k][0])
+                else:
+                    assert m.errors[k] == pytest.approx(0, abs=1e-3)
+
+        for w, e in zip(m_cls._weight_data, [self.f, 1 - self.f]):
+            # Only check first entry since only single step MSDs were
+            # distributed exponentially
+            np.testing.assert_allclose(w.data[k][0, :], e, atol=2e-3)
+            assert w.means[k][0] == pytest.approx(e, abs=2e-3)
+            if n_boot == 0:
+                assert np.isnan(w.errors[k][0])
+            else:
+                assert w.errors[k] == pytest.approx(0, abs=1e-3)
+
+        # Check MSD dataframes
+        dfs = m_cls.get_msd()
+        for d, m_exp, w_exp in zip(dfs, self.msds, [self.f, 1 - self.f]):
+            assert len(d) == 4
+            for df in d:
+                assert list(df.index) == list(keys)
+                np.testing.assert_allclose(df.columns.to_numpy(),
+                                           np.arange(1, n_lag+1) / frame_rate)
+            m, m_err, w, w_err = d
+            # Only check first entry since only single step MSDs were
+            # distributed exponentially
+            np.testing.assert_allclose(m.iloc[:, 0], m_exp, atol=1e-3)
+            np.testing.assert_allclose(w.iloc[:, 0], w_exp, atol=2e-3)
+            if n_boot == 0:
+                assert np.all(np.isnan(m_err.to_numpy()))
+                assert np.all(np.isnan(w_err.to_numpy()))
+            else:
+                np.testing.assert_allclose(m_err.to_numpy(), 0, atol=1e-3)
+                np.testing.assert_allclose(w_err.to_numpy(), 0, atol=1e-3)
+
+    @pytest.fixture(params=["str", "class"])
+    def brownian_cls(self, request):
+        if request.param == "str":
+            return "brownian"
+        return msd.BrownianMotion
+
+    def brownian_msd(self, frate, n_lag, n_boot, d, pa, exp_time):
+        m = (4 * d * (np.arange(1, n_lag + 1) / frate - exp_time / 3)
+             + 4 * pa**2)
+        return np.column_stack([m] * n_boot)
+
+    def test_msd_fit_brownian(self, brownian_cls):
+        """msd_cdf.MsdDist.fit: Brownian model"""
+        frate = 10
+
+        # Create dummy MsdDist instance
+        dx = np.arange(10)
+        trc = pd.DataFrame({"x": np.cumsum(dx), "y": 10, "frame": dx,
+                            "particle": 0})
+        m_cls = motion.MsdDist(trc, n_components=2, frame_rate=frate,
+                               n_boot=0, n_lag=2, fit_method="lsq")
+
+        # Create MSD data
+        n_lag = 10
+        n_boot = 5
+        etime = 0.03
+        params = [{0: (1, 0.05), 1: (0.5, 0.1)},
+                  {0: (2, 0.1), 1: (1, 0.2)}]
+        m = [MsdData(frate, {p: self.brownian_msd(frate, n_lag, n_boot, d, pa,
+                                                  etime)
+                             for p, (d, pa) in par.items()})
+             for par in params]
+        weights = [{0: 0.3, 1: 0.4}, {0: 0.7, 1: 0.6}]
+        w = [MsdData(frate, {k: np.full((10, n_boot), v)
+                             for k, v in w.items()})
+             for w in weights]
+        m_cls._msd_data = m
+        m_cls._weight_data = w
+
+        # Fit
+        res = m_cls.fit(brownian_cls, 2, exposure_time=etime)
+
+        for m, p in zip(res.msd_fits, params):
+            assert len(m._results) == 2
+            assert len(m._err) == 2
+            for k in (0, 1):
+                np.testing.assert_allclose(m._results[k], p[k])
+                np.testing.assert_allclose(m._err[k], 0, atol=1e-3)
+
+        assert len(res.weights._results) == 2
+        assert len(res.weights._err) == 2
+        for k in (0, 1):
+            np.testing.assert_allclose(res.weights._results[k],
+                                       [p[k] for p in weights])
+            np.testing.assert_allclose(res.weights._err[k], 0, atol=1e-3)
+
+        # Check results dataframes
+        dfs = res.get_results()
+        for d, p_exp, w_exp in zip(dfs, params, weights):
+            assert len(d) == 2
+            for df in d:
+                assert list(df.index) == list(p_exp.keys())
+                assert list(df.columns) == ["D", "PA", "weight"]
+            fit, fit_err = d
+            for i, par in p_exp.items():
+                np.testing.assert_allclose(fit.loc[i].iloc[:-1].to_numpy(),
+                                           par)
+                assert fit.loc[i].iloc[-1] == pytest.approx(w_exp[i])
+            np.testing.assert_allclose(fit_err.to_numpy(), 0, atol=1e-3)
+
+    def test_msd_cdf_fit_plot(self):
+        """msd_cdf.MsdDistfFit.plot: Just see if it runs"""
+        dx = np.arange(10)
+        trc = pd.DataFrame({"x": np.cumsum(dx), "y": 10, "frame": dx,
+                            "particle": 0})
+        m_cls = motion.MsdDist(trc, n_components=2, frame_rate=10,
+                               n_boot=0, n_lag=2, fit_method="lsq")
+        m_cls.fit().plot()
+
+
+class TestMsdDistWeights:
+    """msd_dist.Weights"""
+    @pytest.fixture
+    def weight_data(self):
+        frate = 10
+        w = [MsdData(frate,
+                     {0: np.array([np.arange(0, 3), np.arange(1, 4)]),
+                      1: np.array([np.arange(2, 5), np.arange(3, 6)]) * 2}),
+             MsdData(frate,
+                     {0: np.array([np.arange(0, 3), np.arange(1, 4)]) * 2,
+                      1: np.array([np.arange(2, 5), np.arange(3, 6)]) * 3})]
+        return w
+
+    @pytest.fixture
+    def means(self):
+        return collections.OrderedDict([(0, [1.5, 3.0]), (1, [7.0, 10.5])])
+
+    @pytest.fixture
+    def errors(self):
+        return collections.OrderedDict([
+            (0, [np.sqrt(2) * 0.5, np.sqrt(2) * 1.0]),
+            (1, [np.sqrt(2) * 1.0, np.sqrt(2) * 1.5])
+        ])
+
+    def test_init(self, weight_data, means, errors):
+        """msd_cdf.Weights.__init__"""
+        w_cls = msd_dist.Weights(weight_data)
+        assert sorted(w_cls._results.keys()) == [0, 1]
+        assert w_cls._results[0] == means[0]
+        assert w_cls._results[1] == means[1]
+        assert sorted(w_cls._err.keys()) == [0, 1]
+        np.testing.assert_allclose(w_cls._err[0], errors[0])
+        np.testing.assert_allclose(w_cls._err[1], errors[1])
+
+    def test_get_results(self, weight_data, means, errors):
+        """msd_cdf.Weights.get_results"""
+        w_cls = msd_dist.Weights(weight_data)
+        res = w_cls.get_results()
+        for r in res:
+            assert list(r.columns) == list(range(len(weight_data)))
+            assert list(r.index) == list(means.keys())
+        fit, err = res
+        np.testing.assert_allclose(fit.to_numpy(),
+                                   np.array(list(means.values())))
+        np.testing.assert_allclose(err.to_numpy(),
+                                   np.array(list(errors.values())))
+
+    def test_plot(self, weight_data):
+        """msd_cdf.Weights.plot: Make sure it runs"""
+        w_cls = msd_dist.Weights(weight_data)
+        w_cls.plot()
+
+
+class TestLegacyAPI:
+    """Old API"""
+    @pytest.fixture
+    def traj1(self):
+        return io.load(Path(data_path, "B-1_000__tracks.mat"))
+
+    @pytest.fixture
+    def traj2(self):
+        return io.load(Path(data_path, "B-1_001__tracks.mat"))
+
+    def test_emsd(self, traj1, traj2):
+        orig = pd.read_hdf(Path(data_path, "emsd.h5"), "emsd")
         with pytest.warns(np.VisibleDeprecationWarning):
-            e = motion.emsd([self.traj1, self.traj2], 1, 1)
+            e = motion.emsd([traj1, traj2], 1, 1)
         columns = ["msd", "stderr", "lagt"]
         np.testing.assert_allclose(e[columns], orig[columns])
 
-    def test_imsd(self):
+    def test_imsd(self, traj1):
         # orig gives the same results as trackpy.imsd, except for one case
         # where trackpy is wrong when handling trajectories with missing
         # frames
-        orig = pd.read_hdf(os.path.join(data_path, "imsd.h5"), "imsd")
+        orig = pd.read_hdf(Path(data_path, "imsd.h5"), "imsd")
         with pytest.warns(np.VisibleDeprecationWarning):
-            imsd = motion.imsd(self.traj1, 1, 1)
+            imsd = motion.imsd(traj1, 1, 1)
         np.testing.assert_allclose(imsd, orig)
 
+    def test_emsd_cdf(self, cdf_fit_method_name):
+        n = 10000
+        f = 2 / 3
+        msds = [0.02, 0.04]
+        fps = 100
+        n_lag = 10
+        fn = round(f * n)
+        sq_disp = np.concatenate([exp_sample(fn, msds[0]),
+                                  exp_sample(n - fn, msds[1])])
+        x = np.cumsum(np.sqrt(sq_disp))
+        fr = np.arange(len(x))
+        trc = pd.DataFrame({"x": x, "y": 10, "frame": fr, "particle": 0})
 
-#@pytest.fixture(params=["lsq", "weighted-lsq", "prony"])
-#def cdf_fit_method_name(request):
-    #return request.param
+        with pytest.warns(np.VisibleDeprecationWarning):
+            e = motion.emsd_cdf(trc, 1, fps, max_lagtime=n_lag,
+                                method=cdf_fit_method_name)
 
+        for e_, m, f_ in zip(e, msds, [f, (1 - f)]):
+            assert e_.shape == (n_lag, 3)
+            # Only check first entry since only single step MSDs were
+            # distributed exponentially
+            assert e_.iloc[0]["lagt"] == 1 / fps
+            assert e_.iloc[0]["msd"] == pytest.approx(m, abs=0.003)
+            assert e_.iloc[0]["fraction"] == pytest.approx(f_, abs=0.02)
 
-#@pytest.fixture(params=["lsq", "weighted-lsq", "prony"])
-#def cdf_fit_function(request):
-    #if request.param == "lsq":
-        #return msd_cdf._fit_cdf_lsq, {"weighted": False}
-    #if request.param == "weighted-lsq":
-        #return msd_cdf._fit_cdf_lsq, {"weighted": True}
-    #if request.param == "prony":
-        #return msd_cdf._fit_cdf_prony, {"poly_order": 30}
-
-
-#class TestMsdCdf:
-    #msds = np.array([0.02, 0.08])
-    #t_max = 0.5
-    #f = 2 / 3
-    #lagt = 0.01
-
-    #def pdf(self, x):
-        #return (self.f / self.msds[0] * np.exp(-x / self.msds[0]) +
-                #(1 - self.f) / self.msds[1] * np.exp(-x / self.msds[1]))
-
-    #def cdf(self, x):
-        #return (1 - self.f * np.exp(-x / self.msds[0]) -
-                #(1 - self.f) * np.exp(-x / self.msds[1]))
-
-    #def test_fit_cdf(self, cdf_fit_function):
-        #x = np.logspace(-5, 0.5, 100)
-        #b, l = cdf_fit_function[0](x, self.cdf(x), 2, **(cdf_fit_function[1]))
-
-        #np.testing.assert_allclose(sorted(b), sorted([-self.f, -1 + self.f]),
-                                   #atol=5e-3)
-        #np.testing.assert_allclose(sorted(-1/l), sorted(self.msds),
-                                   #atol=2e-3)
-
-    #def test_emsd_from_square_displacements_cdf(self, cdf_fit_method_name):
-        #"""motion.emsd_from_square_displacements_cdf"""
-        #sd_dict = {self.lagt: testing.dist_sample(self.pdf, (0, self.t_max),
-                                                  #10000)}
-        #e = motion.emsd_from_square_displacements_cdf(
-            #sd_dict, method=cdf_fit_method_name)
-        #for e_, m, f_ in zip(e, self.msds, [self.f, (1 - self.f)]):
-            #assert e_.loc[self.lagt, "lagt"] == self.lagt
-            #assert e_.loc[self.lagt, "msd"] == pytest.approx(m, abs=0.003)
-            #assert e_.loc[self.lagt, "fraction"] == pytest.approx(f_, abs=0.02)
-
-    #def test_emsd_cdf(self, cdf_fit_method_name):
-        #px_size = 0.1
-        #msds = testing.dist_sample(self.pdf, (0, self.t_max), 10000)
-        #trc = pd.DataFrame(np.cumsum(np.sqrt(msds))[:, None], columns=["x"])
-        #trc["x"] /= px_size
-        #trc["y"] = 0
-        #trc["frame"] = np.arange(len(trc))
-        #trc["particle"] = 0
-
-        #e = motion.emsd_cdf(trc, px_size, 1/self.lagt,
-                            #method=cdf_fit_method_name)
-
-        #for e_, m, f_ in zip(e, self.msds, [self.f, (1 - self.f)]):
-            #assert e_.loc[self.lagt, "lagt"] == self.lagt
-            #assert e_.loc[self.lagt, "msd"] == pytest.approx(m, abs=0.003)
-            #assert e_.loc[self.lagt, "fraction"] == pytest.approx(f_, abs=0.02)
-
-
-class TestFitMsd(unittest.TestCase):
     def test_fit_msd_matlab(self):
         """motion.fit_msd: Regression test against MATLAB msdplot"""
         # 2 lags
