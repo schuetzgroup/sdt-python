@@ -945,10 +945,10 @@ class SmFretAnalyzer:
         It can be calculated using the formula [Lee2005]_
 
         .. math:: \beta = \frac{1 - \langle S_\gamma \rangle}{
-            \langle S_\gamma\range},
+            \langle S_\gamma\rangle},
 
-        where :math:`S_\gamma` is the like the apparent stoichiometry, but
-        with the donor and acceptor fluorescence upon donor excitation
+        where :math:`S_\gamma` is calculated like the apparent stoichiometry,
+        but with the donor and acceptor fluorescence upon donor excitation
         already corrected using the leakage, direct excitation, and
         detection efficiency factors.
 
