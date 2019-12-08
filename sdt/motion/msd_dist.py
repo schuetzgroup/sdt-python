@@ -330,7 +330,7 @@ class MsdDist:
     Result = namedtuple("Result",
                         ["msd", "msd_err", "weight", "weight_err"])
 
-    def get_msd(self):
+    def get_msd(self, series=True):
         """Get MSD and error DataFrames
 
         The columns contain data for different lag times. Each row corresponds
@@ -340,24 +340,36 @@ class MsdDist:
         :py:meth:`__init__` was called with ``ensemble=True``, there will only
         be one row with index `e_name`.
 
+        If there is only one row, the `series` parameter controls whether to
+        return a :py:class:`pandas.DataFrame` or a :py:class:`pandas.Series`.
+
+        Parameters
+        ----------
+        series : bool, optional
+            If `True` and and there is only one entry (e.g., due to
+            ``ensemble=True`` in the constructor), :py:class:`pandas.Series`
+            objects will be returned. Otherwise, return
+            :py:class:`pandas.DataFrame`. Defaults to `True`.
+
         Returns
         -------
         list of namedTuple(["msd", "msd_err", "weight", "weight_err"])
-            Each entry describes one component. The tuple members are
-            :py:class:`pandas.DataFrame`, where `msd` holds the mean square
-            displacements, `msd_err` contains standard errors of the MSDs,
-            `weight` hold the relative weight of the component calculated for
-            the different lag times, and `weight_err` contains standard
+            Each tuple describes one component. The tuple members are
+            :py:class:`pandas.DataFrame` or :py:class:`pandas.Series`
+            (depending on the `series` parameter), where `msd` holds the mean
+            square displacements, `msd_err` contains standard errors of the
+            MSDs, `weight` hold the relative weight of the component calculated
+            for the different lag times, and `weight_err` contains standard
             errors of the weights. If no bootstrapping was performed, all
             errors are `NaN`.
         """
         ret = []
         for md, fd in zip(self._msd_data, self._weight_data):
             data = self.Result(
-                md.make_dataframe("means"),
-                md.make_dataframe("errors"),
-                fd.make_dataframe("means"),
-                fd.make_dataframe("errors"))
+                md.get_data("means", series),
+                md.get_data("errors", series),
+                fd.get_data("means", series),
+                fd.get_data("errors", series))
             ret.append(data)
         return ret
 
@@ -420,7 +432,7 @@ class MsdDistFit:
 
     Result = namedtuple("Result", ["fit", "fit_err"])
 
-    def get_results(self):
+    def get_results(self, series=True):
         """Get fit results
 
         The columns contain fitted parameters. Each row corresponds
@@ -428,19 +440,30 @@ class MsdDistFit:
         tuple identifying both the DataFrame and the particle; c.f.
         :py:class:`MsdDist`.
 
+        If there is only one row, the `series` parameter controls whether to
+        return a :py:class:`pandas.DataFrame` or a :py:class:`pandas.Series`.
+
+        Parameters
+        ----------
+        series : bool, optional
+            If `True` and and there is only one entry (e.g., due to
+            ``ensemble=True`` in the :py:class:`MsdDist` constructor),
+            :py:class:`pandas.Series` objects will be returned. Otherwise,
+            return :py:class:`pandas.DataFrame`. Defaults to `True`.
+
         Returns
         -------
         list of namedTuple(["fit", "fit_err"])
             Each entry describes one component. The tuple members are
-            :py:class:`pandas.DataFrame`, where ``fit`` holds the fit result as
-            well as the mean weight and ``fit_err`` contains the corresponding
-            standard errors. If no bootstrapping was performed, fit errors are
-            `NaN`.
+            :py:class:`pandas.DataFrame` or :py:class`pandas.Series`,
+            where ``fit`` holds the fit result as well as the mean weight and
+            ``fit_err`` contains the corresponding standard errors. If no
+            bootstrapping was performed, fit errors are `NaN`.
         """
         ret = []
-        weight, weight_err = self.weights.get_results()
+        weight, weight_err = self.weights.get_results(series)
         for comp, msd_fit in enumerate(self.msd_fits):
-            fit, err = msd_fit.get_results()
+            fit, err = msd_fit.get_results(series)
             fit["weight"] = weight[comp]
             err["weight"] = weight_err[comp]
             data = self.Result(fit, err)
@@ -522,17 +545,34 @@ class Weights:
                                for i in range(n_components)]
         self._weight_data = weight_data
 
-    def get_results(self):
+    def get_results(self, series=True):
         """Get results
+
+        Parameters
+        ----------
+        series : bool, optional
+            If `True` and and there is only one entry (e.g., due to
+            ``ensemble=True`` in the :py:class:`MsdDist` constructor),
+            :py:class:`pandas.Series` objects will be returned. Otherwise,
+            return :py:class:`pandas.DataFrame`. Defaults to `True`.
 
         Returns
         -------
-        results : pandas.DataFrame
+        results : pandas.DataFrame or pandas.Series
             Columns are the weight for each component. Each row represents
             one particle.
-        errors : pandas.DataFrame
+        errors : pandas.DataFrame or pandas.Series
             Standard errors.
         """
+        if len(self._results) == 1 and series:
+            name, res = next(iter(self._results.items()))
+            res = pd.Series(res, name=name)
+            if self._err:
+                err = pd.Series(next(iter(self._err.values())), name=name)
+            else:
+                err = pd.Series(name=name)
+            return res, err
+
         res_df = pd.DataFrame(self._results).T
         err_df = pd.DataFrame(self._err).T
         for d in (res_df, err_df):
@@ -670,13 +710,10 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, method="lsq",
                       columns=columns)
     ret = []
     for m in msd_cls.get_msd():
-        r = OrderedDict()
-        lagt = m.msd.columns.to_numpy()
-        r["lagt"] = lagt
-        r["msd"] = m.msd.iloc[0]
-        r["fraction"] = m.weight.iloc[0]
-        r = pd.DataFrame(r)
-        r.index = pd.Index(lagt)
+        r = pd.DataFrame.from_dict(
+            OrderedDict([("lagt", m.msd.index), ("msd", m.msd),
+                         ("fraction", m.weight)]))
+        r.index.name = None
         r.sort_values("lagt", inplace=True)
         ret.append(r)
     return ret

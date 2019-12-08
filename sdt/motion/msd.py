@@ -137,7 +137,7 @@ class Msd:
 
     Result = namedtuple("Result", ["msd", "msd_err"])
 
-    def get_msd(self):
+    def get_msd(self, series=True):
         """Get MSD and error DataFrames
 
         The columns contain data for different lag times. Each row corresponds
@@ -147,19 +147,31 @@ class Msd:
         :py:meth:`__init__` was called with ``ensemble=True``, there will only
         be one row with index `e_name`.
 
+        The `series` parameter controls whether to return a
+        :py:class:`pandas.DataFrame` or a :py:class:`pandas.Series` if there is
+        only one row.
+
+        Parameters
+        ----------
+        series : bool, optional
+            If `True` and and there is only one entry (e.g., due to
+            ``ensemble=True`` in the constructor), :py:class:`pandas.Series`
+            objects will be returned. Otherwise, return
+            :py:class:`pandas.DataFrame`. Defaults to `True`.
+
         Returns
         -------
-        msd : pandas.DataFrame
+        msd : pandas.DataFrame or pandas.Series
             Mean square displacements
-        msd_err : pandas.DataFrame
+        msd_err : pandas.DataFrame or pandas.Series
             Standard errors of the mean square displacements. If
             bootstrapping was used, these are the standard deviations of the
             MSD results from bootstrapping. Otherwise, these are caleculated
             as the standard deviation of square displacements divided by the
             number of samples.
         """
-        return self.Result(self._msd_data.make_dataframe("means"),
-                           self._msd_data.make_dataframe("errors"))
+        return self.Result(self._msd_data.get_data("means", series),
+                           self._msd_data.get_data("errors", series))
 
     def fit(self, model="brownian", *args, **kwargs):
         """Fit a model function to the MSD data
@@ -356,7 +368,7 @@ class AnomalousDiffusion:
 
     Result = namedtuple("Result", ["fit", "fit_err"])
 
-    def get_results(self):
+    def get_results(self, series=True):
         """Get fit results
 
         The columns contain fitted parameters. Each row corresponds
@@ -364,17 +376,42 @@ class AnomalousDiffusion:
         tuple identifying both the DataFrame and the particle; c.f.
         :py:class:`Msd`.
 
+        If there is only one row, the `series` parameter controls whether to
+        return a :py:class:`pandas.DataFrame` or a :py:class:`pandas.Series`.
+
+        Parameters
+        ----------
+        series : bool, optional
+            If `True` and and there is only one entry (e.g., due to
+            ``ensemble=True`` in the :py:class:`Msd` constructor),
+            :py:class:`pandas.Series` objects will be returned. Otherwise,
+            return :py:class:`pandas.DataFrame`. Defaults to `True`.
+
         Returns
         -------
-        fit : pandas.DataFrame
+        fit : pandas.DataFrame or pandas.Series
             Fit results. Columns are the fit paramaters. Each row represents
             one particle.
-        fit_err : pandas.DataFrame
+        fit_err : pandas.DataFrame or pandas.Series
             Fit results standard errors. If no bootstrapping was performed
-            for calculation of MSDs, this is empty.
+            for calculation of MSDs, this is all NaNs.
         """
+        if len(self._results) == 1 and series:
+            name, res = next(iter(self._results.items()))
+            series_args = {"name": name, "index": self._fit_parameters}
+            res = pd.Series(res, **series_args)
+            if self._err:
+                err = pd.Series(next(iter(self._err.values())), **series_args)
+            else:
+                err = pd.Series(**series_args, dtype=float)
+            return self.Result(res, err)
+
         res_df = pd.DataFrame(self._results, index=self._fit_parameters).T
-        err_df = pd.DataFrame(self._err, index=self._fit_parameters).T
+        if self._err:
+            err_df = pd.DataFrame(self._err, index=self._fit_parameters).T
+        else:
+            err_df = pd.DataFrame(index=res_df.index, columns=res_df.columns,
+                                  dtype=float)
         for d in (res_df, err_df):
             d.columns.name = "parameter"
             if isinstance(d.index, pd.MultiIndex):
@@ -621,7 +658,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, columns={}):
                   np.VisibleDeprecationWarning)
     msd_cls = Msd(data, fps, max_lagtime, n_boot=0, ensemble=False,
                   columns=columns)
-    return msd_cls.get_msd()[0].T
+    return msd_cls.get_msd(series=False)[0].T
 
 
 @config.set_columns
@@ -665,9 +702,9 @@ def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
                   np.VisibleDeprecationWarning)
     msd_cls = Msd(data, fps, max_lagtime, n_boot=0, columns=columns)
     msd = msd_cls.get_msd()
-    msd[0].index = ["msd"]
-    msd[1].index = ["stderr"]
-    ret = pd.concat(msd).T
+    msd[0].name = "msd"
+    msd[1].name = "stderr"
+    ret = pd.DataFrame(msd).T
     ret["lagt"] = ret.index
     ret.index.name = None
     ret.columns.name = None
@@ -784,7 +821,7 @@ def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
             exposure_time=exposure_time)
         AnomalousDiffusion.plot(fit_res, show_legend, ax)
 
-    r = fit_res._results
+    r = fit_res._results["ensemble"]
     if len(r) == 3:
         return tuple(r)
     return r[0], r[1], 1

@@ -230,20 +230,32 @@ class MsdData:
         """
         return np.arange(1, n + 1) / self.frame_rate
 
-    def make_dataframe(self, data):
-        """Return data as a DataFrame
+    def get_data(self, data, series=True):
+        """Return data as a Series or DataFrame
 
         Parameters
         ----------
         data : {"means", "errors"}
             Which dataset to return
+        series : bool, optional
+            If `False` return a DataFrame even if there is only a single
+            particle/esemble. Defaults to `True`.
 
         Returns
         -------
-        pandas.DataFrame
-            One particle per row, one lag time per column
+        pandas.Series or pandas.DataFrame
+            One particle per row, one lag time per column. If there is only one
+            row, return a :py:class:`pandas.Series`, unless
+            ``series=False`` was specified.
         """
         data = getattr(self, data)
+        if len(data) == 1 and series:
+            name, res = next(iter(data.items()))
+            ret = pd.Series(res, name=name)
+            ret.index = pd.Index(self.get_lagtimes(len(ret)), name="lagt")
+
+            return ret
+
         # pd.DataFrame.from_dict does not create a MultiIndex
         ret = pd.DataFrame(list(data.values()))
 

@@ -222,8 +222,8 @@ class TestMsdData:
         for i, lt in enumerate(ltimes):
             assert lt == (i + 1) / frate
 
-    def test_make_dataframe(self):
-        """make_dataframe"""
+    def test_get_data(self):
+        """get_data"""
         # Use 0 and 1 as index as well as (0, 0) and (0, 1) (MultiIndex)
         for idx in [(0, 1), ((0, 0), (0, 1))]:
             n_lag = 3
@@ -232,18 +232,37 @@ class TestMsdData:
             frate = 10
             mdata = MsdData(frate, {}, m, e)
 
-            msd = mdata.make_dataframe("means")
-            err = mdata.make_dataframe("errors")
+            msd = mdata.get_data("means")
+            err = mdata.get_data("errors")
 
             for df in (msd, err):
                 if isinstance(idx[0], tuple):
                     assert isinstance(df.index, pd.MultiIndex)
-                assert list(df.index) == list(m.keys())
+                assert list(df.index) == list(idx)
                 assert np.all(df.columns == mdata.get_lagtimes(n_lag))
             np.testing.assert_allclose(msd.to_numpy(),
                                        np.array(list(m.values())))
             np.testing.assert_allclose(err.to_numpy(),
                                        np.array(list(e.values())))
+
+    def test_get_data_single(self):
+        """get_data: dataset consisting of single entry"""
+        # Use 0 and 1 as index as well as (0, 0) and (0, 1) (MultiIndex)
+        for idx in [0, (0, 0)]:
+            n_lag = 3
+            m = {idx: [1, 2, 3]}
+            e = {idx: [0, 1, 2]}
+            frate = 10
+            mdata = MsdData(frate, {}, m, e)
+
+            msd = mdata.get_data("means")
+            err = mdata.get_data("errors")
+
+            for df in (msd, err):
+                assert df.name == idx
+                assert np.all(df.index == mdata.get_lagtimes(n_lag))
+            np.testing.assert_allclose(msd.to_numpy(), m[idx])
+            np.testing.assert_allclose(err.to_numpy(), e[idx])
 
 
 class NotReallyRandom:
@@ -278,9 +297,9 @@ class TestMsd:
             keys = [("file1", 0), ("file1", 2), ("file2", 3), ("file2", 4)]
         return trc, keys
 
-    def _check_get_msd(self, m_cls):
+    def _check_get_msd(self, m_cls, series):
         """Check output of Msd.get_msd()"""
-        res = m_cls.get_msd()
+        res = m_cls.get_msd(series=False)
         msd_df = pd.DataFrame(m_cls._msd_data.means).T
         err_df = pd.DataFrame(m_cls._msd_data.errors).T
 
@@ -299,6 +318,27 @@ class TestMsd:
 
             # Check data
             np.testing.assert_allclose(r.values, e.values)
+
+        if not series:
+            return
+
+        # Check pandas.Series if required
+        res = m_cls.get_msd(series=True)
+        msd_s = np.array(next(iter(m_cls._msd_data.means.values())))
+        err_s = np.array(next(iter(m_cls._msd_data.errors.values())))
+
+        for r, e in zip(res, [msd_s, err_s]):
+            # Check name
+            idx = next(iter(m_cls._msd_data.means.keys()))
+            assert r.name == idx
+
+            # Check index
+            np.testing.assert_allclose(r.index,
+                                       np.arange(1, len(msd_s) + 1) / 10)
+            assert r.index.name == "lagt"
+
+            # Check data
+            np.testing.assert_allclose(r.to_numpy(), e)
 
     def test_ensemble_no_boot(self, inputs, trc_sd_list):
         """ensemble, no bootstrapping"""
@@ -324,7 +364,7 @@ class TestMsd:
                                    expected_msd[:, 0])
         np.testing.assert_allclose(m_cls._msd_data.errors["bla"], expected_err)
 
-        self._check_get_msd(m_cls)
+        self._check_get_msd(m_cls, series=True)
 
     def test_individual_no_boot(self, inputs, trc_sd_list):
         """individual, no bootstrapping"""
@@ -350,7 +390,7 @@ class TestMsd:
                                         np.sqrt(len(sd)))
             np.testing.assert_allclose(m_cls._msd_data.errors[k], expected_err)
 
-        self._check_get_msd(m_cls)
+        self._check_get_msd(m_cls, series=False)
 
     def test_ensemble_boot(self, inputs, trc_sd_list):
         """ensemble, bootstrapping"""
@@ -377,7 +417,7 @@ class TestMsd:
                                    expected_msd[:, 1])
         np.testing.assert_allclose(m_cls._msd_data.errors["bla"], expected_err)
 
-        self._check_get_msd(m_cls)
+        self._check_get_msd(m_cls, series=True)
 
     def test_individual_boot(self, inputs, trc_sd_list):
         """individual, bootstrapping"""
@@ -405,7 +445,7 @@ class TestMsd:
                                        expected_msd[:, 1])
             np.testing.assert_allclose(m_cls._msd_data.errors[k], expected_err)
 
-        self._check_get_msd(m_cls)
+        self._check_get_msd(m_cls, series=False)
 
     def test_3d(self, trc_df, trc_disp_list):
         """3D data, ensemble, no bootstrapping"""
@@ -627,20 +667,46 @@ class TestAnomalousDiffusion:
         res, err = f.get_results()
         assert list(res.columns) == list(err.columns) == self.results_columns
         assert list(res.index) == [0, 2]
-        assert len(err) == 0
-
+        assert np.all(np.isnan(err.to_numpy()))
         np.testing.assert_allclose(res.values, fit_results[:, :, 1],
                                    rtol=1.e-4)
 
+        k, v = next(iter(msd_set_single.items()))
+        msd_set_single_first = {k: v}
+
+        f2 = self.make_fitter(msd_set_single_first, 20)
+        res, err = f2.get_results()
+        assert list(res.index) == list(err.index) == self.results_columns
+        assert res.name == 0
+        assert np.all(np.isnan(err.to_numpy()))
+        np.testing.assert_allclose(res.to_numpy(), fit_results[0, :, 1],
+                                   rtol=1.e-4)
+
+        # pd.Series
         f = self.make_fitter(msd_set, 20)
         res, err = f.get_results()
         assert list(res.columns) == list(err.columns) == self.results_columns
         assert list(res.index) == list(err.index) == [0, 2]
-
         np.testing.assert_allclose(res.values, np.mean(fit_results, axis=2),
                                    rtol=1.e-4)
         np.testing.assert_allclose(err.values,
                                    np.std(fit_results, axis=2, ddof=1),
+                                   rtol=1.e-4)
+
+        k, v = next(iter(msd_set.items()))
+        msd_set_first = {k: v}
+
+        # pd.Series
+        f = self.make_fitter(msd_set_first, 20)
+        res, err = f.get_results()
+        assert list(res.index) == list(err.index) == self.results_columns
+        assert res.name == 0
+        np.testing.assert_allclose(res.to_numpy(),
+                                   np.mean(fit_results[0, :, :], axis=1),
+                                   rtol=1.e-4)
+        np.testing.assert_allclose(err.values,
+                                   np.std(fit_results[0, :, :], axis=1,
+                                          ddof=1),
                                    rtol=1.e-4)
 
 
@@ -818,6 +884,7 @@ class TestFitCdf:
 
 
 class TestMsdDist:
+    """motion.MsdDist"""
     msds = np.array([0.02, 0.08])
     f = 2 / 3
 
@@ -856,6 +923,7 @@ class TestMsdDist:
     def ensemble(self, request):
         return request.param
 
+    @pytest.mark.slow
     def test_msd_calc(self, inputs, cdf_fit_method_name, n_boot, ensemble):
         """motion.MsdDist: MSD calculation"""
         n_lag = 2
@@ -903,7 +971,7 @@ class TestMsdDist:
                 assert w.errors[k] == pytest.approx(0, abs=1e-3)
 
         # Check MSD dataframes
-        dfs = m_cls.get_msd()
+        dfs = m_cls.get_msd(series=False)
         for d, m_exp, w_exp in zip(dfs, self.msds, [self.f, 1 - self.f]):
             assert len(d) == 4
             for df in d:
@@ -915,6 +983,29 @@ class TestMsdDist:
             # distributed exponentially
             np.testing.assert_allclose(m.iloc[:, 0], m_exp, atol=1e-3)
             np.testing.assert_allclose(w.iloc[:, 0], w_exp, atol=2e-3)
+            if n_boot == 0:
+                assert np.all(np.isnan(m_err.to_numpy()))
+                assert np.all(np.isnan(w_err.to_numpy()))
+            else:
+                np.testing.assert_allclose(m_err.to_numpy(), 0, atol=1e-3)
+                np.testing.assert_allclose(w_err.to_numpy(), 0, atol=1e-3)
+
+        if not ensemble:
+            return
+
+        # Check MSD series
+        dfs = m_cls.get_msd(series=True)
+        for d, m_exp, w_exp in zip(dfs, self.msds, [self.f, 1 - self.f]):
+            assert len(d) == 4
+            for df in d:
+                assert df.name == keys[0]
+                np.testing.assert_allclose(df.index.to_numpy(),
+                                           np.arange(1, n_lag+1) / frame_rate)
+            m, m_err, w, w_err = d
+            # Only check first entry since only single step MSDs were
+            # distributed exponentially
+            np.testing.assert_allclose(m.iloc[0], m_exp, atol=1e-3)
+            np.testing.assert_allclose(w.iloc[0], w_exp, atol=2e-3)
             if n_boot == 0:
                 assert np.all(np.isnan(m_err.to_numpy()))
                 assert np.all(np.isnan(w_err.to_numpy()))
@@ -1016,6 +1107,14 @@ class TestMsdDistWeights:
         return w
 
     @pytest.fixture
+    def weight_data_single(self):
+        frate = 10
+        w = [MsdData(frate, {0: np.array([np.arange(0, 3), np.arange(1, 4)])}),
+             MsdData(frate,
+                     {0: np.array([np.arange(0, 3), np.arange(1, 4)]) * 2})]
+        return w
+
+    @pytest.fixture
     def means(self):
         return collections.OrderedDict([(0, [1.5, 3.0]), (1, [7.0, 10.5])])
 
@@ -1048,6 +1147,17 @@ class TestMsdDistWeights:
                                    np.array(list(means.values())))
         np.testing.assert_allclose(err.to_numpy(),
                                    np.array(list(errors.values())))
+
+    def test_get_results_single(self, weight_data_single, means, errors):
+        """msd_cdf.Weights.get_results: single particle (pd.Series)"""
+        w_cls = msd_dist.Weights(weight_data_single)
+        res = w_cls.get_results()
+        for r in res:
+            assert list(r.index) == list(range(len(weight_data_single)))
+            assert r.name == 0
+        fit, err = res
+        np.testing.assert_allclose(fit.to_numpy(), means[0])
+        np.testing.assert_allclose(err.to_numpy(), errors[0])
 
     def test_plot(self, weight_data):
         """msd_cdf.Weights.plot: Make sure it runs"""
