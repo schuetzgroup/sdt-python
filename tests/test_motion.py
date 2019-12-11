@@ -619,7 +619,7 @@ class TestAnomalousDiffusion:
                       [[0.05, 2, 15], [0.02, 0.08, 0.2], [2, 0.5, 1]]])
         return r
 
-    results_columns = ["D", "PA", "alpha"]
+    results_columns = ["D", "eps", "alpha"]
     n_lag = (5, 20)
 
     def make_fitter(self, msd_set, n_lag):
@@ -727,7 +727,7 @@ class TestBrownianMotion(TestAnomalousDiffusion):
                       [[10, 15, 20], [2, 4, 6]]])
         return r
 
-    results_columns = ["D", "PA"]
+    results_columns = ["D", "eps"]
     n_lag = (2, 20)
 
     def make_fitter(self, msd_set, n_lag, exposure_time=0):
@@ -1075,7 +1075,7 @@ class TestMsdDist:
             assert len(d) == 2
             for df in d:
                 assert list(df.index) == list(p_exp.keys())
-                assert list(df.columns) == ["D", "PA", "weight"]
+                assert list(df.columns) == ["D", "eps", "weight"]
             fit, fit_err = d
             for i, par in p_exp.items():
                 np.testing.assert_allclose(fit.loc[i].iloc[:-1].to_numpy(),

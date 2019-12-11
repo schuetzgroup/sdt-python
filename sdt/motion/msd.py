@@ -203,16 +203,17 @@ class Msd:
 class AnomalousDiffusion:
     r"""Fit anomalous diffusion parameters to MSD values
 
-    Fit a function :math:`msd(t_\text{lag}) = 4*D*t_text{lag}^\alpha + 4*pa**2`
+    Fit a function :math:`msd(t_\text{lag}) = 4 D t_text{lag}^\alpha +
+    4 \epsilon^2`
     to the tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient,
-    :math:`pa` is the positional accuracy (uncertainty), and :math:`alpha`
-    the anomalous diffusion exponent.
+    :math:`\epsilon` is the positional accuracy (uncertainty), and
+    :math:`\alpha` the anomalous diffusion exponent.
     """
-    _fit_parameters = ["D", "PA", "alpha"]
+    _fit_parameters = ["D", "eps", "alpha"]
 
     def __init__(self, msd_data, n_lag=np.inf, exposure_time=0.,
                  initial=(0.5, 0.05, 1.)):
-        """Parameters
+        r"""Parameters
         ----------
         msd_data : msd_base.MsdData
             MSD data
@@ -222,12 +223,12 @@ class AnomalousDiffusion:
         exposure_time : float, optional
             Exposure time. Defaults to 0, i.e. no exposure time correction
         initial : tuple of float, optional
-            Initial guesses for the fitting for :math:`D`, :math:`pa`, and
-            :math:`alpha`. Defaults to ``(0.5, 0.05, 1.)``.
+            Initial guesses for the fitting for :math:`D`, :math:`\epsilon`,
+            and :math:`\alpha`. Defaults to ``(0.5, 0.05, 1.)``.
         """
         def residual(x, lagt, target):
-            d, pa, alpha = x
-            r = self.theoretical(lagt, d, pa, alpha, exposure_time)
+            d, eps, alpha = x
+            r = self.theoretical(lagt, d, eps, alpha, exposure_time)
             return r - target
 
         initial = np.asarray(initial)
@@ -311,12 +312,12 @@ class AnomalousDiffusion:
         return (np.sum(s, axis=(1, 2)) / n**2)**(1/alpha)
 
     @staticmethod
-    def theoretical(t, d, pa, alpha=1, exposure_time=0, squeeze_result=True):
+    def theoretical(t, d, eps, alpha=1, exposure_time=0, squeeze_result=True):
         r"""Calculate theoretical MSDs for different lag times
 
-        Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4 pa^2`,
-        where :math:`t_\text{app}` is the apparent time lag which takes into
-        account particle motion during exposure; see
+        Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4
+        \epsilon^2`, where :math:`t_\text{app}` is the apparent time lag which
+        takes into account particle motion during exposure; see
         :py:meth:`exposure_time_corr`.
 
         Parameters
@@ -325,7 +326,7 @@ class AnomalousDiffusion:
             Lag times
         d : float
             Diffusion coefficient
-        pa : float
+        eps : float
             Positional accuracy.
         alpha : float, optional
             Anomalous diffusion exponent. Defaults to 1.
@@ -342,16 +343,16 @@ class AnomalousDiffusion:
         """
         t = np.array(t, ndmin=1, copy=False)
         d = np.array(d, ndmin=1, copy=False)
-        pa = np.array(pa, ndmin=1, copy=False)
+        eps = np.array(eps, ndmin=1, copy=False)
         alpha = np.array(alpha, ndmin=1, copy=False)
-        if d.shape != pa.shape or d.shape != alpha.shape:
-            raise ValueError("`d`, `pa`, and `alpha` should have same shape.")
-        if t.ndim > 1 or d.ndim > 1 or pa.ndim > 1:
-            raise ValueError("Number of dimensions of `t`, `d`, `pa`, and "
+        if d.shape != eps.shape or d.shape != alpha.shape:
+            raise ValueError("`d`, `eps`, and `alpha` should have same shape.")
+        if t.ndim > 1 or d.ndim > 1 or eps.ndim > 1:
+            raise ValueError("Number of dimensions of `t`, `d`, `eps`, and "
                              "`alpha` need to be less than 2")
 
-        ic = 4 * pa**2
-        ic[pa < 0] *= -1
+        ic = 4 * eps**2
+        ic[eps < 0] *= -1
         t_corr = np.empty((len(t), len(alpha)), dtype=float)
         for i, a in enumerate(alpha):
             t_corr[:, i] = AnomalousDiffusion.exposure_time_corr(
@@ -506,18 +507,18 @@ class AnomalousDiffusion:
         color : str
             Color of the plotted line
         """
-        d, pa, alpha = self._results[data_id]
-        d_err, pa_err, alpha_err = self._err.get(data_id, (np.NaN,) * 3)
+        d, eps, alpha = self._results[data_id]
+        d_err, eps_err, alpha_err = self._err.get(data_id, (np.NaN,) * 3)
 
         x = np.linspace(0, n_lag, 100)
-        y = self.theoretical(x, d, pa, alpha, self.exposure_time)
+        y = self.theoretical(x, d, eps, alpha, self.exposure_time)
 
         legend = []
         if name:
             legend.append(name)
         legend.append(self._value_with_error("D", r"μm²/s$^\alpha$", d, d_err))
-        legend.append(self._value_with_error("PA", "nm",
-                                             pa * 1000, pa_err * 1000, ".0f"))
+        legend.append(self._value_with_error(
+            "eps", "nm", eps * 1000, eps_err * 1000, ".0f"))
         legend.append(self._value_with_error("α", "", alpha, alpha_err))
         legend = "\n".join(legend)
 
@@ -528,11 +529,11 @@ class BrownianMotion(AnomalousDiffusion):
     r"""Fit Brownian motion parameters to MSD values
 
     Fit a function :math:`\mathit{msd}(t_\text{lag}) = 4 D t_\text{lag} +
-    4 \mathit{pa}^2` to
+    4 \epsilon^2` to
     the tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient and
-    :math:`\mathit{pa}` is the positional accuracy (uncertainty).
+    :math:`\epsilon` is the positional accuracy (uncertainty).
     """
-    _fit_parameters = ["D", "PA"]
+    _fit_parameters = ["D", "eps"]
 
     def __init__(self, msd_data, n_lag=2, exposure_time=0):
         """Parameters
@@ -556,24 +557,25 @@ class BrownianMotion(AnomalousDiffusion):
                 s, i = np.polyfit(lagt - exposure_time / 3, m[:nl, :], 1)
 
             d = s / 4
-            pa = np.sqrt(i.astype(complex)) / 2
-            pa = np.where(i > 0, np.real(pa), -np.imag(pa))
+            eps = np.sqrt(i.astype(complex)) / 2
+            eps = np.where(i > 0, np.real(eps), -np.imag(eps))
 
-            self._results[particle] = [np.mean(d), np.mean(pa)]
+            self._results[particle] = [np.mean(d), np.mean(eps)]
             if len(d) > 1:
                 # Use corrected sample std as a less biased estimator of the
                 # population std
-                self._err[particle] = [np.std(d, ddof=1), np.std(pa, ddof=1)]
+                self._err[particle] = [np.std(d, ddof=1), np.std(eps, ddof=1)]
 
         self._msd_data = msd_data
         self.exposure_time = exposure_time
 
     @staticmethod
-    def theoretical(t, d, pa, exposure_time=0):
+    def theoretical(t, d, eps, exposure_time=0):
         r"""Calculate theoretical MSDs for different lag times
 
-        Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4 pa^2`,
-        where :math:`t_\text{app}` is the apparent time lag which takes into
+        Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4
+        \epsilon^2`, where :math:`t_\text{app}` is the apparent time lag
+        which takes into
         account particle motion during exposure; see
         :py:meth:`exposure_time_corr`.
 
@@ -583,7 +585,7 @@ class BrownianMotion(AnomalousDiffusion):
             Lag times
         d : float
             Diffusion coefficient
-        pa : float
+        eps : float
             Positional accuracy.
         alpha : float, optional
             Anomalous diffusion exponent. Defaults to 1.
@@ -598,22 +600,22 @@ class BrownianMotion(AnomalousDiffusion):
         numpy.ndarray or scalar
             Calculated theoretical MSDs
         """
-        return AnomalousDiffusion.theoretical(t, d, pa, np.ones_like(d),
+        return AnomalousDiffusion.theoretical(t, d, eps, np.ones_like(d),
                                               exposure_time)
 
     def _plot_single(self, data_id, n_lag, name, ax, color):
-        d, pa = self._results[data_id]
-        d_err, pa_err = self._err.get(data_id, (np.NaN,) * 2)
+        d, eps = self._results[data_id]
+        d_err, eps_err = self._err.get(data_id, (np.NaN,) * 2)
 
         x = np.linspace(0, n_lag, 100)
-        y = self.theoretical(x, d, pa, self.exposure_time)
+        y = self.theoretical(x, d, eps, self.exposure_time)
 
         legend = []
         if name:
             legend.append(name)
         legend.append(self._value_with_error("D", "μm²/s", d, d_err))
-        legend.append(self._value_with_error("PA", "nm",
-                                             pa * 1000, pa_err * 1000, ".0f"))
+        legend.append(self._value_with_error(
+            "ε", "nm", eps * 1000, eps_err * 1000, ".0f"))
         legend = "\n".join(legend)
 
         ax.plot(x, y, c=color, label=legend)
@@ -712,15 +714,15 @@ def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
 
 
 def fit_msd(emsd, max_lagtime=2, exposure_time=0, model="brownian"):
-    """Get the diffusion coefficient and positional accuracy from MSDs
+    r"""Get the diffusion coefficient and positional accuracy from MSDs
 
     .. deperecated:: 14.0
         Use :py:class:`Msd` instead.
 
-    Fit a function :math:`msd(t) = 4*D*t^\alpha + 4*pa**2` to the
+    Fit a function :math:`msd(t) = 4 D t^\alpha + 4 \mathit{PA}^2` to the
     tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient and
-    :math:`pa` is the positional accuracy (uncertainty) and :math:`alpha`
-    the anomalous diffusion exponent.
+    :math:`\mathit{PA}` is the positional accuracy (uncertainty) and
+    :math:`\alpha` the anomalous diffusion exponent.
 
     Parameters
     ----------
