@@ -501,7 +501,7 @@ def test_pipeline_propagate_attrs():
     p1 = Pipeline(lambda x, y: x + y, a1, a2,
                   propagate_attrs={"attr1", "attr2"}, propagate_how=0)
     assert p1.attr1 == 10
-    assert hasattr(p1, "attr2")
+    assert not hasattr(p1, "attr2")
 
     p2 = Pipeline(lambda x, y: x + y, a1, a2,
                   propagate_attrs={"attr1", "attr2"}, propagate_how=1)
