@@ -552,12 +552,14 @@ class BrownianMotion(AnomalousDiffusion):
         self._results = OrderedDict()
         self._err = OrderedDict()
         for particle, m in msd_data.data.items():
+            # TODO: Handle NaNs that can appear if a particle/ensemble is
+            # present only e.g. in every other frame
             nl = min(n_lag, m.shape[0])
             if nl == 2:
                 s = (m[1, :] - m[0, :]) * msd_data.frame_rate
                 i = m[0, :] - s * (1 / msd_data.frame_rate - exposure_time / 3)
             else:
-                lagt = np.arange(1, nl + 1) / msd_data.frame_rate
+                lagt = msd_data.get_lagtimes(nl)
                 s, i = np.polyfit(lagt - exposure_time / 3, m[:nl, :], 1)
 
             d = s / 4
