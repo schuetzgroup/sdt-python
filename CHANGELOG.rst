@@ -7,6 +7,30 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+14.0
+----
+
+- Completely reworked MSD analysis framework. This can be used on the ensemble
+  level or on individual tracks. It is now easier to use and extensible
+  (API break).
+- Add :py:class:`nbui.ROISelector`
+- Fix :py:func:`io.get_files` on Windows
+- rename :py:class:`fret.FretImageSelector` -> :py:class:`FrameSelector` due to
+  added ability to work on DataFrame (API break)
+- Implement smFRET corrections in :py:class:`fret.SmFretAnalyzer`
+- Reorganization of :py:mod:`fret` (API break):
+  Rename :py:class:`fret.SmFretFilter` -> :py:class:`fret.SmFretAnalyzer` and
+  move all analyzing methods from :py:class:`fret.SmFretTracker` there
+- :py:class:`flatfield.Corrector`: Add option to smooth correction image
+- Add :py:class:`nbui.Thresholder`
+- Add (adaptive) thresholding functions to :py:mod:`image`
+- Add :py:func:`image.fill_gamut`
+- Port :py:class:`nbui.Locator` to ipympl and improve and fix.
+- Fork https://github.com/soft-matter/slicerator into helper.slicerator as 
+  development seems to have stalled. Use it instead of the external 
+  slicerator.
+
+
 13.4
 ----
 
