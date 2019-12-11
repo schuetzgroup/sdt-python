@@ -1,4 +1,4 @@
-"""Data input/output
+r"""Data input/output
 =================
 
 :py:mod:`sdt.io` provides convenient ways to save and load all kinds of data.
