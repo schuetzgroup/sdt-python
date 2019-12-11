@@ -662,7 +662,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, columns={}):
         the time column "alt_frame", set ``columns={"coords": ["x", "z"],
         "time": "alt_frame"}``.
     """
-    warnings.warn("This function is deprecated. Use the `Msd` class instead.",
+    warnings.warn("`imsd` is deprecated. Use the `Msd` class instead.",
                   np.VisibleDeprecationWarning)
     msd_cls = Msd(data, fps, max_lagtime, n_boot=0, ensemble=False,
                   columns=columns, pixel_size=pixel_size)
@@ -706,7 +706,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
         the time column "alt_frame", set ``columns={"coords": ["x", "z"],
         "time": "alt_frame"}``.
     """
-    warnings.warn("This function is deprecated. Use the `Msd` class instead.",
+    warnings.warn("`emsd` is deprecated. Use the `Msd` class instead.",
                   np.VisibleDeprecationWarning)
     msd_cls = Msd(data, fps, max_lagtime, n_boot=0, columns=columns,
                   pixel_size=pixel_size)
@@ -754,7 +754,7 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0, model="brownian"):
     alpha : float
         Anomalous diffusion exponent. Only returned if ``model="anomalous"``.
     """
-    warnings.warn("This function is deprecated. Use the `Msd` class instead.",
+    warnings.warn("`fit_msd` is deprecated. Use the `Msd` class instead.",
                   np.VisibleDeprecationWarning)
     msd_cls = Msd._from_data(emsd)
     fit_args = {"exposure_time": exposure_time}
@@ -814,7 +814,7 @@ def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
     alpha : float
         Anomalous diffusion exponent.
     """
-    warnings.warn("This function is deprecated. Use the `Msd` class instead.",
+    warnings.warn("`plot_msd` is deprecated. Use the `Msd` class instead.",
                   np.VisibleDeprecationWarning)
     msd_cls = Msd._from_data(emsd)
 
