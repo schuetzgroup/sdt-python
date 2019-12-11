@@ -131,7 +131,7 @@ class TestBayesOfflinePriors(unittest.TestCase):
         p = 0.1
         inst = offline.NegBinomialPrior(k, p)
         self.assertAlmostEqual(inst.prior(t),
-                               (scipy.misc.comb(t - k, k - 1) * p**k *
+                               (scipy.special.comb(t - k, k - 1) * p**k *
                                 (1 - p)**(t - k)))
 
 
