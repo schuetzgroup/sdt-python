@@ -150,7 +150,7 @@ def _wavelet_bg_single(img, wtype, ext_mode, wlevel, detail):
 
     # zero out detail coefficients
     r = d[:detail+1]  # keep wanted detail (d[0] is approximation)
-    r += [(np.zeros_like(y) for y in x) for x in d[detail+1:]]
+    r += [tuple(np.zeros_like(y) for y in x) for x in d[detail+1:]]
 
     bg = pywt.waverec2(r, wtype, ext_mode)
     bg = bg[:img.shape[0], :img.shape[1]]  # remove padding
