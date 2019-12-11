@@ -66,8 +66,12 @@ def get_files(pattern, subdir=os.curdir):
     idlist = []
     sd = str(subdir)
     for dp, dn, fn in os.walk(sd):
+        reldir = os.path.relpath(dp, sd)
+        if reldir == os.curdir:
+            # Do not prefix "./"
+            reldir = ""
         for f in fn:
-            relp = os.path.relpath(os.path.join(dp, f), sd)
+            relp = os.path.join(reldir, f)
             if sys.platform == "win32":
                 relp = relp.replace("\\", "/")
             m = r.search(relp)
