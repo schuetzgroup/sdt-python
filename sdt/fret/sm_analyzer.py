@@ -18,7 +18,7 @@ def numeric_exc_type(df):
     resulting split array does not have `object` dtype due to
     ("fret", "exc_type") being categorical.
 
-    Expample
+    Example
     --------
     >>> tracks["fret", "exc_type"].dtype
     CategoricalDtype(categories=['a', 'd'], ordered=False)
