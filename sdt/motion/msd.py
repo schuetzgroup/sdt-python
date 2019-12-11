@@ -19,7 +19,8 @@ class Msd:
     """
     @config.set_columns
     def __init__(self, data, frame_rate, n_lag=20, n_boot=100, ensemble=True,
-                 e_name="ensemble", random_state=None, columns={}):
+                 e_name="ensemble", random_state=None, pixel_size=1,
+                 columns={}):
         """Parameters
         ----------
         data : pandas.DataFrame or iterable of pandas.DataFrame
@@ -37,6 +38,9 @@ class Msd:
         ensemble : bool, optional
             Whether to calculate the MSDs for the whole data set or for each
             trajectory individually. Defaults to True.
+        pixel_size : float, optional
+            Pixel size; multiply coordinates by this factor. Defaults to 1
+            (no scaling).
 
         Other parameters
         ----------------
@@ -56,7 +60,7 @@ class Msd:
             ``columns={"coords": ["x", "y", "z"], "time": "alt_frame"}``.
         """
         square_disp = msd_base._all_square_displacements(
-            data, n_lag, ensemble, e_name, columns)
+            data, n_lag, ensemble, e_name, pixel_size, columns)
 
         # Generate bootstrapped data if desired
         if n_boot > 1:
@@ -635,7 +639,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, columns={}):
     data : pandas.DataFrame
         Tracking data
     pixel_size : float
-        width of a pixel in micrometers, **currently ignored**
+        width of a pixel in micrometers.
     fps : float
         Frames per second
     max_lagtime : int, optional
@@ -659,7 +663,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, columns={}):
     warnings.warn("This function is deprecated. Use the `Msd` class instead.",
                   np.VisibleDeprecationWarning)
     msd_cls = Msd(data, fps, max_lagtime, n_boot=0, ensemble=False,
-                  columns=columns)
+                  columns=columns, pixel_size=pixel_size)
     return msd_cls.get_msd(series=False)[0].T
 
 
@@ -679,7 +683,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
     data : list of pandas.DataFrames or pandas.DataFrame
         Tracking data
     pixel_size : float
-        width of a pixel in micrometers, **currently ignored**
+        width of a pixel in micrometers.
     fps : float
         Frames per second
     max_lagtime : int, optional
@@ -702,7 +706,8 @@ def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
     """
     warnings.warn("This function is deprecated. Use the `Msd` class instead.",
                   np.VisibleDeprecationWarning)
-    msd_cls = Msd(data, fps, max_lagtime, n_boot=0, columns=columns)
+    msd_cls = Msd(data, fps, max_lagtime, n_boot=0, columns=columns,
+                  pixel_size=pixel_size)
     msd = msd_cls.get_msd()
     msd[0].name = "msd"
     msd[1].name = "stderr"

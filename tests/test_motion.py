@@ -138,13 +138,15 @@ class TestSquareDisplacements:
                       np.array([3 * ar, 4 * ar]).T],
                      [np.array([5 * ar, 6 * ar]).T]]
 
-        res = _square_displacements(disp_list)
+        px_sz = 0.1
+        res = _square_displacements(disp_list, px_sz)
 
         assert len(res) == 2
         np.testing.assert_allclose(res[0],
-                                   ([5 * n**2 for n in range(m)] +
-                                    [25 * n**2 for n in range(m)]))
-        np.testing.assert_allclose(res[1], [61 * n**2 for n in range(m)])
+                                   ([px_sz**2 * 5 * n**2 for n in range(m)] +
+                                    [px_sz**2 * 25 * n**2 for n in range(m)]))
+        np.testing.assert_allclose(res[1],
+                                   [px_sz**2 * 61 * n**2 for n in range(m)])
 
     def test_3d(self):
         """3D data"""
@@ -275,8 +277,11 @@ class NotReallyRandom:
 
 class TestMsd:
     """motion.msd.Msd"""
+    px_size = 0.1
+
     @pytest.fixture(params=["DataFrame", "list", "dict"])
     def inputs(self, request, trc_df):
+        trc_df[["x", "y"]] /= self.px_size
         dfs = [trc_df]
         for i in range(2, 5):
             df = trc_df.copy()
@@ -343,7 +348,8 @@ class TestMsd:
     def test_ensemble_no_boot(self, inputs, trc_sd_list):
         """ensemble, no bootstrapping"""
         trc, keys = inputs
-        m_cls = motion.Msd(trc, frame_rate=10, n_boot=0, e_name="bla")
+        m_cls = motion.Msd(trc, frame_rate=10, n_boot=0, e_name="bla",
+                           pixel_size=self.px_size)
 
         for t in (m_cls._msd_data.data, m_cls._msd_data.means,
                   m_cls._msd_data.errors):
@@ -369,7 +375,8 @@ class TestMsd:
     def test_individual_no_boot(self, inputs, trc_sd_list):
         """individual, no bootstrapping"""
         trc, keys = inputs
-        m_cls = motion.Msd(trc, frame_rate=10, n_boot=0, ensemble=False)
+        m_cls = motion.Msd(trc, frame_rate=10, n_boot=0, ensemble=False,
+                           pixel_size=self.px_size)
 
         for t in (m_cls._msd_data.data, m_cls._msd_data.means,
                   m_cls._msd_data.errors):
@@ -396,7 +403,8 @@ class TestMsd:
         """ensemble, bootstrapping"""
         trc, keys = inputs
         m_cls = motion.Msd(trc, frame_rate=10, n_boot=3, e_name="bla",
-                           random_state=NotReallyRandom())
+                           random_state=NotReallyRandom(),
+                           pixel_size=self.px_size)
 
         for t in (m_cls._msd_data.data, m_cls._msd_data.means,
                   m_cls._msd_data.errors):
@@ -423,7 +431,8 @@ class TestMsd:
         """individual, bootstrapping"""
         trc, keys = inputs
         m_cls = motion.Msd(trc, frame_rate=10, n_boot=3, ensemble=False,
-                           random_state=NotReallyRandom())
+                           random_state=NotReallyRandom(),
+                           pixel_size=self.px_size)
 
         for t in (m_cls._msd_data.data, m_cls._msd_data.means,
                   m_cls._msd_data.errors):
@@ -440,10 +449,12 @@ class TestMsd:
             expected_msd = np.array(expected_msd)
             expected_err = np.array([np.std(m, ddof=1) for m in expected_msd])
 
-            np.testing.assert_allclose(m_cls._msd_data.data[k], expected_msd)
+            np.testing.assert_allclose(m_cls._msd_data.data[k], expected_msd,
+                                       atol=1e-8)
             np.testing.assert_allclose(m_cls._msd_data.means[k],
-                                       expected_msd[:, 1])
-            np.testing.assert_allclose(m_cls._msd_data.errors[k], expected_err)
+                                       expected_msd[:, 1], atol=1e-8)
+            np.testing.assert_allclose(m_cls._msd_data.errors[k], expected_err,
+                                       atol=1e-8)
 
         self._check_get_msd(m_cls, series=False)
 
@@ -875,18 +886,19 @@ class TestFitCdf:
         msds, weights = msd_dist._msd_from_cdf(sq_disp, 2, cdf_fit_method_name,
                                                n_boot, NoReplaceRS(0))
         msds_exp = np.array([self.msds, 2*self.msds]).T
+        msds_exp = np.dstack([msds_exp] * n_boot)
         weights_exp = np.array([[f[0], f[1]],
                                 [1 - f[0], 1 - f[1]]])
-        np.testing.assert_allclose(msds, np.dstack([msds_exp] * n_boot),
-                                   atol=1e-3)
-        np.testing.assert_allclose(weights, np.dstack([weights_exp] * n_boot),
-                                   atol=2e-3)
+        weights_exp = np.dstack([weights_exp] * n_boot)
+        np.testing.assert_allclose(msds, msds_exp, atol=1e-3)
+        np.testing.assert_allclose(weights, weights_exp, atol=2e-3)
 
 
 class TestMsdDist:
     """motion.MsdDist"""
     msds = np.array([0.02, 0.08])
     f = 2 / 3
+    px_size = 0.1
 
     @pytest.fixture
     def trc_df(self):
@@ -901,6 +913,7 @@ class TestMsdDist:
 
     @pytest.fixture(params=["DataFrame", "list", "dict"])
     def inputs(self, request, trc_df):
+        trc_df[["x", "y"]] /= self.px_size
         trc = [trc_df, trc_df.copy()]
         trc[1]["particle"] += trc_df["particle"].max() + 1
         if request.param == "DataFrame":
@@ -932,7 +945,8 @@ class TestMsdDist:
         m_cls = motion.MsdDist(trc, n_components=2, frame_rate=frame_rate,
                                n_boot=n_boot, n_lag=n_lag,
                                fit_method=cdf_fit_method_name, e_name="bla",
-                               random_state=NoReplaceRS(), ensemble=ensemble)
+                               random_state=NoReplaceRS(), ensemble=ensemble,
+                               pixel_size=self.px_size)
 
         if ensemble:
             keys = ["bla"]
@@ -1197,15 +1211,17 @@ class TestLegacyAPI:
         msds = [0.02, 0.04]
         fps = 100
         n_lag = 10
+        px_size = 0.1
         fn = round(f * n)
         sq_disp = np.concatenate([exp_sample(fn, msds[0]),
                                   exp_sample(n - fn, msds[1])])
         x = np.cumsum(np.sqrt(sq_disp))
         fr = np.arange(len(x))
         trc = pd.DataFrame({"x": x, "y": 10, "frame": fr, "particle": 0})
+        trc[["x", "y"]] /= px_size
 
         with pytest.warns(np.VisibleDeprecationWarning):
-            e = motion.emsd_cdf(trc, 1, fps, max_lagtime=n_lag,
+            e = motion.emsd_cdf(trc, px_size, fps, max_lagtime=n_lag,
                                 method=cdf_fit_method_name)
 
         for e_, m, f_ in zip(e, msds, [f, (1 - f)]):

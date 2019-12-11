@@ -259,7 +259,8 @@ class MsdDist:
     @config.set_columns
     def __init__(self, data, frame_rate, n_components=2, n_lag=10, n_boot=0,
                  ensemble=True, fit_method="lsq", poly_order=30,
-                 e_name="ensemble", random_state=None, columns={}):
+                 e_name="ensemble", random_state=None, pixel_size=1,
+                 columns={}):
         """Parameters
         ----------
         data : pandas.DataFrame or iterable of pandas.DataFrame
@@ -285,6 +286,9 @@ class MsdDist:
             fitting, and "weighted-lsq" is weighted least squares fitting to
             account for the fact that the CDF data are concentrated at x=0.
             Defaults to "lsq".
+        pixel_size : float, optional
+            Pixel size; multiply coordinates by this factor. Defaults to 1
+            (no scaling).
 
         Other parameters
         ----------------
@@ -304,7 +308,7 @@ class MsdDist:
             ``columns={"coords": ["x", "z"], "time": "alt_frame"}``.
         """
         square_disp = msd_base._all_square_displacements(
-            data, n_lag, ensemble, e_name, columns)
+            data, n_lag, ensemble, e_name, pixel_size, columns)
 
         if n_boot > 1 and random_state is None:
             random_state = np.random.RandomState()
@@ -655,22 +659,17 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, method="lsq",
     r"""Calculate ensemble mean square displacements from tracking data CDF
 
     .. deperecated:: 14.0
-        Use :py:class:`MsdCdf` instead.
+        Use :py:class:`MsdDist` instead.
 
     Fit the model cumulative density function to the measured CDF of tracking
-    data. For details, see the documentation of
-    :func:`emsd_from_square_displacements_cdf`.
-
-    This is equivalent to consecutively calling :func:`all_displacements`,
-    :func:`all_square_displacements`, and
-    :func:`emsd_from_square_displacements_cdf`.
+    data. For details, see the documentation of :py:class:`MsdDist`.
 
     Parameters
     ----------
     data : list of pandas.DataFrames or pandas.DataFrame
         Tracking data
     pixel_size : float
-        width of a pixel in micrometers, **currently ignored**
+        width of a pixel in micrometers.
     fps : float
         Frames per second
     num_frac : int, optional
@@ -707,7 +706,7 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, method="lsq",
                   np.VisibleDeprecationWarning)
     msd_cls = MsdDist(data, fps, n_components=num_frac, n_lag=max_lagtime,
                       fit_method=method, poly_order=poly_order,
-                      columns=columns)
+                      pixel_size=pixel_size, columns=columns)
     ret = []
     for m in msd_cls.get_msd():
         r = pd.DataFrame.from_dict(
