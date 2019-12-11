@@ -66,6 +66,9 @@ References
 ----------
 .. [Goul2000] Goulian, M. & Simon, S. M.: "Tracking Single Proteins within
     Cells", Biophysical Journal, Elsevier BV, 2000, 79, 2188–2198
+.. [Schu1997] Schütz, G.; Schindler, H. & Schmidt, T.: "Single-molecule
+    microscopy on model membranes reveals anomalous diffusion", Biophysical
+    Journal, Elsevier BV, 1997, 73, 1073–1080
 """
 from .msd import *  # NOQA
 from .msd_dist import *  # NOQA

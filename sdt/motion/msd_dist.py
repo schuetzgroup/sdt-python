@@ -252,7 +252,7 @@ class MsdDist:
     from single moleclue tracking data. This differs from
     :py:class:`sdt.motion.Msd` by the fact that the distributions
     are analyzed, which allows for detection of multiple
-    components with different diffusion coefficients.
+    components with different diffusion coefficients [Schu1997]_.
 
     Only valid for 2D data.
     """
