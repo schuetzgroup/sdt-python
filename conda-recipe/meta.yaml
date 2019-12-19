@@ -6,8 +6,8 @@ source:
     git_url: ../
 
 build:
-    number: 0
-    script: python setup.py install
+    number: 1
+    script: "{{ PYTHON }} -m pip install . --no-deps -vv"
     noarch: python
 
 requirements:
@@ -26,6 +26,7 @@ requirements:
         - matplotlib
         - pywavelets >=0.3.0
         - micro-helpers >=0.7
+        - pip
 
     run:
         - python
