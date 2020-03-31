@@ -7,6 +7,14 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+14.1
+----
+
+- Fix bug in :py:class:`fret.FrameSelector` which was triggered when the
+  highest occuring frame number was divisible by the length of the excitation
+  sequence.
+
+
 14.0
 ----
 
