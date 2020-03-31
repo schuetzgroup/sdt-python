@@ -22,7 +22,7 @@ else:
 setup(
     name="sdt-python",
     version=vstr,
-    description="Tools related to fluorescence microscopy",
+    description="Tools for fluorescence microscopy analysis",
     author="Lukas Schrangl",
     author_email="lukas.schrangl@tuwien.ac.at",
     # url =

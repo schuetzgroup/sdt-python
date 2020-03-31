@@ -56,5 +56,5 @@ test:
         - tests
 
 about:
-    summary: "Tools related to fluorescence microscopy"
+    summary: "Tools for fluorescence microscopy data analysis"
 
