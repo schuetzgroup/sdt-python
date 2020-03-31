@@ -9,13 +9,13 @@ import pytest
 from sdt import fret, chromatic, image, changepoint, io, flatfield, helper
 
 try:
-    import trackpy
+    import trackpy  # NoQA
     trackpy_available = True
 except ImportError:
     trackpy_available = False
 
 try:
-    import sklearn
+    import sklearn  # NoQA
     sklearn_available = True
 except ImportError:
     sklearn_available = False
@@ -998,6 +998,19 @@ class TestFrameSelector:
 
             r = selector._renumber(v, k, restore=False)
             np.testing.assert_equal(r, np.arange(len(mask))[mask])
+
+    def test_renumber_plusone(self, selector):
+        """fret.FrameSelector._renumber: restore=False, check off-by-one
+
+        There was a bug when the max frame number was divisible by the
+        length of the excitation sequence, resulting in f_map_inv being too
+        short. Ensure that this is fixed by using an array with max == 10
+        and the sequence "da".
+        """
+        selector = fret.FrameSelector("da")
+        ar = np.arange(0, 11, 2)
+        r = selector._renumber(ar, "d", restore=False)
+        np.testing.assert_equal(r, np.arange(len(ar)))
 
     def test_renumber_restore(self, selector, call_results):
         """fret.FrameSelector._renumber: restore=True"""

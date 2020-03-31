@@ -121,7 +121,7 @@ class FrameSelector:
             # the frame number map is {0, 1, …, max_frame}). f_map_inv's values
             # (which form the codomain of the map) need to go up to at least
             # max_frame.
-            n_repeats = math.ceil(max_frame / len(self.excitation_seq))
+            n_repeats = math.ceil((max_frame + 1) / len(self.excitation_seq))
         # Calculate the restoring map
         f_map_inv = np.nonzero(np.tile(good_frame_mask, n_repeats))[0]
         if restore:
