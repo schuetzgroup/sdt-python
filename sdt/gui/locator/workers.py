@@ -13,7 +13,11 @@ import logging
 import multiprocessing as mp
 
 import pims
-import micro_helpers.pims
+try:
+    # If possible, import extra classes
+    import micro_helpers.pims  # NoQA
+except ImportError:
+    pass
 
 from qtpy.QtCore import QObject, Signal, Slot, Property
 from qtpy.QtGui import QPolygonF

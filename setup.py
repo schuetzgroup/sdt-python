@@ -28,15 +28,14 @@ setup(
     # url =
     # license =
     install_requires=["numpy>=1.10",
-                      "scipy>0.18",
                       "pandas",
                       "tables",
+                      "scipy>0.18",
                       "tifffile>=0.14.0",
                       "pyyaml",
                       "pims>=0.3.0",
                       "matplotlib",
-                      "pywavelets>=0.3.0",],
-                      #"micro-helpers>=0.7"],
+                      "pywavelets>=0.3.0", ],
     packages=find_packages(include=["sdt*"]),
     package_data={"": ["*.ui"],
                   "sdt.gui": ["icons/*.svg"]},

@@ -10,7 +10,7 @@ warnings.warn("This module is deprecated. Use the `micro_helpers.pims` module "
               "instead.", np.VisibleDeprecationWarning)
 
 try:
-    from micro_helpers.pims import *
+    from micro_helpers.pims import *  # NoQA
 except ImportError:
     warnings.warn("Could not import pims module from micro_helpers.",
                   RuntimeWarning)

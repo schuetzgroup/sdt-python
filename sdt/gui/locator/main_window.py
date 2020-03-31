@@ -10,7 +10,11 @@ import yaml
 import numpy as np
 import pandas as pd
 import pims
-import micro_helpers.pims
+try:
+    # If possible, import extra classes
+    import micro_helpers.pims  # NoQA
+except ImportError:
+    pass
 
 import qtpy
 from qtpy.QtGui import QPolygonF, QCursor
@@ -434,7 +438,7 @@ class MainWindow(QMainWindow):
                 md = yaml.safe_load(f)
             if not isinstance(md, dict):
                 raise RuntimeError()
-        except:
+        except Exception:
             QMessageBox.critical(self, self.tr("Error loading settings"),
                                  self.tr("Error reading file."))
             return
@@ -443,7 +447,7 @@ class MainWindow(QMainWindow):
         if isinstance(algo, str):
             try:
                 self._locOptionsWidget.method = algo
-            except:
+            except Exception:
                 QMessageBox.critical(self, self.tr("Error loading settings"),
                                      self.tr("Unsupported algorithm"))
                 return

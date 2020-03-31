@@ -25,7 +25,6 @@ requirements:
         - qtpy >=1.1
         - matplotlib
         - pywavelets >=0.3.0
-        - micro-helpers >=0.7
         - pip
 
     run:
@@ -41,7 +40,6 @@ requirements:
         - qtpy >=1.1
         - matplotlib
         - pywavelets >=0.3.0
-        - micro-helpers >=0.7
 
 test:
     requires:
