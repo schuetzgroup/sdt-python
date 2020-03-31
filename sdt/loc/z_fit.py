@@ -54,7 +54,7 @@ class Fitter(object):
             Resolution, i. e. smallest z change detectable. Defaults to 1e-3.
         """
         min, max = params.z_range
-        self._absc = np.linspace(min, max, (max - min)/resolution + 1,
+        self._absc = np.linspace(min, max, round((max - min)/resolution + 1),
                                  dtype=np.float)
         self._curve_x, self._curve_y = params.sigma_from_z(self._absc)
 
