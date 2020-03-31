@@ -366,7 +366,7 @@ class AnomalousDiffusion:
 
         if squeeze_result:
             if ret.size == 1:
-                return np.asscalar(ret)
+                ret.item()  # return scalar
             return np.squeeze(ret)
 
         return ret
