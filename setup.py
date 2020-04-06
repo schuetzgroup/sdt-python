@@ -26,7 +26,7 @@ else:
 setup(
     name="sdt-python",
     version=vstr,
-    description="Tools for fluorescence microscopy analysis",
+    description="Tools for fluorescence microscopy data analysis",
     author="Lukas Schrangl",
     author_email="lukas.schrangl@tuwien.ac.at",
     # url =
@@ -38,6 +38,8 @@ setup(
                       "tifffile>=0.14.0",
                       "pyyaml",
                       "pims>=0.3.0",
+                      "numba",
+                      "qtpy>=1.1",
                       "matplotlib",
                       "pywavelets>=0.3.0", ],
     packages=find_packages(include=["sdt*"]),
