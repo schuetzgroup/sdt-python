@@ -81,7 +81,7 @@ class Fitter(object):
             self._calc_error(i)
 
     def _init_exp_factor(self):
-        """Initially calculate the exponential factor of the Gaussian
+        r"""Initially calculate the exponential factor of the Gaussian
 
         If the Gaussian is :math:`A \exp(-(s_x x^2 + s_y y^2)`, calculate the
         exponential factors :math:`s_x, s_y`, i. e. :math:`1/(2\sigma^2)`. This

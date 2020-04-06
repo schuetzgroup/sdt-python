@@ -90,11 +90,6 @@ class Finder(object):
         ret = Peaks(len(ne_coords))
         ret[:, [col_nums.y, col_nums.x]] = ne_coords
         ret[:, col_nums.wx] = ret[:, col_nums.wy] = self.radius
-        # it would seem more logical to use the residual, like so:
-        # ret[:, col_nums.amp] = image_wo_bg[ne_coords_list]
-        # however, this seems (in some quick tests) to produce more
-        # spurious localizations than the code below (which is also what the
-        # original implementation uses)
         ret[:, col_nums.amp] = self.image[ne_coords_list] - ne_coords_bg
         ret[:, col_nums.bg] = ne_coords_bg
         ret[:, col_nums.z] = 0.
@@ -127,8 +122,6 @@ class Finder(object):
             where in the `image_wo_bg` array one can find a maximum.
         """
         radius = round(self.search_radius)
-        # TODO: cache,
-        # see http://wiki.python.org/moin/PythonDecoratorLibrary#Memoize
 
         # create circular mask with radius `radius`
         mask = np.array([[x**2 + y**2 for x in np.arange(-radius, radius + 1)]
