@@ -1,0 +1,875 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.changepoint.bayes_offline &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.changepoint.bayes_offline</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.changepoint.bayes_offline</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2014 Johannes Kulick</span>
+<span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1">#</span>
+<span class="c1"># Based on https://github.com/hildensia/bayesian_changepoint_detection</span>
+<span class="c1"># (MIT licensed), adapted under BSD-3-Clause as part of the sdt-python</span>
+<span class="c1"># package</span>
+
+<span class="sd">&quot;&quot;&quot;Tools for performing offline Bayesian changepoint detection&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span>
+<span class="kn">import</span> <span class="nn">scipy.misc</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">numba</span>
+
+
+<span class="n">_log_pi</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ConstPrior"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.ConstPrior">[docs]</a><span class="k">class</span> <span class="nc">ConstPrior</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class implementing a constant prior</span>
+
+<span class="sd">    :math:`P(t) = 1 / (\\text{len}(data) + 1)`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+
+<div class="viewcode-block" id="ConstPrior.set_data"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.ConstPrior.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for calculation of the prior</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConstPrior.prior"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.ConstPrior.prior">[docs]</a>    <span class="k">def</span> <span class="nf">prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get prior at time `t`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : int</span>
+<span class="sd">            Time point</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Prior probability for time point `t`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prior</span></div></div>
+
+
+<span class="n">ConstPriorNumba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jitclass</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="p">(</span><span class="s2">&quot;_prior&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">)])(</span><span class="n">ConstPrior</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GeometricPrior"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.GeometricPrior">[docs]</a><span class="k">class</span> <span class="nc">GeometricPrior</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class implementing a geometrically distributed prior</span>
+
+<span class="sd">    :math:`P(t) =  p (1 - p)^{t - 1}`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        p : float</span>
+<span class="sd">            `p` in the forumla above</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+
+<div class="viewcode-block" id="GeometricPrior.set_data"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.GeometricPrior.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for calculation of the prior</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="GeometricPrior.prior"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.GeometricPrior.prior">[docs]</a>    <span class="k">def</span> <span class="nf">prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get prior at time `t`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : int</span>
+<span class="sd">            Time point</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Prior probability for time point `t`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<span class="n">GeometricPriorNumba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jitclass</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:]),</span> <span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">)])(</span><span class="n">GeometricPrior</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NegBinomialPrior"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.NegBinomialPrior">[docs]</a><span class="k">class</span> <span class="nc">NegBinomialPrior</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class implementing a neg-binomially distributed prior</span>
+
+<span class="sd">    :math:`P(t) =  {{t - k}\choose{k - 1}} p^k (1 - p)^{t - k}`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : int</span>
+<span class="sd">            `k` in the formula above</span>
+<span class="sd">        p : float</span>
+<span class="sd">            `p` in the formula above</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">=</span> <span class="n">k</span>
+
+    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for calculation of the prior</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">prior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get prior at time `t`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t : int</span>
+<span class="sd">            Time point</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Prior probability for time point `t`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">comb</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">))</span></div>
+
+
+<span class="k">class</span> <span class="nc">_DynPLikelihood</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Base class for caching observation likelihood results&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for calculation of the likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t, s : int</span>
+<span class="sd">            First and last time point to consider</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            likelihood</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span>
+
+
+<span class="k">class</span> <span class="nc">_GaussianObsLikelihoodBase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gaussian observation likelihood&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for calculation of the likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t, s : int</span>
+<span class="sd">            First and last time point to consider</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            likelihood</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Actual implementation of the `likelihood` method&quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="n">t</span>
+        <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span>
+
+        <span class="n">muT</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">mean</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">nuT</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">n</span>
+        <span class="n">alphaT</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">betaT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span>
+                 <span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">mean</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">betaT</span> <span class="o">*</span> <span class="p">(</span><span class="n">nuT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">alphaT</span> <span class="o">*</span> <span class="n">nuT</span><span class="p">)</span>
+
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">muT</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">nuT</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)))</span>
+        <span class="n">lgA</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">lgamma</span><span class="p">((</span><span class="n">nuT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">nuT</span> <span class="o">*</span> <span class="n">scale</span><span class="p">))</span> <span class="o">-</span>
+               <span class="n">math</span><span class="o">.</span><span class="n">lgamma</span><span class="p">(</span><span class="n">nuT</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">lgA</span> <span class="o">-</span> <span class="p">(</span><span class="n">nuT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">prob</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GaussianObsLikelihood"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.GaussianObsLikelihood">[docs]</a><span class="k">class</span> <span class="nc">GaussianObsLikelihood</span><span class="p">(</span><span class="n">_DynPLikelihood</span><span class="p">,</span> <span class="n">_GaussianObsLikelihoodBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gaussian observation likelihood&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<span class="n">GaussianObsLikelihoodNumba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jitclass</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:])])(</span><span class="n">_GaussianObsLikelihoodBase</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_IfmObsLikelihoodBase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Independent features model from Xuan et al.</span>
+
+<span class="sd">    See *Xuan Xiang, Kevin Murphy: &quot;Modeling Changing Dependency Structure in</span>
+<span class="sd">    Multivariate Time Series&quot;, ICML (2007), pp. 1055--1062*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for calculation of the likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t, s : int</span>
+<span class="sd">            First and last time point to consider</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            likelihood</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Actual implementation of the `likelihood` method&quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="n">t</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">N0</span> <span class="o">=</span> <span class="n">d</span>  <span class="c1"># Weakest prior we can use to retain proper prior</span>
+        <span class="n">V0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">Vn</span> <span class="o">=</span> <span class="n">V0</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Sum over dimension and return (section 3.1 from Xuan paper):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">_log_pi</span> <span class="o">+</span> <span class="p">(</span><span class="n">N0</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">V0</span><span class="p">)</span> <span class="o">-</span>
+                     <span class="n">math</span><span class="o">.</span><span class="n">lgamma</span><span class="p">(</span><span class="n">N0</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">lgamma</span><span class="p">((</span><span class="n">N0</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(((</span><span class="n">N0</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Vn</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="IfmObsLikelihood"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.IfmObsLikelihood">[docs]</a><span class="k">class</span> <span class="nc">IfmObsLikelihood</span><span class="p">(</span><span class="n">_DynPLikelihood</span><span class="p">,</span> <span class="n">_IfmObsLikelihoodBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Independent features model from Xuan et al.</span>
+
+<span class="sd">    See *Xuan Xiang, Kevin Murphy: &quot;Modeling Changing Dependency Structure in</span>
+<span class="sd">    Multivariate Time Series&quot;, ICML (2007), pp. 1055--1062*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<span class="n">IfmObsLikelihoodNumba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jitclass</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:])])(</span><span class="n">_IfmObsLikelihoodBase</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="FullCovObsLikelihood"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.FullCovObsLikelihood">[docs]</a><span class="k">class</span> <span class="nc">FullCovObsLikelihood</span><span class="p">(</span><span class="n">_DynPLikelihood</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Full covariance model from Xuan et al.</span>
+
+<span class="sd">    See *Xuan Xiang, Kevin Murphy: &quot;Modeling Changing Dependency Structure</span>
+<span class="sd">    in Multivariate Time Series&quot;, ICML (2007), pp. 1055--1062*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="n">t</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">N0</span> <span class="o">=</span> <span class="n">dim</span>  <span class="c1"># weakest prior we can use to retain proper prior</span>
+        <span class="n">V0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+
+        <span class="n">Vn</span> <span class="o">=</span> <span class="n">V0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij, ik -&gt; jk&quot;</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># section 3.2 from Xuan paper:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">_log_pi</span> <span class="o">+</span> <span class="n">N0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">V0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">multigammaln</span><span class="p">(</span><span class="n">N0</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span> <span class="o">+</span>
+                <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">multigammaln</span><span class="p">((</span><span class="n">N0</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span> <span class="o">-</span>
+                <span class="p">(</span><span class="n">N0</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">Vn</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jitclass</span><span class="p">([(</span><span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:])])</span>
+<span class="k">class</span> <span class="nc">FullCovObsLikelihoodNumba</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Full covariance model from Xuan et al.</span>
+
+<span class="sd">    See *Xuan Xiang, Kevin Murphy: &quot;Modeling Changing Dependency Structure</span>
+<span class="sd">    in Multivariate Time Series&quot;, ICML (2007), pp. 1055--1062*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for calculation of the likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get likelihood</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t, s : int</span>
+<span class="sd">            First and last time point to consider</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            likelihood</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="n">t</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">s</span><span class="p">]</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">N0</span> <span class="o">=</span> <span class="n">dim</span>  <span class="c1"># weakest prior we can use to retain proper prior</span>
+        <span class="n">V0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+
+        <span class="n">einsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="n">einsum</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span>
+        <span class="n">Vn</span> <span class="o">=</span> <span class="n">V0</span> <span class="o">+</span> <span class="n">einsum</span>
+
+        <span class="c1"># section 3.2 from Xuan paper:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">_log_pi</span> <span class="o">+</span> <span class="n">N0</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">V0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span>
+                <span class="n">numba</span><span class="o">.</span><span class="n">multigammaln</span><span class="p">(</span><span class="n">N0</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span> <span class="o">+</span>
+                <span class="n">numba</span><span class="o">.</span><span class="n">multigammaln</span><span class="p">((</span><span class="n">N0</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span> <span class="o">-</span>
+                <span class="p">(</span><span class="n">N0</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">Vn</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+
+
+<span class="k">class</span> <span class="nc">_ScipyLogsumexp</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper class for `scipy.special.logsumexp`</span>
+
+<span class="sd">    Necessary because functions cannot be passed as arguments to numba</span>
+<span class="sd">    jitted functions, but jitclasses can.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jitclass</span><span class="p">([])</span>
+<span class="k">class</span> <span class="nc">_NumbaLogsumexp</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper class for `sdt.helper.numba.logsumexp`</span>
+
+<span class="sd">    Necessary because functions cannot be passed as arguments to numba</span>
+<span class="sd">    jitted functions, but jitclasses can.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">numba</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">segmentation</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">obs_likelihood</span><span class="p">,</span> <span class="n">truncate</span><span class="p">,</span> <span class="n">logsumexp_wrapper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Bayesian offline changepoint detection (actual implementation)</span>
+
+<span class="sd">    This is an implementation of *Fearnhead, Paul: &quot;Exact and efficient</span>
+<span class="sd">    Bayesian inference for multiple changepoint problems&quot;, Statistics and</span>
+<span class="sd">    computing 16.2 (2006), pp. 203--213*.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    prior : class instance</span>
+<span class="sd">        Instance of a class implementing a prior probability. See</span>
+<span class="sd">        :py:class:`ConstPrior`, :py:class:`GeometricPrior`, or</span>
+<span class="sd">        :py:class:`NegBinomialPrior` for examples.</span>
+<span class="sd">    obs_likelihood : class instance</span>
+<span class="sd">        Instance of a class implementing the observation likelihood. See</span>
+<span class="sd">        :py:class:`GaussianObsLikelihood`, :py:class:`IfmObsLikelihood`, or</span>
+<span class="sd">        :py:class:`FullCovObsLikelihood` for examples.</span>
+<span class="sd">    truncate : float</span>
+<span class="sd">        Speed up calculations by truncating a sum if the summands provide</span>
+<span class="sd">        negligible contributions. This parameter is the exponent of the</span>
+<span class="sd">        threshold. A sensible value would be e.g. -20. Defaults to -inf,</span>
+<span class="sd">        i.e. no truncation.</span>
+<span class="sd">    logsumexp_wrapper : _ScipyLogsumexp or _NumbaLogsumexp</span>
+<span class="sd">        Which ``logsumexp`` function to use</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    q : numpy.ndarray</span>
+<span class="sd">        ``Q[t]`` is the log-likelihood of data ``[t, n]``..</span>
+<span class="sd">    p : numpy.ndarray</span>
+<span class="sd">        ``P[t, s]`` is the log-likelihood of a datasequence ``[t, s]``,</span>
+<span class="sd">        given there is no changepoint between ``t`` and ``s``.</span>
+<span class="sd">    pcp : numpy.ndarray</span>
+<span class="sd">        ``Pcp[i, t]`` is the log-likelihood that the ``i``-th changepoint</span>
+<span class="sd">        is at time step ``t``. To actually get the probility of a</span>
+<span class="sd">        changepoint at time step ``t``, sum the probabilities (which is</span>
+<span class="sd">        `prob`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+
+    <span class="c1"># Save everything in log representation</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">g</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">prior</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">G</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">G</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">G</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">g</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+
+    <span class="n">P</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_likelihood</span><span class="o">.</span><span class="n">likelihood</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">Q</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">P_next_cp</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>  <span class="c1"># == log(0)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">P</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_likelihood</span><span class="o">.</span><span class="n">likelihood</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Compute recursion</span>
+            <span class="n">summand</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">+</span> <span class="n">Q</span><span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">g</span><span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">]</span>
+            <span class="n">P_next_cp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">P_next_cp</span><span class="p">,</span> <span class="n">summand</span><span class="p">)</span>
+
+            <span class="c1"># Truncate sum to become approx. linear in time (see</span>
+            <span class="c1"># Fearnhead, 2006, eq. (3))</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">summand</span><span class="p">)</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">P_next_cp</span><span class="p">))</span> <span class="ow">and</span>
+                    <span class="n">summand</span> <span class="o">-</span> <span class="n">P_next_cp</span> <span class="o">&lt;</span> <span class="n">truncate</span><span class="p">):</span>
+                <span class="k">break</span>
+
+        <span class="n">P</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_likelihood</span><span class="o">.</span><span class="n">likelihood</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="c1"># (1 - G) is numerical stable until G becomes numerically 1</span>
+        <span class="k">if</span> <span class="n">G</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-15</span><span class="p">:</span>  <span class="c1"># exp(-1e-15) = .99999...</span>
+            <span class="n">antiG</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">G</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># (1 - G) is approx. -log(G) for G close to 1</span>
+            <span class="n">antiG</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="o">-</span><span class="n">G</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">])</span>
+
+        <span class="n">Q</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logaddexp</span><span class="p">(</span><span class="n">P_next_cp</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">antiG</span><span class="p">)</span>
+
+    <span class="n">Pcp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">Pcp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">Q</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">g</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">Pcp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">Pcp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">tmp_cond</span> <span class="o">=</span> <span class="p">(</span><span class="n">Pcp</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">Q</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+                        <span class="n">g</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">t</span><span class="o">-</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Q</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">Pcp</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">logsumexp_wrapper</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">tmp_cond</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">Pcp</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">Pcp</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+    <span class="k">return</span> <span class="n">Q</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Pcp</span>
+
+
+<span class="n">segmentation_numba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">segmentation</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BayesOffline"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.BayesOffline">[docs]</a><span class="k">class</span> <span class="nc">BayesOffline</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Bayesian offline changepoint detector</span>
+
+<span class="sd">    This is an implementation of [Fear2006]_ based on the one from the</span>
+<span class="sd">    `bayesian_changepoint_detection</span>
+<span class="sd">    &lt;https://github.com/hildensia/bayesian_changepoint_detection&gt;`_ python</span>
+<span class="sd">    package.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prior_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">const</span><span class="o">=</span><span class="p">(</span><span class="n">ConstPrior</span><span class="p">,</span> <span class="n">ConstPriorNumba</span><span class="p">),</span>
+                     <span class="n">geometric</span><span class="o">=</span><span class="p">(</span><span class="n">GeometricPrior</span><span class="p">,</span> <span class="n">GeometricPriorNumba</span><span class="p">),</span>
+                     <span class="n">neg_binomial</span><span class="o">=</span><span class="p">(</span><span class="n">NegBinomialPrior</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+    <span class="n">likelihood_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">gauss</span><span class="o">=</span><span class="p">(</span><span class="n">GaussianObsLikelihood</span><span class="p">,</span>
+                                 <span class="n">GaussianObsLikelihoodNumba</span><span class="p">),</span>
+                          <span class="n">ifm</span><span class="o">=</span><span class="p">(</span><span class="n">IfmObsLikelihood</span><span class="p">,</span> <span class="n">IfmObsLikelihoodNumba</span><span class="p">),</span>
+                          <span class="n">full_cov</span><span class="o">=</span><span class="p">(</span><span class="n">FullCovObsLikelihood</span><span class="p">,</span>
+                                    <span class="n">FullCovObsLikelihoodNumba</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prior</span><span class="o">=</span><span class="s2">&quot;const&quot;</span><span class="p">,</span> <span class="n">obs_likelihood</span><span class="o">=</span><span class="s2">&quot;gauss&quot;</span><span class="p">,</span>
+                 <span class="n">prior_params</span><span class="o">=</span><span class="p">{},</span> <span class="n">obs_likelihood_params</span><span class="o">=</span><span class="p">{},</span>
+                 <span class="n">numba_logsumexp</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;numba&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        prior : {&quot;const&quot;, &quot;geometric&quot;, &quot;neg_binomial&quot;} or prior class, optional</span>
+<span class="sd">            Prior probabiltiy. This can either be a string describing the</span>
+<span class="sd">            prior or a type or instance of a class implementing the prior, as</span>
+<span class="sd">            for example :py:class:`ConstPrior`, :py:class:`GeometricPrior`, or</span>
+<span class="sd">            :py:class:`NegBinomialPrior`.</span>
+
+<span class="sd">            If a string or a type ar passed, a class instance will be created</span>
+<span class="sd">            passing `prior_params` to ``__init__``.</span>
+
+<span class="sd">            If &quot;const&quot;, use :py:class:`ConstPrior`. If &quot;geometric&quot;, use</span>
+<span class="sd">            :py:class:`GeometricPrior`. If &quot;neg_binomial&quot;, use</span>
+<span class="sd">            :py:class:`GeometricPrior`. Defaults to &quot;const&quot;.</span>
+<span class="sd">        obs_likelihood : {&quot;gauss&quot;, &quot;ifm&quot;, &quot;full_cov&quot;} or likelihood class, opt.</span>
+<span class="sd">            Observation likelhood. This can either be a string describing the</span>
+<span class="sd">            likelihood or a type or instance of a class implementing the</span>
+<span class="sd">            likelihood, as for example :py:class:`GaussianObsLikelihood`,</span>
+<span class="sd">            :py:class:`IfmObsLikelihood`, or :py:class:`FullCovObsLikelihood`.</span>
+
+<span class="sd">            If a string or a type ar passed, a class instance will be created</span>
+<span class="sd">            passing `obs_likelihood_params` to ``__init__``.</span>
+
+<span class="sd">            If &quot;gauss&quot;, use :py:class:`GaussianObsLikelihood`.</span>
+<span class="sd">            If &quot;ifm&quot;, use :py:class:`IfmObsLikelihood`. If &quot;full_cov&quot;, use</span>
+<span class="sd">            :py:class:`FullCovObsLikelihood`. Defaults to &quot;gauss&quot;.</span>
+
+<span class="sd">            For multivariate data, &quot;ifm&quot; or &quot;full_cov&quot; is recommended.</span>
+<span class="sd">        prior_params : dict, optional</span>
+<span class="sd">            Parameters to `prior`&#39;s ``__init__`` if it needs to be</span>
+<span class="sd">            constructed. Defaults to {}.</span>
+<span class="sd">        obs_likelihood_params : dict, optional</span>
+<span class="sd">            Parameters to `obs_likelihood`&#39;s ``__init__`` if it needs to be</span>
+<span class="sd">            constructed. Defaults to {}.</span>
+<span class="sd">        engine : {&quot;python&quot;, &quot;numba&quot;}, optional</span>
+<span class="sd">            If &quot;numba&quot;, use the numba-accelerated implementation. Defaults to</span>
+<span class="sd">            &quot;numba&quot;.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        numba_logsumexp : bool, optional</span>
+<span class="sd">            If True, use numba-accelerated :py:func:`logsumexp`, otherwise</span>
+<span class="sd">            use :py:func:`scipy.special.logsumexp`. Defaults to True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">use_numba</span> <span class="o">=</span> <span class="p">(</span><span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;numba&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">numba</span><span class="o">.</span><span class="n">numba_available</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">prior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_map</span><span class="p">[</span><span class="n">prior</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">use_numba</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span><span class="p">(</span><span class="o">**</span><span class="n">prior_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs_likelihood</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">obs_likelihood</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_map</span><span class="p">[</span><span class="n">obs_likelihood</span><span class="p">]</span>
+            <span class="n">obs_likelihood</span> <span class="o">=</span> <span class="n">obs_likelihood</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">use_numba</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obs_likelihood</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="n">obs_likelihood</span> <span class="o">=</span> <span class="n">obs_likelihood</span><span class="p">(</span><span class="o">**</span><span class="n">obs_likelihood_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obs_likelihood</span> <span class="o">=</span> <span class="n">obs_likelihood</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">segmentation</span> <span class="o">=</span> <span class="n">segmentation_numba</span> <span class="k">if</span> <span class="n">use_numba</span> <span class="k">else</span> <span class="n">segmentation</span>
+
+        <span class="k">if</span> <span class="n">numba_logsumexp</span> <span class="ow">and</span> <span class="n">numba</span><span class="o">.</span><span class="n">numba_available</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logsumexp</span> <span class="o">=</span> <span class="n">_NumbaLogsumexp</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logsumexp</span> <span class="o">=</span> <span class="n">_ScipyLogsumexp</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BayesOffline.find_changepoints"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.BayesOffline.find_changepoints">[docs]</a>    <span class="k">def</span> <span class="nf">find_changepoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">prob_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                          <span class="n">truncate</span><span class="o">=-</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find changepoints in datasets</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : array-like</span>
+<span class="sd">            Data array</span>
+<span class="sd">        prob_threshold : float or None, optional</span>
+<span class="sd">            If this is a float, local maxima in the changepoint probabilities</span>
+<span class="sd">            are considered changepoints, if they are above the threshold. In</span>
+<span class="sd">            that case, an array of changepoints is returned. If `None`,</span>
+<span class="sd">            an array of probabilities is returned. Defaults to `None`.</span>
+<span class="sd">        full_output : bool, optional</span>
+<span class="sd">            Whether to return only the probabilities for a changepoint as a</span>
+<span class="sd">            function of time or the full information. Defaults to False, i.e.</span>
+<span class="sd">            only probabilities.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cp_or_prob : numpy.ndarray</span>
+<span class="sd">            Probabilities for a changepoint as a function of time (if</span>
+<span class="sd">            ``prob_threshold=None``) or the enumeration of changepoints (if</span>
+<span class="sd">            `prob_threshold` is not `None`).</span>
+<span class="sd">        q : numpy.ndarray</span>
+<span class="sd">            ``Q[t]`` is the log-likelihood of data ``[t, n]``. Only returned</span>
+<span class="sd">            if ``full_output=True`` and ``prob_threshold=None``.</span>
+<span class="sd">        p : numpy.ndarray</span>
+<span class="sd">            ``P[t, s]`` is the log-likelihood of a datasequence ``[t, s]``,</span>
+<span class="sd">            given there is no changepoint between ``t`` and ``s``. Only</span>
+<span class="sd">            returned if ``full_output=True`` and ``prob_threshold=None``.</span>
+<span class="sd">        pcp : numpy.ndarray</span>
+<span class="sd">            ``Pcp[i, t]`` is the log-likelihood that the ``i``-th changepoint</span>
+<span class="sd">            is at time step ``t``. To actually get the probility of a</span>
+<span class="sd">            changepoint at time step ``t``, sum the probabilities (which is</span>
+<span class="sd">            `prob`). Only returned if ``full_output=True`` and</span>
+<span class="sd">            ``prob_threshold=None``.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        truncate : float, optional</span>
+<span class="sd">            Speed up calculations by truncating a sum if the summands provide</span>
+<span class="sd">            negligible contributions. This parameter is the exponent of the</span>
+<span class="sd">            threshold. Set to ``-inf`` to turn off. Defaults to -20.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prior</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obs_likelihood</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">Q</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Pcp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segmentation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prior</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_likelihood</span><span class="p">,</span>
+                                      <span class="n">truncate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">)</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">Pcp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prob_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lmax</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">argrelmax</span><span class="p">(</span><span class="n">prob</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">lmax</span><span class="p">[</span><span class="n">prob</span><span class="p">[</span><span class="n">lmax</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">prob_threshold</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">full_output</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">prob</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">Pcp</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">prob</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

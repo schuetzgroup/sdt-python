@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.sim.fluo_image &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.sim.fluo_image</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.sim.fluo_image</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Simulation of fluorescence microscopy images&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..helper.numba</span> <span class="kn">import</span> <span class="n">jit</span>
+
+
+<div class="viewcode-block" id="simulate_gauss"><a class="viewcode-back" href="../../../sim.html#sdt.sim.simulate_gauss">[docs]</a><span class="k">def</span> <span class="nf">simulate_gauss</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;numba&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulate an image from multiple Gaussian PSFs</span>
+
+<span class="sd">    Given a list of coordinates, amplitudes and sigmas, simulate a fluorescent</span>
+<span class="sd">    image. This is a frontend to the lower level functions</span>
+<span class="sd">    :py:func:`gauss_psf_numba`, :py:func:`gauss_psf`, and</span>
+<span class="sd">    :py:func:`gauss_psf_full`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple of int, len=2</span>
+<span class="sd">        Shape of the output image. First entry is the width, second is the</span>
+<span class="sd">        height.</span>
+<span class="sd">    centers : numpy.ndarray, shape=(n, 2)</span>
+<span class="sd">        Coordinates of the PSF centers</span>
+<span class="sd">    amplitudes : array_like</span>
+<span class="sd">        Amplitudes of the PSFs. Either a scalar that is used for all Gaussians</span>
+<span class="sd">        or an 1D array specifying the amplitude for each Gaussian. See also</span>
+<span class="sd">        the `mass` parameter.</span>
+<span class="sd">    sigmas : array_like</span>
+<span class="sd">        If it is one number, this will be used as sigma for all Gaussians. An</span>
+<span class="sd">        array of two numbers will be interpreted as sigmas in x and y</span>
+<span class="sd">        directions for all Gaussians. A one-dimensional array of length n</span>
+<span class="sd">        can be used to specify sigma for each Gaussian, and a 2D array of shape</span>
+<span class="sd">        (n, 2) gives sigmas in x and y directions for each Gaussian.</span>
+<span class="sd">    cutoff : float, optional</span>
+<span class="sd">        Each Gaussian is only calculated in a box `cutoff` times sigma pixels</span>
+<span class="sd">        around the center. Does not apply if `engine` is &quot;python_full&quot;.</span>
+<span class="sd">        Defaults to 5.</span>
+<span class="sd">    mass : bool, optional</span>
+<span class="sd">        If True, the value(s) given by `amplitude` are the integrated</span>
+<span class="sd">        Gaussians. If False, they are amplitudes. Defaults to False.</span>
+<span class="sd">    engine : {&quot;numba&quot;, &quot;python&quot;, &quot;python_full&quot;}, optional</span>
+<span class="sd">        &quot;numba&quot; is a :py:mod:`numba`-optimized version, which is by far the</span>
+<span class="sd">        fastest. &quot;python&quot; is written in pure python. &quot;python_full&quot; is also</span>
+<span class="sd">        pure python and calculates each Gaussian for the whole image</span>
+<span class="sd">        (not only in a region around the center, where it is significant),</span>
+<span class="sd">        which makes it the slowest. Defaults to &quot;numba&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Simulated image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">centers</span><span class="p">)</span>
+    <span class="n">amplitudes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">))</span>
+
+    <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sigmas</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">sigmas</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">sigmas</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">centers</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">centers</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mass</span><span class="p">:</span>
+        <span class="n">amplitudes</span> <span class="o">=</span> <span class="n">amplitudes</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;numba&quot;</span><span class="p">:</span>
+        <span class="c1"># There have been weird problems in unittest if `sigmas` was not</span>
+        <span class="c1"># copied, which were only preset if JIT was turned on…</span>
+        <span class="c1"># To be on the save side, also make a copy of `amplitudes`, which is</span>
+        <span class="c1"># also broadcast.</span>
+        <span class="k">return</span> <span class="n">gauss_psf_numba</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">centers</span><span class="p">),</span>
+                               <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigmas</span><span class="p">),</span> <span class="n">cutoff</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;python&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gauss_psf</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;python_full&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gauss_psf_full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown engine: &quot;</span> <span class="o">+</span> <span class="n">engine</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gauss_psf_full"><a class="viewcode-back" href="../../../sim.html#sdt.sim.gauss_psf_full">[docs]</a><span class="k">def</span> <span class="nf">gauss_psf_full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulate an image from multiple Gaussian PSFs</span>
+
+<span class="sd">    Given a list of coordinates, amplitudes and sigmas, simulate a fluorescent</span>
+<span class="sd">    image. For each emitter, the Gaussian is calculated over the whole image</span>
+<span class="sd">    area, which makes this very slow (since calculating exponentials is quite</span>
+<span class="sd">    time consuming.)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple of int, len=2</span>
+<span class="sd">        Shape of the output image. First entry is the width, second is the</span>
+<span class="sd">        height.</span>
+<span class="sd">    centers : numpy.ndarray, shape=(n, 2)</span>
+<span class="sd">        Coordinates of the PSF centers</span>
+<span class="sd">    amplitudes : list of float, len=n</span>
+<span class="sd">        Amplitudes of the Gaussians</span>
+<span class="sd">    sigmas : numpy.ndarray, shape(n, 2)</span>
+<span class="sd">        x and y sigmas of the Gaussians</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Simulated image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">arr_shape</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">arr_shape</span><span class="p">)</span>
+    <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">sigmas</span><span class="p">,</span> <span class="n">centers</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">arr_shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">),</span> <span class="n">ampl</span><span class="p">,</span> <span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
+        <span class="c1"># np.exp is by far the most time consuming operation, therefore we</span>
+        <span class="c1"># can have this loop here. Doing broadcasting stuff easily runs out</span>
+        <span class="c1"># of memory for lots of emitters</span>
+        <span class="n">arg</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">xc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sx</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">yc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sy</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">ampl</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="gauss_psf"><a class="viewcode-back" href="../../../sim.html#sdt.sim.gauss_psf">[docs]</a><span class="k">def</span> <span class="nf">gauss_psf</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulate an image from multiple Gaussian PSFs</span>
+
+<span class="sd">    Given a list of coordinates, amplitudes and sigmas, simulate a fluorescent</span>
+<span class="sd">    image. For each emitter, the Gaussian is calculated only in a square of</span>
+<span class="sd">    2*`roi_size`+1 pixels width, which can make it considerably faster than</span>
+<span class="sd">    :py:func:`gauss_psf_full`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple of int, len=2</span>
+<span class="sd">        Shape of the output image. First entry is the width, second is the</span>
+<span class="sd">        height.</span>
+<span class="sd">    centers : numpy.ndarray, shape=(n, 2)</span>
+<span class="sd">        Coordinates of the PSF centers</span>
+<span class="sd">    amplitudes : list of float, len=n</span>
+<span class="sd">        Amplitudes of the Gaussians</span>
+<span class="sd">    sigmas : numpy.ndarray, shape(n, 2)</span>
+<span class="sd">        x and y sigmas of the Gaussians</span>
+<span class="sd">    cutoff : float</span>
+<span class="sd">        Each Gaussian is only calculated in a box `cutoff` times sigma pixels</span>
+<span class="sd">        around the center.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Simulated image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span> <span class="o">=</span> <span class="n">shape</span>
+    <span class="n">roi_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">cutoff</span><span class="o">*</span><span class="n">sigmas</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">),</span> <span class="n">ampl</span><span class="p">,</span> <span class="p">(</span><span class="n">sx</span><span class="p">,</span> <span class="n">sy</span><span class="p">),</span> <span class="p">(</span><span class="n">rx</span><span class="p">,</span> <span class="n">ry</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span>
+                                                  <span class="n">roi_sizes</span><span class="p">):</span>
+        <span class="n">xc_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">xc</span><span class="p">))</span>
+        <span class="n">yc_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">yc</span><span class="p">))</span>
+        <span class="n">x_roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">xc_int</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                          <span class="nb">min</span><span class="p">(</span><span class="n">xc_int</span> <span class="o">+</span> <span class="n">rx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_size</span><span class="p">))</span>
+        <span class="n">x_roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x_roi</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">y_roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">yc_int</span> <span class="o">-</span> <span class="n">ry</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                          <span class="nb">min</span><span class="p">(</span><span class="n">yc_int</span> <span class="o">+</span> <span class="n">ry</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y_size</span><span class="p">))</span>
+        <span class="n">y_roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y_roi</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">arg</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">x_roi</span> <span class="o">-</span> <span class="n">xc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sx</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_roi</span> <span class="o">-</span> <span class="n">yc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sy</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">y_roi</span><span class="p">,</span> <span class="n">x_roi</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ampl</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="gauss_psf_numba"><a class="viewcode-back" href="../../../sim.html#sdt.sim.gauss_psf_numba">[docs]</a><span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">gauss_psf_numba</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simulate an image from multiple Gaussian PSFs</span>
+
+<span class="sd">    Given a list of coordinates, amplitudes and sigmas, simulate a fluorescent</span>
+<span class="sd">    image. For each emitter, the Gaussian is calculated only in a square of</span>
+<span class="sd">    2*`roi_size`+1 pixels width. Also, the :py:mod:`numba` package is used,</span>
+<span class="sd">    which can make it considerably faster than :py:func:`gauss_psf_full` and</span>
+<span class="sd">    :py:func:`gauss_psf`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shape : tuple of int, len=2</span>
+<span class="sd">        Shape of the output image. First entry is the width, second is the</span>
+<span class="sd">        height.</span>
+<span class="sd">    centers : numpy.ndarray, shape=(n, 2)</span>
+<span class="sd">        Coordinates of the PSF centers</span>
+<span class="sd">    amplitudes : list of float, len=n</span>
+<span class="sd">        Amplitudes of the Gaussians</span>
+<span class="sd">    sigmas : numpy.ndarray, shape(n, 2)</span>
+<span class="sd">        x and y sigmas of the Gaussians</span>
+<span class="sd">    cutoff : float</span>
+<span class="sd">        Each Gaussian is only calculated in a box `cutoff` times sigma pixels</span>
+<span class="sd">        around the center.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Simulated image.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_size</span><span class="p">,</span> <span class="n">y_size</span> <span class="o">=</span> <span class="n">shape</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">y_size</span><span class="p">,</span> <span class="n">x_size</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centers</span><span class="p">)):</span>
+        <span class="n">sx</span><span class="p">,</span> <span class="n">sy</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">ampl</span> <span class="o">=</span> <span class="n">amplitudes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">xc</span><span class="p">,</span> <span class="n">yc</span> <span class="o">=</span> <span class="n">centers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">rx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">sx</span><span class="o">*</span><span class="n">cutoff</span><span class="p">))</span>
+        <span class="n">ry</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">sy</span><span class="o">*</span><span class="n">cutoff</span><span class="p">))</span>
+        <span class="n">xc_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">xc</span><span class="p">))</span>
+        <span class="n">yc_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">yc</span><span class="p">))</span>
+        <span class="n">x_roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">xc_int</span> <span class="o">-</span> <span class="n">rx</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                          <span class="nb">min</span><span class="p">(</span><span class="n">xc_int</span> <span class="o">+</span> <span class="n">rx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_size</span><span class="p">))</span>
+        <span class="n">y_roi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">yc_int</span> <span class="o">-</span> <span class="n">ry</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                          <span class="nb">min</span><span class="p">(</span><span class="n">yc_int</span> <span class="o">+</span> <span class="n">ry</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y_size</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_roi</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">y_roi</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">xc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sx</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">yc</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">sy</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ampl</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

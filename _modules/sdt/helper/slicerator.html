@@ -1,0 +1,1022 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.helper.slicerator &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.helper.slicerator</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.helper.slicerator</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2015, Daniel B. Allan</span>
+<span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+<span class="c1">#</span>
+<span class="c1"># Based on https://github.com/soft-matter/slicerator</span>
+
+<span class="sd">&quot;&quot;&quot;A lazy-loading, fancy-slicable iterable</span>
+
+<span class="sd">forked from https://github.com/soft-matter/slicerator (originally released</span>
+<span class="sd">under MIT license).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
+
+
+<span class="k">def</span> <span class="nf">_iter_attr</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ns</span> <span class="ow">in</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span> <span class="o">+</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">mro</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">ns</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">ns</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="c1"># obj has no __dict__</span>
+
+
+<div class="viewcode-block" id="Slicerator"><a class="viewcode-back" href="../../../helper.html#sdt.helper.Slicerator">[docs]</a><span class="k">class</span> <span class="nc">Slicerator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A generator that supports fancy indexing</span>
+
+<span class="sd">    When sliced using any iterable with a known length, it returns another</span>
+<span class="sd">    object like itself, a Slicerator. When sliced with an integer,</span>
+<span class="sd">    it returns the data payload.</span>
+
+<span class="sd">    Also, the attributes of the parent object can be propagated, exposed</span>
+<span class="sd">    through the child Slicerators. By default, no attributes are</span>
+<span class="sd">    propagated. Attributes can be white-listed by using the optional</span>
+<span class="sd">    parameter `propagated_attrs`.</span>
+
+<span class="sd">    Methods taking an index will be remapped if they are decorated</span>
+<span class="sd">    with `index_attr`. They also have to be present in the</span>
+<span class="sd">    `propagate_attrs` list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_slicerator_flag</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ancestor</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">propagate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ancestor : object</span>
+<span class="sd">        indices : iterable</span>
+<span class="sd">            Giving indices into `ancestor`.</span>
+<span class="sd">            Required if len(ancestor) is invalid.</span>
+<span class="sd">        length : integer</span>
+<span class="sd">            length of indices</span>
+<span class="sd">            This is required if `indices` is a generator,</span>
+<span class="sd">            that is, if `len(indices)` is invalid</span>
+<span class="sd">        propagate_attrs : list of str, optional</span>
+<span class="sd">            list of attributes to be propagated into Slicerator</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Slicing on a Slicerator returns another Slicerator:</span>
+
+<span class="sd">        &gt;&gt;&gt; v = Slicerator([0, 1, 2, 3], range(4), 4)</span>
+<span class="sd">        &gt;&gt;&gt; v1 = v[:2]</span>
+<span class="sd">        &gt;&gt;&gt; type(v[:2])</span>
+<span class="sd">        Slicerator</span>
+<span class="sd">        &gt;&gt;&gt; v2 = v[::2]</span>
+<span class="sd">        &gt;&gt;&gt; type(v2)</span>
+<span class="sd">        Slicerator</span>
+<span class="sd">        &gt;&gt;&gt; v2[0]</span>
+<span class="sd">        0</span>
+
+<span class="sd">        Unless the slice itself has an unknown length, which makes slicing</span>
+<span class="sd">        impossible:</span>
+
+<span class="sd">        &gt;&gt;&gt; v3 = v2((i for i in [0]))  # argument is a generator</span>
+<span class="sd">        &gt;&gt;&gt; type(v3)</span>
+<span class="sd">        generator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ancestor</span><span class="p">)</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The length parameter is required in this &quot;</span>
+                                 <span class="s2">&quot;case because len(ancestor) is not valid.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The length parameter is required in this &quot;</span>
+                                 <span class="s2">&quot;case because len(indices) is not valid.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># when list of propagated attributes are given explicitly,</span>
+        <span class="c1"># take this list and ignore the class definition</span>
+        <span class="k">if</span> <span class="n">propagate_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span> <span class="o">=</span> <span class="n">propagate_attrs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check propagated_attrs field from the ancestor definition</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ancestor</span><span class="p">,</span> <span class="s1">&#39;_propagate_attrs&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span> <span class="o">+=</span> <span class="n">ancestor</span><span class="o">.</span><span class="n">_propagate_attrs</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ancestor</span><span class="p">,</span> <span class="s1">&#39;propagate_attrs&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span> <span class="o">+=</span> <span class="n">ancestor</span><span class="o">.</span><span class="n">propagate_attrs</span>
+
+            <span class="c1"># add methods having the _propagate flag</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">_iter_attr</span><span class="p">(</span><span class="n">ancestor</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s1">&#39;_propagate_flag&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ancestor</span> <span class="o">=</span> <span class="n">ancestor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">indices</span>
+
+<div class="viewcode-block" id="Slicerator.from_func"><a class="viewcode-back" href="../../../helper.html#sdt.helper.Slicerator.from_func">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">propagate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a Slicerator from a function that accepts an integer index</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        func : callable</span>
+<span class="sd">            callable that accepts an integer as its argument</span>
+<span class="sd">        length : int</span>
+<span class="sd">            number of elements; used to supposed revserse slicing like [-1]</span>
+<span class="sd">        propagate_attrs : list, optional</span>
+<span class="sd">            list of attributes to be propagated into Slicerator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">class</span> <span class="nc">Dummy</span><span class="p">:</span>
+            <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">length</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">Dummy</span><span class="p">(),</span> <span class="n">propagate_attrs</span><span class="o">=</span><span class="n">propagate_attrs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slicerator.from_class"><a class="viewcode-back" href="../../../helper.html#sdt.helper.Slicerator.from_class">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">some_class</span><span class="p">,</span> <span class="n">propagate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make an existing class support fancy indexing via Slicerator objects</span>
+
+<span class="sd">        When sliced using any iterable with a known length, it returns a</span>
+<span class="sd">        Slicerator. When sliced with an integer, it returns the data payload.</span>
+
+<span class="sd">        Also, the attributes of the parent object can be propagated, exposed</span>
+<span class="sd">        through the child Slicerators. By default, no attributes are</span>
+<span class="sd">        propagated. Attributes can be white_listed in the following ways:</span>
+
+<span class="sd">        1. using the optional parameter `propagate_attrs`; the contents of this</span>
+<span class="sd">           list will overwrite any other list of propagated attributes</span>
+<span class="sd">        2. using the @propagate_attr decorator inside the class definition</span>
+<span class="sd">        3. using a `propagate_attrs` class attribute inside the class</span>
+<span class="sd">           definition</span>
+
+<span class="sd">        The difference between options 2 and 3 appears when subclassing. As</span>
+<span class="sd">        option 2 is bound to the method, the method will always be propagated.</span>
+<span class="sd">        On the contrary, option 3 is bound to the class, so this can be</span>
+<span class="sd">        overwritten by the subclass.</span>
+
+<span class="sd">        Methods taking an index will be remapped if they are decorated</span>
+<span class="sd">        with `index_attr`. This decorator does not ensure that the method is</span>
+<span class="sd">        propagated.</span>
+
+<span class="sd">        The existing class should support indexing (:py:meth:`__getitem__`</span>
+<span class="sd">        method) and it should define a length (:py:meth:`__len__`).</span>
+
+<span class="sd">        The result will look exactly like the existing class</span>
+<span class="sd">        (:py:attr:`__name__`, :py:attr:`__doc__`, :py:attr:`__module__`,</span>
+<span class="sd">        :py:meth:`__repr__` will be propagated), but :py:meth:`__getitem__`</span>
+<span class="sd">        will be renamed to :py:meth:`_get` and :py:meth:`__getitem__` will</span>
+<span class="sd">        produce a :py:class:`Slicerator` object when sliced.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        some_class : type</span>
+<span class="sd">        propagated_attrs : list, optional</span>
+<span class="sd">            list of attributes to be propagated into Slicerator</span>
+<span class="sd">            this will overwrite any other propagation list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">class</span> <span class="nc">SliceratorSubclass</span><span class="p">(</span><span class="n">some_class</span><span class="p">):</span>
+            <span class="n">_slicerator_flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">_get</span> <span class="o">=</span> <span class="n">some_class</span><span class="o">.</span><span class="fm">__getitem__</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">some_class</span><span class="p">,</span> <span class="s1">&#39;__doc__&#39;</span><span class="p">):</span>
+                <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">some_class</span><span class="o">.</span><span class="vm">__doc__</span>  <span class="c1"># for Python 2, do it here</span>
+
+            <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;Getitem supports repeated slicing via Slicerator objects.&quot;&quot;&quot;</span>
+                <span class="n">indices</span><span class="p">,</span> <span class="n">new_length</span> <span class="o">=</span> <span class="n">key_to_indices</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">new_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">new_length</span><span class="p">,</span> <span class="n">propagate_attrs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;__name__&#39;</span><span class="p">,</span> <span class="s1">&#39;__module__&#39;</span><span class="p">,</span> <span class="s1">&#39;__repr__&#39;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">SliceratorSubclass</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">some_class</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">SliceratorSubclass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Advancing indices won&#39;t affect this new copy of self._indices.</span>
+        <span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">tee</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">indices</span>
+
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ancestor</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_map_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Key out of range&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">abs_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">+</span> <span class="n">key</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">):</span>
+                <span class="n">abs_key</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">return</span> <span class="n">abs_key</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Sliced </span><span class="si">{0}</span><span class="s2">. Original repr:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ancestor</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="n">ln</span> <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ancestor</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">msg</span> <span class="o">+</span> <span class="n">old</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;for data access&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_index</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rel_indices</span><span class="p">,</span> <span class="n">new_length</span> <span class="o">=</span> <span class="n">key_to_indices</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">new_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">rel_indices</span><span class="p">)</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">_index_generator</span><span class="p">(</span><span class="n">rel_indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Slicerator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ancestor</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">new_length</span><span class="p">,</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># to avoid infinite recursion, always check if public field is there</span>
+        <span class="k">if</span> <span class="s1">&#39;_propagate_attrs&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ancestor</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">SliceableAttribute</span><span class="p">)</span> <span class="ow">or</span>
+                    <span class="nb">hasattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s1">&#39;_index_flag&#39;</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">SliceableAttribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">attr</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># When serializing, return a list of the sliced data</span>
+        <span class="c1"># Any exposed attrs are lost.</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_as_list</span><span class="p">):</span>
+        <span class="c1"># When deserializing, restore a Slicerator instance</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_as_list</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">key_to_indices</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts a fancy key into a list of indices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    key : slice, iterable of numbers, or boolean mask</span>
+<span class="sd">    length : integer</span>
+<span class="sd">        length of object that will be indexed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    indices, new_length</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+        <span class="c1"># if we have a slice, return a range object returning the indices</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+        <span class="c1"># if the input is an iterable, doing &#39;fancy&#39; indexing</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;__array__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;dtype&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="c1"># if we have a bool array, set up masking and return indices</span>
+                <span class="n">nums</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+                <span class="c1"># This next line fakes up numpy&#39;s bool masking without</span>
+                <span class="c1"># importing numpy.</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">if</span> <span class="n">y</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="c1"># The key is a generator; return a plain old generator.</span>
+            <span class="c1"># Withoug using the generator, we cannot know its length.</span>
+            <span class="c1"># Also it cannot be checked if values are in range.</span>
+            <span class="n">gen</span> <span class="o">=</span> <span class="p">((</span><span class="n">_k</span> <span class="k">if</span> <span class="n">_k</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">length</span> <span class="o">+</span> <span class="n">_k</span><span class="p">)</span> <span class="k">for</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">gen</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The key is a list of in-range values. Check if they are in range.</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">_k</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">length</span> <span class="ow">or</span> <span class="n">_k</span> <span class="o">&gt;=</span> <span class="n">length</span> <span class="k">for</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">key</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Keys out of range&quot;</span><span class="p">)</span>
+            <span class="n">rel_indices</span> <span class="o">=</span> <span class="p">((</span><span class="n">_k</span> <span class="k">if</span> <span class="n">_k</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">length</span> <span class="o">+</span> <span class="n">_k</span><span class="p">)</span> <span class="k">for</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rel_indices</span><span class="p">,</span> <span class="n">new_length</span>
+
+    <span class="c1"># other cases: it&#39;s possibly a number</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># allow negative indexing</span>
+        <span class="k">if</span> <span class="o">-</span><span class="n">length</span> <span class="o">&lt;</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">length</span> <span class="o">+</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;index out of range&#39;</span><span class="p">)</span>
+
+    <span class="c1"># in all other case, just return the key and let user deal with the type.</span>
+    <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">_index_generator</span><span class="p">(</span><span class="n">new_indices</span><span class="p">,</span> <span class="n">old_indices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find locations of new_indicies in the ref. frame of the old_indices.</span>
+
+<span class="sd">    Example: (1, 3), (1, 3, 5, 10) -&gt; (3, 10)</span>
+
+<span class="sd">    The point of all this trouble is that this is done lazily, returning</span>
+<span class="sd">    a generator without actually looping through the inputs.&quot;&quot;&quot;</span>
+    <span class="c1"># Use iter() to be safe. On a generator, this returns an identical ref.</span>
+    <span class="n">new_indices</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">new_indices</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">new_indices</span><span class="p">)</span>
+    <span class="n">last_n</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">old_indices_</span><span class="p">,</span> <span class="n">old_indices</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">tee</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">old_indices</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">old_indices_</span><span class="p">):</span>
+            <span class="c1"># If new_indices is not strictly monotonically increasing, break</span>
+            <span class="c1"># and start again from the beginning of old_indices.</span>
+            <span class="k">if</span> <span class="n">last_n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">last_n</span><span class="p">:</span>
+                <span class="n">last_n</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">last_n</span> <span class="o">=</span> <span class="n">n</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">new_indices</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                    <span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="c1"># Don&#39;t stop yet; we still have one last thing to yield.</span>
+                <span class="k">yield</span> <span class="n">o</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+
+<div class="viewcode-block" id="Pipeline"><a class="viewcode-back" href="../../../helper.html#sdt.helper.Pipeline">[docs]</a><span class="k">class</span> <span class="nc">Pipeline</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A class to support lazy function evaluation on an iterable.</span>
+
+<span class="sd">    When a :py:class:`Pipeline` object is indexed, it returns an element of its</span>
+<span class="sd">    ancestor modified with a process function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_slicerator_flag</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proc_func</span><span class="p">,</span> <span class="o">*</span><span class="n">ancestors</span><span class="p">,</span> <span class="n">propagate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">propagate_how</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        proc_func : callable</span>
+<span class="sd">            function that processes data returned by Slicerator. The function</span>
+<span class="sd">            acts element-wise and is only evaluated when data is actually</span>
+<span class="sd">            returned</span>
+<span class="sd">        *ancestors : objects</span>
+<span class="sd">            Object to be processed.</span>
+<span class="sd">        propagate_attrs : set of str or None, optional</span>
+<span class="sd">            Names of attributes to be propagated through the pipeline. If this</span>
+<span class="sd">            is `None`, go through ancestors and look at `_propagate_attrs`</span>
+<span class="sd">            and `propagate_attrs` attributes and search for attributes having</span>
+<span class="sd">            a `_propagate_flag` attribute. Defaults to `None`.</span>
+<span class="sd">        propagate_how : {&#39;first&#39;, &#39;last&#39;} or int, optional</span>
+<span class="sd">            Where to look for attributes to propagate. If this is an integer,</span>
+<span class="sd">            it specifies the index of the ancestor (in `ancestors`). If it is</span>
+<span class="sd">            &#39;first&#39;, go through all ancestors starting with the first one until</span>
+<span class="sd">            one is found that has the attribute. If it is &#39;last&#39;, go through</span>
+<span class="sd">            the ancestors in reverse order. Defaults to &#39;first&#39;.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        Construct the pipeline object that multiplies elements by two:</span>
+
+<span class="sd">        &gt;&gt;&gt; ancestor = [0, 1, 2, 3, 4]</span>
+<span class="sd">        &gt;&gt;&gt; times_two = Pipeline(lambda x: 2*x, ancestor)</span>
+
+<span class="sd">        Whenever the pipeline object is indexed, it takes the correct element</span>
+<span class="sd">        from its ancestor, and then applies the process function.</span>
+
+<span class="sd">        &gt;&gt;&gt; times_two[3]</span>
+<span class="sd">        6</span>
+
+<span class="sd">        See also</span>
+<span class="sd">        --------</span>
+<span class="sd">        pipeline</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Only accept ancestors of the same length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ancestors</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ancestors</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Ancestors have to be of same length.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ancestors</span> <span class="o">=</span> <span class="n">ancestors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_proc_func</span> <span class="o">=</span> <span class="n">proc_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_how</span> <span class="o">=</span> <span class="n">propagate_how</span>
+
+        <span class="c1"># when list of propagated attributes are given explicitly,</span>
+        <span class="c1"># take this list and ignore the class definition</span>
+        <span class="k">if</span> <span class="n">propagate_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">propagate_attrs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check propagated_attrs field from the ancestor definition</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_prop_ancestors</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;_propagate_attrs&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;propagate_attrs&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">propagate_attrs</span><span class="p">)</span>
+
+                <span class="c1"># add methods having the _propagate flag</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">_iter_attr</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s1">&#39;_propagate_flag&#39;</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_prop_ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get relevant ancestor(s) for attribute propagation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            List of ancestors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_propagate_how</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ancestors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_propagate_how</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_propagate_how</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_how</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ancestors</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_how</span> <span class="o">==</span> <span class="s1">&#39;last&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ancestors</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;propagate_how has to be an index, &#39;first&#39;, or &quot;</span>
+                         <span class="s2">&quot;&#39;last&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="c1"># We need to copy here: else any _proc_func that acts inplace would</span>
+        <span class="c1"># change the ancestor value.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc_func</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ancestors</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">anc_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ancestors</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;(</span><span class="si">{0}</span><span class="s1">,) processed through </span><span class="si">{1}</span><span class="s1">. Original repr:</span><span class="se">\n</span><span class="s1">    &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">anc_str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_proc_func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="p">[</span><span class="nb">repr</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ancestors</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">msg</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">    ----</span><span class="se">\n</span><span class="s2">    &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;for data access&quot;&quot;&quot;</span>
+        <span class="n">indices</span><span class="p">,</span> <span class="n">new_length</span> <span class="o">=</span> <span class="n">key_to_indices</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">new_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Slicerator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">new_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># to avoid infinite recursion, always check if public field is there</span>
+        <span class="n">pa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_propagate_attrs&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pa</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;_propagate_attrs is not iterable&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">pa</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_prop_ancestors</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;No attribute `</span><span class="si">{}</span><span class="s1">` propagated.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># When serializing, return a list of the processed data</span>
+        <span class="c1"># Any exposed attrs are lost.</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_as_list</span><span class="p">):</span>
+        <span class="c1"># When deserializing, restore the Pipeline</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">data_as_list</span><span class="p">)</span></div>
+
+
+<span class="n">_pipeline_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">Slicerator</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
+    <span class="c1"># Also support the pipeline decorator for the original slicerator&#39;s</span>
+    <span class="c1"># `Pipeline` and `Slicerator` classes</span>
+    <span class="kn">import</span> <span class="nn">slicerator</span> <span class="k">as</span> <span class="nn">slc</span>
+    <span class="n">_pipeline_types</span> <span class="o">=</span> <span class="n">_pipeline_types</span> <span class="o">+</span> <span class="p">(</span><span class="n">slc</span><span class="o">.</span><span class="n">Slicerator</span><span class="p">,</span> <span class="n">slc</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">slc</span>
+
+
+<div class="viewcode-block" id="pipeline"><a class="viewcode-back" href="../../../helper.html#sdt.helper.pipeline">[docs]</a><span class="k">def</span> <span class="nf">pipeline</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator to enable lazy evaluation of a function.</span>
+
+<span class="sd">    When the function is applied to a Slicerator or Pipeline object, it</span>
+<span class="sd">    returns another lazily-evaluated, Pipeline object.</span>
+
+<span class="sd">    When the function is applied to any other object, it falls back on its</span>
+<span class="sd">    normal behavior.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : callable or type</span>
+<span class="sd">        Function or class type for lazy evaluation</span>
+<span class="sd">    retain_doc : bool, optional</span>
+<span class="sd">        If True, don&#39;t modify `func`&#39;s doc string to say that it has been</span>
+<span class="sd">        made lazy. Defaults to False</span>
+<span class="sd">    ancestor_count : int or &#39;all&#39;, optional</span>
+<span class="sd">        Number of inputs to the pipeline. For instance,</span>
+<span class="sd">        a function taking three parameters that adds up the elements of</span>
+<span class="sd">        two :py:class:`Slicerators` and a constant offset would have</span>
+<span class="sd">        ``ancestor_count=2``. If &#39;all&#39;, all the function&#39;s arguments are used</span>
+<span class="sd">        for the pipeline. Defaults to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Pipeline</span>
+<span class="sd">        Lazy function evaluation :py:class:`Pipeline` for `func`.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    Pipeline</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Apply the pipeline decorator to your image processing function.</span>
+
+<span class="sd">    &gt;&gt;&gt; @pipeline</span>
+<span class="sd">    ...  def color_channel(image, channel):</span>
+<span class="sd">    ...      return image[channel, :, :]</span>
+
+<span class="sd">    In order to preserve the original function&#39;s doc string (i. e. do not add</span>
+<span class="sd">    a note saying that it was made lazy), use the decorator like so:</span>
+
+<span class="sd">    &gt;&gt;&gt; @pipeline(retain_doc=True)</span>
+<span class="sd">    ... def color_channel(image, channel):</span>
+<span class="sd">    ...     &#39;&#39;&#39;This doc string will not be changed&#39;&#39;&#39;</span>
+<span class="sd">    ...     return image[channel, :, :]</span>
+
+<span class="sd">    Passing a Slicerator the function returns a Pipeline</span>
+<span class="sd">    that &quot;lazily&quot; applies the function when the images come out. Different</span>
+<span class="sd">    functions can be applied to the same underlying images, creating</span>
+<span class="sd">    independent objects.</span>
+
+<span class="sd">    &gt;&gt;&gt; red_images = color_channel(images, 0)</span>
+<span class="sd">    &gt;&gt;&gt; green_images = color_channel(images, 1)</span>
+
+<span class="sd">    Pipeline functions can also be composed.</span>
+
+<span class="sd">    &gt;&gt;&gt; @pipeline</span>
+<span class="sd">    ... def rescale(image):</span>
+<span class="sd">    ...     return (image - image.min())/image.ptp()</span>
+<span class="sd">    &gt;&gt;&gt; rescale(color_channel(images, 0))</span>
+
+<span class="sd">    The function can still be applied to ordinary images. The decorator</span>
+<span class="sd">    only takes affect when a Slicerator object is passed.</span>
+
+<span class="sd">    &gt;&gt;&gt; single_img = images[0]</span>
+<span class="sd">    &gt;&gt;&gt; red_img = red_channel(single_img)  # normal behavior</span>
+
+
+<span class="sd">    Pipeline functions can take more than one slicerator.</span>
+
+<span class="sd">    &gt;&gt;&gt; @pipeline(ancestor_count=2)</span>
+<span class="sd">    ...  def sum_offset(img1, img2, offset):</span>
+<span class="sd">    ...      return img1 + img2 + offset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_pipeline</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_pipeline</span><span class="p">(</span><span class="n">func_or_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">is_class</span> <span class="o">=</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">func_or_class</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">is_class</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">is_class</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_pipeline_fromclass</span><span class="p">(</span><span class="n">func_or_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_pipeline_fromfunc</span><span class="p">(</span><span class="n">func_or_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_pipeline_fromclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">retain_doc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ancestor_count</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Actual `pipeline` implementation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : class</span>
+<span class="sd">        Class for lazy evaluation</span>
+<span class="sd">    retain_doc : bool</span>
+<span class="sd">        If True, don&#39;t modify `func`&#39;s doc string to say that it has been</span>
+<span class="sd">        made lazy</span>
+<span class="sd">    ancestor_count : int or &#39;all&#39;, optional</span>
+<span class="sd">        Number of inputs to the pipeline. Defaults to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Pipeline</span>
+<span class="sd">        Lazy function evaluation :py:class:`Pipeline` for `func`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ancestor_count</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="c1"># subtract 1 for `self`</span>
+        <span class="n">ancestor_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ancestors</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span><span class="n">ancestor_count</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">ancestor_count</span><span class="p">:]</span>
+        <span class="n">all_pipe</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;_slicerator_flag&#39;</span><span class="p">)</span> <span class="ow">or</span>
+                       <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">_pipeline_types</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ancestors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">all_pipe</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">ancestors</span> <span class="o">+</span> <span class="n">args</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fall back on normal behavior of func, interpreting input</span>
+            <span class="c1"># as a single image.</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ancestors</span><span class="p">)</span> <span class="o">+</span> <span class="n">args</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">retain_doc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;This function has been made lazy. When passed</span><span class="se">\n</span><span class="s2">&quot;</span>
+                           <span class="s2">&quot;a Slicerator, it will return a </span><span class="se">\n</span><span class="s2">&quot;</span>
+                           <span class="s2">&quot;Pipeline of the results. When passed </span><span class="se">\n</span><span class="s2">&quot;</span>
+                           <span class="s2">&quot;any other objects, its behavior is &quot;</span>
+                           <span class="s2">&quot;unchanged.</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span>
+    <span class="n">process</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">return</span> <span class="n">process</span>
+
+
+<span class="k">def</span> <span class="nf">_pipeline_fromfunc</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">retain_doc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ancestor_count</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Actual `pipeline` implementation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : callable</span>
+<span class="sd">        Function for lazy evaluation</span>
+<span class="sd">    retain_doc : bool</span>
+<span class="sd">        If True, don&#39;t modify `func`&#39;s doc string to say that it has been</span>
+<span class="sd">        made lazy</span>
+<span class="sd">    ancestor_count : int or &#39;all&#39;, optional</span>
+<span class="sd">        Number of inputs to the pipeline. Defaults to 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Pipeline</span>
+<span class="sd">        Lazy function evaluation :py:class:`Pipeline` for `func`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ancestor_count</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="n">ancestor_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ancestors</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span><span class="n">ancestor_count</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">ancestor_count</span><span class="p">:]</span>
+        <span class="n">all_pipe</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;_slicerator_flag&#39;</span><span class="p">)</span> <span class="ow">or</span>
+                       <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">_pipeline_types</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ancestors</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">all_pipe</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">proc_func</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">args</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">proc_func</span><span class="p">,</span> <span class="o">*</span><span class="n">ancestors</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Fall back on normal behavior of func, interpreting input</span>
+            <span class="c1"># as a single image.</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">ancestors</span> <span class="o">+</span> <span class="n">args</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">retain_doc</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;This function has been made lazy. When passed</span><span class="se">\n</span><span class="s2">&quot;</span>
+                           <span class="s2">&quot;a Slicerator, it will return a </span><span class="se">\n</span><span class="s2">&quot;</span>
+                           <span class="s2">&quot;Pipeline of the results. When passed </span><span class="se">\n</span><span class="s2">&quot;</span>
+                           <span class="s2">&quot;any other objects, its behavior is &quot;</span>
+                           <span class="s2">&quot;unchanged.</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">process</span><span class="o">.</span><span class="vm">__doc__</span>
+    <span class="n">process</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">return</span> <span class="n">process</span>
+
+
+<span class="k">def</span> <span class="nf">propagate_attr</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="n">func</span><span class="o">.</span><span class="n">_propagate_flag</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">func</span>
+
+
+<span class="k">def</span> <span class="nf">index_attr</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">key_to_indices</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">_index_flag</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+
+<span class="k">class</span> <span class="nc">SliceableAttribute</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class enables index-taking methods that are linked to a Slicerator</span>
+<span class="sd">    object to remap their indices according to the Slicerator indices.</span>
+
+<span class="sd">    It also enables fancy indexing, exactly like the Slicerator itself. The new</span>
+<span class="sd">    attribute supports both calling and indexing to give identical results.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slicerator</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ancestor</span> <span class="o">=</span> <span class="n">slicerator</span><span class="o">.</span><span class="n">_ancestor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="n">slicerator</span><span class="o">.</span><span class="n">_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get</span> <span class="o">=</span> <span class="n">attribute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">slicerator</span><span class="o">.</span><span class="n">indices</span>  <span class="c1"># make an independent copy</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Advancing indices won&#39;t affect this new copy of self._indices.</span>
+        <span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">tee</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">indices</span>
+
+    <span class="k">def</span> <span class="nf">_map_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Key out of range&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">abs_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">+</span> <span class="n">key</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">key</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">):</span>
+                <span class="n">abs_key</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">return</span> <span class="n">abs_key</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_index</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rel_indices</span><span class="p">,</span> <span class="n">new_length</span> <span class="o">=</span> <span class="n">key_to_indices</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">rel_indices</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+
+<span class="c1"># Based on https://github.com/soft-matter/slicerator</span>
+<span class="c1"># Original copyright and license information:</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright (c) 2015, Daniel B. Allan</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># Redistribution and use in source and binary forms, with or without</span>
+<span class="c1"># modification, are permitted provided that the following conditions are met:</span>
+<span class="c1">#</span>
+<span class="c1"># * Redistributions of source code must retain the above copyright notice, this</span>
+<span class="c1">#   list of conditions and the following disclaimer.</span>
+<span class="c1">#</span>
+<span class="c1"># * Redistributions in binary form must reproduce the above copyright notice,</span>
+<span class="c1">#   this list of conditions and the following disclaimer in the documentation</span>
+<span class="c1">#   and/or other materials provided with the distribution.</span>
+<span class="c1">#</span>
+<span class="c1"># * Neither the name of the matplotlib project nor the names of its</span>
+<span class="c1">#   contributors may be used to endorse or promote products derived from</span>
+<span class="c1">#   this software without specific prior written permission.</span>
+<span class="c1">#</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span>
+<span class="c1"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
+<span class="c1"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span>
+<span class="c1"># ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE</span>
+<span class="c1"># LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</span>
+<span class="c1"># CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</span>
+<span class="c1"># SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS</span>
+<span class="c1"># INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</span>
+<span class="c1"># CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</span>
+<span class="c1"># ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</span>
+<span class="c1"># POSSIBILITY OF SUCH DAMAGE.</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.loc.cg.restrict_roi &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.loc.cg.restrict_roi</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.loc.cg.restrict_roi</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Function to restrict peak localization to a ROI&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">slicerator</span>
+
+<span class="kn">from</span> <span class="nn">...image</span> <span class="kn">import</span> <span class="n">filters</span>
+<span class="kn">from</span> <span class="nn">...roi</span> <span class="kn">import</span> <span class="n">PathROI</span>
+
+
+<span class="k">def</span> <span class="nf">restrict_roi</span><span class="p">(</span><span class="n">locate_func</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Restrict a this module&#39;s ``locate`` and ``batch`` functions to a ROI</span>
+
+<span class="sd">    Spezialization of :py:func:`sdt.loc.restrict_roi` for the</span>
+<span class="sd">    :py:mod:`sdt.loc.cg` module. Here we have to do the band pass filtering</span>
+<span class="sd">    before applying a ROI to avoid boundary artefacts.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    locate_func : callable</span>
+<span class="sd">        locate/batch function to use on the ROI</span>
+<span class="sd">    buffer : float</span>
+<span class="sd">        The ROI is enlarged by this many pixels before applying to the</span>
+<span class="sd">        image data to avoid boundary artefacts. After localizing, peaks that</span>
+<span class="sd">        are not contained in the (unbuffered) ROI are filtered out.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        Version of ``locate_func`` that is restrictable to a ROI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">restricted_locate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">roi</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process a ROI in an image or image sequence using :py:func:`{fname}`</span>
+
+<span class="sd">        This chooses a region of interest in an image (or image sequence)</span>
+<span class="sd">        before calling :py:func:`{fname}`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : image data</span>
+<span class="sd">            Passed to :py:func:`{fname}` as the first argument.</span>
+<span class="sd">        roi : path</span>
+<span class="sd">            This is used by the :py:class:`sdt.roi.PathROI` constructor</span>
+<span class="sd">            to create the ROI</span>
+<span class="sd">        rel_origin : bool, optional</span>
+<span class="sd">            If True, the top-left corner coordinates of the path&#39;s bounding</span>
+<span class="sd">            rectangle will be subtracted off all feature coordinates, i. e.</span>
+<span class="sd">            the top-left corner will be the new origin. Defaults to True.</span>
+<span class="sd">            This is a keyword-only argument.</span>
+<span class="sd">        *args</span>
+<span class="sd">            Positional arguments passed to :py:func:`{fname}`</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Keyword arguments passed to :py:func:`{fname}`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            Result of the calls to :py:func:`{fname}` restricted to the ROI.</span>
+<span class="sd">            Coordinates are given with respect to the bounding box of the ROI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="c1"># Turn into Slicerator to make the pipelines work</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">slicerator</span><span class="o">.</span><span class="n">Slicerator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># check if bandpass filtering is desired</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bp</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">bp</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;bandpass&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">bp</span><span class="p">:</span>
+            <span class="c1"># get radius</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">radius</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">radius</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;radius&quot;</span><span class="p">]</span>
+
+            <span class="c1"># get noise radius</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">noise_radius</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">noise_radius</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;noise_radius&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">cg</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">noise_radius</span><span class="p">,</span> <span class="n">nonneg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">PathROI</span><span class="p">):</span>
+            <span class="n">roi</span> <span class="o">=</span> <span class="n">roi</span><span class="o">.</span><span class="n">path</span>
+        <span class="c1"># slightly larger ROI to avoid boundary artefacts</span>
+        <span class="n">img_roi</span> <span class="o">=</span> <span class="n">PathROI</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">buffer</span><span class="p">)</span>
+        <span class="n">feat_roi</span> <span class="o">=</span> <span class="n">PathROI</span><span class="p">(</span><span class="n">roi</span><span class="p">,</span> <span class="n">no_image</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;reset_origin&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The `reset_origin` parameter is deprecated and will be &quot;</span>
+                <span class="s2">&quot;removed in the future. Use `rel_origin` instead.&quot;</span><span class="p">,</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+            <span class="n">rel_origin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reset_origin&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rel_origin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;rel_origin&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">loc</span> <span class="o">=</span> <span class="n">locate_func</span><span class="p">(</span><span class="n">img_roi</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span>
+                          <span class="n">bandpass</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># since we cropped the image, we have to add to the coordinates</span>
+        <span class="n">img_roi</span><span class="o">.</span><span class="n">reset_origin</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+
+        <span class="c1"># now get only stuff inside the polygon</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="n">feat_roi</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">rel_origin</span><span class="o">=</span><span class="n">rel_origin</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">loc</span>
+
+    <span class="n">restricted_locate</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">restricted_locate</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">fname</span><span class="o">=</span><span class="n">locate_func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">restricted_locate</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

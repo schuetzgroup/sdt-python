@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analyze spatial aspects of data &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Single molecule FRET analysis" href="fret.html" />
+    <link rel="prev" title="Changepoint detection" href="changepoint.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analyze spatial aspects of data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Analyze spatial aspects of data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-sdt.spatial"></span><div class="section" id="analyze-spatial-aspects-of-data">
+<h1>Analyze spatial aspects of data<a class="headerlink" href="#analyze-spatial-aspects-of-data" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-sdt.spatial" title="sdt.spatial"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.spatial</span></code></a> module provides methods for analyzing spatial
+aspects of single molecule data:</p>
+<ul class="simple">
+<li><p>Check whether features have near neighbors using the
+<a class="reference internal" href="#sdt.spatial.has_near_neighbor" title="sdt.spatial.has_near_neighbor"><code class="xref py py-func docutils literal notranslate"><span class="pre">has_near_neighbor()</span></code></a> function</p></li>
+<li><p>In tracking data, interpolate features that have been missed by the
+localization algorithm with help of <a class="reference internal" href="#sdt.spatial.interpolate_coords" title="sdt.spatial.interpolate_coords"><code class="xref py py-func docutils literal notranslate"><span class="pre">interpolate_coords()</span></code></a></p></li>
+<li><p>Calculate the area of a polygon using <a class="reference internal" href="#sdt.spatial.polygon_area" title="sdt.spatial.polygon_area"><code class="xref py py-func docutils literal notranslate"><span class="pre">polygon_area()</span></code></a></p></li>
+</ul>
+<p class="rubric">Examples</p>
+<p>To find out whether single molecule features have other features nearby,
+use the <a class="reference internal" href="#sdt.spatial.has_near_neighbor" title="sdt.spatial.has_near_neighbor"><code class="xref py py-func docutils literal notranslate"><span class="pre">has_near_neighbor()</span></code></a> function:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span>
+<span class="go">    x   y</span>
+<span class="go">0  10  10</span>
+<span class="go">1  10  11</span>
+<span class="go">2  20  20</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">has_near_neighbor</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mf">2.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span>
+<span class="go">    x   y  has_neighbor</span>
+<span class="go">0  10  10             1</span>
+<span class="go">1  10  11             1</span>
+<span class="go">2  20  20             0</span>
+</pre></div>
+</div>
+<p>Missing localizations in single molecule tracking data can be interpolated
+by <a class="reference internal" href="#sdt.spatial.interpolate_coords" title="sdt.spatial.interpolate_coords"><code class="xref py py-func docutils literal notranslate"><span class="pre">interpolate_coords()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trc</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
+<span class="gp">... </span>                       <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trc</span>
+<span class="go">    x   y  frame  particle</span>
+<span class="go">0  10  10      0         0</span>
+<span class="go">1  10  10      2         0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trc_i</span> <span class="o">=</span> <span class="n">interpolate_coords</span><span class="p">(</span><span class="n">trc</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trc_i</span>
+<span class="go">    x   y  frame  particle  interp</span>
+<span class="go">0  10  10      0         0       0</span>
+<span class="go">1  10  10      1         0       1</span>
+<span class="go">2  10  10      2         0       0</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#sdt.spatial.polygon_area" title="sdt.spatial.polygon_area"><code class="xref py py-func docutils literal notranslate"><span class="pre">polygon_area()</span></code></a> can be used to calculate the area of a polygon:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vertices</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">polygon_area</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+<span class="go">100.0</span>
+</pre></div>
+</div>
+<div class="section" id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="sdt.spatial.has_near_neighbor">
+<code class="sig-prename descclassname">sdt.spatial.</code><code class="sig-name descname">has_near_neighbor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#has_near_neighbor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.spatial.has_near_neighbor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether localized features have near neighbors</p>
+<p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> <cite>data</cite> with localization data, each
+data point is checked whether other points (in the same frame) are closer
+than <cite>r</cite>.</p>
+<p>The results will be written in a “has_neighbor” column of the <cite>data</cite>
+DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Localization data. The “has_neighbor” column will be
+appended/overwritten with the results.</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – Maximum distance for data points to be considered near neighbors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite> and <cite>time</cite>.
+This means, if your DataFrame has coordinate columns “x” and “z” and
+the time column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.spatial.interpolate_coords">
+<code class="sig-prename descclassname">sdt.spatial.</code><code class="sig-name descname">interpolate_coords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tracks</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#interpolate_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.spatial.interpolate_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate coordinates for missing localizations</p>
+<p>For each particle in <cite>tracks</cite>, interpolate coordinates for frames
+where no localization was detected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tracks</strong> (<em>pandas.DataFrame</em>) – Tracking data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tracking data with missing frames interpolated. An “interp” column
+is added. If False, the localization was detected previously. If
+True, it was added via interpolation by this method.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite>, <cite>time</cite>, and <cite>particle</cite>.
+This means, if your DataFrame has coordinate columns “x” and “z” and
+the time column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.spatial.polygon_area">
+<code class="sig-prename descclassname">sdt.spatial.</code><code class="sig-name descname">polygon_area</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertices</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#polygon_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.spatial.polygon_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the (signed) area of a simple polygon</p>
+<p>The polygon may not self-intersect.</p>
+<p>This is based on JavaScript code from
+<a class="reference external" href="http://www.mathopenref.com/coordpolygonarea2.html">http://www.mathopenref.com/coordpolygonarea2.html</a>.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">polygonArea</span><span class="p">(</span><span class="nx">X</span><span class="p">,</span> <span class="nx">Y</span><span class="p">,</span> <span class="nx">numPoints</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nx">area</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>           <span class="c1">// Accumulates area in the loop</span>
+    <span class="nx">j</span> <span class="o">=</span> <span class="nx">numPoints</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// The last vertex is the &#39;previous&#39; one to the</span>
+                        <span class="c1">// first</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">numPoints</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nx">area</span> <span class="o">=</span> <span class="nx">area</span> <span class="o">+</span>  <span class="p">(</span><span class="nx">X</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span><span class="o">+</span><span class="nx">X</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="nx">Y</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span><span class="o">-</span><span class="nx">Y</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+        <span class="nx">j</span> <span class="o">=</span> <span class="nx">i</span><span class="p">;</span>  <span class="c1">// j is previous vertex to i</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">area</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vertices</strong> (<em>list of 2-tuples or numpy.ndarray, shape=(n, 2)</em>) – Coordinates of the poligon vertices.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Signed area of the polygon. Area is &gt; 0 if vertices are given
+counterclockwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fret.html" class="btn btn-neutral float-right" title="Single molecule FRET analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="changepoint.html" class="btn btn-neutral float-left" title="Changepoint detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

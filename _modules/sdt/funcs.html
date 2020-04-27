@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.funcs &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.funcs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.funcs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Special functions</span>
+<span class="sd">=================</span>
+
+<span class="sd">The :py:mod:`sdt.funcs` module contains classes for construction of certain</span>
+<span class="sd">kinds of functions,</span>
+
+<span class="sd">- :py:class:`StepFunction` for step functions,</span>
+<span class="sd">- :py:class:`ECDF` for empirical cumulative distribution functions.</span>
+
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">Create a step function:</span>
+
+<span class="sd">&gt;&gt;&gt; xs = numpy.arange(10)</span>
+<span class="sd">&gt;&gt;&gt; sfun = StepFunction(xs, xs)  # left-sided by default</span>
+
+<span class="sd">Evaluate the function for some x:</span>
+
+<span class="sd">&gt;&gt;&gt; x = numpy.linspace(-1, 10, 23)</span>
+<span class="sd">&gt;&gt;&gt; sfun(x)</span>
+<span class="sd">array([0., 0., 0., 1., 1., 2., 2., 3., 3., 4., 4., 5., 5., 6., 6., 7., 7.,</span>
+<span class="sd">       8., 8., 9., 9., 9., 9.])</span>
+
+<span class="sd">Create an eCDF from generated data:</span>
+
+<span class="sd">&gt;&gt;&gt; obs = numpy.random.rand(100)  # Uniformly distributed observations</span>
+<span class="sd">&gt;&gt;&gt; e = ECDF(obs)</span>
+
+<span class="sd">Evaluate the eCDF:</span>
+
+<span class="sd">&gt;&gt;&gt; x = numpy.linspace(0, 1, 21)</span>
+<span class="sd">&gt;&gt;&gt; e(x)</span>
+<span class="sd">array([0.  , 0.05, 0.12, 0.19, 0.22, 0.27, 0.31, 0.36, 0.44, 0.48, 0.52,</span>
+<span class="sd">       0.53, 0.6 , 0.64, 0.71, 0.73, 0.79, 0.87, 0.89, 0.96, 1.  ])</span>
+
+
+<span class="sd">Programming reference</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">.. autoclass:: StepFunction</span>
+<span class="sd">    :members:</span>
+<span class="sd">    :special-members: __call__</span>
+<span class="sd">.. autoclass:: ECDF</span>
+<span class="sd">    :members:</span>
+<span class="sd">    :special-members: __call__</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
+
+
+<div class="viewcode-block" id="StepFunction"><a class="viewcode-back" href="../../funcs.html#sdt.funcs.StepFunction">[docs]</a><span class="k">class</span> <span class="nc">StepFunction</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A step function</span>
+
+<span class="sd">    Given the sites of jumps, `x` and the function values `y` at those sites,</span>
+<span class="sd">    construct a function that is constant inbetween.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; xs = numpy.arange(10)</span>
+<span class="sd">    &gt;&gt;&gt; sfun = StepFunction(xs, xs)  # left-sided by default</span>
+<span class="sd">    &gt;&gt;&gt; x = numpy.linspace(-1, 10, 23)</span>
+<span class="sd">    &gt;&gt;&gt; sfun(x)</span>
+<span class="sd">    array([0., 0., 0., 1., 1., 2., 2., 3., 3., 4., 4., 5., 5., 6., 6., 7., 7.,</span>
+<span class="sd">           8., 8., 9., 9., 9., 9.])</span>
+<span class="sd">    &gt;&gt;&gt; sfun2 = StepFunction(xs, xs, side=&quot;right&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; sfun2(x)</span>
+<span class="sd">    array([0., 0., 0., 0., 1., 1., 2., 2., 3., 3., 4., 4., 5., 5., 6., 6., 7.,</span>
+<span class="sd">           7., 8., 8., 9., 9., 9.])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x, y : array-like</span>
+<span class="sd">            Function graph</span>
+<span class="sd">        fill_value : float or (float, float) or &quot;extrapolate&quot;, optional</span>
+<span class="sd">            Values to use for ``x &lt; x[0]`` and ``x &gt; x[-1]``. If this is</span>
+<span class="sd">            &quot;extrapolate&quot;, use ``x[0]`` and ``x[-1]``, respectively. If a</span>
+<span class="sd">            float is given, use it in both cases. If a pair of floats is given,</span>
+<span class="sd">            the first entry is used on the lower end, the second on the upper</span>
+<span class="sd">            end. Defaults to &quot;extrapolate&quot;.</span>
+<span class="sd">        sort : bool, optional</span>
+<span class="sd">            Whether to sort data such that `x` is in ascending order. Set to</span>
+<span class="sd">            `False` if `x` is already sorted to avoid re-sorting. Defaults to</span>
+<span class="sd">            `True`.</span>
+<span class="sd">        side : {&quot;left&quot;, &quot;right&quot;}, optional</span>
+<span class="sd">            The step function will yield ``y[i+1]`` for any x in the interval</span>
+<span class="sd">            (``x[i]``, ``x[i+1]``] if ``side=&quot;left&quot;`` (thus making the step</span>
+<span class="sd">            function continuos from the left). It will yield ``y[i]`` and for</span>
+<span class="sd">            x in the interval [``x[i]``, ``x[i+1]``) if ``side=&quot;right&quot;``</span>
+<span class="sd">            (continuous from the right). Defaults to &quot;left&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+            <span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;next&quot;</span>
+        <span class="k">elif</span> <span class="n">side</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+            <span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;previous&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`side` has to be either </span><span class="se">\&quot;</span><span class="s2">left</span><span class="se">\&quot;</span><span class="s2"> or </span><span class="se">\&quot;</span><span class="s2">right</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">assume_sorted</span><span class="o">=</span><span class="ow">not</span> <span class="n">sort</span><span class="p">,</span>
+                                            <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                            <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Abscissa values of the steps; sorted&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span><span class="o">.</span><span class="n">x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ordinate values of the steps&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span><span class="o">.</span><span class="n">y</span>
+
+<div class="viewcode-block" id="StepFunction.__call__"><a class="viewcode-back" href="../../funcs.html#sdt.funcs.StepFunction.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get step function value(s) at `x`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : number or array-like</span>
+<span class="sd">            Where to evaluate the step function</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        number or numpy.ndarray</span>
+<span class="sd">            Function value(s) at `x`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ECDF"><a class="viewcode-back" href="../../funcs.html#sdt.funcs.ECDF">[docs]</a><span class="k">class</span> <span class="nc">ECDF</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Empirical cumulative distribution function (eCDF)</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; obs = numpy.random.rand(100)  # Uniformly distributed observations</span>
+<span class="sd">    &gt;&gt;&gt; e = ECDF(obs)</span>
+<span class="sd">    &gt;&gt;&gt; x = numpy.linspace(0, 1, 21)</span>
+<span class="sd">    &gt;&gt;&gt; e(x)</span>
+<span class="sd">    array([0.  , 0.05, 0.12, 0.19, 0.22, 0.27, 0.31, 0.36, 0.44, 0.48, 0.52,</span>
+<span class="sd">           0.53, 0.6 , 0.64, 0.71, 0.73, 0.79, 0.87, 0.89, 0.96, 1.  ])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        obs : array-like</span>
+<span class="sd">            List of observations</span>
+<span class="sd">        interp : None or int, optional</span>
+<span class="sd">            Which interpolation to use. `None` will create a right-continuous</span>
+<span class="sd">            step function. Using an integer, the interpolating spline order</span>
+<span class="sd">            can be specified. Defaults to `None`.</span>
+<span class="sd">        sort : bool, optional</span>
+<span class="sd">            If obs is already sorted in ascending order, set to `False` to</span>
+<span class="sd">            avoid re-sorting. Defaults to `True`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
+            <span class="n">obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+            <span class="n">obs</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;previous&quot;</span> <span class="k">if</span> <span class="n">interp</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">interp</span><span class="p">,</span> <span class="n">assume_sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ECDF.__call__"><a class="viewcode-back" href="../../funcs.html#sdt.funcs.ECDF.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get eCDF value(s) at `x`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : number or array-like</span>
+<span class="sd">            Where to evaluate the step function</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        number or numpy.ndarray</span>
+<span class="sd">            eCDF value(s) at `x`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">observations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Array of observations&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span><span class="o">.</span><span class="n">x</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

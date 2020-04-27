@@ -1,0 +1,540 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>GUIs for the Jupyter notebook &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Simulation of microscopy-related data" href="sim.html" />
+    <link rel="prev" title="Fluorescent feature localization" href="loc.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">GUIs for the Jupyter notebook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>GUIs for the Jupyter notebook</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-sdt.nbui"></span><div class="section" id="guis-for-the-jupyter-notebook">
+<h1>GUIs for the Jupyter notebook<a class="headerlink" href="#guis-for-the-jupyter-notebook" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-sdt.nbui" title="sdt.nbui"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.nbui</span></code></a> module contains graphical user interfaces to be used
+within Jupyter notebooks.</p>
+<p>Currently, there is</p>
+<ul class="simple">
+<li><p>the <a class="reference internal" href="#sdt.nbui.Locator" title="sdt.nbui.Locator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Locator</span></code></a> class for setting the parameters for the
+<a class="reference internal" href="loc.html#module-0" title="sdt.loc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.loc</span></code></a> algorithms with visual feedback</p></li>
+<li><p>the <a class="reference internal" href="#sdt.nbui.Thresholder" title="sdt.nbui.Thresholder"><code class="xref py py-class docutils literal notranslate"><span class="pre">Thresholder</span></code></a> class for setting parameters for the
+thresholding algorithms in <a class="reference internal" href="image.html#module-sdt.image" title="sdt.image"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.image</span></code></a> with visual feedback</p></li>
+<li><p>the <a class="reference internal" href="#sdt.nbui.ROISelector" title="sdt.nbui.ROISelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ROISelector</span></code></a> class for choosing ROIs by drawing them on
+images</p></li>
+</ul>
+<div class="section" id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="sdt.nbui.Locator">
+<em class="property">class </em><code class="sig-prename descclassname">sdt.nbui.</code><code class="sig-name descname">Locator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'gray'</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.nbui.Locator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Notebook UI for finding parameters for single molecule localizations</p>
+<p>This allows for loading single molecule image data, setting localization
+algorithm parameters and inspecting the result.</p>
+<p>This requires the use of the <cite>widget</cite> (<cite>ipympl</cite>) matplotlib backend.</p>
+<p class="rubric">Examples</p>
+<p>The first line in each notebook should enable the correct backend.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">widget</span>
+</pre></div>
+</div>
+<p>In a notebook cell, create the UI:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">img_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.tif&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">locator</span> <span class="o">=</span> <span class="n">Locator</span><span class="p">(</span><span class="n">img_files</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">locator</span>
+</pre></div>
+</div>
+<p>Now one can play around with the parameters. Once a satisfactory
+combination has been found, get the parameters in another notebook cell:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">locator</span><span class="o">.</span><span class="n">algorithm</span>
+<span class="go">&quot;3D-DAOSTORM&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">par</span> <span class="o">=</span> <span class="n">locator</span><span class="o">.</span><span class="n">options</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">par</span>
+<span class="go">{&#39;radius&#39;: 1.0,</span>
+<span class="go">&#39;model&#39;: &#39;2d&#39;,</span>
+<span class="go">&#39;threshold&#39;: 800.0,</span>
+<span class="go">&#39;find_filter&#39;: &#39;Cg&#39;,</span>
+<span class="go">&#39;find_filter_opts&#39;: {&#39;feature_radius&#39;: 3},</span>
+<span class="go">&#39;min_distance&#39;: None,</span>
+<span class="go">&#39;size_range&#39;: None}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">**par</span></code> can be passed directly to <a class="reference internal" href="#sdt.nbui.Locator.locate_func" title="sdt.nbui.Locator.locate_func"><code class="xref py py-attr docutils literal notranslate"><span class="pre">locate_func</span></code></a> and
+<a class="reference internal" href="#sdt.nbui.Locator.batch_func" title="sdt.nbui.Locator.batch_func"><code class="xref py py-attr docutils literal notranslate"><span class="pre">batch_func</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">locator</span><span class="o">.</span><span class="n">batch_func</span><span class="p">(</span><span class="n">img_files</span><span class="p">,</span> <span class="o">**</span><span class="n">par</span><span class="p">)</span>  <span class="c1"># loc.daostorm_3d.batch</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> (<em>list of str or dict of str: list-like of numpy.ndarray</em>) – Either a list of file names or a dict mapping an identifier (which
+is displayed) to an image sequence.</p></li>
+<li><p><strong>cmap</strong> (<em>str, optional</em>) – Colormap to use for displaying images. Defaults to “gray”.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple of float, optional</em>) – Size of the figure.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="sdt.nbui.Locator.algorithm">
+<code class="sig-name descname">algorithm</code><a class="headerlink" href="#sdt.nbui.Locator.algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the algorithm</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="sdt.nbui.Locator.options">
+<code class="sig-name descname">options</code><a class="headerlink" href="#sdt.nbui.Locator.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>dict of options to the localizing function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.Locator.locate_func">
+<em class="property">property </em><code class="sig-name descname">locate_func</code><a class="headerlink" href="#sdt.nbui.Locator.locate_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Currently selected single frame localization function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.Locator.batch_func">
+<em class="property">property </em><code class="sig-name descname">batch_func</code><a class="headerlink" href="#sdt.nbui.Locator.batch_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Currently selected batch localization function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.Locator.locate_roi_func">
+<em class="property">property </em><code class="sig-name descname">locate_roi_func</code><a class="headerlink" href="#sdt.nbui.Locator.locate_roi_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Currently selected single frame localization (+ ROI) function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.Locator.batch_roi_func">
+<em class="property">property </em><code class="sig-name descname">batch_roi_func</code><a class="headerlink" href="#sdt.nbui.Locator.batch_roi_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Currently selected batch localization (+ ROI) function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.Locator.auto_scale">
+<code class="sig-name descname">auto_scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">b</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator.auto_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.nbui.Locator.auto_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Auto-scale check box was toggled</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.Locator.get_settings">
+<code class="sig-name descname">get_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator.get_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.nbui.Locator.get_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all settings (algorithm and options)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#sdt.nbui.Locator.algorithm" title="sdt.nbui.Locator.algorithm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">algorithm</span></code></a> and <a class="reference internal" href="#sdt.nbui.Locator.options" title="sdt.nbui.Locator.options"><code class="xref py py-attr docutils literal notranslate"><span class="pre">options</span></code></a> attributes are
+accessible via the “algorithm” and “options” keys, respectively.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.Locator.set_settings">
+<code class="sig-name descname">set_settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator.set_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.nbui.Locator.set_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all settings (algorithm and options)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> (<em>dict</em>) – New values for the <a class="reference internal" href="#sdt.nbui.Locator.algorithm" title="sdt.nbui.Locator.algorithm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">algorithm</span></code></a> and <a class="reference internal" href="#sdt.nbui.Locator.options" title="sdt.nbui.Locator.options"><code class="xref py py-attr docutils literal notranslate"><span class="pre">options</span></code></a>
+attributes should be accessible via the “algorithm” and “options”
+keys, respectively.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="sdt.nbui.Thresholder">
+<em class="property">class </em><code class="sig-prename descclassname">sdt.nbui.</code><code class="sig-name descname">Thresholder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'gray'</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/thresholder.html#Thresholder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.nbui.Thresholder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Notebook UI for finding image thresholding parameters</p>
+<p>This allows for loading image data, setting thresholding algorithm
+parameters and inspecting the result.</p>
+<p>This requires the use of the <cite>widget</cite> (<cite>ipympl</cite>) matplotlib backend.</p>
+<p class="rubric">Examples</p>
+<p>The first line in each notebook should enable the correct backend.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">widget</span>
+</pre></div>
+</div>
+<p>In a notebook cell, create the UI:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Assume img_list is a list of 2D arrays containing image data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">th</span> <span class="o">=</span> <span class="n">Thresholder</span><span class="p">(</span><span class="n">img_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">th</span>
+</pre></div>
+</div>
+<p>Now one can play around with the parameters. Once a satisfactory
+combination has been found, get the parameters in another notebook cell:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">th</span><span class="o">.</span><span class="n">algorithm</span>
+<span class="go">&quot;adaptive&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">par</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">options</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">par</span>
+<span class="go">{&#39;block_size&#39;: 65, &#39;c&#39;: -5.0, &#39;smooth&#39;: 1.5, &#39;method&#39;: &#39;mean&#39;}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">**par</span></code> can be passed directly to <a class="reference internal" href="#sdt.nbui.Thresholder.func" title="sdt.nbui.Thresholder.func"><code class="xref py py-attr docutils literal notranslate"><span class="pre">func</span></code></a></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mask</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">img_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="n">par</span><span class="p">)</span>  <span class="c1"># image.adaptive_thresh</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> (<em>list of array-like or dict of str: array-like</em>) – Either a list of images or a dict mapping identifiers (which are
+displayed) to an image.</p></li>
+<li><p><strong>cmap</strong> (<em>str, optional</em>) – Colormap to use for displaying images. Defaults to “gray”.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple of float, optional</em>) – Size of the figure.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="sdt.nbui.Thresholder.images">
+<code class="sig-name descname">images</code><a class="headerlink" href="#sdt.nbui.Thresholder.images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map of name -&gt; image or list of images</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict or list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="sdt.nbui.Thresholder.algorithm">
+<code class="sig-name descname">algorithm</code><a class="headerlink" href="#sdt.nbui.Thresholder.algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="sdt.nbui.Thresholder.options">
+<code class="sig-name descname">options</code><a class="headerlink" href="#sdt.nbui.Thresholder.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Options to the thresholding function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.Thresholder.func">
+<em class="property">property </em><code class="sig-name descname">func</code><a class="headerlink" href="#sdt.nbui.Thresholder.func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processing function of the currently selected algorithm</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="sdt.nbui.ROISelector">
+<em class="property">class </em><code class="sig-prename descclassname">sdt.nbui.</code><code class="sig-name descname">ROISelector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">'gray'</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/roi_selector.html#ROISelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.nbui.ROISelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Notebook UI for creating ROIs by drawing them on images</p>
+<p>This is useful e.g. to select the region occupied by a cell from a
+transmission light image.</p>
+<p>This requires the use of the <cite>widget</cite> (<cite>ipympl</cite>) matplotlib backend.</p>
+<p class="rubric">Examples</p>
+<p>The first line in each notebook should enable the correct backend.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">widget</span>
+</pre></div>
+</div>
+<p>In a notebook cell, create the UI:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.tif&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">imgs</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">pims</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">n</span><span class="p">)[</span><span class="mi">0</span><span class="p">]}</span>  <span class="c1"># get first frame from each sequence</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span> <span class="o">=</span> <span class="n">ROISelector</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span>
+</pre></div>
+</div>
+<p>Now one can draw ROIs on each image. It is also possible to define
+multiple categories such as “cell” and “background”:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;background&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>By setting the <a class="reference internal" href="#sdt.nbui.ROISelector.auto_category" title="sdt.nbui.ROISelector.auto_category"><code class="xref py py-attr docutils literal notranslate"><span class="pre">auto_category</span></code></a> attribute to <cite>True</cite>, after drawing
+a ROI, the next category will be enabled automatically, allowing for
+quick selection of different ROIs within the same image.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span><span class="o">.</span><span class="n">auto_category</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>Once finished, the ROIs can be accessed via the <a class="reference internal" href="#sdt.nbui.ROISelector.rois" title="sdt.nbui.ROISelector.rois"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rois</span></code></a> attribute,
+which is a nested dict mapping category -&gt; file name -&gt; ROI.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rs</span><span class="o">.</span><span class="n">rois</span>
+<span class="go">{&#39;cat1&#39;: {&#39;a.tif&#39;: &lt;sdt.roi.roi.RectangleROI at 0x7fab2190c240&gt;,</span>
+<span class="go">  &#39;b.tif&#39;: &lt;sdt.roi.roi.PathROI at 0x7fab21855128&gt;},</span>
+<span class="go"> &#39;cat2&#39;: {&#39;a.tif&#39;: &lt;sdt.roi.roi.EllipseROI at 0x7fab21963c50&gt;,</span>
+<span class="go">  &#39;b.tif&#39;: &lt;sdt.roi.roi.PathROI at 0x7fab2190d7b8&gt;}}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>images</strong> (<em>dict of str: array-like</em>) – A dict mapping identifiers to images.</p></li>
+<li><p><strong>cmap</strong> (<em>str, optional</em>) – Colormap to use for displaying images. Defaults to “gray”.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple of float, optional</em>) – Size of the figure.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="sdt.nbui.ROISelector.auto_category">
+<code class="sig-name descname">auto_category</code><a class="headerlink" href="#sdt.nbui.ROISelector.auto_category" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether to automatically select the next category once a ROI has
+been drawn.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="sdt.nbui.ROISelector.images">
+<code class="sig-name descname">images</code><a class="headerlink" href="#sdt.nbui.ROISelector.images" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map of name -&gt; image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="sdt.nbui.ROISelector.rois">
+<code class="sig-name descname">rois</code><a class="headerlink" href="#sdt.nbui.ROISelector.rois" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map of category -&gt; (Map of name -&gt; ROI)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="sdt.nbui.ROISelector.categories">
+<code class="sig-name descname">categories</code><a class="headerlink" href="#sdt.nbui.ROISelector.categories" title="Permalink to this definition">¶</a></dt>
+<dd><p>ROI categories. By default, there is one category called
+“default”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sdt.nbui.ROISelector.redraw">
+<code class="sig-name descname">redraw</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/roi_selector.html#ROISelector.redraw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.nbui.ROISelector.redraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redraw the image and ROIs</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sim.html" class="btn btn-neutral float-right" title="Simulation of microscopy-related data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="loc.html" class="btn btn-neutral float-left" title="Fluorescent feature localization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

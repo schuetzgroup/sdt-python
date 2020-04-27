@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.config &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.config</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.config</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Mechanism for getting and setting default function parameters</span>
+<span class="sd">=============================================================</span>
+
+<span class="sd">Typically, :py:class:`pandas.DataFrames` containing single molecule</span>
+<span class="sd">localization data would have x coordinates in the &quot;x&quot; column, y coordinates in</span>
+<span class="sd">the y column, the total intensity in the &quot;mass&quot; column and so on. Sometimes,</span>
+<span class="sd">this is however not the case, e.g. when multiple DataFrames have been</span>
+<span class="sd">concatenated using a MultiIndex. In that case, it is necessary to be able</span>
+<span class="sd">to tell a function that takes the DataFrame as an input, that it has to look</span>
+<span class="sd">for the x coordinate e.g. in the ``(&quot;channel1&quot;, &quot;x&quot;)`` column.</span>
+
+<span class="sd">The :py:mod:`sdt.config` module contains function decorators that provide</span>
+<span class="sd">sensible default values (e.g. ``[&quot;x&quot;, &quot;y&quot;]`` for coordinate columns), which can</span>
+<span class="sd">be changed by the user. There exist the :py:func:`set_columns` decorator which</span>
+<span class="sd">is used for setting DataFrame column names and teh :py:func:`use_defaults`</span>
+<span class="sd">decorator, which for all other kind of default arguments.</span>
+
+<span class="sd">:py:func:`set_columns` gets its defaults for :py:attr:`columns`, which can</span>
+<span class="sd">be changed by the user for a global effect. Similarly, :py:func:`use_defaults`</span>
+<span class="sd">reads :py:attr:`rc`.</span>
+
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">Define a function that will take the DataFrame column names from the</span>
+<span class="sd">`column` argument:</span>
+
+<span class="sd">&gt;&gt;&gt; @set_columns</span>
+<span class="sd">... def get_mass(data, columns={}):</span>
+<span class="sd">...     return data[columns[&quot;mass&quot;]]</span>
+
+<span class="sd">Thanks to :py:func:`set_columns`, the `columns` dict will have sensible</span>
+<span class="sd">default values (which can be changed globally by the user by setting the</span>
+<span class="sd">corresponding items in :py:attr:`columns`). Additionally, any user of the</span>
+<span class="sd">`get_mass` function can override the column names when calling the function.</span>
+
+
+<span class="sd">Programming reference</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">.. autofunction:: set_columns</span>
+<span class="sd">.. autofunction:: use_defaults</span>
+<span class="sd">.. autodata:: columns</span>
+<span class="sd">.. autodata:: rc</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+
+<span class="n">rc</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">channel_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;channel1&quot;</span><span class="p">,</span> <span class="s2">&quot;channel2&quot;</span><span class="p">],)</span>
+<span class="sd">&quot;&quot;&quot;Global config dictionary&quot;&quot;&quot;</span>
+
+
+<span class="n">columns</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">coords</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">],</span>
+    <span class="n">time</span><span class="o">=</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span>
+    <span class="n">mass</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+    <span class="n">signal</span><span class="o">=</span><span class="s2">&quot;signal&quot;</span><span class="p">,</span>
+    <span class="n">bg</span><span class="o">=</span><span class="s2">&quot;bg&quot;</span><span class="p">,</span>
+    <span class="n">bg_dev</span><span class="o">=</span><span class="s2">&quot;bg_dev&quot;</span><span class="p">,</span>
+    <span class="n">particle</span><span class="o">=</span><span class="s2">&quot;particle&quot;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Default column names in :py:class:`pandas.DataFrame`&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="use_defaults"><a class="viewcode-back" href="../../helper.html#sdt.config.use_defaults">[docs]</a><span class="k">def</span> <span class="nf">use_defaults</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator to apply default values to functions</span>
+
+<span class="sd">    If any function argument whose name is a key in :py:attr:`rc` is `None`,</span>
+<span class="sd">    set its value to what is specified in :py:attr:`rc`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">        Function to be decorated</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    function</span>
+<span class="sd">        Modified function</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; @use_defaults</span>
+<span class="sd">    ... def f(channel_names=None):</span>
+<span class="sd">    ...     return channel_names</span>
+<span class="sd">    &gt;&gt;&gt; [&#39;channel1&#39;, &#39;channel2&#39;]</span>
+<span class="sd">    [&#39;channel1&#39;, &#39;channel2&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; f()</span>
+<span class="sd">    [&#39;channel1&#39;, &#39;channel2&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; f([&quot;ch1&quot;, &quot;ch2&quot;, &quot;ch3&quot;])</span>
+<span class="sd">    [&#39;ch1&#39;, &#39;ch2&#39;, &#39;ch3&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; config.rc[&quot;channel_names&quot;] = [&quot;channel4&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; f()</span>
+<span class="sd">    [&#39;channel4&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ba</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ba</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ba</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ba</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">ba</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">ba</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">sig</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
+
+<div class="viewcode-block" id="set_columns"><a class="viewcode-back" href="../../helper.html#sdt.config.set_columns">[docs]</a><span class="k">def</span> <span class="nf">set_columns</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator to set default column names for DataFrames</span>
+
+<span class="sd">    Use this on functions that accept a dict as the `columns` argument.</span>
+<span class="sd">    Values from :py:attr:`columns` will be added for any key not present in</span>
+<span class="sd">    the dict argument. This is intended as a way to be able to use functions</span>
+<span class="sd">    on DataFrames with non-standard column names.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">        Function to be decorated</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    function</span>
+<span class="sd">        Modified function</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Create some data:</span>
+
+<span class="sd">    &gt;&gt;&gt; a = numpy.arange(6).reshape((-1, 2))</span>
+<span class="sd">    &gt;&gt;&gt; df = pandas.DataFrame(a, columns=[&quot;mass&quot;, &quot;other_mass&quot;])</span>
+<span class="sd">    &gt;&gt;&gt; df</span>
+<span class="sd">        mass  other_mass</span>
+<span class="sd">    0     0           1</span>
+<span class="sd">    1     2           3</span>
+<span class="sd">    2     4           5</span>
+
+<span class="sd">    Example function which should return the &quot;mass&quot; column from a single</span>
+<span class="sd">    molecule data DataFrame:</span>
+
+<span class="sd">    &gt;&gt;&gt; @set_columns</span>
+<span class="sd">    ... def get_mass(data, columns={}):</span>
+<span class="sd">    ...     return data[columns[&quot;mass&quot;]]</span>
+<span class="sd">    &gt;&gt;&gt; get_mass(df)</span>
+<span class="sd">    0    0</span>
+<span class="sd">    1    2</span>
+<span class="sd">    2    4</span>
+<span class="sd">    Name: mass, dtype: int64</span>
+
+<span class="sd">    However, if for some reason the &quot;other_mass&quot; column should be used instead,</span>
+<span class="sd">    this can be achieved by</span>
+
+<span class="sd">    &gt;&gt;&gt; get_mass(df, columns={&quot;mass&quot;: &quot;other_mass&quot;})</span>
+<span class="sd">    0    1</span>
+<span class="sd">    1    3</span>
+<span class="sd">    2    5</span>
+<span class="sd">    Name: other_mass, dtype: int64</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">ba</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ba</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>
+
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">columns</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">cols</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ba</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">])</span>
+        <span class="n">ba</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cols</span>
+
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">ba</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">ba</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">sig</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

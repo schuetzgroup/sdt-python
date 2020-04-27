@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.changepoint.pelt &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.changepoint.pelt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.changepoint.pelt</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;PELT changepoint detection&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">numba</span>
+
+
+<div class="viewcode-block" id="CostL1"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.CostL1">[docs]</a><span class="k">class</span> <span class="nc">CostL1</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;L1 norm cost</span>
+
+<span class="sd">    The cost is :math:`\sum_i |y_i - \operatorname{median}(y)|`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    min_size : int</span>
+<span class="sd">        Minimum size of a segment that works with this cost function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_size</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<div class="viewcode-block" id="CostL1.set_data"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.CostL1.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for cost function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="CostL1.cost"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.CostL1.cost">[docs]</a>    <span class="k">def</span> <span class="nf">cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate cost from time `t` to time `s`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t, s : int</span>
+<span class="sd">            Start and end point</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Cost</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">-</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;t - s less than min_size&quot;</span><span class="p">)</span>
+
+        <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">s</span><span class="p">]</span>
+        <span class="c1"># Cannot use axis=0 argument in numba</span>
+        <span class="n">med</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">med</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">sub</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sub</span> <span class="o">-</span> <span class="n">med</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div></div>
+
+
+<span class="n">CostL1Numba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jitclass</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;min_size&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:])])(</span>
+        <span class="n">CostL1</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CostL2"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.CostL2">[docs]</a><span class="k">class</span> <span class="nc">CostL2</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;L2 norm cost</span>
+
+<span class="sd">    The cost is :math:`\operatorname{var}(y) Δt`, where :math:`Δt` is the</span>
+<span class="sd">    duration of the segment.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    min_size : int</span>
+<span class="sd">        Minimum size of a segment that works with this cost function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_size</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+<div class="viewcode-block" id="CostL2.set_data"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.CostL2.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set data for cost function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="CostL2.cost"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.CostL2.cost">[docs]</a>    <span class="k">def</span> <span class="nf">cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate cost from time `t` to time `s`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        t, s : int</span>
+<span class="sd">            Start and end point</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Cost</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">-</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;t - s less than min_size&quot;</span><span class="p">)</span>
+
+        <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">s</span><span class="p">]</span>
+        <span class="c1"># Cannot use axis=0 argument in numba</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sub</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">var</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">sub</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">var</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span></div></div>
+
+
+<span class="n">CostL2Numba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jitclass</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;min_size&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">float64</span><span class="p">[:,</span> <span class="p">:])])(</span>
+        <span class="n">CostL2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">segmentation</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">min_size</span><span class="p">,</span> <span class="n">jump</span><span class="p">,</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">max_exp_cp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;PELT changepoint detection</span>
+
+<span class="sd">    Implementation of the PELT algorithm [1]_. It is compatible with the</span>
+<span class="sd">    implementation from `ruptures &lt;https://github.com/deepcharles/ruptures&gt;`_.</span>
+
+<span class="sd">    Usually, this function will not be used directly. Users may find the</span>
+<span class="sd">    :py:class:`Pelt` class more convenient.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cost : cost class instance</span>
+<span class="sd">        This needs a `data` attribute with the data to find changepoints in</span>
+<span class="sd">        and a `cost` function that computes the cost of a data segment.</span>
+<span class="sd">        See :py:class:`CostL1` and :py:class:`CostL2` for details.</span>
+<span class="sd">    min_size : int</span>
+<span class="sd">        Minimum length of segments between change points</span>
+<span class="sd">    jump : int</span>
+<span class="sd">        Consider only every `jump`-th data point to speed up calculation.</span>
+<span class="sd">    penalty : float</span>
+<span class="sd">        Penalty of creating a new changepoint</span>
+<span class="sd">    max_exp_cp : int</span>
+<span class="sd">        Expected maximum number of changepoints. Memory for at least this many</span>
+<span class="sd">        changepoints will be pre-allocated. If there are more, a larger array</span>
+<span class="sd">        will be allocated, but this incurs some overhead.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray, shape(n)</span>
+<span class="sd">        Array of changepoints</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Killick et al.: &quot;Optimal Detection of Changepoints With a Linear</span>
+<span class="sd">        Computational Cost&quot;, Journal of the American Statistical Association,</span>
+<span class="sd">        Informa UK Limited, 2012, 107, 1590–1598</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cost</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">+</span> <span class="n">jump</span><span class="p">,</span> <span class="n">jump</span><span class="p">)</span>
+    <span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_samples</span>
+    <span class="n">min_idx_diff</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">min_size</span><span class="o">/</span><span class="n">jump</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">min_idx_diff</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">costs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+    <span class="n">costs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">le</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">-</span> <span class="n">min_idx_diff</span>
+    <span class="n">partitions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">le</span> <span class="o">*</span> <span class="n">max_exp_cp</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">partition_starts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">start_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">new_start</span><span class="p">,</span> <span class="n">end_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">min_idx_diff</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))):</span>
+        <span class="n">new_costs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">start_idx</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">start_idx</span><span class="p">):</span>
+            <span class="n">new_costs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="n">end_idx</span><span class="p">])</span> <span class="o">+</span> <span class="n">penalty</span>
+        <span class="n">new_costs</span> <span class="o">+=</span> <span class="n">costs</span><span class="p">[</span><span class="n">start_idx</span><span class="p">]</span>
+
+        <span class="n">best_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">new_costs</span><span class="p">)</span>
+        <span class="n">best_cost</span> <span class="o">=</span> <span class="n">new_costs</span><span class="p">[</span><span class="n">best_idx</span><span class="p">]</span>
+        <span class="n">best_real_idx</span> <span class="o">=</span> <span class="n">start_idx</span><span class="p">[</span><span class="n">best_idx</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">best_real_idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">best_part</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">best_part_start</span> <span class="o">=</span> <span class="n">partition_starts</span><span class="p">[</span><span class="n">best_real_idx</span><span class="p">]</span>
+            <span class="n">best_part_end</span> <span class="o">=</span> <span class="n">partition_starts</span><span class="p">[</span><span class="n">best_real_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">best_part</span> <span class="o">=</span> <span class="n">partitions</span><span class="p">[</span><span class="n">best_part_start</span><span class="p">:</span><span class="n">best_part_end</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">end_idx</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">times</span><span class="p">[</span><span class="n">best_part</span><span class="p">]</span>
+
+        <span class="n">new_partition</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">best_part</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">new_partition</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_part</span>
+        <span class="n">new_partition</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_idx</span>
+
+        <span class="n">new_part_start</span> <span class="o">=</span> <span class="n">partition_starts</span><span class="p">[</span><span class="n">end_idx</span><span class="p">]</span>
+        <span class="n">new_part_end</span> <span class="o">=</span> <span class="n">new_part_start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_partition</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">new_part_end</span> <span class="o">&gt;</span> <span class="n">partitions</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="n">old_part</span> <span class="o">=</span> <span class="n">partitions</span>
+            <span class="n">partitions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">old_part</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+            <span class="n">partitions</span><span class="p">[:</span><span class="n">old_part</span><span class="o">.</span><span class="n">size</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_part</span>
+
+        <span class="n">partitions</span><span class="p">[</span><span class="n">new_part_start</span><span class="p">:</span><span class="n">new_part_end</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_partition</span>
+        <span class="n">partition_starts</span><span class="p">[</span><span class="n">end_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_part_end</span>
+
+        <span class="n">costs</span><span class="p">[</span><span class="n">end_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_cost</span>
+
+        <span class="n">s2</span> <span class="o">=</span> <span class="n">start_idx</span><span class="p">[</span><span class="n">new_costs</span> <span class="o">&lt;=</span> <span class="n">best_cost</span> <span class="o">+</span> <span class="n">penalty</span><span class="p">]</span>
+        <span class="n">start_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">start_idx</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">s2</span>
+        <span class="n">start_idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_start</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="n">segmentation_numba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)(</span><span class="n">segmentation</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Pelt"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.Pelt">[docs]</a><span class="k">class</span> <span class="nc">Pelt</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;PELT changepoint detection</span>
+
+<span class="sd">    Implementation of the PELT algorithm [Kill2012]_. It is compatible with the</span>
+<span class="sd">    implementation from `ruptures &lt;https://github.com/deepcharles/ruptures&gt;`_.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; det = Pelt(cost=&quot;l2&quot;, min_size=1, jump=1)</span>
+<span class="sd">    &gt;&gt;&gt; # Make some data with a changepoint at t = 10</span>
+<span class="sd">    &gt;&gt;&gt; data = np.concatenate([np.ones(10), np.zeros(10)])</span>
+<span class="sd">    &gt;&gt;&gt; det.find_changepoints(data, 1)</span>
+<span class="sd">    array([10])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cost_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">l1</span><span class="o">=</span><span class="p">(</span><span class="n">CostL1</span><span class="p">,</span> <span class="n">CostL1Numba</span><span class="p">),</span> <span class="n">l2</span><span class="o">=</span><span class="p">(</span><span class="n">CostL2</span><span class="p">,</span> <span class="n">CostL2Numba</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cost</span><span class="o">=</span><span class="s2">&quot;l2&quot;</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">jump</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">cost_params</span><span class="o">=</span><span class="p">{},</span>
+                 <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;numba&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cost : cost class or cost class instance or str, optional</span>
+<span class="sd">            If &quot;l1&quot;, use :py:class:`CostL1`, &quot;l2&quot;, use :py:class:`CostL2`.</span>
+<span class="sd">            A cost class type or instance can be passed directly.</span>
+<span class="sd">        min_size : int, optional</span>
+<span class="sd">            Minimum length of segments between change points. Defaults to 2.</span>
+<span class="sd">        jump : int, optional</span>
+<span class="sd">            Consider only every `jump`-th data point to speed up calculation.</span>
+<span class="sd">            Defaults to 5.</span>
+<span class="sd">        cost_params : dict, optional</span>
+<span class="sd">            Parameters to pass to the cost class&#39;s `__init__`. Only relevant</span>
+<span class="sd">            if `cost` is not a class instance. Defaults to {}.</span>
+<span class="sd">        engine : {&quot;python&quot;, &quot;numba&quot;}, optional</span>
+<span class="sd">            If &quot;numba&quot;, use the numba-accelerated implementation. Defaults to</span>
+<span class="sd">            &quot;numba&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">use_numba</span> <span class="o">=</span> <span class="p">(</span><span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;numba&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">numba</span><span class="o">.</span><span class="n">numba_available</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_map</span><span class="p">[</span><span class="n">cost</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">use_numba</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="n">cost</span> <span class="o">=</span> <span class="n">cost</span><span class="p">(</span><span class="o">**</span><span class="n">cost_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span> <span class="o">=</span> <span class="n">cost</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">segmentation</span> <span class="o">=</span> <span class="n">segmentation_numba</span> <span class="k">if</span> <span class="n">use_numba</span> <span class="k">else</span> <span class="n">segmentation</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost</span><span class="o">.</span><span class="n">min_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jump</span> <span class="o">=</span> <span class="n">jump</span>
+
+<div class="viewcode-block" id="Pelt.find_changepoints"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.Pelt.find_changepoints">[docs]</a>    <span class="k">def</span> <span class="nf">find_changepoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">max_exp_cp</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Do the changpoint detection on `data`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : numpy.ndarray, shape(n, m)</span>
+<span class="sd">            m datasets of n data points</span>
+<span class="sd">        penalty : float</span>
+<span class="sd">            Penalty of creating a new changepoint</span>
+<span class="sd">        max_exp_cp : int, optional</span>
+<span class="sd">            Expected maximum number of changepoints. Memory for at least this</span>
+<span class="sd">            many changepoints will be pre-allocated. If there are more, a</span>
+<span class="sd">            larger array will be allocated, but this incurs some overhead.</span>
+<span class="sd">            Defaults to 10.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray, shape(n)</span>
+<span class="sd">            Array of changepoints</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">segmentation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cost</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jump</span><span class="p">,</span>
+                                 <span class="n">penalty</span><span class="p">,</span> <span class="n">max_exp_cp</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

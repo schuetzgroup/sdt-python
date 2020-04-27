@@ -1,0 +1,722 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.io.sm &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.io.sm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.io.sm</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Load single molecule data from files</span>
+
+<span class="sd">This module allows for reading data files produced by various MATLAB and</span>
+<span class="sd">python tools. So far it can read data from</span>
+
+<span class="sd">- particle_tracking_2D</span>
+<span class="sd">- prepare_peakposition (and anything als that produces pk files)</span>
+<span class="sd">- check_fit (i. e. pks files)</span>
+<span class="sd">- msdplot.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sp_io</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="n">adjust_index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;Since MATLAB&#39;s indices start at 1 and python&#39;s start at 0, some data</span>
+<span class="sd">(such as feature coordinates and frame numbers) may be off by one.</span>
+<span class="sd">This list contains the names of columns to be corrected.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../io.html#sdt.io.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load localization or tracking data from file</span>
+
+<span class="sd">    Use the :func:`load_\*` function appropriate for the file type in order to</span>
+<span class="sd">    load the data. The file type is determined by the file&#39;s extension or</span>
+<span class="sd">    the `fmt` parameter.</span>
+
+<span class="sd">    Supported file types:</span>
+
+<span class="sd">    - HDF5 files (\*.h5)</span>
+<span class="sd">    - ThunderSTORM CSV files (\*.csv)</span>
+<span class="sd">    - particle_tracking_2D positions (\*_positions.mat)</span>
+<span class="sd">    - particle_tracking_2D tracks (\*_tracks.mat)</span>
+<span class="sd">    - pkc files (\*.pkc)</span>
+<span class="sd">    - pks files (\*.pks)</span>
+<span class="sd">    - trc files (\*.trc)</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file</span>
+<span class="sd">    typ : str, optional</span>
+<span class="sd">        If the file is HDF5, load this key (usually either &quot;features&quot; or</span>
+<span class="sd">        &quot;tracks&quot;), unless it is &quot;auto&quot;. In that case try to read &quot;tracks&quot; and</span>
+<span class="sd">        if that fails, try to read &quot;features&quot;.</span>
+<span class="sd">        If the file is in particle_tracker format, this can be either &quot;auto&quot;,</span>
+<span class="sd">        &quot;features&quot; or &quot;tracks&quot;. Defaults to &quot;auto&quot;.</span>
+<span class="sd">    fmt : {&quot;auto&quot;, &quot;hdf5&quot;, &quot;particle_tracker&quot;, &quot;pkc&quot;, &quot;pks&quot;, &quot;trc&quot;, &quot;csv&quot;}, optional</span>
+<span class="sd">        Output format. If &quot;auto&quot;, infer the format from `filename`. Otherwise,</span>
+<span class="sd">        write the given format.</span>
+<span class="sd">    color : {&quot;red&quot;, &quot;green&quot;}, optional</span>
+<span class="sd">        For pkc files, specify whether to load the red (default) or green</span>
+<span class="sd">        channel.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Loaded data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.h5&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;hdf5&quot;</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_positions.mat&quot;</span><span class="p">):</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;particle_tracker&quot;</span>
+            <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+                <span class="n">typ</span> <span class="o">=</span> <span class="s2">&quot;features&quot;</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_tracks.mat&quot;</span><span class="p">):</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;particle_tracker&quot;</span>
+            <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+                <span class="n">typ</span> <span class="o">=</span> <span class="s2">&quot;tracks&quot;</span>
+        <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.pkc&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;pkc&quot;</span>
+        <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.pks&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;pks&quot;</span>
+        <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.trc&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;trc&quot;</span>
+        <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.csv&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;csv&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not determine format from file name &quot;</span> <span class="o">+</span>
+                             <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;hdf5&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;tracks&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">typ</span> <span class="o">=</span> <span class="s2">&quot;features&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_hdf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;particle_tracker&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">load_pt2d</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="n">typ</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;pkc&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">load_pkmatrix</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">(</span><span class="n">color</span> <span class="o">==</span> <span class="s2">&quot;green&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;pks&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">load_pks</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;trc&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">load_trc</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">load_csv</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown format &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">))</span></div>
+
+
+<span class="n">_pt2d_name_trans</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">((</span>
+    <span class="p">(</span><span class="s2">&quot;x-Position&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;y-Position&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Integrated Intensity&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Radius of Gyration&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Excentricity&quot;</span><span class="p">,</span> <span class="s2">&quot;ecc&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Maximal Pixel Intensity&quot;</span><span class="p">,</span> <span class="s2">&quot;signal&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Background per Pixel&quot;</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Standard Deviation of Background&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_dev&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Full Integrated Intensity - Background&quot;</span><span class="p">,</span> <span class="s2">&quot;mass_corr&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Background per Feature&quot;</span><span class="p">,</span> <span class="s2">&quot;feat_bg&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Frame Number&quot;</span><span class="p">,</span> <span class="s2">&quot;frame&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Time in Frames&quot;</span><span class="p">,</span> <span class="s2">&quot;time&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;Trace ID&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">)))</span>
+
+
+<div class="viewcode-block" id="load_pt2d"><a class="viewcode-back" href="../../../io.html#sdt.io.load_pt2d">[docs]</a><span class="k">def</span> <span class="nf">load_pt2d</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">load_protocol</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load a _positions.mat file created by particle_tracking_2D</span>
+
+<span class="sd">    Use :py:func:`scipy.io.loadmat` to load the file and convert data to a</span>
+<span class="sd">    :py:class:`pandas.DataFrame`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file to load</span>
+<span class="sd">    typ : {&quot;features&quot;, &quot;tracks&quot;}</span>
+<span class="sd">        Specify whether to load feature data (positions.mat) or tracking data</span>
+<span class="sd">        (tracks.mat)</span>
+<span class="sd">    load_protocol : bool, optional</span>
+<span class="sd">        Look for a _protocol.mat file (i. e. replace the &quot;_positions.mat&quot; part</span>
+<span class="sd">        of `filename` with &quot;_protocol.mat&quot;) in order to load the column names.</span>
+<span class="sd">        This may be buggy for some older versions of particle_tracking_2D. If</span>
+<span class="sd">        reading the protocol fails, this behaves as if load_protocol=False.</span>
+<span class="sd">        Defaults to True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Loaded data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;features&quot;</span><span class="p">:</span>
+        <span class="n">mat_component</span> <span class="o">=</span> <span class="s2">&quot;MT&quot;</span>
+        <span class="n">filename_component</span> <span class="o">=</span> <span class="s2">&quot;positions.mat&quot;</span>
+        <span class="n">protocol_component</span> <span class="o">=</span> <span class="s2">&quot;positions_output&quot;</span>
+    <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;tracks&quot;</span><span class="p">:</span>
+        <span class="n">mat_component</span> <span class="o">=</span> <span class="s2">&quot;tracks&quot;</span>
+        <span class="n">filename_component</span> <span class="o">=</span> <span class="s2">&quot;tracks.mat&quot;</span>
+        <span class="n">protocol_component</span> <span class="o">=</span> <span class="s2">&quot;tracking_output&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown type: &quot;</span> <span class="o">+</span> <span class="n">typ</span><span class="p">)</span>
+
+    <span class="n">mt</span> <span class="o">=</span> <span class="n">sp_io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="n">mat_component</span><span class="p">]</span>
+
+    <span class="c1"># column names for DataFrame, will be overridden if load_protocol == True</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_pt2d_name_trans</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">load_protocol</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">proto_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">filename</span><span class="p">[:</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">filename_component</span><span class="p">)]</span> <span class="o">+</span>
+                          <span class="s2">&quot;protocol.mat&quot;</span><span class="p">)</span>
+            <span class="n">proto</span> <span class="o">=</span> <span class="n">sp_io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">proto_path</span><span class="p">,</span> <span class="n">struct_as_record</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">squeeze_me</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">name_str</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">proto</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">],</span> <span class="n">protocol_component</span><span class="p">)</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">name_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span>
+
+            <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">_pt2d_name_trans</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Failed to read protocol for &quot;</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span>
+                         <span class="s2">&quot;. Falling back to using hard-coded names.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># append cols with names for unnamed columns</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">),</span> <span class="n">mt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;column</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+    <span class="c1"># columns name list cannot have more columns than there are in the file</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[:</span><span class="n">mt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">adjust_index</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="s2">&quot;size&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="c1"># particle_tracker returns the squared radius of gyration</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<span class="n">_pk_column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">,</span> <span class="s2">&quot;column6&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;column7&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_dev&quot;</span><span class="p">,</span> <span class="s2">&quot;column9&quot;</span><span class="p">,</span> <span class="s2">&quot;column10&quot;</span><span class="p">]</span>
+<span class="n">_pk_ret_column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_dev&quot;</span><span class="p">,</span> <span class="s2">&quot;frame&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="load_pkmatrix"><a class="viewcode-back" href="../../../io.html#sdt.io.load_pkmatrix">[docs]</a><span class="k">def</span> <span class="nf">load_pkmatrix</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">green</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load a pkmatrix from a .mat file</span>
+
+<span class="sd">    Use :py:func:`scipy.io.loadmat` to load the file and convert data to a</span>
+<span class="sd">    :py:class:`pandas.DataFrame`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file to load</span>
+<span class="sd">    green : bool</span>
+<span class="sd">        If True, load `pkmatrix_green`, which is the right half of the image</span>
+<span class="sd">        when using ``prepare_peakposition`` in 2 color mode. Otherwise,</span>
+<span class="sd">        load `pkmatrix`. Defaults to False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Loaded data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">sp_io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">struct_as_record</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squeeze_me</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">green</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;par&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pkmatrix</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;par&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pkmatrix_green</span>
+
+    <span class="c1"># if no localizations were found, an empty array is returned. However,</span>
+    <span class="c1"># the DataFrame constructor expects None in this case.</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">d</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">_pk_column_names</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">adjust_index</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="s2">&quot;size&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="c1"># the size in a pkmatrix is FWHM; convert to sigma of the gaussian</span>
+        <span class="c1"># sigma = FWHM/sqrt(8*log(2))</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">/=</span> <span class="mf">2.3548200450309493</span>
+
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">_pk_ret_column_names</span><span class="p">]</span></div>
+
+
+<span class="n">_pks_column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">,</span> <span class="s2">&quot;bg_dev&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;ep&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="load_pks"><a class="viewcode-back" href="../../../io.html#sdt.io.load_pks">[docs]</a><span class="k">def</span> <span class="nf">load_pks</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load a pks matrix from a MATLAB file</span>
+
+<span class="sd">    Use :py:func:`scipy.io.loadmat` to load the file and convert data to a</span>
+<span class="sd">    :py:class:`pandas.DataFrame`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file to load</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Loaded data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">sp_io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">struct_as_record</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squeeze_me</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;pks&quot;</span><span class="p">]</span>
+
+    <span class="c1"># if no localizations were found, an empty array is returned. However,</span>
+    <span class="c1"># the DataFrame constructor expects None in this case.</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">d</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">_pks_column_names</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">adjust_index</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="s2">&quot;size&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="c1"># the size in a pkmatrix is FWHM; convert to sigma of the gaussian</span>
+        <span class="c1"># sigma = FWHM/sqrt(8*log(2))</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">/=</span> <span class="mf">2.3548200450309493</span>
+
+    <span class="c1"># TODO: trackpy ep is in pixels (?), pks in nm</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<span class="n">_trc_col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">,</span> <span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">]</span>
+<span class="n">_trc_ret_col_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="load_trc"><a class="viewcode-back" href="../../../io.html#sdt.io.load_trc">[docs]</a><span class="k">def</span> <span class="nf">load_trc</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load tracking data from a .trc file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file to load</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Loaded data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">_trc_col_names</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">adjust_index</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">_trc_ret_col_names</span><span class="p">]</span></div>
+
+
+<span class="n">_thunderstorm_name_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;sigma&quot;</span><span class="p">:</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;intensity&quot;</span><span class="p">:</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="s2">&quot;bg&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bkgstd&quot;</span><span class="p">:</span> <span class="s2">&quot;bg_dev&quot;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="load_csv"><a class="viewcode-back" href="../../../io.html#sdt.io.load_csv">[docs]</a><span class="k">def</span> <span class="nf">load_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load localization data from a CSV file created by ThunderSTORM</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file to load</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Single molecule data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># ThunderSTORM column names are &quot;&lt;name&gt; [&lt;unit&gt;]&quot;</span>
+    <span class="c1"># Get the name and translate it to the &quot;standard&quot; name if possible</span>
+    <span class="n">unit_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(\w+) \[(\w+)\]$&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">unit_re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_thunderstorm_name_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">cols</span>
+
+    <span class="k">if</span> <span class="s2">&quot;frame&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<span class="n">_msd_column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lagt&quot;</span><span class="p">,</span> <span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="s2">&quot;stderr&quot;</span><span class="p">,</span> <span class="s2">&quot;qianerr&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="load_msdplot"><a class="viewcode-back" href="../../../io.html#sdt.io.load_msdplot">[docs]</a><span class="k">def</span> <span class="nf">load_msdplot</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load msdplot data from .mat file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file to load</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">    dict([d, stderr, qianerr, pa, emsd])</span>
+<span class="sd">        d is the diffusion coefficient in μm²/s, stderr its standard</span>
+<span class="sd">        error, qianerr its Qian error, pa the positional accuracy in nm and</span>
+<span class="sd">        emsd a pandas.DataFrame containing the msd-vs.-tlag data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">sp_io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">struct_as_record</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squeeze_me</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;msd1&quot;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="mf">1000.</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;d1&quot;</span><span class="p">],</span>
+                <span class="n">stderr</span><span class="o">=</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;dstd1&quot;</span><span class="p">],</span>
+                <span class="n">qianerr</span><span class="o">=</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;dstd_qian1&quot;</span><span class="p">],</span>
+                <span class="n">pa</span><span class="o">=</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;pos1&quot;</span><span class="p">],</span>
+                <span class="n">emsd</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">_msd_column_names</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="save"><a class="viewcode-back" href="../../../io.html#sdt.io.save">[docs]</a><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save feature/tracking data</span>
+
+<span class="sd">    This supports HDF5, trc, and particle_tracker formats.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file to write to</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        Data to save</span>
+<span class="sd">    typ : {&quot;auto&quot;, &quot;features&quot;, &quot;tracks&quot;}</span>
+<span class="sd">        Specify whether to save feature data or tracking data. If &quot;auto&quot;,</span>
+<span class="sd">        consider `data` tracking data if a &quot;particle&quot; column is present,</span>
+<span class="sd">        otherwise treat as feature data.</span>
+<span class="sd">    fmt : {&quot;auto&quot;, &quot;hdf5&quot;, &quot;particle_tracker&quot;, &quot;trc&quot;}</span>
+<span class="sd">        Output format. If &quot;auto&quot;, infer the format from `filename`. Otherwise,</span>
+<span class="sd">        write the given format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">typ</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;tracks&quot;</span><span class="p">,</span> <span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown type: &quot;</span> <span class="o">+</span> <span class="n">typ</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.h5&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;hdf5&quot;</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_positions.mat&quot;</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_tracks.mat&quot;</span><span class="p">)):</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;particle_tracker&quot;</span>
+        <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.trc&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;trc&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not determine format from file name &quot;</span> <span class="o">+</span>
+                             <span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;particle&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">typ</span> <span class="o">=</span> <span class="s2">&quot;tracks&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">typ</span> <span class="o">=</span> <span class="s2">&quot;features&quot;</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;hdf5&quot;</span><span class="p">:</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">to_hdf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;particle_tracker&quot;</span><span class="p">:</span>
+        <span class="n">save_pt2d</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;trc&quot;</span><span class="p">:</span>
+        <span class="n">save_trc</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown format &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="save_pt2d"><a class="viewcode-back" href="../../../io.html#sdt.io.save_pt2d">[docs]</a><span class="k">def</span> <span class="nf">save_pt2d</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;tracks&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save feature/tracking data in particle_tracker format</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or pathlib.Path</span>
+<span class="sd">        Name of the file to write to</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        Data to save</span>
+<span class="sd">    typ : {&quot;features&quot;, &quot;tracks&quot;}</span>
+<span class="sd">        Specify whether to save feature data or tracking data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">data_cols</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">num_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_pt2d_name_trans</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="s2">&quot;particle&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">typ</span> <span class="o">!=</span> <span class="s2">&quot;tracks&quot;</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">cur_col</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cur_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_features</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">adjust_index</span><span class="p">:</span>
+            <span class="n">data_cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span>
+            <span class="n">data_cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_col</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_col</span><span class="p">)</span>
+
+    <span class="n">key_name</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;MT&quot;</span> <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;features&quot;</span> <span class="k">else</span> <span class="s2">&quot;tracks&quot;</span><span class="p">)</span>
+    <span class="n">sp_io</span><span class="o">.</span><span class="n">savemat</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="p">{</span><span class="n">key_name</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">data_cols</span><span class="p">)})</span></div>
+
+
+<div class="viewcode-block" id="save_trc"><a class="viewcode-back" href="../../../io.html#sdt.io.save_trc">[docs]</a><span class="k">def</span> <span class="nf">save_trc</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Save tracking data in trc format</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        Name of the file to write to</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        Data to save</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="s2">&quot;particle&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">adjust_index</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;__trc_idx__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">,</span> <span class="s2">&quot;frame&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;__trc_idx__&quot;</span><span class="p">])</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,932 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.motion.msd_dist &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.motion.msd_dist</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.motion.msd_dist</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Tools for calculation of MSDs via cumulative density functions&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">msd_base</span><span class="p">,</span> <span class="n">msd</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">exp_fit</span><span class="p">,</span> <span class="n">config</span>
+
+
+<span class="k">def</span> <span class="nf">_fit_cdf_prony</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Variant of `exp_fit.fit` for the model of the CDF</span>
+
+<span class="sd">    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting</span>
+<span class="sd">    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data</span>
+<span class="sd">    using a modified Prony&#39;s method. Additionally, there are the constraints</span>
+<span class="sd">    :math:`\sum_{k=1}^p -\beta_k = 1` and :math:`\alpha = 1`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.ndarray</span>
+<span class="sd">        Abscissa (x-axis) data</span>
+<span class="sd">    y : numpy.ndarray</span>
+<span class="sd">        CDF function values corresponding to `x`.</span>
+<span class="sd">    n_exp : int</span>
+<span class="sd">        Number of exponential functions (``p``) in the sum</span>
+<span class="sd">    poly_order : int</span>
+<span class="sd">        For calculation, the sum of exponentials is approximated by a sum</span>
+<span class="sd">        of Legendre polynomials. This parameter gives the degree of the</span>
+<span class="sd">        highest order polynomial.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mant_coeff : numpy.ndarray</span>
+<span class="sd">        Mantissa coefficients (:math:`\beta_k`)</span>
+<span class="sd">    exp_coeff : numpy.ndarray</span>
+<span class="sd">        List of exponential coefficients (:math:`\lambda_k`)</span>
+<span class="sd">    ode_coeff : numpy.ndarray</span>
+<span class="sd">        Optimal coefficienst of the ODE involved in calculating the exponential</span>
+<span class="sd">        coefficients.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    initial_guess : numpy.ndarray or None, optional</span>
+<span class="sd">        An initial guess for determining the parameters of the ODE (if you</span>
+<span class="sd">        don&#39;t know what this is about, don&#39;t bother). The array is 1D and has</span>
+<span class="sd">        `n_exp` + 1 entries. If None, use ``numpy.ones(n_exp + 1)``.</span>
+<span class="sd">        Defaults to None.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Since :math:`\sum_{i=1}^p -\beta_i = 1` and :math:`\alpha = 1`, assuming</span>
+<span class="sd">    :math:`\lambda_k` already known (since they are gotten by fitting the</span>
+<span class="sd">    coefficients of the ODE), there is only the constrained linear least</span>
+<span class="sd">    squares problem</span>
+
+<span class="sd">    ..math:: 1 + \sum_{k=1}^{p-1} \beta_k \text{e}^{\lambda_k t} +</span>
+<span class="sd">        (-1 - \sum_{k=1}^{p-1} \beta_k) \text{e}^{\lambda_p t} = y</span>
+
+<span class="sd">    left to solve. This is equivalent to</span>
+
+<span class="sd">    ..math:: \sum_{k=1}^{p-1} \beta_k</span>
+<span class="sd">        (\text{e}^{\lambda_k t} - \text{e}^{\lambda_p t}) =</span>
+<span class="sd">        y - 1 + \text{e}^{\lambda_p t},</span>
+
+<span class="sd">    which yields :math:`\beta_1, …, \beta_{p-1}`. :math:`\beta_p` can then be</span>
+<span class="sd">    determined from the constraint.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get exponent coefficients as usual</span>
+    <span class="n">exp_coeff</span><span class="p">,</span> <span class="n">ode_coeff</span> <span class="o">=</span> <span class="n">exp_fit</span><span class="o">.</span><span class="n">get_exponential_coeffs</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n_exp</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># for only one exponential, the mantissa coefficient is -1</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">exp_coeff</span>
+
+    <span class="c1"># Solve the equivalent linear lsq problem (see notes section of the</span>
+    <span class="c1"># docstring).</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exp_coeff</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">restr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">exp_coeff</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">V</span> <span class="o">-=</span> <span class="n">restr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">lsq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">restr</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lsq</span> <span class="o">=</span> <span class="n">lsq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Also recover the last mantissa coefficient from the constraint</span>
+    <span class="n">mant_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">lsq</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lsq</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+
+    <span class="k">return</span> <span class="n">mant_coeff</span><span class="p">,</span> <span class="n">exp_coeff</span>
+
+
+<span class="k">def</span> <span class="nf">_fit_cdf_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initial_b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initial_l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit CDF by least squares fitting</span>
+
+<span class="sd">    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting</span>
+<span class="sd">    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data</span>
+<span class="sd">    using least squares fitting. Additionally, there are the constraints</span>
+<span class="sd">    :math:`\sum_{k=1}^p -\beta_k = 1` and :math:`\alpha = 1`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.ndarray</span>
+<span class="sd">        Abscissa (x-axis) data</span>
+<span class="sd">    y : numpy.ndarray</span>
+<span class="sd">        CDF function values corresponding to `x`.</span>
+<span class="sd">    n_exp : int</span>
+<span class="sd">        Number of exponential functions (``p``) in the sum</span>
+<span class="sd">    weighted : bool, optional</span>
+<span class="sd">        Whether to way the residual according to inverse data point density</span>
+<span class="sd">        on the abscissa. Usually, there are many data points close to x=0,</span>
+<span class="sd">        which makes the least squares fit very accurate in that region and not</span>
+<span class="sd">        so much everywhere else. Defaults to True.</span>
+<span class="sd">    initial_b : numpy.ndarray, optional</span>
+<span class="sd">        initial guesses for the :math:`b_k`</span>
+<span class="sd">    initial_l : numpy.ndarray, optional</span>
+<span class="sd">        initial guesses for the :math:`\lambda_k`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    mant_coeff : numpy.ndarray</span>
+<span class="sd">        Mantissa coefficients (:math:`\beta_k`)</span>
+<span class="sd">    exp_coeff : numpy.ndarray</span>
+<span class="sd">        List of exponential coefficients (:math:`\lambda_k`)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">constrained_func</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+        <span class="n">beta</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">beta</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">exp_fit</span><span class="o">.</span><span class="n">exp_sum</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
+
+    <span class="n">bounds_low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_exp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_exp</span><span class="p">)</span>
+    <span class="n">bounds_high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_exp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_exp</span><span class="p">)</span>
+
+    <span class="c1"># initial guesses</span>
+    <span class="k">if</span> <span class="n">initial_b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">initial_b</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="n">n_exp</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                 <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">initial_l</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">initial_l</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="n">n_exp</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">)</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">initial_b</span><span class="p">,</span> <span class="n">initial_l</span><span class="p">])</span>
+
+    <span class="c1"># fit</span>
+    <span class="k">if</span> <span class="n">weighted</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">w</span> <span class="o">/=</span> <span class="n">w</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>  <span class="c1"># since residual is squared, use sqrt</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">constrained_func</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span>
+                                    <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">bounds_low</span><span class="p">,</span> <span class="n">bounds_high</span><span class="p">),</span>
+                                    <span class="n">sigma</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_exp</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">b</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">popt</span><span class="p">[:</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">b</span><span class="p">,</span> <span class="n">popt</span><span class="p">[</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+
+
+<span class="k">def</span> <span class="nf">_msd_from_cdf</span><span class="p">(</span><span class="n">square_disp</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_boot</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit the CDF of square displacements to an exponential model</span>
+
+<span class="sd">    The cumulative density function (CDF) of square displacements is the</span>
+<span class="sd">    sum</span>
+
+<span class="sd">    .. math:: 1 - \sum_{i=1}^n \beta_i e^{-\frac{r^2}{4 D \Delta t_i}},</span>
+
+<span class="sd">    where :math:`n` is the number of diffusing components, :math:`\beta_i` the</span>
+<span class="sd">    fraction of th i-th component, :math:`r^2` the square displacement and</span>
+<span class="sd">    :math:`D` the diffusion coefficient. By fitting to the measured CDF, these</span>
+<span class="sd">    parameters can be extracted.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    square_disp : list of numpy.ndarray</span>
+<span class="sd">        The i-th array contains square deviations for the i-th lag time.</span>
+<span class="sd">        In other words, `square_disp` is one value from the result of</span>
+<span class="sd">        :py:func:`msd_base._all_square_displacements`.</span>
+<span class="sd">    n_components : int</span>
+<span class="sd">        The number of components</span>
+<span class="sd">    fit_method : {&quot;prony&quot;, &quot;lsq&quot;, &quot;weighted-lsq&quot;}</span>
+<span class="sd">        Method to use for fitting CDFs. &quot;prony&quot; is a modified Prony&#39;s method,</span>
+<span class="sd">        &quot;lsq&quot; is least squares fitting, and &quot;weighted-lsq&quot; is weighted least</span>
+<span class="sd">        squares fitting to account for the fact that the CDF data are</span>
+<span class="sd">        concentrated at x=0.</span>
+<span class="sd">    n_boot : int</span>
+<span class="sd">        Number of bootstrapping iterations for calculation of errors.</span>
+<span class="sd">        Set to 0 to turn off bootstrapping for performance gain, in which</span>
+<span class="sd">        case there will be no errors on the fit results.</span>
+<span class="sd">    random_state : numpy.random.RandomState</span>
+<span class="sd">        :py:class:`numpy.random.RandomState` instance to use for</span>
+<span class="sd">        random sampling for bootstrapping. Only needed for `n_boot` &gt; 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    msds : numpy.ndarray, shape(n_frac, len(square_disp), n_boot)</span>
+<span class="sd">        Mean square displacements. First index is for the component, second for</span>
+<span class="sd">        the lag time, third for bootstrap run.</span>
+<span class="sd">    weights : numpy.ndarray, shape(n_frac, len(square_disp), n_boot)</span>
+<span class="sd">        Component weights. First index is for the component, second for</span>
+<span class="sd">        the lag time, third for bootstrap run.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    poly_order : int, optional</span>
+<span class="sd">        For the &quot;prony&quot; method, the sum of exponentials is approximated by a</span>
+<span class="sd">        polynomial. This parameter gives the degree of the polynomial.</span>
+<span class="sd">        Defaults to 30.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_boot</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">n_boot</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_components</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">square_disp</span><span class="p">),</span> <span class="n">n_boot</span><span class="p">))</span>
+    <span class="n">msds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">n_components</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">square_disp</span><span class="p">),</span> <span class="n">n_boot</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cur_orig_sd</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">square_disp</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cur_orig_sd</span><span class="p">),</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_boot</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">n_boot</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">cur_sd</span> <span class="o">=</span> <span class="n">random_state</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">cur_orig_sd</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cur_orig_sd</span><span class="p">),</span>
+                                             <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cur_sd</span> <span class="o">=</span> <span class="n">cur_orig_sd</span>
+            <span class="n">cur_sd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">cur_sd</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;prony&quot;</span><span class="p">:</span>
+                <span class="n">beta</span><span class="p">,</span> <span class="n">lam</span> <span class="o">=</span> <span class="n">_fit_cdf_prony</span><span class="p">(</span><span class="n">cur_sd</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;lsq&quot;</span><span class="p">:</span>
+                <span class="n">beta</span><span class="p">,</span> <span class="n">lam</span> <span class="o">=</span> <span class="n">_fit_cdf_lsq</span><span class="p">(</span><span class="n">cur_sd</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span>
+                                         <span class="n">weighted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;weighted-lsq&quot;</span><span class="p">:</span>
+                <span class="n">beta</span><span class="p">,</span> <span class="n">lam</span> <span class="o">=</span> <span class="n">_fit_cdf_lsq</span><span class="p">(</span><span class="n">cur_sd</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span>
+                                         <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown method&quot;</span><span class="p">)</span>
+
+            <span class="n">weights</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">beta</span>
+            <span class="n">msds</span><span class="p">[:,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">lam</span>
+
+    <span class="k">return</span> <span class="n">msds</span><span class="p">,</span> <span class="n">weights</span>
+
+
+<div class="viewcode-block" id="MsdDist"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist">[docs]</a><span class="k">class</span> <span class="nc">MsdDist</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate and analyze mean square displacement (MSD) distribution</span>
+
+<span class="sd">    from single moleclue tracking data. This differs from</span>
+<span class="sd">    :py:class:`sdt.motion.Msd` by the fact that the distributions</span>
+<span class="sd">    are analyzed, which allows for detection of multiple</span>
+<span class="sd">    components with different diffusion coefficients [Schu1997]_.</span>
+
+<span class="sd">    Only valid for 2D data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">ensemble</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_method</span><span class="o">=</span><span class="s2">&quot;lsq&quot;</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                 <span class="n">e_name</span><span class="o">=</span><span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame or iterable of pandas.DataFrame</span>
+<span class="sd">            Tracking data. Either a single DataFrame or a collection of</span>
+<span class="sd">            DataFrames.</span>
+<span class="sd">        frame_rate : float</span>
+<span class="sd">            Frame rate</span>
+<span class="sd">        n_components : int, optional</span>
+<span class="sd">            Number of diffusing components. Defaults to 2.</span>
+<span class="sd">        n_lag : int or inf, optional</span>
+<span class="sd">            Number of lag times (time steps) to consider at most. Defaults to</span>
+<span class="sd">            10.</span>
+<span class="sd">        n_boot : int, optional</span>
+<span class="sd">            Number of bootstrapping iterations for calculation of errors.</span>
+<span class="sd">            Set to 0 to turn off bootstrapping for performance gain, in which</span>
+<span class="sd">            case there will be no errors on the fit results. Defaults to 0.</span>
+<span class="sd">        ensemble : bool, optional</span>
+<span class="sd">            Whether to calculate the MSDs for the whole data set or for each</span>
+<span class="sd">            trajectory individually. Defaults to True.</span>
+<span class="sd">        fit_method : {&quot;prony&quot;, &quot;lsq&quot;, &quot;weighted-lsq&quot;}, optional</span>
+<span class="sd">            Method to use for cumulative distribution function (CDF) fitting.</span>
+<span class="sd">            &quot;prony&quot; is a modified Prony&#39;s method, &quot;lsq&quot; is least squares</span>
+<span class="sd">            fitting, and &quot;weighted-lsq&quot; is weighted least squares fitting to</span>
+<span class="sd">            account for the fact that the CDF data are concentrated at x=0.</span>
+<span class="sd">            Defaults to &quot;lsq&quot;.</span>
+<span class="sd">        pixel_size : float, optional</span>
+<span class="sd">            Pixel size; multiply coordinates by this factor. Defaults to 1</span>
+<span class="sd">            (no scaling).</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        e_name : str, optional</span>
+<span class="sd">            If the `ensemble` parameter is `True`, use this as the name for</span>
+<span class="sd">            the dataset. It shows up in the MSD DataFrame (see</span>
+<span class="sd">            :py:meth:`get_msd`) and in plots. Defaults to &quot;ensemble&quot;.</span>
+<span class="sd">        random_state : numpy.random.RandomState or None, optional</span>
+<span class="sd">            :py:class:`numpy.random.RandomState` instance to use for</span>
+<span class="sd">            random sampling for bootstrapping. If `None`, use create a new</span>
+<span class="sd">            instance with ``seed=None``. Defaults to `None`.</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. Relevant names are `coords`, `particle`,</span>
+<span class="sd">            and `time`. This means, if your DataFrame has coordinate columns</span>
+<span class="sd">            &quot;x&quot; and &quot;z&quot; and the time column &quot;alt_frame&quot;, set</span>
+<span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;], &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">square_disp</span> <span class="o">=</span> <span class="n">msd_base</span><span class="o">.</span><span class="n">_all_square_displacements</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">n_lag</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">,</span> <span class="n">e_name</span><span class="p">,</span> <span class="n">pixel_size</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_boot</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">random_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">random_state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">()</span>
+
+        <span class="n">msd_set</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="n">weight_set</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">p_id</span><span class="p">,</span> <span class="n">p_sds</span> <span class="ow">in</span> <span class="n">square_disp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">msds</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">_msd_from_cdf</span><span class="p">(</span><span class="n">p_sds</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">fit_method</span><span class="p">,</span>
+                                          <span class="n">n_boot</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">)</span>
+            <span class="n">msd_set</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">msds</span>
+            <span class="n">weight_set</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_components</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">msd_set</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span><span class="p">),</span>
+                             <span class="p">(</span><span class="n">weight_set</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span><span class="p">)]:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">msd_base</span><span class="o">.</span><span class="n">MsdData</span><span class="p">(</span>
+                    <span class="n">frame_rate</span><span class="p">,</span>
+                    <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
+                <span class="n">dst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+    <span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span>
+                        <span class="p">[</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="s2">&quot;msd_err&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="s2">&quot;weight_err&quot;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="MsdDist.get_msd"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist.get_msd">[docs]</a>    <span class="k">def</span> <span class="nf">get_msd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get MSD and error DataFrames</span>
+
+<span class="sd">        The columns contain data for different lag times. Each row corresponds</span>
+<span class="sd">        to one trajectory. The row index is either the particle number if a</span>
+<span class="sd">        single DataFrame was passed to :py:meth:`__init__` or a tuple</span>
+<span class="sd">        identifying both the DataFrame and the particle. If</span>
+<span class="sd">        :py:meth:`__init__` was called with ``ensemble=True``, there will only</span>
+<span class="sd">        be one row with index `e_name`.</span>
+
+<span class="sd">        If there is only one row, the `series` parameter controls whether to</span>
+<span class="sd">        return a :py:class:`pandas.DataFrame` or a :py:class:`pandas.Series`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        series : bool, optional</span>
+<span class="sd">            If `True` and and there is only one entry (e.g., due to</span>
+<span class="sd">            ``ensemble=True`` in the constructor), :py:class:`pandas.Series`</span>
+<span class="sd">            objects will be returned. Otherwise, return</span>
+<span class="sd">            :py:class:`pandas.DataFrame`. Defaults to `True`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of namedTuple([&quot;msd&quot;, &quot;msd_err&quot;, &quot;weight&quot;, &quot;weight_err&quot;])</span>
+<span class="sd">            Each tuple describes one component. The tuple members are</span>
+<span class="sd">            :py:class:`pandas.DataFrame` or :py:class:`pandas.Series`</span>
+<span class="sd">            (depending on the `series` parameter), where `msd` holds the mean</span>
+<span class="sd">            square displacements, `msd_err` contains standard errors of the</span>
+<span class="sd">            MSDs, `weight` hold the relative weight of the component calculated</span>
+<span class="sd">            for the different lag times, and `weight_err` contains standard</span>
+<span class="sd">            errors of the weights. If no bootstrapping was performed, all</span>
+<span class="sd">            errors are `NaN`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">md</span><span class="p">,</span> <span class="n">fd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Result</span><span class="p">(</span>
+                <span class="n">md</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;means&quot;</span><span class="p">,</span> <span class="n">series</span><span class="p">),</span>
+                <span class="n">md</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;errors&quot;</span><span class="p">,</span> <span class="n">series</span><span class="p">),</span>
+                <span class="n">fd</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;means&quot;</span><span class="p">,</span> <span class="n">series</span><span class="p">),</span>
+                <span class="n">fd</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;errors&quot;</span><span class="p">,</span> <span class="n">series</span><span class="p">))</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="MsdDist.fit"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;brownian&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit a model function to the MSD data</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : {&quot;anomalous&quot;, &quot;brownian&quot;}</span>
+<span class="sd">            Type of model to fit</span>
+<span class="sd">        n_lag : int or inf, optional</span>
+<span class="sd">            Number of lag times to use for fitting. Defaults to 2 for the</span>
+<span class="sd">            Brownian model and `inf` for anomalous diffusion.</span>
+<span class="sd">        exposure_time : float, optional</span>
+<span class="sd">            Exposure time. Defaults to 0, i.e. no exposure time compensation</span>
+<span class="sd">        initial : tuple of float, len 3, optional</span>
+<span class="sd">            Initial guess for fitting anomalous diffusion. The tuple entries</span>
+<span class="sd">            are diffusion coefficient, positional accuracy, and alpha.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">MsdDistFit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">MsdDistFit</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Fit diffusion parameters to MSDs from square displacement dists&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msd_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">weight_data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        msd_data : list of msd_base.MsdData</span>
+<span class="sd">            Each MsdData instance should contain MSD data for one component</span>
+<span class="sd">        model : {&quot;brownian&quot;, &quot;anomalous&quot;, model class}</span>
+<span class="sd">            Model to fit. If &quot;brownian&quot;, use :py:class:`msd.BrownianMotion`.</span>
+<span class="sd">            If &quot;anomalous&quot;, use :py:class:`msd.AnomalousDiffusion`. If a class,</span>
+<span class="sd">            use that. It has to be modelled like the aforemntioned classes,</span>
+<span class="sd">            i.e., ``__init__`` should accept a :py:class:`msd_base.MsdData`</span>
+<span class="sd">            instance and keyword args. Fitting should be done in ``__init__``.</span>
+<span class="sd">            A ``get_results`` method should return two DataFrames, the first</span>
+<span class="sd">            containing in each row the fit results for one particle; the second</span>
+<span class="sd">            should contain the fit errors per particle.</span>
+<span class="sd">        weight_data : list of msd_base.MsdData</span>
+<span class="sd">            Each MsdData instance should contain weight data for one component</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Keyword arguments passed to model class ``__init__``. This could be</span>
+<span class="sd">            ``exposure_time`` for exposure time correction in</span>
+<span class="sd">            :py:class:`msd.BrownianMotion`or :py:class:`msd.AnomalousDiffusion`</span>
+<span class="sd">            models or a ``&quot;initial&quot;`` triple of inital guesses for `D`,</span>
+<span class="sd">            uncertainty, and α for the :py:class:`msd.AnomalousDiffusion`</span>
+<span class="sd">            model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;brownian&quot;</span><span class="p">):</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">msd</span><span class="o">.</span><span class="n">BrownianMotion</span>
+            <span class="k">elif</span> <span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;anomalous&quot;</span><span class="p">):</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">msd</span><span class="o">.</span><span class="n">AnomalousDiffusion</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown model: &quot;</span> <span class="o">+</span> <span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msd_fits</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="p">(</span><span class="n">md</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">md</span> <span class="ow">in</span> <span class="n">msd_data</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">Weights</span><span class="p">(</span><span class="n">weight_data</span><span class="p">)</span>
+
+    <span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;fit_err&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get fit results</span>
+
+<span class="sd">        The columns contain fitted parameters. Each row corresponds</span>
+<span class="sd">        to one trajectory. The row index is either the particle number or a</span>
+<span class="sd">        tuple identifying both the DataFrame and the particle; c.f.</span>
+<span class="sd">        :py:class:`MsdDist`.</span>
+
+<span class="sd">        If there is only one row, the `series` parameter controls whether to</span>
+<span class="sd">        return a :py:class:`pandas.DataFrame` or a :py:class:`pandas.Series`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        series : bool, optional</span>
+<span class="sd">            If `True` and and there is only one entry (e.g., due to</span>
+<span class="sd">            ``ensemble=True`` in the :py:class:`MsdDist` constructor),</span>
+<span class="sd">            :py:class:`pandas.Series` objects will be returned. Otherwise,</span>
+<span class="sd">            return :py:class:`pandas.DataFrame`. Defaults to `True`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of namedTuple([&quot;fit&quot;, &quot;fit_err&quot;])</span>
+<span class="sd">            Each entry describes one component. The tuple members are</span>
+<span class="sd">            :py:class:`pandas.DataFrame` or :py:class`pandas.Series`,</span>
+<span class="sd">            where ``fit`` holds the fit result as well as the mean weight and</span>
+<span class="sd">            ``fit_err`` contains the corresponding standard errors. If no</span>
+<span class="sd">            bootstrapping was performed, fit errors are `NaN`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">weight</span><span class="p">,</span> <span class="n">weight_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">comp</span><span class="p">,</span> <span class="n">msd_fit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_fits</span><span class="p">):</span>
+            <span class="n">fit</span><span class="p">,</span> <span class="n">err</span> <span class="o">=</span> <span class="n">msd_fit</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">series</span><span class="p">)</span>
+            <span class="n">fit</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight</span><span class="p">[</span><span class="n">comp</span><span class="p">]</span>
+            <span class="n">err</span><span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight_err</span><span class="p">[</span><span class="n">comp</span><span class="p">]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Result</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msd_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plot MSDs and fit results</span>
+
+<span class="sd">        First plot will show weights of the components, other plots will</span>
+<span class="sd">        show MSDs and fits of each component.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fig : matplotlib.figure.Figure or None, optional</span>
+<span class="sd">            Figure object to use in case weight_ax or msd_ax are not given.</span>
+<span class="sd">            If `None`, use ``matplotlib.pyplot.gcf()``. Defaults to `None`.</span>
+<span class="sd">        weight_ax : matplotlib.axes.Axes or None, optional</span>
+<span class="sd">            Axes object for plotting the weights of the components. If `None`,</span>
+<span class="sd">            use ``fig`` to create it. Defaults to `None`.</span>
+<span class="sd">        msd_ax : list-like of matplotlib.axes.Axes or None, optional</span>
+<span class="sd">            Axes objects for plotting the MSDs of each component. If `None`,</span>
+<span class="sd">            use ``fig`` to create them. Defaults to `None`.</span>
+<span class="sd">        show_legend : bool, optional</span>
+<span class="sd">            Whether to show numerical fit results in the plot legend. Defaults</span>
+<span class="sd">            to `True`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        fig : matplotlib.figure.Figure</span>
+<span class="sd">            Figure object used.</span>
+<span class="sd">        weight_ax : matplotlib.axes.Axes</span>
+<span class="sd">            Axes object for plotting the weights of the components</span>
+<span class="sd">        msd_ax : list of matplotlib.axes.Axes</span>
+<span class="sd">            Axes objects for plotting the MSDs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+        <span class="k">if</span> <span class="n">weight_ax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">msd_ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">set_constrained_layout</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">n_sub</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_fits</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_sub</span><span class="p">)</span>
+            <span class="n">weight_ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">msd_ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">weight_ax</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="n">show_legend</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_fits</span><span class="p">,</span> <span class="n">msd_ax</span><span class="p">)):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="n">show_legend</span><span class="p">)</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Component </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">weight_ax</span><span class="p">,</span> <span class="n">msd_ax</span>
+
+
+<span class="k">class</span> <span class="nc">Weights</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Handle weight data for a single component from :py:class:`MsdDist`</span>
+
+<span class="sd">    This is similar to what e.g. :py:class:`msd.BrownianMotion` does with</span>
+<span class="sd">    MSD data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        weight_data : list of msd_base.MsdData</span>
+<span class="sd">            Weight data for each component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_components</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weight_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">n_components</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`weight_data` is empty.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_err</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">p_id</span> <span class="ow">in</span> <span class="n">weight_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">means</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">weight_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">means</span><span class="p">[</span><span class="n">p_id</span><span class="p">])</span>
+                                   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_components</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">weight_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">means</span><span class="p">[</span><span class="n">p_id</span><span class="p">],</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_components</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span> <span class="o">=</span> <span class="n">weight_data</span>
+
+    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get results</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        series : bool, optional</span>
+<span class="sd">            If `True` and and there is only one entry (e.g., due to</span>
+<span class="sd">            ``ensemble=True`` in the :py:class:`MsdDist` constructor),</span>
+<span class="sd">            :py:class:`pandas.Series` objects will be returned. Otherwise,</span>
+<span class="sd">            return :py:class:`pandas.DataFrame`. Defaults to `True`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        results : pandas.DataFrame or pandas.Series</span>
+<span class="sd">            Columns are the weight for each component. Each row represents</span>
+<span class="sd">            one particle.</span>
+<span class="sd">        errors : pandas.DataFrame or pandas.Series</span>
+<span class="sd">            Standard errors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">series</span><span class="p">:</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span><span class="p">,</span> <span class="n">err</span>
+
+        <span class="n">res_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">err_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">(</span><span class="n">res_df</span><span class="p">,</span> <span class="n">err_df</span><span class="p">):</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;component&quot;</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;particle&quot;</span>
+        <span class="k">return</span> <span class="n">res_df</span><span class="p">,</span> <span class="n">err_df</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plot lag time vs. weight</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        show_legend : bool, optional</span>
+<span class="sd">            Whether to add a legend to the plot. Defaults to `True`.</span>
+<span class="sd">        ax : matplotlib.axes.Axes or None, optional</span>
+<span class="sd">            Axes to use for plotting. If `None`, use ``pyplot.gca()``.</span>
+<span class="sd">            Defaults to `None`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matplotlib.axes.Axes</span>
+<span class="sd">            Axes used for plotting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;lag time [s]&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">p_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">:</span>
+            <span class="n">marker</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="s2">&quot;^&quot;</span><span class="p">))</span>
+            <span class="n">linestyles</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-.&quot;</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">))</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p_id</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">p_id</span><span class="p">)</span>
+
+            <span class="n">legend</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+                <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">weight_str</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">p_id</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="p">[</span><span class="n">p_id</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+                    <span class="n">weight_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2"> ± </span><span class="si">{</span><span class="n">e</span><span class="si">:</span><span class="s2">.2g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">weight_str</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="si">:</span><span class="s2">2.g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;weights:&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weight_str</span><span class="p">))</span>
+            <span class="n">legend</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">legend</span><span class="p">)</span>
+
+            <span class="n">loop_vars</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">linestyles</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">mark</span><span class="p">,</span> <span class="n">lstyle</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loop_vars</span><span class="p">):</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">means</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">errors</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span>
+                <span class="n">lt</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">get_lagtimes</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+
+                <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lt</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">p_id</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">lt</span><span class="p">),</span>
+                               <span class="n">ls</span><span class="o">=</span><span class="n">lstyle</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">legend</span><span class="p">)</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">lt</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="n">mark</span><span class="p">,</span>
+                            <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+                <span class="n">legend</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># only add for the first line</span>
+
+        <span class="k">if</span> <span class="n">show_legend</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ax</span>
+
+
+<span class="c1"># Old API</span>
+
+<span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">emsd_cdf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pixel_size</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">num_frac</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;lsq&quot;</span><span class="p">,</span>
+             <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate ensemble mean square displacements from tracking data CDF</span>
+
+<span class="sd">    .. deperecated:: 14.0</span>
+<span class="sd">        Use :py:class:`MsdDist` instead.</span>
+
+<span class="sd">    Fit the model cumulative density function to the measured CDF of tracking</span>
+<span class="sd">    data. For details, see the documentation of :py:class:`MsdDist`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : list of pandas.DataFrames or pandas.DataFrame</span>
+<span class="sd">        Tracking data</span>
+<span class="sd">    pixel_size : float</span>
+<span class="sd">        width of a pixel in micrometers.</span>
+<span class="sd">    fps : float</span>
+<span class="sd">        Frames per second</span>
+<span class="sd">    num_frac : int, optional</span>
+<span class="sd">        The number of diffusing species. Defaults to 2</span>
+<span class="sd">    max_lagtime : int, optional</span>
+<span class="sd">        Maximum number of time lags to consider. Defaults to 10.</span>
+<span class="sd">    method : {&quot;prony&quot;, &quot;lsq&quot;, &quot;weighted-lsq&quot;}, optional</span>
+<span class="sd">        Which fit method to use. &quot;prony&quot; is a modified Prony&#39;s method, &quot;lsq&quot;</span>
+<span class="sd">        is least squares fitting, and &quot;weighted-lsq&quot; is weighted least squares</span>
+<span class="sd">        fitting to account for the fact that the CDF data are concentrated</span>
+<span class="sd">        at x=0. Defaults to &quot;prony&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of pandas.DataFrames([lagt, msd, fraction])</span>
+<span class="sd">        For each species, the DataFrame contains for each lag time the msd,</span>
+<span class="sd">        the fraction.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    poly_order : int, optional</span>
+<span class="sd">        For the &quot;prony&quot; method, the sum of exponentials is approximated by a</span>
+<span class="sd">        polynomial. This parameter gives the degree of the polynomial.</span>
+<span class="sd">        Defaults to 30.</span>
+<span class="sd">    columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        Relevant names are `coords`, `particle`, and `time`.</span>
+<span class="sd">        This means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and</span>
+<span class="sd">        the time column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
+<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;`emsd_cdf` is deprecated. Use the `Msd` class instead.&quot;</span><span class="p">,</span>
+                  <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+    <span class="n">msd_cls</span> <span class="o">=</span> <span class="n">MsdDist</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">num_frac</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="n">max_lagtime</span><span class="p">,</span>
+                      <span class="n">fit_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="n">poly_order</span><span class="p">,</span>
+                      <span class="n">pixel_size</span><span class="o">=</span><span class="n">pixel_size</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">msd_cls</span><span class="o">.</span><span class="n">get_msd</span><span class="p">():</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+            <span class="n">OrderedDict</span><span class="p">([(</span><span class="s2">&quot;lagt&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">msd</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">msd</span><span class="p">),</span>
+                         <span class="p">(</span><span class="s2">&quot;fraction&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">)]))</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;lagt&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

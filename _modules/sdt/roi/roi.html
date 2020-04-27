@@ -1,0 +1,827 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.roi.roi &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.roi.roi</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.roi.roi</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Classes for dealing with regions of interest in microscopy data&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">from</span> <span class="nn">matplotlib.transforms</span> <span class="kn">import</span> <span class="n">Affine2D</span>
+
+<span class="kn">from</span> <span class="nn">slicerator</span> <span class="kn">import</span> <span class="n">pipeline</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">.mask_roi</span> <span class="kn">import</span> <span class="n">MaskROI</span>
+
+
+<div class="viewcode-block" id="ROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI">[docs]</a><span class="k">class</span> <span class="nc">ROI</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rectangular region of interest in a picture</span>
+
+<span class="sd">    This class represents a rectangular region of interest. It can crop images</span>
+<span class="sd">    or restrict data (such as feature localization data) to a specified region.</span>
+
+<span class="sd">    At the moment, this works only for single channel (i. e. grayscale) images.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Let `f` be a numpy array representing an image.</span>
+
+<span class="sd">    &gt;&gt;&gt; f.shape</span>
+<span class="sd">    (128, 128)</span>
+<span class="sd">    &gt;&gt;&gt; r = ROI((0, 0), (64, 64))</span>
+<span class="sd">    &gt;&gt;&gt; f2 = r(f)</span>
+<span class="sd">    &gt;&gt;&gt; f2.shape</span>
+<span class="sd">    (64, 64)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!ROI&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        top_left : tuple of int</span>
+<span class="sd">            Coordinates of the top-left corner. Pixels with coordinates</span>
+<span class="sd">            greater or equal than these are excluded from the ROI.</span>
+<span class="sd">        bottom_right : tuple of int or None, optional</span>
+<span class="sd">            Coordinates of the bottom-right corner. Pixels with</span>
+<span class="sd">            coordinates greater or equal than these are excluded from the ROI.</span>
+<span class="sd">            Either this or `size` need to specified.</span>
+<span class="sd">        size : tuple of int or None, optional</span>
+<span class="sd">            Size of the ROI. Specifying `size` is equivalent to</span>
+<span class="sd">            ``bottom_right=[t+s for t, s in zip(top_left, shape)]``.</span>
+<span class="sd">            Either this or `bottom_right` need to specified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span> <span class="o">=</span> <span class="n">top_left</span>
+        <span class="sd">&quot;&quot;&quot;x and y coordinates of the top-left corner. Data with coordinates</span>
+<span class="sd">        greater or equal than these are excluded from the ROI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;x and y coordinates of the bottom-right corner. Data with</span>
+<span class="sd">        coordinates greater or equal than these are excluded from the ROI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">bottom_right</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span> <span class="o">=</span> <span class="n">bottom_right</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">top_left</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ROI.__call__"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{},</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Restrict data to the region of interest.</span>
+
+<span class="sd">        If the input is localization data, it is filtered depending on whether</span>
+<span class="sd">        the coordinates are within the rectangle. If it is image data, it is</span>
+<span class="sd">        cropped to the rectangle.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame or pims.FramesSequence or array-like</span>
+<span class="sd">            Data to be processed. If a pandas.Dataframe, select only those</span>
+<span class="sd">            lines with coordinate values within the ROI. Crop the image.</span>
+<span class="sd">        rel_origin : bool, optional</span>
+<span class="sd">            If True, the top-left corner coordinates will be subtracted off</span>
+<span class="sd">            all feature coordinates, i. e. the top-left corner of the ROI will</span>
+<span class="sd">            be the new origin. Only valid if `invert` is False. Defaults to</span>
+<span class="sd">            True.</span>
+<span class="sd">        invert : bool, optional</span>
+<span class="sd">            If True, only datapoints outside the ROI are selected. Works only</span>
+<span class="sd">            if `data` is a :py:class:`pandas.DataFrame`. Defaults to `False`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame or slicerator.Slicerator or numpy.array</span>
+<span class="sd">            Data restricted to the ROI represented by this class.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. The only relevant name is `coords`. This</span>
+<span class="sd">            means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;, set</span>
+<span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">],</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">):</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                <span class="n">mask</span> <span class="o">&amp;=</span> <span class="n">d</span> <span class="o">&gt;</span> <span class="n">t</span>
+                <span class="n">mask</span> <span class="o">&amp;=</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">b</span>
+
+            <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+                <span class="n">roi_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">roi_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="s2">&quot;reset_origin&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;The `reset_origin` parameter is deprecated and will be &quot;</span>
+                    <span class="s2">&quot;removed in the future. Use `rel_origin` instead.&quot;</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+                <span class="n">rel_origin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;reset_origin&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unexpected keyword argument &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">tuple</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+
+            <span class="k">if</span> <span class="n">rel_origin</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">invert</span><span class="p">:</span>
+                <span class="n">roi_data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span>
+
+            <span class="k">return</span> <span class="n">roi_data</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sl</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_left</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="nd">@pipeline</span>
+            <span class="k">def</span> <span class="nf">crop</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">img</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">crop</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ROI.reset_origin"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.reset_origin">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="nf">reset_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Reset coordinates to the original coordinate system</span>
+
+<span class="sd">        This undoes the effect of the `reset_origin` parameter to</span>
+<span class="sd">        :py:meth:`__call__`. The coordinates of the top-left ROI corner are</span>
+<span class="sd">        added to the feature coordinates in `data`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            Localization data, modified in place.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. The only relevant name is `coords`. This</span>
+<span class="sd">            means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;, set</span>
+<span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span></div>
+
+<div class="viewcode-block" id="ROI.to_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+
+<span class="sd">        Pass this as the `representer` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;top_left&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">top_left</span><span class="p">)),</span>
+             <span class="p">(</span><span class="s2">&quot;bottom_right&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ROI.from_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+
+<span class="sd">        Pass this as the `constructor` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;top_left&quot;</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;bottom_right&quot;</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="PathROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI">[docs]</a><span class="k">class</span> <span class="nc">PathROI</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Region of interest in a picture determined by a path</span>
+
+<span class="sd">    This class represents a region of interest that is described by a path.</span>
+<span class="sd">    It uses :py:class:`matplotlib.path.Path` to this end. It can crop images</span>
+<span class="sd">    or restrict data (such as feature localization data) to a specified region.</span>
+
+<span class="sd">    This works only for paths that do not intersect themselves and for single</span>
+<span class="sd">    channel (i. e. grayscale) images.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!PathROI&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">no_image</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : list of vertices or matplotlib.path.Path</span>
+<span class="sd">            Description of the path. Either a list of vertices that will</span>
+<span class="sd">            be used to construct a :py:class:`matplotlib.path.Path` or a</span>
+<span class="sd">            :py:class:`matplotlib.path.Path` instance that will be copied.</span>
+<span class="sd">        buffer : float, optional</span>
+<span class="sd">            Add extra space around the path. This, however, does not</span>
+<span class="sd">            affect the size of the cropped image, which is just the size of</span>
+<span class="sd">            the bounding box of the :py:attr:`path`, without `buffer`.</span>
+<span class="sd">            Defaults to 0.</span>
+<span class="sd">        no_image : bool, optional</span>
+<span class="sd">            If True, don&#39;t compute the image mask (which is quite time</span>
+<span class="sd">            consuming). This implies that this instance only works for</span>
+<span class="sd">            DataFrames. Defaults to False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;:py:class:`matplotlib.path.Path` outlining the region of interest.</span>
+<span class="sd">        Do not modifiy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mpl</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">codes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">vert</span> <span class="o">=</span> <span class="n">path</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vert</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+                <span class="n">vert</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">path</span>
+                <span class="n">vert</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="n">buffer</span>
+        <span class="sd">&quot;&quot;&quot;Float giving the width of extra space around the path. Does not</span>
+<span class="sd">        affect the size of the image, which is just the size of the bounding</span>
+<span class="sd">        box of the :py:attr:`path`, without :py:attr:`buffer`.</span>
+<span class="sd">        Do not modify.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># calculate bounding box</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_extents</span><span class="p">()</span><span class="o">.</span><span class="n">get_points</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;numpy.ndarray, shape(2, 2), dtype(float) describing the bounding box</span>
+<span class="sd">        of the path, enlarged by :py:attr:`buffer` on each side.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">buffer</span><span class="p">,</span> <span class="n">buffer</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+             <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">[</span><span class="mi">1</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Smallest integer bounding box containing :py:attr:`bounding_box`&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">spatial</span><span class="o">.</span><span class="n">polygon_area</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="c1"># If the path is clockwise, the `radius` argument to</span>
+        <span class="c1"># Path.contains_points needs to be negative to enlarge the ROI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer_sign</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="c1"># Now that we know the sign, make the area positive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Area of the ROI (without :py:attr:`buffer`)&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Boolean pixel array; rasterized :py:attr:`path` or None if</span>
+<span class="sd">        ``no_image=True`` was passed to the constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">no_image</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Draw ROI path, but only in the bounding box of the polygon, for</span>
+        <span class="c1"># performance reasons</span>
+        <span class="n">mask_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mask_shape</span> <span class="o">=</span> <span class="n">mask_shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># Move polygon to the top left, subtract another half pixel so that</span>
+        <span class="c1"># coordinates are pixel centers</span>
+        <span class="n">trans</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="c1"># Checking a lot of points if they are inside the polygon,</span>
+        <span class="c1"># this is rather slow</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">mask_shape</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># Using 2 * buffer seems to give the expected result (enlarge the</span>
+        <span class="c1"># path by about `buffer` units)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span>
+            <span class="n">idx</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer_sign</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">mask_shape</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PathROI.__call__"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">crop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Restrict data to the region of interest.</span>
+
+<span class="sd">        If the input is localization data, it is filtered depending on whether</span>
+<span class="sd">        the coordinates are within the path. If it is image data, it is</span>
+<span class="sd">        cropped to the bounding rectangle of the path and all pixels not</span>
+<span class="sd">        contained in the path are set to `fill_value`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame or pims.FramesSequence or array-like</span>
+<span class="sd">            Data to be processed. If a pandas.Dataframe, select only those</span>
+<span class="sd">            lines with coordinate values within the ROI path (+ buffer).</span>
+<span class="sd">            Otherwise, `slicerator.pipeline` is used to crop image data to the</span>
+<span class="sd">            bounding rectangle of the path and set all pixels not within the</span>
+<span class="sd">            path to `fill_value`</span>
+<span class="sd">        rel_origin : bool, optional</span>
+<span class="sd">            If True, the top-left corner coordinates of the path&#39;s bounding</span>
+<span class="sd">            rectangle will be subtracted off all feature coordinates, i. e.</span>
+<span class="sd">            the top-left corner will be the new origin. If a coordinate of the</span>
+<span class="sd">            bounding rectangle is negative, 0 will be used as the origin</span>
+<span class="sd">            instead. This is necessary to ensure that localization data to</span>
+<span class="sd">            which the ROI is applied is consistent with image data to which</span>
+<span class="sd">            the ROI is applied. Only valid if `invert` is False. Defaults to</span>
+<span class="sd">            `True`.</span>
+<span class="sd">        fill_value : number or callable, optional</span>
+<span class="sd">            Fill value for pixels that are not contained in the path. If</span>
+<span class="sd">            callable, it should take the array of pixels within the mask as its</span>
+<span class="sd">            argument and return a scalar that is used as the fill value. Not</span>
+<span class="sd">            applicable for single molecule data. Defaults to 0.</span>
+<span class="sd">        invert : bool, optional</span>
+<span class="sd">            If True, only datapoints/pixels outside the path are selected.</span>
+<span class="sd">            Defaults to `False`.</span>
+<span class="sd">        crop : bool, optional</span>
+<span class="sd">            If True, crop image data to the (integer) bounding box of the</span>
+<span class="sd">            path. Defaults to True.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame or slicerator.Slicerator or numpy.array</span>
+<span class="sd">            Data restricted to the ROI represented by this class.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. The only relevant name is `coords`. This</span>
+<span class="sd">            means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;, set</span>
+<span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="c1"># if empty, return the empty data frame to avoid errors</span>
+                <span class="c1"># below</span>
+                <span class="k">return</span> <span class="n">data</span>
+
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span>
+            <span class="c1"># Using 2 * buffer seems to give the expected result (enlarge the</span>
+            <span class="c1"># path by about `buffer` units)</span>
+            <span class="n">roi_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span>
+                <span class="n">pos</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer_sign</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+            <span class="c1"># If buffer &gt; 0, the path + buffer can be larger than the</span>
+            <span class="c1"># bounding rect. Restrict localizations to bounding rect so that</span>
+            <span class="c1"># results are consistent with image data.</span>
+            <span class="n">roi_mask</span> <span class="o">&amp;=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">roi_mask</span> <span class="o">&amp;=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pos</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+                <span class="n">roi_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">roi_mask</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">roi_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">roi_mask</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="s2">&quot;reset_origin&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;The `reset_origin` parameter is deprecated and will be &quot;</span>
+                    <span class="s2">&quot;removed in the future. Use `rel_origin` instead.&quot;</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
+                <span class="n">rel_origin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;reset_origin&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unexpected keyword argument &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">tuple</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+
+            <span class="k">if</span> <span class="n">rel_origin</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">invert</span><span class="p">:</span>
+                <span class="n">roi_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">-=</span> \
+                    <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">roi_data</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot crop image since no image mask &quot;</span>
+                                 <span class="s2">&quot;was created during construction.&quot;</span><span class="p">)</span>
+
+            <span class="n">mask_roi</span> <span class="o">=</span> <span class="n">MaskROI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">masked</span> <span class="o">=</span> <span class="n">mask_roi</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="n">invert</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">crop</span><span class="p">:</span>
+                <span class="n">tl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">br</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">crop_roi</span> <span class="o">=</span> <span class="n">ROI</span><span class="p">(</span><span class="n">tl</span><span class="p">,</span> <span class="n">br</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">crop_roi</span><span class="p">(</span><span class="n">masked</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">masked</span></div>
+
+<div class="viewcode-block" id="PathROI.reset_origin"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.reset_origin">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="nf">reset_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Reset coordinates to the original coordinate system</span>
+
+<span class="sd">        This undoes the effect of the `reset_origin` parameter to</span>
+<span class="sd">        :py:meth:`__call__`. The coordinates of the top-left ROI corner are</span>
+<span class="sd">        added to the feature coordinates in `data`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            Localization data, modified in place.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. The only relevant name is `coords`. This</span>
+<span class="sd">            means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;, set</span>
+<span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PathROI.transform"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trafo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linear</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new PathROI instance with a transformed path</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        trafo : matplotlib.transforms.Transform or numpy.ndarray, shape(3, 3), optional</span>
+<span class="sd">            Full transform. If given as a matrix, it has to have the form</span>
+
+<span class="sd">            .. code-block:: text</span>
+
+<span class="sd">                a c e</span>
+<span class="sd">                b d f</span>
+<span class="sd">                0 0 1,</span>
+
+<span class="sd">            where a, b, c, d give the linear part of the transform (see</span>
+<span class="sd">            `linear` below) and e, f give the translation part (see `trans`</span>
+<span class="sd">            below).</span>
+<span class="sd">        linear : numpy.ndarray, shape(2, 2), optional</span>
+<span class="sd">            Linear part (rotation, scaling, shear) of the transform. Only used</span>
+<span class="sd">            if `trafo` is not given.</span>
+<span class="sd">        trans : numpy.ndarray, shape(2), optional</span>
+<span class="sd">            Translation. Only used if `trafo` is not given.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PathROI</span>
+<span class="sd">            ROI with transformed path and same :py:attr:`buffer`. The image</span>
+<span class="sd">            mask is only created if this instance has an image mask.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">trafo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trafo</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">(</span><span class="n">trafo</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Assume it is already a Transform object</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">trafo</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trafo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">linear</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">trafo</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">linear</span>
+            <span class="k">if</span> <span class="n">trans</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">trafo</span><span class="p">[:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">trans</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">(</span><span class="n">trafo</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">PathROI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span>
+                       <span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PathROI.to_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+
+<span class="sd">        Pass this as the `representer` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vert</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">cod</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">codes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">data</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;vertices&quot;</span><span class="p">,</span> <span class="n">vert</span><span class="p">),</span>
+             <span class="p">(</span><span class="s2">&quot;vertex codes&quot;</span><span class="p">,</span> <span class="n">cod</span><span class="p">),</span>
+             <span class="p">(</span><span class="s2">&quot;buffer&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">buffer</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PathROI.from_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+
+<span class="sd">        Pass this as the `constructor` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">vert</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;vertices&quot;</span><span class="p">]</span>
+        <span class="n">codes</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vertex codes&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;buffer&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="n">codes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="RectangleROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.RectangleROI">[docs]</a><span class="k">class</span> <span class="nc">RectangleROI</span><span class="p">(</span><span class="n">PathROI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Rectangular region of interest in a picture</span>
+
+<span class="sd">    This differs from :py:class:`ROI` in that it is derived from</span>
+<span class="sd">    :py:class:`PathROI` and thus allows for float coordinates. Also, the</span>
+<span class="sd">    :py:attr:`path` can easily be transformed using</span>
+<span class="sd">    :py:class:`matplotlib.transforms`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!RectangleROI&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">buffer</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">no_image</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        top_left : tuple of float</span>
+<span class="sd">            x and y coordinates of the top-left corner.</span>
+<span class="sd">        bottom_right : tuple of float or None, optional</span>
+<span class="sd">            x and y coordinates of the bottom-right corner.</span>
+<span class="sd">            Either this or `shape` need to specified.</span>
+<span class="sd">        size : tuple of float or None, optional</span>
+<span class="sd">            Size of the ROI. Specifying `size` is equivalent to</span>
+<span class="sd">            ``bottom_right=[t+s for t, s in zip(top_left, shape)]``.</span>
+<span class="sd">            Either this or `bottom_right` need to specified.</span>
+<span class="sd">        buffer, no_image</span>
+<span class="sd">            see :py:class:`PathROI`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">bottom_right</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bottom_right</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">s</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">top_left</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
+
+        <span class="n">path</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">unit_rectangle</span><span class="p">()</span>
+        <span class="n">trafo</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">bottom_right</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">top_left</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                <span class="n">bottom_right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">top_left</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">trafo</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">*</span><span class="n">top_left</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">transform_path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">no_image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span> <span class="o">=</span> <span class="n">top_left</span>
+        <span class="sd">&quot;&quot;&quot;x and y coordinates of the top-left corner.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span> <span class="o">=</span> <span class="n">bottom_right</span>
+        <span class="sd">&quot;&quot;&quot;x and y coordinates of the bottom-right corner.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+
+<span class="sd">        Pass this as the `representer` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;top_left&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">top_left</span><span class="p">)),</span>
+             <span class="p">(</span><span class="s2">&quot;bottom_right&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">bottom_right</span><span class="p">)),</span>
+             <span class="p">(</span><span class="s2">&quot;buffer&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">buffer</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+
+<span class="sd">        Pass this as the `constructor` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;buffer&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;top_left&quot;</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;bottom_right&quot;</span><span class="p">],</span> <span class="n">buf</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EllipseROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.EllipseROI">[docs]</a><span class="k">class</span> <span class="nc">EllipseROI</span><span class="p">(</span><span class="n">PathROI</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Elliptical region of interest in a picture</span>
+
+<span class="sd">    Subclass of :py:class:`PathROI`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!EllipseROI&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">no_image</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        center : tuple of float</span>
+<span class="sd">        axes : tuple of float</span>
+<span class="sd">            Lengths of first and second axis.</span>
+<span class="sd">        angle : float, optional</span>
+<span class="sd">            Angle of rotation (counterclockwise, in radian). Defaults to 0.</span>
+<span class="sd">        buffer, no_image</span>
+<span class="sd">            see :py:class:`PathROI`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="o">.</span><span class="n">unit_circle</span><span class="p">()</span>
+        <span class="n">trafo</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="o">*</span><span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="n">trafo</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">*</span><span class="n">center</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">transform_path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">no_image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="sd">&quot;&quot;&quot;x and y coordinates of the ellipse center.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span>
+        <span class="sd">&quot;&quot;&quot;Lengths of first and second half-axis.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="sd">&quot;&quot;&quot;Angle of rotation (counterclockwise, in radians).&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+
+<span class="sd">        Pass this as the `representer` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">center</span><span class="p">)),</span>
+             <span class="p">(</span><span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">axes</span><span class="p">)),</span>
+             <span class="p">(</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">angle</span><span class="p">),</span>
+             <span class="p">(</span><span class="s2">&quot;buffer&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">buffer</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+
+<span class="sd">        Pass this as the `constructor` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;buffer&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;center&quot;</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">],</span> <span class="n">angle</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span></div>
+
+
+<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">..io</span> <span class="kn">import</span> <span class="n">yaml</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">ROI</span><span class="p">)</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">PathROI</span><span class="p">)</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">RectangleROI</span><span class="p">)</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">EllipseROI</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

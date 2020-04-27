@@ -1,0 +1,508 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Multi-color data analysis &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Diffusion analysis" href="motion.html" />
+    <link rel="prev" title="Overlay color channels" href="chromatic.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multi-color data analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#programming-reference">Programming reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#low-level-helper-functions">Low level helper functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Multi-color data analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-sdt.multicolor"></span><div class="section" id="multi-color-data-analysis">
+<h1>Multi-color data analysis<a class="headerlink" href="#multi-color-data-analysis" title="Permalink to this headline">¶</a></h1>
+<p>This module provides functions to analyze multi-color single molecule data.
+In particular, there is support for</p>
+<ul class="simple">
+<li><p>finding colocalizations</p></li>
+<li><p>detecting and plotting codiffusion</p></li>
+<li><p>merging data from different channels.</p></li>
+</ul>
+<p>Single molecule data have to be aligned first using e.g.
+<a class="reference internal" href="chromatic.html#sdt.chromatic.Corrector" title="sdt.chromatic.Corrector"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.chromatic.Corrector</span></code></a>.</p>
+<p class="rubric">Examples</p>
+<p>To demonstrate how to find colocalizations, create fake data first:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loc1</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc2</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">22</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc1</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">loc2</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>Now, find the colocalizations using <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">coloc</span> <span class="o">=</span> <span class="n">find_colocalizations</span><span class="p">(</span><span class="n">loc1</span><span class="p">,</span> <span class="n">loc2</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coloc</span>
+<span class="go">  channel1          channel2</span>
+<span class="go">         x  y frame        x  y frame</span>
+<span class="go">0        1  1     0        1  2     0</span>
+</pre></div>
+</div>
+<p>Detecting codiffusing particles works similar using
+<a class="reference internal" href="#sdt.multicolor.find_codiffusion" title="sdt.multicolor.find_codiffusion"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_codiffusion()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trc1</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;tracking1.h5&quot;</span><span class="p">)</span>  <span class="c1"># load data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trc2</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;tracking2.h5&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">codiff</span> <span class="o">=</span> <span class="n">find_codiffusion</span><span class="p">(</span><span class="n">trc1</span><span class="p">,</span> <span class="n">trc2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A single codiffusing pair can be plot with help of <a class="reference internal" href="#sdt.multicolor.plot_codiffusion" title="sdt.multicolor.plot_codiffusion"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_codiffusion()</span></code></a>
+using the result of <a class="reference internal" href="#sdt.multicolor.find_codiffusion" title="sdt.multicolor.find_codiffusion"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_codiffusion()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_codiffusion</span><span class="p">(</span><span class="n">codiff</span><span class="p">,</span> <span class="n">particle</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Data from two color channels can be merged so that colocalizing features only
+appear once using <a class="reference internal" href="#sdt.multicolor.merge_channels" title="sdt.multicolor.merge_channels"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_channels()</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">merged</span> <span class="o">=</span> <span class="n">merge_channels</span><span class="p">(</span><span class="n">loc1</span><span class="p">,</span> <span class="n">loc2</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">merged</span>
+<span class="go">    x   y  frame</span>
+<span class="go">0   1   1      0</span>
+<span class="go">1  11  11      0</span>
+<span class="go">2  22  22      0</span>
+</pre></div>
+</div>
+<div class="section" id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="sdt.multicolor.find_colocalizations">
+<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">find_colocalizations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">features1</span></em>, <em class="sig-param"><span class="n">features2</span></em>, <em class="sig-param"><span class="n">max_dist</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">keep_non_coloc</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">channel_names</span><span class="o">=</span><span class="default_value">['channel1', 'channel2']</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#find_colocalizations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.find_colocalizations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match localizations in one channel to localizations in another</p>
+<p>For every localization in <cite>features1</cite> find localizations in
+<cite>features2</cite> (in the same frame) that are in a circle with radius <cite>max_dist</cite>
+around it, then pick the closest one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>features1, features2</strong> (<em>pandas.DataFrame</em>) – Localization data</p></li>
+<li><p><strong>max_dist</strong> (<em>float, optional</em>) – Maximum distance between features to still be considered colocalizing.
+Defaults to 2.</p></li>
+<li><p><strong>keep_non_coloc</strong> (<em>bool, optional</em>) – If True, also keep non-colocalized features in the result DataFrame.
+Non-colocalized features have NaNs in the columns of the channel they
+don’t appear in. Defaults to False.</p></li>
+<li><p><strong>channel_names</strong> (<em>list of str, optional</em>) – Names of the two channels.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The DataFrame has a multi-index for columns with the top level
+given by the <cite>channel_names</cite> parameter. Each line of DataFrame
+corresponds to one pair of colocalizing particles.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite> and <cite>time</cite>. This means,
+if your DataFrame has coordinate columns “x” and “z” and the time
+column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.multicolor.calc_pair_distance">
+<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">calc_pair_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">channel_names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#calc_pair_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.calc_pair_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate distances between colocalized features</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Colocalized feature data, e.g. output of
+<a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Distances between colocalized features. The series’ index is the
+same as in the input DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.Series</p>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>channel_names</strong> (<em>list of str or None, optional</em>) – Names of the channels. If None, use the first two entries of teh top
+level of <cite>data</cite>’s MultiIndex. Defaults to None.</p></li>
+<li><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+The only relevant name is <cite>coords. This means,
+if your DataFrame has coordinate columns “x” and “z”, set
+``columns={“coords”: [“x”, “z”]}`</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.multicolor.find_codiffusion">
+<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">find_codiffusion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tracks1</span></em>, <em class="sig-param"><span class="n">tracks2</span></em>, <em class="sig-param"><span class="n">abs_threshold</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">rel_threshold</span><span class="o">=</span><span class="default_value">0.75</span></em>, <em class="sig-param"><span class="n">return_data</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">feature_pairs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_dist</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">channel_names</span><span class="o">=</span><span class="default_value">['channel1', 'channel2']</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#find_codiffusion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.find_codiffusion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find codiffusion in tracking data</p>
+<p>First, find pairs of localizations, the look up to which tracks they
+belong to and thus match tracks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tracks1, tracks2</strong> (<em>pandas.DataFrame</em>) – Tracking data. In addition to what is required by
+<a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a>, a “particle” column has to be present.</p></li>
+<li><p><strong>abs_threshold</strong> (<em>int, optional</em>) – Minimum number of matched localizations per track pair. Defaults to 3</p></li>
+<li><p><strong>rel_threshold</strong> (<em>float, optional</em>) – Minimum fraction of matched localizations that have to belong to the
+same pair of tracks. E. g., if localizations of  aparticle in the
+first channel match five localizations of a particle in the second
+channel, and there are eight frames between the first and the last
+match, that fraction would be 5/8. Defaults to 0.75.</p></li>
+<li><p><strong>return_data</strong> (<em>{“data”, “numbers”, “both”}, optional</em>) – Whether to return the full data of the codiffusing particles, only
+their particle numbers, or both. Defaults to “data”.</p></li>
+<li><p><strong>feature_pairs</strong> (<em>pandas.DataFrame or None, optional</em>) – If <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> has already been called on the
+data, the result can be passed to save re-computation. If <cite>None</cite>,
+<a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> is called in this function. Defaults
+to None</p></li>
+<li><p><strong>max_dist</strong> (<em>float, optional</em>) – <cite>max_dist</cite> parameter for <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> call.
+Defaults to 2.</p></li>
+<li><p><strong>channel_names</strong> (<em>list of str, optional</em>) – Names of the two channels. Defaults to [“channel1”, “channel2”].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Full data (from <cite>tracks1</cite> and <cite>tracks2</cite>) of the codiffusing particles.
+The DataFrame has a multi-index for columns with the top level
+being the two channels.  Each line of DataFrame corresponds to one pair
+of colocalizing particles. Returned if <cite>return_data</cite> is “data” or
+“both”.</p></li>
+<li><p><strong>match_numbers</strong> (<em>numpy.ndarray, shape=(n, 4)</em>) – Each row’s first entry is a particle number in the first channel and
+its second entry is the matching particle number in the second channel.
+Third and fourth columns are start and end frame, respectively.
+Returned if <cite>return_data</cite> is “numbers” or “both”.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Other Parameters</dt>
+<dd class="field-odd"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite>, <cite>particle</cite>, and <cite>time</cite>. This means,
+if your DataFrame has coordinate columns “x” and “z” and the time
+column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.multicolor.plot_codiffusion">
+<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">plot_codiffusion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">particle</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_legend</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">legend_loc</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">linestyles</span><span class="o">=</span><span class="default_value">['-', '--', ':', '-.']</span></em>, <em class="sig-param"><span class="n">channel_names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#plot_codiffusion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.plot_codiffusion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot trajectories of codiffusing particles</p>
+<p>Each step is colored differently so that by comparing colors one can
+figure out which steps in one channel correspond to which steps in the
+other channel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame or tuple of pandas.DataFrames</em>) – Tracking data of codiffusing particles. This can be a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with a MultiIndex for columns as e. g.
+returned by <a class="reference internal" href="#sdt.multicolor.find_codiffusion" title="sdt.multicolor.find_codiffusion"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_codiffusion()</span></code></a> (i. e. matching indices in the
+DataFrames correspond to matching localizations) or a tuple of
+DataFrames, one for each channel.</p></li>
+<li><p><strong>particle</strong> (<em>int or tuple of int</em>) – Specify particle ID. In case <cite>data</cite> is a list of DataFrames and the
+particles have different IDs, one can pass the tuple of IDs.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em>) – To be used for plotting. If <cite>None</cite>, <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.gca()</span></code> will be
+used. Defaults to <cite>None</cite>.</p></li>
+<li><p><strong>cmap</strong> (<em>matplotlib.colors.Colormap, optional</em>) – To be used for coloring steps. Defaults to the “Paired” map of
+<cite>matplotlib</cite>.</p></li>
+<li><p><strong>show_legend</strong> (<em>bool, optional</em>) – Whether to print a legend or not. Defaults to True.</p></li>
+<li><p><strong>legend_loc</strong> (<em>int or str</em>) – Is passed as the <cite>loc</cite> parameter to matplotlib’s axes’ <cite>legend</cite> method.
+Defaults to 0.</p></li>
+<li><p><strong>channel_names</strong> (<em>list of str or None, optional</em>) – Names of the channels. If None, use the first two entries of teh top
+level of <cite>data</cite>’s MultiIndex if it has one (i. e. if it is a DataFrame
+as created by <a class="reference internal" href="#sdt.multicolor.find_codiffusion" title="sdt.multicolor.find_codiffusion"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_codiffusion()</span></code></a>), otherwise use
+[“channel1”, “channel2”]. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Other Parameters</dt>
+<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite>, <cite>particle</cite>, and <cite>time</cite>. This means,
+if your DataFrame has coordinate columns “x” and “z” and the time
+column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.multicolor.merge_channels">
+<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">merge_channels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">features1</span></em>, <em class="sig-param"><span class="n">features2</span></em>, <em class="sig-param"><span class="n">max_dist</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">mean_pos</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">return_data</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#merge_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.merge_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge features of <cite>features1</cite> and <cite>features2</cite></p>
+<p>Concatenate all of <cite>features1</cite> and those entries of <cite>features2</cite> that do
+not colocalize with any of <cite>features1</cite> (in the same frame).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>features1, features2</strong> (<em>pandas.DataFrame</em>) – Localization data</p></li>
+<li><p><strong>max_dist</strong> (<em>float, optional</em>) – Maximum distance between features to still be considered colocalizing.
+Defaults to 2.</p></li>
+<li><p><strong>mean_pos</strong> (<em>bool, optional</em>) – When entries are merged (i. e., if an entry in <cite>features1</cite> is close
+enough to one in <cite>features2</cite>), calculate the center of mass of the
+two channel’s entries. If <cite>False</cite>, use the position in <cite>features1</cite>.
+All other (non-coordinate) columns are taken from <cite>features1</cite> in any
+case. Defaults to <cite>False</cite>.</p></li>
+<li><p><strong>return_data</strong> (<em>{“data”, “index”, “both”}, optional</em>) – Whether to return the full data of merged features, only indices
+(that is, the DatatFrame’s indices) of features in <cite>features2</cite> that
+have no counterpart in <cite>features1</cite>, or both. Defaults to “data”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – DataFrame of merged features. Returned if <cite>return_data</cite> is “data” or
+“both”.</p></li>
+<li><p><strong>feat2_index</strong> (<em>pandas.Index</em>) – Indices of features out of <cite>features2</cite> that have no counterpart in
+<cite>features1</cite>. One can construct the DataFrame (as returned if
+<cite>return_data</cite> is “data” or “both”) by
+<code class="docutils literal notranslate"><span class="pre">pandas.concat([features1,</span> <span class="pre">features2.loc[feat2_index]],</span>
+<span class="pre">keys=channel_names,</span> <span class="pre">ignore_index=True)</span></code>. Returned if <cite>return_data</cite>
+is “index” or “both”.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Other Parameters</dt>
+<dd class="field-odd"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite> and <cite>time</cite>. This means,
+if your DataFrame has coordinate columns “x” and “z” and the time
+column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="low-level-helper-functions">
+<h2>Low level helper functions<a class="headerlink" href="#low-level-helper-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="sdt.multicolor.find_closest_pairs">
+<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">find_closest_pairs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coords1</span></em>, <em class="sig-param"><span class="n">coords2</span></em>, <em class="sig-param"><span class="n">max_dist</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#find_closest_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.find_closest_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find best matches between coordinates</p>
+<p>Given two coordinate arrays (<cite>coords1</cite> and <cite>coords2</cite>), find pairs of points
+with the minimum distance between them. Each point will be in at most one
+pair (in contrast to <cite>usual</cite> KD-tree queries).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords1, coords2</strong> (<em>array-like, shape(n, m)</em>) – Arrays of m-dimensional coordinate tuples. The dimension (m) has to be
+the same in both arrays while the number of points (n) can differ.</p></li>
+<li><p><strong>max_dist</strong> (<em>float</em>) – Maximum distance for two points to be considered a pair</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Each row describes one match. The first entry is the index of a point
+in <cite>coords1</cite>. The second entry is the index of its match in <cite>coords2</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray, shape(n, 2), dtype(int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="motion.html" class="btn btn-neutral float-right" title="Diffusion analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="chromatic.html" class="btn btn-neutral float-left" title="Overlay color channels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

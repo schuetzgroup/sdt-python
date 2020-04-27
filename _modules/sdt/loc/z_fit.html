@@ -1,0 +1,627 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.loc.z_fit &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.loc.z_fit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.loc.z_fit</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Fit z positions from astigmatism</span>
+
+<span class="sd">By introducing a zylindrical lense into the emission pathway, the point spread</span>
+<span class="sd">function gets distorted depending on the z position of the emitter. Instead of</span>
+<span class="sd">being circular, it becomes elliptic. This can used to deteremine the z</span>
+<span class="sd">position of the emitter.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
+
+<span class="kn">from</span> <span class="nn">..helper.numba</span> <span class="kn">import</span> <span class="n">jit</span>
+
+
+<span class="c1"># Save arrays and OrderedDicts to YAML</span>
+<span class="k">class</span> <span class="nc">_ParameterDumper</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeDumper</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">def</span> <span class="nf">_yaml_dict_representer</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_dict</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">_yaml_list_representer</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_list</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="n">_ParameterDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">,</span>
+                                 <span class="n">_yaml_dict_representer</span><span class="p">)</span>
+<span class="n">_ParameterDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">_yaml_list_representer</span><span class="p">)</span>
+
+
+<span class="n">default_z_range</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># z positions only valid in this range</span>
+
+
+<div class="viewcode-block" id="Fitter"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Fitter">[docs]</a><span class="k">class</span> <span class="nc">Fitter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for fitting the z position from the elipticity of PSFs</span>
+
+<span class="sd">    This implements the Zhuang group&#39;s z fitting algorithm [*]_. The</span>
+<span class="sd">    calibration curves for x and y are calculated from the parameters and the</span>
+<span class="sd">    z position is determined by finding the minimum &quot;distance&quot; from the curve.</span>
+
+<span class="sd">    .. [*] See the `fitz` program in the `sa_utilities` directory in</span>
+<span class="sd">        `their git repository &lt;https://github.com/ZhuangLab/storm-analysis&gt;`_.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        params : Parameters</span>
+<span class="sd">            Z fit parameters</span>
+<span class="sd">        resolution : float, optional</span>
+<span class="sd">            Resolution, i. e. smallest z change detectable. Defaults to 1e-3.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">min</span><span class="p">,</span> <span class="nb">max</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">z_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_absc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="nb">round</span><span class="p">((</span><span class="nb">max</span> <span class="o">-</span> <span class="nb">min</span><span class="p">)</span><span class="o">/</span><span class="n">resolution</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                 <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_curve_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curve_y</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">sigma_from_z</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_absc</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Fitter.fit"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Fitter.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fit the z position</span>
+
+<span class="sd">        Takes a :py:class:`pandas.DataFrame` with `size_x` and `size_y`</span>
+<span class="sd">        columns and writes the `z` column.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            Fitting data. There need to be `size_x` and `size_y` columns.</span>
+<span class="sd">            A `z` column will be written with fitted `z` position values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dw</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;size_x&quot;</span><span class="p">][:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span> <span class="o">-</span>
+               <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_curve_x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]))</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+              <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;size_y&quot;</span><span class="p">][:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span> <span class="o">-</span>
+               <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_curve_y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">min_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_absc</span><span class="p">[</span><span class="n">min_idx</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Z position fitting parameters</span>
+
+<span class="sd">    When imaging with a zylindrical lense in the emission path, round features</span>
+<span class="sd">    are deformed into ellipses whose semiaxes extensions are computed as</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        w = w_0 \sqrt{1 + \left(\frac{z - c}{d}\right)^2 +</span>
+<span class="sd">        a_1 \left(\frac{z - c}{d}\right)^3 +</span>
+<span class="sd">        a_2 \left(\frac{z - c}{d}\right)^4 + \ldots}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_file_header</span> <span class="o">=</span> <span class="s2">&quot;# z fit parameters</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="n">_PTuple</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;ParamTuple&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;w0&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">])</span>
+    <span class="n">_PTuple</span><span class="o">.</span><span class="fm">__new__</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="Parameters.Tuple"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Parameters.Tuple">[docs]</a>    <span class="k">class</span> <span class="nc">Tuple</span><span class="p">(</span><span class="n">_PTuple</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Named tuple of the parameters for one axis</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        w0, c, d : float</span>
+<span class="sd">            :math:`w_0, c, d` of the calibration curve</span>
+<span class="sd">        a : numpy.ndarray</span>
+<span class="sd">            Polynomial coefficients :math:`a_i` of the calibration curve</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_range</span><span class="o">=</span><span class="n">default_z_range</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_range</span> <span class="o">=</span> <span class="n">z_range</span>
+        <span class="sd">&quot;&quot;&quot;Minimum and maximum valid z positions. Defaults to (-0.5, 0.5).&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;x calibration curve parameter :py:class:`Tuple`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span>
+
+    <span class="nd">@x</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">par</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="o">=</span> <span class="n">par</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">par</span><span class="o">.</span><span class="n">a</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_der_poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">par</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_w0_sq</span> <span class="o">=</span> <span class="n">par</span><span class="o">.</span><span class="n">w0</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;y calibration curve parameter :py:class:`Tuple`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
+
+    <span class="nd">@y</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">par</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">par</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">par</span><span class="o">.</span><span class="n">a</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_der_poly</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">par</span><span class="o">.</span><span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">par</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">))))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_w0_sq</span> <span class="o">=</span> <span class="n">par</span><span class="o">.</span><span class="n">w0</span><span class="o">**</span><span class="mi">2</span>
+
+<div class="viewcode-block" id="Parameters.sigma_from_z"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Parameters.sigma_from_z">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_from_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate x and y sigmas corresponding to a z position</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : numpy.ndarray</span>
+<span class="sd">            Array of z positions</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray, shape=(2, len(z))</span>
+<span class="sd">            First row contains sigmas in x direction, second row is for the</span>
+<span class="sd">            y direction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">d</span>
+        <span class="n">sigma_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">w0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_poly</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">d</span>
+        <span class="n">sigma_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">w0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y_poly</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Parameters.exp_factor_from_z"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Parameters.exp_factor_from_z">[docs]</a>    <span class="k">def</span> <span class="nf">exp_factor_from_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the factor in the exponential of the Gaussian</span>
+
+<span class="sd">        Calculate the factors :math:`s_x, s_y` in :math:`A \exp(-s_x(x-x_c)^2)</span>
+<span class="sd">        \exp(-s_y(y-y_c)^2)`. These factors are therefore</span>
+<span class="sd">        :math:`\frac{1}{2\sigma^2}`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : numpy.ndarray</span>
+<span class="sd">            Array of z positions</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray, shape=(2, len(z))</span>
+<span class="sd">            First row contains s in x direction, second row is for the</span>
+<span class="sd">            y direction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">d</span>
+        <span class="n">sigma_x_sq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_w0_sq</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_poly</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">d</span>
+        <span class="n">sigma_y_sq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_w0_sq</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_poly</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">sigma_x_sq</span><span class="p">,</span> <span class="n">sigma_y_sq</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="Parameters.exp_factor_der"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Parameters.exp_factor_der">[docs]</a>    <span class="k">def</span> <span class="nf">exp_factor_der</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the derivative of the the exponential factor w.r.t. z</span>
+
+<span class="sd">        The analytical expression for this is</span>
+
+<span class="sd">        .. math:: \frac{ds}{dz} = -\frac{2 w_0^2 s^2}{d}</span>
+<span class="sd">            \left(2\frac{z - c}{d} + 3 a_1 \left(\frac{z - c}{d}\right)^2 +</span>
+<span class="sd">            4 a_2 \left(\frac{z - c}{d}\right)^3 + \ldots \right).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : numpy.ndarray</span>
+<span class="sd">            Array of z positions</span>
+<span class="sd">        factor : numpy.ndarray or None, optional</span>
+<span class="sd">            Result of :py:meth:`exp_factor_from_z` call. If `None`, it</span>
+<span class="sd">            will be called in this method. The purpose of this is to speed</span>
+<span class="sd">            up computation if the exponential factor has already been</span>
+<span class="sd">            calculated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray, shape=(2, len(z))</span>
+<span class="sd">            First row contains :math:`\frac{ds}{dz}` in x direction, second</span>
+<span class="sd">            row is for the y direction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">factor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp_factor_from_z</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">factor</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">d</span>
+        <span class="c1"># below differs from the Zhuang impl by the self._x.d division</span>
+        <span class="n">ds_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_w0_sq</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_der_poly</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="o">.</span><span class="n">d</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">d</span>
+        <span class="c1"># below differs from the Zhuang impl by the self._y.d division</span>
+        <span class="n">ds_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_w0_sq</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_der_poly</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="o">.</span><span class="n">d</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">ds_dx</span><span class="p">,</span> <span class="n">ds_dy</span><span class="p">))</span> <span class="o">*</span> <span class="n">f</span></div>
+
+<div class="viewcode-block" id="Parameters.save"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Parameters.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save parameters to a yaml file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file : str or file-like object</span>
+<span class="sd">            File name or file to write to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">par</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">((</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(((</span><span class="s2">&quot;w0&quot;</span><span class="p">,</span> <span class="n">par</span><span class="o">.</span><span class="n">w0</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">par</span><span class="o">.</span><span class="n">c</span><span class="p">),</span>
+                                         <span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="n">par</span><span class="o">.</span><span class="n">d</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">par</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">tolist</span><span class="p">())))</span>
+            <span class="n">s</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+
+        <span class="n">s</span><span class="p">[</span><span class="s2">&quot;z range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_range</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_header</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">_ParameterDumper</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file_header</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">_ParameterDumper</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Parameters.load"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Parameters.load">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load parameters from a yaml file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file : str or file-like object</span>
+<span class="sd">            File name or file to read from</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Parameters</span>
+<span class="sd">            Class instance with parameters loaded from file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">z_range</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;z range&quot;</span><span class="p">])</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">ret</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;w0&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;d&quot;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]))</span>
+             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="Parameters.calibrate"><a class="viewcode-back" href="../../../loc.html#sdt.loc.z_fit.Parameters.calibrate">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">calibrate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">guess</span><span class="o">=</span><span class="n">Tuple</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span>
+                  <span class="n">z_range</span><span class="o">=</span><span class="n">default_z_range</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get parameters from calibration sample</span>
+
+<span class="sd">        Extract fitting parameters from PSFs where the z position is known.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        loc : pandas.DataFrame</span>
+<span class="sd">            Localization data of a calibration sample. `z`, `size_x`, and</span>
+<span class="sd">            `size_y` columns need to be present.</span>
+<span class="sd">        guess : ParamTuple, optional</span>
+<span class="sd">            Initial guess for the parameter fitting. The length of the</span>
+<span class="sd">            `guess.a` array also determines the number of polynomial parameters</span>
+<span class="sd">            to be fitted. Defaults to (1., 0., 1., np.ones(2)).</span>
+<span class="sd">        z_range : tuple of float</span>
+<span class="sd">            Minimum and maximum valid z positions. Defaults to (-0.5, 0.5).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Parameters</span>
+<span class="sd">            Class instance with parameters from the calibration sample</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">curve</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">w0</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">Polynomial</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">a</span><span class="p">)))</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">pos</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="n">d</span>
+            <span class="k">return</span> <span class="n">w0</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">p</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">z_range</span><span class="o">=</span><span class="n">z_range</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span>
+        <span class="n">fit_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">guess</span><span class="o">.</span><span class="n">a</span><span class="p">)),</span>
+                      <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">):</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="s2">&quot;size_&quot;</span> <span class="o">+</span> <span class="n">coord</span><span class="p">]</span>
+            <span class="n">fit</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span>
+                <span class="n">curve</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">[</span><span class="n">guess</span><span class="o">.</span><span class="n">w0</span><span class="p">,</span> <span class="n">guess</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">guess</span><span class="o">.</span><span class="n">d</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">guess</span><span class="o">.</span><span class="n">a</span><span class="p">),</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="n">fit_bounds</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">fit</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ret</span></div></div>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">numba_sigma_from_z</span><span class="p">(</span><span class="n">z_param</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Numba-accelerated version of :py:meth:`Parameters.sigma_from_z`</span>
+
+<span class="sd">    This calculates sigma in one direction (x OR y) for one single z.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_param : numpy.ndarray</span>
+<span class="sd">        z fit parameters, i. e. ``np.hstack(params.x)`` (or `params.y`) for a</span>
+<span class="sd">        :py:class:`Parameters` object</span>
+<span class="sd">    z : float</span>
+<span class="sd">        z value</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Corresponding sigma value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">z_param</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">z_param</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t_x</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">p_x</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">t</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_param</span><span class="p">)):</span>
+        <span class="n">t</span> <span class="o">*=</span> <span class="n">t_x</span>
+        <span class="n">p_x</span> <span class="o">+=</span> <span class="n">z_param</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span>
+    <span class="k">return</span> <span class="n">z_param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">p_x</span><span class="p">)</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">numba_exp_factor_from_z</span><span class="p">(</span><span class="n">z_param</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Numba-accelerated version of :py:meth:`Parameters.exp_factor_from_z`</span>
+
+<span class="sd">    This calculates exponential factor in one direction (x OR y) for one</span>
+<span class="sd">    single z.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_param : numpy.ndarray</span>
+<span class="sd">        z fit parameters, i. e. ``np.hstack(params.x)`` (or `params.y`) for a</span>
+<span class="sd">        :py:class:`Parameters` object</span>
+<span class="sd">    z : float</span>
+<span class="sd">        z value</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Corresponding exponential factor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">z_param</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">z_param</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t_x</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">p_x</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">t</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_param</span><span class="p">)):</span>
+        <span class="n">t</span> <span class="o">*=</span> <span class="n">t_x</span>
+        <span class="n">p_x</span> <span class="o">+=</span> <span class="n">z_param</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">z_param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">p_x</span><span class="p">)</span>
+
+
+<span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">numba_exp_factor_der</span><span class="p">(</span><span class="n">z_param</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Numba-accelerated version of :py:meth:`Parameters.exp_factor_der`</span>
+
+<span class="sd">    This calculates the derivative of the exponential factor w.r.t. z in one</span>
+<span class="sd">    direction (x OR y) for one single z.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    z_param : numpy.ndarray</span>
+<span class="sd">        z fit parameters, i. e. ``np.hstack(params.x)`` (or `params.y`) for a</span>
+<span class="sd">        :py:class:`Parameters` object</span>
+<span class="sd">    z : float</span>
+<span class="sd">        z value</span>
+<span class="sd">    factor : float, optional</span>
+<span class="sd">        Result of :py:func:`numba_exp_factor_from_z` call. If `numpy.nan`, it</span>
+<span class="sd">        will be called in this method. The purpose of this is to speed</span>
+<span class="sd">        up computation if the exponential factor has already been</span>
+<span class="sd">        calculated. Defaults to numpy.nan.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Corresponding exponential factor</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">factor</span><span class="p">):</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="n">numba_exp_factor_from_z</span><span class="p">(</span><span class="n">z_param</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">factor</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="n">t_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">z_param</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="n">z_param</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t_x</span>
+    <span class="n">p_x</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">t</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_param</span><span class="p">)):</span>
+        <span class="n">t</span> <span class="o">*=</span> <span class="n">t_x</span>
+        <span class="n">p_x</span> <span class="o">+=</span> <span class="n">j</span> <span class="o">*</span> <span class="n">z_param</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">t</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">z_param</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">p_x</span> <span class="o">/</span> <span class="n">z_param</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

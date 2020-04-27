@@ -1,0 +1,957 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.brightness &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.brightness</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.brightness</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Brightness analysis</span>
+<span class="sd">===================</span>
+
+<span class="sd">This is a collection of tools to analyze the brightness of fluorophores. It</span>
+<span class="sd">offers</span>
+
+<span class="sd">- The :py:func:`from_raw_image` function which may be used to calculate the</span>
+<span class="sd">  brightness of single molecules by extracting the information directly from</span>
+<span class="sd">  the raw image data.</span>
+<span class="sd">- The :py:class:`Distribution` class, with which one can determine the</span>
+<span class="sd">  brightness distribution of fluorophores via kernel density estimation.</span>
+
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">To determine single molecule brightness using :py:func:`from_raw_image`, one</span>
+<span class="sd">needs the raw image data and localization data of molecules (which can be</span>
+<span class="sd">determined from the image date e.g. using functionality from the</span>
+<span class="sd">:py:mod:`sdt.loc` module):</span>
+
+<span class="sd">&gt;&gt;&gt; img_seq = pims.open(&quot;images.tif&quot;)  # Load image sequence</span>
+<span class="sd">&gt;&gt;&gt; loc = sdt.io.load(&quot;localizations.h5&quot;)  # Load single molecule localizations</span>
+<span class="sd">&gt;&gt;&gt; from_raw_image(loc, img_seq, radius=4)</span>
+
+<span class="sd">The last line updates the ``loc`` DataFrame with the brightness data extracted</span>
+<span class="sd">from the raw image.</span>
+
+<span class="sd">The distribution of the brightness of single molecules can be calculated</span>
+<span class="sd">by means of the :py:class:`Distribution` class:</span>
+
+<span class="sd">&gt;&gt;&gt; loc = [sdt.io.load(f) for f in glob.glob(&quot;*.h5&quot;)]  # Load sm data</span>
+<span class="sd">&gt;&gt;&gt; cam_eff = 300 / 15.7  # number of camera counts per photon</span>
+<span class="sd">&gt;&gt;&gt; bdist = Distribution(loc, cam_eff)</span>
+<span class="sd">&gt;&gt;&gt; bdist.mean()</span>
+<span class="sd">314.1592653589793</span>
+<span class="sd">&gt;&gt;&gt; bdist.std()</span>
+<span class="sd">31.41592653589793</span>
+<span class="sd">&gt;&gt;&gt; bdist.plot()</span>
+
+
+<span class="sd">Programming reference</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">.. autofunction:: from_raw_image</span>
+<span class="sd">.. autoclass:: Distribution</span>
+<span class="sd">    :members:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
+
+<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">numba</span>
+<span class="kn">from</span> <span class="nn">.image</span> <span class="kn">import</span> <span class="n">CircleMask</span><span class="p">,</span> <span class="n">RectMask</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">config</span>
+
+
+<span class="k">def</span> <span class="nf">_make_mask_image</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a boolean mask with all `True` except for `mask` around features</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    feat_idx : array-like, shape(n, m), dtype(int)</span>
+<span class="sd">        Rounded indices (coordinates reversed) of features in the image. These</span>
+<span class="sd">        indices have to be clipped to `shape`.</span>
+<span class="sd">    mask : array-like, dtype(bool)</span>
+<span class="sd">        Feature mask</span>
+<span class="sd">    shape : tuple of int</span>
+<span class="sd">        Desired shape of the resulting image</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray, dtype(bool)</span>
+<span class="sd">        Boolean mask of the desired shape</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create return array which is two pixels larger than shape. That way we</span>
+    <span class="c1"># can use the add-1-trick below and rounding, which has likely been done</span>
+    <span class="c1"># to create integer `feat_idx` cannot get us out-of-bounds.</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="c1"># Add 1 if mask dimension is odd so that in the end ret[1:-1, 1:-1, …]</span>
+    <span class="c1"># has the mask centered in the odd dimensions and moved to the top left</span>
+    <span class="c1"># in even dimensions</span>
+    <span class="n">fi</span> <span class="o">=</span> <span class="n">feat_idx</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ret</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">fi</span><span class="o">.</span><span class="n">T</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;same&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="p">[(</span><span class="nb">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)]</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_make_mask_image_numba</span><span class="p">(</span><span class="n">i_start</span><span class="p">,</span> <span class="n">i_end</span><span class="p">,</span> <span class="n">m_start</span><span class="p">,</span> <span class="n">m_end</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a boolean mask with all `True` except for `mask` around features</span>
+
+<span class="sd">    numba-accelerated implementation. This is called differently than</span>
+<span class="sd">    :py:func:`_make_mask_image`. **Works only for 2D data.**</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    i_start : array-like, shape(n, 2), dtype(int)</span>
+<span class="sd">        Indices of start pixels in the image of the feature mask for each</span>
+<span class="sd">        feature. This is typically the `img_start` array returned by</span>
+<span class="sd">        :py:func:`_get_mask_boundaries`.</span>
+<span class="sd">    i_end : array-like, shape(n, 2), dtype(int)</span>
+<span class="sd">        Indices of end pixels in the image of the feature mask for each</span>
+<span class="sd">        feature. This is typically the `img_end` array returned by</span>
+<span class="sd">        :py:func:`_get_mask_boundaries`.</span>
+<span class="sd">    m_start : array-like, shape(n, 2), dtype(int)</span>
+<span class="sd">        Indices of start pixels in the feature mask for each</span>
+<span class="sd">        feature. This is typically the `mask_start` array returned by</span>
+<span class="sd">        :py:func:`_get_mask_boundaries`.</span>
+<span class="sd">    m_end : array-like, shape(n, 2), dtype(int)</span>
+<span class="sd">        Indices of end pixels in the feature mask for each</span>
+<span class="sd">        feature. This is typically the `mask_start` array returned by</span>
+<span class="sd">        :py:func:`_get_mask_boundaries`.</span>
+<span class="sd">    mask : array-like, dtype(bool)</span>
+<span class="sd">        Feature mask</span>
+<span class="sd">    shape : tuple of int</span>
+<span class="sd">        Desired shape of the resulting image</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray, dtype(bool)</span>
+<span class="sd">        Boolean mask of the desired shape</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span>
+    <span class="n">mask_inv</span> <span class="o">=</span> <span class="o">~</span><span class="n">mask</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">i_start</span><span class="p">)):</span>
+        <span class="c1"># TODO: This is 2D only until someone comes up with a solution</span>
+        <span class="n">mask_part</span> <span class="o">=</span> <span class="n">mask_inv</span><span class="p">[</span><span class="n">m_start</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span><span class="n">m_end</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                             <span class="n">m_start</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span><span class="n">m_end</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i_start</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span><span class="n">i_end</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">i_start</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span><span class="n">i_end</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">&amp;=</span> <span class="n">mask_part</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+
+<span class="k">def</span> <span class="nf">_get_mask_boundaries</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">mask_shape</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get boundaries for masks around features</span>
+
+<span class="sd">    For each feature, this calculates where in the image a mask has to begin</span>
+<span class="sd">    and to end to be centered around the feature. It takes the image size into</span>
+<span class="sd">    account such that masks are clipped at the edges.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    feat_idx : array-like, shape(n, m), dtype(int)</span>
+<span class="sd">        Rounded indices (coordinates reversed) of features in the image.</span>
+<span class="sd">    mask_shape : tuple of int</span>
+<span class="sd">        Shape of the mask</span>
+<span class="sd">    shape : tuple of int</span>
+<span class="sd">        Shape of the image</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img_start, img_end : numpy.ndarray, dtype(int), shape(m, n)</span>
+<span class="sd">        Where in the image the mask starts and ends</span>
+<span class="sd">    mask_start, mask_end : numpy.ndarray, dtype(int), shape(m, n)</span>
+<span class="sd">        Which part of the mask to apply. This is important if the mask gets</span>
+<span class="sd">        clipped near the edges of the image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">feat_idx</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">floor_divide</span><span class="p">(</span><span class="n">mask_shape</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">mask_shape</span>
+
+    <span class="n">img_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+    <span class="n">img_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">mask_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mask_shape</span><span class="p">)</span>
+    <span class="n">mask_end</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">shape</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mask_shape</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">img_start</span><span class="p">,</span> <span class="n">img_end</span><span class="p">,</span> <span class="n">mask_start</span><span class="p">,</span> <span class="n">mask_end</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_get_mask_boundaries_numba</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">mask_shape</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get boundaries for masks around features (numba-accelerated)</span>
+
+<span class="sd">    For each feature, this calculates where in the image a mask has to begin</span>
+<span class="sd">    and to end to be centered around the feature. It takes the image size into</span>
+<span class="sd">    account such that masks are clipped at the edges.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    feat_idx : array-like, shape(n, m), dtype(int)</span>
+<span class="sd">        Rounded indices (coordinates reversed) of features in the image.</span>
+<span class="sd">    mask_shape : tuple of int</span>
+<span class="sd">        Shape of the mask</span>
+<span class="sd">    shape : tuple of int</span>
+<span class="sd">        Shape of the image</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    img_start, img_end : numpy.ndarray, dtype(int), shape(m, n)</span>
+<span class="sd">        Where in the image the mask starts and ends</span>
+<span class="sd">    mask_start, mask_end : numpy.ndarray, dtype(int), shape(m, n)</span>
+<span class="sd">        Which part of the mask to apply. This is important if the mask gets</span>
+<span class="sd">        clipped near the edges of the image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="n">feat_idx</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ndim</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">mask_shape</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ms</span> <span class="o">//</span> <span class="mi">2</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">feat_idx</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">ms</span>
+            <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+            <span class="n">ret</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+            <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="n">ms</span><span class="p">))</span>
+            <span class="n">ret</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span> <span class="n">ms</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+
+
+<span class="k">def</span> <span class="nf">_from_raw_image_python</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">feat_mask</span><span class="p">,</span> <span class="n">bg_mask</span><span class="p">,</span> <span class="n">bg_estimator</span><span class="p">,</span>
+                           <span class="n">global_bg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get brightness by counting pixel values (single frame, python impl.)</span>
+
+<span class="sd">    This is called for each frame by :py:func:`from_raw_image`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pos : array-like, shape(n, m)</span>
+<span class="sd">        Localization coordinates (n features in an m-dimensional space)</span>
+<span class="sd">    frame : numpy.ndarray</span>
+<span class="sd">        Raw image data</span>
+<span class="sd">    feat_mask : array-like, dtype(bool)</span>
+<span class="sd">        Mask around each localization to determine which pixel belong to the</span>
+<span class="sd">        feature</span>
+<span class="sd">    bg_mask : array-like, dtype(bool)</span>
+<span class="sd">        Mask around each localization to determine which pixel belong to the</span>
+<span class="sd">        background.</span>
+<span class="sd">    bg_estimator : numpy ufunc</span>
+<span class="sd">        How to determine the background from the background pixels. A typical</span>
+<span class="sd">        example would be :py:func:`np.mean`.</span>
+<span class="sd">    global_bg : bool, optional</span>
+<span class="sd">        If True, calculate background globally from all pixels that are not</span>
+<span class="sd">        part of any feature. `bg_mask` is ignored in this case. Defaults to</span>
+<span class="sd">        False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray, shape(n, 4)</span>
+<span class="sd">        Each line represents one feature. Columns are &quot;signal&quot;, &quot;mass&quot;,</span>
+<span class="sd">        &quot;bg&quot;, &quot;bg_std&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">feat_mask_ones</span> <span class="o">=</span> <span class="n">feat_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># Number of pixels selected by the mask</span>
+
+    <span class="n">feat_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># Make a mask for the whole image where everything is True except for the</span>
+    <span class="c1"># feat_mask around features</span>
+    <span class="n">mask_img</span> <span class="o">=</span> <span class="n">_make_mask_image</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">feat_mask</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">feat_start</span><span class="p">,</span> <span class="n">feat_end</span><span class="p">,</span> <span class="n">feat_mask_start</span><span class="p">,</span> <span class="n">feat_mask_end</span> <span class="o">=</span> \
+        <span class="n">_get_mask_boundaries</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">feat_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">global_bg</span><span class="p">:</span>
+        <span class="n">bg_pixels</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">mask_img</span><span class="p">]</span>
+        <span class="n">bg</span> <span class="o">=</span> <span class="n">bg_estimator</span><span class="p">(</span><span class="n">bg_pixels</span><span class="p">)</span>
+        <span class="n">bg_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">bg_pixels</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bg_start</span><span class="p">,</span> <span class="n">bg_end</span><span class="p">,</span> <span class="n">bg_mask_start</span><span class="p">,</span> <span class="n">bg_mask_end</span> <span class="o">=</span> \
+            <span class="n">_get_mask_boundaries</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">bg_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)):</span>
+        <span class="n">feat_slice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="nb">slice</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">feat_start</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">feat_end</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="n">feat_region</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">feat_slice</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">feat_region</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">feat_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="c1"># The signal was too close to the egde of the image, we could not</span>
+            <span class="c1"># read all the pixels we wanted</span>
+            <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="k">continue</span>
+
+        <span class="n">feat_pixels</span> <span class="o">=</span> <span class="n">feat_region</span><span class="p">[</span><span class="n">feat_mask</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">global_bg</span><span class="p">:</span>
+            <span class="n">bg_slice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">slice</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bg_start</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">bg_end</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">bg_mask_slice</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">slice</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bg_mask_start</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">bg_mask_end</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">bg_mask_with_feat</span> <span class="o">=</span> <span class="n">bg_mask</span><span class="p">[</span><span class="n">bg_mask_slice</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">mask_img</span><span class="p">[</span><span class="n">bg_slice</span><span class="p">]</span>
+            <span class="n">bg_pixels</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">bg_slice</span><span class="p">][</span><span class="n">bg_mask_with_feat</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">bg_pixels</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                <span class="n">bg</span> <span class="o">=</span> <span class="n">bg_estimator</span><span class="p">(</span><span class="n">bg_pixels</span><span class="p">)</span>
+                <span class="n">bg_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">bg_pixels</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+                <span class="n">bg_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+
+        <span class="n">mass_uncorr</span> <span class="o">=</span> <span class="n">feat_pixels</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">signal_uncorr</span> <span class="o">=</span> <span class="n">feat_pixels</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bg</span><span class="p">):</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="n">mass_uncorr</span> <span class="o">-</span> <span class="n">feat_mask_ones</span> <span class="o">*</span> <span class="n">bg</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">signal_uncorr</span> <span class="o">-</span> <span class="n">bg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="n">mass_uncorr</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">signal_uncorr</span>
+
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mass</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg_std</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_from_raw_image_numba</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">feat_mask</span><span class="p">,</span> <span class="n">bg_mask</span><span class="p">,</span> <span class="n">bg_estimator</span><span class="p">,</span>
+                          <span class="n">global_bg</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get brightness by counting pixel values (single frame, numba impl.)</span>
+
+<span class="sd">    This is called for each frame by :py:func:`from_raw_image` with numba</span>
+<span class="sd">    engine. It works for 2D data only.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pos : array-like, shape(n, m)</span>
+<span class="sd">        Localization coordinates (n features in an m-dimensional space)</span>
+<span class="sd">    frame : numpy.ndarray</span>
+<span class="sd">        Raw image data</span>
+<span class="sd">    feat_mask : array-like, dtype(bool)</span>
+<span class="sd">        Mask around each localization to determine which pixel belong to the</span>
+<span class="sd">        feature</span>
+<span class="sd">    bg_mask : array-like, dtype(bool)</span>
+<span class="sd">        Mask around each localization to determine which pixel belong to the</span>
+<span class="sd">        background.</span>
+<span class="sd">    bg_estimator : numpy ufunc</span>
+<span class="sd">        How to determine the background from the background pixels. A typical</span>
+<span class="sd">        example would be :py:func:`np.mean`.</span>
+<span class="sd">    global_bg : bool, optional</span>
+<span class="sd">        If True, calculate background globally from all pixels that are not</span>
+<span class="sd">        part of any feature. `bg_mask` is ignored in this case. Defaults to</span>
+<span class="sd">        False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray, shape(n, 4)</span>
+<span class="sd">        Each line represents one feature. Columns are &quot;signal&quot;, &quot;mass&quot;,</span>
+<span class="sd">        &quot;bg&quot;, &quot;bg_std&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">feat_mask_ones</span> <span class="o">=</span> <span class="n">feat_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>  <span class="c1"># Number of pixels selected by the mask</span>
+
+    <span class="n">feat_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">feat_idx</span><span class="p">)</span>
+    <span class="c1">#feat_idx = np.around(pos[:, ::-1]).astype(int)</span>
+
+    <span class="n">feat_bd</span> <span class="o">=</span> <span class="n">_get_mask_boundaries_numba</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">feat_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                                         <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c1"># Make a mask for the whole image where everything is True except for the</span>
+    <span class="c1"># feat_mask around features</span>
+    <span class="n">mask_img</span> <span class="o">=</span> <span class="n">_make_mask_image_numba</span><span class="p">(</span><span class="n">feat_bd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">feat_bd</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">feat_bd</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                      <span class="n">feat_bd</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">feat_mask</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">global_bg</span><span class="p">:</span>
+        <span class="n">bg_pixels</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="n">mask_img</span><span class="o">.</span><span class="n">flatten</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">bg_estimator</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">bg_pixels</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bg_pixels</span><span class="p">)</span>
+        <span class="n">bg_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">bg_pixels</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bg_bd</span> <span class="o">=</span> <span class="n">_get_mask_boundaries_numba</span><span class="p">(</span><span class="n">feat_idx</span><span class="p">,</span> <span class="n">bg_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                                           <span class="n">frame</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)):</span>
+        <span class="n">feat_pixels</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="n">feat_bd</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span><span class="n">feat_bd</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                            <span class="n">feat_bd</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span><span class="n">feat_bd</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">feat_pixels</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">feat_mask</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="c1"># The signal was too close to the egde of the image, we could not</span>
+            <span class="c1"># read all the pixels we wanted</span>
+            <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="k">continue</span>
+
+        <span class="n">f_mask_pixels</span> <span class="o">=</span> <span class="n">feat_mask</span><span class="p">[</span><span class="n">feat_bd</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span><span class="n">feat_bd</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                  <span class="n">feat_bd</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span><span class="n">feat_bd</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+        <span class="n">feat_pixels_masked</span> <span class="o">=</span> <span class="n">feat_pixels</span><span class="p">[</span><span class="n">f_mask_pixels</span><span class="p">]</span>
+        <span class="n">mass_uncorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">feat_pixels_masked</span><span class="p">)</span>
+        <span class="n">signal_uncorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">feat_pixels_masked</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">global_bg</span><span class="p">:</span>
+            <span class="n">bg_pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                       <span class="n">bg_bd</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+            <span class="n">bg_mask_with_feat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span>
+                <span class="n">bg_mask</span><span class="p">[</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                        <span class="n">bg_bd</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">&amp;</span>
+                <span class="n">mask_img</span><span class="p">[</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                         <span class="n">bg_bd</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span><span class="n">bg_bd</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+            <span class="n">bg_pixels_masked</span> <span class="o">=</span> <span class="n">bg_pixels</span><span class="p">[</span><span class="n">bg_mask_with_feat</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">bg_pixels_masked</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">bg_estimator</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">bg_pixels_masked</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bg_pixels_masked</span><span class="p">)</span>
+                <span class="n">bg_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">bg_pixels_masked</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+                <span class="n">bg_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+
+        <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bg</span><span class="p">):</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="n">mass_uncorr</span> <span class="o">-</span> <span class="n">feat_mask_ones</span> <span class="o">*</span> <span class="n">bg</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">signal_uncorr</span> <span class="o">-</span> <span class="n">bg</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mass</span> <span class="o">=</span> <span class="n">mass_uncorr</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">signal_uncorr</span>
+
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mass</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg_std</span>
+
+    <span class="k">return</span> <span class="n">ret</span>
+
+
+<div class="viewcode-block" id="from_raw_image"><a class="viewcode-back" href="../../brightness.html#sdt.brightness.from_raw_image">[docs]</a><span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">from_raw_image</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">bg_frame</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bg_estimator</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                   <span class="n">columns</span><span class="o">=</span><span class="p">{},</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;numba&quot;</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="s2">&quot;square&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine particle brightness by counting pixel values</span>
+
+<span class="sd">    Around each localization, pixel values are summed up (see the `mask`</span>
+<span class="sd">    parameter) to determine the brightness (mass). Additionally, local</span>
+<span class="sd">    background is determined by calculating the brightness (see `bg_estimator`</span>
+<span class="sd">    parameter in a frame (again, see `mask` parameter) around this box,</span>
+<span class="sd">    where all pixels belonging to any localization are excluded. This</span>
+<span class="sd">    background is subtracted from the signal brightness.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    positions : pandas.DataFrame</span>
+<span class="sd">        Localization data. &quot;signal&quot;, &quot;mass&quot;, &quot;bg&quot;, and &quot;bg_dev&quot;</span>
+<span class="sd">        columns are added and/or replaced directly in this object.</span>
+<span class="sd">    frames : iterable of numpy.ndarrays</span>
+<span class="sd">        Raw image data</span>
+<span class="sd">    radius : int</span>
+<span class="sd">        Half width of the box in which pixel values are summed up. See `mask`</span>
+<span class="sd">        parameter for details.</span>
+<span class="sd">    bg_frame : int or infinity, optional</span>
+<span class="sd">        Width of frame (in pixels) around a feature for background</span>
+<span class="sd">        determination. If infinity, background is calculated globally from all</span>
+<span class="sd">        pixels that are not part of any feature. Defaults to 2.</span>
+<span class="sd">    bg_estimator : {&quot;mean&quot;, &quot;median&quot;} or numpy ufunc, optional</span>
+<span class="sd">        How to determine the background from the background pixels. &quot;mean&quot;</span>
+<span class="sd">        will use :py:func:`numpy.mean` and &quot;median&quot; will use</span>
+<span class="sd">        :py:func:`numpy.median`. If a function is given (which takes the</span>
+<span class="sd">        pixel data as arguments and returns a scalar), apply this to the</span>
+<span class="sd">        pixels. Defaults to &quot;mean&quot;.</span>
+<span class="sd">    mask : {&quot;square&quot;, &quot;circle&quot;} or (array-like, array-like), optional</span>
+<span class="sd">        If &quot;square&quot;, sum pixels in a ``2 * radius + 1`` sized square around</span>
+<span class="sd">        each localization as the brightness and use `bg_estimator` in a frame</span>
+<span class="sd">        of `bg_frame` width around it to determine the local background, which</span>
+<span class="sd">        is subtracted from the brightness. If &quot;circle&quot;, sum pixels in a</span>
+<span class="sd">        ``2 * radius + 1`` sized circle (a :py:class:`CircleMask`</span>
+<span class="sd">        with radius `radius` and ``extra=0.5`` is used) around each</span>
+<span class="sd">        localization and get the background from an annulus of width</span>
+<span class="sd">        ``bg_frame``. One can also pass a tuple ``(feat_mask, bg_mask)`` of</span>
+<span class="sd">        boolean arrays for brightness and background detection. In this case,</span>
+<span class="sd">        `radius` and `bg_frame` are ignored. If `bg_mask` is None, calculate</span>
+<span class="sd">        background globally (per frame) from all pixels that are not</span>
+<span class="sd">        part of any feature. In all cases, all pixels belonging</span>
+<span class="sd">        to any signal are automatically excluded from the background detection.</span>
+<span class="sd">        Defaults to &quot;square&quot;.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        Relevant names are `coords`, `time`, `mass`, `signal`, `bg`, `bg_dev`.</span>
+<span class="sd">        This means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and</span>
+<span class="sd">        the time column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
+<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+<span class="sd">    engine : {&quot;numba&quot;, &quot;python&quot;}, optional</span>
+<span class="sd">        Numba is faster, but only supports 2D data and mean or median</span>
+<span class="sd">        bg_estimator. If numba cannot be used, automatically fall back to</span>
+<span class="sd">        pure python, which support arbitray dimensions and bg_estimator</span>
+<span class="sd">        functions. Defaults to &quot;numba&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bg_estimator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">bg_estimator</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="n">bg_estimator</span><span class="p">)</span>
+
+    <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;numba&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;numba engine supports only 2D data. Falling back &quot;</span>
+                          <span class="s2">&quot;to python backend.&quot;</span><span class="p">)</span>
+            <span class="n">engine</span> <span class="o">=</span> <span class="s2">&quot;python&quot;</span>
+        <span class="k">if</span> <span class="n">bg_estimator</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">:</span>
+            <span class="n">bg_estimator</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">bg_estimator</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">:</span>
+            <span class="n">bg_estimator</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;numba engine supports only mean and median as &quot;</span>
+                          <span class="s2">&quot;bg_estimators. Falling back to python backend.&quot;</span><span class="p">)</span>
+            <span class="n">engine</span> <span class="o">=</span> <span class="s2">&quot;python&quot;</span>
+
+    <span class="c1"># Create masks for foreground pixels and background pixels around a</span>
+    <span class="c1"># feature</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="o">==</span> <span class="s2">&quot;square&quot;</span><span class="p">:</span>
+            <span class="n">feat_mask</span> <span class="o">=</span> <span class="n">RectMask</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="n">ndim</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bg_frame</span><span class="p">):</span>
+                <span class="n">bg_mask</span> <span class="o">=</span> <span class="n">RectMask</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">radius</span> <span class="o">+</span> <span class="n">bg_frame</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="n">ndim</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bg_mask</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">mask</span> <span class="o">==</span> <span class="s2">&quot;circle&quot;</span><span class="p">:</span>
+            <span class="n">feat_mask</span> <span class="o">=</span> <span class="n">CircleMask</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bg_frame</span><span class="p">):</span>
+                <span class="n">bg_mask</span> <span class="o">=</span> <span class="n">CircleMask</span><span class="p">(</span><span class="n">radius</span> <span class="o">+</span> <span class="n">bg_frame</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bg_mask</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; does not describe a mask&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mask</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Assume it is a tuple of arrays</span>
+        <span class="n">feat_mask</span><span class="p">,</span> <span class="n">bg_mask</span> <span class="o">=</span> <span class="n">mask</span>
+
+    <span class="c1"># Convert to numpy array for performance reasons</span>
+    <span class="c1"># This is faster than pos_matrix = positions[columns[&quot;coords&quot;]].values</span>
+    <span class="n">pos_matrix</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]:</span>
+        <span class="n">pos_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">pos_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pos_matrix</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">fno_matrix</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="c1"># Pre-allocate result array</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">pos_matrix</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;numba&quot;</span><span class="p">:</span>
+        <span class="n">worker</span> <span class="o">=</span> <span class="n">_from_raw_image_numba</span>
+    <span class="k">elif</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;python&quot;</span><span class="p">:</span>
+        <span class="n">worker</span> <span class="o">=</span> <span class="n">_from_raw_image_python</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown engine </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">engine</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">bg_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">bg_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">emtpy</span><span class="p">((</span><span class="mi">0</span><span class="p">,)</span><span class="o">*</span><span class="n">ndim</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">global_bg</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">global_bg</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">fnos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">fno_matrix</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fnos</span><span class="p">:</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="p">(</span><span class="n">fno_matrix</span> <span class="o">==</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">current</span><span class="p">]</span> <span class="o">=</span> <span class="n">worker</span><span class="p">(</span><span class="n">pos_matrix</span><span class="p">[</span><span class="n">current</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="n">f</span><span class="p">],</span> <span class="n">feat_mask</span><span class="p">,</span>
+                              <span class="n">bg_mask</span><span class="p">,</span> <span class="n">bg_estimator</span><span class="p">,</span> <span class="n">global_bg</span><span class="p">)</span>
+
+    <span class="n">positions</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;signal&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">positions</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">positions</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;bg&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">positions</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;bg_dev&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span></div>
+
+
+<span class="k">def</span> <span class="nf">_norm_pdf_python</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_calc_dist_python</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">gauss_width</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="n">x_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">s</span> <span class="o">*</span> <span class="n">gauss_width</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">m</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">gauss_width</span><span class="p">)</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">x_mask</span><span class="p">]</span> <span class="o">+=</span> <span class="n">_norm_pdf_python</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x_mask</span><span class="p">],</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">y</span>
+
+
+<span class="n">_norm_pdf_numba</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">_norm_pdf_python</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_calc_dist_numba</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">gauss_width</span><span class="p">):</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mean</span><span class="p">)):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+            <span class="n">xj</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">xj</span> <span class="o">&lt;</span> <span class="n">m</span> <span class="o">-</span> <span class="n">s</span> <span class="o">*</span> <span class="n">gauss_width</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">xj</span> <span class="o">&gt;</span> <span class="n">m</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">gauss_width</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">_norm_pdf_numba</span><span class="p">(</span><span class="n">xj</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span>
+
+
+<div class="viewcode-block" id="Distribution"><a class="viewcode-back" href="../../brightness.html#sdt.brightness.Distribution">[docs]</a><span class="k">class</span> <span class="nc">Distribution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Brightness distribution of fluorescent signals</span>
+
+<span class="sd">    Given a list of peak masses (integrated intensities), calculate the</span>
+<span class="sd">    masses&#39; probability density function.</span>
+
+<span class="sd">    This is a Gaussian KDE with variable bandwith. See the `bw` parameter</span>
+<span class="sd">    documentation for details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">abscissa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bw</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">cam_eff</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">kern_width</span><span class="o">=</span><span class="mf">5.</span><span class="p">,</span>
+                 <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;numba&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : list of pandas.DataFrame or pandas.DataFrame or numpy.ndarray</span>
+<span class="sd">            If a DataFrame is given, extract the masses from the &quot;mass&quot; column.</span>
+<span class="sd">            A list of DataFrames will be concatenated. Brightness values can</span>
+<span class="sd">            also be passed as an one-dimensional ndarray.</span>
+<span class="sd">        abscissa : None or numpy.ndarray or float</span>
+<span class="sd">            The abscissa (x axis) values for the calculated distribution.</span>
+<span class="sd">            Providing a float is equivalent to ``numpy.arange(abscissa + 1)``.</span>
+<span class="sd">            If `None`, automatically choose something appropriate based on the</span>
+<span class="sd">            values of `data` and the bandwidth.</span>
+<span class="sd">        bw : float, optional</span>
+<span class="sd">            Bandwidth factor. The bandwidth for each data point ``d`` is</span>
+<span class="sd">            calculated as ``bw * np.sqrt(d)``. Defaults to 2.</span>
+<span class="sd">        cam_eff : float, optional</span>
+<span class="sd">            Camera efficiency, i. e. how many camera counts correspond to one</span>
+<span class="sd">            photon. The brightness data will be divided by this number.</span>
+<span class="sd">            Defaults to 1.</span>
+<span class="sd">        kern_width : float, optional</span>
+<span class="sd">            Calculate kernels only in the range of +/- `kern_width` times the</span>
+<span class="sd">            bandwidth to save computation time. Defaults to 5.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        engine : {&quot;numba&quot;, &quot;python&quot;}, optional</span>
+<span class="sd">            Whether to use the faster numba-based implementation or the slower</span>
+<span class="sd">            pure python one. Defaults to &quot;numba&quot;.</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. The only relevant name is `mass`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="c1"># assume it is an iterable of DataFrames</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="o">/</span> <span class="n">cam_eff</span>  <span class="c1"># don&#39;t change original data by using /=</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">bw</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">abscissa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">am</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">am</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">[</span><span class="n">am</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">abscissa</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">abscissa</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">abscissa</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;numba&quot;</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">_calc_dist_numba</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">kern_width</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;python&quot;</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">_calc_dist_python</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">kern_width</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown engine </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">engine</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+        <span class="n">y</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;:py:class:`numpy.ndarray` of shape (2, n); First row is the</span>
+<span class="sd">        abscissa, second row is the ordinate of the normalized distribution</span>
+<span class="sd">        function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_data</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Number of data points (single molecules) used to create the</span>
+<span class="sd">        distribution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Distribution.mean"><a class="viewcode-back" href="../../brightness.html#sdt.brightness.Distribution.mean">[docs]</a>    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Mean</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Mean (1st moment) of the distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Distribution.std"><a class="viewcode-back" href="../../brightness.html#sdt.brightness.Distribution.std">[docs]</a>    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Standard deviation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Standard deviation (square root of the 2nd central moment) of the</span>
+<span class="sd">            distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">m</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Distribution.most_probable"><a class="viewcode-back" href="../../brightness.html#sdt.brightness.Distribution.most_probable">[docs]</a>    <span class="k">def</span> <span class="nf">most_probable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Most probable value (mode)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Most probable brightness (brightness value were the distribution</span>
+<span class="sd">            function has its maximum)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y</span><span class="p">)]</span></div>
+
+    <span class="n">mode</span> <span class="o">=</span> <span class="n">most_probable</span>
+
+<div class="viewcode-block" id="Distribution.plot"><a class="viewcode-back" href="../../brightness.html#sdt.brightness.Distribution.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plot the distribution function graph</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : matplotlib.axes.Axes or None, optional</span>
+<span class="sd">            Axes to draw on. If `None`, use :py:func:`matplotlib.gca`.</span>
+<span class="sd">            Defaults to `None`.</span>
+<span class="sd">        label : str or None, optional</span>
+<span class="sd">            Label for the legend. Defaults to None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;Brightness distribution</span>
+<span class="s2">Number of data points: </span><span class="si">{num_d}</span><span class="s2"></span>
+<span class="s2">Most probable value:   </span><span class="si">{mp:.4g}</span><span class="s2"></span>
+<span class="s2">Mean:                  </span><span class="si">{mn:.4g}</span><span class="s2"></span>
+<span class="s2">Standard deviation:    </span><span class="si">{std:.4g}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">num_d</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_data</span><span class="p">,</span> <span class="n">mp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">most_probable</span><span class="p">(),</span> <span class="n">mn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+            <span class="n">std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">std</span><span class="p">())</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

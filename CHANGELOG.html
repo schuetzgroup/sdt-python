@@ -1,0 +1,666 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Change log &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Helpers for writing new code" href="helper.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Change log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">14.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">14.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">13.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">13.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">13.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">13.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">13.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">12.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">11.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">11.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#older-versions">Older versions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id11">10.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">10.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">10.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">10.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">9.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">8.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">7.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">7.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">6.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">6.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">5.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">5.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">5.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">5.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">5.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">5.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">4.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">4.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">4.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">3.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">2.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">2.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a1">1.0a1</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Change log</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="change-log">
+<span id="changelog"></span><h1>Change log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h1>
+<p>Generally, if the major version number was increased, there was an API break,
+so watch out for those!</p>
+<div class="section" id="id1">
+<h2>14.1<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Fix bug in <code class="xref py py-class docutils literal notranslate"><span class="pre">fret.FrameSelector</span></code> which was triggered when the
+highest occuring frame number was divisible by the length of the excitation
+sequence.</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>14.0<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Completely reworked MSD analysis framework. This can be used on the ensemble
+level or on individual tracks. It is now easier to use and extensible
+(API break).</p></li>
+<li><p>Add <code class="xref py py-class docutils literal notranslate"><span class="pre">nbui.ROISelector</span></code></p></li>
+<li><p>Fix <code class="xref py py-func docutils literal notranslate"><span class="pre">io.get_files()</span></code> on Windows</p></li>
+<li><p>rename <code class="xref py py-class docutils literal notranslate"><span class="pre">fret.FretImageSelector</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">FrameSelector</span></code> due to
+added ability to work on DataFrame (API break)</p></li>
+<li><p>Implement smFRET corrections in <code class="xref py py-class docutils literal notranslate"><span class="pre">fret.SmFretAnalyzer</span></code></p></li>
+<li><p>Reorganization of <code class="xref py py-mod docutils literal notranslate"><span class="pre">fret</span></code> (API break):
+Rename <code class="xref py py-class docutils literal notranslate"><span class="pre">fret.SmFretFilter</span></code> -&gt; <code class="xref py py-class docutils literal notranslate"><span class="pre">fret.SmFretAnalyzer</span></code> and
+move all analyzing methods from <code class="xref py py-class docutils literal notranslate"><span class="pre">fret.SmFretTracker</span></code> there</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">flatfield.Corrector</span></code>: Add option to smooth correction image</p></li>
+<li><p>Add <code class="xref py py-class docutils literal notranslate"><span class="pre">nbui.Thresholder</span></code></p></li>
+<li><p>Add (adaptive) thresholding functions to <code class="xref py py-mod docutils literal notranslate"><span class="pre">image</span></code></p></li>
+<li><p>Add <code class="xref py py-func docutils literal notranslate"><span class="pre">image.fill_gamut()</span></code></p></li>
+<li><p>Port <code class="xref py py-class docutils literal notranslate"><span class="pre">nbui.Locator</span></code> to ipympl and improve and fix.</p></li>
+<li><p>Fork <a class="reference external" href="https://github.com/soft-matter/slicerator">https://github.com/soft-matter/slicerator</a> into helper.slicerator as
+development seems to have stalled. Use it instead of the external
+slicerator.</p></li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2>13.4<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add a function to simulate Brownian motion to <code class="xref py py-mod docutils literal notranslate"><span class="pre">sim</span></code></p></li>
+<li><p>Fix frame numbers (off by 1) and column names when loading ThunderSTORM
+single molecule data from CSV files</p></li>
+<li><p>Add the <code class="xref py py-mod docutils literal notranslate"><span class="pre">funcs</span></code> module, which implement step functions and eCDFs</p></li>
+<li><p>Make the <cite>lmfit</cite> package an optional dependency</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">gaussian_fit.gaussian_2d()</span></code>: Rotate mathematically positive</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">roi.PathROI</span></code>: Make sure that relative origin is not negative.
+Otherwise localization data will not fit the image data anymore, since
+for the latter the origin can never be negative. Fixes e.g. an issue with
+shifted localizations if the ROI in <code class="docutils literal notranslate"><span class="pre">gui.locator</span></code> is close to the image
+boundaries.</p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>13.3<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Fix numpy 1.15 warnings</p></li>
+<li><p>Add support for loading ThunderSTORM CSV files</p></li>
+<li><p>Support flipped/mirrored channels in <code class="xref py py-class docutils literal notranslate"><span class="pre">chromatic.Corrector</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="id5">
+<h2>13.2<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.MaskROI</span></code> supporting ROIs from boolean image arrays</p></li>
+<li><p>Improvements to plotting functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">fret</span></code> module</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">motion.fit_msd()</span></code>: Support anomalous diffusion (with exposure time
+correction).</p></li>
+<li><p>Add <code class="xref py py-meth docutils literal notranslate"><span class="pre">transform()</span></code> method to <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.PathROI</span></code></p></li>
+<li><p>Add <code class="xref py py-func docutils literal notranslate"><span class="pre">calc_pair_distance()</span></code></p></li>
+<li><p>Greatly speed up (M)SD calculation functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">motion</span></code> for large
+datasets</p></li>
+<li><p>Speed up <code class="xref py py-func docutils literal notranslate"><span class="pre">motion.find_immobilizations()</span></code> and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">motion.find_immobilizations_int()</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="id6">
+<h2>13.1<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<p>Bugfix release</p>
+<ul class="simple">
+<li><p>Fix loading io.yaml on Windows, where there is no <cite>numpy.float128</cite></p></li>
+<li><p>Support ImageJ metadata in io.SdtTiffStack</p></li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h2>13.0<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add changepoint detection algorithms (PELT, offline and online Bayesian
+changepoint detection)</p></li>
+<li><p>Image masks: Improve <code class="xref py py-class docutils literal notranslate"><span class="pre">CircleMask</span></code>, add <code class="xref py py-class docutils literal notranslate"><span class="pre">RectMask</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">brightness.from_raw_image()</span></code>: Improved background detection,
+numba-accelerated implementation</p></li>
+<li><p>Move <code class="xref py py-mod docutils literal notranslate"><span class="pre">beam_shape</span></code> -&gt; <code class="xref py py-mod docutils literal notranslate"><span class="pre">flatfield</span></code> (API break)</p>
+<ul>
+<li><p>Add support for calculating correction image from single molecule data</p></li>
+</ul>
+</li>
+<li><p>Add <code class="xref py py-func docutils literal notranslate"><span class="pre">io.get_files()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">io.chdir()</span></code></p></li>
+<li><p>Overhaul, improve, and extend the <code class="xref py py-mod docutils literal notranslate"><span class="pre">fret</span></code> module for analyzing
+single molecule FRET data. (API break)</p>
+<ul>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SmFretTracker</span></code> class for tracking and determination of
+FRET-related quantities</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SmFretFilter</span></code> for filtering the data (stepwise bleaching,
+brightness, …)</p></li>
+<li><p>Functions for plotting the data</p></li>
+<li><p>Huge speed-ups, bug fixes, etc.</p></li>
+</ul>
+</li>
+<li><p>Add <code class="xref py py-mod docutils literal notranslate"><span class="pre">config</span></code> module for configurable default arguments to functions.</p></li>
+<li><p>Add Jupyter notebook UI for finding 3D-DAOSTORM parameters</p></li>
+<li><p>Allow creation of ROIs using <cite>size</cite> as second arg instead of <cite>bottom_right</cite></p></li>
+<li><p>Rename <cite>reset_origin</cite> arg to ROI classes <code class="docutils literal notranslate"><span class="pre">__call__</span></code> to <cite>rel_origin</cite>,
+introduce <code class="docutils literal notranslate"><span class="pre">unset_origin</span></code> function that undoes the effect of
+<code class="docutils literal notranslate"><span class="pre">rel_origin=True</span></code> (API break).</p></li>
+<li><p>Load ROIs from ImageJ ROI files</p></li>
+<li><p>Dump <code class="xref py py-class docutils literal notranslate"><span class="pre">chromatic.Corrector</span></code> to YAML</p></li>
+<li><p>Add support for <code class="xref py py-mod docutils literal notranslate"><span class="pre">pathlib</span></code></p></li>
+<li><p>Many fixes and improvements</p></li>
+</ul>
+</div>
+<div class="section" id="id8">
+<h2>12.0<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Major reorganization (API break)</p>
+<ul>
+<li><p>Move <code class="xref py py-mod docutils literal notranslate"><span class="pre">data</span></code> -&gt; <code class="xref py py-mod docutils literal notranslate"><span class="pre">io</span></code>.</p></li>
+<li><p>Add <code class="xref py py-class docutils literal notranslate"><span class="pre">SdtSpeStack</span></code> to <code class="xref py py-mod docutils literal notranslate"><span class="pre">io</span></code>.</p></li>
+<li><p>Move <code class="xref py py-func docutils literal notranslate"><span class="pre">image_tools.save_as_tiff()</span></code> -&gt; <code class="xref py py-mod docutils literal notranslate"><span class="pre">io</span></code>.</p></li>
+<li><p>Move YAML stuff to <code class="xref py py-mod docutils literal notranslate"><span class="pre">io</span></code>.</p></li>
+<li><p>Create <code class="xref py py-mod docutils literal notranslate"><span class="pre">spacial</span></code> module for functions dealing with spacial aspects
+of single molecule data.</p></li>
+<li><p>Move ROI handling into new top-level <code class="xref py py-mod docutils literal notranslate"><span class="pre">roi</span></code> module.</p></li>
+</ul>
+</li>
+<li><p>Improve <code class="xref py py-class docutils literal notranslate"><span class="pre">brightness.Distribution</span></code> class</p>
+<ul>
+<li><p>Create fast numba implementation</p></li>
+<li><p>Automatic abscissa</p></li>
+<li><p>Calculate kernels only where sensible (+/- 5 sigma by default)</p></li>
+<li><p>Update docs</p></li>
+<li><p>Rename some parameters (API break)</p></li>
+</ul>
+</li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">chromatic.Corrector</span></code>: Allow callable <cite>cval</cite> in <cite>__call__</cite></p></li>
+<li><p>Add numba implementation for <code class="xref py py-class docutils literal notranslate"><span class="pre">brightness.from_raw_image</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">fret.SmFretAnalyzer.quantify_fret()</span></code> superseeds
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">fret.SmFretAnalyzer.efficincy()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">fret.SmFretAnalyzer.stoichiometry()</span></code>.</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">fret.SmFretData.track()</span></code>: Various improvements.</p></li>
+<li><p>yaml: Add <cite>save</cite>, <cite>dump</cite>, and friends so that one does not need to import
+both upstream yaml and sdt’s yaml in most cases.</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">plot.density_scatter()</span></code> now returns plotted data.</p></li>
+<li><p>Handle empty datasets in <code class="xref py py-func docutils literal notranslate"><span class="pre">plot.density_scatter()</span></code>.</p></li>
+<li><p>Add <code class="xref py py-meth docutils literal notranslate"><span class="pre">SmFretAnalyzer.has_fluorophores()</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="id9">
+<h2>11.1<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Implement transforming PathROIs using <cite>chromatic.Corrector</cite></p></li>
+<li><p>Bug fixes</p>
+<ul>
+<li><p>PathROI construction with <code class="docutils literal notranslate"><span class="pre">no_noimage=True</span></code></p></li>
+<li><p>Empty DataFrames in <cite>fret.SmFretData.track</cite></p></li>
+<li><p>Empty arrays in <cite>multicolor.find_colocalizations</cite></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id10">
+<h2>11.0<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Ability to tag features with near neighbors in localization data</p></li>
+<li><p>For smFRET tracking, (optionally) use above feature to select only
+localizations that don’t have any near neighbors, otherwise the brightness
+determination will yield bogus results.</p></li>
+<li><p>Stop using <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Panel</span></code>. It has been deprecated in version 0.20.
+Use <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Panel</span></code> s with multi-indices for columns instead. This
+affects much of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">multicolor</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">fret</span></code> modules.
+This was used as an opportunity for more drastic redesigns of the data
+structures. (API break)</p></li>
+<li><p>Move SDT-control specific stuff from <code class="xref py py-mod docutils literal notranslate"><span class="pre">image_tools</span></code> as well as
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">pims</span></code> to the external <cite>micro_helpers</cite> package. Since
+<cite>locator</cite> depends on this, the whole <cite>sdt</cite> package depends on <cite>micro_helpers</cite>
+now. (API break)</p></li>
+<li><p>Support .stk files in <cite>locator</cite></p></li>
+<li><p>Add ability to only return indices in <code class="xref py py-func docutils literal notranslate"><span class="pre">multicolor.merge_channels()</span></code>.</p></li>
+<li><p>Allow for not dropping non-colocalized data in
+<code class="xref py py-func docutils literal notranslate"><span class="pre">multicolor.find_colocalizations()</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="older-versions">
+<h2>Older versions<a class="headerlink" href="#older-versions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id11">
+<h3>10.3<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Add the <cite>plot</cite> module. It contains</p>
+<ul>
+<li><p>the <cite>density_scatter</cite> function. It produces scatter plots (supporting both
+matplotlib and bokeh) where data points are colored according to their
+density.</p></li>
+<li><p>The <cite>NbColumnDataSource</cite>, which is a subclass of bokeh’s <cite>ColumnDataSource</cite>,
+but its <cite>selected[“1d”]</cite> attribute is updated even in jupyter notebooks.
+Starting with bokeh 0.12.5, this is obsolete however since bokeh now
+supports embedding bokeh apps in notebooks (via the function handler).</p></li>
+</ul>
+</li>
+<li><p>Remove unused and incomplete <cite>plots_viewer</cite> and <cite>sm_fret_viewer</cite></p></li>
+</ul>
+</div>
+<div class="section" id="id12">
+<h3>10.2<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Add classes for elliptical and rectangular path-based ROIs</p></li>
+<li><p>Add an <cite>invert</cite> option to path-based ROIs</p></li>
+<li><p>Implement YAML loaders and dumpers for various structures</p></li>
+<li><p>Add <cite>fret</cite> module for analyzing single molecule FRET data</p></li>
+<li><p>Make it possible to choose how to estimate the background in
+<cite>brightness.from_raw_image</cite></p></li>
+<li><p>Bug fixes</p></li>
+</ul>
+</div>
+<div class="section" id="id13">
+<h3>10.1<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>loc.daostorm_3d: Introduce <cite>size_range</cite> and <cite>min_distance</cite> parameters</p></li>
+<li><p>loc.daostorm_3d: Allow for applying filters to the raw image data to increase
+the SNR for the feature finding process. Fitting is still done on the
+unmodified data.</p></li>
+<li><p>locator: Rework the options UI to allow easy addition of new parameters.</p></li>
+<li><p>Minor bug fixes</p></li>
+</ul>
+</div>
+<div class="section" id="id14">
+<h3>10.0<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>motion: Implement new <cite>find_immobilizations</cite> algorithm</p></li>
+<li><p>locator: Use same default directory for all file dialogs</p></li>
+<li><p>Port to qtpy 1.1</p></li>
+<li><p>Add <cite>image.masks</cite></p></li>
+<li><p>Rename <cite>image_filter</cite> -&gt; <cite>image.filters</cite> (API break)</p></li>
+<li><p>brightness: Improve <cite>from_raw_image</cite> performance</p></li>
+</ul>
+</div>
+<div class="section" id="id15">
+<h3>9.0<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Fix infinite loop in <cite>motion.find_immobilizations</cite></p></li>
+<li><p>Minor fixes in <cite>motion.find_immobilizations</cite></p></li>
+<li><p>Rename <cite>background</cite> -&gt; <cite>image_filter</cite> since the module may at some point
+contain filters other than for background estimation. Also rename the
+individual filter functions (API break).</p></li>
+<li><p>Add many tests (and/or make sure they are run).</p></li>
+</ul>
+</div>
+<div class="section" id="id16">
+<h3>8.0<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Create <cite>background</cite> module for estimation and subtraction of background in
+fluorescence microscopy images. Unfortunately, there is no sphinx
+documentation yet since <cite>slicerator.pipeline</cite> does not work (yet) with
+sphinx autodoc.</p></li>
+<li><p>Add <cite>motion.find_immobilizations</cite> to find immobilized sections of particle
+trajectories.</p></li>
+<li><p>Fix an issue where NaNs where present in <cite>multicolor.find_codiffusion</cite>
+where they should not be.</p></li>
+<li><p>Improve <cite>brightness.Distribution.__init__</cite>. It now accepts also lists of
+DataFrames (but no more lists of floats) and a new <cite>cam_eff</cite> parameter to
+account for camera photoconversion efficiency (API break).</p></li>
+<li><p>Add unit tests for <cite>image_tools</cite>. In the course of this, some bugs were
+fixed, but also handling of ROI metadata in the <cite>sdt.pims</cite> classes changed;
+ROIs are now a list of dicts instead of a structured array (API break).</p></li>
+</ul>
+</div>
+<div class="section" id="id17">
+<h3>7.1<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Introduce the <cite>multicolor</cite> module. This is a better version (faster, with
+tests) of the <cite>sm_fret</cite> module, which is now deprecated.</p></li>
+<li><p>Minor fixes and improvements.</p></li>
+</ul>
+</div>
+<div class="section" id="id18">
+<h3>7.0<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Fix <cite>chromatic.Corrector.__call__</cite> when applied to <cite>Slicerator</cite>.</p></li>
+<li><p>chromatic: Allow for using multiple files and files with multiple frames for
+calculation of the correction parameters in <cite>Corrector</cite> (slight API break:
+The <cite>feat1</cite> and <cite>feat2</cite> attributes are now lists of DataFrames, not
+plain DataFrames anymore.)</p></li>
+<li><p>helper.singleton: Add a singleton type class decorator. Based on
+<a class="reference external" href="https://github.com/reyoung/singleton">https://github.com/reyoung/singleton</a></p></li>
+<li><p>Minor GUI and plotting tweaks</p></li>
+<li><p>data, motion: Be more consistent with naming of things (e. g. use “lagt”
+everywhere and not also sometimes “tlag”, make all variable names lower case,
+…) (API break)</p></li>
+<li><p>Fix crash in loc.daostorm_3d in images without localizations</p></li>
+</ul>
+</div>
+<div class="section" id="id19">
+<h3>6.1<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Fix start-up of sdt.gui.locator on Windows</p></li>
+</ul>
+</div>
+<div class="section" id="id20">
+<h3>6.0<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Add data.Filter class for filtering of single molecule microscopy data</p></li>
+<li><p>Implement the “z” model in daostorm_3d for z position fitting (slight API
+break)</p></li>
+<li><p>Create loc.z_fit with a class for z fit parameters and a fitter class for
+z positions from astigmatism</p></li>
+<li><p>Better background handling in peak finding in daostorm_3d</p></li>
+<li><p>sim: Allow for simultion of elliptical Gaussians (API break)</p></li>
+</ul>
+</div>
+<div class="section" id="id21">
+<h3>5.5<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>gui.locator: Add support for load options from file</p></li>
+<li><p>brightness: Save information on how many data points were used</p></li>
+</ul>
+</div>
+<div class="section" id="id22">
+<h3>5.4<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Improvements for gui.locator</p></li>
+</ul>
+</div>
+<div class="section" id="id23">
+<h3>5.3<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Command line options for gui.locator</p></li>
+<li><p>Add the <cite>sim</cite> module for Gaussian PSF simulation</p></li>
+<li><p>Bug fixes</p></li>
+</ul>
+</div>
+<div class="section" id="id24">
+<h3>5.2<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>brightness: Add Distribution class</p></li>
+</ul>
+</div>
+<div class="section" id="id25">
+<h3>5.1<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>gui.locator: Fix saving settings on Qt4</p></li>
+</ul>
+</div>
+<div class="section" id="id26">
+<h3>5.0<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Huge documentation update</p></li>
+<li><p>Remove t_column, mass_column, etc. attributes (API break)</p></li>
+<li><p>Change default method for motion.emsd_cdf to “lsq” (API break)</p></li>
+<li><p>gaussian_fit: Rename guess_paramaters -&gt; guess_parameters (API break)</p></li>
+<li><p>beam_shape: Also correct the “signal” column (API break)</p></li>
+</ul>
+</div>
+<div class="section" id="id27">
+<h3>4.2<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Add support for writing trc files</p></li>
+</ul>
+</div>
+<div class="section" id="id28">
+<h3>4.1<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>remove python-dateutil dependency</p></li>
+</ul>
+</div>
+<div class="section" id="id29">
+<h3>4.0<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Support ROIs in loc.* locate/batch functions</p></li>
+<li><p>Save additional metadata as YAML (previously it was JSON) with
+<cite>image_tools.save_as_tiff</cite> (API break)</p></li>
+<li><p>Cosmetic overhaul of pims</p></li>
+<li><p>Make pims load YAML metadata from TIFF files (API break)</p></li>
+<li><p>Minor bug fixes</p></li>
+</ul>
+</div>
+<div class="section" id="id30">
+<h3>3.0<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Use full affine transformation in chromatic. This also leads to a different
+save file format etc. (API break, file format break)</p></li>
+<li><p>fix gui.chromatic accordingly</p></li>
+</ul>
+</div>
+<div class="section" id="id31">
+<h3>2.1<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Fix race condition in gui.locator preview worker</p></li>
+</ul>
+</div>
+<div class="section" id="id32">
+<h3>2.0<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Add PathROI in image_tools</p></li>
+<li><p>Smaller improvements to gui.locator</p></li>
+</ul>
+</div>
+<div class="section" id="a1">
+<h3>1.0a1<a class="headerlink" href="#a1" title="Permalink to this headline">¶</a></h3>
+<p>First alpha release</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="helper.html" class="btn btn-neutral float-left" title="Helpers for writing new code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

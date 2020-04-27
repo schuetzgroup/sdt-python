@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.fret.utils &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.fret.utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.fret.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Module containing tools related to images from FRET experiments&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span>
+
+
+<div class="viewcode-block" id="FrameSelector"><a class="viewcode-back" href="../../../fret.html#sdt.fret.FrameSelector">[docs]</a><span class="k">class</span> <span class="nc">FrameSelector</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Select images of a certain excitation type from an image series</span>
+
+<span class="sd">    E.g. if employing alternating excitation, this can be used to select only</span>
+<span class="sd">    the donor or only the acceptor frames.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; # Sequence of 6 &quot;images&quot;</span>
+<span class="sd">    &gt;&gt;&gt; img_seq = numpy.array([numpy.full((3, 3), i) for i in range(8)])</span>
+<span class="sd">    &gt;&gt;&gt; sel = FrameSelector(&quot;odda&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; sel(img_seq, &quot;o&quot;)</span>
+<span class="sd">    array([[[0, 0, 0],</span>
+<span class="sd">            [0, 0, 0],</span>
+<span class="sd">            [0, 0, 0]],</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">           [[4, 4, 4],</span>
+<span class="sd">            [4, 4, 4],</span>
+<span class="sd">            [4, 4, 4]]])</span>
+<span class="sd">    &gt;&gt;&gt; sel(img_seq, &quot;d&quot;)</span>
+<span class="sd">    array([[[1, 1, 1],</span>
+<span class="sd">            [1, 1, 1],</span>
+<span class="sd">            [1, 1, 1]],</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">           [[2, 2, 2],</span>
+<span class="sd">            [2, 2, 2],</span>
+<span class="sd">            [2, 2, 2]],</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">           [[5, 5, 5],</span>
+<span class="sd">            [5, 5, 5],</span>
+<span class="sd">            [5, 5, 5]],</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
+<span class="sd">           [[6, 6, 6],</span>
+<span class="sd">            [6, 6, 6],</span>
+<span class="sd">            [6, 6, 6]]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excitation_seq</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        excitation_seq : str or list-like of characters</span>
+<span class="sd">            Excitation sequence. Typically, &quot;d&quot; would stand for donor, &quot;a&quot; for</span>
+<span class="sd">            acceptor.</span>
+
+<span class="sd">            One needs only specify the shortest sequence that is repeated,</span>
+<span class="sd">            i. e. &quot;ddddaddddadddda&quot; is the same as &quot;dddda&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">excitation_seq</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;numpy.ndarray of dtype(&quot;&lt;U1&quot;) describing the excitation sequence.</span>
+<span class="sd">        Typically, &quot;d&quot; would stand for donor, &quot;a&quot; for</span>
+<span class="sd">        acceptor.</span>
+
+<span class="sd">        One needs only specify the shortest sequence that is repeated,</span>
+<span class="sd">        i. e. &quot;ddddaddddadddda&quot; is the same as &quot;dddda&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exc_seq</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">excitation_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;dict mapping the excitation types in :py:attr:`excitation_seq` to</span>
+<span class="sd">        the corresponding frame numbers (modulo the length of</span>
+<span class="sd">        py:attr:`excitation_seq`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exc_frames</span>
+
+    <span class="nd">@excitation_seq</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exc_seq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exc_frames</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span>
+                                       <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exc_seq</span> <span class="o">==</span> <span class="n">k</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exc_seq</span><span class="p">)})</span>
+
+    <span class="k">def</span> <span class="nf">_renumber</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_nos</span><span class="p">,</span> <span class="n">which</span><span class="p">,</span> <span class="n">restore</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Do the actual frame renumbering</span>
+
+<span class="sd">        for :py:meth:`__call__` and :py:meth:`restore_frame_numbers`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        frame_nos : numpy.ndarray</span>
+<span class="sd">            Array of frame numbers to be mapped</span>
+<span class="sd">        which : str or iterable of str</span>
+<span class="sd">            Excitation type(s). This should match something in</span>
+<span class="sd">            :py:attr:`excitation_seq`.</span>
+<span class="sd">        restore : bool</span>
+<span class="sd">            If `False`, renumber the frames (as in :py:meth:`__call__`).</span>
+<span class="sd">            If `True`, restore original frame numbers (as in</span>
+<span class="sd">            :py:meth:`restore_frame_numbers`).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            New frame numbers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">frame_nos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">frame_nos</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">good_frame_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">which</span><span class="p">))</span>
+        <span class="n">max_frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">frame_nos</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">restore</span><span class="p">:</span>
+            <span class="c1"># f_map_inv needs at least max_frame + 1 entries (the domain of</span>
+            <span class="c1"># the restoring map is {0, 1, …, max_frame}), meaning</span>
+            <span class="c1"># good_frame_mask has to be chained (max_frame + 1) / num_true</span>
+            <span class="c1"># times, where num_true is the number of True entries in</span>
+            <span class="c1"># good_frame_mask</span>
+            <span class="n">num_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">good_frame_mask</span><span class="p">)</span>
+            <span class="n">n_repeats</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">max_frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_true</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># f_map needs at least max_frame + 1 entries (the domain of</span>
+            <span class="c1"># the frame number map is {0, 1, …, max_frame}). f_map_inv&#39;s values</span>
+            <span class="c1"># (which form the codomain of the map) need to go up to at least</span>
+            <span class="c1"># max_frame.</span>
+            <span class="n">n_repeats</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">max_frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">))</span>
+        <span class="c1"># Calculate the restoring map</span>
+        <span class="n">f_map_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">good_frame_mask</span><span class="p">,</span> <span class="n">n_repeats</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">restore</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f_map_inv</span><span class="p">[</span><span class="n">frame_nos</span><span class="p">]</span>
+        <span class="c1"># Invert the restoring map</span>
+        <span class="n">f_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">f_map_inv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">f_map</span><span class="p">[</span><span class="n">f_map_inv</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">f_map_inv</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f_map</span><span class="p">[</span><span class="n">frame_nos</span><span class="p">]</span>
+
+<div class="viewcode-block" id="FrameSelector.__call__"><a class="viewcode-back" href="../../../fret.html#sdt.fret.FrameSelector.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Get only data corresponding to a certain excitation type</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame or list-like of numpy.ndarrays</span>
+<span class="sd">            Localization data or sequence of images</span>
+<span class="sd">        which : str or iterable of str, optional</span>
+<span class="sd">            Excitation type(s). This should match something in</span>
+<span class="sd">            :py:attr:`excitation_seq`. Defaults to &quot;d&quot;.</span>
+<span class="sd">        renumber : bool, optional</span>
+<span class="sd">            Renumber frames so that only frames for excitation types</span>
+<span class="sd">            corresponding to `which` are counted.</span>
+
+<span class="sd">            After selecting only data corresponding to an excitation type (e.g.</span>
+<span class="sd">            &quot;a&quot;) in a :py:class:`pandas.DataFrame`, all other types are</span>
+<span class="sd">            missing and frame number are not consecutive any more. This can be</span>
+<span class="sd">            a problem for tracking or diffusion analysis. Setting</span>
+<span class="sd">            ``renumber=True`` will work around this.</span>
+
+<span class="sd">            Only applicable if `data` is a :py:class:`pandas.DataFrame`.</span>
+<span class="sd">            Defaults to `False`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        type(data) or slicerator.Slicerator</span>
+<span class="sd">            Selected frames. If `data` is a DataFrame, return only lines</span>
+<span class="sd">            corresponding to excitation types given by `which`. If</span>
+<span class="sd">            ``renumber=True``, a modified copy of `data` is returned.</span>
+
+<span class="sd">            If `data` is an image sequence, first an attempt is made at</span>
+<span class="sd">            indexing the images  directly. If `data` supports this (e.g. if it</span>
+<span class="sd">            is a :py:class:`numpy.ndarray`), the indexed version is returned.</span>
+<span class="sd">            Otherwise, `img_seq` is converted to</span>
+<span class="sd">            :py:class:`sdt.helper.Slicerator`, indexed, and returned.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names in case `data` is a</span>
+<span class="sd">            :py:class:`pandas.DataFrame`. The only relevant name is `time`.</span>
+<span class="sd">            That means, if the DataFrame has frame number columns &quot;frame2&quot;,</span>
+<span class="sd">            set ``columns={&quot;time&quot;: &quot;frame2&quot;}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">good_frame_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">which</span><span class="p">))</span>
+        <span class="n">good_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">good_frame_mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">frames</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">frames</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">good_frames</span><span class="p">)]</span>
+
+            <span class="k">if</span> <span class="n">renumber</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ret</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">ret</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renumber</span><span class="p">(</span>
+                    <span class="n">ret</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">which</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ret</span>
+
+        <span class="c1"># Deal with image data</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">sel_idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">idx</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">),</span> <span class="n">good_frames</span><span class="p">)]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">sel_idx</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="c1"># This can happen if e.g. data is a list</span>
+            <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">Slicerator</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">Slicerator</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="n">sel_idx</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="FrameSelector.restore_frame_numbers"><a class="viewcode-back" href="../../../fret.html#sdt.fret.FrameSelector.restore_frame_numbers">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="nf">restore_frame_numbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Undo frame renumbering from :py:meth:`__call__`</span>
+
+<span class="sd">        `data` is modified in place for this purpose.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            Localization data</span>
+<span class="sd">        which : str or iterable of str, optional</span>
+<span class="sd">            Excitation type(s). This should match something in</span>
+<span class="sd">            :py:attr:`excitation_seq`. Defaults to &quot;d&quot;.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names in case `data` is a</span>
+<span class="sd">            :py:class:`pandas.DataFrame`. The only relevant name is `time`.</span>
+<span class="sd">            That means, if the DataFrame has frame number columns &quot;frame2&quot;,</span>
+<span class="sd">            set ``columns={&quot;time&quot;: &quot;frame2&quot;}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renumber</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">which</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

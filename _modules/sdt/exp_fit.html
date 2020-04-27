@@ -1,0 +1,662 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.exp_fit &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.exp_fit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.exp_fit</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit of a sum of exponential functions</span>
+<span class="sd">=====================================</span>
+
+<span class="sd">The :py:mod:`sdt.exp_fit` module provides routines to fit a sum of exponential</span>
+<span class="sd">functions</span>
+
+<span class="sd">.. math:: y(x) = \alpha + \sum_{i=1}^p \beta_i \text{e}^{\lambda_i x}</span>
+
+<span class="sd">to data represented by pairs :math:`(t_k, y_k)`. This is done by using a</span>
+<span class="sd">modified Prony&#39;s method.</span>
+
+<span class="sd">The mathematics behind this can be found in :ref:`theory` as well as at [1]_.</span>
+<span class="sd">This module includes rewrite of the GPLv3-licensed code by Greg von Winckel,</span>
+<span class="sd">which is also available at [1]_. Further insights about the algorithm may be</span>
+<span class="sd">gained by reading anything about Prony&#39;s method and [2]_.</span>
+
+
+<span class="sd">.. [1] https://web.archive.org/web/20160813110706/http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions</span>
+<span class="sd">.. [2] M. R. Osborne, G. K. Smyth: A Modified Prony Algorithm for Fitting</span>
+<span class="sd">    Functions Defined by Difference Equations. SIAM J. on Sci. and Statist.</span>
+<span class="sd">    Comp., Vol 12 (1991), pages 362–382.</span>
+
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">Given an array ``x`` of values of the independent variable and an array ``y``</span>
+<span class="sd">of corresponding values of the sum of the exponentials, the parameters</span>
+<span class="sd">``a`` (:math:`\alpha` in above formula), ``b`` (:math:`\beta_i`) and ``l``</span>
+<span class="sd">(:math:`\lambda_i`) can be found by calling</span>
+
+<span class="sd">&gt;&gt;&gt; a, b, l, _ = sdt.exp_fit.fit(x, y, n_exp=2, poly_order=30)</span>
+
+
+<span class="sd">High level API</span>
+<span class="sd">--------------</span>
+
+<span class="sd">.. autofunction:: fit</span>
+<span class="sd">.. autofunction:: exp_sum</span>
+
+
+<span class="sd">Low level functions</span>
+<span class="sd">-------------------</span>
+
+<span class="sd">The functions above use (as documented in the :ref:`theory` section) several</span>
+<span class="sd">lower level functions.</span>
+
+<span class="sd">.. autofunction:: int_mat_legendre</span>
+<span class="sd">.. autoclass:: OdeSolver</span>
+<span class="sd">  :members:</span>
+<span class="sd">  :undoc-members:</span>
+<span class="sd">.. autofunction:: get_exponential_coeffs</span>
+
+
+<span class="sd">.. _theory:</span>
+
+<span class="sd">Theory</span>
+<span class="sd">------</span>
+
+<span class="sd">:math:`y(t)` is the general solution of the ordinary differential equation (ODE)</span>
+
+<span class="sd">.. math:: \sum_{j=0}^p a_j \frac{d^j y}{dt^j} = \alpha</span>
+
+<span class="sd">if</span>
+
+<span class="sd">.. math:: \sum_{j=0}^p a_j \lambda_i^j = 0 \quad\forall i\in \{1,\ldots, p\}.</span>
+
+<span class="sd">In other words: The :math:`\lambda_i` are the roots of the polynomial</span>
+<span class="sd">:math:`p(z) = \sum_{j=0}^p a_j z^j`.</span>
+
+<span class="sd">For numerical calculations, :math:`y(t)` is approximated by a Legendre series,</span>
+
+<span class="sd">.. math:: y(x)\approx \sum_{k=0}^m\hat{y}_k P_k(x).</span>
+
+<span class="sd">Since this is a polynomial, any derivative is again a polynomial and can thus</span>
+<span class="sd">be written as sum of Legendre polynomials,</span>
+
+<span class="sd">.. math:: \frac{d^j y(x)}{dx^j} \approx \sum_{k=0}^m (D^j\hat{y})_k P_k(x),</span>
+
+<span class="sd">where :math:`D` is the Legendre differentiation matrix.</span>
+
+<span class="sd">For the purpose of solving the ODE, let :math:`\alpha = 1` (i. e. divide the</span>
+<span class="sd">whole ODE by :math:`alpha`). Its approximated version is then</span>
+
+<span class="sd">.. math:: \sum_{j=0}^p a_j D^j \hat{y} = e_1</span>
+
+<span class="sd">with :math:`e_1 = (1, 0, \ldots, 0)` being the first canonical unit vector.</span>
+
+<span class="sd">:math:`y(x)` is supposed to be the best approximation of the original data</span>
+<span class="sd">:math:`z`, meaning that</span>
+
+<span class="sd">.. math:: x - y \perp \mathbb{P}_m.</span>
+
+<span class="sd">From that follows</span>
+
+<span class="sd">.. math:: \int_{-1}^1 (z-y)P_l(x)\, dx = 0 \quad \Rightarrow</span>
+
+<span class="sd">    \int_{-1}^1 zP_l(x)\,dx = \sum_{k = 0}^m\hat{y}_k</span>
+<span class="sd">    \int_{-1}^1 P_k(t) P_l(x)\, dx = \frac{2\hat{y}_l}{2l+1}.</span>
+
+<span class="sd">This leads to</span>
+
+<span class="sd">.. math:: \hat{y}_l = (l+\frac{1}{2})\int_{-1}^1 z P_l(x)\, dx \approx</span>
+<span class="sd">    (l + \frac{1}{2})\sum_{i=1}^n w_i z_i P(x_i)</span>
+
+<span class="sd">where :math:`w_i` are weights for numerical integration.</span>
+
+<span class="sd">In order to determine the model parameters, first determine the first</span>
+<span class="sd">:math:`p` Legendre coefficients :math:`\hat{y}_k`. Then, for some set of</span>
+<span class="sd">parameters :math:`a_j`, determine the rest of the Legendre coefficient by</span>
+<span class="sd">solving the ODE (which is a linear system of equations in Legendre space) and</span>
+<span class="sd">compare to the original data :math:`z`. Do least squares fitting of</span>
+<span class="sd">:math:`a_j` in that manner. This yields some optimal :math:`a_j` values. From</span>
+<span class="sd">that, it is straight-forward to determine the exponential factors</span>
+<span class="sd">:math:`\lambda_i` by finding the roots of the polynomial.</span>
+
+<span class="sd">A linear least squares fit can then be used to determine the remaining</span>
+<span class="sd">parameters :math:`\alpha` and :math:`\beta_i`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.polynomial.legendre</span> <span class="kn">import</span> <span class="n">legint</span><span class="p">,</span> <span class="n">legval</span><span class="p">,</span> <span class="n">legvander</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">lu_factor</span><span class="p">,</span> <span class="n">lu_solve</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">leastsq</span>
+
+
+<div class="viewcode-block" id="int_mat_legendre"><a class="viewcode-back" href="../../exp_fit.html#sdt.exp_fit.int_mat_legendre">[docs]</a><span class="k">def</span> <span class="nf">int_mat_legendre</span><span class="p">(</span><span class="n">n_coeff</span><span class="p">,</span> <span class="n">int_order</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Legendre polynomial integration matrix</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_coeff : int</span>
+<span class="sd">        Number of Legendre coefficients</span>
+<span class="sd">    int_order : int</span>
+<span class="sd">        Order of integration</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Legendre integral matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">legint</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_coeff</span><span class="p">),</span> <span class="n">int_order</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OdeSolver"><a class="viewcode-back" href="../../exp_fit.html#sdt.exp_fit.OdeSolver">[docs]</a><span class="k">class</span> <span class="nc">OdeSolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for solving the ODE involved in fitting&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        poly_order : int</span>
+<span class="sd">            Highest order Legendre polynomial in the series expansion</span>
+<span class="sd">            approximating the actual fit model</span>
+<span class="sd">        n_exp : int</span>
+<span class="sd">            Number of exponentials to fit to the data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_poly_order</span> <span class="o">=</span> <span class="n">poly_order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">=</span> <span class="n">n_exp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_exp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_res_coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_exp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">poly_order</span><span class="p">)</span>
+
+        <span class="c1"># For improved conditioning, we don&#39;t actually look at the k-th</span>
+        <span class="c1"># differentiation, but at the (p - k)-th integration; i. e.</span>
+        <span class="c1"># integrate ODE p times (integration matrix B)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">iml</span> <span class="o">=</span> <span class="n">int_mat_legendre</span><span class="p">(</span><span class="n">poly_order</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iml</span><span class="p">[</span><span class="n">n_exp</span><span class="p">:</span><span class="o">-</span><span class="n">n</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;1D array of coefficients of the ODE&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span>
+
+    <span class="nd">@coefficients</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span> <span class="ow">is</span> <span class="n">coeffs</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span> <span class="o">=</span> <span class="n">coeffs</span>
+
+        <span class="c1"># \sum_{k=1}^p a_k D^k \hat{y} = e_1 is equivalent to</span>
+        <span class="c1"># \sum_{k=1}^p a_k B^{p-k} \hat{y} = B^p e_1</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_poly_order</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poly_order</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># first n_exp coefficients are determined by residual orthogonal</span>
+        <span class="c1"># requirement, therefore only consider a[:, n_exp:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_factors</span> <span class="o">=</span> <span class="n">lu_factor</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">]</span>
+
+<div class="viewcode-block" id="OdeSolver.solve"><a class="viewcode-back" href="../../exp_fit.html#sdt.exp_fit.OdeSolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res_coeffs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Solve the ODE</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        res_coeffs : numpy.ndarray</span>
+<span class="sd">            The first ``n_exp`` (where ``n_exp`` is the number of exponentials in the</span>
+<span class="sd">            fit) Legendre coefficients, which can be calculated from the</span>
+<span class="sd">            residual condition</span>
+<span class="sd">        rhs : numpy.ndarray</span>
+<span class="sd">            Right hand side of the ODE. For a fit with a constant offset,</span>
+<span class="sd">            this is the (1, 0, 0, …, 0), without offset it is (0, 0, …, 0)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            1D array of Legendre coefficients of the numerical solution of</span>
+<span class="sd">            the ODE</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_res_coeffs</span> <span class="o">=</span> <span class="n">res_coeffs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_coeffs</span>
+        <span class="c1"># since residual orthogonal requirement already yields coefficients</span>
+        <span class="c1"># subtract from RHS</span>
+        <span class="n">reduced_rhs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">@</span> <span class="n">rhs</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span> <span class="o">@</span> <span class="n">res_coeffs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">:]</span> <span class="o">=</span> <span class="n">lu_solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_factors</span><span class="p">,</span> <span class="n">reduced_rhs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="OdeSolver.tangent"><a class="viewcode-back" href="../../exp_fit.html#sdt.exp_fit.OdeSolver.tangent">[docs]</a>    <span class="k">def</span> <span class="nf">tangent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">d_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_poly_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">b_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span>
+            <span class="n">d_y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">lu_solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_factors</span><span class="p">,</span> <span class="n">b_y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d_y</span></div></div>
+
+
+<div class="viewcode-block" id="get_exponential_coeffs"><a class="viewcode-back" href="../../exp_fit.html#sdt.exp_fit.get_exponential_coeffs">[docs]</a><span class="k">def</span> <span class="nf">get_exponential_coeffs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the exponential coefficients</span>
+
+<span class="sd">    As a first step to fitting the sum of exponentials</span>
+<span class="sd">    :math:`y(x) = \alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k x}` to the</span>
+<span class="sd">    data, calculate the exponential &quot;rate&quot; factors :math:`\lambda_k` using a</span>
+<span class="sd">    modified Prony&#39;s method.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.ndarray</span>
+<span class="sd">        Independent variable values</span>
+<span class="sd">    y : numpy.ndarray</span>
+<span class="sd">        Function values corresponding to `x`.</span>
+<span class="sd">    n_exp : int</span>
+<span class="sd">        Number of exponential functions (``p`` in the equation above) in the</span>
+<span class="sd">        sum</span>
+<span class="sd">    poly_order : int</span>
+<span class="sd">        For calculation, the sum of exponentials is approximated by a sum</span>
+<span class="sd">        of Legendre polynomials. This parameter gives the degree of the</span>
+<span class="sd">        highest order polynomial.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    exp_coeff : numpy.ndarray</span>
+<span class="sd">        List of exponential coefficients</span>
+<span class="sd">    ode_coeff : numpy.ndarray</span>
+<span class="sd">        Optimal coefficients of the ODE involved in calculating the exponential</span>
+<span class="sd">        coefficients.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    initial_guess : numpy.ndarray or None, optional</span>
+<span class="sd">        An initial guess for determining the parameters of the ODE (if you</span>
+<span class="sd">        don&#39;t know what this is about, don&#39;t bother). The array is 1D and has</span>
+<span class="sd">        `n_exp` + 1 entries. If None, use ``numpy.ones(n_exp + 1)``.</span>
+<span class="sd">        Defaults to None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">initial_guess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">initial_guess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="n">OdeSolver</span><span class="p">(</span><span class="n">poly_order</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">)</span>
+
+    <span class="c1"># Map x to [-1, 1]</span>
+    <span class="n">x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x_mapped</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">x_range</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1"># Weights (trapezoidal)</span>
+    <span class="n">d_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">d_x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">w</span> <span class="o">/=</span> <span class="n">x_range</span>
+
+    <span class="n">leg</span> <span class="o">=</span> <span class="n">legvander</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">n_exp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="n">coeffs</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="n">coeffs</span>
+        <span class="c1"># The following is the residual condition</span>
+        <span class="c1"># \hat{y}_k = (k + 1 / 2) \sum_{i=1}^n w_i z_i P(t_i)</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">leg</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">rc</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">)</span>
+        <span class="c1"># Solve the ODE in Legendre space</span>
+        <span class="c1"># \sum_{k=0}^p a_k D^k \hat{y} = e_1</span>
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">poly_order</span><span class="p">)</span>
+        <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">sol_hat</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rc</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+        <span class="c1"># transform to real space</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">legval</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">sol_hat</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span> <span class="o">-</span> <span class="n">sol</span>
+
+    <span class="k">def</span> <span class="nf">jacobian</span><span class="p">(</span><span class="n">coeffs</span><span class="p">):</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="n">coeffs</span>
+        <span class="n">jac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">tan</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">tangent</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">jac</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">legval</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">tan</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">jac</span>
+
+    <span class="n">ode_coeff</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="n">initial_guess</span><span class="p">,</span> <span class="n">Dfun</span><span class="o">=</span><span class="n">jacobian</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">roots</span><span class="p">(</span><span class="n">ode_coeff</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">x_range</span><span class="p">,</span> <span class="n">ode_coeff</span></div>
+
+
+<div class="viewcode-block" id="fit"><a class="viewcode-back" href="../../exp_fit.html#sdt.exp_fit.fit">[docs]</a><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_ode_coeff</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit a sum of exponential functions to data</span>
+
+<span class="sd">    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting</span>
+<span class="sd">    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k x}` to the data</span>
+<span class="sd">    using a modified Prony&#39;s method.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.ndarray</span>
+<span class="sd">        Independent variable values</span>
+<span class="sd">    y : numpy.ndarray</span>
+<span class="sd">        Function values corresponding to `t`.</span>
+<span class="sd">    n_exp : int</span>
+<span class="sd">        Number of exponential functions (`p` in the equation above) in the</span>
+<span class="sd">        sum</span>
+<span class="sd">    poly_order : int</span>
+<span class="sd">        For calculation, the sum of exponentials is approximated by a sum</span>
+<span class="sd">        of Legendre polynomials. This parameter gives the degree of the</span>
+<span class="sd">        highest order polynomial.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    offset : float</span>
+<span class="sd">        Additive offset (:math:`\alpha` in the equation above)</span>
+<span class="sd">    mant_coeff : numpy.ndarray</span>
+<span class="sd">        Mantissa coefficients (:math:`\beta_k`)</span>
+<span class="sd">    exp_coeff : numpy.ndarray</span>
+<span class="sd">        List of exponential coefficients (:math:`\lambda_k`)</span>
+<span class="sd">    ode_coeff : numpy.ndarray</span>
+<span class="sd">        Optimal coefficienst of the ODE involved in calculating the exponential</span>
+<span class="sd">        coefficients. Only returned if `return_ode_coeff` is `True`.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    initial_guess : numpy.ndarray or None, optional</span>
+<span class="sd">        An initial guess for determining the parameters of the ODE (if you</span>
+<span class="sd">        don&#39;t know what this is about, don&#39;t bother). The array is 1D and has</span>
+<span class="sd">        `n_exp` + 1 entries. If None, use ``numpy.ones(n_exp + 1)``.</span>
+<span class="sd">        Defaults to None.</span>
+<span class="sd">    return_ode_coeff : bool, optional</span>
+<span class="sd">        Whether to return the ODE coefficients as well. Defaults to False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">exp_coeff</span><span class="p">,</span> <span class="n">ode_coeff</span> <span class="o">=</span> <span class="n">get_exponential_coeffs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span>
+                                                  <span class="n">initial_guess</span><span class="p">)</span>
+    <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">exp_coeff</span><span class="p">])))</span>
+    <span class="n">lsq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">lsq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">mant_coeff</span> <span class="o">=</span> <span class="n">lsq</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="k">if</span> <span class="n">return_ode_coeff</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">offset</span><span class="p">,</span> <span class="n">mant_coeff</span><span class="p">,</span> <span class="n">exp_coeff</span><span class="p">,</span> <span class="n">ode_coeff</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">offset</span><span class="p">,</span> <span class="n">mant_coeff</span><span class="p">,</span> <span class="n">exp_coeff</span></div>
+
+
+<div class="viewcode-block" id="exp_sum"><a class="viewcode-back" href="../../exp_fit.html#sdt.exp_fit.exp_sum">[docs]</a><span class="k">def</span> <span class="nf">exp_sum</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sum of exponentials</span>
+
+<span class="sd">    Return ``a + b[0]*exp(l[0]*t) + b[1]*exp(l[1]*t) + …``</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : numpy.ndarray</span>
+<span class="sd">        Independent variable</span>
+<span class="sd">    a : float</span>
+<span class="sd">        Additive parameter</span>
+<span class="sd">    b : array-like of float, shape(n)</span>
+<span class="sd">        Mantissa coefficients</span>
+<span class="sd">    l : array-like of float, shape(n)</span>
+<span class="sd">        Coefficients in the exponent</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Result</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; exp_sum(np.arange(10), a=1, b=[-0.2, -0.8], l=[-0.1, -0.01])</span>
+<span class="sd">    array([ 0.        ,  0.02699265,  0.05209491,  0.07547993,  0.09730444,</span>
+<span class="sd">            0.11771033,  0.13682605,  0.15476788,  0.17164113,  0.18754112])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">t</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">l</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">a</span></div>
+
+
+<span class="k">def</span> <span class="nf">exp_sum_lmfit</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sum of exponentials, usable for :py:class:`lmfit.Model`</span>
+
+<span class="sd">    Return ``a + b0*exp(l0*t) + b1*exp(l1*t) + …``. This is more suitable</span>
+<span class="sd">    for fitting using :py:class:`lmfit.Model` than :py:func:`exp_sum`. See</span>
+<span class="sd">    the example below.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    t : numpy.ndarray</span>
+<span class="sd">        Independent variable</span>
+<span class="sd">    a : float</span>
+<span class="sd">        Additive parameter</span>
+<span class="sd">    **params : floats</span>
+<span class="sd">        To get the sum of `n+1` exponentials, one needs to supply floats</span>
+<span class="sd">        `b0`, `b1`, …, `bn` as mantissa coefficients and `l0`, `ln` as</span>
+<span class="sd">        coefficients in the exponent.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Result</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = numpy.array(...)  # x values</span>
+<span class="sd">    &gt;&gt;&gt; y = numpy.array(...)  # y values</span>
+
+<span class="sd">    &gt;&gt;&gt; b_names = [&quot;b{}&quot;.format(i) for i in num_exp]</span>
+<span class="sd">    &gt;&gt;&gt; l_names = [&quot;l{}&quot;.format(i) for i in num_exp]</span>
+<span class="sd">    &gt;&gt;&gt; m = lmfit.Model(exp_fit.exp_sum_lmfit)</span>
+<span class="sd">    &gt;&gt;&gt; m.set_param_hint(&quot;a&quot;, ...)</span>
+<span class="sd">    &gt;&gt;&gt; for b in b_names:</span>
+<span class="sd">    ...     m.set_param_hint(b, ...)</span>
+<span class="sd">    &gt;&gt;&gt; for l in l_names:</span>
+<span class="sd">    ...     m.set_param_hint(l, ...)</span>
+<span class="sd">    &gt;&gt;&gt; p = m.make_params()</span>
+<span class="sd">    &gt;&gt;&gt; f = m.fit(y, params=p, t=x)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_exp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">exp_sum</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;b</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_exp</span><span class="p">)],</span>
+                   <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;l</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_exp</span><span class="p">)])</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

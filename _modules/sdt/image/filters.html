@@ -1,0 +1,478 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.image.filters &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.image.filters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.image.filters</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Methods for background estimation and -subtraction in microscopy images&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numbers</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">import</span> <span class="nn">pywt</span>
+
+<span class="kn">from</span> <span class="nn">.masks</span> <span class="kn">import</span> <span class="n">CircleMask</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoConvergence</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">pipeline</span>
+
+
+<div class="viewcode-block" id="wavelet_bg"><a class="viewcode-back" href="../../../image.html#sdt.image.wavelet_bg">[docs]</a><span class="nd">@pipeline</span><span class="p">(</span><span class="n">retain_doc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">wavelet_bg</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">feat_thresh</span><span class="p">,</span> <span class="n">feat_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wtype</span><span class="o">=</span><span class="s2">&quot;db4&quot;</span><span class="p">,</span> <span class="n">wlevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+               <span class="n">initial</span><span class="o">=</span><span class="p">{},</span> <span class="n">ext_mode</span><span class="o">=</span><span class="s2">&quot;smooth&quot;</span><span class="p">,</span> <span class="n">max_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+               <span class="n">conv_threshold</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span> <span class="n">no_conv</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Estimate the background using wavelets</span>
+
+<span class="sd">    This is an implementation of the algorithm described in [Galloway2009]_</span>
+<span class="sd">    for 2D image data. It works by iteratively estimating the background using</span>
+<span class="sd">    wavelet approximations and removing feature (non-background) data from</span>
+<span class="sd">    the estimate.</span>
+
+<span class="sd">    A :py:class:`NoConvergence` exception is raised if the estimate does not</span>
+<span class="sd">    converge within `max_iterations`.</span>
+
+<span class="sd">    This is a :py:func:`sdt.helper.pipeline`, meaning that it can be applied</span>
+<span class="sd">    to single images or image sequences (as long as they are of type</span>
+<span class="sd">    :py:class:`sdt.helper.Slicerator`).</span>
+
+<span class="sd">    .. [Galloway2009] Galloway, C. M. et al.: &quot;An iterative algorithm for</span>
+<span class="sd">        background removal in spectroscopy by wavelet transforms&quot;. Appl</span>
+<span class="sd">        Spectrosc, 2009, 63, 1370-1376</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image : Slicerator or numpy.ndarray</span>
+<span class="sd">        Image data. Either a sequence (Slicerator) or a single image.</span>
+<span class="sd">    feat_thresh : float</span>
+<span class="sd">        Consider everything that is brighter than the estimated background by</span>
+<span class="sd">        at least `threshold` a feature and do not include it in the</span>
+<span class="sd">        consecutive iteration of the background estimation process.</span>
+<span class="sd">    feat_mask : int or numpy.ndarray or None, optional</span>
+<span class="sd">        Setting `feat_thresh` rather high will most probably cause unwanted</span>
+<span class="sd">        effects around the edges of a feature (since those, although above</span>
+<span class="sd">        background, will be treated as background). The can `feat_mask` be used</span>
+<span class="sd">        to increase the size of regions considered occupied by a feature by</span>
+<span class="sd">        dilation. If `feat_mask` is `None`, don&#39;t do that. If it is `int`,</span>
+<span class="sd">        create a circular mask with radius `feat_mask`. If it is an array,</span>
+<span class="sd">        use it as the mask for dilation. Defaults to `None`.</span>
+<span class="sd">    initial : dict</span>
+<span class="sd">        Parameters for the wavelet transform of the initial background guess.</span>
+<span class="sd">        The dict may contain &quot;wtype&quot;, &quot;wlevel&quot;, &quot;ext_mode&quot;, and &quot;detail&quot; keys.</span>
+<span class="sd">        If any of those is not given, use the corresponding parameters from</span>
+<span class="sd">        the function call.</span>
+<span class="sd">    wtype : str or pywt.Wavelet, optional</span>
+<span class="sd">        Wavelet type. See :py:func:`pywt.wavelist` for available wavelet types.</span>
+<span class="sd">        Defaults to &quot;db4&quot;.</span>
+<span class="sd">    wlevel : int, optional</span>
+<span class="sd">        Wavelet decomposition level. The maximum level depends on the</span>
+<span class="sd">        wavelet type. See :py:func:`pywt.dwt_max_level` for details. Defaults</span>
+<span class="sd">        to 3.</span>
+<span class="sd">    ext_mode : str, optional</span>
+<span class="sd">        Signal extension mode for wavelet de/recomposition. Refer to the</span>
+<span class="sd">        `pywavelets` documentation for details. Defaults to &quot;smooth&quot;.</span>
+<span class="sd">    max_iterations : int, optional</span>
+<span class="sd">        Maximum number of cycles of background estimation and removing</span>
+<span class="sd">        features from the estimate. Defaults to 20.</span>
+<span class="sd">    detail : int, optional</span>
+<span class="sd">        Number of wavelet detail coefficients to retain in the background</span>
+<span class="sd">        estimate. Defaults to 0, i. e. only use approximation coefficients.</span>
+<span class="sd">    conv_threshold : float, optional</span>
+<span class="sd">        If the relative difference of estimates between two iterations is</span>
+<span class="sd">        less than `conv_threshold`, consider the result converged and return</span>
+<span class="sd">        it. If this does not happen within `max_iterations`, raise a</span>
+<span class="sd">        :py:class:`NoConvergence` exception instead (with the last result as</span>
+<span class="sd">        its `last_result` attribute).</span>
+<span class="sd">    no_conv : {&quot;raise&quot;, &quot;ignore&quot;} or number, optional</span>
+<span class="sd">        What to do if the result does not converge. &quot;raise&quot; will raise a</span>
+<span class="sd">        :py:class:`NoConvergence` exception. If a number is passed,</span>
+<span class="sd">        construct an array of the same type and shape as the input that is</span>
+<span class="sd">        filled with the scalar.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Slicerator or numpy.ndarray</span>
+<span class="sd">        Estimate for the background</span>
+<span class="sd">    img = np.copy(image)</span>
+<span class="sd">    bg = np.zeros_like(img)</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    NoConvergence</span>
+<span class="sd">        when the estimate did not converge within `max_iterations` and</span>
+<span class="sd">        ``no_conv=&quot;raise&quot;`` was passed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feat_mask</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">feat_mask</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># also add 0.5 extra radius to make it &quot;rounder&quot;</span>
+            <span class="n">feat_mask</span> <span class="o">=</span> <span class="n">CircleMask</span><span class="p">(</span><span class="n">feat_mask</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">feat_mask</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">feat_mask</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feat_mask</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;feat_mask has to be None, int, or numpy.ndarray&quot;</span><span class="p">)</span>
+
+    <span class="c1"># initial guess</span>
+    <span class="n">bg</span> <span class="o">=</span> <span class="n">_wavelet_bg_single</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">initial</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wtype&quot;</span><span class="p">,</span> <span class="n">wtype</span><span class="p">),</span>
+                            <span class="n">initial</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ext_mode&quot;</span><span class="p">,</span> <span class="n">ext_mode</span><span class="p">),</span>
+                            <span class="n">initial</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wlevel&quot;</span><span class="p">,</span> <span class="n">wlevel</span><span class="p">),</span>
+                            <span class="n">initial</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;detail&quot;</span><span class="p">,</span> <span class="n">detail</span><span class="p">))</span>
+
+    <span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iterations</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">image</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">bg</span> <span class="o">+</span> <span class="n">feat_thresh</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">feat_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">binary_dilation</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">feat_mask</span><span class="p">)</span>
+        <span class="n">img</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">bg</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>  <span class="c1"># remove features</span>
+
+        <span class="n">old_bg</span> <span class="o">=</span> <span class="n">bg</span>
+        <span class="n">bg</span> <span class="o">=</span> <span class="n">_wavelet_bg_single</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">wtype</span><span class="p">,</span> <span class="n">ext_mode</span><span class="p">,</span> <span class="n">wlevel</span><span class="p">,</span> <span class="n">detail</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">bg</span> <span class="o">-</span> <span class="n">old_bg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">conv_threshold</span><span class="p">):</span>
+            <span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">converged</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">no_conv</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">no_conv</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">no_conv</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoConvergence</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">no_conv</span> <span class="o">==</span> <span class="s2">&quot;ignore&quot;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`no_conv` has to be a number, &quot;raise&quot;, or &#39;</span>
+                             <span class="s1">&#39;&quot;ignore&quot;.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">bg</span></div>
+
+
+<span class="k">def</span> <span class="nf">_wavelet_bg_single</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">wtype</span><span class="p">,</span> <span class="n">ext_mode</span><span class="p">,</span> <span class="n">wlevel</span><span class="p">,</span> <span class="n">detail</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Single round of background estimation using wavelet transforms</span>
+
+<span class="sd">    For parameter documentation, see :py:func:`wavelet_bg`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">wavedec2</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">wtype</span><span class="p">,</span> <span class="n">ext_mode</span><span class="p">,</span> <span class="n">wlevel</span><span class="p">)</span>
+
+    <span class="c1"># zero out detail coefficients</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">d</span><span class="p">[:</span><span class="n">detail</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># keep wanted detail (d[0] is approximation)</span>
+    <span class="n">r</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="n">detail</span><span class="o">+</span><span class="mi">1</span><span class="p">:]]</span>
+
+    <span class="n">bg</span> <span class="o">=</span> <span class="n">pywt</span><span class="o">.</span><span class="n">waverec2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">wtype</span><span class="p">,</span> <span class="n">ext_mode</span><span class="p">)</span>
+    <span class="n">bg</span> <span class="o">=</span> <span class="n">bg</span><span class="p">[:</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:</span><span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>  <span class="c1"># remove padding</span>
+
+    <span class="k">return</span> <span class="n">bg</span>
+
+
+<div class="viewcode-block" id="wavelet"><a class="viewcode-back" href="../../../image.html#sdt.image.wavelet">[docs]</a><span class="nd">@pipeline</span><span class="p">(</span><span class="n">retain_doc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">wavelet</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remove the background using wavelets</span>
+
+<span class="sd">    This returns ``image - wavelet_bg(image, *args, **kwargs)``. See</span>
+<span class="sd">    the :py:func:`wavelet_bg` documentation for details.</span>
+
+<span class="sd">    This is a :py:func:`sdt.helper.pipeline`, meaning that it can be applied</span>
+<span class="sd">    to single images or image sequences (as long as they are of type</span>
+<span class="sd">    :py:class:`sdt.helper.Slicerator`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">image</span> <span class="o">-</span> <span class="n">wavelet_bg</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cg"><a class="viewcode-back" href="../../../image.html#sdt.image.cg">[docs]</a><span class="nd">@pipeline</span><span class="p">(</span><span class="n">retain_doc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cg</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">feature_radius</span><span class="p">,</span> <span class="n">noise_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">nonneg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Remove background using a bandpass filter according to Crocker &amp; Grier</span>
+
+<span class="sd">    Convolve with kernel</span>
+
+<span class="sd">    .. math:: K(i, j) = \frac{1}{K_0} \left[\frac{1}{B}</span>
+<span class="sd">        \exp\left(-\frac{i^2 + j^2}{4\lambda^2}\right) -</span>
+<span class="sd">        \frac{1}{(2w+1)^2}\right]</span>
+
+<span class="sd">    where :math:`w` is ``feature_radius``, :math:`\lambda` is the</span>
+<span class="sd">    ``noise_radius``, and :math:`B, K_0` are normalization constants</span>
+
+<span class="sd">    .. math:: B = \left[\sum_{i=-w}^w \exp\left(-\frac{i^2}{4\lambda^2}\right)</span>
+<span class="sd">        \right]^2</span>
+
+<span class="sd">    .. math:: K_0 = \frac{1}{B} \left[\sum_{i=-w}^w</span>
+<span class="sd">        \exp\left(-\frac{i^2}{2\lambda^2}\right)\right]^2 -</span>
+<span class="sd">        \frac{B}{(2w+1)^2}.</span>
+
+<span class="sd">    The first term in the sum in :math:`K` does Gaussian smoothing, the</span>
+<span class="sd">    second one is a boxcar filter to get rid of long-range fluctuations.</span>
+
+<span class="sd">    The algorithm has been described in [Croc1996]_.</span>
+
+<span class="sd">    This is a :py:func:`slicerator.pipeline`, meaning that it can be applied</span>
+<span class="sd">    to single images or image sequences (as long as they are of type</span>
+<span class="sd">    :py:class:`slicerator.Slicerator`).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    image : numpy.ndarray</span>
+<span class="sd">        image data</span>
+<span class="sd">    feature_radius : int</span>
+<span class="sd">        This should be a number a little greater than the radius of the</span>
+<span class="sd">        peaks.</span>
+<span class="sd">    noise_radius : float, optional</span>
+<span class="sd">        Noise correlation length in pixels. Defaults to 1.</span>
+<span class="sd">    nonneg : bool, optional</span>
+<span class="sd">        If True, clip values of the filtered image to [0, infinity). Defaults</span>
+<span class="sd">        to True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Slicerator or numpy.ndarray</span>
+<span class="sd">        Bandpass filtered image (sequence)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">feature_radius</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">noise_radius</span><span class="p">)</span>
+    <span class="n">gaussian_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">w</span><span class="p">,</span> <span class="n">w</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">noise_radius</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># normalization factors</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">gaussian_1d</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="c1"># gaussian_1d**2 is exp(- i^2/(2*lambda))</span>
+    <span class="n">K_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">gaussian_1d</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">B</span> <span class="o">-</span> <span class="n">B</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="c1"># convolution with kernel K</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">gaussian_1d</span><span class="p">,</span> <span class="n">gaussian_1d</span><span class="p">)</span><span class="o">/</span><span class="n">B</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">K_0</span>
+    <span class="n">filtered_img</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">fftconvolve</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="s2">&quot;valid&quot;</span><span class="p">)</span>
+
+    <span class="c1"># pad to the same size as the original image</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">nonneg</span><span class="p">:</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">w</span><span class="p">:</span><span class="o">-</span><span class="n">w</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span><span class="o">-</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">filtered_img</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ret</span><span class="p">[</span><span class="n">w</span><span class="p">:</span><span class="o">-</span><span class="n">w</span><span class="p">,</span> <span class="n">w</span><span class="p">:</span><span class="o">-</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">filtered_img</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="cg_bg"><a class="viewcode-back" href="../../../image.html#sdt.image.cg_bg">[docs]</a><span class="nd">@pipeline</span><span class="p">(</span><span class="n">retain_doc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cg_bg</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Estimate background using bandpass filter according to Crocker &amp; Grier</span>
+
+<span class="sd">    This returns ``image - cg(image, *args, **kwargs)``. See</span>
+<span class="sd">    the :py:func:`cg` documentation for details.</span>
+
+<span class="sd">    This is a :py:func:`sdt.helper.pipeline`, meaning that it can be applied</span>
+<span class="sd">    to single images or image sequences (as long as they are of type</span>
+<span class="sd">    :py:class:`sdt.helper.Slicerator`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">image</span> <span class="o">-</span> <span class="n">cg</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gaussian_filter"><a class="viewcode-back" href="../../../image.html#sdt.image.gaussian_filter">[docs]</a><span class="nd">@pipeline</span><span class="p">(</span><span class="n">retain_doc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">gaussian_filter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`pipeline`&#39;ed version of :py:func:`scipy.ndimage.gaussian_filter`</span>
+
+<span class="sd">    See :py:func:`scipy.ndimage.gaussian_filter` documentation for details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

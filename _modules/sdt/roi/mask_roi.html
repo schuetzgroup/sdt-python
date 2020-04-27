@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.roi.mask_roi &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.roi.mask_roi</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.roi.mask_roi</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">slicerator</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span>
+
+
+<div class="viewcode-block" id="MaskROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.MaskROI">[docs]</a><span class="k">class</span> <span class="nc">MaskROI</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Region of interest defined by a boolean mask array</span>
+
+<span class="sd">    This class represents a region of interest that is described by an array</span>
+<span class="sd">    of boolean values It can crop images or restrict data (such as feature</span>
+<span class="sd">    localization data) to a specified region.</span>
+
+<span class="sd">    This works only for single channel (i. e. grayscale) images.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!MaskROI&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">mask_origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pixel_size</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mask : numpy.ndarray, dtype(bool)</span>
+<span class="sd">            Set the :py:attr:`mask` attribute.</span>
+<span class="sd">        mask_origin : tuple of float, optional</span>
+<span class="sd">            Set the :py:attr:`mask_origin` attribute. Defaults to (0, 0).</span>
+<span class="sd">        pixel_size : float, optional</span>
+<span class="sd">            Set the :py:attr:`pixel_size` attribute. Defaults to 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+        <span class="sd">&quot;&quot;&quot;Boolean mask array where each `True` entry represents a pixel with</span>
+<span class="sd">            data to be accepted and each `False` entry represents a pixel with</span>
+<span class="sd">            data to be rejected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_origin</span> <span class="o">=</span> <span class="n">mask_origin</span>
+        <span class="sd">&quot;&quot;&quot;Tuple of coordinates of the origin of the mask. This shifts the</span>
+<span class="sd">        mask with respect to the data it is applied to using</span>
+<span class="sd">        :py:meth:`__call__`. These are real coordinates, not array indices</span>
+<span class="sd">        (whose order would be inverted and scaled by :py:attr:`pixel_size`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">=</span> <span class="n">pixel_size</span>
+        <span class="sd">&quot;&quot;&quot;Size of a pixel. Used to scale the in DataFrames correctly.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MaskROI.__call__"><a class="viewcode-back" href="../../../roi.html#sdt.roi.MaskROI.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Restrict data to the region of interest.</span>
+
+<span class="sd">        If the input is localization data, it is filtered depending on whether</span>
+<span class="sd">        the coordinates are within the path. If it is image data, all pixels</span>
+<span class="sd">        for which the mask evaluates to `False` are set to `fill_value`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame or pims.FramesSequence or array-like</span>
+<span class="sd">            Data to be processed. If a pandas.Dataframe, select only those</span>
+<span class="sd">            lines with coordinate values within the ROI path (+ buffer).</span>
+<span class="sd">            Otherwise, `slicerator.pipeline` is used to crop image data to the</span>
+<span class="sd">            bounding rectangle of the path and set all pixels not within the</span>
+<span class="sd">            path to `fill_value`</span>
+<span class="sd">        rel_origin : bool, optional</span>
+<span class="sd">            If True, :py:attr:`mask_origin` will be subtracted off all feature</span>
+<span class="sd">            coordinates, i. e. :py:attr:`mask_origin` will be the new origin.</span>
+<span class="sd">            Only used if `invert` is False. Defaults to True.</span>
+<span class="sd">        fill_value : number or callable, optional</span>
+<span class="sd">            Fill value for pixels that are not contained in the mask. If</span>
+<span class="sd">            callable, it should take the array of pixels within the mask as its</span>
+<span class="sd">            argument and return a scalar that is used as the fill value. Not</span>
+<span class="sd">            applicable for single molecule data. Defaults to 0.</span>
+<span class="sd">        invert : bool, optional</span>
+<span class="sd">            If True, only datapoints/pixels outside the mask are selected.</span>
+<span class="sd">            Defaults to `False`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame or slicerator.Slicerator or numpy.array</span>
+<span class="sd">            Data restricted to the ROI represented by this class.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. The only relevant name is `coords`. This</span>
+<span class="sd">            means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;, set</span>
+<span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_origin</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+            <span class="n">data_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">bd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="c1"># Find localizations that are with the bounds of the mask</span>
+                <span class="n">data_mask</span> <span class="o">&amp;=</span> <span class="n">p</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+                <span class="n">data_mask</span> <span class="o">&amp;=</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">bd</span>
+
+            <span class="c1"># Of the localizations that are in bounds, select only those where</span>
+            <span class="c1"># the mask is `True`</span>
+            <span class="n">pos_in_bounds</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pos</span><span class="p">[</span><span class="n">data_mask</span><span class="p">,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">data_mask</span><span class="p">[</span><span class="n">data_mask</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">pos_in_bounds</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+                <span class="n">data_mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">data_mask</span>
+            <span class="n">good</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data_mask</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">rel_origin</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">invert</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_origin</span>
+            <span class="k">return</span> <span class="n">good</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nd">@slicerator</span><span class="o">.</span><span class="n">pipeline</span>
+            <span class="k">def</span> <span class="nf">set_fv</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+                <span class="n">nz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+
+                <span class="c1"># Use only indices that are in bounds of `data`</span>
+                <span class="n">bounds_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nz</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_origin</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+                    <span class="c1"># Add scaled origin coordinates</span>
+                    <span class="n">n</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">o</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+                    <span class="c1"># Check bounds</span>
+                    <span class="n">bounds_mask</span> <span class="o">&amp;=</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+                    <span class="n">bounds_mask</span> <span class="o">&amp;=</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">s</span>
+                <span class="n">nz</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="n">bounds_mask</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nz</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">fill_value</span><span class="p">):</span>
+                        <span class="c1"># There is probably no way around inverting the</span>
+                        <span class="c1"># index array</span>
+                        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+                        <span class="n">m</span><span class="p">[</span><span class="n">nz</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">fv</span> <span class="o">=</span> <span class="n">fill_value</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fv</span> <span class="o">=</span> <span class="n">fill_value</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">ret</span><span class="p">[</span><span class="n">nz</span><span class="p">]</span> <span class="o">=</span> <span class="n">fv</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">img_sel</span> <span class="o">=</span> <span class="n">img</span><span class="p">[</span><span class="n">nz</span><span class="p">]</span>
+                    <span class="n">fv</span> <span class="o">=</span> <span class="p">(</span><span class="n">fill_value</span><span class="p">(</span><span class="n">img_sel</span><span class="p">)</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">fill_value</span><span class="p">)</span>
+                          <span class="k">else</span> <span class="n">fill_value</span><span class="p">)</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">fv</span><span class="p">)</span>
+                    <span class="n">ret</span><span class="p">[</span><span class="n">nz</span><span class="p">]</span> <span class="o">=</span> <span class="n">img_sel</span>
+                <span class="k">return</span> <span class="n">ret</span>
+            <span class="k">return</span> <span class="n">set_fv</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MaskROI.reset_origin"><a class="viewcode-back" href="../../../roi.html#sdt.roi.MaskROI.reset_origin">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="nf">reset_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Reset coordinates to the original coordinate system</span>
+
+<span class="sd">        This undoes the effect of the `reset_origin` parameter to</span>
+<span class="sd">        :py:meth:`__call__`. The coordinates of the top-left ROI corner are</span>
+<span class="sd">        added to the feature coordinates in `data`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            Localization data, modified in place.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. The only relevant name is `coords`. This</span>
+<span class="sd">            means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;, set</span>
+<span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_origin</span></div>
+
+<div class="viewcode-block" id="MaskROI.to_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.MaskROI.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+
+<span class="sd">        Pass this as the `representer` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)),</span>  <span class="c1"># int gives nicer representation</span>
+             <span class="p">(</span><span class="s2">&quot;mask_origin&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mask_origin</span><span class="p">)),</span>
+             <span class="p">(</span><span class="s2">&quot;pixel_size&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">pixel_size</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MaskROI.from_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.MaskROI.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+
+<span class="sd">        Pass this as the `constructor` parameter to</span>
+<span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;mask&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">),</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;mask_origin&quot;</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;pixel_size&quot;</span><span class="p">])</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Area of `True` pixels in the mask&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_size</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">ndim</span></div>
+
+
+<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">..io</span> <span class="kn">import</span> <span class="n">yaml</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">MaskROI</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

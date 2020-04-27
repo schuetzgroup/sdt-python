@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Documentation of the sdt python package &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Regions of interest (ROIs)" href="roi.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Documentation of the <cite>sdt</cite> python package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="documentation-of-the-sdt-python-package">
+<h1>Documentation of the <cite>sdt</cite> python package<a class="headerlink" href="#documentation-of-the-sdt-python-package" title="Permalink to this headline">¶</a></h1>
+<p>This package contains various tools to deal with data from fluorescence
+microscopy.</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Handle regions of interest (ROIs) is possible by means of the
+<a class="reference internal" href="roi.html#module-sdt.roi" title="sdt.roi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.roi</span></code></a> module.</p></li>
+<li><p>Overlay multiple channels and correct for chromatic aberrations using the
+<a class="reference internal" href="chromatic.html#module-sdt.chromatic" title="sdt.chromatic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.chromatic</span></code></a> module.</p></li>
+<li><p>Deal with multi-color data (colocalization, codiffusion, …)
+with help of functions featured in the <a class="reference internal" href="multicolor.html#module-sdt.multicolor" title="sdt.multicolor"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.multicolor</span></code></a> module.</p></li>
+<li><p>Determine parameters related to the motion and diffusion of single molecules
+(mean square displacements, diffusion coefficients, …) from tracking
+experiments using functionality provided by the <a class="reference internal" href="motion.html#module-sdt.motion" title="sdt.motion"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.motion</span></code></a> module.</p></li>
+<li><p>Analysis of fluorescent molecule brightness can be done with help of the
+<a class="reference internal" href="brightness.html#module-sdt.brightness" title="sdt.brightness"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.brightness</span></code></a> module.</p></li>
+<li><p>The <a class="reference internal" href="io.html#module-sdt.io" title="sdt.io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.io</span></code></a> module includes support for reading and writing data
+from and to files in various formats.</p></li>
+<li><p>Perform changepoint detection using the <a class="reference internal" href="changepoint.html#module-sdt.changepoint" title="sdt.changepoint"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.changepoint</span></code></a> module.</p></li>
+<li><p>The <a class="reference internal" href="spatial.html#module-sdt.spatial" title="sdt.spatial"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.spatial</span></code></a> module allows for saving dealing with spatial
+aspects of data such as determining whether there are near neighbors,
+interpolating missing features in tracking data and calculating the area of a
+polygon.</p></li>
+<li><p>Analyze single molecule FRET data using the <a class="reference internal" href="fret.html#module-sdt.fret" title="sdt.fret"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.fret</span></code></a> module.</p></li>
+<li><p>Process raw images (e.g. background subtraction) with help of the
+<a class="reference internal" href="image.html#module-sdt.image" title="sdt.image"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.image</span></code></a> module.</p></li>
+<li><p>Using the <a class="reference internal" href="flatfield.html#module-sdt.flatfield" title="sdt.flatfield"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.flatfield</span></code></a> module, flat field correction of image
+and localization data can be achieved.</p></li>
+<li><p>The <a class="reference internal" href="loc.html#module-0" title="sdt.loc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.loc</span></code></a> package allows for localization of fluorescent
+features in images. To that end, several algorithms are provided
+(<a class="reference internal" href="loc.html#module-sdt.loc.daostorm_3d" title="sdt.loc.daostorm_3d"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.loc.daostorm_3d</span></code></a>, <a class="reference internal" href="loc.html#module-sdt.loc.cg" title="sdt.loc.cg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.loc.cg</span></code></a>),  which all share a
+similar API.
+Additionally, <a class="reference internal" href="loc.html#module-sdt.loc.z_fit" title="sdt.loc.z_fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.loc.z_fit</span></code></a> allows for determining the z
+position of features from astigmatism.</p></li>
+<li><p>The <a class="reference internal" href="nbui.html#module-sdt.nbui" title="sdt.nbui"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.nbui</span></code></a> module contains GUIs to embed into Jupyter
+notebooks.</p></li>
+<li><p>With help of the <a class="reference internal" href="sim.html#module-sdt.sim" title="sdt.sim"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.sim</span></code></a> module, fluorescence microscopy data
+can be simulated.</p></li>
+<li><p>The <a class="reference internal" href="funcs.html#module-sdt.funcs" title="sdt.funcs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.funcs</span></code></a> module contains classes for creation of step
+functions and eCDFs.</p></li>
+<li><p>Plot data with methods from <a class="reference internal" href="plot.html#module-sdt.plot" title="sdt.plot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.plot</span></code></a>.</p></li>
+</ul>
+<p>There are also some helper modules that contain helpful functions and that
+the above modules are built on top of:</p>
+<ul class="simple">
+<li><p>Fitting a sum of exponentials can be done using the <a class="reference internal" href="exp_fit.html#module-sdt.exp_fit" title="sdt.exp_fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.exp_fit</span></code></a>
+module.</p></li>
+<li><p><a class="reference internal" href="gaussian_fit.html#module-sdt.gaussian_fit" title="sdt.gaussian_fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.gaussian_fit</span></code></a> provides models for the <a class="reference external" href="http://lmfit.github.io/lmfit-py/">lmfit</a> package for non-linear least squares
+fitting of 1D and 2D Gaussian function parameters.</p></li>
+<li><p>Some helpers for writing new code can be found in <a class="reference internal" href="helper.html#module-sdt.helper" title="sdt.helper"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.helper</span></code></a> and
+<a class="reference internal" href="helper.html#module-sdt.config" title="sdt.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.config</span></code></a>.</p></li>
+</ul>
+</div>
+<div class="section" id="list-of-changes">
+<h2>List of changes<a class="headerlink" href="#list-of-changes" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference internal" href="CHANGELOG.html#changelog"><span class="std std-ref">Change log</span></a> for a list of changes between software versions.</p>
+</div>
+<div class="section" id="table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="roi.html#integer-pixel-based-rectangular-rois">Integer pixel-based rectangular ROIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roi.html#arbitrary-rois-with-subpixel-accuracy">Arbitrary ROIs with subpixel accuracy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roi.html#boolean-mask-rois">Boolean mask ROIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="roi.html#imagej-roi-file-loading">ImageJ ROI file loading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="chromatic.html#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multicolor.html#programming-reference">Programming reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multicolor.html#low-level-helper-functions">Low level helper functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="motion.html#msd-calculation">MSD calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="motion.html#diffusion-models-for-fitting">Diffusion models for fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="motion.html#immobilization-detection">Immobilization detection</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="brightness.html#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Data input/output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="io.html#tiff-files">TIFF files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html#single-molecule-data">Single molecule data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html#filesystem-related">Filesystem-related</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html#yaml">YAML</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changepoint.html">Changepoint detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changepoint.html#pelt">PELT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changepoint.html#offline-bayesian-changepoint-detection">Offline Bayesian changepoint detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changepoint.html#online-bayesian-changepoint-detection">Online Bayesian changepoint detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changepoint.html#plotting-of-changepoints">Plotting of changepoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="spatial.html#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fret.html#tracking">Tracking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fret.html#analysis-and-filtering">Analysis and Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fret.html#plotting">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fret.html#image-selection">Image selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fret.html#helpers">Helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="image.html#filters">Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html#thresholding">Thresholding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html#masks">Masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flatfield.html#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="loc.html#module-sdt.loc.daostorm_3d">daostorm_3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loc.html#module-sdt.loc.cg">cg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loc.html#z-position-fitting">z position fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loc.html#module-0">Raw pixel extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nbui.html#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sim.html#fluoresence-microscopy-images">Fluoresence microscopy images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim.html#single-molecule-tracking-data">Single molecule tracking data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim.html#programming-reference">Programming reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sim.html#low-level-simulation-functions">Low level simulation functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="funcs.html#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#programming-reference">Programming reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exp_fit.html#high-level-api">High level API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exp_fit.html#low-level-functions">Low level functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exp_fit.html#theory">Theory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_fit.html#models">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gaussian_fit.html#auxiliary-functions">Auxiliary functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="helper.html#helper-classes-and-functions">Helper classes and functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="helper.html#mechanism-for-getting-and-setting-default-function-parameters">Mechanism for getting and setting default function parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id1">14.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id2">14.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id3">13.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id4">13.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id5">13.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id6">13.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id7">13.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id8">12.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id9">11.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id10">11.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#older-versions">Older versions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="roi.html" class="btn btn-neutral float-right" title="Regions of interest (ROIs)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

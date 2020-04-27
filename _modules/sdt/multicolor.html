@@ -1,0 +1,802 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.multicolor &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.multicolor</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.multicolor</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Multi-color data analysis</span>
+<span class="sd">=========================</span>
+
+<span class="sd">This module provides functions to analyze multi-color single molecule data.</span>
+<span class="sd">In particular, there is support for</span>
+
+<span class="sd">- finding colocalizations</span>
+<span class="sd">- detecting and plotting codiffusion</span>
+<span class="sd">- merging data from different channels.</span>
+
+<span class="sd">Single molecule data have to be aligned first using e.g.</span>
+<span class="sd">:py:class:`sdt.chromatic.Corrector`.</span>
+
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">To demonstrate how to find colocalizations, create fake data first:</span>
+
+<span class="sd">&gt;&gt;&gt; loc1 = pandas.DataFrame([[1, 1], [11, 11]], columns=[&quot;x&quot;, &quot;y&quot;])</span>
+<span class="sd">&gt;&gt;&gt; loc2 = pandas.DataFrame([[1, 2], [22, 22]], columns=[&quot;x&quot;, &quot;y&quot;])</span>
+<span class="sd">&gt;&gt;&gt; loc1[&quot;frame&quot;] = loc2[&quot;frame&quot;] = 0</span>
+
+<span class="sd">Now, find the colocalizations using :py:func:`find_colocalizations`:</span>
+
+<span class="sd">&gt;&gt;&gt; coloc = find_colocalizations(loc1, loc2, max_dist=2)</span>
+<span class="sd">&gt;&gt;&gt; coloc</span>
+<span class="sd">  channel1          channel2</span>
+<span class="sd">         x  y frame        x  y frame</span>
+<span class="sd">0        1  1     0        1  2     0</span>
+
+<span class="sd">Detecting codiffusing particles works similar using</span>
+<span class="sd">:py:func:`find_codiffusion`:</span>
+
+<span class="sd">&gt;&gt;&gt; trc1 = sdt.io.load(&quot;tracking1.h5&quot;)  # load data</span>
+<span class="sd">&gt;&gt;&gt; trc2 = sdt.io.load(&quot;tracking2.h5&quot;)</span>
+<span class="sd">&gt;&gt;&gt; codiff = find_codiffusion(trc1, trc2)</span>
+
+<span class="sd">A single codiffusing pair can be plot with help of :py:func:`plot_codiffusion`</span>
+<span class="sd">using the result of :py:func:`find_codiffusion`:</span>
+
+<span class="sd">&gt;&gt;&gt; plot_codiffusion(codiff, particle=0)</span>
+
+<span class="sd">Data from two color channels can be merged so that colocalizing features only</span>
+<span class="sd">appear once using :py:func:`merge_channels`:</span>
+
+<span class="sd">&gt;&gt;&gt; merged = merge_channels(loc1, loc2, max_dist=2)</span>
+<span class="sd">&gt;&gt;&gt; merged</span>
+<span class="sd">    x   y  frame</span>
+<span class="sd">0   1   1      0</span>
+<span class="sd">1  11  11      0</span>
+<span class="sd">2  22  22      0</span>
+
+
+<span class="sd">Programming reference</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">.. autofunction:: find_colocalizations</span>
+<span class="sd">.. autofunction:: calc_pair_distance</span>
+<span class="sd">.. autofunction:: find_codiffusion</span>
+<span class="sd">.. autofunction:: plot_codiffusion</span>
+<span class="sd">.. autofunction:: merge_channels</span>
+
+
+<span class="sd">Low level helper functions</span>
+<span class="sd">--------------------------</span>
+
+<span class="sd">.. autofunction:: find_closest_pairs</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">cKDTree</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">config</span>
+
+
+<span class="c1"># Default values. If changed, also change doc strings</span>
+<span class="n">_channel_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;channel1&quot;</span><span class="p">,</span> <span class="s2">&quot;channel2&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="find_closest_pairs"><a class="viewcode-back" href="../../multicolor.html#sdt.multicolor.find_closest_pairs">[docs]</a><span class="k">def</span> <span class="nf">find_closest_pairs</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find best matches between coordinates</span>
+
+<span class="sd">    Given two coordinate arrays (`coords1` and `coords2`), find pairs of points</span>
+<span class="sd">    with the minimum distance between them. Each point will be in at most one</span>
+<span class="sd">    pair (in contrast to `usual` KD-tree queries).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords1, coords2 : array-like, shape(n, m)</span>
+<span class="sd">        Arrays of m-dimensional coordinate tuples. The dimension (m) has to be</span>
+<span class="sd">        the same in both arrays while the number of points (n) can differ.</span>
+<span class="sd">    max_dist : float</span>
+<span class="sd">        Maximum distance for two points to be considered a pair</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray, shape(n, 2), dtype(int)</span>
+<span class="sd">        Each row describes one match. The first entry is the index of a point</span>
+<span class="sd">        in `coords1`. The second entry is the index of its match in `coords2`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Use cKDTrees to efficiently compute distances</span>
+    <span class="n">t1</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">coords1</span><span class="p">)</span>
+    <span class="n">t2</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">coords2</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">sparse_distance_matrix</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;ndarray&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Sort w.r.t. distance between partners so that pairs with smallest</span>
+    <span class="c1"># distances will be found first</span>
+    <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;v&quot;</span><span class="p">])</span>
+    <span class="n">i1</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;i&quot;</span><span class="p">][</span><span class="n">sort_idx</span><span class="p">]</span>
+    <span class="n">i2</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;j&quot;</span><span class="p">][</span><span class="n">sort_idx</span><span class="p">]</span>
+
+    <span class="c1"># Keep track of points that are already in pairs</span>
+    <span class="n">taken1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">taken2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+    <span class="c1"># Record pairs starting with those that have the smallest distance</span>
+    <span class="c1"># between partners</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ii1</span><span class="p">,</span> <span class="n">ii2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">taken1</span><span class="p">[</span><span class="n">ii1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">taken2</span><span class="p">[</span><span class="n">ii2</span><span class="p">]):</span>
+            <span class="c1"># Only if both partners are not already in another pair</span>
+            <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ii1</span><span class="p">,</span> <span class="n">ii2</span><span class="p">))</span>
+            <span class="n">taken1</span><span class="p">[</span><span class="n">ii1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">taken2</span><span class="p">[</span><span class="n">ii2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="find_colocalizations"><a class="viewcode-back" href="../../multicolor.html#sdt.multicolor.find_colocalizations">[docs]</a><span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">find_colocalizations</span><span class="p">(</span><span class="n">features1</span><span class="p">,</span> <span class="n">features2</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span>
+                         <span class="n">keep_non_coloc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">channel_names</span><span class="o">=</span><span class="n">_channel_names</span><span class="p">,</span>
+                         <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;Match localizations in one channel to localizations in another</span>
+
+<span class="sd">    For every localization in `features1` find localizations in</span>
+<span class="sd">    `features2` (in the same frame) that are in a circle with radius `max_dist`</span>
+<span class="sd">    around it, then pick the closest one.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    features1, features2 : pandas.DataFrame</span>
+<span class="sd">        Localization data</span>
+<span class="sd">    max_dist : float, optional</span>
+<span class="sd">        Maximum distance between features to still be considered colocalizing.</span>
+<span class="sd">        Defaults to 2.</span>
+<span class="sd">    keep_non_coloc : bool, optional</span>
+<span class="sd">        If True, also keep non-colocalized features in the result DataFrame.</span>
+<span class="sd">        Non-colocalized features have NaNs in the columns of the channel they</span>
+<span class="sd">        don&#39;t appear in. Defaults to False.</span>
+<span class="sd">    channel_names : list of str, optional</span>
+<span class="sd">        Names of the two channels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        The DataFrame has a multi-index for columns with the top level</span>
+<span class="sd">        given by the `channel_names` parameter. Each line of DataFrame</span>
+<span class="sd">        corresponds to one pair of colocalizing particles.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        Relevant names are `coords` and `time`. This means,</span>
+<span class="sd">        if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and the time</span>
+<span class="sd">        column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
+<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span>
+    <span class="n">p1_mat</span> <span class="o">=</span> <span class="n">features1</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">p2_mat</span> <span class="o">=</span> <span class="n">features2</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="n">pairs1_idx</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">pairs2_idx</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame_no</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">p1_mat</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="c1"># indices of features in current frame</span>
+        <span class="n">p1_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">p1_mat</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame_no</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">p2_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">p2_mat</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame_no</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># current frame positions with the frame column excluded</span>
+        <span class="n">p1_f</span> <span class="o">=</span> <span class="n">p1_mat</span><span class="p">[</span><span class="n">p1_idx</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">p2_f</span> <span class="o">=</span> <span class="n">p2_mat</span><span class="p">[</span><span class="n">p2_idx</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">p1_f</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="n">p2_f</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">pair_idx</span> <span class="o">=</span> <span class="n">find_closest_pairs</span><span class="p">(</span><span class="n">p1_f</span><span class="p">,</span> <span class="n">p2_f</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">)</span>
+
+        <span class="n">pairs1_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p1_idx</span><span class="p">[</span><span class="n">pair_idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]])</span>
+        <span class="n">pairs2_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2_idx</span><span class="p">[</span><span class="n">pair_idx</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]])</span>
+
+    <span class="n">pairs1_idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">pairs1_idx</span><span class="p">)</span> <span class="k">if</span> <span class="n">pairs1_idx</span> <span class="k">else</span>
+                  <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
+    <span class="n">pairs2_idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">pairs2_idx</span><span class="p">)</span> <span class="k">if</span> <span class="n">pairs2_idx</span> <span class="k">else</span>
+                  <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
+    <span class="n">pairs1</span> <span class="o">=</span> <span class="n">features1</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">pairs1_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">pairs2</span> <span class="o">=</span> <span class="n">features2</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">pairs2_idx</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">keep_non_coloc</span><span class="p">:</span>
+        <span class="n">start_idx</span> <span class="o">=</span> <span class="n">pairs1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs1</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features1</span><span class="p">):</span>
+            <span class="n">non_coloc_mask1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="n">non_coloc_mask1</span><span class="p">[</span><span class="n">pairs1_idx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">non_coloc1</span> <span class="o">=</span> <span class="n">features1</span><span class="p">[</span><span class="n">non_coloc_mask1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">non_coloc1</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="n">start_idx</span><span class="p">,</span>
+                                             <span class="n">start_idx</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">non_coloc1</span><span class="p">))</span>
+            <span class="n">pairs1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pairs1</span><span class="p">,</span> <span class="n">non_coloc1</span><span class="p">])</span>
+            <span class="n">start_idx</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_coloc1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs2</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">features2</span><span class="p">):</span>
+            <span class="n">non_coloc_mask2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="n">non_coloc_mask2</span><span class="p">[</span><span class="n">pairs2_idx</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">non_coloc2</span> <span class="o">=</span> <span class="n">features2</span><span class="p">[</span><span class="n">non_coloc_mask2</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">non_coloc2</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="n">start_idx</span><span class="p">,</span>
+                                             <span class="n">start_idx</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">non_coloc2</span><span class="p">))</span>
+            <span class="n">pairs2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pairs2</span><span class="p">,</span> <span class="n">non_coloc2</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pairs1</span><span class="p">,</span> <span class="n">pairs2</span><span class="p">],</span> <span class="n">keys</span><span class="o">=</span><span class="n">channel_names</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="merge_channels"><a class="viewcode-back" href="../../multicolor.html#sdt.multicolor.merge_channels">[docs]</a><span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">merge_channels</span><span class="p">(</span><span class="n">features1</span><span class="p">,</span> <span class="n">features2</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">mean_pos</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                   <span class="n">return_data</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;Merge features of `features1` and `features2`</span>
+
+<span class="sd">    Concatenate all of `features1` and those entries of `features2` that do</span>
+<span class="sd">    not colocalize with any of `features1` (in the same frame).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    features1, features2 : pandas.DataFrame</span>
+<span class="sd">        Localization data</span>
+<span class="sd">    max_dist : float, optional</span>
+<span class="sd">        Maximum distance between features to still be considered colocalizing.</span>
+<span class="sd">        Defaults to 2.</span>
+<span class="sd">    mean_pos : bool, optional</span>
+<span class="sd">        When entries are merged (i. e., if an entry in `features1` is close</span>
+<span class="sd">        enough to one in `features2`), calculate the center of mass of the</span>
+<span class="sd">        two channel&#39;s entries. If `False`, use the position in `features1`.</span>
+<span class="sd">        All other (non-coordinate) columns are taken from `features1` in any</span>
+<span class="sd">        case. Defaults to `False`.</span>
+<span class="sd">    return_data : {&quot;data&quot;, &quot;index&quot;, &quot;both&quot;}, optional</span>
+<span class="sd">        Whether to return the full data of merged features, only indices</span>
+<span class="sd">        (that is, the DatatFrame&#39;s indices) of features in `features2` that</span>
+<span class="sd">        have no counterpart in `features1`, or both. Defaults to &quot;data&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        DataFrame of merged features. Returned if `return_data` is &quot;data&quot; or</span>
+<span class="sd">        &quot;both&quot;.</span>
+<span class="sd">    feat2_index : pandas.Index</span>
+<span class="sd">        Indices of features out of `features2` that have no counterpart in</span>
+<span class="sd">        `features1`. One can construct the DataFrame (as returned if</span>
+<span class="sd">        `return_data` is &quot;data&quot; or &quot;both&quot;) by</span>
+<span class="sd">        ``pandas.concat([features1, features2.loc[feat2_index]],</span>
+<span class="sd">        keys=channel_names, ignore_index=True)``. Returned if `return_data`</span>
+<span class="sd">        is &quot;index&quot; or &quot;both&quot;.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        Relevant names are `coords` and `time`. This means,</span>
+<span class="sd">        if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and the time</span>
+<span class="sd">        column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
+<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span>
+    <span class="n">f1_mat</span> <span class="o">=</span> <span class="n">features1</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">f2_mat</span> <span class="o">=</span> <span class="n">features2</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="n">coloc_idx_1</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">coloc_idx_2</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">frame_no</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="n">f1_mat</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">f2_mat</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="c1"># indices of features in current frame</span>
+        <span class="n">f1_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">f1_mat</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame_no</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">f2_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">f2_mat</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame_no</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">f1_idx</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="n">f2_idx</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+            <span class="c1"># One channel does not have any features in this frame</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">coloc_idx_1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">coloc_idx_2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># current frame positions with the frame column excluded</span>
+        <span class="n">f1_f</span> <span class="o">=</span> <span class="n">f1_mat</span><span class="p">[</span><span class="n">f1_idx</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">f2_f</span> <span class="o">=</span> <span class="n">f2_mat</span><span class="p">[</span><span class="n">f2_idx</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">pair_idx</span> <span class="o">=</span> <span class="n">find_closest_pairs</span><span class="p">(</span><span class="n">f1_f</span><span class="p">,</span> <span class="n">f2_f</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">)</span>
+        <span class="n">coloc_idx_1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f1_idx</span><span class="p">[</span><span class="n">pair_idx</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]])</span>
+        <span class="n">coloc_idx_2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f2_idx</span><span class="p">[</span><span class="n">pair_idx</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]])</span>
+
+    <span class="n">coloc_idx_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">coloc_idx_1</span><span class="p">)</span>
+    <span class="n">coloc_idx_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">coloc_idx_2</span><span class="p">)</span>
+
+    <span class="c1"># Indices of features of `features2` that don&#39;t colocalize with anything</span>
+    <span class="c1"># in `features1`</span>
+    <span class="n">f2_non_coloc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f2_mat</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">f2_non_coloc</span><span class="p">[</span><span class="n">coloc_idx_2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">f2_non_coloc_idx</span> <span class="o">=</span> <span class="n">features2</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">f2_non_coloc</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">return_data</span> <span class="o">==</span> <span class="s2">&quot;index&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">f2_non_coloc_idx</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">features1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">mean_pos</span><span class="p">:</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">f1_mat</span><span class="p">[</span><span class="n">coloc_idx_1</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">f2_mat</span><span class="p">[</span><span class="n">coloc_idx_2</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">ret</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ret</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">coloc_idx_1</span><span class="p">],</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">p1</span> <span class="o">+</span> <span class="n">p2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">if</span> <span class="n">coloc_idx_2</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">f2_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="c1"># Append non-merged features of channel 2 to `ret`</span>
+        <span class="n">f2_non_coloc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f2_mat</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">f2_non_coloc</span><span class="p">[</span><span class="n">coloc_idx_2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">ret</span><span class="p">,</span> <span class="n">features2</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">f2_non_coloc_idx</span><span class="p">]),</span>
+                        <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_data</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ret</span>
+    <span class="k">elif</span> <span class="n">return_data</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="p">,</span> <span class="n">f2_non_coloc_idx</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`return_data` has to be one of &#39;data&#39;, &#39;index&#39;, &quot;</span>
+                         <span class="s2">&quot;or &#39;both&#39;.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="find_codiffusion"><a class="viewcode-back" href="../../multicolor.html#sdt.multicolor.find_codiffusion">[docs]</a><span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">find_codiffusion</span><span class="p">(</span><span class="n">tracks1</span><span class="p">,</span> <span class="n">tracks2</span><span class="p">,</span> <span class="n">abs_threshold</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rel_threshold</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+                     <span class="n">return_data</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">feature_pairs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                     <span class="n">channel_names</span><span class="o">=</span><span class="n">_channel_names</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;Find codiffusion in tracking data</span>
+
+<span class="sd">    First, find pairs of localizations, the look up to which tracks they</span>
+<span class="sd">    belong to and thus match tracks.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tracks1, tracks2 : pandas.DataFrame</span>
+<span class="sd">        Tracking data. In addition to what is required by</span>
+<span class="sd">        :py:func:`find_colocalizations`, a &quot;particle&quot; column has to be present.</span>
+<span class="sd">    abs_threshold : int, optional</span>
+<span class="sd">        Minimum number of matched localizations per track pair. Defaults to 3</span>
+<span class="sd">    rel_threshold : float, optional</span>
+<span class="sd">        Minimum fraction of matched localizations that have to belong to the</span>
+<span class="sd">        same pair of tracks. E. g., if localizations of  aparticle in the</span>
+<span class="sd">        first channel match five localizations of a particle in the second</span>
+<span class="sd">        channel, and there are eight frames between the first and the last</span>
+<span class="sd">        match, that fraction would be 5/8. Defaults to 0.75.</span>
+<span class="sd">    return_data : {&quot;data&quot;, &quot;numbers&quot;, &quot;both&quot;}, optional</span>
+<span class="sd">        Whether to return the full data of the codiffusing particles, only</span>
+<span class="sd">        their particle numbers, or both. Defaults to &quot;data&quot;.</span>
+<span class="sd">    feature_pairs : pandas.DataFrame or None, optional</span>
+<span class="sd">        If :py:func:`find_colocalizations` has already been called on the</span>
+<span class="sd">        data, the result can be passed to save re-computation. If `None`,</span>
+<span class="sd">        :py:func:`find_colocalizations` is called in this function. Defaults</span>
+<span class="sd">        to None</span>
+<span class="sd">    max_dist : float, optional</span>
+<span class="sd">        `max_dist` parameter for :py:func:`find_colocalizations` call.</span>
+<span class="sd">        Defaults to 2.</span>
+<span class="sd">    channel_names : list of str, optional</span>
+<span class="sd">        Names of the two channels. Defaults to [&quot;channel1&quot;, &quot;channel2&quot;].</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        Full data (from `tracks1` and `tracks2`) of the codiffusing particles.</span>
+<span class="sd">        The DataFrame has a multi-index for columns with the top level</span>
+<span class="sd">        being the two channels.  Each line of DataFrame corresponds to one pair</span>
+<span class="sd">        of colocalizing particles. Returned if `return_data` is &quot;data&quot; or</span>
+<span class="sd">        &quot;both&quot;.</span>
+<span class="sd">    match_numbers : numpy.ndarray, shape=(n, 4)</span>
+<span class="sd">        Each row&#39;s first entry is a particle number in the first channel and</span>
+<span class="sd">        its second entry is the matching particle number in the second channel.</span>
+<span class="sd">        Third and fourth columns are start and end frame, respectively.</span>
+<span class="sd">        Returned if `return_data` is &quot;numbers&quot; or &quot;both&quot;.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        Relevant names are `coords`, `particle`, and `time`. This means,</span>
+<span class="sd">        if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and the time</span>
+<span class="sd">        column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
+<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">feature_pairs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">feature_pairs</span> <span class="o">=</span> <span class="n">find_colocalizations</span><span class="p">(</span>
+                <span class="n">tracks1</span><span class="p">,</span> <span class="n">tracks2</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">,</span> <span class="n">channel_names</span><span class="o">=</span><span class="n">channel_names</span><span class="p">,</span>
+                <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+    <span class="n">ch1_pairs</span> <span class="o">=</span> <span class="n">feature_pairs</span><span class="p">[</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">ch2_pairs</span> <span class="o">=</span> <span class="n">feature_pairs</span><span class="p">[</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">pn</span><span class="p">,</span> <span class="n">data1</span> <span class="ow">in</span> <span class="n">ch1_pairs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]):</span>
+        <span class="c1"># get channel 2 pair data corresponding to particle `pn` in channel 1</span>
+        <span class="c1"># (only &quot;particle&quot; and &quot;frame&quot; columns)</span>
+        <span class="n">data2</span> <span class="o">=</span> <span class="n">ch2_pairs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data1</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">],</span>
+                                            <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]]</span><span class="o">.</span><span class="n">values</span>
+        <span class="c1"># count how often which channel 2 particle appears</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">data2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># turn into array where each row is (channel2_particle_number, count)</span>
+        <span class="n">count_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">count</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="c1"># only take those which appear &gt;= abs_threshold times</span>
+        <span class="n">candidate_pns</span> <span class="o">=</span> <span class="n">count_arr</span><span class="p">[</span><span class="n">count_arr</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">abs_threshold</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">c_pn</span><span class="p">,</span> <span class="n">c_cnt</span> <span class="ow">in</span> <span class="n">candidate_pns</span><span class="p">:</span>
+            <span class="c1"># for each, get frame number for first and last match</span>
+            <span class="n">c_data2</span> <span class="o">=</span> <span class="n">data2</span><span class="p">[</span><span class="n">data2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">c_pn</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">c_data2</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">c_data2</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">c_cnt</span> <span class="o">/</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">rel_threshold</span><span class="p">:</span>
+                <span class="c1"># if greater or equal to threshold, record as valid</span>
+                <span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">pn</span><span class="p">,</span> <span class="n">c_pn</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+
+    <span class="n">matches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">return_data</span> <span class="o">==</span> <span class="s2">&quot;numbers&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">matches</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># construct the DataFrame to be returned</span>
+    <span class="k">for</span> <span class="n">new_pn</span><span class="p">,</span> <span class="p">(</span><span class="n">pn1</span><span class="p">,</span> <span class="n">pn2</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">matches</span><span class="p">):</span>
+        <span class="c1"># get tracks between start frame and end frame</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">tracks1</span><span class="p">[</span><span class="n">tracks1</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]]</span> <span class="o">==</span> <span class="n">pn1</span><span class="p">]</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">t1</span><span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">t1</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]])</span> <span class="o">&amp;</span>
+                <span class="p">(</span><span class="n">t1</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">))]</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="n">tracks2</span><span class="p">[</span><span class="n">tracks2</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]]</span> <span class="o">==</span> <span class="n">pn2</span><span class="p">]</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="n">t2</span><span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">t2</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]])</span> <span class="o">&amp;</span>
+                <span class="p">(</span><span class="n">t2</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">))]</span>
+        <span class="c1"># use frame as the index (=axis for merging when creating DataFrame)</span>
+        <span class="n">t1</span> <span class="o">=</span> <span class="n">t1</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># Copy to save</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="n">t2</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># the original</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">],</span> <span class="n">keys</span><span class="o">=</span><span class="n">channel_names</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># assign new particle number</span>
+        <span class="n">p</span><span class="p">[</span><span class="s2">&quot;codiff&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_pn</span>
+        <span class="c1"># assign frame number even to localizations that are missing in one</span>
+        <span class="c1"># channel (instead of a NaN). Thanks to set_index above, axes[0] is</span>
+        <span class="c1"># the list of frame numbers</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">(</span><span class="n">channel_names</span><span class="p">,</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])]</span> <span class="o">=</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="c1"># re-assign particle numbers to overwrite NaNs</span>
+        <span class="n">p</span><span class="p">[</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pn1</span>
+        <span class="n">p</span><span class="p">[</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pn2</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_data</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span>
+    <span class="k">elif</span> <span class="n">return_data</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">matches</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`return_data` has to be one of &#39;data&#39;, &#39;numbers&#39;, &quot;</span>
+                         <span class="s2">&quot;or &#39;both&#39;.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calc_pair_distance"><a class="viewcode-back" href="../../multicolor.html#sdt.multicolor.calc_pair_distance">[docs]</a><span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">calc_pair_distance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">channel_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate distances between colocalized features</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        Colocalized feature data, e.g. output of</span>
+<span class="sd">        :py:func:`find_colocalizations`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.Series</span>
+<span class="sd">        Distances between colocalized features. The series&#39; index is the</span>
+<span class="sd">        same as in the input DataFrame.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    channel_names : list of str or None, optional</span>
+<span class="sd">        Names of the channels. If None, use the first two entries of teh top</span>
+<span class="sd">        level of `data`&#39;s MultiIndex. Defaults to None.</span>
+<span class="sd">    columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        The only relevant name is `coords. This means,</span>
+<span class="sd">        if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;, set</span>
+<span class="sd">        ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">channel_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">channel_names</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">remove_unused_levels</span><span class="p">()</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">-</span>
+         <span class="n">data</span><span class="p">[</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]])</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="plot_codiffusion"><a class="viewcode-back" href="../../multicolor.html#sdt.multicolor.plot_codiffusion">[docs]</a><span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">plot_codiffusion</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">particle</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">legend_loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;-.&quot;</span><span class="p">],</span>
+                     <span class="n">channel_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;Plot trajectories of codiffusing particles</span>
+
+<span class="sd">    Each step is colored differently so that by comparing colors one can</span>
+<span class="sd">    figure out which steps in one channel correspond to which steps in the</span>
+<span class="sd">    other channel.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pandas.DataFrame or tuple of pandas.DataFrames</span>
+<span class="sd">        Tracking data of codiffusing particles. This can be a</span>
+<span class="sd">        :py:class:`pandas.DataFrame` with a MultiIndex for columns as e. g.</span>
+<span class="sd">        returned by :py:func:`find_codiffusion` (i. e. matching indices in the</span>
+<span class="sd">        DataFrames correspond to matching localizations) or a tuple of</span>
+<span class="sd">        DataFrames, one for each channel.</span>
+<span class="sd">    particle : int or tuple of int</span>
+<span class="sd">        Specify particle ID. In case `data` is a list of DataFrames and the</span>
+<span class="sd">        particles have different IDs, one can pass the tuple of IDs.</span>
+<span class="sd">    ax : matplotlib.axes.Axes</span>
+<span class="sd">        To be used for plotting. If `None`, ``matplotlib.pyplot.gca()`` will be</span>
+<span class="sd">        used. Defaults to `None`.</span>
+<span class="sd">    cmap: matplotlib.colors.Colormap, optional</span>
+<span class="sd">        To be used for coloring steps. Defaults to the &quot;Paired&quot; map of</span>
+<span class="sd">        `matplotlib`.</span>
+<span class="sd">    show_legend : bool, optional</span>
+<span class="sd">        Whether to print a legend or not. Defaults to True.</span>
+<span class="sd">    legend_loc : int or str</span>
+<span class="sd">        Is passed as the `loc` parameter to matplotlib&#39;s axes&#39; `legend` method.</span>
+<span class="sd">        Defaults to 0.</span>
+<span class="sd">    channel_names : list of str or None, optional</span>
+<span class="sd">        Names of the channels. If None, use the first two entries of teh top</span>
+<span class="sd">        level of `data`&#39;s MultiIndex if it has one (i. e. if it is a DataFrame</span>
+<span class="sd">        as created by :py:func:`find_codiffusion`), otherwise use</span>
+<span class="sd">        [&quot;channel1&quot;, &quot;channel2&quot;]. Defaults to None.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        Relevant names are `coords`, `particle`, and `time`. This means,</span>
+<span class="sd">        if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and the time</span>
+<span class="sd">        column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
+<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">cmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s2">&quot;Paired&quot;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+
+    <span class="n">col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">channel_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">):</span>
+            <span class="n">channel_names</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">remove_unused_levels</span><span class="p">()</span><span class="o">.</span><span class="n">levels</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">channel_names</span> <span class="o">=</span> <span class="n">_channel_names</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">d_iter</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]]</span> <span class="o">==</span> <span class="n">particle</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span>
+                  <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channel_names</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">particle</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">particle</span> <span class="o">=</span> <span class="p">(</span><span class="n">particle</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">d_iter</span> <span class="o">=</span> <span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]]</span> <span class="o">==</span> <span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+                                                                 <span class="n">particle</span><span class="p">))</span>
+
+    <span class="n">legend</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">ls</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">d_iter</span><span class="p">,</span> <span class="n">linestyles</span><span class="p">):</span>
+        <span class="c1"># the following two lines create a 3D array s. t. the i-th entry is</span>
+        <span class="c1"># the matrix [[start_x, start_y], [end_x, end_y]]</span>
+        <span class="n">xy</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span>
+        <span class="n">xy</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">segments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">xy</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">:]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">lc</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">collections</span><span class="o">.</span><span class="n">LineCollection</span><span class="p">(</span>
+            <span class="n">segments</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)),</span>
+            <span class="n">linestyles</span><span class="o">=</span><span class="n">ls</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">lc</span><span class="p">,</span> <span class="n">autolim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">Line2D</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">ls</span><span class="o">=</span><span class="n">ls</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">))</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">show_legend</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">legend</span><span class="p">,</span> <span class="n">channel_names</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">legend</span><span class="p">)],</span> <span class="n">loc</span><span class="o">=</span><span class="n">legend_loc</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

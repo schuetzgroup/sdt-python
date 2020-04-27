@@ -1,0 +1,562 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.io.yaml &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.io.yaml</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.io.yaml</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Support for loading and saving :py:mod:`sdt` data types from/to YAML</span>
+
+<span class="sd">This includes the :py:class:`ArrayDumper` and :py:class:`SafeArrayDumper`</span>
+<span class="sd">YAML dumpers for pretty-printing numpy arrays and their corresponding loaders,</span>
+<span class="sd">:py:class:`ArrayLoader` and :py:class:`SafeArrayLoader`.</span>
+
+<span class="sd">Additionally, there are the :py:class:`Loader`/:py:class:`SafeLoader`/</span>
+<span class="sd">:py:class:`Dumper`/:py:class:`SafeDumper` subclasses that have</span>
+<span class="sd">representers/constructors for many types in the :py:mod:`sdt` package.</span>
+
+<span class="sd">All of them can be used by passing them as the `Dumper`/`Loader` parameters</span>
+<span class="sd">to :py:func:`yaml.dump`/:py:func:`yaml.load`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">class</span> <span class="nc">ArrayNode</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">Node</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;YAML node for numpy arrays&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">ArrayEvent</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">NodeEvent</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;YAML parser event for numpy arrays&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">implicit</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">class</span> <span class="nc">ArrayDumperBase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Base class implementing a readable representation of numpy arrays</span>
+
+<span class="sd">    Uses :py:func:`numpy.array2string` to create a readable representation</span>
+<span class="sd">    of an array as a nested list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">array_tag</span> <span class="o">=</span> <span class="s2">&quot;!array&quot;</span>
+
+    <span class="k">def</span> <span class="nf">represent_numpy_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ArrayNode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">array_tag</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">serialize_array_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="n">alias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchors</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialized_nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">AliasEvent</span><span class="p">(</span><span class="n">alias</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serialized_nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">ArrayEvent</span><span class="p">(</span><span class="n">alias</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">expect_array_node</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_anchor</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_tag</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increase_indent</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">get_printoptions</span><span class="p">()[</span><span class="s2">&quot;threshold&quot;</span><span class="p">]</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array2string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_indent</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_plain</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indents</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">ArrayDumper</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">Dumper</span><span class="p">,</span> <span class="n">ArrayDumperBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`yaml.Dumper` making numpy array dumps more readable</span>
+
+<span class="sd">    This uses :py:func:`numpy.array2string` to create a readable representation</span>
+<span class="sd">    of an array as a nested list.</span>
+
+<span class="sd">    To use this dumper, simply pass it to :py:func:`yaml.dump` as the `Dumper`</span>
+<span class="sd">    parameter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">serialize_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ArrayNode</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serialize_array_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">serialize_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">expect_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">simple_key</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">ArrayEvent</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">expect_array_node</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">expect_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">simple_key</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">SafeArrayDumper</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeDumper</span><span class="p">,</span> <span class="n">ArrayDumperBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`yaml.SafeDumper` making numpy array dumps more readable</span>
+
+<span class="sd">    This uses :py:func:`numpy.array2string` to create a readable representation</span>
+<span class="sd">    of an array as a nested list.</span>
+
+<span class="sd">    To use this dumper, simply pass it to :py:func:`yaml.dump` as the `Dumper`</span>
+<span class="sd">    parameter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">serialize_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ArrayNode</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">serialize_array_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">serialize_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">expect_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">simple_key</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">ArrayEvent</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">expect_array_node</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">expect_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">simple_key</span><span class="p">)</span>
+
+
+<span class="n">ArrayDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ArrayDumper</span><span class="o">.</span><span class="n">represent_numpy_array</span><span class="p">)</span>
+<span class="n">SafeArrayDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                <span class="n">SafeArrayDumper</span><span class="o">.</span><span class="n">represent_numpy_array</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ArrayLoaderBase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Base class for loading arrays dumped by :py:class:`ArrayDumperBase`&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">construct_numpy_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_sequence</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ArrayLoader</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">Loader</span><span class="p">,</span> <span class="n">ArrayLoaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`yaml.Loader` for loading numpy arrays</span>
+
+<span class="sd">    that were dumped using :py:class:`ArrayDumper`.</span>
+
+<span class="sd">    To use this dumper, simply pass it to :py:func:`yaml.load` as the `Loader`</span>
+<span class="sd">    parameter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">SafeArrayLoader</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeLoader</span><span class="p">,</span> <span class="n">ArrayLoaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`yaml.SafeLoader` for loading numpy arrays</span>
+
+<span class="sd">    that were dumped using :py:class:`SafeArrayDumper`.</span>
+
+<span class="sd">    To use this dumper, simply pass it to :py:func:`yaml.load` as the `Loader`</span>
+<span class="sd">    parameter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="n">ArrayLoader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="n">ArrayDumperBase</span><span class="o">.</span><span class="n">array_tag</span><span class="p">,</span>
+                            <span class="n">ArrayLoader</span><span class="o">.</span><span class="n">construct_numpy_array</span><span class="p">)</span>
+<span class="n">SafeArrayLoader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="n">ArrayDumperBase</span><span class="o">.</span><span class="n">array_tag</span><span class="p">,</span>
+                                <span class="n">SafeArrayLoader</span><span class="o">.</span><span class="n">construct_numpy_array</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Dumper"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.Dumper">[docs]</a><span class="k">class</span> <span class="nc">Dumper</span><span class="p">(</span><span class="n">ArrayDumper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`ArrayDumper` with support for many more types</span>
+
+<span class="sd">    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SafeDumper"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.SafeDumper">[docs]</a><span class="k">class</span> <span class="nc">SafeDumper</span><span class="p">(</span><span class="n">SafeArrayDumper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`SafeArrayDumper` with support for many more types</span>
+
+<span class="sd">    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Loader"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.Loader">[docs]</a><span class="k">class</span> <span class="nc">Loader</span><span class="p">(</span><span class="n">ArrayLoader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`ArrayLoader` with support for many more types</span>
+
+<span class="sd">    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SafeLoader"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.SafeLoader">[docs]</a><span class="k">class</span> <span class="nc">SafeLoader</span><span class="p">(</span><span class="n">SafeArrayLoader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`SafeArrayLoader` with support for many more types</span>
+
+<span class="sd">    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<span class="c1"># slice</span>
+<span class="k">def</span> <span class="nf">slice_representer</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">start</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">stop</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">step</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="s2">&quot;!slice&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">slice_constructor</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">slice</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="s2">&quot;stop&quot;</span><span class="p">],</span> <span class="n">val</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">])</span>
+
+
+<span class="c1"># dict-like</span>
+<span class="k">def</span> <span class="nf">dict_representer</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">Resolver</span><span class="o">.</span><span class="n">DEFAULT_MAPPING_TAG</span><span class="p">,</span>
+                                    <span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+
+
+<span class="c1"># Load mappings as ordered dicts</span>
+<span class="k">def</span> <span class="nf">odict_constructor</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">loader</span><span class="o">.</span><span class="n">construct_pairs</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+
+<span class="n">Dumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="nb">slice</span><span class="p">,</span> <span class="n">slice_representer</span><span class="p">)</span>
+<span class="n">SafeDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="nb">slice</span><span class="p">,</span> <span class="n">slice_representer</span><span class="p">)</span>
+<span class="n">SafeDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="n">dict_representer</span><span class="p">)</span>
+
+<span class="c1"># Represent numpy scalars as standard types</span>
+<span class="k">for</span> <span class="n">D</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Dumper</span><span class="p">,</span> <span class="n">SafeDumper</span><span class="p">):</span>
+    <span class="c1"># There is no float128 on Windows; do it the safe way</span>
+    <span class="n">float_t</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+               <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float16&quot;</span><span class="p">,</span> <span class="s2">&quot;float32&quot;</span><span class="p">,</span> <span class="s2">&quot;float64&quot;</span><span class="p">,</span> <span class="s2">&quot;float128&quot;</span><span class="p">)</span>
+               <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="n">t</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">float_t</span><span class="p">:</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">represent_float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int16</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint16</span><span class="p">,</span>
+              <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">):</span>
+        <span class="n">D</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">represent_int</span><span class="p">)</span>
+
+<span class="n">Loader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s2">&quot;!slice&quot;</span><span class="p">,</span> <span class="n">slice_constructor</span><span class="p">)</span>
+<span class="n">SafeLoader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s2">&quot;!slice&quot;</span><span class="p">,</span> <span class="n">slice_constructor</span><span class="p">)</span>
+<span class="n">Loader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">Resolver</span><span class="o">.</span><span class="n">DEFAULT_MAPPING_TAG</span><span class="p">,</span>
+                       <span class="n">odict_constructor</span><span class="p">)</span>
+<span class="n">SafeLoader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">Resolver</span><span class="o">.</span><span class="n">DEFAULT_MAPPING_TAG</span><span class="p">,</span>
+                           <span class="n">odict_constructor</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_class_representer_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a representer for class `cls`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls : class</span>
+<span class="sd">        Class to be represented using</span>
+<span class="sd">        :py:meth:`yaml.Dumper.represent_yaml_object`. This class needs to have</span>
+<span class="sd">        a `yaml_tag` attribute and may optionally have a `flow_style`</span>
+<span class="sd">        attribute.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        Function to be passed to `yaml.Dumper.add_representer`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flow_style</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;yaml_flow_style&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">rep</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_yaml_object</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span>
+                                            <span class="n">flow_style</span><span class="o">=</span><span class="n">flow_style</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rep</span>
+
+
+<span class="k">def</span> <span class="nf">_class_constructor_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a constructor for class `cls`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls : class</span>
+<span class="sd">        Class to be constructed using</span>
+<span class="sd">        :py:meth:`yaml.Dumper.construct_yaml_object`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    callable</span>
+<span class="sd">        Function to be passed to `yaml.Dumper.add_constructor`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">cons</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_yaml_object</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cons</span>
+
+
+<div class="viewcode-block" id="dump"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.dump">[docs]</a><span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper around :py:func:`yaml.dump` using :py:class:`Dumper`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="safe_dump"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.safe_dump">[docs]</a><span class="k">def</span> <span class="nf">safe_dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump` using :py:class:`SafeDumper`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">SafeDumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dump_all"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.dump_all">[docs]</a><span class="k">def</span> <span class="nf">dump_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump_all` using :py:class:`Dumper`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="safe_dump_all"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.safe_dump_all">[docs]</a><span class="k">def</span> <span class="nf">safe_dump_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump_all` using :py:class:`SafeDumper`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">SafeDumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">Loader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load` using :py:class:`Loader`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="safe_load"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.safe_load">[docs]</a><span class="k">def</span> <span class="nf">safe_load</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load` using :py:class:`SafeLoader`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">SafeLoader</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_all"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.load_all">[docs]</a><span class="k">def</span> <span class="nf">load_all</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">Loader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load_all` using :py:class:`Loader`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load_all</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="safe_load_all"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.safe_load_all">[docs]</a><span class="k">def</span> <span class="nf">safe_load_all</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load_all` using :py:class:`SafeLoader`&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load_all</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">SafeLoader</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="register_yaml_class"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.register_yaml_class">[docs]</a><span class="k">def</span> <span class="nf">register_yaml_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add support for representing and loading a class</span>
+
+<span class="sd">    A representer is be added to :py:class:`Dumper` and</span>
+<span class="sd">    :py:class:`SafeDumper`. A loader is added to :py:class:`Loader` and</span>
+<span class="sd">    :py:class:`SafeLoader`.</span>
+
+<span class="sd">    The class should have a `yaml_tag` attribute and may have a</span>
+<span class="sd">    `yaml_flow_style` attribute.</span>
+
+<span class="sd">    If `to_yaml` or `from_yaml` class methods exist, they will be used for</span>
+<span class="sd">    representing or constructing class instances (see PyYAML&#39;s</span>
+<span class="sd">    :py:func:`yaml.Dumper.add_representer` and</span>
+<span class="sd">    :py:func:`yaml.Loader.add_constructor` details). Otherwise, the default</span>
+<span class="sd">    :py:func:`Dumper.represent_yaml_object` and</span>
+<span class="sd">    :py:func:`Loader.construct_yaml_object` are used.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cls : type</span>
+<span class="sd">        Class to add support for</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rep</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;to_yaml&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">rep</span> <span class="o">=</span> <span class="n">rep</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rep</span><span class="p">)</span> <span class="k">else</span> <span class="n">_class_representer_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="n">Dumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
+    <span class="n">SafeDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
+
+    <span class="n">cons</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;from_yaml&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">cons</span> <span class="o">=</span> <span class="n">cons</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">cons</span><span class="p">)</span> <span class="k">else</span> <span class="n">_class_representer_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="n">Loader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">cons</span><span class="p">)</span>
+    <span class="n">SafeLoader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">cons</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

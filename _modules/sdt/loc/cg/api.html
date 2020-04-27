@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.loc.cg.api &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.loc.cg.api</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.loc.cg.api</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;API for the Crocker-Grier feature finding and fitting algorithm</span>
+
+<span class="sd">Provides the standard :py:func:`locate` and :py:func:`batch` functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">algorithm</span>
+<span class="kn">from</span> <span class="nn">.algorithm</span> <span class="kn">import</span> <span class="n">col_nums</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">make_batch</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">restrict_roi</span>
+
+
+<div class="viewcode-block" id="locate"><a class="viewcode-back" href="../../../../loc.html#sdt.loc.cg.locate">[docs]</a><span class="k">def</span> <span class="nf">locate</span><span class="p">(</span><span class="n">raw_image</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">signal_thresh</span><span class="p">,</span> <span class="n">mass_thresh</span><span class="p">,</span> <span class="n">bandpass</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+           <span class="n">noise_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Locate bright, Gaussian-like features in an image</span>
+
+<span class="sd">    This implements an algorithm proposed by Crocker &amp; Grier [Croc1996]_</span>
+<span class="sd">    and is based on the implementation by the Kilfoil group, see</span>
+<span class="sd">    http://people.umass.edu/kilfoil/tools.php</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_image : array-like</span>
+<span class="sd">        Raw image data</span>
+<span class="sd">    radius : int</span>
+<span class="sd">        This should be a number a little greater than the radius of the</span>
+<span class="sd">        peaks.</span>
+<span class="sd">    signal_thresh : float</span>
+<span class="sd">        A number roughly equal to the value of the brightest pixel (minus the</span>
+<span class="sd">        CCD baseline) in the dimmest peak to be detected. Local maxima with</span>
+<span class="sd">        brightest pixels below this threshold will be discarded.</span>
+<span class="sd">    mass_thresh : float</span>
+<span class="sd">        Use a number roughly equal to the integrated intensity (mass) of the</span>
+<span class="sd">        dimmest peak (minus the CCD baseline) that should be detected. If this</span>
+<span class="sd">        is too low more background will be detected. If it is too high more</span>
+<span class="sd">        peaks will be missed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    DataFrame([&quot;x&quot;, &quot;y&quot;, &quot;mass&quot;, &quot;size&quot;, &quot;ecc&quot;])</span>
+<span class="sd">        x and y are the coordinates of the features. mass is the total</span>
+<span class="sd">        intensity of the feature. size gives the radii of gyration of the</span>
+<span class="sd">        features and ecc the eccentricity. If ``raw_image`` has a `frame_no`</span>
+<span class="sd">        attribute, a ``frame`` column with this information will also be</span>
+<span class="sd">        appended.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    bandpass : bool, optional</span>
+<span class="sd">        Set to True to turn on bandpass filtering, false otherwise. Default is</span>
+<span class="sd">        True.</span>
+<span class="sd">    noise_radius : float, optional</span>
+<span class="sd">        Noise correlation length in pixels. Defaults to 1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">peaks</span> <span class="o">=</span> <span class="n">algorithm</span><span class="o">.</span><span class="n">locate</span><span class="p">(</span><span class="n">raw_image</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">signal_thresh</span><span class="p">,</span> <span class="n">mass_thresh</span><span class="p">,</span>
+                             <span class="n">bandpass</span><span class="p">,</span> <span class="n">noise_radius</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">peaks</span><span class="p">[:,</span> <span class="p">[</span><span class="n">col_nums</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
+                                <span class="n">col_nums</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">ecc</span><span class="p">]],</span>
+                      <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="s2">&quot;ecc&quot;</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_image</span><span class="p">,</span> <span class="s2">&quot;frame_no&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">raw_image</span><span class="o">.</span><span class="n">frame_no</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_image</span><span class="o">.</span><span class="n">frame_no</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<span class="c1"># Multihreaded version makes it slower, use the single threaded one</span>
+<span class="n">batch</span> <span class="o">=</span> <span class="n">make_batch</span><span class="o">.</span><span class="n">make_batch</span><span class="p">(</span><span class="n">locate</span><span class="p">)</span>
+<span class="n">locate_roi</span> <span class="o">=</span> <span class="n">restrict_roi</span><span class="o">.</span><span class="n">restrict_roi</span><span class="p">(</span><span class="n">locate</span><span class="p">)</span>
+<span class="n">batch_roi</span> <span class="o">=</span> <span class="n">restrict_roi</span><span class="o">.</span><span class="n">restrict_roi</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

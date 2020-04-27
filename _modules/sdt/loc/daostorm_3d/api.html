@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.loc.daostorm_3d.api &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.loc.daostorm_3d.api</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.loc.daostorm_3d.api</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;API for the daostorm_3d feature finding and fitting algorithm</span>
+
+<span class="sd">Provides the standard :py:func:`locate` and :py:func:`batch` functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">col_nums</span><span class="p">,</span> <span class="n">feat_status</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fit_impl</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">find</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">algorithm</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">make_batch</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">restrict_roi</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">z_fit</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">snr_filters</span>
+
+<span class="n">numba_available</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fit_numba_impl</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">find_numba</span>
+    <span class="n">numba_available</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;Failed to import the numba optimized fitter. Falling back to the &quot;</span>
+        <span class="s2">&quot;slow pure python fitter. Error message: </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+
+
+<span class="n">num_threads</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="locate"><a class="viewcode-back" href="../../../../loc.html#sdt.loc.daostorm_3d.locate">[docs]</a><span class="k">def</span> <span class="nf">locate</span><span class="p">(</span><span class="n">raw_image</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">z_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+           <span class="n">find_filter</span><span class="o">=</span><span class="n">snr_filters</span><span class="o">.</span><span class="n">Identity</span><span class="p">(),</span> <span class="n">find_filter_opts</span><span class="o">=</span><span class="p">{},</span>
+           <span class="n">min_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;numba&quot;</span><span class="p">,</span>
+           <span class="n">max_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Locate bright, Gaussian-like features in an image</span>
+
+<span class="sd">    Uses the 3D-DAOSTORM algorithm [Babc2012]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_image : array-like</span>
+<span class="sd">        Raw image data</span>
+<span class="sd">    radius : float</span>
+<span class="sd">        This is in units of pixels. Initial guess for the radius of the</span>
+<span class="sd">        features.</span>
+<span class="sd">    model : {&quot;2dfixed&quot;, &quot;2d&quot;, &quot;3d&quot;, &quot;z&quot;}</span>
+<span class="sd">        &quot;2dfixed&quot; will do fixed sigma 2d Gaussian fitting. &quot;2d&quot; does variable</span>
+<span class="sd">        sigma 2d Gaussian fitting. &quot;3d&quot; means that x, y sigma are independently</span>
+<span class="sd">        variables (elliptical Gaussian, this is intened for determining the</span>
+<span class="sd">        z position from astigmatism). When using &quot;z&quot;, the z position is</span>
+<span class="sd">        varied to fit the signal x and y sigmas.</span>
+<span class="sd">    threshold : float</span>
+<span class="sd">        A number roughly equal to the value of the brightest pixel (minus the</span>
+<span class="sd">        CCD baseline) in the dimmest peak to be detected. Local maxima with</span>
+<span class="sd">        brightest pixels below this threshold will be discarded.</span>
+<span class="sd">    z_params : z_fit.Parameters or str or pandas.DataFrame or None</span>
+<span class="sd">        Only necessary if the `model` is &quot;z&quot; (then it cannot be `None`),</span>
+<span class="sd">        otherwise it is ignored. One may pass a :py:class:`z_fit.Parameters`</span>
+<span class="sd">        instance or a filename to load the parameters from or a</span>
+<span class="sd">        :py:class:`pandas.DataFrame` with calibration data (`z` vs. `size_x`</span>
+<span class="sd">        and `size_y`).</span>
+<span class="sd">    find_filter : str or :py:class:`snr_filters.SnrFilter`, optional</span>
+<span class="sd">        Apply a filter to the raw image data for the feature finding step.</span>
+<span class="sd">        Fitting is still done on the original image. `find_filter` can be the</span>
+<span class="sd">        name of one of the filters in :py:mod:`snr_filters` (i. e. &quot;Identity&quot;,</span>
+<span class="sd">        &quot;Cg&quot;, or &quot;Gaussian&quot;) or an :py:class:`snr_filters.SnrFilter` instance.</span>
+<span class="sd">        &quot;Identity&quot; is the identity transform, i. e. does nothing. &quot;Cg&quot; is</span>
+<span class="sd">        the Crocker &amp; Grier bandpass filter, see</span>
+<span class="sd">        :py:func:`sdt.image.filters.cg`, and &quot;Gaussian&quot; is a Gaussian filter.</span>
+<span class="sd">        Defaults to &quot;Identity&quot;.</span>
+<span class="sd">    find_filter_opts : dict</span>
+<span class="sd">        Parameters to be passed to the filter. For &quot;Cg&quot;, this is</span>
+<span class="sd">        &quot;feature_radius&quot;, for &quot;Gaussian&quot;, this is &quot;sigma&quot;</span>
+<span class="sd">    min_distance : float or None, optional</span>
+<span class="sd">        Minimum distance between two features. This can be used to suppress</span>
+<span class="sd">        detection of bright features as multiple overlapping ones if</span>
+<span class="sd">        `threshold` is rather low. If `None`, use `radius` (original</span>
+<span class="sd">        3D-DAOSTORM behavior). Defaults to None.</span>
+<span class="sd">    size_range : list of float or None, optional</span>
+<span class="sd">        [min, max] of the feature sizes both in x and y direction. Features</span>
+<span class="sd">        with sizes not in the range will be discarded, neighboring features</span>
+<span class="sd">        will be re-fit. If None, use ``[0.25*radius, inf]`` (original</span>
+<span class="sd">        3D-DAOSTORM behavior). Defaults to None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    DataFrame([x, y, z, signal, mass, bg, size])</span>
+<span class="sd">        x and y are the coordinates of the features. mass is the total</span>
+<span class="sd">        intensity of the feature, bg the background per pixel. size gives the</span>
+<span class="sd">        radii (sigma) of the features. If `raw_image` has a `frame_no`</span>
+<span class="sd">        attribute, a `frame` column with this information will also be</span>
+<span class="sd">        appended.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    engine : {&quot;python&quot;, &quot;numba&quot;}, optional</span>
+<span class="sd">        Which engine to use for calculations. &quot;numba&quot; is much faster than</span>
+<span class="sd">        &quot;python&quot;, but requires numba to be installed. Defaults to &quot;numba&quot;</span>
+<span class="sd">    max_iterations : int, optional</span>
+<span class="sd">        Maximum number of iterations for successive peak finding and fitting.</span>
+<span class="sd">        Default: 20</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">z_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to specify `z_params`&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z_params</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">z_params</span> <span class="o">=</span> <span class="n">z_fit</span><span class="o">.</span><span class="n">Parameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">z_params</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">z_params</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">z_params</span> <span class="o">=</span> <span class="n">z_fit</span><span class="o">.</span><span class="n">Parameters</span><span class="o">.</span><span class="n">calibrate</span><span class="p">(</span><span class="n">z_params</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;numba&quot;</span> <span class="ow">and</span> <span class="n">numba_available</span><span class="p">:</span>
+        <span class="n">Finder</span> <span class="o">=</span> <span class="n">find_numba</span><span class="o">.</span><span class="n">Finder</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;2dfixed&quot;</span><span class="p">:</span>
+            <span class="n">Fitter</span> <span class="o">=</span> <span class="n">fit_numba_impl</span><span class="o">.</span><span class="n">Fitter2DFixed</span>
+        <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;2d&quot;</span><span class="p">:</span>
+            <span class="n">Fitter</span> <span class="o">=</span> <span class="n">fit_numba_impl</span><span class="o">.</span><span class="n">Fitter2D</span>
+        <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;3d&quot;</span><span class="p">:</span>
+            <span class="n">Fitter</span> <span class="o">=</span> <span class="n">fit_numba_impl</span><span class="o">.</span><span class="n">Fitter3D</span>
+        <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span>
+            <span class="n">Fitter</span> <span class="o">=</span> <span class="n">fit_numba_impl</span><span class="o">.</span><span class="n">fitter_z_factory</span><span class="p">(</span><span class="n">z_params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown model: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">engine</span> <span class="o">==</span> <span class="s2">&quot;python&quot;</span><span class="p">:</span>
+        <span class="n">Finder</span> <span class="o">=</span> <span class="n">find</span><span class="o">.</span><span class="n">Finder</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;2dfixed&quot;</span><span class="p">:</span>
+            <span class="n">Fitter</span> <span class="o">=</span> <span class="n">fit_impl</span><span class="o">.</span><span class="n">Fitter2DFixed</span>
+        <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;2d&quot;</span><span class="p">:</span>
+            <span class="n">Fitter</span> <span class="o">=</span> <span class="n">fit_impl</span><span class="o">.</span><span class="n">Fitter2D</span>
+        <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;3d&quot;</span><span class="p">:</span>
+            <span class="n">Fitter</span> <span class="o">=</span> <span class="n">fit_impl</span><span class="o">.</span><span class="n">Fitter3D</span>
+        <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span>
+            <span class="n">Fitter</span> <span class="o">=</span> <span class="n">fit_impl</span><span class="o">.</span><span class="n">fitter_z_factory</span><span class="p">(</span><span class="n">z_params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown model: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown engine: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">engine</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">find_filter</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">filter_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">snr_filters</span><span class="p">,</span> <span class="n">find_filter</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                 <span class="s2">&quot;There is no filter named </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">find_filter</span><span class="p">))</span>
+        <span class="n">find_filter</span> <span class="o">=</span> <span class="n">filter_class</span><span class="p">(</span><span class="o">**</span><span class="n">find_filter_opts</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">find_filter</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="ow">and</span>
+          <span class="nb">issubclass</span><span class="p">(</span><span class="n">find_filter</span><span class="p">,</span> <span class="n">snr_filters</span><span class="o">.</span><span class="n">SnrFilter</span><span class="p">)):</span>
+        <span class="n">find_filter</span> <span class="o">=</span> <span class="n">find_filter</span><span class="p">(</span><span class="o">**</span><span class="n">find_filter_opts</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">find_filter</span><span class="p">,</span> <span class="n">snr_filters</span><span class="o">.</span><span class="n">SnrFilter</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid find-filter&quot;</span><span class="p">)</span>
+
+    <span class="n">peaks</span> <span class="o">=</span> <span class="n">algorithm</span><span class="o">.</span><span class="n">locate</span><span class="p">(</span><span class="n">raw_image</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span>
+                             <span class="n">find_filter</span><span class="p">,</span> <span class="n">Finder</span><span class="p">,</span> <span class="n">Fitter</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">,</span>
+                             <span class="n">size_range</span><span class="p">)</span>
+
+    <span class="c1"># Create DataFrame</span>
+    <span class="n">converged_peaks</span> <span class="o">=</span> <span class="n">peaks</span><span class="p">[</span><span class="n">peaks</span><span class="p">[:,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">stat</span><span class="p">]</span> <span class="o">==</span> <span class="n">feat_status</span><span class="o">.</span><span class="n">conv</span><span class="p">]</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">converged_peaks</span><span class="p">[:,</span> <span class="p">[</span><span class="n">col_nums</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">amp</span><span class="p">,</span>
+                                          <span class="n">col_nums</span><span class="o">.</span><span class="n">bg</span><span class="p">]],</span>
+                      <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;signal&quot;</span><span class="p">,</span> <span class="s2">&quot;bg&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">converged_peaks</span><span class="p">[:,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">z</span><span class="p">]</span>
+
+    <span class="c1"># integral of the 2D Gaussian 2 * pi * amplitude * sigma_x * sigma_y</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span>
+        <span class="n">converged_peaks</span><span class="p">[:,</span> <span class="p">[</span><span class="n">col_nums</span><span class="o">.</span><span class="n">wx</span><span class="p">,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">wy</span><span class="p">,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">amp</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;3d&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">):</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;size_x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">converged_peaks</span><span class="p">[:,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">wx</span><span class="p">]</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;size_y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">converged_peaks</span><span class="p">[:,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">wy</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">converged_peaks</span><span class="p">[:,</span> <span class="n">col_nums</span><span class="o">.</span><span class="n">wx</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">raw_image</span><span class="p">,</span> <span class="s2">&quot;frame_no&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">raw_image</span><span class="o">.</span><span class="n">frame_no</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_image</span><span class="o">.</span><span class="n">frame_no</span>
+
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<span class="n">batch</span> <span class="o">=</span> <span class="n">make_batch</span><span class="o">.</span><span class="n">make_batch_threaded</span><span class="p">(</span><span class="n">locate</span><span class="p">)</span>
+<span class="n">locate_roi</span> <span class="o">=</span> <span class="n">restrict_roi</span><span class="o">.</span><span class="n">restrict_roi</span><span class="p">(</span><span class="n">locate</span><span class="p">)</span>
+<span class="n">batch_roi</span> <span class="o">=</span> <span class="n">restrict_roi</span><span class="o">.</span><span class="n">restrict_roi</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

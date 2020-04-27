@@ -1,0 +1,887 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.chromatic &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.chromatic</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.chromatic</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Overlay color channels</span>
+<span class="sd">======================</span>
+
+<span class="sd">Multi-color microscopy images are typically created by directing the light of</span>
+<span class="sd">different wavelengths onto different regions of the camera chip or onto</span>
+<span class="sd">different cameras.</span>
+
+<span class="sd">In order to overlay the different channels, one can record images of</span>
+<span class="sd">multi-color beads and identify each bead&#39;s position in each channel to</span>
+<span class="sd">determine a transformation that transforms data from one channel to match the</span>
+<span class="sd">other channel. The :py:class:`Corrector` class offers an easy way to do this.</span>
+
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">Let&#39;s assume that multiple images/sequences of flourescent beads have been</span>
+<span class="sd">acquired with two color channels on in the same image. First, the beads</span>
+<span class="sd">need to be localized (e.g. using the ``sdt.gui.locator`` application).</span>
+<span class="sd">These need to be loaded:</span>
+
+<span class="sd">&gt;&gt;&gt; bead_loc = [sdt.io.load(b) for b in glob.glob(&quot;beads*.h5&quot;)]</span>
+
+<span class="sd">Next, we define ROIs for the two channels using :py:class:`sdt.roi.ROI` and</span>
+<span class="sd">choose the bead localizations with respect to the ROIs:</span>
+
+<span class="sd">&gt;&gt;&gt; r1 = sdt.roi.ROI((0, 0), size=(200, 100))</span>
+<span class="sd">&gt;&gt;&gt; r2 = sdt.roi.ROI((0, 200), size=(200, 100))</span>
+<span class="sd">&gt;&gt;&gt; beads_r1 = [r1(b) for b in bead_loc]</span>
+<span class="sd">&gt;&gt;&gt; beads_r2 = [r2(b) for b in bead_loc]</span>
+
+<span class="sd">Now, calculate the transform that overlays the two channels using</span>
+<span class="sd">:py:class:`Corrector`:</span>
+
+<span class="sd">&gt;&gt;&gt; corr = Corrector(beads_r1, beads_r2)</span>
+<span class="sd">&gt;&gt;&gt; corr.determine_parameters()</span>
+<span class="sd">&gt;&gt;&gt; corr.test()  # Plot results</span>
+
+<span class="sd">This can now be used to transform i.e. image data from channel 1 so that it</span>
+<span class="sd">can be overlaid with channel 1:</span>
+
+<span class="sd">&gt;&gt;&gt; img = pims.open(&quot;image.tif&quot;)[0]  # Load first frame (number 0)</span>
+<span class="sd">&gt;&gt;&gt; img_r1 = r1(img)  # Get channel 1 part of the image</span>
+<span class="sd">&gt;&gt;&gt; img_r2 = r2(img)  # Get channel 2 part of the image</span>
+<span class="sd">&gt;&gt;&gt; img_r1_corr = corr(img_r1, channel=1)  # Transform channel 1 image</span>
+<span class="sd">&gt;&gt;&gt; overlay = numpy.dstack([img_r1, img_r2, np.zeros_like(img_r1)])</span>
+<span class="sd">&gt;&gt;&gt; matplotlib.pyplot.imshow(overlay)  # Plot overlay</span>
+
+<span class="sd">Similarly, coordinates of single molecule data can be transformed:</span>
+
+<span class="sd">&gt;&gt;&gt; loc = sdt.io.load(&quot;loc.h5&quot;)  # Load data</span>
+<span class="sd">&gt;&gt;&gt; loc_r1 = r1(loc)  # Get data from channel 1</span>
+<span class="sd">&gt;&gt;&gt; loc_r2 = r2(loc)  # Get data from channel 2</span>
+<span class="sd">&gt;&gt;&gt; loc_r1_corr = corr(loc_r1, channel=1)  # Transform channel 1 data</span>
+<span class="sd">&gt;&gt;&gt; matplotlib.pyplot.scatter(loc_r1_corr[&quot;x&quot;], loc_r1_corr[&quot;y&quot;], marker=&quot;+&quot;)</span>
+<span class="sd">&gt;&gt;&gt; matplotlib.pyplot.scatter(loc_r2[&quot;x&quot;], loc_r2[&quot;y&quot;], marker=&quot;x&quot;)</span>
+
+<span class="sd">There is also support for saving and loading a :py:class:`Corrector` instance</span>
+<span class="sd">to/from YAML:</span>
+
+<span class="sd">&gt;&gt;&gt; with open(&quot;output.yaml&quot;, &quot;w&quot;) as f:</span>
+<span class="sd">&gt;&gt;&gt;     sdt.io.yaml.safe_dump(corr, f)</span>
+<span class="sd">&gt;&gt;&gt; with opon(&quot;output.yaml&quot;, &quot;r&quot;) as f:</span>
+<span class="sd">&gt;&gt;&gt;     corr_loaded = sdt.io.yaml.safe_load(f)</span>
+
+
+<span class="sd">Programming reference</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">.. autoclass:: Corrector</span>
+<span class="sd">    :members:</span>
+<span class="sd">    :special-members: __call__</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">roi</span><span class="p">,</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">pipeline</span>
+
+
+<span class="k">def</span> <span class="nf">_affine_trafo</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Do an affine transformation</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    params : numpy.ndarray, shape(n, n+1) or shape(n+1, n+1)</span>
+<span class="sd">        Transformation matrix. The top-left (n, n) block is used as the</span>
+<span class="sd">        linear part of the transformation while the top-right column of n</span>
+<span class="sd">        entries specifies the shift.</span>
+<span class="sd">    loc : numpy.ndarray, shape(m, n)</span>
+<span class="sd">        Array of m n-dimensional coordinate tuples to be transformed.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray, shape(m, n)</span>
+<span class="sd">        Transformed coordinate tuples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ndim</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">loc</span> <span class="o">@</span> <span class="n">params</span><span class="p">[:</span><span class="n">ndim</span><span class="p">,</span> <span class="p">:</span><span class="n">ndim</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">params</span><span class="p">[:</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ndim</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Corrector"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector">[docs]</a><span class="k">class</span> <span class="nc">Corrector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for easy overlay of two fluorescence microscopy channels</span>
+
+<span class="sd">    This class provides an easy-to-use interface to the correction</span>
+<span class="sd">    process.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!ChromaticCorrector&quot;</span>
+
+    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">feat2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{},</span>
+                 <span class="n">channel_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;channel1&quot;</span><span class="p">,</span> <span class="s2">&quot;channel2&quot;</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feat1, feat2 : list of pandas.DataFrame or pandas.DataFrame or None, optional</span>
+<span class="sd">            Set the `feat1` and `feat2` attribute (turning it into a list</span>
+<span class="sd">            if it is a single DataFrame). Can also be `None`, but in this case</span>
+<span class="sd">            :py:meth:`find_pairs` and :py:meth:`determine_parameters` will</span>
+<span class="sd">            not work. Defaults to `None`.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names as defined in</span>
+<span class="sd">            :py:attr:`config.columns`. Relevant name are `coords` and `time`.</span>
+<span class="sd">            That means, if the DataFrames have coordinate columns &quot;x&quot; and &quot;z&quot;,</span>
+<span class="sd">            and a time column &quot;alt_frame&quot;, set</span>
+<span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;], &quot;time&quot;: &quot;alt_frame&quot;}``. This is</span>
+<span class="sd">            used to set the :py:attr:`columns` attribute.</span>
+<span class="sd">        channel_names : list of str, optional</span>
+<span class="sd">            Set the `channel_names` attribute. Defaults to ``[&quot;channel1&quot;,</span>
+<span class="sd">            &quot;channel2&quot;]``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feat1</span> <span class="o">=</span> <span class="p">[</span><span class="n">feat1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feat1</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="k">else</span> <span class="n">feat1</span>
+        <span class="sd">&quot;&quot;&quot;List of pandas.DataFrame; Positions of beads (as found by a</span>
+<span class="sd">        localization algorithm) in the first channel. Each DataFrame</span>
+<span class="sd">        corresponds to one image (sequence), thus multiple bead images can be</span>
+<span class="sd">        used to increase the accuracy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feat2</span> <span class="o">=</span> <span class="p">[</span><span class="n">feat2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feat2</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="k">else</span> <span class="n">feat2</span>
+        <span class="sd">&quot;&quot;&quot;Same as :py:attr:`feat1`, but for the second channel&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
+        <span class="sd">&quot;&quot;&quot;dict of column names in :py:attr:`feat1` and :py:attr:`feat2`.</span>
+<span class="sd">        Defaults are taken from :py:attr:`config.columns`. This is not used</span>
+<span class="sd">        in :py:meth:`__call__`, which has its own `columns` parameter.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span> <span class="o">=</span> <span class="n">channel_names</span>
+        <span class="sd">&quot;&quot;&quot;List of channel names&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;:py:class:`pandas.DataFrame` containing the pairs found by</span>
+<span class="sd">        :py:meth:`determine_parameters`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Array describing the affine transformation of data from</span>
+<span class="sd">        channel 1 to channel 2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Array describing the affine transformation of data from</span>
+<span class="sd">        channel 2 to channel 1.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Corrector.determine_parameters"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.determine_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">determine_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol_rel</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tol_abs</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">score_cutoff</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+                             <span class="n">ambiguity_factor</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">flip_axes</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;Determine the parameters for the affine transformation</span>
+
+<span class="sd">        This takes the localizations of :py:attr:`feat1` and tries to match</span>
+<span class="sd">        them with those of :py:attr:`feat2`. Then a linear fit is used to</span>
+<span class="sd">        determine the affine transformation to correct for chromatic</span>
+<span class="sd">        aberrations.</span>
+
+<span class="sd">        This is a convenience function that calls :py:meth:`find_pairs` and</span>
+<span class="sd">        :py:meth:`fit_parameters`; see the documentation of the methods for</span>
+<span class="sd">        details.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tol_rel : float</span>
+<span class="sd">            Relative tolerance parameter for :py:func:`numpy.isclose()`.</span>
+<span class="sd">            Defaults to 0.05.</span>
+<span class="sd">        tol_abs : float</span>
+<span class="sd">            Absolute tolerance parameter for :py:func:`numpy.isclose()`.</span>
+<span class="sd">            Defaults to 0.</span>
+<span class="sd">        score_cutoff : float, optional</span>
+<span class="sd">            In order to get rid of false matches a threshold for scores can</span>
+<span class="sd">            be set. All scores below this threshold are discarded. The</span>
+<span class="sd">            threshold is calculated as ``score_cutoff*score.max()``. Defaults</span>
+<span class="sd">            to 0.5.</span>
+<span class="sd">        ambiguity_factor : float</span>
+<span class="sd">            If there are two candidates as a partner for a feature, and the</span>
+<span class="sd">            score of the lower scoring one is larger than `ambiguity_factor`</span>
+<span class="sd">            times the score of the higher scorer, the pairs are considered</span>
+<span class="sd">            ambiguous and therefore discarded. Defaults to 0.8.</span>
+<span class="sd">        flip_axes : int or list of int, optional</span>
+<span class="sd">            Axes with respect to which the channels are flipped. E.g. if</span>
+<span class="sd">            channel 2 is upside done w.r.t channel 1, set ``flip_axes=1``,</span>
+<span class="sd">            if it is mirrored left-to-right, set ``flip_axes=0``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_pairs</span><span class="p">(</span><span class="n">tol_rel</span><span class="p">,</span> <span class="n">tol_abs</span><span class="p">,</span> <span class="n">score_cutoff</span><span class="p">,</span> <span class="n">ambiguity_factor</span><span class="p">,</span>
+                        <span class="n">flip_axes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_parameters</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Corrector.__call__"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+                 <span class="n">cval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Correct for chromatic aberrations</span>
+
+<span class="sd">        This can be done either on coordinates (e. g. resulting from feature</span>
+<span class="sd">        localization) or directly on raw images.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame or slicerator.Slicerator or array-like</span>
+<span class="sd">            data to be processed. If a pandas.Dataframe, the feature</span>
+<span class="sd">            coordinates will be corrected. Otherwise,</span>
+<span class="sd">            :py:class:`sdt.helper.Pipeline` is used to correct image data using</span>
+<span class="sd">            an affine transformation.</span>
+<span class="sd">        channel : int, optional</span>
+<span class="sd">            If `features` are in the first channel (corresponding to the</span>
+<span class="sd">            `feat1` arg of the constructor), set to 1. If features are in the</span>
+<span class="sd">            second channel, set to 2. Depending on this, a transformation will</span>
+<span class="sd">            be applied to the coordinates of `features` to match the other</span>
+<span class="sd">            channel (mathematically speaking depending on this parameter</span>
+<span class="sd">            either the &quot;original&quot; transformation or its inverse are applied.)</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">            Only has an effect if `data` is a DataFrame. If True, the</span>
+<span class="sd">            feature coordinates will be corrected in place. Defaults to False.</span>
+<span class="sd">        mode : str, optional</span>
+<span class="sd">            How to fill points outside of the uncorrected image boundaries.</span>
+<span class="sd">            Possibilities are &quot;constant&quot;, &quot;nearest&quot;, &quot;reflect&quot; or &quot;wrap&quot;.</span>
+<span class="sd">            Defaults to &quot;constant&quot;.</span>
+<span class="sd">        cval : scalar or callable, optional</span>
+<span class="sd">            What value to use for `mode=&quot;constant&quot;`. If this is callable, it</span>
+<span class="sd">            should take a single argument (the uncorrected image) and return a</span>
+<span class="sd">            scalar, which will be used as the fill value. Defaults to 0.0.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        columns : dict, optional</span>
+<span class="sd">            Override default column names in case `data` is a</span>
+<span class="sd">            :py:class:`pandas.DataFrame`. The only relevant name is `coords`.</span>
+<span class="sd">            That means, if the DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;,</span>
+<span class="sd">            set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;channel has to be either 1 or 2&quot;</span><span class="p">)</span>
+
+        <span class="n">pos_columns</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">pos_columns</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">par</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;parameters</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel</span><span class="p">))</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">pos_columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">_affine_trafo</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="c1"># copied previously, now return</span>
+                <span class="k">return</span> <span class="n">data</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Affine2D</span><span class="p">(</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;parameters</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">transform_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">path</span><span class="p">),</span>
+                               <span class="n">buffer</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span>
+                               <span class="n">no_image</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">image_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parms</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;parameters</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="n">channel</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span><span class="p">))</span>
+
+            <span class="nd">@pipeline</span>
+            <span class="k">def</span> <span class="nf">corr</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+                <span class="c1"># transpose image since matrix axes are reversed compared to</span>
+                <span class="c1"># coordinate axes</span>
+                <span class="n">img_t</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">T</span>
+
+                <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">cval</span><span class="p">):</span>
+                    <span class="n">cv</span> <span class="o">=</span> <span class="n">cval</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">cv</span> <span class="o">=</span> <span class="n">cval</span>
+
+                <span class="c1"># this way, the original subclass of np.ndarray is preserved</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">img_t</span><span class="p">)</span>
+                <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">affine_transform</span><span class="p">(</span>
+                    <span class="n">img_t</span><span class="p">,</span> <span class="n">parms</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">parms</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">output</span><span class="o">=</span><span class="n">ret</span><span class="p">,</span>
+                    <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># transpose back</span>
+            <span class="k">return</span> <span class="n">corr</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Corrector.test"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test validity of the correction parameters</span>
+
+<span class="sd">        This plots the affine transformation functions and the coordinates of</span>
+<span class="sd">        the pairs that were matched in the channels. If everything went well,</span>
+<span class="sd">        the dots (i. e. pair coordinates) should lie on the line</span>
+<span class="sd">        (transformation function).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : tuple of matplotlib axes or None, optional</span>
+<span class="sd">            Axes to use for plotting. The length of the tuple has to be 2.</span>
+<span class="sd">            If None, allocate new axes using</span>
+<span class="sd">            :py:func:`matplotlib.pyplot.subplots`. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">grid_kw</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">width_ratios</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">gridspec_kw</span><span class="o">=</span><span class="n">grid_kw</span><span class="p">)</span>
+
+        <span class="n">c1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">c1_corr</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">diff1</span> <span class="o">=</span> <span class="p">(</span><span class="n">c1_corr</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span> <span class="o">-</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]])</span>
+        <span class="n">diff1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">diff1</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">c2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">diff1</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;# data points&quot;</span><span class="p">)</span>
+
+        <span class="n">x_col</span><span class="p">,</span> <span class="n">y_col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">c1_corr</span><span class="p">[</span><span class="n">x_col</span><span class="p">],</span> <span class="n">c1_corr</span><span class="p">[</span><span class="n">y_col</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">c2</span><span class="p">[</span><span class="n">x_col</span><span class="p">],</span> <span class="n">c2</span><span class="p">[</span><span class="n">y_col</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">adjustable</span><span class="o">=</span><span class="s2">&quot;datalim&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Overlay&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Corrector.save"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npz&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;chromatic_param1&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;chromatic_param2&quot;</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;Save transformation parameters to file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file : str or file</span>
+<span class="sd">            File name or an open file-like object to save data to.</span>
+<span class="sd">        fmt : {&quot;npz&quot;, &quot;mat&quot;}, optional</span>
+<span class="sd">            Format to save data. Either numpy (&quot;npz&quot;) or MATLAB (&quot;mat&quot;).</span>
+<span class="sd">            Defaults to &quot;npz&quot;.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        key : tuple of str, optional</span>
+<span class="sd">            Name of the variables in the saved file. Defaults to</span>
+<span class="sd">            (&quot;chromatic_param1&quot;, &quot;chromatic_param2&quot;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vardict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span><span class="p">,</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters2</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;npz&quot;</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">**</span><span class="n">vardict</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;mat&quot;</span><span class="p">:</span>
+            <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">savemat</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">vardict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown format: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Corrector.load"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.load">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;npz&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;chromatic_param1&quot;</span><span class="p">,</span> <span class="s2">&quot;chromatic_param2&quot;</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;Read paramaters from a file and construct a `Corrector`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file : str or file</span>
+<span class="sd">            File name or an open file-like object to load data from.</span>
+<span class="sd">        fmt : {&quot;npz&quot;, &quot;mat&quot;, &quot;wrp&quot;}, optional</span>
+<span class="sd">            Format to save data. Either numpy (&quot;npz&quot;) or MATLAB (&quot;mat&quot;) or</span>
+<span class="sd">            `determine_shiftstretch`&#39;s wrp (&quot;wrp&quot;). Defaults to &quot;npz&quot;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        sdt.chromatic.Corrector</span>
+<span class="sd">            A :py:class:`Corrector` instance with the parameters read from the</span>
+<span class="sd">            file.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        key : tuple of str, optional</span>
+<span class="sd">            Name of the variables in the saved file (does not apply to &quot;wrp&quot;).</span>
+<span class="sd">            Defaults to (&quot;chromatic_param1&quot;, &quot;chromatic_param2&quot;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="n">Corrector</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;npz&quot;</span><span class="p">:</span>
+            <span class="n">npz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="n">corr</span><span class="o">.</span><span class="n">parameters1</span> <span class="o">=</span> <span class="n">npz</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">corr</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">npz</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;mat&quot;</span><span class="p">:</span>
+            <span class="n">mat</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="n">corr</span><span class="o">.</span><span class="n">parameters1</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">corr</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;wrp&quot;</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">squeeze_me</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">struct_as_record</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s2">&quot;S&quot;</span><span class="p">]</span>
+            <span class="n">corr</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">d</span><span class="o">.</span><span class="n">k1</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">d1</span><span class="p">],</span>
+                                         <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">k2</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">d2</span><span class="p">],</span>
+                                         <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+            <span class="n">corr</span><span class="o">.</span><span class="n">parameters1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">parameters2</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown format: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">corr</span></div>
+
+<div class="viewcode-block" id="Corrector.find_pairs"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.find_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">find_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol_rel</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tol_abs</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">score_cutoff</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>
+                   <span class="n">ambiguity_factor</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">flip_axes</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="sd">&quot;&quot;&quot;Match features of `feat1` with features of `feat2`</span>
+
+<span class="sd">        This is done by calculating the vectors from every</span>
+<span class="sd">        feature all the other features in :py:attr:`feat1` and compare them to</span>
+<span class="sd">        those of :py:attr:`feat2` using the :py:func:`numpy.isclose` function</span>
+<span class="sd">        on both the x and the y</span>
+<span class="sd">        coordinate, where `tol_rel` and `tol_abs` are the relative and</span>
+<span class="sd">        absolute tolerance parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tol_rel : float</span>
+<span class="sd">            Relative tolerance parameter for `numpy.isclose()`. Defaults to</span>
+<span class="sd">            0.05.</span>
+<span class="sd">        tol_abs : float</span>
+<span class="sd">            Absolute tolerance parameter for `numpy.isclose()`. Defaults to 0.</span>
+<span class="sd">        score_cutoff : float, optional</span>
+<span class="sd">            In order to get rid of false matches a threshold for scores can</span>
+<span class="sd">            be set. All scores below this threshold are discarded. The</span>
+<span class="sd">            threshold is calculated as score_cutoff * score.max(). Defaults to</span>
+<span class="sd">            0.5.</span>
+<span class="sd">        ambiguity_factor : float</span>
+<span class="sd">            If there are two candidates as a partner for a feature, and the</span>
+<span class="sd">            score of the lower scoring one is larger than `ambiguity_factor`</span>
+<span class="sd">            times the score of the higher scorer, the pairs are considered</span>
+<span class="sd">            ambiguous and therefore discarded. Defaults to 0.8.</span>
+<span class="sd">        flip_axes : int or list of int, optional</span>
+<span class="sd">            Axes with respect to which the channels are flipped. E.g. if</span>
+<span class="sd">            channel 2 is upside done w.r.t channel 1, set ``flip_axes=1``,</span>
+<span class="sd">            if it is mirrored left-to-right, set ``flip_axes=0``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f1</span><span class="p">,</span> <span class="n">f2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feat1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feat2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">)):</span>
+                <span class="c1"># If there is a &quot;frame&quot; column, split data according to</span>
+                <span class="c1"># frame number since pairs can only be in the same frame</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="n">f</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span> <span class="o">==</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">)]</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">f1</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If there is no &quot;frame&quot; column, just take everything</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">((</span><span class="n">f1</span><span class="p">,</span> <span class="n">f2</span><span class="p">),)</span>
+            <span class="k">for</span> <span class="n">f1_frame_data</span><span class="p">,</span> <span class="n">f2_frame_data</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">f1_frame_data</span><span class="o">.</span><span class="n">empty</span> <span class="ow">or</span> <span class="n">f2_frame_data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="c1"># Don&#39;t even try to operate on empty frames. Weird things</span>
+                    <span class="c1"># are bound to happen</span>
+                    <span class="k">continue</span>
+                <span class="n">v1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vectors_cartesian</span><span class="p">(</span><span class="n">f1_frame_data</span><span class="p">)</span>
+                <span class="n">v2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vectors_cartesian</span><span class="p">(</span><span class="n">f2_frame_data</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flip_axes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                    <span class="n">flip_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">flip_axes</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">flip_axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">flip_axes</span><span class="p">)</span>
+                <span class="n">v2</span><span class="p">[</span><span class="n">flip_axes</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_scores_cartesian</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">tol_rel</span><span class="p">,</span> <span class="n">tol_abs</span><span class="p">)</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pairs_from_score</span><span class="p">(</span>
+                    <span class="n">f1_frame_data</span><span class="p">,</span> <span class="n">f2_frame_data</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">score_cutoff</span><span class="p">,</span>
+                    <span class="n">ambiguity_factor</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Corrector.fit_parameters"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.fit_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">fit_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine parameters for the affine transformation</span>
+
+<span class="sd">        An affine transformation is used to map x and y coordinates of `feat1`</span>
+<span class="sd">        to to those of `feat2`. This requires :py:attr:`pairs` to be set, e.g.</span>
+<span class="sd">        by running :py:meth:`find_pairs`.</span>
+<span class="sd">        The result is saved as :py:attr:`parameters1` (transform of channel 1</span>
+<span class="sd">        coordinates to channel 2) and :py:attr:`parameters2` (transform of</span>
+<span class="sd">        channel 2  coordinates to channel 1) attributes.</span>
+
+<span class="sd">        :py:attr:`parameters1` is calculated by determining the affine</span>
+<span class="sd">        transformation between the :py:attr:`pairs` entries using a linear</span>
+<span class="sd">        least squares fit. :py:attr:`parameters2` is its inverse. Therefore,</span>
+<span class="sd">        results may be slightly different depending on what is channel1 and</span>
+<span class="sd">        what is channel2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ch1_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ch2_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">loc1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">[</span><span class="n">ch1_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">loc2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">[</span><span class="n">ch2_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="n">loc1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">ndim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">loc1_embedded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">loc1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">loc1</span><span class="p">),</span> <span class="mi">1</span><span class="p">))])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span><span class="p">[:</span><span class="n">ndim</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">loc1_embedded</span><span class="p">,</span> <span class="n">loc2</span><span class="p">,</span>
+                                                     <span class="n">rcond</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span><span class="p">[</span><span class="n">ndim</span><span class="p">,</span> <span class="p">:</span><span class="n">ndim</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span><span class="p">[</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ndim</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_vectors_cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate vectors of each point in features to every other point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        features : pandas.DataFrame</span>
+<span class="sd">            Features with coordinates in columns `pos_columns`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        vecs : numpy.ndarray</span>
+<span class="sd">            The first axis specifies the coordinate component of the vectors,</span>
+<span class="sd">            e. g. ``vecs[0]`` gives the x components. For each ``i``,</span>
+<span class="sd">            ``vecs[i, j, k]`` yields the i-th component of the vector pointing</span>
+<span class="sd">            from the j-th feature in `features` to the k-th feature.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># transpose so that data[1] gives x coordinates, data[2] y coordinates</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">T</span>
+        <span class="c1"># for each coordinate (the first &#39;:&#39;), calculate the differences</span>
+        <span class="c1"># between all entries (thus &#39;np.newaxis, :&#39; and &#39;:, np.newaxis&#39;)</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_all_scores_cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">,</span> <span class="n">tol_rel</span><span class="p">,</span> <span class="n">tol_abs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine scores for all possible pairs of features</span>
+
+<span class="sd">        Compare all elements of `vec1` and all of `vec2` using</span>
+<span class="sd">        `numpy.isclose()` to determine which pairs of features have the most</span>
+<span class="sd">        simalar vectors pointing to the other features.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vec1 : numpy.ndarray</span>
+<span class="sd">            Vectors for the first set of features as determined by</span>
+<span class="sd">            `_vectors_cartesian`.</span>
+<span class="sd">        vec2 : numpy.array</span>
+<span class="sd">            Vectors for the second set of features as determined by</span>
+<span class="sd">            `_vectors_cartesian`.</span>
+<span class="sd">        tol_rel : float</span>
+<span class="sd">            Relative tolerance parameter for `numpy.isclose`</span>
+<span class="sd">        tol_abs : float</span>
+<span class="sd">            Absolute tolerance parameter for `numpy.isclose`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.array</span>
+<span class="sd">            A matrix of scores. scores[i, j] holds the number of matching</span>
+<span class="sd">            vectors for the i-th entry of feat1 and the j-th entry of feat2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># vectors versions for broadcasting</span>
+        <span class="c1"># The first index specifies the coordinate (x, y, z, …)</span>
+        <span class="c1"># The np.newaxis are shifted for vec1 and vec2 so that calculating</span>
+        <span class="c1"># vec1_b - vec2_b (as is done in np.isclose) results in a 5D array of</span>
+        <span class="c1"># the differences of all vectors for all coordinates.</span>
+        <span class="n">vec1_b</span> <span class="o">=</span> <span class="n">vec1</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">vec2_b</span> <span class="o">=</span> <span class="n">vec2</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+        <span class="c1"># For each coordinate k the (i, j)-th 2D matrix</span>
+        <span class="c1"># (vec1_b - vec2_b)[k, i, j] contains in the m-th row and n-th column</span>
+        <span class="c1"># the difference between the vector from feature i to feature j in</span>
+        <span class="c1"># feat1 and the vector from feature m to feature n in feat2</span>
+        <span class="c1"># diff_small contains True or False depending on whether the vectors</span>
+        <span class="c1"># are similar enough</span>
+        <span class="n">diff_small</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">vec1_b</span><span class="p">,</span> <span class="n">vec2_b</span><span class="p">,</span> <span class="n">tol_rel</span><span class="p">,</span> <span class="n">tol_abs</span><span class="p">)</span>
+
+        <span class="c1"># All coordinates have to be similar; this is like a logical AND along</span>
+        <span class="c1"># only axis 0, the coordinate axis.</span>
+        <span class="n">all_small</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">diff_small</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Sum up all True entries as the score. The more similar vectors two</span>
+        <span class="c1"># points have, the more likely it is that they are the same.</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">all_small</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="k">def</span> <span class="nf">_pairs_from_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat1</span><span class="p">,</span> <span class="n">feat2</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">score_cutoff</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                          <span class="n">ambiguity_factor</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Analyze the score matrix and determine what the pairs are</span>
+
+<span class="sd">        For each feature, select the highest scoring corresponding feature.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feat1, feat2 : pandas.DataFrame</span>
+<span class="sd">            Bead localizations</span>
+<span class="sd">        score : numpy.array</span>
+<span class="sd">            The score matrix as calculated by `_all_scores_cartesian`</span>
+<span class="sd">        score_cutoff : float, optional</span>
+<span class="sd">            In order to get rid of false matches a threshold for scores can</span>
+<span class="sd">            be set. All scores below this threshold are discarded. The</span>
+<span class="sd">            threshold is calculated as score_cutoff*score.max(). Defaults to</span>
+<span class="sd">            0.5.</span>
+<span class="sd">        ambiguity_factor : float</span>
+<span class="sd">            If there are two candidates as a partner for a feature, and the</span>
+<span class="sd">            score of the lower scoring one is larger than `ambiguity_factor`</span>
+<span class="sd">            times the score of the higher scorer, the pairs are considered</span>
+<span class="sd">            ambiguous and therefore discarded. Defaults to 0.8.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            Each row of the DataFrame contains information of one feature pair.</span>
+<span class="sd">            This information consists of lists of coordinates of the feature</span>
+<span class="sd">            in each channel, i. e. the columns are a MultiIndex from the</span>
+<span class="sd">            product of the `channel_names` and `pos_columns` class attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># always search through the axis with fewer localizations since</span>
+        <span class="c1"># since otherwise there is bound to be double matches</span>
+        <span class="k">if</span> <span class="n">score</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">score</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)])</span>
+
+        <span class="c1"># now deal with ambiguities, i. e. if one feature has two similarly</span>
+        <span class="c1"># likely partners</span>
+        <span class="c1"># For each feature, calculate the threshold.</span>
+        <span class="n">amb_thresh</span> <span class="o">=</span> <span class="n">score</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span> <span class="o">*</span> <span class="n">ambiguity_factor</span>
+        <span class="c1"># look for high scorers along the 0 axis (rows)</span>
+        <span class="n">amb0</span> <span class="o">=</span> <span class="p">(</span><span class="n">score</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:]</span> <span class="o">&gt;</span> <span class="n">amb_thresh</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span>
+        <span class="n">amb0</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">amb0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># look for high scorers along the 1 axis (columns)</span>
+        <span class="n">amb1</span> <span class="o">=</span> <span class="p">(</span><span class="n">score</span><span class="p">[:,</span> <span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">&gt;</span> <span class="n">amb_thresh</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">amb1</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">amb1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># drop if there are more than one high scorers in any axis</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[:,</span> <span class="o">~</span><span class="p">(</span><span class="n">amb0</span> <span class="o">|</span> <span class="n">amb1</span><span class="p">)]</span>
+
+        <span class="c1"># get rid of indices with low scores</span>
+        <span class="c1"># TODO: Can this be gotten rid of now that the ambiguity stuff works?</span>
+        <span class="n">score_cutoff</span> <span class="o">*=</span> <span class="n">score</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">cutoff_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">score</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span> <span class="o">&gt;=</span> <span class="n">score_cutoff</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[:,</span> <span class="n">cutoff_mask</span><span class="p">]</span>
+
+        <span class="n">pair_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span>
+            <span class="n">feat1</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]],</span>
+            <span class="n">feat2</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]]))</span>
+
+        <span class="n">mi</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="p">,</span>
+                                         <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]])</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pair_matrix</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">mi</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Corrector.to_yaml"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+
+<span class="sd">        Pass this as the `representer` parameter to your</span>
+<span class="sd">        :py:class:`yaml.Dumper` subclass&#39;s `add_representer` method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;parameters1&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">parameters1</span><span class="p">),</span>
+             <span class="p">(</span><span class="s2">&quot;parameters2&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">parameters2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Corrector.from_yaml"><a class="viewcode-back" href="../../chromatic.html#sdt.chromatic.Corrector.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+
+<span class="sd">        Pass this as the `constructor` parameter to your</span>
+<span class="sd">        :py:class:`yaml.Loader` subclass&#39;s `add_constructor` method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">parameters1</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;parameters1&quot;</span><span class="p">]</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;parameters2&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span></div></div>
+
+
+<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">.io</span> <span class="kn">import</span> <span class="n">yaml</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">Corrector</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

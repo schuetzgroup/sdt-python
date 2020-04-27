@@ -1,0 +1,479 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.spatial &mdash; sdt-python 14.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                14.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.spatial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.spatial</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sd">&quot;&quot;&quot;Analyze spatial aspects of data</span>
+<span class="sd">===============================</span>
+
+<span class="sd">The :py:mod:`sdt.spatial` module provides methods for analyzing spatial</span>
+<span class="sd">aspects of single molecule data:</span>
+
+<span class="sd">- Check whether features have near neighbors using the</span>
+<span class="sd">  :py:func:`has_near_neighbor` function</span>
+<span class="sd">- In tracking data, interpolate features that have been missed by the</span>
+<span class="sd">  localization algorithm with help of :py:func:`interpolate_coords`</span>
+<span class="sd">- Calculate the area of a polygon using :py:func:`polygon_area`</span>
+
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+
+<span class="sd">To find out whether single molecule features have other features nearby,</span>
+<span class="sd">use the :py:func:`has_near_neighbor` function:</span>
+
+<span class="sd">&gt;&gt;&gt; loc = pandas.DataFrame([[10, 10], [10, 11], [20, 20]], columns=[&quot;x&quot;, &quot;y&quot;])</span>
+<span class="sd">&gt;&gt;&gt; loc</span>
+<span class="sd">    x   y</span>
+<span class="sd">0  10  10</span>
+<span class="sd">1  10  11</span>
+<span class="sd">2  20  20</span>
+<span class="sd">&gt;&gt;&gt; has_near_neighbor(loc, r=2.)</span>
+<span class="sd">&gt;&gt;&gt; loc</span>
+<span class="sd">    x   y  has_neighbor</span>
+<span class="sd">0  10  10             1</span>
+<span class="sd">1  10  11             1</span>
+<span class="sd">2  20  20             0</span>
+
+<span class="sd">Missing localizations in single molecule tracking data can be interpolated</span>
+<span class="sd">by :py:func:`interpolate_coords`:</span>
+
+<span class="sd">&gt;&gt;&gt; trc = pandas.DataFrame([[10, 10, 0, 0], [10, 10, 2, 0]],</span>
+<span class="sd">...                        columns=[&quot;x&quot;, &quot;y&quot;, &quot;frame&quot;, &quot;particle&quot;])</span>
+<span class="sd">&gt;&gt;&gt; trc</span>
+<span class="sd">    x   y  frame  particle</span>
+<span class="sd">0  10  10      0         0</span>
+<span class="sd">1  10  10      2         0</span>
+<span class="sd">&gt;&gt;&gt; trc_i = interpolate_coords(trc)</span>
+<span class="sd">&gt;&gt;&gt; trc_i</span>
+<span class="sd">    x   y  frame  particle  interp</span>
+<span class="sd">0  10  10      0         0       0</span>
+<span class="sd">1  10  10      1         0       1</span>
+<span class="sd">2  10  10      2         0       0</span>
+
+<span class="sd">:py:func:`polygon_area` can be used to calculate the area of a polygon:</span>
+
+<span class="sd">&gt;&gt;&gt; vertices = [[0, 0], [10, 0], [10, 10], [0, 10]]</span>
+<span class="sd">&gt;&gt;&gt; polygon_area(vertices)</span>
+<span class="sd">100.0</span>
+
+
+<span class="sd">Programming reference</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">.. autofunction:: has_near_neighbor</span>
+<span class="sd">.. autofunction:: interpolate_coords</span>
+<span class="sd">.. autofunction:: polygon_area</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">cKDTree</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">config</span>
+
+
+<span class="k">def</span> <span class="nf">_has_near_neighbor_impl</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of finding near neighbors using KD trees</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : array-like, shape(n, m)</span>
+<span class="sd">        n data points of dimension m</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Maximum distance for data points to be considered near neighbors</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray, shape(n)</span>
+<span class="sd">        For each data point this is 1 if it has neighbors closer than `r` and</span>
+<span class="sd">        0 if it has not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Find data points with near neighbors</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">nn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">query_pairs</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">output_type</span><span class="o">=</span><span class="s2">&quot;ndarray&quot;</span><span class="p">))</span>
+    <span class="c1"># Record those data points</span>
+    <span class="n">hn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">hn</span><span class="p">[</span><span class="n">nn</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">hn</span>
+
+
+<div class="viewcode-block" id="has_near_neighbor"><a class="viewcode-back" href="../../spatial.html#sdt.spatial.has_near_neighbor">[docs]</a><span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">has_near_neighbor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;Check whether localized features have near neighbors</span>
+
+<span class="sd">    Given a :py:class:`pandas.DataFrame` `data` with localization data, each</span>
+<span class="sd">    data point is checked whether other points (in the same frame) are closer</span>
+<span class="sd">    than `r`.</span>
+
+<span class="sd">    The results will be written in a &quot;has_neighbor&quot; column of the `data`</span>
+<span class="sd">    DataFrame.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : pandas.DataFrame</span>
+<span class="sd">        Localization data. The &quot;has_neighbor&quot; column will be</span>
+<span class="sd">        appended/overwritten with the results.</span>
+<span class="sd">    r : float</span>
+<span class="sd">        Maximum distance for data points to be considered near neighbors.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        Relevant names are `coords` and `time`.</span>
+<span class="sd">        This means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and</span>
+<span class="sd">        the time column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
+<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;has_neighbor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">data_arr</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="c1"># Sort so that `diff` works below</span>
+        <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">data_arr</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">data_arr</span> <span class="o">=</span> <span class="n">data_arr</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+
+        <span class="c1"># Split data according to frame number</span>
+        <span class="n">frame_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">data_arr</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">data_split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">data_arr</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">frame_bounds</span><span class="p">)</span>
+
+        <span class="c1"># List of array of indices of data points with near neighbors</span>
+        <span class="n">has_neighbor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">_has_near_neighbor_impl</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+                                       <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">data_split</span><span class="p">])</span>
+
+        <span class="c1"># Get the reverse of sort_idx s. t. all(x[sort_idx][rev_sort_idx] == x)</span>
+        <span class="n">ran</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_arr</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">rev_sort_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">ran</span><span class="p">)</span>
+        <span class="n">rev_sort_idx</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ran</span>
+
+        <span class="c1"># Undo sorting</span>
+        <span class="n">has_neighbor</span> <span class="o">=</span> <span class="n">has_neighbor</span><span class="p">[</span><span class="n">rev_sort_idx</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">has_neighbor</span> <span class="o">=</span> <span class="n">_has_near_neighbor_impl</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]],</span> <span class="n">r</span><span class="p">)</span>
+
+    <span class="c1"># Append column to data frame</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;has_neighbor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">has_neighbor</span></div>
+
+
+<div class="viewcode-block" id="interpolate_coords"><a class="viewcode-back" href="../../spatial.html#sdt.spatial.interpolate_coords">[docs]</a><span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<span class="k">def</span> <span class="nf">interpolate_coords</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;Interpolate coordinates for missing localizations</span>
+
+<span class="sd">    For each particle in `tracks`, interpolate coordinates for frames</span>
+<span class="sd">    where no localization was detected.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tracks : pandas.DataFrame</span>
+<span class="sd">        Tracking data</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Tracking data with missing frames interpolated. An &quot;interp&quot; column</span>
+<span class="sd">        is added. If False, the localization was detected previously. If</span>
+<span class="sd">        True, it was added via interpolation by this method.</span>
+
+<span class="sd">    Other parameters</span>
+<span class="sd">    ----------------</span>
+<span class="sd">     columns : dict, optional</span>
+<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
+<span class="sd">        Relevant names are `coords`, `time`, and `particle`.</span>
+<span class="sd">        This means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and</span>
+<span class="sd">        the time column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
+<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tracks</span> <span class="o">=</span> <span class="n">tracks</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">tracks</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span> <span class="o">+</span>
+                 <span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">particles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">arr</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">missing_coords</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">missing_fno</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">missing_pno</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">particles</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">arr</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">p</span><span class="p">]</span>  <span class="c1"># get particle p</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])]</span>  <span class="c1"># sort according to frame number</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>  <span class="c1"># frame numbers</span>
+        <span class="c1"># get missing frame numbers</span>
+        <span class="n">miss</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frames</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
+        <span class="n">miss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">miss</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">a</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+            <span class="c1"># for missing frames interpolate each coordinate</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">miss</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+            <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">missing_coords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
+        <span class="n">missing_pno</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">miss</span><span class="p">),</span> <span class="n">p</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">))</span>
+        <span class="n">missing_fno</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">miss</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">missing_coords</span><span class="p">:</span>
+        <span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;interp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">tracks</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]])</span>
+        <span class="k">return</span> <span class="n">tracks</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">missing_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">missing_coords</span><span class="p">)</span>
+    <span class="n">missing_fno</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">missing_fno</span><span class="p">)</span>
+    <span class="n">missing_pno</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">missing_pno</span><span class="p">)</span>
+    <span class="n">missing_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">missing_coords</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">])</span>
+    <span class="n">missing_df</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">missing_pno</span>
+    <span class="n">missing_df</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">missing_fno</span>
+    <span class="c1"># Don&#39;t use bool below. Otherwise, the `values` attribute of the DataFrame</span>
+    <span class="c1"># will have &quot;object&quot; dtype.</span>
+    <span class="n">missing_df</span><span class="p">[</span><span class="s2">&quot;interp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;interp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">missing_df</span><span class="p">,</span> <span class="s2">&quot;outer&quot;</span><span class="p">)</span>
+    <span class="n">ret</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;particle&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="polygon_area"><a class="viewcode-back" href="../../spatial.html#sdt.spatial.polygon_area">[docs]</a><span class="k">def</span> <span class="nf">polygon_area</span><span class="p">(</span><span class="n">vertices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the (signed) area of a simple polygon</span>
+
+<span class="sd">    The polygon may not self-intersect.</span>
+
+<span class="sd">    This is based on JavaScript code from</span>
+<span class="sd">    http://www.mathopenref.com/coordpolygonarea2.html.</span>
+
+<span class="sd">    .. code-block:: javascript</span>
+
+<span class="sd">        function polygonArea(X, Y, numPoints)</span>
+<span class="sd">        {</span>
+<span class="sd">            area = 0;           // Accumulates area in the loop</span>
+<span class="sd">            j = numPoints - 1;  // The last vertex is the &#39;previous&#39; one to the</span>
+<span class="sd">                                // first</span>
+
+<span class="sd">            for (i=0; i&lt;numPoints; i++)</span>
+<span class="sd">            {</span>
+<span class="sd">                area = area +  (X[j]+X[i]) * (Y[j]-Y[i]);</span>
+<span class="sd">                j = i;  // j is previous vertex to i</span>
+<span class="sd">            }</span>
+<span class="sd">            return area/2;</span>
+<span class="sd">        }</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vertices : list of 2-tuples or numpy.ndarray, shape=(n, 2)</span>
+<span class="sd">        Coordinates of the poligon vertices.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Signed area of the polygon. Area is &gt; 0 if vertices are given</span>
+<span class="sd">        counterclockwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">vertices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">vertices</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span><span class="o">/</span><span class="mi">2</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
