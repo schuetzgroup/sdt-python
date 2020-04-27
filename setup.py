@@ -26,11 +26,11 @@ else:
 setup(
     name="sdt-python",
     version=vstr,
-    description="Tools for fluorescence microscopy data analysis",
+    description="Tools for fluorescence microscopy analysis",
     author="Lukas Schrangl",
     author_email="lukas.schrangl@tuwien.ac.at",
-    # url =
-    # license =
+    url = "https://github.com/schuetzgroup/sdt-python",
+    license = "BSD-3-Clause",
     install_requires=["numpy>=1.10",
                       "pandas",
                       "tables",
@@ -38,12 +38,11 @@ setup(
                       "tifffile>=0.14.0",
                       "pyyaml",
                       "pims>=0.3.0",
-                      "numba",
-                      "qtpy>=1.1",
                       "matplotlib",
                       "pywavelets>=0.3.0", ],
     packages=find_packages(include=["sdt*"]),
     package_data={"": ["*.ui"],
                   "sdt.gui": ["icons/*.svg"]},
-    long_description=read("README.rst")
+    long_description=read("README.rst"),
+    long_description_content_type="text/x-rst"
 )

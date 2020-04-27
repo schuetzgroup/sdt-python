@@ -51,7 +51,7 @@ test:
         - pytest
         - trackpy
         - lmfit
-        - pandas <1.0
+        - pandas
 
     commands:
         - pytest -v tests
@@ -60,5 +60,9 @@ test:
         - tests
 
 about:
+    home: https://github.com/schuetzgroup/sdt-python
+    license: BSD-3-Clause
     summary: "Tools for fluorescence microscopy data analysis"
+    dev_url: https://github.com/schuetzgroup/sdt-python
+    doc_url: https://schuetzgroup.github.io/sdt-python
 

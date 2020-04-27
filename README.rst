@@ -21,7 +21,7 @@ It contains
 - much more.
 
 
-Extensive documentation can be found at https://hal.iap.tuwien.ac.at/py_sdt_doc/
+Extensive documentation can be found at https://schuetzgroup.github.io/sdt-python.
 
 
 Requirements
