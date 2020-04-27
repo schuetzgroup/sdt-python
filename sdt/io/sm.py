@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Load single molecule data from files
 
 This module allows for reading data files produced by various MATLAB and

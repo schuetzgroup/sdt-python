@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Put together finding and fitting for feature localization"""
 
 

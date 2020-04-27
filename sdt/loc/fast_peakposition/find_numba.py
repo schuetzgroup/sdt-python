@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Find local maxima in an image
 
 This module provides a numba accelerated :py:class:`Finder` class, which

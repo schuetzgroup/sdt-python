@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Tools for calculation of MSDs via cumulative density functions"""
 from collections import namedtuple, OrderedDict
 import itertools

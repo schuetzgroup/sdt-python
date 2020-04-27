@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Provide widgets for setting localization algorithm parameters
 
 There is a container widget that allows for selection of the alogorithm which

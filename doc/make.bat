@@ -1,3 +1,7 @@
+REM SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+REM
+REM SPDX-License-Identifier: CC0-1.0
+
 @ECHO OFF
 
 REM Command file for Sphinx documentation

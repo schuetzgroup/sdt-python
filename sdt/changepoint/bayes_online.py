@@ -1,3 +1,13 @@
+# Copyright (c) 2014 Johannes Kulick
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-License-Identifier: MIT
+#
+# Based on https://github.com/hildensia/bayesian_changepoint_detection
+# (MIT licensed), adapted under BSD-3-Clause as part of the sdt-python
+# package
+
 """Tools for performing online Bayesian changepoint detection"""
 import math
 
@@ -367,29 +377,3 @@ class BayesOnline:
             the array equals the number of datapoints - `past`.
         """
         return np.array([p[past] for p in self.probabilities[past:-1]])
-
-
-# Based on https://github.com/hildensia/bayesian_changepoint_detection
-# Original copyright and license information:
-#
-# The MIT License (MIT)
-#
-# Copyright (c) 2014 Johannes Kulick
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.

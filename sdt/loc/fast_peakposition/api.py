@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """API for the prepare_peakposition feature finding and fitting algorithm
 
 Provides the standard :py:func:`locate` and :py:func:`batch` functions.

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Stuff related to internal data structures
 
 The most import one is the :py:class:`Peaks` class, which extends numpy.ndarray

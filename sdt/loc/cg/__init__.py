@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Tools for locating bright, Gaussian-like features in an image
 
 This implements an algorithm proposed by Crocker & Grier [Crocker1996]_ and is

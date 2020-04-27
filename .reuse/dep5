@@ -1,0 +1,10 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: sdt-python
+Upstream-Contact: Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+Source: https://github.com/schuetzgroup/sdt-python
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...

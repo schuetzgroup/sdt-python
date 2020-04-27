@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Support for loading and saving :py:mod:`sdt` data types from/to YAML
 
 This includes the :py:class:`ArrayDumper` and :py:class:`SafeArrayDumper`

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
 """Numba accelerated version of the :py:mod:`fit_impl` module
 
 For documentation, look at :py:mod:`fit_impl`

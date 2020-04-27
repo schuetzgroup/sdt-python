@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
 #
+# SPDX-License-Identifier: BSD-3-Clause
+
 # sdt-python documentation build configuration file, created by
 # sphinx-quickstart on Thu Nov 26 16:07:52 2015.
 #

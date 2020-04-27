@@ -1,3 +1,12 @@
+# SPDX-FileCopyrightText: 2013 Yu Yang <reyoung@126.com>
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-License-Identifier: MIT
+#
+# Singleton test cases from https://github.com/reyoung/singleton (MIT
+# licensed), adapted under BSD-3-Clause as part of the sdt-python package
+
 import unittest
 import numpy as np
 import pandas as pd

@@ -1,3 +1,10 @@
+# Copyright (c) 2015, Daniel B. Allan
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# Based on https://github.com/soft-matter/slicerator
+
 """A lazy-loading, fancy-slicable iterable
 
 forked from https://github.com/soft-matter/slicerator (originally released
