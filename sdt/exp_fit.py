@@ -4,13 +4,13 @@ r"""Fit of a sum of exponential functions
 The :py:mod:`sdt.exp_fit` module provides routines to fit a sum of exponential
 functions
 
-.. math:: y(t) = \alpha + \sum_{i=1}^p \beta_i \text{e}^{\lambda_i t}
+.. math:: y(x) = \alpha + \sum_{i=1}^p \beta_i \text{e}^{\lambda_i x}
 
 to data represented by pairs :math:`(t_k, y_k)`. This is done by using a
 modified Prony's method.
 
 The mathematics behind this can be found in :ref:`theory` as well as at [1]_.
-This code is based on GPLv3-licensed code by Greg von Winckel which can be
+This module includes rewrite of the GPLv3-licensed code by Greg von Winckel,
 which is also available at [1]_. Further insights about the algorithm may be
 gained by reading anything about Prony's method and [2]_.
 
@@ -24,12 +24,12 @@ gained by reading anything about Prony's method and [2]_.
 Examples
 --------
 
-Given an array ``t`` of values of the independent variable and an array ``y``
+Given an array ``x`` of values of the independent variable and an array ``y``
 of corresponding values of the sum of the exponentials, the parameters
 ``a`` (:math:`\alpha` in above formula), ``b`` (:math:`\beta_i`) and ``l``
 (:math:`\lambda_i`) can be found by calling
 
->>> a, b, l, _ = sdt.exp_fit.fit(t, y, num_exp=2, poly_order=30)
+>>> a, b, l, _ = sdt.exp_fit.fit(x, y, n_exp=2, poly_order=30)
 
 
 High level API
@@ -70,12 +70,12 @@ In other words: The :math:`\lambda_i` are the roots of the polynomial
 
 For numerical calculations, :math:`y(t)` is approximated by a Legendre series,
 
-.. math:: y(t)\approx \sum_{k=0}^m\hat{y}_k P_k(t).
+.. math:: y(x)\approx \sum_{k=0}^m\hat{y}_k P_k(x).
 
 Since this is a polynomial, any derivative is again a polynomial and can thus
-be written again as sum of Legendre polynomials,
+be written as sum of Legendre polynomials,
 
-.. math:: \frac{d^j y(t)}{dt^j} \approx \sum_{k=0}^m (D^j\hat{y})_k P_k(t),
+.. math:: \frac{d^j y(x)}{dx^j} \approx \sum_{k=0}^m (D^j\hat{y})_k P_k(x),
 
 where :math:`D` is the Legendre differentiation matrix.
 
@@ -86,21 +86,21 @@ whole ODE by :math:`alpha`). Its approximated version is then
 
 with :math:`e_1 = (1, 0, \ldots, 0)` being the first canonical unit vector.
 
-:math:`y(t)` is supposed to be the best approximation of the original data
+:math:`y(x)` is supposed to be the best approximation of the original data
 :math:`z`, meaning that
 
 .. math:: x - y \perp \mathbb{P}_m.
 
 From that follows
 
-.. math:: \int_{-1}^1 (z-y)P_l(t)\, dt = 0 \quad \Rightarrow
+.. math:: \int_{-1}^1 (z-y)P_l(x)\, dx = 0 \quad \Rightarrow
 
-    \int_{-1}^1 zP_l(t)\,dt = \sum_{k = 0}^m\hat{y}_k
-    \int_{-1}^1 P_k(t) P_l(t)\, dt = \frac{2\hat{y}_l}{2l+1}.
+    \int_{-1}^1 zP_l(x)\,dx = \sum_{k = 0}^m\hat{y}_k
+    \int_{-1}^1 P_k(t) P_l(x)\, dx = \frac{2\hat{y}_l}{2l+1}.
 
 This leads to
 
-.. math:: \hat{y}_l = (l+\frac{1}{2})\int_{-1}^1 z P_l(t)\, dt \approx
+.. math:: \hat{y}_l = (l+\frac{1}{2})\int_{-1}^1 z P_l(x)\, dx \approx
     (l + \frac{1}{2})\sum_{i=1}^n w_i z_i P(x_i)
 
 where :math:`w_i` are weights for numerical integration.
@@ -123,87 +123,82 @@ from scipy.linalg import lu_factor, lu_solve
 from scipy.optimize import leastsq
 
 
-def int_mat_legendre(n, order):
+def int_mat_legendre(n_coeff, int_order):
     """Legendre polynomial integration matrix
 
     Parameters
     ----------
-    n : int
+    n_coeff : int
         Number of Legendre coefficients
-    order : int
-        Integration order
+    int_order : int
+        Order of integration
 
     Returns
     -------
     numpy.ndarray
         Legendre integral matrix
     """
-    I = np.eye(n)
-    B = legint(I, order)
-    return B
+    return legint(np.eye(n_coeff), int_order)
 
 
 class OdeSolver(object):
     """Class for solving the ODE involved in fitting"""
-    def __init__(self, m, p):
+    def __init__(self, poly_order, n_exp):
         """Parameters
         ----------
-        m : int
+        poly_order : int
             Highest order Legendre polynomial in the series expansion
             approximating the actual fit model
-        p : int
+        n_exp : int
             Number of exponentials to fit to the data
         """
-        self._m = m
-        self._p = p
-        self._B = []
-        self._a = np.zeros(p)
-        self._c = np.zeros(p)
-        self._y = np.zeros(m)
+        self._poly_order = poly_order
+        self._n_exp = n_exp
+        self._coeffs = np.zeros(n_exp)
+        self._res_coeffs = np.zeros(n_exp)
+        self._leg_coeffs = np.zeros(poly_order)
 
         # For improved conditioning, we don't actually look at the k-th
         # differentiation, but at the (p - k)-th integration; i. e.
         # integrate ODE p times (integration matrix B)
-        for k in range(p):
-            self._B.insert(0, int_mat_legendre(m, p-k)[p:(k-p), :])
-
-        self._B.insert(0, int_mat_legendre(m, 0)[p:, :])
+        self._b = []
+        for n in range(n_exp + 1):
+            iml = int_mat_legendre(poly_order, n)
+            self._b.append(iml[n_exp:-n or None, :])
 
     @property
     def coefficients(self):
         """1D array of coefficients of the ODE"""
-        return self._a
+        return self._coeffs
 
     @coefficients.setter
-    def coefficients(self, a):
-        # Update system matrix only if coefficients change
-        if self._a is not a:
-            self._a = a
-            A = np.zeros((self._m-self._p, self._m))
+    def coefficients(self, coeffs):
+        if self._coeffs is coeffs:
+            return
 
-            # \sum_{k=1}^p a_k D^k \hat{y} = e_1 is equivalent to
-            # \sum_{k=1}^p a_k B^{p-k} \hat{y} = B^p e_1
-            for k in range(self._p+1):
-                A += self._a[k] * self._B[self._p-k]
+        self._coeffs = coeffs
 
-            # L,U,P factors for the system matrix
-            # first p coefficients are determined by residual orthogonal
-            # requirement, therefore only consider A[:, p:]
-            self._factors = lu_factor(A[:, self._p:])
+        # \sum_{k=1}^p a_k D^k \hat{y} = e_1 is equivalent to
+        # \sum_{k=1}^p a_k B^{p-k} \hat{y} = B^p e_1
+        a = np.zeros((self._poly_order - self._n_exp, self._poly_order))
+        for i in range(self._n_exp + 1):
+            a += self._coeffs[i] * self._b[self._n_exp - i]
 
-            # Moment condition terms
-            self._cond = A[:, :self._p]
+        # first n_exp coefficients are determined by residual orthogonal
+        # requirement, therefore only consider a[:, n_exp:]
+        self._factors = lu_factor(a[:, self._n_exp:])
+        self._cond = a[:, :self._n_exp]
 
-    def solve(self, c, f):
+    def solve(self, res_coeffs, rhs):
         """Solve the ODE
 
         Parameters
         ----------
-        c : numpy.ndarray
-            The first ``p`` (where ``p`` is the number of exponentials in the
+        res_coeffs : numpy.ndarray
+            The first ``n_exp`` (where ``n_exp`` is the number of exponentials in the
             fit) Legendre coefficients, which can be calculated from the
             residual condition
-        f : numpy.ndarray
+        rhs : numpy.ndarray
             Right hand side of the ODE. For a fit with a constant offset,
             this is the (1, 0, 0, …, 0), without offset it is (0, 0, …, 0)
 
@@ -213,39 +208,39 @@ class OdeSolver(object):
             1D array of Legendre coefficients of the numerical solution of
             the ODE
         """
-        self._c = c
-        self._y[:self._p] = c
+        self._res_coeffs = res_coeffs
+        self._leg_coeffs[:self._n_exp] = res_coeffs
         # since residual orthogonal requirement already yields coefficients
         # subtract from RHS
-        rhs = np.dot(self._B[-1], f) - np.dot(self._cond, c)
-        self._y[self._p:] = lu_solve(self._factors, rhs)
-        return self._y.copy()
+        reduced_rhs = self._b[-1] @ rhs - self._cond @ res_coeffs
+        self._leg_coeffs[self._n_exp:] = lu_solve(self._factors, reduced_rhs)
+        return self._leg_coeffs.copy()
 
     def tangent(self):
-        dy = np.zeros((self._m, self._p+1))
+        d_y = np.zeros((self._poly_order, self._n_exp + 1))
 
-        for k in range(self._p+1):
-            By = np.dot(self._B[self._p-k], self._y)
-            dy[self._p:, k] = -lu_solve(self._factors, By)
+        for i in range(self._n_exp + 1):
+            b_y = self._b[self._n_exp - i] @ self._leg_coeffs
+            d_y[self._n_exp:, i] = -lu_solve(self._factors, b_y)
 
-        return dy
+        return d_y
 
 
-def get_exponential_coeffs(t, y, num_exp, poly_order, initial_guess=None):
+def get_exponential_coeffs(x, y, n_exp, poly_order, initial_guess=None):
     r"""Calculate the exponential coefficients
 
     As a first step to fitting the sum of exponentials
-    :math:`y(t) = \alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the
+    :math:`y(x) = \alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k x}` to the
     data, calculate the exponential "rate" factors :math:`\lambda_k` using a
     modified Prony's method.
 
     Parameters
     ----------
-    t : numpy.ndarray
+    x : numpy.ndarray
         Independent variable values
     y : numpy.ndarray
-        Function values corresponding to `t`.
-    num_exp : int
+        Function values corresponding to `x`.
+    n_exp : int
         Number of exponential functions (``p`` in the equation above) in the
         sum
     poly_order : int
@@ -258,7 +253,7 @@ def get_exponential_coeffs(t, y, num_exp, poly_order, initial_guess=None):
     exp_coeff : numpy.ndarray
         List of exponential coefficients
     ode_coeff : numpy.ndarray
-        Optimal coefficienst of the ODE involved in calculating the exponential
+        Optimal coefficients of the ODE involved in calculating the exponential
         coefficients.
 
     Other parameters
@@ -266,70 +261,73 @@ def get_exponential_coeffs(t, y, num_exp, poly_order, initial_guess=None):
     initial_guess : numpy.ndarray or None, optional
         An initial guess for determining the parameters of the ODE (if you
         don't know what this is about, don't bother). The array is 1D and has
-        `num_exp` + 1 entries. If None, use ``numpy.ones(num_exp + 1)``.
+        `n_exp` + 1 entries. If None, use ``numpy.ones(n_exp + 1)``.
         Defaults to None.
     """
     if initial_guess is None:
-        initial_guess = np.ones(num_exp + 1)
+        initial_guess = np.ones(n_exp + 1)
 
-    s = OdeSolver(poly_order, num_exp)
+    s = OdeSolver(poly_order, n_exp)
 
-    scale = 2 / (t[-1] - t[0])
+    # Map x to [-1, 1]
+    x_min = np.min(x)
+    x_range = np.ptp(x)
+    x_mapped = 2 * (x - x_min) / x_range - 1
 
-    # Trapezoidal weights
-    dt = t[1:] - t[:-1]
-    w = np.zeros(len(t))
-    w[0] = 0.5 * dt[0]
-    w[1:-1] = 0.5 * (dt[1:] + dt[:-1])
-    w[-1] = 0.5 * dt[-1]
-    w *= scale
+    # Weights (trapezoidal)
+    d_x = np.diff(x)
+    w = np.zeros(len(x))
+    w[0] = d_x[0]
+    w[1:-1] = d_x[1:] + d_x[:-1]
+    w[-1] = d_x[-1]
+    w /= x_range
 
-    # Mapped abscissa to [-1, 1]
-    t_mapped = scale * (t - t[0]) - 1
-    L = legvander(t_mapped, num_exp - 1)
+    leg = legvander(x_mapped, n_exp - 1)
 
-    def residual(a):
-        s.coefficients = a
+    def residual(coeffs):
+        s.coefficients = coeffs
         # The following is the residual condition
         # \hat{y}_k = (k + 1 / 2) \sum_{i=1}^n w_i z_i P(t_i)
-        c = np.dot(L.T, w * y) * (0.5 + np.arange(num_exp))
+        rc = leg.T @ (w * y)
+        rc *= np.arange(0.5, n_exp)
         # Solve the ODE in Legendre space
         # \sum_{k=0}^p a_k D^k \hat{y} = e_1
-        sol_hat = s.solve(c, np.eye(poly_order)[0])
+        rhs = np.zeros(poly_order)
+        rhs[0] = 1
+        sol_hat = s.solve(rc, rhs)
         # transform to real space
-        sol = legval(t_mapped, sol_hat)
+        sol = legval(x_mapped, sol_hat)
         return y - sol
 
-    def jacobian(a):
-        s.coefficients = a
-        J = np.zeros((len(t), num_exp+1))
+    def jacobian(coeffs):
+        s.coefficients = coeffs
+        jac = np.zeros((len(x), n_exp + 1))
 
-        dy = s.tangent()
-        for k in range(num_exp + 1):
-            J[:, k] = -legval(t_mapped, dy[:, k])
+        tan = s.tangent()
+        for i in range(n_exp + 1):
+            jac[:, i] = -legval(x_mapped, tan[:, i])
 
-        return J
+        return jac
 
-    a_opt = leastsq(residual, initial_guess, Dfun=jacobian)
-    a_opt = a_opt[0]
+    ode_coeff = leastsq(residual, initial_guess, Dfun=jacobian)[0]
 
-    return np.roots(a_opt[::-1])*scale, a_opt
+    return np.roots(ode_coeff[::-1]) * 2 / x_range, ode_coeff
 
 
-def fit(t, y, num_exp, poly_order, initial_guess=None, return_ode_coeff=False):
+def fit(x, y, n_exp, poly_order, initial_guess=None, return_ode_coeff=False):
     r"""Fit a sum of exponential functions to data
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
-    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data
+    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k x}` to the data
     using a modified Prony's method.
 
     Parameters
     ----------
-    t : numpy.ndarray
+    x : numpy.ndarray
         Independent variable values
     y : numpy.ndarray
         Function values corresponding to `t`.
-    num_exp : int
+    n_exp : int
         Number of exponential functions (`p` in the equation above) in the
         sum
     poly_order : int
@@ -354,17 +352,17 @@ def fit(t, y, num_exp, poly_order, initial_guess=None, return_ode_coeff=False):
     initial_guess : numpy.ndarray or None, optional
         An initial guess for determining the parameters of the ODE (if you
         don't know what this is about, don't bother). The array is 1D and has
-        `num_exp` + 1 entries. If None, use ``numpy.ones(num_exp + 1)``.
+        `n_exp` + 1 entries. If None, use ``numpy.ones(n_exp + 1)``.
         Defaults to None.
     return_ode_coeff : bool, optional
         Whether to return the ODE coefficients as well. Defaults to False.
     """
-    exp_coeff, ode_coeff = get_exponential_coeffs(t, y, num_exp, poly_order,
+    exp_coeff, ode_coeff = get_exponential_coeffs(x, y, n_exp, poly_order,
                                                   initial_guess)
-    V = np.exp(np.outer(t, np.hstack((0, exp_coeff))))
-    lsq = np.linalg.lstsq(V, y, rcond=-1)
-    offset = lsq[0][0]
-    mant_coeff = lsq[0][1:]
+    mat = np.exp(np.outer(x, np.hstack([0, exp_coeff])))
+    lsq = np.linalg.lstsq(mat, y, rcond=-1)[0]
+    offset = lsq[0]
+    mant_coeff = lsq[1:]
 
     if return_ode_coeff:
         return offset, mant_coeff, exp_coeff, ode_coeff
