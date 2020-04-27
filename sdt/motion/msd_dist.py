@@ -12,7 +12,7 @@ from . import msd_base, msd
 from .. import exp_fit, config
 
 
-def _fit_cdf_prony(x, y, num_exp, poly_order, initial_guess=None):
+def _fit_cdf_prony(x, y, n_exp, poly_order, initial_guess=None):
     r"""Variant of `exp_fit.fit` for the model of the CDF
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
@@ -26,9 +26,8 @@ def _fit_cdf_prony(x, y, num_exp, poly_order, initial_guess=None):
         Abscissa (x-axis) data
     y : numpy.ndarray
         CDF function values corresponding to `x`.
-    num_exp : int
-        Number of exponential functions (``p``) in the
-        sum
+    n_exp : int
+        Number of exponential functions (``p``) in the sum
     poly_order : int
         For calculation, the sum of exponentials is approximated by a sum
         of Legendre polynomials. This parameter gives the degree of the
@@ -49,7 +48,7 @@ def _fit_cdf_prony(x, y, num_exp, poly_order, initial_guess=None):
     initial_guess : numpy.ndarray or None, optional
         An initial guess for determining the parameters of the ODE (if you
         don't know what this is about, don't bother). The array is 1D and has
-        `num_exp` + 1 entries. If None, use ``numpy.ones(num_exp + 1)``.
+        `n_exp` + 1 entries. If None, use ``numpy.ones(n_exp + 1)``.
         Defaults to None.
 
     Notes
@@ -73,9 +72,9 @@ def _fit_cdf_prony(x, y, num_exp, poly_order, initial_guess=None):
     """
     # get exponent coefficients as usual
     exp_coeff, ode_coeff = exp_fit.get_exponential_coeffs(
-        x, y, num_exp, poly_order, initial_guess)
+        x, y, n_exp, poly_order, initial_guess)
 
-    if num_exp < 2:
+    if n_exp < 2:
         # for only one exponential, the mantissa coefficient is -1
         return np.array([-1.]), exp_coeff
 
@@ -92,7 +91,7 @@ def _fit_cdf_prony(x, y, num_exp, poly_order, initial_guess=None):
     return mant_coeff, exp_coeff
 
 
-def _fit_cdf_lsq(x, y, num_exp, weighted=True, initial_b=None, initial_l=None):
+def _fit_cdf_lsq(x, y, n_exp, weighted=True, initial_b=None, initial_l=None):
     r"""Fit CDF by least squares fitting
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
@@ -106,7 +105,7 @@ def _fit_cdf_lsq(x, y, num_exp, weighted=True, initial_b=None, initial_l=None):
         Abscissa (x-axis) data
     y : numpy.ndarray
         CDF function values corresponding to `x`.
-    num_exp : int
+    n_exp : int
         Number of exponential functions (``p``) in the sum
     weighted : bool, optional
         Whether to way the residual according to inverse data point density
@@ -126,21 +125,21 @@ def _fit_cdf_lsq(x, y, num_exp, weighted=True, initial_b=None, initial_l=None):
         List of exponential coefficients (:math:`\lambda_k`)
     """
     def constrained_func(t, *args):
-        lam = args[num_exp-1:]
+        lam = args[n_exp-1:]
         beta = np.zeros_like(lam)
-        beta[:-1] = args[:num_exp-1]
+        beta[:-1] = args[:n_exp-1]
         beta[-1] = -1 - beta.sum()
         return exp_fit.exp_sum(t, 1, beta, lam)
 
-    bounds_low = np.array([-1] * (num_exp - 1) + [-np.inf] * num_exp)
-    bounds_high = np.array([0] * (num_exp - 1) + [0] * num_exp)
+    bounds_low = np.array([-1] * (n_exp - 1) + [-np.inf] * n_exp)
+    bounds_high = np.array([0] * (n_exp - 1) + [0] * n_exp)
 
     # initial guesses
     if initial_b is None:
-        initial_b = -np.logspace(-num_exp, 0, num_exp-1, base=2,
+        initial_b = -np.logspace(-n_exp, 0, n_exp-1, base=2,
                                  endpoint=False)
     if initial_l is None:
-        initial_l = -1 / np.logspace(-num_exp, 0, num_exp)
+        initial_l = -1 / np.logspace(-n_exp, 0, n_exp)
     p0 = np.concatenate([initial_b, initial_l])
 
     # fit
@@ -157,10 +156,10 @@ def _fit_cdf_lsq(x, y, num_exp, weighted=True, initial_b=None, initial_l=None):
                                     bounds=(bounds_low, bounds_high),
                                     sigma=w)
 
-    b = np.zeros(num_exp, dtype=float)
-    b[:-1] = popt[:num_exp-1]
+    b = np.zeros(n_exp, dtype=float)
+    b[:-1] = popt[:n_exp-1]
     b[-1] = -1 - b.sum()
-    return b, popt[num_exp-1:]
+    return b, popt[n_exp-1:]
 
 
 def _msd_from_cdf(square_disp, n_components, method, n_boot, random_state=None,
