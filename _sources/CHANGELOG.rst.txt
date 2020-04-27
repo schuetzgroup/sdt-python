@@ -11,6 +11,13 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+14.2
+----
+
+- Publicly release under BSD 3-Clause license
+- Cleanups
+
+
 14.1
 ----
 
