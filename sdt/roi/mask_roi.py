@@ -6,9 +6,9 @@ from contextlib import suppress
 
 import numpy as np
 import pandas as pd
-import slicerator
 
 from .. import config
+from ..helper import pipeline
 
 
 class MaskROI:
@@ -60,7 +60,7 @@ class MaskROI:
         data : pandas.DataFrame or pims.FramesSequence or array-like
             Data to be processed. If a pandas.Dataframe, select only those
             lines with coordinate values within the ROI path (+ buffer).
-            Otherwise, `slicerator.pipeline` is used to crop image data to the
+            Otherwise, :py:class:`pipeline` is used to crop image data to the
             bounding rectangle of the path and set all pixels not within the
             path to `fill_value`
         rel_origin : bool, optional
@@ -78,7 +78,7 @@ class MaskROI:
 
         Returns
         -------
-        pandas.DataFrame or slicerator.Slicerator or numpy.array
+        pandas.DataFrame or helper.Slicerator or numpy.array
             Data restricted to the ROI represented by this class.
 
         Other parameters
@@ -113,7 +113,7 @@ class MaskROI:
                 good[columns["coords"]] -= self.mask_origin
             return good
         else:
-            @slicerator.pipeline
+            @pipeline
             def set_fv(img):
                 nz = np.nonzero(self.mask)
 

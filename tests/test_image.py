@@ -6,9 +6,9 @@ import unittest
 import os
 
 import numpy as np
-import slicerator
 import pytest
 
+from sdt.helper import Slicerator
 from sdt.image import filters, masks
 import sdt.sim
 from sdt import image
@@ -62,7 +62,7 @@ class TestWavelet(unittest.TestCase):
 
         Regression test
         """
-        img = slicerator.Slicerator([self.bg+self.img])
+        img = Slicerator([self.bg+self.img])
         bg_est = filters.wavelet_bg(img, **self.wavelet_options)[0]
         np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
 
@@ -81,7 +81,7 @@ class TestWavelet(unittest.TestCase):
 
         Regression test
         """
-        img = slicerator.Slicerator([self.bg+self.img])
+        img = Slicerator([self.bg+self.img])
         img_est = filters.wavelet(img, **self.wavelet_options)[0]
         np.testing.assert_allclose(img_est, self.img+self.bg-self.orig,
                                    rtol=1e-6)
@@ -109,7 +109,7 @@ class TestCG(unittest.TestCase):
 
         Regression test
         """
-        img = slicerator.Slicerator([self.bg+self.img])
+        img = Slicerator([self.bg+self.img])
         bp_img = filters.cg(img, **self.options)[0]
         np.testing.assert_allclose(bp_img, self.orig)
 
@@ -127,7 +127,7 @@ class TestCG(unittest.TestCase):
 
         Regression test
         """
-        img = slicerator.Slicerator([self.bg+self.img])
+        img = Slicerator([self.bg+self.img])
         bp_img = filters.cg_bg(img, **self.options)[0]
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
 

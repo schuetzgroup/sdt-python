@@ -11,9 +11,8 @@ import pandas as pd
 import matplotlib as mpl
 from matplotlib.transforms import Affine2D
 
-from slicerator import pipeline
-
 from .. import spatial, config
+from ..helper import pipeline
 from .mask_roi import MaskROI
 
 

@@ -6,8 +6,8 @@
 import warnings
 
 import numpy as np
-import slicerator
 
+from ...helper import Slicerator
 from ...image import filters
 from ...roi import PathROI
 
@@ -64,7 +64,7 @@ def restrict_roi(locate_func, buffer=10):
         """
         if isinstance(data, (tuple, list)):
             # Turn into Slicerator to make the pipelines work
-            data = slicerator.Slicerator(data)
+            data = Slicerator(data)
 
         # check if bandpass filtering is desired
         try:

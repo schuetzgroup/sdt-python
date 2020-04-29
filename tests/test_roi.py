@@ -12,11 +12,11 @@ import numpy as np
 import pandas as pd
 import yaml
 import pims
-import slicerator
 from matplotlib.transforms import Affine2D
 
 from sdt import roi
 from sdt.io import yaml
+from sdt.helper import Pipeline, Slicerator
 
 
 data_path = Path(__file__).resolve().parents[0] / "data_roi"
@@ -80,7 +80,7 @@ class TestRoi(TestCaseBase):
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
         l = [self.img]*2
-        s = slicerator.Slicerator(l)
+        s = Slicerator(l)
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.cropped_img]*2)
 
@@ -236,7 +236,7 @@ class TestPathRoi(TestRoi):
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
         l = [self.img]*2
-        s = slicerator.Slicerator(l)
+        s = Slicerator(l)
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float)]*2)
 
@@ -389,7 +389,7 @@ class TestNoImagePathRoi(TestPathRoi):
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
         l = [self.img]*2
-        s = slicerator.Slicerator(l)
+        s = Slicerator(l)
         with self.assertRaises(ValueError):
             self.roi(s)
 
@@ -477,7 +477,7 @@ class TestNonOverlappingPathRoi(TestPathRoi):
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
         l = [self.img]*2
-        s = slicerator.Slicerator(l)
+        s = Slicerator(l)
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float).T[:20, :20]]*2)
 
@@ -576,7 +576,7 @@ class TestEllipseRoi(TestPathRoi):
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
         l = [self.img]*2
-        s = slicerator.Slicerator(l)
+        s = Slicerator(l)
         # bottom ten rows get chopped off due to small self.img size
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float)[:70, :]]*2)
@@ -645,10 +645,10 @@ class TestMaskRoi(TestRoi):
         """.__call__: image data, test pipeline capabilities"""
         self.roi.mask_origin = (0, 0)
         l = [self.img.copy()]*2
-        s = slicerator.Slicerator(l)
+        s = Slicerator(l)
         rimg = self.roi(s, fill_value=10)
         self.img[self.img == 0] = 10
-        self.assertIsInstance(rimg, slicerator.Pipeline)
+        self.assertIsInstance(rimg, Pipeline)
         np.testing.assert_equal(list(rimg), [self.img]*2)
 
     def test_dataframe_rel_origin(self):

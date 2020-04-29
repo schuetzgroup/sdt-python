@@ -6,8 +6,8 @@
 import warnings
 
 import numpy as np
-import slicerator
 
+from ..helper import Slicerator
 from ..roi import PathROI
 
 
@@ -71,7 +71,7 @@ def restrict_roi(locate_func, buffer=10):
 
         if isinstance(data, (tuple, list)):
             # Turn into Slicerator to make the img_roi pipeline work
-            data = slicerator.Slicerator(data)
+            data = Slicerator(data)
 
         if "reset_origin" in kwargs:
             warnings.warn(
