@@ -10,6 +10,13 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+14.3.1
+------
+
+- Fix tests for OSX and Windows
+- Use exclusively bundled slicerator
+
+
 14.3
 ----
 
