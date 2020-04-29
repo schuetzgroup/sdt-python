@@ -16,19 +16,7 @@ build:
 
 requirements:
     host:
-        - nomkl  # [unix]
         - python
-        - setuptools
-        - numpy >=1.10
-        - pandas
-        - pytables
-        - scipy >0.18
-        - tifffile >=0.14.0
-        - pyyaml
-        - pims >=0.3.0
-        - qtpy >=1.1
-        - matplotlib
-        - pywavelets >=0.3.0
         - pip
 
     run:
@@ -47,17 +35,31 @@ requirements:
 
 test:
     requires:
-        - nomkl  # [unix]
         - pytest
         - trackpy
         - lmfit
-        - pandas
-
     commands:
         - pytest -v tests
-
     source_files:
         - tests
+    imports:
+        - sdt
+        - sdt.brightness
+        - sdt.changepoint
+        - sdt.chromatic
+        - sdt.exp_fit
+        - sdt.flatfield
+        - sdt.fret
+        - sdt.gaussian_fit
+        - sdt.helper
+        - sdt.image
+        - sdt.io
+        - sdt.loc
+        - sdt.motion
+        - sdt.multicolor
+        - sdt.roi
+        - sdt.sim
+        - sdt.spatial
 
 about:
     home: https://github.com/schuetzgroup/sdt-python
