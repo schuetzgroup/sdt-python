@@ -329,11 +329,11 @@ class TestFiles(unittest.TestCase):
 
     def test_chdir_str(self):
         """io.chdir: str arg"""
-        cwd = os.getcwd()
+        cwd = Path.cwd()
         with tempfile.TemporaryDirectory() as d:
             with sdt.io.chdir(d):
-                self.assertEqual(os.getcwd(), d)
-            self.assertEqual(os.getcwd(), cwd)
+                self.assertEqual(Path.cwd(), Path(d).resolve())
+            self.assertEqual(Path.cwd(), cwd)
 
     def test_chdir_path(self):
         """io.chdir: Path arg"""
@@ -341,7 +341,7 @@ class TestFiles(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             d = Path(d)
             with sdt.io.chdir(d):
-                self.assertEqual(Path.cwd(), d)
+                self.assertEqual(Path.cwd(), d.resolve())
             self.assertEqual(Path.cwd(), cwd)
 
     def test_get_files(self):
