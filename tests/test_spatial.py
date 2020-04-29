@@ -57,7 +57,8 @@ class TestInterpolateCoords(unittest.TestCase):
         x = np.arange(10, dtype=np.float)
         xy = np.column_stack([x, x + 10])
         self.trc = pd.DataFrame(xy, columns=["x", "y"])
-        self.trc["frame"] = np.arange(2, 12)
+        # Windows uses int32 by default, so explicitly set dtype
+        self.trc["frame"] = np.arange(2, 12, dtype=np.int64)
         self.trc["particle"] = 0
         self.trc["interp"] = 0
         self.trc.loc[[1, 4, 5], "interp"] = 1

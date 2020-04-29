@@ -196,9 +196,14 @@ class TestCalcPairDistance(unittest.TestCase):
 
 class TestFindCodiffusion(unittest.TestCase):
     def setUp(self):
-        c = np.repeat([[10, 10, 1, 1]], 10, axis=0)
+        # Windows uses int32 by default, so be explicit
+        c = np.array([[10, 10, 1, 1]], dtype=np.int64)
+        c = np.repeat(c, 10, axis=0)
         c[:, -1] = np.arange(10)
         self.track = pd.DataFrame(c, columns=["x", "y", "particle", "frame"])
+        print(self.track)
+        print(self.track.dtypes)
+        print(np.array([10, 10, 1, 1]).dtype)
 
     def test_find_codiffusion_numbers(self):
         """multicolor.find_codiffusion: Test returning the particle numbers"""

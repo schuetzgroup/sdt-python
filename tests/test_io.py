@@ -2,19 +2,21 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import unittest
-import os
-import tempfile
-import io
-from pathlib import Path
 import collections
 from datetime import datetime
+import io
+import os
+from pathlib import Path
+import sys
+import tempfile
+import unittest
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pims
-import yaml
+import pytest
 import tifffile
+import yaml
 
 import sdt.io
 
@@ -275,6 +277,11 @@ class TestTiff(unittest.TestCase):
                 self.assertDictEqual(yaml.safe_load(md),
                                      self.frames[0].metadata)
 
+    # Cannot run on Windows since close method is not implemented in PIMS.
+    # TIFF is not closed and thus Windows raises an error when trying to
+    # delete temporary directory.
+    @pytest.mark.xfail(sys.platform == "win32",
+                       reason="PIMS does not close files.")
     def test_sdt_tiff_stack(self):
         """io.SdtTiffStack"""
         with tempfile.TemporaryDirectory() as td:
@@ -314,9 +321,9 @@ class TestFiles(unittest.TestCase):
         self.keys0 = 0.1
         self.keys2 = list(zip((10, 12, 14), ("py", "dat", "doc")))
         self.files = (["00_another_{:1.1f}_bla.ext".format(self.keys0)] +
-                      [os.path.join(self.subdirs[0], "file_{}.txt".format(i))
+                      [self.subdirs[0] + "/file_{}.txt".format(i)
                        for i in range(1, 6)] +
-                      [os.path.join(self.subdirs[1], "bla_{}.{}".format(i, e))
+                      [self.subdirs[1] + "/bla_{}.{}".format(i, e)
                        for i, e in self.keys2])
         self.files = sorted(self.files)
 
@@ -382,7 +389,7 @@ class TestFiles(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             self._make_files(d)
             s = self.subdirs[1]
-            f, i = sdt.io.get_files("bla_(\d+)\.(\w+)", os.path.join(d, s))
+            f, i = sdt.io.get_files(r"bla_(\d+)\.(\w+)", os.path.join(d, s))
         expected_f = []
         for g in self.files:
             sp = Path(g).parts
@@ -396,7 +403,7 @@ class TestFiles(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             self._make_files(d)
             s = self.subdirs[1]
-            f, i = sdt.io.get_files("^00_another_(\d+\.\d+)_bla\.ext$", d)
+            f, i = sdt.io.get_files(r"^00_another_(\d+\.\d+)_bla\.ext$", d)
         self.assertEqual(f, [self.files[0]])
         self.assertEqual(i, [(self.keys0,)])
 
