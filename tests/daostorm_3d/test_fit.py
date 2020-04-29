@@ -231,8 +231,8 @@ class FitterTest(unittest.TestCase):
         f = fit_impl.FitterZ(self.z_sim_img, self.z_sim_local_max,
                              self.z_params, 1e-6, max_iterations=10)
         f.fit()
-        np.testing.assert_allclose(f.peaks, orig["peaks"])
-        np.testing.assert_allclose(f.residual, orig["residual"])
+        np.testing.assert_allclose(f.peaks, orig["peaks"], atol=1e-6)
+        np.testing.assert_allclose(f.residual, orig["residual"], atol=1e-6)
 
 
 if __name__ == "__main__":
