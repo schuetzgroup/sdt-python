@@ -41,7 +41,7 @@ Convert the installation to `conda forge <https://conda-forge.org>`_
     conda config --set channel_priority strict
     conda update --all
     conda install sdt-python
-    conda install opencv trackpy lmfit
+    conda install opencv trackpy lmfit ipympl
 
 The last line installs optional, recommended packages.
 
@@ -53,7 +53,7 @@ Create a new environment using `conda forge <https://conda-forge.org>`_
 ::
 
     conda create -n sdt_env -c conda-forge --strict-channel-priority sdt-python
-    conda install -n sdt_env -c conda-forge --strict-channel-priority opencv trackpy lmfit
+    conda install -n sdt_env -c conda-forge --strict-channel-priority opencv trackpy lmfit ipympl
     conda activate sdt_env
 
 The second line installs optional, recommended packages. ``sdt_env`` is the
@@ -67,7 +67,8 @@ or
 Using pip (untested)
 ^^^^^^^^^^^^^^^^^^^^
 
-Install some Python distribution and run::
+Install some Python distribution. Download this source code, change into the
+root folder (where this README is located) and run::
 
     python -m pip install .
 
@@ -92,3 +93,4 @@ Recommended packages
 - opencv
 - trackpy
 - lmfit
+- ipympl
