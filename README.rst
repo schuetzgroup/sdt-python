@@ -24,9 +24,59 @@ It contains
 Extensive documentation can be found at https://schuetzgroup.github.io/sdt-python.
 
 
+Installation
+------------
+
+Using anaconda (recommended)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After installing Python 3 from https://www.anaconda.com/products/individual,
+open an anaconda prompt and
+
+Convert the installation to `conda forge <https://conda-forge.org>`_
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+::
+
+    conda config --add channels conda-forge
+    conda config --set channel_priority strict
+    conda update --all
+    conda install sdt-python
+    conda install opencv trackpy lmfit
+
+The last line installs optional, recommended packages.
+
+Instead of converting the whole installation to conda-forge, it is possible to
+
+
+Create a new environment using `conda forge <https://conda-forge.org>`_
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+::
+
+    conda create -n sdt_env -c conda-forge --strict-channel-priority sdt-python
+    conda install -n sdt_env -c conda-forge --strict-channel-priority opencv trackpy lmfit
+    conda activate sdt_env
+
+The second line installs optional, recommended packages. ``sdt_env`` is the
+name of the new environment. For more information on conda environments,
+have a look
+`here <https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/>`_
+or
+`here <https://towardsdatascience.com/a-guide-to-conda-environments-bc6180fc533>`_.
+
+
+Using pip (untested)
+^^^^^^^^^^^^^^^^^^^^
+
+Install some Python distribution and run::
+
+    python -m pip install .
+
+
 Requirements
 ------------
+
 - Python >= 3.5
+- matplotlib
 - numpy >= 1.10
 - pandas
 - pims >= 0.3.0
@@ -37,6 +87,8 @@ Requirements
 
 Recommended packages
 --------------------
-- numba
-- matplotlib
+
 - qtpy >= 1.1
+- opencv
+- trackpy
+- lmfit
