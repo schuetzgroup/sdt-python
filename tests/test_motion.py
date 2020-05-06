@@ -932,30 +932,6 @@ class TestFitCdf:
                                     [[0.9, 0.85, 0.8],
                                      [0.8, 0.9, 0.95]]])
 
-        msds_k = np.array([[[0.1, 0.6, 0.2],
-                            [0.2, 0.3, 0.4]],
-                           [[0.5, 0.15, 0.7],
-                            [0.2, 1.2, 1.4]]])
-        weights_k = np.array([[[0.2, 0.85, 0.1],
-                               [0.3, 0.2, 0.1]],
-                              [[0.8, 0.15, 0.9],
-                               [0.3, 0.8, 0.1]]])
-        with pytest.warns(RuntimeWarning):
-            m_k, w_k = msd_dist._assign_components(msds_k, weights_k,
-                                                   "k-means")
-        msds_k_exp = np.array([[[0.1, 0.15, 0.2],
-                                [np.NaN, 0.3, 0.4]],
-                               [[0.5, 0.6, 0.7],
-                                [np.NaN, 1.2, 1.4]]])
-        weights_k_exp = np.array([[[0.2, 0.15, 0.1],
-                                   [np.NaN, 0.2, 0.1]],
-                                  [[0.8, 0.85, 0.9],
-                                   [np.NaN, 0.8, 0.1]]])
-        assert(np.allclose(m_k, msds_k_exp, equal_nan=True) or
-               np.allclose(m_k, msds_k_exp[::-1, ...], equal_nan=True))
-        assert(np.allclose(w_k, weights_k_exp, equal_nan=True) or
-               np.allclose(w_k, weights_k_exp[::-1, ...], equal_nan=True))
-
 
 class TestMsdDist:
     """motion.MsdDist"""

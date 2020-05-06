@@ -206,7 +206,7 @@ class MsdData:
         """
         if means is None:
             self.means = OrderedDict(
-                [(k, np.nanmean(v, axis=1)) for k, v in data.items()])
+                [(k, np.mean(v, axis=1)) for k, v in data.items()])
 
         self.errors = errors
         """obj:`dict` of particle id -> :obj:`numpy.ndarray` : standard errors
@@ -220,7 +220,7 @@ class MsdData:
             for k, v in data.items():
                 if v.shape[1] > 1:
                     # bootstrapping was done
-                    e = np.nanstd(v, axis=1, ddof=1)
+                    e = np.std(v, axis=1, ddof=1)
                 else:
                     # no bootstrapping, no error
                     e = np.full(v.shape[0], np.NaN)
