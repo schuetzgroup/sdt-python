@@ -42,7 +42,7 @@ Convert the installation to `conda forge <https://conda-forge.org>`_
     conda uninstall anaconda
     conda update --all
     conda install sdt-python
-    conda install opencv trackpy lmfit ipympl
+    conda install opencv trackpy lmfit ipympl scikit-learn
 
 The last line installs optional, recommended packages.
 
@@ -54,7 +54,7 @@ Create a new environment using `conda forge <https://conda-forge.org>`_
 ::
 
     conda create -n sdt_env -c conda-forge --strict-channel-priority sdt-python
-    conda install -n sdt_env -c conda-forge --strict-channel-priority opencv trackpy lmfit ipympl
+    conda install -n sdt_env -c conda-forge --strict-channel-priority opencv trackpy lmfit ipympl scikit-learn
     conda activate sdt_env
 
 The second line installs optional, recommended packages. ``sdt_env`` is the
@@ -95,3 +95,4 @@ Recommended packages
 - trackpy
 - lmfit
 - ipympl
+- scikit-learn
