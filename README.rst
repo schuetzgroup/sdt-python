@@ -39,6 +39,7 @@ Convert the installation to `conda forge <https://conda-forge.org>`_
 
     conda config --add channels conda-forge
     conda config --set channel_priority strict
+    conda uninstall anaconda
     conda update --all
     conda install sdt-python
     conda install opencv trackpy lmfit ipympl
