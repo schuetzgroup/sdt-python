@@ -845,7 +845,7 @@ class TestFitCdf:
                 (1 - f) * np.exp(-x / msds[1]))
 
     def test_fit_cdf(self, cdf_fit_function):
-        """motion.msd_cdf._fit_cdf_* functions"""
+        """motion.msd_dist._fit_cdf_* functions"""
         f = 2 / 3
         x = np.logspace(-5, 0.5, 100)
         beta, lam = cdf_fit_function(x, self.cdf(x, self.msds, f), 2)
@@ -856,7 +856,7 @@ class TestFitCdf:
                                    atol=2e-3)
 
     def test_msd_from_cdf_no_boot(self, cdf_fit_method_name):
-        """motion._msd_from_cdf, no bootstrapping"""
+        """motion.msd_dist._msd_from_cdf, no bootstrapping"""
         f = np.array([2/3, 3/4])
         n = 10000
         fn = np.round(f * n).astype(int)
@@ -896,6 +896,65 @@ class TestFitCdf:
         weights_exp = np.dstack([weights_exp] * n_boot)
         np.testing.assert_allclose(msds, msds_exp, atol=1e-3)
         np.testing.assert_allclose(weights, weights_exp, atol=2e-3)
+
+    def test_assign_components(self):
+        """motion.msd_dist._assign_components"""
+        msds = np.array([[[0.1, 0.15, 0.2],
+                          [1.0, 0.3, 1.4]],
+                         [[0.5, 0.6, 0.7],
+                          [0.2, 1.2, 0.4]]])
+        weights = np.array([[[0.1, 0.85, 0.2],
+                             [0.8, 0.9, 0.05]],
+                            [[0.9, 0.15, 0.8],
+                             [0.2, 0.1, 0.95]]])
+
+        m_m, w_m = msd_dist._assign_components(msds, weights, "msd")
+        np.testing.assert_allclose(m_m,
+                                   [[[0.1, 0.15, 0.2],
+                                     [0.2, 0.3, 0.4]],
+                                    [[0.5, 0.6, 0.7],
+                                     [1.0, 1.2, 1.4]]])
+        np.testing.assert_allclose(w_m,
+                                   [[[0.1, 0.85, 0.2],
+                                     [0.2, 0.9, 0.95]],
+                                    [[0.9, 0.15, 0.8],
+                                     [0.8, 0.1, 0.05]]])
+
+        m_w, w_w = msd_dist._assign_components(msds, weights, "weight")
+        np.testing.assert_allclose(m_w,
+                                   [[[0.1, 0.6, 0.2],
+                                     [0.2, 1.2, 1.4]],
+                                    [[0.5, 0.15, 0.7],
+                                     [1.0, 0.3, 0.4]]])
+        np.testing.assert_allclose(w_w,
+                                   [[[0.1, 0.15, 0.2],
+                                     [0.2, 0.1, 0.05]],
+                                    [[0.9, 0.85, 0.8],
+                                     [0.8, 0.9, 0.95]]])
+
+        msds_k = np.array([[[0.1, 0.6, 0.2],
+                            [0.2, 0.3, 0.4]],
+                           [[0.5, 0.15, 0.7],
+                            [0.2, 1.2, 1.4]]])
+        weights_k = np.array([[[0.2, 0.85, 0.1],
+                               [0.3, 0.2, 0.1]],
+                              [[0.8, 0.15, 0.9],
+                               [0.3, 0.8, 0.1]]])
+        with pytest.warns(RuntimeWarning):
+            m_k, w_k = msd_dist._assign_components(msds_k, weights_k,
+                                                   "k-means")
+        msds_k_exp = np.array([[[0.1, 0.15, 0.2],
+                                [np.NaN, 0.3, 0.4]],
+                               [[0.5, 0.6, 0.7],
+                                [np.NaN, 1.2, 1.4]]])
+        weights_k_exp = np.array([[[0.2, 0.15, 0.1],
+                                   [np.NaN, 0.2, 0.1]],
+                                  [[0.8, 0.85, 0.9],
+                                   [np.NaN, 0.8, 0.1]]])
+        assert(np.allclose(m_k, msds_k_exp, equal_nan=True) or
+               np.allclose(m_k, msds_k_exp[::-1, ...], equal_nan=True))
+        assert(np.allclose(w_k, weights_k_exp, equal_nan=True) or
+               np.allclose(w_k, weights_k_exp[::-1, ...], equal_nan=True))
 
 
 class TestMsdDist:

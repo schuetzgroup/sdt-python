@@ -249,6 +249,95 @@ def _msd_from_cdf(square_disp, n_components, method, n_boot, random_state=None,
     return msds, weights
 
 
+def _assign_components(msds, weights, how, random_state=None):
+    """Assign MSDs and weights to components
+
+    Which of the MSDs / weights gets assigned to which component in
+    :py:func:`_msd_from_cdf` depends on the order the fitting function
+    returns them, which is not predictable.
+    E.g., the slow MSD could be assigned sometimes to component 1, sometimes
+    to component 2, etc.
+
+    This function tries to resolve the problem.
+
+    Parameters
+    ----------
+    msds, weights : numpy.ndarray
+        Arrays as returned by :py:func:`_msd_from_cdf`
+    how : {"msd", "weight", "kmeans"}
+        If "msd", components are assigned according to increasing MSDs. If
+        "weight", components are assigned according to increasing weights.
+        If "k-means", a k-means clustering algorithm is executed in
+        MSD-weight space. Not that this can fail for some datapoints as, e.g.,
+        the same component is assigned twice. "k-means" requires
+        `scikit-learn`.
+    random_state : numpy.random.RandomState or None, optional
+        :py:class:`numpy.random.RandomState` instance to use for k-means.
+        Defaults to `None`.
+
+    Returns
+    -------
+    msds_assigned : numpy.ndarray
+        MSDs assigned to components. ``msds_assigned[i, j, k]`` is the
+        MSD of the i-th component, the j-th lag time, and the k-th bootstrap
+        run.
+    weights_assigned : numpy.ndarray
+        Weights assigned to components. ``weights_assigned[i, j, k]`` is the
+        weight of the i-th component, the j-th lag time, and the k-th bootstrap
+        run.
+    """
+    if how == "k-means":
+        # Find clusters in (msd, weight) space
+        import sklearn.cluster
+        kmeans = sklearn.cluster.KMeans(
+            n_clusters=msds.shape[0], random_state=random_state)
+
+        msds_assigned = np.empty_like(msds)
+        weights_assigned = np.empty_like(weights)
+        invalid_cnt = 0
+        for i in range(msds.shape[1]):
+            # Perform k-means for each lag time separately as MSDs depend on
+            # it.
+            km_data = np.column_stack([msds[:, i, :].reshape(-1),
+                                       weights[:, i, :].reshape(-1)])
+            labels = kmeans.fit(km_data).labels_
+            labels = labels.reshape((msds.shape[0], msds.shape[2]))
+
+            for j in range(msds.shape[2]):
+                lab = labels[:, j]
+                u = np.unique(lab)
+                if len(u) == labels.shape[0]:
+                    # Each component was assigned exactly once for this
+                    # lag time and bootstrap run
+                    msds_assigned[:, i, j] = msds[lab, i, j]
+                    weights_assigned[:, i, j] = weights[lab, i, j]
+                else:
+                    msds_assigned[:, i, j] = np.NaN
+                    weights_assigned[:, i, j] = np.NaN
+                    invalid_cnt += 1
+        if invalid_cnt > 0:
+            msg = "Failed to assign components via k-means in {} of {} cases."
+            msg = msg.format(invalid_cnt, msds.shape[1] * msds.shape[2])
+            warnings.warn(msg, RuntimeWarning)
+        return msds_assigned, weights_assigned
+
+    if how == "msd":
+        labels = np.argsort(msds, axis=0)
+    elif how == "weight":
+        labels = np.argsort(weights, axis=0)
+    else:
+        raise ValueError("Unknown assignment method: {}".format(how))
+
+    # Assign
+    idx = np.indices(msds.shape)
+    idx[0] = labels
+    idx = tuple(idx)
+    msds_assigned = msds[idx]
+    weights_assigned = weights[idx]
+
+    return msds_assigned, weights_assigned
+
+
 class MsdDist:
     """Calculate and analyze mean square displacement (MSD) distribution
 
@@ -263,7 +352,7 @@ class MsdDist:
     def __init__(self, data, frame_rate, n_components=2, n_lag=10, n_boot=0,
                  ensemble=True, fit_method="lsq", poly_order=30,
                  e_name="ensemble", random_state=None, pixel_size=1,
-                 columns={}):
+                 assign_method="msd", columns={}):
         """Parameters
         ----------
         data : pandas.DataFrame or iterable of pandas.DataFrame
@@ -292,6 +381,15 @@ class MsdDist:
         pixel_size : float, optional
             Pixel size; multiply coordinates by this factor. Defaults to 1
             (no scaling).
+        assign_method : {"msd", "weight", "kmeans"}, optional
+            If "msd", components are assigned according to increasing MSDs,
+            i.e., lowest MSD will be component 1, next will be component 2,
+            and so on. If "weight", components are assigned according to
+            increasing weights. If "k-means", a k-means clustering algorithm
+            is executed in MSD–weight space. Note that this can fail in some
+            cases as, e.g., the same component could be assigned twice.
+            Such datapoints are discarded and a warning is shown..
+            "k-means" requires `scikit-learn`. Defaults to "msd".
 
         Other parameters
         ----------------
@@ -321,8 +419,10 @@ class MsdDist:
         for p_id, p_sds in square_disp.items():
             msds, weights = _msd_from_cdf(p_sds, n_components, fit_method,
                                           n_boot, random_state, poly_order)
-            msd_set[p_id] = msds
-            weight_set[p_id] = weights
+            msds_ass, weights_ass = _assign_components(
+                msds, weights, assign_method, random_state)
+            msd_set[p_id] = msds_ass
+            weight_set[p_id] = weights_ass
 
         self._msd_data = []
         self._weight_data = []
