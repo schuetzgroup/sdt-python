@@ -21,7 +21,10 @@ It contains
 - much more.
 
 
-Extensive documentation can be found at https://schuetzgroup.github.io/sdt-python.
+A repository of tutorials is provided at
+https://github.com/schuetzgroup/sdt-python-tutorials.
+Extensive API documentation can be found at
+https://schuetzgroup.github.io/sdt-python.
 
 
 Installation
