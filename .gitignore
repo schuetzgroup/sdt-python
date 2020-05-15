@@ -12,3 +12,4 @@ __pycache__
 .pytest_cache
 .vscode
 sdt-python.code-workspace
+.idea
