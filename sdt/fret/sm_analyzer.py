@@ -452,7 +452,8 @@ class SmFretAnalyzer:
 
         self.tracks["fret", out_col] = np.concatenate(segments)
 
-    def bleach_step(self, donor_thresh, acceptor_thresh, truncate=True):
+    def bleach_step(self, donor_thresh, acceptor_thresh, truncate=True,
+                    special="none"):
         """Find tracks wwith acceptable fluorophore bleaching behavior
 
         "Acceptable" means that the acceptor bleaches to a value less than
@@ -480,6 +481,10 @@ class SmFretAnalyzer:
             median is below this value.
         truncate : bool, optional
             If `True`, remove data after the bleach step. Defaults to `True`.
+        special : {"none", "don-only", "acc-only"}, optional
+            Donor-only ("don-only") and acceptor-only ("acc-only") datasets
+            require special treatment to ignore the missing fluorophore.
+            Defaults to "none", nothing special.
 
         Examples
         --------
@@ -489,7 +494,7 @@ class SmFretAnalyzer:
         acceptable bleaching behavior. Of the other tracks, only keep data from
         before any bleaching.
 
-        >>> filt.acceptor_bleach_step(800, 500, truncate=True)
+        >>> ana.bleach_step(800, 500, truncate=True)
         """
         time_col = ("donor", self.columns["time"])
         self.tracks.sort_values([("fret", "particle"), time_col], inplace=True)
@@ -506,33 +511,47 @@ class SmFretAnalyzer:
 
             good = []
             for p, trc_p in trc_split:
-                # Make step functions
-                cps_d = np.nonzero(np.diff(trc_p[:, 1]))[0] + 1  # changepoints
-                split_d = np.array_split(trc_p[:, (0, 4)], cps_d)
-                med_d = [np.median(s[s[:, 1] == don_exc_num, 0])
-                         for s in split_d]
+                is_good = True
 
-                cps_a = np.nonzero(np.diff(trc_p[:, 3]))[0] + 1  # changepoints
-                split_a = np.array_split(trc_p[:, (2, 4)], cps_a)
-                med_a = [np.median(s[s[:, 1] == acc_exc_num, 0])
-                         for s in split_a]
+                # No reason for checking acceptor if donor-only
+                if not special.startswith("d") and is_good:
+                    # Get change changepoints from segments
+                    cps_a = np.nonzero(np.diff(trc_p[:, 3]))[0] + 1
+                    split_a = np.array_split(trc_p[:, (2, 4)], cps_a)
+                    med_a = [np.median(s[s[:, 1] == acc_exc_num, 0])
+                             for s in split_a]
 
-                # See if only the first step of the acceptor brightness is
-                # above acceptor_thresh and if there are either no steps in
-                # the donor mass or if only the first step in the donor
-                # brightness is above donor_thresh
-                is_good = (len(med_a) > 1 and
-                           all(m < acceptor_thresh for m in med_a[1:]) and
-                           (len(med_d) == 1 or all(m < donor_thresh
-                                                   for m in med_d[1:])))
+                    # See if only the first step of the acceptor brightness is
+                    # above acceptor_thresh.
+                    is_good = (len(med_a) > 1 and
+                               all(m < acceptor_thresh for m in med_a[1:]))
+                else:
+                    # For truncation below
+                    cps_a = []
+
+                # No reason for checking donor if acceptor-only
+                if not special.startswith("a") and is_good:
+                    # Get change changepoints from segments
+                    cps_d = np.nonzero(np.diff(trc_p[:, 1]))[0] + 1
+                    split_d = np.array_split(trc_p[:, (0, 4)], cps_d)
+                    med_d = [np.median(s[s[:, 1] == don_exc_num, 0])
+                             for s in split_d]
+                    # See if there are either no steps in the donor mass or if
+                    # only the first step in the donor brightness is above
+                    # donor_thresh
+                    is_good = (len(med_d) == 1 or
+                               all(m < donor_thresh for m in med_d[1:]))
+                else:
+                    # For truncation below
+                    cps_d = []
+
                 if is_good:
                     if truncate:
                         # Add data before bleach step
                         g = np.zeros(len(trc_p), dtype=bool)
-                        if len(cps_d):
-                            stop = min(cps_d[0], cps_a[0])
-                        else:
-                            stop = cps_a[0]
+                        stop = min(c[0] if len(c) else np.inf
+                                   for c in [cps_d, cps_a])
+                        stop = stop if np.isfinite(stop) else None
                         g[:stop] = True
                     else:
                         g = np.ones(len(trc_p), dtype=bool)

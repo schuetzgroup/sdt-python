@@ -391,6 +391,36 @@ class TestSmFretAnalyzer:
         ana1.bleach_step(800, 500, truncate=True)
         pd.testing.assert_frame_equal(ana1.tracks, expected)
 
+    def test_bleach_step_don_only(self, ana1):
+        """fret.SmFretAnalyzer.bleach_step: donor-only, truncate=False"""
+        exp_mask = ana1.tracks["fret", "particle"].isin([0, 1, 2, 3, 4, 7])
+        expected = ana1.tracks[exp_mask].copy()
+        ana1.bleach_step(800, 500, truncate=False, special="don-only")
+        pd.testing.assert_frame_equal(ana1.tracks, expected)
+
+    def test_bleach_step_don_only_trunc(self, ana1):
+        """fret.SmFretAnalyzer.bleach_step: donor-only, truncate=True"""
+        exp_mask = (ana1.tracks["fret", "particle"].isin([0, 1, 2, 3, 4, 7]) &
+                    (ana1.tracks["fret", "d_seg"] == 0))
+        expected = ana1.tracks[exp_mask].copy()
+        ana1.bleach_step(800, 500, truncate=True, special="don-only")
+        pd.testing.assert_frame_equal(ana1.tracks, expected)
+
+    def test_bleach_step_acc(self, ana1):
+        """fret.SmFretAnalyzer.bleach_step: acceptor-only, truncate=False"""
+        exp_mask = ana1.tracks["fret", "particle"].isin([1, 3, 4, 5, 6])
+        expected = ana1.tracks[exp_mask].copy()
+        ana1.bleach_step(800, 500, truncate=False, special="acc-only")
+        pd.testing.assert_frame_equal(ana1.tracks, expected)
+
+    def test_bleach_step_acc_trunc(self, ana1):
+        """fret.SmFretAnalyzer.bleach_step: acceptor-only, truncate=True"""
+        exp_mask = (ana1.tracks["fret", "particle"].isin([1, 3, 4, 5, 6]) &
+                    (ana1.tracks["fret", "a_seg"] == 0))
+        expected = ana1.tracks[exp_mask].copy()
+        ana1.bleach_step(800, 500, truncate=True, special="acc-only")
+        pd.testing.assert_frame_equal(ana1.tracks, expected)
+
     def test_flag_excitation_type(self, ana2):
         """fret.SmFretAnalyzer.flag_excitation_type"""
         ana2.excitation_seq = "odddda"
