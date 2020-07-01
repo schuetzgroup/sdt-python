@@ -10,6 +10,13 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+14.4
+----
+
+- motion.MsdDist: Ensure proper assignment of MSDs/weights to components
+- fret.SmFretAnalyzer.bleach_step: Suport donor-only and acceptor-only samples
+
+
 14.3.1 – 14.3.2
 ---------------
 
