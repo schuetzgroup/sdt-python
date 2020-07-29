@@ -202,8 +202,7 @@ class TestBayesOfflineNumba(TestBayesOffline):
     def test_engine(self):
         """changepoint.BayesOffline: set numba engine"""
         f = offline.BayesOffline("const", "gauss", engine=self.engine)
-        from numba.dispatcher import Dispatcher
-        self.assertIsInstance(f.segmentation, Dispatcher)
+        assert hasattr(f.segmentation, "py_func")
 
     def test_offline_changepoint_gauss_univ(self):
         """changepoint.BayesOffline: Gauss, numba
@@ -549,8 +548,7 @@ class TestPeltNumba(TestPelt):
     def test_engine(self):
         """changepoint.pelt.Pelt: set numba engine"""
         c = pelt.Pelt("l2", 1, 1, engine=self.engine)
-        from numba.dispatcher import Dispatcher
-        self.assertIsInstance(c.segmentation, Dispatcher)
+        assert hasattr(c.segmentation, "py_func")
 
     def test_segmentation(self):
         """changepoint.pelt.segmentation_numba"""
