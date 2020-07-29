@@ -9,8 +9,12 @@ import numpy as np
 
 try:
     from numba import *
-    
     numba_available = True
+    try:
+        # numba 0.49 moved jitclass to experimental
+        from numba.experimental import jitclass
+    except ImportError:
+        pass
 except ImportError:
     def jit(*args, **kwargs):
         def stub(*sargs, **skwargs):
