@@ -74,9 +74,9 @@ class Fitter(object):
             Fitting data. There need to be `size_x` and `size_y` columns.
             A `z` column will be written with fitted `z` position values.
         """
-        dw = ((np.sqrt(data["size_x"][:, np.newaxis]) -
+        dw = ((np.sqrt(data["size_x"].to_numpy()[:, np.newaxis]) -
                np.sqrt(self._curve_x[np.newaxis, :]))**2 +
-              (np.sqrt(data["size_y"][:, np.newaxis]) -
+              (np.sqrt(data["size_y"].to_numpy()[:, np.newaxis]) -
                np.sqrt(self._curve_y[np.newaxis, :]))**2)
         min_idx = np.argmin(dw, axis=1)
         data["z"] = self._absc[min_idx]

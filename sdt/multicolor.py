@@ -444,7 +444,7 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         # channel (instead of a NaN). Thanks to set_index above, axes[0] is
         # the list of frame numbers
         p.loc[:, (channel_names, columns["time"])] = \
-            np.broadcast_to(p.axes[0][:, np.newaxis], (len(p), 2))
+            np.broadcast_to(p.axes[0].to_numpy()[:, np.newaxis], (len(p), 2))
         # re-assign particle numbers to overwrite NaNs
         p[channel_names[0], columns["particle"]] = pn1
         p[channel_names[1], columns["particle"]] = pn2
