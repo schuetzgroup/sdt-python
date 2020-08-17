@@ -16,6 +16,7 @@ Currently, there is
   thresholding algorithms in :py:mod:`sdt.image` with visual feedback
 - the :py:class:`ROISelector` class for choosing ROIs by drawing them on
   images
+- the :py:class:`FileDialog` class for selecting files
 
 
 Programming reference
@@ -26,7 +27,10 @@ Programming reference
     :members:
 .. autoclass:: ROISelector
     :members:
+.. autoclass:: FileDialog
+    :members:
 """
-from .locator import Locator
-from .roi_selector import ROISelector
-from .thresholder import Thresholder
+from .locator import Locator  # noqa: 401
+from .roi_selector import ROISelector  # noqa: 401
+from .thresholder import Thresholder  # noqa: 401
+from .file_dialog import FileDialog  # noqa: 401
