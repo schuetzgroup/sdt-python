@@ -70,59 +70,100 @@ to/from YAML:
 
 Programming reference
 ---------------------
-
 .. autoclass:: Corrector
     :members:
     :special-members: __call__
+
+References
+----------
+
+.. [Preibisch2010] Preibisch, S.; Saalfeld, S.; Schindelin, J. & Tomancak, P.:
+    "Software for bead-based registration of selective plane illumination
+    microscopy data", Nature Methods, Springer Science and Business Media LLC,
+    2010, 7, 418–419
 """
 from contextlib import suppress
+from pathlib import Path
+from typing import Callable, Dict, Optional, Sequence, Tuple, Union
+from typing.io import BinaryIO
 
+import cv2
+import matplotlib as mpl
 import numpy as np
 import pandas as pd
 import scipy.io
-import scipy.stats
 import scipy.ndimage
-import matplotlib as mpl
+import scipy.spatial
+import scipy.stats
 
 from . import roi, config
-from .helper import pipeline
+from .helper import pipeline, Slicerator
 
 
-def _affine_trafo(params, loc):
-    """Do an affine transformation
+def _affine_trafo(params: np.ndarray, loc: np.ndarray) -> np.ndarray:
+    """Perform an affine transformation
 
     Parameters
     ----------
-    params : numpy.ndarray, shape(n, n+1) or shape(n+1, n+1)
-        Transformation matrix. The top-left (n, n) block is used as the
-        linear part of the transformation while the top-right column of n
-        entries specifies the shift.
-    loc : numpy.ndarray, shape(m, n)
+    params
+        Transformation matrix of shape (n, n+1) or (n+1, n+1). The top-left
+        (n, n) block is used as the linear part of the transformation while the
+        top-right column of n entries specifies the shift.
+    loc
         Array of m n-dimensional coordinate tuples to be transformed.
 
     Returns
     -------
-    numpy.ndarray, shape(m, n)
-        Transformed coordinate tuples
+    Transformed coordinate tuples
     """
     ndim = params.shape[1] - 1
     return loc @ params[:ndim, :ndim].T + params[:ndim, ndim]
 
 
-class Corrector(object):
+class Corrector:
     """Class for easy overlay of two fluorescence microscopy channels
 
-    This class provides an easy-to-use interface to the correction
-    process.
+    This class provides an easy-to-use interface to the registration
+    process. It is based on the algorithm published by Preibisch et al.
+    [Preibisch2010]_.
     """
     yaml_tag = "!ChromaticCorrector"
 
+    feat1: Sequence[pd.DataFrame]
+    """Positions of beads (as found by a localization algorithm) in the first
+    channel. Each DataFrame corresponds to one image (sequence), thus multiple
+    bead images can be used to increase the accuracy.
+    """
+    feat2: Sequence[pd.DataFrame]
+    """Same as :py:attr:`feat1`, but for the second channel"""
+    columns: Dict
+    """Column names in :py:attr:`feat1` and :py:attr:`feat2`. Defaults are
+    taken from :py:attr:`config.columns`.
+    """
+    channel_names: Sequence[str]
+    """Channel names"""
+    pairs: pd.DataFrame
+    """Pairs found by :py:meth:`determine_parameters`."""
+    parameters1: np.ndarray
+    """Array describing the affine transformation of data from channel 1 to
+    channel 2.
+    """
+    parameters2: np.ndarray
+    """Array describing the affine transformation of data from channel 2 to
+    channel 1.
+    """
+
     @config.set_columns
-    def __init__(self, feat1=None, feat2=None, columns={},
-                 channel_names=["channel1", "channel2"]):
+    def __init__(self,
+                 feat1: Optional[Union[Sequence[pd.DataFrame],
+                                       pd.DataFrame]] = None,
+                 feat2: Optional[Union[Sequence[pd.DataFrame],
+                                       pd.DataFrame]] = None,
+                 columns: Dict = {},
+                 channel_names: Sequence[str] = ["channel1", "channel2"]):
         """Parameters
         ----------
-        feat1, feat2 : list of pandas.DataFrame or pandas.DataFrame or None, optional
+        feat1, feat2
             Set the `feat1` and `feat2` attribute (turning it into a list
             if it is a single DataFrame). Can also be `None`, but in this case
             :py:meth:`find_pairs` and :py:meth:`determine_parameters` will
@@ -130,53 +171,33 @@ class Corrector(object):
 
         Other parameters
         ----------------
-        columns : dict, optional
+        columns
             Override default column names as defined in
             :py:attr:`config.columns`. Relevant name are `coords` and `time`.
             That means, if the DataFrames have coordinate columns "x" and "z",
             and a time column "alt_frame", set
             ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This is
             used to set the :py:attr:`columns` attribute.
-        channel_names : list of str, optional
+        channel_names
             Set the `channel_names` attribute. Defaults to ``["channel1",
             "channel2"]``.
         """
         self.feat1 = [feat1] if isinstance(feat1, pd.DataFrame) else feat1
-        """List of pandas.DataFrame; Positions of beads (as found by a
-        localization algorithm) in the first channel. Each DataFrame
-        corresponds to one image (sequence), thus multiple bead images can be
-        used to increase the accuracy.
-        """
         self.feat2 = [feat2] if isinstance(feat2, pd.DataFrame) else feat2
-        """Same as :py:attr:`feat1`, but for the second channel"""
         self.columns = columns
-        """dict of column names in :py:attr:`feat1` and :py:attr:`feat2`.
-        Defaults are taken from :py:attr:`config.columns`. This is not used
-        in :py:meth:`__call__`, which has its own `columns` parameter.
-        """
         self.channel_names = channel_names
-        """List of channel names"""
         self.pairs = None
-        """:py:class:`pandas.DataFrame` containing the pairs found by
-        :py:meth:`determine_parameters`.
-        """
         self.parameters1 = np.eye(len(columns["coords"]) + 1)
-        """Array describing the affine transformation of data from
-        channel 1 to channel 2.
-        """
         self.parameters2 = np.eye(len(columns["coords"]) + 1)
-        """Array describing the affine transformation of data from
-        channel 2 to channel 1.
-        """
 
-    def determine_parameters(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
-                             ambiguity_factor=0.8, flip_axes=[]):
+    def determine_parameters(self, n_neighbors: int = 3,
+                             ambiguity_factor: float = 5.0,
+                             max_error: float = 1.0):
         """Determine the parameters for the affine transformation
 
         This takes the localizations of :py:attr:`feat1` and tries to match
-        them with those of :py:attr:`feat2`. Then a linear fit is used to
-        determine the affine transformation to correct for chromatic
-        aberrations.
+        them with those of :py:attr:`feat2`. Then a fit is used to determine
+        the affine transformation between the channels.
 
         This is a convenience function that calls :py:meth:`find_pairs` and
         :py:meth:`fit_parameters`; see the documentation of the methods for
@@ -184,34 +205,29 @@ class Corrector(object):
 
         Parameters
         ----------
-        tol_rel : float
-            Relative tolerance parameter for :py:func:`numpy.isclose()`.
-            Defaults to 0.05.
-        tol_abs : float
-            Absolute tolerance parameter for :py:func:`numpy.isclose()`.
-            Defaults to 0.
-        score_cutoff : float, optional
-            In order to get rid of false matches a threshold for scores can
-            be set. All scores below this threshold are discarded. The
-            threshold is calculated as ``score_cutoff*score.max()``. Defaults
-            to 0.5.
-        ambiguity_factor : float
-            If there are two candidates as a partner for a feature, and the
-            score of the lower scoring one is larger than `ambiguity_factor`
-            times the score of the higher scorer, the pairs are considered
-            ambiguous and therefore discarded. Defaults to 0.8.
-        flip_axes : int or list of int, optional
-            Axes with respect to which the channels are flipped. E.g. if
-            channel 2 is upside done w.r.t channel 1, set ``flip_axes=1``,
-            if it is mirrored left-to-right, set ``flip_axes=0``.
+        n_neighbors
+            Number of neighboring beads to consider to find matching features
+            across channels.
+        ambiguity_factor
+            A low value (around 1) will accept pairs even if there are similar
+            possible matches. The higher this value, the less are ambigous
+            results accepted.
+        max_error
+            Maximum error (i.e., distance between transformed position from
+            channel 1 and matched position in channel 2) to consider a feature
+            pair not an outlier and thus remove it from the transformation fit.
         """
-        self.find_pairs(tol_rel, tol_abs, score_cutoff, ambiguity_factor,
-                        flip_axes)
-        self.fit_parameters()
+        self.find_pairs(n_neighbors, ambiguity_factor)
+        self.fit_parameters(max_error)
 
     @config.set_columns
-    def __call__(self, data, channel=2, inplace=False, mode="constant",
-                 cval=0.0, columns={}):
+    def __call__(self,
+                 data: Union[pd.DataFrame, roi.PathROI, Slicerator,
+                             np.ndarray],
+                 channel: int = 2, inplace: bool = False,
+                 mode: str = "constant",
+                 cval: Union[float, Callable[[np.ndarray], float]] = 0.0,
+                 columns: Dict = {}):
         """Correct for chromatic aberrations
 
         This can be done either on coordinates (e. g. resulting from feature
@@ -219,33 +235,32 @@ class Corrector(object):
 
         Parameters
         ----------
-        data : pandas.DataFrame or slicerator.Slicerator or array-like
-            data to be processed. If a pandas.Dataframe, the feature
+        data
+            Data to be processed. If a pandas.Dataframe, the feature
             coordinates will be corrected. Otherwise,
             :py:class:`sdt.helper.Pipeline` is used to correct image data using
             an affine transformation.
-        channel : int, optional
+        channel : int
             If `features` are in the first channel (corresponding to the
             `feat1` arg of the constructor), set to 1. If features are in the
             second channel, set to 2. Depending on this, a transformation will
             be applied to the coordinates of `features` to match the other
             channel (mathematically speaking depending on this parameter
             either the "original" transformation or its inverse are applied.)
-        inplace : bool, optional
+        inplace : bool
             Only has an effect if `data` is a DataFrame. If True, the
-            feature coordinates will be corrected in place. Defaults to False.
-        mode : str, optional
+            feature coordinates will be corrected in place.
+        mode : str
             How to fill points outside of the uncorrected image boundaries.
             Possibilities are "constant", "nearest", "reflect" or "wrap".
-            Defaults to "constant".
-        cval : scalar or callable, optional
+        cval : scalar or callable
             What value to use for `mode="constant"`. If this is callable, it
             should take a single argument (the uncorrected image) and return a
-            scalar, which will be used as the fill value. Defaults to 0.0.
+            scalar, which will be used as the fill value.
 
         Other parameters
         ----------------
-        columns : dict, optional
+        columns
             Override default column names in case `data` is a
             :py:class:`pandas.DataFrame`. The only relevant name is `coords`.
             That means, if the DataFrame has coordinate columns "x" and "z",
@@ -296,7 +311,7 @@ class Corrector(object):
                 return ret.T  # transpose back
             return corr(data)
 
-    def test(self, ax=None):
+    def test(self, ax: Optional[Sequence] = None):
         """Test validity of the correction parameters
 
         This plots the affine transformation functions and the coordinates of
@@ -306,10 +321,9 @@ class Corrector(object):
 
         Parameters
         ----------
-        ax : tuple of matplotlib axes or None, optional
-            Axes to use for plotting. The length of the tuple has to be 2.
-            If None, allocate new axes using
-            :py:func:`matplotlib.pyplot.subplots`. Defaults to None.
+        ax
+            Two matplotib axes instances for plotting. If `None`, allocate new
+            axes using :py:func:`matplotlib.pyplot.subplots`.
         """
         import matplotlib.pyplot as plt
 
@@ -340,23 +354,22 @@ class Corrector(object):
 
         ax[0].figure.tight_layout()
 
-    def save(self, file, fmt="npz", key=("chromatic_param1",
-                                         "chromatic_param2")):
+    def save(self, file: Union[BinaryIO, str, Path], fmt: str = "npz",
+             key: Tuple[str] = ("chromatic_param1", "chromatic_param2")):
         """Save transformation parameters to file
 
         Parameters
         ----------
-        file : str or file
+        file
             File name or an open file-like object to save data to.
-        fmt : {"npz", "mat"}, optional
+        fmt
             Format to save data. Either numpy ("npz") or MATLAB ("mat").
             Defaults to "npz".
 
         Other parameters
         ----------------
-        key : tuple of str, optional
-            Name of the variables in the saved file. Defaults to
-            ("chromatic_param1", "chromatic_param2").
+        key
+            Names of two transformations in the saved file.
         """
         vardict = {key[0]: self.parameters1, key[1]: self.parameters2}
         if fmt == "npz":
@@ -366,31 +379,32 @@ class Corrector(object):
         else:
             raise ValueError("Unknown format: {}".format(fmt))
 
-    @staticmethod
-    def load(file, fmt="npz", key=("chromatic_param1", "chromatic_param2")):
+    @classmethod
+    def load(cls, file: Union[BinaryIO, str, Path], fmt: str = "npz",
+             key: Tuple[str] = ("chromatic_param1", "chromatic_param2")
+             ) -> "Corrector":
         """Read paramaters from a file and construct a `Corrector`
 
         Parameters
         ----------
-        file : str or file
+        file
             File name or an open file-like object to load data from.
-        fmt : {"npz", "mat", "wrp"}, optional
+        fmt
             Format to save data. Either numpy ("npz") or MATLAB ("mat") or
             `determine_shiftstretch`'s wrp ("wrp"). Defaults to "npz".
 
         Returns
         -------
-        sdt.chromatic.Corrector
-            A :py:class:`Corrector` instance with the parameters read from the
-            file.
+        A :py:class:`Corrector` instance with the parameters read from the
+        file.
 
         Other parameters
         ----------------
-        key : tuple of str, optional
+        key
             Name of the variables in the saved file (does not apply to "wrp").
             Defaults to ("chromatic_param1", "chromatic_param2").
         """
-        corr = Corrector(None, None)
+        corr = cls(None, None)
         if fmt == "npz":
             npz = np.load(file)
             corr.parameters1 = npz[key[0]]
@@ -412,40 +426,177 @@ class Corrector(object):
 
         return corr
 
-    def find_pairs(self, tol_rel=0.05, tol_abs=0., score_cutoff=0.6,
-                   ambiguity_factor=0.8, flip_axes=[]):
-        """Match features of `feat1` with features of `feat2`
+    @staticmethod
+    def _calc_bases(coords: np.ndarray, idx: np.ndarray) -> np.ndarray:
+        """Create orthogonal coordinate system for each bead
 
-        This is done by calculating the vectors from every
-        feature all the other features in :py:attr:`feat1` and compare them to
-        those of :py:attr:`feat2` using the :py:func:`numpy.isclose` function
-        on both the x and the y
-        coordinate, where `tol_rel` and `tol_abs` are the relative and
-        absolute tolerance parameters.
+        First basis vector is from the bead to the furthest of the n_neighbors
+        neighbors, second is to the second-furthest minus the projection onto
+        the first basis, and so on (Gram-Schmidt process).
 
         Parameters
         ----------
-        tol_rel : float
-            Relative tolerance parameter for `numpy.isclose()`. Defaults to
-            0.05.
-        tol_abs : float
-            Absolute tolerance parameter for `numpy.isclose()`. Defaults to 0.
-        score_cutoff : float, optional
-            In order to get rid of false matches a threshold for scores can
-            be set. All scores below this threshold are discarded. The
-            threshold is calculated as score_cutoff * score.max(). Defaults to
-            0.5.
-        ambiguity_factor : float
-            If there are two candidates as a partner for a feature, and the
-            score of the lower scoring one is larger than `ambiguity_factor`
-            times the score of the higher scorer, the pairs are considered
-            ambiguous and therefore discarded. Defaults to 0.8.
-        flip_axes : int or list of int, optional
-            Axes with respect to which the channels are flipped. E.g. if
-            channel 2 is upside done w.r.t channel 1, set ``flip_axes=1``,
-            if it is mirrored left-to-right, set ``flip_axes=0``.
+        coords
+            Row-wise coordinates of the beads
+        idx
+            Row-wise indices of the nearest neighbors, sorted ascendingly by
+            distance (i.e., the j-th entry in the i-th row is the index of
+            the j-th nearest neighbor of bead i).
+
+        Returns
+        -------
+        3D array where [i, :, :] yields the matrix of basis column vectors for
+        the i-th bead.
         """
-        p = []
+        coords = np.asarray(coords, dtype=float)
+        n_dim = coords.shape[1]
+        # bases = []
+        bases = np.empty((len(coords), n_dim, n_dim))
+        # Squared lengths of basis vectors
+        base_len_sq = []
+        for n in range(n_dim):
+            # vector from bead to n-th furthest neighbor
+            vec = coords[idx[:, -(n+1)]] - coords
+            for i, bl in enumerate(base_len_sq):
+                # subtract projection onto previously calculated
+                # axes
+                b = bases[..., i]
+                vec -= (np.sum(vec * b, axis=1) / bl)[:, None] * b
+            bases[:, :, n] = vec
+            base_len_sq.append(np.sum(vec * vec, axis=1))
+        return bases
+
+    @staticmethod
+    def _calc_local_coords(coords: np.ndarray, n_neighbors: int) -> np.ndarray:
+        """Calculate coordinates of neighboring beads in local coordinates
+
+        Create a coordinate system for each bead using :py:meth:`_calc_bases`
+        and compute the coordinates of the neighboring beads.
+
+        Parameters
+        ----------
+        coords
+            Row-wise coordinates of the beads
+        n_neighbors
+            Number of neighboring beads to consider
+
+        Returns
+        -------
+        3D array where [i, :, :] yields the matrix of coordinate column vectors
+        of the neighbors of the i-th bead.
+        """
+        kd = scipy.spatial.cKDTree(coords)
+        # No need to return nearest neighbor (k=1) since this is
+        # the bead itself. Counting starts at 1.
+        dist, idx = kd.query(coords, k=range(2, n_neighbors + 2))
+
+        # Solve linear equation system to calculate coordinates in
+        # the new basis described by axes.
+        # Left hand side is the coordinate transform from new basis
+        # to cartesian. First index is bead number, last to indices
+        # give the transformation matrix.
+        bases = __class__._calc_bases(coords, idx)
+        # Right hand side are vectors from bead (first index) to
+        # its neighbors
+        rhs = coords[idx] - coords[:, None, :]
+        # Swap last and second-to last indices to produce row
+        # vectors
+        rhs = np.moveaxis(rhs, -2, -1)
+        # Solve system
+        local_coords = np.linalg.solve(bases, rhs)
+        return local_coords
+
+    @staticmethod
+    def _signatures_from_local_coords(local_coords: np.ndarray,
+                                      triu: np.ndarray) -> np.ndarray:
+        """Extract bead signatures from local coordinates
+
+        Due to the construction of the basis vectors, the furthest neighbor
+        will always have coordinates [1., 0., …, .0], the will have
+        [x, 1., 0, …, 0.], and so on. Remove these zeros and ones values,
+        i.e., get the values from the upper triangle of the flipped matrix as
+        the signature.
+
+        Parameters
+        ----------
+        local_coords
+            3D array where [i, :, :] yields the matrix of coordinate column
+            vectors of the neighbors of the i-th bead (see
+            :py:meth:`_calc_local_coords`).
+        triu
+            Indices of the upper triangular matrix shifted by one. Generate
+            using ``np.triu_indices(n=n_dim, m=n_neighbors, k=1)``. This is
+            passed as an argmuent so it can be created once and reused.
+
+        Returns
+        -------
+        2D array where [i, :] yields the signature of the i-th bead.
+        """
+        return local_coords[..., ::-1][:, triu[0], triu[1]]
+
+    @staticmethod
+    def _pairs_from_signatures(coords: Sequence[np.ndarray],
+                               signatures: Sequence[np.ndarray],
+                               ambiguity_factor: float) -> Tuple[np.ndarray]:
+        """Find pairs from signatures
+
+        Find the nearest neighbors in signature space
+
+        Parameters
+        ----------
+        coords
+            Matrix of bead coordinate row vectors for each channel
+        signatures
+            Matrix of row-wise bead signatures for each channel
+        ambiguity_factor
+            Accept only matches where the distance (in signature space) between
+            the beads of the second best match is at least ``ambiguity_factor``
+            times as large as the distance for the best match.
+
+        Returns
+        -------
+        Matrices of matched bead coordinate row vectors for each channel. The
+        i-th row of the first matrix matches the i-th row of the second.
+        """
+        unambiguous = []
+        matches = []
+        # Find pairs and check for ambiguity both ways. Otherwise there will
+        # be problems if there are two candidates in one channel for one in the
+        # other depending on which is channel 1 and which is channel 2
+        for src, dest in (0, 1), (1, 0):
+            kd = scipy.spatial.cKDTree(signatures[src])
+            match_dist, match_idx = kd.query(signatures[dest], k=2)
+            u = match_dist[:, 1] > ambiguity_factor * match_dist[:, 0]
+            unambiguous.append(u)
+            matches.append(match_idx)
+
+        unamb_twoway = unambiguous[0] & unambiguous[1][matches[0][:, 0]]
+        return (coords[0][matches[0][unamb_twoway, 0]],
+                coords[1][unamb_twoway])
+
+    def find_pairs(self, n_neighbors: int = 3, ambiguity_factor: float = 5.0):
+        """Match features of `feat1` with features of `feat2`
+
+        Find the geomtric signature for each feature in each channel. Those
+        with best matching signatures are taken to be the same feature.
+
+        Parameters
+        ----------
+        n_neighbors
+            Number of neighboring beads to consider for signature calculation.
+        ambiguity_factor
+            Accept only matches where the distance (with respect to the
+            geometric signature) between the beads of the second best match is
+            at least ``ambiguity_factor`` times as large as the distance for
+            the best match.
+        """
+        pairs = []
+        n_dim = len(self.columns["coords"])
+        # Indices of triangular matrix, used below
+        triu = np.triu_indices(n=n_dim, m=n_neighbors, k=1)
+        # At least n_dim neighbors are needed to define local coordinates
+        n_neighbors = max(n_neighbors, n_dim)
+
         for f1, f2 in zip(self.feat1, self.feat2):
             if all(self.columns["time"] in f.columns for f in (f1, f2)):
                 # If there is a "frame" column, split data according to
@@ -455,27 +606,33 @@ class Corrector(object):
             else:
                 # If there is no "frame" column, just take everything
                 data = ((f1, f2),)
-            for f1_frame_data, f2_frame_data in data:
-                if f1_frame_data.empty or f2_frame_data.empty:
-                    # Don't even try to operate on empty frames. Weird things
-                    # are bound to happen
+
+            for frame_data in data:
+                if any(len(f) < n_neighbors + 1 for f in frame_data):
+                    # Not enough neighbors
                     continue
-                v1 = self._vectors_cartesian(f1_frame_data)
-                v2 = self._vectors_cartesian(f2_frame_data)
 
-                if isinstance(flip_axes, int):
-                    flip_axes = [flip_axes]
-                else:
-                    flip_axes = list(flip_axes)
-                v2[flip_axes] *= -1
+                signatures = []
+                coordinates = []
+                for f in frame_data:
+                    # Profile says that the code below takes half the
+                    # time compared to f[sel.columns["coords"]].to_numpy()
+                    coords = np.array([f[c].to_numpy()
+                                       for c in self.columns["coords"]]).T
+                    lc = self._calc_local_coords(coords, n_neighbors)
+                    s = self._signatures_from_local_coords(lc, triu)
+                    signatures.append(s)
+                    coordinates.append(coords)
 
-                s = self._all_scores_cartesian(v1, v2, tol_rel, tol_abs)
-                p.append(self._pairs_from_score(
-                    f1_frame_data, f2_frame_data, s, score_cutoff,
-                    ambiguity_factor))
-        self.pairs = pd.concat(p)
+                # TODO: flip_axes
+                p = self._pairs_from_signatures(coordinates, signatures,
+                                                ambiguity_factor)
+                pairs.append(np.hstack(p))
+        pair_cols = [self.channel_names, self.columns["coords"]]
+        self.pairs = pd.DataFrame(
+            np.vstack(pairs), columns=pd.MultiIndex.from_product(pair_cols))
 
-    def fit_parameters(self):
+    def fit_parameters(self, max_error: float = 1.0):
         """Determine parameters for the affine transformation
 
         An affine transformation is used to map x and y coordinates of `feat1`
@@ -483,168 +640,36 @@ class Corrector(object):
         by running :py:meth:`find_pairs`.
         The result is saved as :py:attr:`parameters1` (transform of channel 1
         coordinates to channel 2) and :py:attr:`parameters2` (transform of
-        channel 2  coordinates to channel 1) attributes.
+        channel 2 coordinates to channel 1) attributes.
 
         :py:attr:`parameters1` is calculated by determining the affine
-        transformation between the :py:attr:`pairs` entries using a linear
-        least squares fit. :py:attr:`parameters2` is its inverse. Therefore,
+        transformation between the :py:attr:`pairs` entries using a RANSAC
+        algorithm. :py:attr:`parameters2` is its inverse. Therefore,
         results may be slightly different depending on what is channel1 and
         what is channel2.
+
+        Parameters
+        ----------
+        max_error
+            Maximum error (i.e., distance between transformed position from
+            channel 1 and matched position in channel 2) to consider a feature
+            pair not an outlier.
         """
         ch1_name = self.channel_names[0]
         ch2_name = self.channel_names[1]
 
-        loc1 = self.pairs[ch1_name][self.columns["coords"]].values
-        loc2 = self.pairs[ch2_name][self.columns["coords"]].values
-        ndim = loc1.shape[1]
+        loc1 = self.pairs[ch1_name][self.columns["coords"]]
+        loc2 = self.pairs[ch2_name][self.columns["coords"]]
+        n_dim = loc1.shape[1]
 
-        self.parameters1 = np.empty((ndim + 1,) * 2)
-        loc1_embedded = np.hstack([loc1, np.ones((len(loc1), 1))])
-        self.parameters1[:ndim, :] = np.linalg.lstsq(loc1_embedded, loc2,
-                                                     rcond=-1)[0].T
-        self.parameters1[ndim, :ndim] = 0.
-        self.parameters1[ndim, ndim] = 1.
+        self.parameters1[:n_dim, :], good_pairs = cv2.estimateAffine2D(
+            loc1.to_numpy(dtype=np.float32), loc2.to_numpy(dtype=np.float32),
+            method=cv2.RANSAC, ransacReprojThreshold=max_error)
+        self.parameters1[n_dim, :n_dim] = 0.
+        self.parameters1[n_dim, n_dim] = 1.
 
         self.parameters2 = np.linalg.inv(self.parameters1)
-
-    def _vectors_cartesian(self, features):
-        """Calculate vectors of each point in features to every other point
-
-        Parameters
-        ----------
-        features : pandas.DataFrame
-            Features with coordinates in columns `pos_columns`
-
-        Returns
-        -------
-        vecs : numpy.ndarray
-            The first axis specifies the coordinate component of the vectors,
-            e. g. ``vecs[0]`` gives the x components. For each ``i``,
-            ``vecs[i, j, k]`` yields the i-th component of the vector pointing
-            from the j-th feature in `features` to the k-th feature.
-        """
-        # transpose so that data[1] gives x coordinates, data[2] y coordinates
-        data = features[self.columns["coords"]].values.T
-        # for each coordinate (the first ':'), calculate the differences
-        # between all entries (thus 'np.newaxis, :' and ':, np.newaxis')
-        return data[:, np.newaxis, :] - data[:, :, np.newaxis]
-
-    def _all_scores_cartesian(self, vec1, vec2, tol_rel, tol_abs):
-        """Determine scores for all possible pairs of features
-
-        Compare all elements of `vec1` and all of `vec2` using
-        `numpy.isclose()` to determine which pairs of features have the most
-        simalar vectors pointing to the other features.
-
-        Parameters
-        ----------
-        vec1 : numpy.ndarray
-            Vectors for the first set of features as determined by
-            `_vectors_cartesian`.
-        vec2 : numpy.array
-            Vectors for the second set of features as determined by
-            `_vectors_cartesian`.
-        tol_rel : float
-            Relative tolerance parameter for `numpy.isclose`
-        tol_abs : float
-            Absolute tolerance parameter for `numpy.isclose`
-
-        Returns
-        -------
-        numpy.array
-            A matrix of scores. scores[i, j] holds the number of matching
-            vectors for the i-th entry of feat1 and the j-th entry of feat2.
-        """
-        # vectors versions for broadcasting
-        # The first index specifies the coordinate (x, y, z, …)
-        # The np.newaxis are shifted for vec1 and vec2 so that calculating
-        # vec1_b - vec2_b (as is done in np.isclose) results in a 5D array of
-        # the differences of all vectors for all coordinates.
-        vec1_b = vec1[:, np.newaxis, :, np.newaxis, :]
-        vec2_b = vec2[:, :, np.newaxis, :, np.newaxis]
-
-        # For each coordinate k the (i, j)-th 2D matrix
-        # (vec1_b - vec2_b)[k, i, j] contains in the m-th row and n-th column
-        # the difference between the vector from feature i to feature j in
-        # feat1 and the vector from feature m to feature n in feat2
-        # diff_small contains True or False depending on whether the vectors
-        # are similar enough
-        diff_small = np.isclose(vec1_b, vec2_b, tol_rel, tol_abs)
-
-        # All coordinates have to be similar; this is like a logical AND along
-        # only axis 0, the coordinate axis.
-        all_small = np.all(diff_small, axis=0)
-
-        # Sum up all True entries as the score. The more similar vectors two
-        # points have, the more likely it is that they are the same.
-        return np.sum(all_small, axis=(0, 1)).T
-
-    def _pairs_from_score(self, feat1, feat2, score, score_cutoff=0.5,
-                          ambiguity_factor=0.8):
-        """Analyze the score matrix and determine what the pairs are
-
-        For each feature, select the highest scoring corresponding feature.
-
-        Parameters
-        ----------
-        feat1, feat2 : pandas.DataFrame
-            Bead localizations
-        score : numpy.array
-            The score matrix as calculated by `_all_scores_cartesian`
-        score_cutoff : float, optional
-            In order to get rid of false matches a threshold for scores can
-            be set. All scores below this threshold are discarded. The
-            threshold is calculated as score_cutoff*score.max(). Defaults to
-            0.5.
-        ambiguity_factor : float
-            If there are two candidates as a partner for a feature, and the
-            score of the lower scoring one is larger than `ambiguity_factor`
-            times the score of the higher scorer, the pairs are considered
-            ambiguous and therefore discarded. Defaults to 0.8.
-
-        Returns
-        -------
-        pandas.DataFrame
-            Each row of the DataFrame contains information of one feature pair.
-            This information consists of lists of coordinates of the feature
-            in each channel, i. e. the columns are a MultiIndex from the
-            product of the `channel_names` and `pos_columns` class attributes.
-        """
-        # always search through the axis with fewer localizations since
-        # since otherwise there is bound to be double matches
-        if score.shape[0] > score.shape[1]:
-            indices = np.array([np.argmax(score, axis=0),
-                                np.arange(score.shape[1])])
-        else:
-            indices = np.array([np.arange(score.shape[0]),
-                                np.argmax(score, axis=1)])
-
-        # now deal with ambiguities, i. e. if one feature has two similarly
-        # likely partners
-        # For each feature, calculate the threshold.
-        amb_thresh = score[tuple(indices)] * ambiguity_factor
-        # look for high scorers along the 0 axis (rows)
-        amb0 = (score[indices[0], :] > amb_thresh[:, np.newaxis])
-        amb0 = (np.sum(amb0, axis=1) > 1)
-        # look for high scorers along the 1 axis (columns)
-        amb1 = (score[:, indices[1]] > amb_thresh[np.newaxis, :])
-        amb1 = (np.sum(amb1, axis=0) > 1)
-        # drop if there are more than one high scorers in any axis
-        indices = indices[:, ~(amb0 | amb1)]
-
-        # get rid of indices with low scores
-        # TODO: Can this be gotten rid of now that the ambiguity stuff works?
-        score_cutoff *= score.max()
-        cutoff_mask = (score[tuple(indices)] >= score_cutoff)
-        indices = indices[:, cutoff_mask]
-
-        pair_matrix = np.hstack((
-            feat1.iloc[indices[0]][self.columns["coords"]],
-            feat2.iloc[indices[1]][self.columns["coords"]]))
-
-        mi = pd.MultiIndex.from_product([self.channel_names,
-                                         self.columns["coords"]])
-        return pd.DataFrame(pair_matrix, columns=mi)
+        self.pairs = self.pairs[np.squeeze(good_pairs.astype(bool))]
 
     @classmethod
     def to_yaml(cls, dumper, data):
