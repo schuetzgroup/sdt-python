@@ -70,6 +70,7 @@ to/from YAML:
 
 Programming reference
 ---------------------
+
 .. autoclass:: Corrector
     :members:
     :special-members: __call__
