@@ -38,7 +38,6 @@ class TestSm(unittest.TestCase):
         np.testing.assert_allclose(new, orig)
         np.testing.assert_allclose(newp, orig)
 
-
     def test_load_hdf5_features(self):
         """io.load: HDF5 features"""
         h5name = os.path.join(data_path, "orig_pt2d.h5")
@@ -141,7 +140,6 @@ class TestSm(unittest.TestCase):
         self._do_load(os.path.join(data_path, "orig_thunderstorm.h5"),
                       "features", sdt.io.load,
                       os.path.join(data_path, "thunderstorm.csv"))
-
 
     def test_load_msdplot_mat(self):
         """io.load_msdplot"""
@@ -402,10 +400,10 @@ class TestFiles(unittest.TestCase):
         """io.get_files: float groups"""
         with tempfile.TemporaryDirectory() as d:
             self._make_files(d)
-            s = self.subdirs[1]
             f, i = sdt.io.get_files(r"^00_another_(\d+\.\d+)_bla\.ext$", d)
         self.assertEqual(f, [self.files[0]])
         self.assertEqual(i, [(self.keys0,)])
+
 
 if __name__ == "__main__":
     unittest.main()
