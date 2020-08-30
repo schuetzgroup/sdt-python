@@ -3,75 +3,9 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """Fitting of 1D and 2D Gaussian functions
-=======================================
 
-The :py:mod:`gaussian_fit` module provides models for the `lmfit
-<http://lmfit.github.io/lmfit-py/>`_ package for easy fitting of 1D and 2D
-Gaussian functions to data. For further information on how to use these, please
-refer to the :py:mod:`lmfit` documentation.
-
-
-Examples
---------
-
-1D fit example: First create some data to work on.
-
->>> x = numpy.arange(100)  # Create some data
->>> y = numpy.exp(-(x - 50)**2 / 8)
-
-Now fit model to the data:
-
->>> m = sdt.gaussian_fit.Gaussian1DModel()  # Create model
->>> p = m.guess(y, x)  # Initial guess
->>> res = m.fit(y, params=p, x=x)  # Do the fitting
->>> res.best_values  # Show fitted parameters
-{'offset': 4.4294473935549931e-136,
- 'sigma': 1.9999999999999996,
- 'center': 50.0,
- 'amplitude': 1.0}
->>> res.eval(x=50.3)  # Evaluate fitted Gaussian at x=50.3
-0.98881304461123321
-
-2D fit example: Create data, a little more complicated in 2D.
-
->>> coords = numpy.indices((50, 100))  # Create data
->>> x, y = coords
->>> center = numpy.array([[20, 40]]).T
->>> centered_flat = coords.reshape((2, -1)) - center
->>> cov = numpy.linalg.inv(numpy.array([[8, 0], [0, 18]]))
->>> z = 2 * numpy.exp(-np.sum(centered_flat * (cov @ centered_flat), axis=0))
->>> z = z.reshape(x.shape)
-
-Do the fitting:
-
->>> m = sdt.gaussian_fit.Gaussian2DModel()  # Create model
->>> p = m.guess(z, x, y)  # Initial guess
->>> res = m.fit(z, params=p, x=x, y=y)  # Do the fitting
->>> res.best_values  # Show fitted parameters
-{'rotation': 0.0,
- 'offset': 2.6045547770814313e-55,
- 'sigmay': 3.0,
- 'centery': 40.0,
- 'sigmax': 1.9999999999999996,
- 'centerx': 20.0,
- 'amplitude': 2.0}
->>> res.eval(x=20.5, y=40.5)  # Evaluate fitted Gaussian at x=20.5, y=40.5
-1.9117294272505907
-
-
-Models
-------
-
-.. autoclass:: Gaussian1DModel
-.. autoclass:: Gaussian2DModel
-
-
-Auxiliary functions
--------------------
-
-.. autofunction:: guess_parameters
-.. autofunction:: gaussian_1d
-.. autofunction:: gaussian_2d
+This module provides models for fitting 1D and 2D Gaussians using the lmfit
+package. See the module-level documentation for details.
 """
 from contextlib import suppress
 from collections import OrderedDict
@@ -79,7 +13,7 @@ from collections import OrderedDict
 import numpy as np
 
 
-def guess_parameters(data, *indep_vars):
+def guess_gaussian_parameters(data, *indep_vars):
     """Initial guess of parameters of the Gaussian
 
     This function does a crude estimation of the parameters:
@@ -157,77 +91,10 @@ def guess_parameters(data, *indep_vars):
     return ret
 
 
-def gaussian_1d(x, amplitude=1., center=0., sigma=1., offset=0.):
-    r"""1D gaussian
-
-    .. math:: A e^\frac{(x - c)^2}{2\sigma^2} + b
-
-    Parameters
-    ----------
-    x : numpy.ndarray
-        Function arguments
-    amplitude : float, optional
-        `A` in the formula above. Defaults to 1.
-    center : float, optional
-        `c` in the formula above. Defaults to 0.
-    sigma : float, optional
-        :math:`\sigma` in the formula above. Defaults to 1.
-    offset : float, optional
-        `b` in the formula above. Defaults to 0.
-
-    Returns
-    -------
-    numpy.ndarray
-        Function values
-    """
-    return amplitude * np.exp(-((x - center)/sigma)**2/2.) + offset
-
-
-def gaussian_2d(x, y, amplitude=1., center=(0., 0.), sigma=(1., 1.),
-                offset=0., rotation=0.):
-    r"""2D gaussian
-
-    .. math:: A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}
-        + \frac{(R(y - c_y))^2}{2\sigma_y^2}) + b,
-
-    where :math:`R` rotates the vector (x, y) by `rotation` radiants.
-
-    Parameters
-    ----------
-    x, y : numpy.array
-        Function arguments
-    amplitude : float, optional
-        `A` in the formula above. Defaults to 1.
-    centerx, centery : float, optional
-        :math:`c_x`, :math:`c_y` in the formula above. Defaults to 0.
-    sigmax, sigmay : float, optional
-        :math:`\sigma_x`,  :math:`\sigma_y` in the formula above. Defaults
-        to 1.
-    offset : float, optional
-        `b` in the formula above. Defaults to 0.
-    rotation : float, optional
-        Rotate the Gaussian by that many radiants. Defaults to 0
-
-    Returns
-    -------
-    numpy.ndarray
-        Function values
-    """
-    cs = np.cos(rotation)
-    sn = np.sin(rotation)
-
-    xc_r = center[0] * cs + center[1] * sn  # rotate center coordinates
-    yc_r = -center[0] * sn + center[1] * cs
-
-    x_r = x * cs + y * sn  # rotate independent variable
-    y_r = -x * sn + y * cs
-
-    arg = ((x_r - xc_r) / sigma[0])**2 + ((y_r - yc_r) / sigma[1])**2
-    return amplitude * np.exp(-arg/2.) + offset
-
-
 with suppress(ImportError):
     import lmfit
+
+    from ..funcs import gaussian_1d, gaussian_2d_lmfit
 
 
     class Gaussian1DModel(lmfit.Model):
@@ -244,18 +111,12 @@ with suppress(ImportError):
 
         def guess(self, data, x, **kwargs):
             """Make an initial guess using :func:`guess_parameters`"""
-            pdict = guess_parameters(data, x)
+            pdict = guess_gaussian_parameters(data, x)
             pars = self.make_params(amplitude=pdict["amplitude"],
                                     center=pdict["center"][0],
                                     sigma=pdict["sigma"][0],
                                     offset=pdict["offset"])
             return lmfit.models.update_param_vals(pars, self.prefix, **kwargs)
-
-
-    def _g2d_adaptor(x, y, amplitude=1., center0=0., center1=0., sigma0=1.,
-                     sigma1=1., offset=0., rotation=0):
-        return gaussian_2d(x, y, amplitude, (center0, center1),
-                           (sigma0, sigma1), offset, rotation)
 
 
     class Gaussian2DModel(lmfit.Model):
@@ -268,7 +129,7 @@ with suppress(ImportError):
         """
         def __init__(self, *args, **kwargs):
             """Constructor""" + lmfit.models.COMMON_DOC
-            super().__init__(_g2d_adaptor, independent_vars=["x", "y"],
+            super().__init__(gaussian_2d_lmfit, independent_vars=["x", "y"],
                              *args, **kwargs)
             self.set_param_hint("sigma0", min=0.)
             self.set_param_hint("sigma1", min=0.)
@@ -276,7 +137,7 @@ with suppress(ImportError):
 
         def guess(self, data, x, y, **kwargs):
             """Make an initial guess using :func:`guess_parameters`"""
-            pdict = guess_parameters(data, x, y)
+            pdict = guess_gaussian_parameters(data, x, y)
             pars = self.make_params(amplitude=pdict["amplitude"],
                                     center0=pdict["center"][0],
                                     center1=pdict["center"][1],

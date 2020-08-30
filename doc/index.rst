@@ -6,7 +6,7 @@
    sphinx-quickstart on Thu Nov 26 16:07:52 2015.
 
 Documentation of the `sdt` python package
-===========================================
+=========================================
 
 This package contains various tools to deal with data from fluorescence
 microscopy.
@@ -49,17 +49,10 @@ Overview
 - With help of the :py:mod:`sdt.sim` module, fluorescence microscopy data
   can be simulated.
 - The :py:mod:`sdt.funcs` module contains classes for creation of step
-  functions and eCDFs.
+  functions and eCDFs as well as some special functions like Gaussians and
+  sums of exponentials.
 - Plot data with methods from :py:mod:`sdt.plot`.
-
-There are also some helper modules that contain helpful functions and that
-the above modules are built on top of:
-
-- Fitting a sum of exponentials can be done using the :py:mod:`sdt.exp_fit`
-  module.
-- :py:mod:`sdt.gaussian_fit` provides models for the `lmfit
-  <http://lmfit.github.io/lmfit-py/>`_ package for non-linear least squares
-  fitting of 1D and 2D Gaussian function parameters.
+- Fitting routines are available in the :py:mod:`sdt.optimize` module.
 - Some helpers for writing new code can be found in :py:mod:`sdt.helper` and
   :py:mod:`sdt.config`.
 
@@ -92,8 +85,7 @@ Table of contents
   sim
   funcs
   plot
-  exp_fit
-  gaussian_fit
+  optimize
   helper
   CHANGELOG
 

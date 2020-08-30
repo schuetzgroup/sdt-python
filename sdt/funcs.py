@@ -11,6 +11,10 @@ kinds of functions,
 - :py:class:`StepFunction` for step functions,
 - :py:class:`ECDF` for empirical cumulative distribution functions.
 
+Additionally, 1D and 2D Gaussians can be evaluated using :py:func:`gaussian_1d`
+and :py:func:`gaussian_2d`, respectively. Sums of exponentials are implemented
+by :py:func:`exp_sum` and :py:func:`exp_sum_lmfit`.
+
 
 Examples
 --------
@@ -49,7 +53,13 @@ Programming reference
 .. autoclass:: ECDF
     :members:
     :special-members: __call__
+.. autofunction:: gaussian_1d
+.. autofunction:: gaussian_2d
+.. autofunction:: exp_sum
+.. autofunction:: exp_sum_lmfit
 """
+from typing import Tuple
+
 import numpy as np
 from scipy import interpolate
 
@@ -184,3 +194,192 @@ class ECDF:
     def observations(self):
         """Array of observations"""
         return self._interp.x
+
+
+# TODO: Use numpy ArrayLike typehint once it is available
+def gaussian_1d(x: np.ndarray, amplitude: float = 1., center: float = 0.,
+                sigma: float = 1., offset: float = 0.):
+    r"""1D Gaussian
+
+    .. math:: A e^\frac{(x - c)^2}{2\sigma^2} + b
+
+    Parameters
+    ----------
+    x
+        Independent variable
+    amplitude
+        `A` in the formula above.
+    center
+        `c` in the formula above.
+    sigma
+        :math:`\sigma` in the formula above.
+    offset
+        `b` in the formula above.
+
+    Returns
+    -------
+    Function values
+    """
+    return amplitude * np.exp(-((x - center)/sigma)**2/2.) + offset
+
+
+# TODO: Use numpy ArrayLike typehint once it is available
+def gaussian_2d(x: np.ndarray, y: np.ndarray, amplitude: float = 1.,
+                center: Tuple[float, float] = (0., 0.),
+                sigma: Tuple[float, float] = (1., 1.),
+                offset: float = 0., rotation: float = 0.):
+    r"""2D Gaussian
+
+    .. math:: A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}
+        + \frac{(R(y - c_y))^2}{2\sigma_y^2}) + b,
+
+    where :math:`R` rotates the vector (x, y) by `rotation` radiants.
+
+    Parameters
+    ----------
+    x, y
+        Independent variables
+    amplitude
+        `A` in the formula above.
+    center
+        :math:`c_x`, :math:`c_y` in the formula above.
+    sigma
+        :math:`\sigma_x`,  :math:`\sigma_y` in the formula above.
+    offset
+        `b` in the formula above.
+    rotation
+        Rotate the Gaussian by that many radiants.
+
+    Returns
+    -------
+    Function values
+    """
+    cs = np.cos(rotation)
+    sn = np.sin(rotation)
+
+    xc_r = center[0] * cs + center[1] * sn  # rotate center coordinates
+    yc_r = -center[0] * sn + center[1] * cs
+
+    x_r = x * cs + y * sn  # rotate independent variable
+    y_r = -x * sn + y * cs
+
+    arg = ((x_r - xc_r) / sigma[0])**2 + ((y_r - yc_r) / sigma[1])**2
+    return amplitude * np.exp(-arg/2.) + offset
+
+
+# TODO: Use numpy ArrayLike typehint once it is available
+def gaussian_2d_lmfit(x: np.ndarray, y: np.ndarray, amplitude: float = 1.,
+                      center0: float = 0., center1: float = 0.,
+                      sigma0: float = 1., sigma1: float = 1.,
+                      offset: float = 0., rotation: float = 0):
+    r"""2D Gaussian, usable for :py:class:`lmfit.Model`
+
+    Version of :py:func:`gaussian_2d` that uses only scalar parameters.
+
+    .. math:: A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}
+        + \frac{(R(y - c_y))^2}{2\sigma_y^2}) + b,
+
+    where :math:`R` rotates the vector (x, y) by `rotation` radiants.
+
+    Parameters
+    ----------
+    x, y
+        Independent variables
+    amplitude
+        `A` in the formula above.
+    center0, center1
+        :math:`c_x`, :math:`c_y` in the formula above.
+    sigma0, sigma1
+        :math:`\sigma_x`,  :math:`\sigma_y` in the formula above.
+    offset
+        `b` in the formula above.
+    rotation
+        Rotate the Gaussian by that many radiants.
+
+    Returns
+    -------
+    Function values
+    """
+    return gaussian_2d(x, y, amplitude, (center0, center1), (sigma0, sigma1),
+                       offset, rotation)
+
+
+# TODO: Use numpy ArrayLike typehint once it is available
+def exp_sum(x: np.ndarray, offset: float, mant: np.ndarray, exp: np.ndarray
+            ) -> np.ndarray:
+    """Sum of exponentials
+
+    Return ``offset + mant[0] * exponential(exp[0] * x) + mant[1] *
+    exponential(exp[1] * x) + …``
+
+    Parameters
+    ----------
+    x
+        Independent variable
+    offset
+        Additive parameter
+    mant
+        Mantissa coefficients
+    exp
+        Coefficients in the exponent
+    Returns
+    -------
+    numpy.ndarray
+        Result
+
+    Examples
+    --------
+    >>> exp_sum(np.arange(10), offset=1, mant=[-0.2, -0.8], exp=[-0.1, -0.01])
+    array([ 0.        ,  0.02699265,  0.05209491,  0.07547993,  0.09730444,
+            0.11771033,  0.13682605,  0.15476788,  0.17164113,  0.18754112])
+    """
+    x = np.asarray(x)
+    mant = np.asarray(mant)
+    exp = np.asarray(exp)
+    return np.sum(mant * np.exp(x[:, None] * exp[None, :]), axis=1) + offset
+
+
+# TODO: Use numpy ArrayLike typehint once it is available
+def exp_sum_lmfit(x: np.ndarray, offset: float = 1., **params: float
+                  ) -> np.ndarray:
+    """Sum of exponentials, usable for :py:class:`lmfit.Model`
+
+    Return ``offset + mant0 * exponential(exp0 * x) + mant1 *
+    exponential(exp1 * x) + …``. This is more suitable for fitting using
+    :py:class:`lmfit.Model` than :py:func:`exp_sum`. See the example below.
+
+    Parameters
+    ----------
+    x
+        Independent variable
+    offset
+        Additive parameter
+    **params
+        To get the sum of `n+1` exponentials, one needs to supply floats
+        `mant0`, `mant1`, …, `mantn` as mantissa coefficients and `exp0`, …,
+        `expn` as coefficients in the exponent.
+
+    Returns
+    -------
+    Result
+
+    Examples
+    --------
+    >>> x = numpy.array(...)  # x values
+    >>> y = numpy.array(...)  # y values
+
+    >>> mant_names = ["mant{}".format(i) for i in num_exp]
+    >>> exp_names = ["exp{}".format(i) for i in num_exp]
+    >>> m = lmfit.Model(funcs.exp_sum_lmfit)
+    >>> m.set_param_hint("offset", ...)
+    >>> for m in mant_names:
+    ...     m.set_param_hint(m, ...)
+    >>> for e in exp_names:
+    ...     m.set_param_hint(e, ...)
+    >>> p = m.make_params()
+    >>> f = m.fit(y, params=p, t=x)
+    """
+    n_exp = len(params) // 2
+    return exp_sum(x, offset,
+                   [params["mant{}".format(i)] for i in range(n_exp)],
+                   [params["exp{}".format(i)] for i in range(n_exp)])

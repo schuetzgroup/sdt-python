@@ -10,14 +10,14 @@ import warnings
 
 import numpy as np
 import pandas as pd
-from scipy import optimize
+from scipy import optimize as sp_opt
 
 from . import msd_base, msd
-from .. import exp_fit, config
+from .. import config, funcs, optimize as sdt_opt
 
 
 def _fit_cdf_prony(x, y, n_exp, poly_order, initial_guess=None):
-    r"""Variant of `exp_fit.fit` for the model of the CDF
+    r"""Variant of `optimize.fit_exp_sum` for the model of the CDF
 
     Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
     :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data
@@ -75,7 +75,7 @@ def _fit_cdf_prony(x, y, n_exp, poly_order, initial_guess=None):
     determined from the constraint.
     """
     # get exponent coefficients as usual
-    exp_coeff, ode_coeff = exp_fit.get_exponential_coeffs(
+    exp_coeff, ode_coeff = sdt_opt.get_exp_coeffs(
         x, y, n_exp, poly_order, initial_guess)
 
     if n_exp < 2:
@@ -133,7 +133,7 @@ def _fit_cdf_lsq(x, y, n_exp, weighted=True, initial_b=None, initial_l=None):
         beta = np.zeros_like(lam)
         beta[:-1] = args[:n_exp-1]
         beta[-1] = -1 - beta.sum()
-        return exp_fit.exp_sum(t, 1, beta, lam)
+        return funcs.exp_sum(t, 1, beta, lam)
 
     bounds_low = np.array([-1] * (n_exp - 1) + [-np.inf] * n_exp)
     bounds_high = np.array([0] * (n_exp - 1) + [0] * n_exp)
@@ -156,9 +156,9 @@ def _fit_cdf_lsq(x, y, n_exp, weighted=True, initial_b=None, initial_l=None):
     else:
         w = None
 
-    popt, pcov = optimize.curve_fit(constrained_func, x, y, p0,
-                                    bounds=(bounds_low, bounds_high),
-                                    sigma=w)
+    popt, pcov = sp_opt.curve_fit(constrained_func, x, y, p0,
+                                  bounds=(bounds_low, bounds_high),
+                                  sigma=w)
 
     b = np.zeros(n_exp, dtype=float)
     b[:-1] = popt[:n_exp-1]
