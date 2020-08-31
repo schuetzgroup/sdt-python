@@ -78,7 +78,7 @@ Auxiliary functions
 Fitting of a sum of exponential functions
 -----------------------------------------
 
-The :py:func:`fit_exp_sum` function allows for fitting a sum of exponential
+The :py:class:`ExpSumModel` class allows for fitting a sum of exponential
 functions
 
 .. math:: y(x) = \alpha + \sum_{i=1}^p \beta_i \text{e}^{\lambda_i x}
@@ -103,17 +103,30 @@ Examples
 
 Given an array ``x`` of values of the independent variable and an array ``y``
 of corresponding values of the sum of the exponentials, the parameters
-``a`` (:math:`\alpha` in above formula), ``b`` (:math:`\beta_i`) and ``l``
-(:math:`\lambda_i`) can be found by calling
+``offset`` (:math:`\alpha` in above formula), ``mant`` (:math:`\beta_i`) and
+``exp`` (:math:`\lambda_i`) can be found by calling
 
->>> a, b, l, _ = sdt.exp_fit.fit(x, y, n_exp=2, poly_order=30)
+>>> res = optimize.ExpSumModel(n_exp=2).fit(y, x)
+>>> res.offset
+3.5
+>>> res.mant
+array([0.8, 0.2])
+>>> res.exp
+array([-0.2, -1.5])
 
 
 Programming interface
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: fit_exp_sum
-.. autofunction:: get_exp_coeffs
+.. autoclass:: ExpSumModel
+    :members:
+    :special-members: __call__
+.. autoclass:: ExpSumModelResult
+    :members:
+    :special-members: __call__
+.. autoclass:: ProbExpSumModel
+    :members:
+    :special-members: __call__
 
 
 .. _theory:
@@ -181,11 +194,12 @@ that, it is straight-forward to determine the exponential factors
 
 A linear least squares fit can then be used to determine the remaining
 parameters :math:`\alpha` and :math:`\beta_i`.
-"""
+"""  # noqa e501
 
 from contextlib import suppress
 
-from .exp_fit import fit_exp_sum, get_exp_coeffs  # noqa f401
+from .exp_fit import (ExpSumModel, ExpSumModelResult,  # noqa f401
+                      ProbExpSumModel)  # noqa f401
 from .gaussian_fit import guess_gaussian_parameters  # noqa f401
 with suppress(ImportError):
     from .gaussian_fit import Gaussian1DModel, Gaussian2DModel  # noqa f401

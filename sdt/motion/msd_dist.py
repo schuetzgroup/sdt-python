@@ -17,12 +17,7 @@ from .. import config, funcs, optimize as sdt_opt
 
 
 def _fit_cdf_prony(x, y, n_exp, poly_order, initial_guess=None):
-    r"""Variant of `optimize.fit_exp_sum` for the model of the CDF
-
-    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting
-    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data
-    using a modified Prony's method. Additionally, there are the constraints
-    :math:`\sum_{k=1}^p -\beta_k = 1` and :math:`\alpha = 1`.
+    r"""Use :py:class:`sdt_op.ProbExpSumModel` to fit the CDF
 
     Parameters
     ----------
@@ -43,9 +38,6 @@ def _fit_cdf_prony(x, y, n_exp, poly_order, initial_guess=None):
         Mantissa coefficients (:math:`\beta_k`)
     exp_coeff : numpy.ndarray
         List of exponential coefficients (:math:`\lambda_k`)
-    ode_coeff : numpy.ndarray
-        Optimal coefficienst of the ODE involved in calculating the exponential
-        coefficients.
 
     Other parameters
     ----------------
@@ -54,45 +46,9 @@ def _fit_cdf_prony(x, y, n_exp, poly_order, initial_guess=None):
         don't know what this is about, don't bother). The array is 1D and has
         `n_exp` + 1 entries. If None, use ``numpy.ones(n_exp + 1)``.
         Defaults to None.
-
-    Notes
-    -----
-    Since :math:`\sum_{i=1}^p -\beta_i = 1` and :math:`\alpha = 1`, assuming
-    :math:`\lambda_k` already known (since they are gotten by fitting the
-    coefficients of the ODE), there is only the constrained linear least
-    squares problem
-
-    ..math:: 1 + \sum_{k=1}^{p-1} \beta_k \text{e}^{\lambda_k t} +
-        (-1 - \sum_{k=1}^{p-1} \beta_k) \text{e}^{\lambda_p t} = y
-
-    left to solve. This is equivalent to
-
-    ..math:: \sum_{k=1}^{p-1} \beta_k
-        (\text{e}^{\lambda_k t} - \text{e}^{\lambda_p t}) =
-        y - 1 + \text{e}^{\lambda_p t},
-
-    which yields :math:`\beta_1, …, \beta_{p-1}`. :math:`\beta_p` can then be
-    determined from the constraint.
     """
-    # get exponent coefficients as usual
-    exp_coeff, ode_coeff = sdt_opt.get_exp_coeffs(
-        x, y, n_exp, poly_order, initial_guess)
-
-    if n_exp < 2:
-        # for only one exponential, the mantissa coefficient is -1
-        return np.array([-1.]), exp_coeff
-
-    # Solve the equivalent linear lsq problem (see notes section of the
-    # docstring).
-    V = np.exp(np.outer(x, exp_coeff[:-1]))
-    restr = np.exp(x*exp_coeff[-1])
-    V -= restr.reshape(-1, 1)
-    lsq = np.linalg.lstsq(V, y - 1 + restr, rcond=-1)
-    lsq = lsq[0]
-    # Also recover the last mantissa coefficient from the constraint
-    mant_coeff = np.hstack((lsq, -1 - lsq.sum()))
-
-    return mant_coeff, exp_coeff
+    res = sdt_opt.ProbExpSumModel(n_exp, poly_order).fit(y, x, initial_guess)
+    return res.mant, res.exp
 
 
 def _fit_cdf_lsq(x, y, n_exp, weighted=True, initial_b=None, initial_l=None):

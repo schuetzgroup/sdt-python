@@ -322,10 +322,10 @@ def exp_sum(x: np.ndarray, offset: float, mant: np.ndarray, exp: np.ndarray
         Mantissa coefficients
     exp
         Coefficients in the exponent
+
     Returns
     -------
-    numpy.ndarray
-        Result
+    Function values
 
     Examples
     --------
@@ -361,7 +361,7 @@ def exp_sum_lmfit(x: np.ndarray, offset: float = 1., **params: float
 
     Returns
     -------
-    Result
+    Function values
 
     Examples
     --------
