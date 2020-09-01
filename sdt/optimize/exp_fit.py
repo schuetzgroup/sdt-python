@@ -222,7 +222,7 @@ class ExpSumModel:
 
         return exp_coeff, ode_coeff
 
-    def fit(self, y: np.ndarray, x: np.ndarray, 
+    def fit(self, y: np.ndarray, x: np.ndarray,
             initial_guess: Optional[np.ndarray] = None) -> "ExpSumModelResult":
         r"""Perform the fit
 
@@ -372,7 +372,7 @@ class ProbExpSumModel(ExpSumModel):
     which yields :math:`\beta_1, …, \beta_{p-1}`. :math:`\beta_p` can then be
     determined from the constraint.
     """
-    def fit(self, y: np.ndarray, x: np.ndarray, 
+    def fit(self, y: np.ndarray, x: np.ndarray,
             initial_guess: Optional[np.ndarray] = None) -> "ExpSumModelResult":
         r"""Perform the fit
 
