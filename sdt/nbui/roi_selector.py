@@ -265,7 +265,8 @@ class ROISelector(VBox):
         """Callback for ellipse ROI"""
         e = self._cur_roi_sel
         ex = e.extents
-        r = roi.EllipseROI(e.center, ((ex[1] - ex[0]) / 2, (ex[3] - ex[2])/ 2))
+        r = roi.EllipseROI(e.center,
+                           ((ex[1] - ex[0]) / 2, (ex[3] - ex[2]) / 2))
         self._roi_selected(r)
 
     def _poly_roi_selected(self, vertices):
