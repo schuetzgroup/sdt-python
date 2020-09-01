@@ -75,6 +75,40 @@ Auxiliary functions
 .. autofunction:: guess_gaussian_parameters
 
 
+Random sample consensus (RANSAC)
+--------------------------------
+
+Perform a fit to noisy data (i.e., data containing outliers) by repeatedly
+
+- randomly choosing a (small) subset of the data
+- fitting parameters
+- determining of the goodness of the fit for the rest of the data, only
+  accepting those points within a predefined error margin
+- refining the fit by fitting all remaining data
+
+Finally take the parameters from the fit with the smallest overall error.
+
+
+Examples
+~~~~~~~~
+
+Assuming that ``z`` is an array of noisy Gaussian values for ``x`` and ``y``, a
+fit can be performed as follows:
+
+>>> model = optimize.Gaussian2DModel()
+>>> model.set_param_hint("rotation", vary=False)  # Set restriction
+>>> r = optimize.RANSAC(model, max_error=1, n_fit=10, n_iter=100,
+                        initial_guess=model.guess)
+>>> best_fit, inlier_idx = r.fit(z, x=x, y=y)
+
+
+Programming interface
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: RANSAC
+    :members:
+
+
 Fitting affine transformations to point pairs
 ---------------------------------------------
 
@@ -233,4 +267,5 @@ from .exp_fit import (ExpSumModel, ExpSumModelResult,  # noqa f401
 from .gaussian_fit import guess_gaussian_parameters  # noqa f401
 with suppress(ImportError):
     from .gaussian_fit import Gaussian1DModel, Gaussian2DModel  # noqa f401
+from .ransac import RANSAC  # noqa f401
 from .affine_fit import AffineModel, AffineModelResult  # noqa f401
