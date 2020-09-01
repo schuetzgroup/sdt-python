@@ -75,6 +75,36 @@ Auxiliary functions
 .. autofunction:: guess_gaussian_parameters
 
 
+Fitting affine transformations to point pairs
+---------------------------------------------
+
+Given a set of pairs of points, an affine transformation between first and
+second pair entries can be found by means of a linear least squares fit.
+
+
+Examples
+~~~~~~~~
+
+Let ``xy`` be row-wise coordinates of points and ``xy_t`` their transformed
+counterparts, i.e., ``xy[0, :]`` describes a point corresponding to
+``xy_t[i, :]``. Then the best-fitting transformation can be found using
+
+>>> r = optimize.AffineModel().fit(xy_t, xy)
+>>> r.transform
+array([[...]])
+
+
+Programming interface
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: AffineModel
+    :members:
+    :special-members: __call__
+.. autoclass:: AffineModelResult
+    :members:
+    :special-members: __call__
+
+
 Fitting of a sum of exponential functions
 -----------------------------------------
 
@@ -203,3 +233,4 @@ from .exp_fit import (ExpSumModel, ExpSumModelResult,  # noqa f401
 from .gaussian_fit import guess_gaussian_parameters  # noqa f401
 with suppress(ImportError):
     from .gaussian_fit import Gaussian1DModel, Gaussian2DModel  # noqa f401
+from .affine_fit import AffineModel, AffineModelResult  # noqa f401
