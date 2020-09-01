@@ -256,7 +256,8 @@ class ExpSumModel:
                                  ode_coeff)
 
     # TODO: Use numpy ArrayLike typehint once it is available
-    def eval(self, x, offset, mant, exp):
+    @staticmethod
+    def eval(x, offset, mant, exp):
         """Evaluate the sum of exponentials
 
         Parameters
