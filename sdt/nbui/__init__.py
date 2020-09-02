@@ -17,6 +17,7 @@ Currently, there is
 - the :py:class:`ROISelector` class for choosing ROIs by drawing them on
   images
 - the :py:class:`FileDialog` class for selecting files
+- the :py:class:`ImageDisplay` class for displaying images
 
 
 Programming reference
@@ -29,8 +30,11 @@ Programming reference
     :members:
 .. autoclass:: FileDialog
     :members:
+.. autoclass:: ImageDisplay
+    :members:
 """
 from .locator import Locator  # noqa: 401
 from .roi_selector import ROISelector  # noqa: 401
 from .thresholder import Thresholder  # noqa: 401
 from .file_dialog import FileDialog  # noqa: 401
+from .image_display import ImageDisplay  # noqa: 401
