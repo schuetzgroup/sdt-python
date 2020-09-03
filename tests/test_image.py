@@ -266,3 +266,26 @@ class TestThresh:
     def test_percentile(self):
         mask = image.percentile_thresh(self.img, 50, 0.1)
         np.testing.assert_array_equal(mask, self.img.astype(bool))
+
+
+def test_center():
+    """image.center"""
+    img = np.arange(20).reshape((4, 5))
+
+    cnt = image.center(img, (8, 7), 1)
+    exp = np.ones((8, 7), dtype=img.dtype)
+    exp[2:-2, 1:-1] = img
+    np.testing.assert_allclose(cnt, exp)
+
+    cnt_odd = image.center(img, (8, 6))
+    exp_odd = np.zeros((8, 6), dtype=img.dtype)
+    exp_odd[2:-2, :-1] = img
+    np.testing.assert_allclose(cnt_odd, exp_odd)
+
+    crop = image.center(img, (2, 1))
+    np.testing.assert_allclose(crop, img[1:-1, 2:-2])
+
+    both = image.center(img, (2, 7))
+    exp_b = np.zeros((2, 7), dtype=img.dtype)
+    exp_b[:, 1:-1] = img[1:-1, :]
+    np.testing.assert_allclose(both, exp_b)
