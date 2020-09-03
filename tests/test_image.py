@@ -132,12 +132,12 @@ class TestCG(unittest.TestCase):
         np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
 
 
-class TestMasks(unittest.TestCase):
+class TestMasks:
     def test_circle_mask(self):
         """image.CircleMask"""
         orig = np.array([[False, False,  True, False, False],
                          [False,  True,  True,  True, False],
-                         [ True,  True,  True,  True,  True],
+                         [ True,  True,  True,  True,  True],  # noqa f201
                          [False,  True,  True,  True, False],
                          [False, False,  True, False, False]], dtype=bool)
         np.testing.assert_equal(masks.CircleMask(2), orig)
@@ -145,9 +145,9 @@ class TestMasks(unittest.TestCase):
     def test_circle_mask_extra(self):
         """image.CircleMask: `extra` param"""
         orig = np.array([[False,  True,  True,  True, False],
-                         [ True,  True,  True,  True,  True],
-                         [ True,  True,  True,  True,  True],
-                         [ True,  True,  True,  True,  True],
+                         [ True,  True,  True,  True,  True],  # noqa f201
+                         [ True,  True,  True,  True,  True],  # noqa f201
+                         [ True,  True,  True,  True,  True],  # noqa f201
                          [False,  True,  True,  True, False]], dtype=bool)
         np.testing.assert_equal(masks.CircleMask(2, 0.5), orig)
 
@@ -164,6 +164,44 @@ class TestMasks(unittest.TestCase):
                          [False, False, False, False, False, False, False]],
                         dtype=bool)
         np.testing.assert_equal(masks.CircleMask(2, shape=(9, 7)), orig)
+
+    def test_diamond_mask(self):
+        """image.DiamondMask"""
+        orig = np.array([[False, False, False,  True, False, False, False],
+                         [False, False,  True,  True,  True, False, False],
+                         [False,  True,  True,  True,  True,  True, False],
+                         [ True,  True,  True,  True,  True,  True,  True],  # noqa f201
+                         [False,  True,  True,  True,  True,  True, False],
+                         [False, False,  True,  True,  True, False, False],
+                         [False, False, False,  True, False, False, False]],
+                        dtype=bool)
+        np.testing.assert_equal(masks.DiamondMask(3), orig)
+
+    def test_diamond_mask_extra(self):
+        """image.DiamondMask"""
+        orig = np.array([[False, False,  True,  True,  True, False, False],
+                         [False,  True,  True,  True,  True,  True, False],
+                         [ True,  True,  True,  True,  True,  True,  True],  # noqa f201
+                         [ True,  True,  True,  True,  True,  True,  True],  # noqa f201
+                         [ True,  True,  True,  True,  True,  True,  True],  # noqa f201
+                         [False,  True,  True,  True,  True,  True, False],
+                         [False, False,  True,  True,  True, False, False]],
+                        dtype=bool)
+        np.testing.assert_equal(masks.DiamondMask(3, extra=1.5), orig)
+
+    def test_diamond_mask_shape(self):
+        """image.CircleMask: `shape` param"""
+        orig = np.array([[False, False, False, False, False, False, False],
+                         [False, False, False, False, False, False, False],
+                         [False, False, False,  True, False, False, False],
+                         [False, False,  True,  True,  True, False, False],
+                         [False,  True,  True,  True,  True,  True, False],
+                         [False, False,  True,  True,  True, False, False],
+                         [False, False, False,  True, False, False, False],
+                         [False, False, False, False, False, False, False],
+                         [False, False, False, False, False, False, False]],
+                        dtype=bool)
+        np.testing.assert_equal(masks.DiamondMask(2, shape=(9, 7)), orig)
 
     def test_rect_mask(self):
         """image.RectMask"""

@@ -68,6 +68,7 @@ Masks
 -----
 .. autoclass:: RectMask
 .. autoclass:: CircleMask
+.. autoclass:: DiamondMask
 
 Utilities
 ---------
