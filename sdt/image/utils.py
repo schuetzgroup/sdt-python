@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+from typing import Any, Tuple
+
 import numpy as np
 
 
@@ -36,3 +38,37 @@ def fill_gamut(img, dtype=None):
         scaled *= np.iinfo(dtype).max
 
     return scaled.astype(dtype)
+
+
+def center(obj: np.ndarray, shape: Tuple[int, ...], fill_value: Any = 0
+           ) -> np.ndarray:
+    """Center an image in an array of different size
+
+    If the new shape is larger, the image will be padded, otherwise it will be
+    cropped.
+
+    Parameters
+    ----------
+    obj
+        Image array
+    shape
+        Output shape
+    fill_value
+        Value to use for padding
+
+    Returns
+    -------
+    New array with `obj` centered.
+    """
+    ret = np.full(shape, fill_value, dtype=obj.dtype)
+    ret_slices = []
+    obj_slices = []
+    for n, o in zip(shape, obj.shape):
+        e = min(n, o)
+        ret_margin = (n - e) // 2
+        ret_slices.append(slice(ret_margin, ret_margin + e))
+        obj_margin = (o - e) // 2
+        obj_slices.append(slice(obj_margin, obj_margin + e))
+
+    ret[tuple(ret_slices)] = obj[tuple(obj_slices)]
+    return ret

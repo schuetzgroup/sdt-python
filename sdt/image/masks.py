@@ -5,6 +5,8 @@
 """Geometric binary masks for image data"""
 import numpy as np
 
+from .utils import center
+
 
 class RectMask(np.ndarray):
     """Boolean array representing a rectangular mask"""
@@ -18,18 +20,8 @@ class RectMask(np.ndarray):
             mask will be centered in the array. By default, the smallest
             possible size is chosen.
         """
-        if shape is None:
-            shape = ext
-        obj = np.zeros(shape, dtype=bool)
-
-        m_slices = []
-        for s, e in zip(shape, ext):
-            margin = max(0, (s - e) // 2)
-            m_slices.append(slice(margin, margin + e))
-
-        obj[tuple(m_slices)] = 1
-
-        return obj
+        obj = np.ones(ext, dtype=bool)
+        return obj if shape is None else center(obj, shape)
 
 
 class CircleMask(np.ndarray):
@@ -73,16 +65,4 @@ class CircleMask(np.ndarray):
         """
         obj = np.arange(-radius, radius+1)**2
         obj = (obj[np.newaxis, :] + obj[:, np.newaxis]) <= (radius + extra)**2
-
-        if shape is not None:
-            ret = np.zeros(shape, dtype=bool)
-
-            m_slices = []
-            for s, e in zip(shape, obj.shape):
-                margin = max(0, (s - e) // 2)
-                m_slices.append(slice(margin, margin + e))
-
-            ret[tuple(m_slices)] = obj
-            obj = ret
-
-        return obj
+        return obj if shape is None else center(obj, shape)

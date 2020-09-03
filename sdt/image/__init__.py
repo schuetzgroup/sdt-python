@@ -72,6 +72,7 @@ Masks
 Utilities
 ---------
 .. autofunction:: fill_gamut
+.. autofunction:: center
 
 
 References
@@ -80,15 +81,15 @@ References
     microscopy for colloidal studies", Journal of colloid and interface
     science, Elsevier, 1996, 179, 298-310
 """
-from . import filters
-from . import masks
-from . import utils
+from . import filters  # noqa f401
+from . import masks  # noqa f401
+from . import utils  # noqa f401
 
-from .filters import *
-from .masks import *
-from .utils import *
+from .filters import *  # noqa f401
+from .masks import *  # noqa f401
+from .utils import *  # noqa f401
 
 from contextlib import suppress
 with suppress(ImportError):
-    from . import threshold
-    from .threshold import *
+    from . import threshold  # noqa f401
+    from .threshold import *  # noqa f401
