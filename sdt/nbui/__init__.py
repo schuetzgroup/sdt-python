@@ -32,9 +32,12 @@ Programming reference
     :members:
 .. autoclass:: ImageDisplay
     :members:
+.. autoclass:: ImageSelector
+    :members:
 """
 from .locator import Locator  # noqa: 401
 from .roi_selector import ROISelector  # noqa: 401
 from .thresholder import Thresholder  # noqa: 401
 from .file_dialog import FileDialog  # noqa: 401
 from .image_display import ImageDisplay  # noqa: 401
+from .image_selector import ImageSelector  # noqa: 401
