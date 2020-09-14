@@ -331,9 +331,11 @@ class Corrector:
         if ax is None:
             grid_kw = dict(width_ratios=(1, 2))
             fig, ax = plt.subplots(1, 2, gridspec_kw=grid_kw)
+        else:
+            fig = None
 
         c1 = self.pairs[self.channel_names[0]]
-        c1_corr = self(c1, channel=1)
+        c1_corr = self(c1, channel=1, columns=self.columns)
         diff1 = (c1_corr[self.columns["coords"]] -
                  self.pairs[self.channel_names[1]][self.columns["coords"]])
         diff1 = np.sqrt(np.sum(diff1**2, axis=1))
@@ -353,7 +355,9 @@ class Corrector:
         ax[1].set_xlabel("x")
         ax[1].set_ylabel("y")
 
-        ax[0].figure.tight_layout()
+        if fig is not None:
+            # Figure was created here, so it is safe to do this
+            fig.tight_layout()
 
     def save(self, file: Union[BinaryIO, str, Path], fmt: str = "npz",
              key: Tuple[str] = ("chromatic_param1", "chromatic_param2")):
