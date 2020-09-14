@@ -2,8 +2,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import unittest
-import os
 from io import StringIO
 
 import pandas as pd
@@ -25,155 +23,190 @@ except ImportError:
     sklearn_available = False
 
 
-path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_data")
+class TestSmFretTracker:
+    bg = 5
+    feat_radius = 2
+    img_size = 150
+    n_frames = 10
+    signal = 10
+    x_shift = 40
 
+    @pytest.fixture
+    def feat_mask(self):
+        return image.CircleMask(self.feat_radius, 0.5)
 
-class TestSmFretTracker(unittest.TestCase):
-    def setUp(self):
-        # Data to check tracking functionality
-        self.img_size = 150
-        self.feat_radius = 2
-        self.signal = 10
-        self.bg = 5
-        self.x_shift = 40
-        self.num_frames = 10
+    @pytest.fixture
+    def localizations(self, feat_mask):
+        loc = ([[20, 30]] * self.n_frames +
+               [[27, 30]] * (self.n_frames // 2) +
+               [[29, 30]] * (self.n_frames // 2))
 
-        loc = ([[20, 30]] * self.num_frames +
-               [[27, 30]] * (self.num_frames // 2) +
-               [[29, 30]] * (self.num_frames // 2))
-        self.don_loc = pd.DataFrame(np.array(loc), columns=["x", "y"])
-        self.don_loc["frame"] = np.concatenate(
-                [np.arange(self.num_frames, dtype=np.int)]*2)
-        self.acc_loc = self.don_loc.copy()
-        self.acc_loc["x"] += self.x_shift
+        don = pd.DataFrame(np.array(loc), columns=["x", "y"])
+        don["frame"] = np.concatenate(
+                [np.arange(self.n_frames, dtype=np.int)]*2)
 
-        cmask = image.CircleMask(self.feat_radius, 0.5)
-        img = np.full((self.img_size, self.img_size), self.bg, dtype=np.int)
-        x, y, _ = self.don_loc.iloc[0]
+        acc = don.copy()
+        acc["x"] += self.x_shift
+
+        for loc in don, acc:
+            s = ([self.signal] * self.n_frames +
+                 [0] * self.n_frames)
+            loc["signal"] = s
+            m = feat_mask.sum() * self.signal
+            loc["mass"] = [m] * self.n_frames + [0] * self.n_frames
+            loc["bg"] = self.bg
+            loc["bg_dev"] = 0.
+
+        return don, acc
+
+    @pytest.fixture
+    def images(self, localizations, feat_mask):
+        don_loc, acc_loc = localizations
+
+        img = np.full((self.img_size,)*2, self.bg, dtype=np.int)
+        x = don_loc.loc[0, "x"]
+        y = don_loc.loc[0, "y"]
         img[y-self.feat_radius:y+self.feat_radius+1,
-            x-self.feat_radius:x+self.feat_radius+1][cmask] += self.signal
-        self.don_img = [img] * self.num_frames
+            x-self.feat_radius:x+self.feat_radius+1][feat_mask] += self.signal
+        don_img = [img] * self.n_frames
         img = np.full((self.img_size, self.img_size), self.bg, dtype=np.int)
-        x, y, _ = self.acc_loc.iloc[0]
+        x = acc_loc.loc[0, "x"]
+        y = acc_loc.loc[0, "y"]
         img[y-self.feat_radius:y+self.feat_radius+1,
-            x-self.feat_radius:x+self.feat_radius+1][cmask] += self.signal
-        self.acc_img = [img] * self.num_frames
+            x-self.feat_radius:x+self.feat_radius+1][feat_mask] += self.signal
+        acc_img = [img] * self.n_frames
 
-        self.corr = chromatic.Corrector(None, None)
-        self.corr.parameters1[0, -1] = self.x_shift
-        self.corr.parameters2[0, -1] = -self.x_shift
+        return don_img, acc_img
 
-        for l in (self.don_loc, self.acc_loc):
-            s = [self.signal] * self.num_frames + [0] * self.num_frames
-            l["signal"] = s
-            m = cmask.sum() * self.signal
-            l["mass"] = [m] * self.num_frames + [0] * self.num_frames
-            l["bg"] = self.bg
-            l["bg_dev"] = 0.
+    @pytest.fixture
+    def fret_data(self, localizations):
+        don_loc, acc_loc = localizations
 
-        f = pd.DataFrame(np.empty((len(self.don_loc), 0)))
-        f["particle"] = [0] * self.num_frames + [1] * self.num_frames
+        f = pd.DataFrame(np.empty((len(don_loc), 0)))
+        f["particle"] = [0] * self.n_frames + [1] * self.n_frames
         f["interp"] = 0
-        f["has_neighbor"] = ([1] * (self.num_frames // 2) +
-                             [0] * (self.num_frames // 2)) * 2
+        f["has_neighbor"] = ([1] * (self.n_frames // 2) +
+                             [0] * (self.n_frames // 2)) * 2
+        return pd.concat([don_loc, acc_loc, f],
+                         keys=["donor", "acceptor", "fret"], axis=1)
 
-        self.fret_data = pd.concat([self.don_loc, self.acc_loc, f],
-                                   keys=["donor", "acceptor", "fret"], axis=1)
+    @pytest.fixture
+    def tracker_params(self):
+        corr = chromatic.Corrector()
+        corr.parameters1[0, -1] = self.x_shift
+        corr.parameters2[0, -1] = -self.x_shift
 
-        self.tracker = fret.SmFretTracker(
-            "da", self.corr, link_radius=4, link_mem=1, min_length=5,
-            feat_radius=self.feat_radius, neighbor_radius=7.5)
+        return dict(chromatic_corr=corr, link_radius=4, link_mem=1,
+                    min_length=5, feat_radius=self.feat_radius,
+                    neighbor_radius=7.5)
 
-    @unittest.skipUnless(trackpy_available, "trackpy not available")
-    def test_track(self):
+    def test_flag_excitation_type(self, fret_data):
+        """fret.SmFretAnalyzer.flag_excitation_type"""
+        tr = fret.SmFretTracker("oddda")
+        tr.flag_excitation_type(fret_data)
+
+        fr_mod = fret_data["donor", "frame"] % len(tr.excitation_seq)
+        assert np.all(fret_data.loc[fr_mod == 0, ("fret", "exc_type")] == "o")
+        assert np.all(fret_data.loc[fr_mod == 4, ("fret", "exc_type")] == "a")
+        assert np.all(fret_data.loc[~(fr_mod).isin({0, 4}),
+                                    ("fret", "exc_type")] == "d")
+
+    @pytest.mark.skipif(not trackpy_available, reason="trackpy not available")
+    def test_track(self, localizations, images, fret_data, tracker_params):
         """fret.SmFretTracker.track: no interpolation"""
+        don_loc, acc_loc = localizations
         # Remove brightness-related cols to see if they get added
-        dl = self.don_loc[["x", "y", "frame"]]
+        dl = don_loc[["x", "y", "frame"]]
         # Write bogus values to see whether they get overwritten
-        self.acc_loc["mass"] = -1
+        acc_loc["mass"] = -1
 
-        self.tracker.interpolate = False
-        fret_data = self.tracker.track(
-            self.don_img, self.acc_img, dl.drop([2, 3, 5]),
-            self.acc_loc.drop(5))
+        tr = fret.SmFretTracker("da", interpolate=False, **tracker_params)
+        result = tr.track(*images, dl.drop([2, 3, 5]), acc_loc.drop(5))
 
-        exp = self.fret_data.drop(5).reset_index(drop=True)
-        pd.testing.assert_frame_equal(fret_data, exp,
+        exp = fret_data.drop(5).reset_index(drop=True)
+        exp["fret", "exc_type"] = pd.Series(
+            ["d", "a"] * 2 + ["d"] + ["d", "a"] * 7, dtype="category")
+        pd.testing.assert_frame_equal(result, exp,
                                       check_dtype=False, check_like=True)
 
-    @unittest.skipUnless(trackpy_available, "trackpy not available")
-    def test_track_interpolate(self):
+    @pytest.mark.skipif(not trackpy_available, reason="trackpy not available")
+    def test_track_interpolate(self, localizations, images, fret_data,
+                               tracker_params):
         """fret.SmFretTracker.track: interpolation"""
+        don_loc, acc_loc = localizations
         # Remove brightness-related cols to see if they get added
-        dl = self.don_loc[["x", "y", "frame"]]
+        dl = don_loc[["x", "y", "frame"]]
         # Write bogus values to see whether they get overwritten
-        self.acc_loc["mass"] = -1
+        acc_loc["mass"] = -1
 
-        self.tracker.interpolate = True
-        fret_data = self.tracker.track(
-            self.don_img, self.acc_img, dl.drop([2, 3, 5]),
-            self.acc_loc.drop(5))
+        tr = fret.SmFretTracker("da", interpolate=True, **tracker_params)
+        result = tr.track(*images, dl.drop([2, 3, 5]), acc_loc.drop(5))
 
-        self.fret_data.loc[5, ("fret", "interp")] = 1
+        fret_data.loc[5, ("fret", "interp")] = 1
+        fret_data["fret", "exc_type"] = pd.Series(["d", "a"] * 10,
+                                                  dtype="category")
 
-        pd.testing.assert_frame_equal(fret_data, self.fret_data,
+        pd.testing.assert_frame_equal(result, fret_data,
                                       check_dtype=False, check_like=True)
 
-    @unittest.skipUnless(trackpy_available, "trackpy not available")
-    def test_track_skip_other_frames(self):
+    @pytest.mark.skipif(not trackpy_available, reason="trackpy not available")
+    def test_track_skip_other_frames(self, localizations, images, fret_data,
+                                     tracker_params):
         """fret.SmFretTracker.track: Skip non-donor-or-acceptor frames"""
-        self.tracker.excitation_seq = "cdada"
-        self.tracker.link_options["memory"] = 0
-        self.tracker.min_length = 8
+        tr = fret.SmFretTracker("cdada", **tracker_params)
+        tr.link_options["memory"] = 0
+        tr.min_length = 8
 
         # even with frames dropped we should still get both tracks since
         # the dropped frames are not of "d" or "a" excitation type
-        fret_data = self.tracker.track(
-            self.don_img, self.acc_img, self.don_loc.drop([0, 5]),
-            self.acc_loc.drop([0, 5]))
+        don_loc, acc_loc = localizations
+        result = tr.track(*images, don_loc.drop([0, 5]), acc_loc.drop([0, 5]))
 
         # drop frames that are not of "d" or "a" type
-        expected = self.fret_data.drop([0, 5, 10, 15]).reset_index(drop=True)
-        pd.testing.assert_frame_equal(fret_data, expected,
+        expected = fret_data.drop([0, 5, 10, 15]).reset_index(drop=True)
+        expected["fret", "exc_type"] = pd.Series(["d", "a"] * 8,
+                                                 dtype="category")
+        pd.testing.assert_frame_equal(result, expected,
                                       check_dtype=False, check_like=True)
 
-    @unittest.skipUnless(trackpy_available, "trackpy not available")
-    def test_track_d_mass(self):
+    @pytest.mark.skipif(not trackpy_available, reason="trackpy not available")
+    def test_track_d_mass(self, localizations, images, fret_data,
+                          tracker_params):
         """fret.SmFretTracker.track: d_mass=True"""
-        fret_data = self.tracker.track(self.don_img, self.acc_img,
-                                       self.don_loc, self.acc_loc, d_mass=True)
-        self.fret_data["fret", "d_mass"] = (self.don_loc["mass"] +
-                                            self.acc_loc["mass"])
-        pd.testing.assert_frame_equal(fret_data, self.fret_data,
+        don_loc, acc_loc = localizations
+        tr = fret.SmFretTracker("da", **tracker_params)
+        result = tr.track(*images, *localizations, d_mass=True)
+        fret_data["fret", "d_mass"] = (don_loc["mass"] + acc_loc["mass"])
+        fret_data["fret", "exc_type"] = pd.Series(["d", "a"] * 10,
+                                                  dtype="category")
+        pd.testing.assert_frame_equal(result, fret_data,
                                       check_dtype=False, check_like=True)
 
-    @unittest.skipUnless(hasattr(io, "yaml"), "YAML not found")
-    def test_yaml(self):
+    @pytest.mark.skipif(not hasattr(io, "yaml"), reason="YAML not found")
+    def test_yaml(self, tracker_params):
         """fret.SmFretTracker: save to/load from YAML"""
         sio = StringIO()
-        self.tracker.acceptor_channel = 1
-        io.yaml.safe_dump(self.tracker, sio)
+        tr = fret.SmFretTracker("da", **tracker_params)
+        tr.acceptor_channel = 1
+        io.yaml.safe_dump(tr, sio)
         sio.seek(0)
-        tracker = io.yaml.safe_load(sio)
+        tr_loaded = io.yaml.safe_load(sio)
 
-        self.assertDictEqual(tracker.link_options, self.tracker.link_options)
-        self.assertDictEqual(tracker.brightness_options,
-                             self.tracker.brightness_options)
+        assert tr_loaded.link_options == tr.link_options
+        assert tr_loaded.brightness_options == tr.brightness_options
         res = {}
         orig = {}
         for k in ("acceptor_channel", "coloc_dist", "interpolate",
                   "neighbor_radius"):
-            res[k] = getattr(tracker, k)
-            orig[k] = getattr(self.tracker, k)
-        self.assertEqual(res, orig)
+            res[k] = getattr(tr_loaded, k)
+            orig[k] = getattr(tr, k)
+            assert res == orig
 
-        np.testing.assert_allclose(tracker.chromatic_corr.parameters1,
-                                   self.tracker.chromatic_corr.parameters1)
-        np.testing.assert_allclose(tracker.chromatic_corr.parameters2,
-                                   self.tracker.chromatic_corr.parameters2)
-        np.testing.assert_equal(tracker.excitation_seq,
-                                self.tracker.excitation_seq)
+        np.testing.assert_allclose(tr_loaded.chromatic_corr.parameters1,
+                                   tr.chromatic_corr.parameters1)
+        np.testing.assert_allclose(tr_loaded.chromatic_corr.parameters2,
+                                   tr.chromatic_corr.parameters2)
+        np.testing.assert_equal(tr_loaded.excitation_seq, tr.excitation_seq)
 
 
 def test_numeric_exc_type():
@@ -315,6 +348,8 @@ def ana2():
     df = pd.DataFrame(loc, columns=["frame", "mass"])
     df = pd.concat([df]*2, keys=["donor", "acceptor"], axis=1)
     df["fret", "particle"] = 0
+    df["fret", "exc_type"] = pd.Series(list(seq) * (num_frames // len(seq)),
+                                       dtype="category")
 
     return fret.SmFretAnalyzer(df, seq)
 
@@ -421,53 +456,28 @@ class TestSmFretAnalyzer:
         ana1.bleach_step(800, 500, truncate=True, special="acc-only")
         pd.testing.assert_frame_equal(ana1.tracks, expected)
 
-    def test_flag_excitation_type(self, ana2):
-        """fret.SmFretAnalyzer.flag_excitation_type"""
-        ana2.excitation_seq = "odddda"
-        ana2.flag_excitation_type()
-
-        t = ana2.tracks
-        fr_mod = t["donor", "frame"] % len(ana2.excitation_seq)
-        assert np.all(t.loc[fr_mod == 0, ("fret", "exc_type")] == "o")
-        assert np.all(t.loc[fr_mod == 5, ("fret", "exc_type")] == "a")
-        assert np.all(t.loc[~(fr_mod).isin({0, 5}), ("fret", "exc_type")] ==
-                      "d")
-
     def test_calc_fret_values_eff(self, ana2):
         """fret.SmFretAnalyzer.calc_fret_values: FRET efficiency"""
         don_mass = np.ones(len(ana2.tracks)) * 1000
         acc_mass = (np.arange(len(ana2.tracks), dtype=float) + 1) * 1000
         ana2.tracks["donor", "mass"] = don_mass
         ana2.tracks["acceptor", "mass"] = acc_mass
+        ana2.tracks["fret", "exc_type"] = pd.Series(
+            ["d" if f % 2 == 0 else "a"
+             for f in ana2.tracks["donor", "frame"]], dtype="category")
 
-        ana2.excitation_seq = "da"
         ana2.calc_fret_values()
 
         d_mass = don_mass + acc_mass
         eff = acc_mass / d_mass
 
         # direct acceptor ex
-        acc_dir = ana2.tracks["donor", "frame"] % 2 == 1
+        acc_dir = ana2.tracks["fret", "exc_type"] == "a"
         eff[acc_dir] = np.NaN
         d_mass[acc_dir] = np.NaN
 
         np.testing.assert_allclose(ana2.tracks["fret", "eff_app"], eff)
         np.testing.assert_allclose(ana2.tracks["fret", "d_mass"], d_mass)
-
-    def test_calc_fret_values_exc_type(self, ana2):
-        """fret.SmFretAnalyzer.calc_fret_values: excitation type"""
-        ana2.tracks["donor", "mass"] = 0
-        ana2.tracks["acceptor", "mass"] = 0
-        ana2.excitation_seq = "odddda"
-
-        ana2.calc_fret_values()
-
-        t = ana2.tracks
-        fr_mod = t["donor", "frame"] % len(ana2.excitation_seq)
-        assert np.all(t.loc[fr_mod == 0, ("fret", "exc_type")] == "o")
-        assert np.all(t.loc[fr_mod == 5, ("fret", "exc_type")] == "a")
-        assert np.all(t.loc[~(fr_mod).isin({0, 5}), ("fret", "exc_type")] ==
-                      "d")
 
     def test_calc_fret_values_stoi_linear(self, ana2):
         """fret.SmFretAnalyzer.calc_fret_values: stoi., linear interp."""
@@ -572,9 +582,7 @@ class TestSmFretAnalyzer:
         """fret.SmFretAnalyzer.calc_fret_values: keep_d_mass=True"""
         dm = np.arange(len(ana2.tracks), dtype=float)
         ana2.tracks["fret", "d_mass"] = dm
-        dm[~(ana2.tracks["donor", "frame"] %
-             len(ana2.excitation_seq)).isin(
-                 ana2.excitation_frames["d"])] = np.NaN
+        dm[~(ana2.tracks["fret", "exc_type"] == "d")] = np.NaN
 
         ana2.calc_fret_values(keep_d_mass=True)
 
@@ -587,9 +595,7 @@ class TestSmFretAnalyzer:
         ana2.tracks["donor", "mass"] = 100 * np.arange(len(ana2.tracks))
         ana2.tracks["acceptor", "mass"] = 200 * np.arange(len(ana2.tracks))
         dm_orig = 300 * np.arange(len(ana2.tracks), dtype=float)
-        dm_orig[~(ana2.tracks["donor", "frame"] %
-                  len(ana2.excitation_seq)).isin(
-                      ana2.excitation_frames["d"])] = np.NaN
+        dm_orig[~(ana2.tracks["fret", "exc_type"] == "d")] = np.NaN
 
         ana2.tracks["fret", "d_mass"] = dm
 
@@ -605,9 +611,7 @@ class TestSmFretAnalyzer:
         ana2.tracks["donor", "mass"] = 100 * np.arange(len(ana2.tracks))
         ana2.tracks["acceptor", "mass"] = 200 * np.arange(len(ana2.tracks))
         dm_orig = 300 * np.arange(len(ana2.tracks), dtype=float)
-        dm_orig[~(ana2.tracks["donor", "frame"] %
-                  len(ana2.excitation_seq)).isin(
-                      ana2.excitation_frames["d"])] = np.NaN
+        dm_orig[~(ana2.tracks["fret", "exc_type"] == "d")] = np.NaN
 
         ana2.calc_fret_values(keep_d_mass=True)
 

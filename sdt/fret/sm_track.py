@@ -9,7 +9,7 @@ from contextlib import suppress
 import numpy as np
 import pandas as pd
 
-from .. import multicolor, spatial, brightness, config
+from .. import chromatic, multicolor, spatial, brightness, config
 from .utils import FrameSelector
 
 try:
@@ -99,7 +99,8 @@ class SmFretTracker:
         """A :py:class:`FrameSelector` instance with the matching
         :py:attr:`excitation_seq`.
         """
-        self.chromatic_corr = chromatic_corr
+        self.chromatic_corr = (chromatic_corr if chromatic_corr is not None
+                               else chromatic.Corrector())
         """chromatic.Corrector used to overlay channels"""
 
         self.link_options = link_options.copy()
@@ -188,6 +189,11 @@ class SmFretTracker:
         :py:func:`brightness.from_raw_image`. These data are written into a
         a :py:class:`pandas.DataFrame` whose columns have a MultiIndex
         containing the "donor" and "acceptor" items in the top level.
+
+        A column specifying whether the entry originates from donor or
+        acceptor excitation is also added: ("fret", "exc_type"). It is "d"
+        for donor and "a" for acceptor excitation; see the
+        :py:meth:`flag_excitation_type` method.
 
         Parameters
         ----------
@@ -357,7 +363,29 @@ class SmFretTracker:
         valid = u[c >= self.min_length]
         ret = ret[ret["fret", "particle"].isin(valid)]
 
+        self.flag_excitation_type(ret)
         return ret.reset_index(drop=True)
+
+    def flag_excitation_type(self, tracks: pd.DataFrame):
+        """Add a column indicating excitation type (donor/acceptor/...)
+
+        Add  ("fret", "exc_type") column in place. It is of "category" type.
+
+        Parameters
+        ----------
+        tracks
+            Result of :py:meth:`track`
+        """
+        # FIXME: Don't force convert to int, but raise an error (?)
+        # First, the track method needs to preserve the data type of the time
+        # column
+        frames = tracks["donor", self.columns["time"]].to_numpy(dtype=int)
+        et = pd.Series(self.excitation_seq[frames % len(self.excitation_seq)],
+                       dtype="category")
+        # Assignment to dataframe is done by matching indices, not line-wise
+        # Thus copy index
+        et.index = tracks.index
+        tracks["fret", "exc_type"] = et
 
     @classmethod
     def to_yaml(cls, dumper, data):

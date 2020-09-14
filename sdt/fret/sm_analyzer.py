@@ -5,61 +5,13 @@
 """Module containing a class for analyzing and filtering smFRET data"""
 from collections import defaultdict, OrderedDict
 import itertools
-from contextlib import contextmanager
 
 import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 
+from . import utils
 from .. import helper, changepoint, config, roi
-
-
-@contextmanager
-def numeric_exc_type(df):
-    """Context manager temporarily turning ("fret", "exc_type") column to int
-
-    This is useful e.g. in :py:func:`helper.split_dataframe` so that the
-    resulting split array does not have `object` dtype due to
-    ("fret", "exc_type") being categorical.
-
-    Example
-    --------
-    >>> tracks["fret", "exc_type"].dtype
-    CategoricalDtype(categories=['a', 'd'], ordered=False)
-    >>> with numeric_exc_type(tracks) as exc_cats:
-    >>>     tracks["fret", "exc_type"].dtype
-    dtype('int64')
-    >>>     exc_cats[0]
-    "a"
-
-    ``exc_cats`` is an array that holds old categories. It can be used to find
-    out which (new) integer corresponds to which category
-
-    When leaving the ``with`` block, the old categorical column is restored.
-    This works only for the original DataFrame, but not for any copies made
-    within the block!
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        Dataframe for which to temporarily use an integer ("fret", "exc_type")
-        column.
-
-    Yields
-    ------
-    pandas.Index
-        Maps integers to categories
-    """
-    exc_types = df["fret", "exc_type"].copy()
-    exc_cats = exc_types.cat.categories.copy()
-    exc_types.cat.categories = list(range(len(exc_cats)))
-    df["fret", "exc_type"] = exc_types.astype(int)
-
-    try:
-        yield exc_cats
-    finally:
-        exc_types.cat.categories = exc_cats
-        df["fret", "exc_type"] = exc_types
 
 
 def gaussian_mixture_split(data, n_components, columns=[("fret", "eff_app"),
@@ -101,7 +53,7 @@ def gaussian_mixture_split(data, n_components, columns=[("fret", "eff_app"),
     data = data[valid].copy()
     data["__gmm_labels__"] = labels
 
-    split = OrderedDict([(l, []) for l in np.sort(np.unique(labels))])
+    split = OrderedDict([(lab, []) for lab in np.sort(np.unique(labels))])
 
     for p, t in helper.split_dataframe(data, ("fret", "particle"),
                                        ["__gmm_labels__"], type="array"):
@@ -280,9 +232,6 @@ class SmFretAnalyzer:
             [("fret", "particle"), ("donor", self.columns["time"])],
             inplace=True)
 
-        # Excitation type, needed below
-        self.flag_excitation_type()
-
         # Calculate brightness upon acceptor excitation. This requires
         # interpolation
         cols = [("donor", self.columns["mass"]),
@@ -298,7 +247,7 @@ class SmFretAnalyzer:
         a_mass = []
         if "a" in self.tracks["fret", "exc_type"].cat.categories:
             # Calculate direct acceptor excitation
-            with numeric_exc_type(self.tracks) as exc_cats:
+            with utils.numeric_exc_type(self.tracks) as exc_cats:
                 for p, t in helper.split_dataframe(
                         self.tracks, ("fret", "particle"), cols, sort=False):
                     ad_p_mask = (t[:, 3] == np.nonzero(exc_cats == "a")[0])
@@ -362,15 +311,6 @@ class SmFretAnalyzer:
         self.tracks["fret", "a_mass"] = a_mass
         self.tracks.reindex(columns=self.tracks.columns.sortlevel(0)[0])
 
-    def flag_excitation_type(self):
-        """Add a column indicating excitation type (donor/acceptor/...)
-
-        Add  ("fret", "exc_type") column. It is of "category" type.
-        """
-        frames = self.tracks["donor", self.columns["time"]]
-        self.tracks["fret", "exc_type"] = self.excitation_seq[
-             frames % len(self.excitation_seq)].values
-
     def segment_mass(self, channel, **kwargs):
         """Segment tracks by changepoint detection in brightness
 
@@ -414,7 +354,7 @@ class SmFretAnalyzer:
         else:
             raise ValueError("`channel` has to be \"donor\" or \"acceptor\".")
 
-        with numeric_exc_type(self.tracks) as exc_cats:
+        with utils.numeric_exc_type(self.tracks) as exc_cats:
             trc_split = helper.split_dataframe(
                 self.tracks, ("fret", "particle"),
                 [("fret", mass_col), time_col, ("fret", "exc_type")],
@@ -499,7 +439,7 @@ class SmFretAnalyzer:
         time_col = ("donor", self.columns["time"])
         self.tracks.sort_values([("fret", "particle"), time_col], inplace=True)
 
-        with numeric_exc_type(self.tracks) as exc_cats:
+        with utils.numeric_exc_type(self.tracks) as exc_cats:
             trc_split = helper.split_dataframe(
                 self.tracks, ("fret", "particle"),
                 [("fret", "d_mass"), ("fret", "d_seg"),

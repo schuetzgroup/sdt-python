@@ -14,7 +14,7 @@ molecule FRET data. This includes
 - functions for plotting results, such as :py:func:`smfret_scatter`,
   :py:func:`smfret_hist`, and :py:func:`draw_track`.
 - selection of images in a FRET sequence according to excitation type using
-  :py:class:`FretImageSelector`.
+  :py:class:`FrameSelector`.
 
 
 Examples
@@ -67,9 +67,9 @@ Draw a scatter plot of FRET efficiency vs. stoichiometry:
 >>> smfret_scatter({"data1": filt.tracks}, ("fret", "eff), ("fret", "stoi"))
 
 To get only the direct acceptor excitation images from ``acceptor_img``,
-use :py:class:`FretImageSelector`:
+use :py:class:`FrameSelector`:
 
->>> sel = FretImageSelector("dddda")
+>>> sel = FrameSelector("dddda")
 >>> acc_direct = sel(acceptor_img, "a")
 
 
@@ -112,7 +112,7 @@ References
     Diffusing Biomolecules Using Alternating-Laser Excitation", Biophysical
     Journal, Elsevier BV, 2005, 88, 2939–2953
 """
-from .utils import *
-from .sm_track import *
-from .sm_analyzer import *
-from .sm_plot import *
+from .utils import *  # noqa f403
+from .sm_track import *  # noqa f403
+from .sm_analyzer import *  # noqa f403
+from .sm_plot import *  # noqa f403
