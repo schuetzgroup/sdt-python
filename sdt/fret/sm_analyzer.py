@@ -182,11 +182,6 @@ class SmFretAnalyzer:
         donor excitation datapoints in order to allow for calculation of
         stoichiometries.
 
-        A column specifying whether the entry originates from donor or
-        acceptor excitation is also added: ("fret", "exc_type"). It is "d"
-        for donor and "a" for acceptor excitation; see the
-        :py:meth:`flag_excitation_type` method.
-
         For each localization in `tracks`, the total brightness upon donor
         excitation is calculated by taking the sum of ``("donor", "mass")``
         and ``("acceptor", "mass")`` values. It is added as a
