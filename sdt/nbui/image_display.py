@@ -127,7 +127,7 @@ class ImageDisplay(ipywidgets.VBox):
 
     def auto_scale(self, b=None):
         """Auto-set black and white points
-        
+
         Set black point to the minimum and white point to the maximum value
         of the image data (:py:attr:`input` attribute).
         """
