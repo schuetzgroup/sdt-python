@@ -226,6 +226,9 @@ def test_numeric_exc_type():
     pd.testing.assert_frame_equal(df, df_before)
 
 
+ana1_seq = np.array(["d", "a"])
+
+
 @pytest.fixture
 def ana1():
     """SmFretAnalyzer used in some tests"""
@@ -319,7 +322,7 @@ def ana1():
 
     data = pd.concat([data1, data2, data3, data4, data5, data6, data7, data8],
                      ignore_index=True)
-    return fret.SmFretAnalyzer(data, "da")
+    return fret.SmFretAnalyzer(data)
 
 
 @pytest.fixture
@@ -336,37 +339,27 @@ def ana_query_part(ana1):
     return ana1
 
 
+ana2_seq = np.array(["d", "d", "d", "d", "a"])
+
+
 @pytest.fixture
 def ana2():
     """SmFretAnalyzer used in some tests"""
     num_frames = 20
-    seq = "dddda"
     mass = 1000
 
-    loc = np.column_stack([np.arange(len(seq), len(seq)+num_frames),
+    loc = np.column_stack([np.arange(len(ana2_seq), len(ana2_seq)+num_frames),
                            np.full(num_frames, mass)])
     df = pd.DataFrame(loc, columns=["frame", "mass"])
     df = pd.concat([df]*2, keys=["donor", "acceptor"], axis=1)
     df["fret", "particle"] = 0
-    df["fret", "exc_type"] = pd.Series(list(seq) * (num_frames // len(seq)),
-                                       dtype="category")
+    df["fret", "exc_type"] = pd.Series(
+        list(ana2_seq) * (num_frames // len(ana2_seq)), dtype="category")
 
-    return fret.SmFretAnalyzer(df, seq)
+    return fret.SmFretAnalyzer(df)
 
 
 class TestSmFretAnalyzer:
-    def test_init(self):
-        """fret.SmFretAnalyzer.__init__"""
-        ana = fret.SmFretAnalyzer(pd.DataFrame(), "odddda")
-        pd.testing.assert_series_equal(
-            ana.excitation_seq, pd.Series(["o", "d", "d", "d", "d", "a"],
-                                          dtype="category"))
-        f = ana.excitation_frames
-        assert set(f.keys()) == {"o", "d", "a"}
-        np.testing.assert_equal(f["o"], [0])
-        np.testing.assert_equal(f["d"], [1, 2, 3, 4])
-        np.testing.assert_equal(f["a"], [5])
-
     def test_segment_mass(self):
         """fret.SmFretAnalyzer.segment_mass"""
         # NaNs cause bogus changepoints using Pelt; if segment_a_mass
@@ -393,7 +386,7 @@ class TestSmFretAnalyzer:
 
         cp_det = changepoint.Pelt("l2", min_size=1, jump=1, engine="python")
 
-        ana = fret.SmFretAnalyzer(fret_data, "dddaa", cp_detector=cp_det)
+        ana = fret.SmFretAnalyzer(fret_data, cp_detector=cp_det)
         ana.segment_mass("acceptor", penalty=1e7)
         assert ("fret", "a_seg") in ana.tracks.columns
         np.testing.assert_equal(ana.tracks["fret", "a_seg"].values, segs * 2)
@@ -405,7 +398,7 @@ class TestSmFretAnalyzer:
 
         fret_data["fret", "d_mass"] = fret_data["fret", "a_mass"]
 
-        ana = fret.SmFretAnalyzer(fret_data, "aaddd", cp_detector=cp_det)
+        ana = fret.SmFretAnalyzer(fret_data, cp_detector=cp_det)
         ana.segment_mass("donor", penalty=1e7)
         assert ("fret", "d_seg") in ana.tracks.columns
         np.testing.assert_equal(ana.tracks["fret", "d_seg"].values, segs * 2)
@@ -481,14 +474,13 @@ class TestSmFretAnalyzer:
 
     def test_calc_fret_values_stoi_linear(self, ana2):
         """fret.SmFretAnalyzer.calc_fret_values: stoi., linear interp."""
-        direct_acc = (ana2.tracks["donor", "frame"] %
-                      len(ana2.excitation_seq)).isin(
-                          ana2.excitation_frames["a"])
+        direct_acc = (ana2.tracks["donor", "frame"] % len(ana2_seq)).isin(
+            np.nonzero(ana2_seq == "a")[0])
 
         mass = 1000
         linear_mass = ana2.tracks["acceptor", "frame"] * 100
         # Extrapolate constant value
-        ld = len(ana2.excitation_frames["d"])
+        ld = np.count_nonzero(ana2_seq == "d")
         linear_mass[:ld] = linear_mass[ld]
 
         ana2.tracks.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = \
@@ -507,16 +499,16 @@ class TestSmFretAnalyzer:
 
     def test_calc_fret_values_stoi_nearest(self, ana2):
         """fret.SmFretAnalyzer.calc_fret_values: stoi., nearest interp."""
-        seq_len = len(ana2.excitation_seq)
+        seq_len = len(ana2_seq)
         trc = ana2.tracks.iloc[:2*seq_len].copy()  # Assume sorted
         mass = 1000
         trc.loc[:, [("donor", "mass"), ("acceptor", "mass")]] = mass
 
         mass_acc1 = 1500
-        a_direct1 = ana2.excitation_frames["a"]
+        a_direct1 = np.nonzero(ana2_seq == "a")[0]
         trc.loc[a_direct1, ("acceptor", "mass")] = mass_acc1
         mass_acc2 = 2000
-        a_direct2 = a_direct1 + len(ana2.excitation_seq)
+        a_direct2 = a_direct1 + len(ana2_seq)
         trc.loc[a_direct2, ("acceptor", "mass")] = mass_acc2
         near_mass = np.full(len(trc), mass_acc1)
 
@@ -542,9 +534,9 @@ class TestSmFretAnalyzer:
 
     def test_calc_fret_values_stoi_single(self, ana2):
         """fret.SmFretAnalyzer.calc_fret_values: stoichiometry, single acc."""
-        direct_acc = (ana2.tracks["donor", "frame"] %
-                      len(ana2.excitation_seq)).isin(
-                          ana2.excitation_frames["a"])
+        direct_acc = (ana2.tracks["donor", "frame"] % len(ana2_seq)).isin(
+            np.nonzero(ana2_seq == "a")[0])
+        print(direct_acc)
         a = np.nonzero(direct_acc.to_numpy())[0][0]  # First acc; assume sorted
         trc = ana2.tracks.iloc[:a+1].copy()
         mass = 1000

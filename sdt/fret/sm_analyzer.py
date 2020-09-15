@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """Module containing a class for analyzing and filtering smFRET data"""
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict
 import itertools
 
 import numpy as np
@@ -77,19 +77,12 @@ class SmFretAnalyzer:
     the different excitation efficiencies according to [Lee2005]_.
     """
     @config.set_columns
-    def __init__(self, tracks, excitation_seq, cp_detector=None, columns={}):
+    def __init__(self, tracks, cp_detector=None, columns={}):
         """Parameters
         ----------
         tracks : pandas.DataFrame
             smFRET tracking data as produced by :py:class:`SmFretTracker` by
             running its :py:meth:`SmFretTracker.track` method.
-        excitation_seq : str or list-like of characters
-            Excitation sequence. "d" stands for donor, "a" for acceptor,
-            anything else describes other kinds of frames which are to be
-            ignored.
-
-            One needs only specify the shortest sequence that is repeated,
-            i. e. "ddddaddddadddda" is the same as "dddda".
         cp_detector : changepoint detector or None, optional
             If `None`, create a :py:class:`changepoint.Pelt` instance with
             ``model="l2"``, ``min_size=1``, and ``jump=1``.
@@ -115,8 +108,6 @@ class SmFretAnalyzer:
         bleaching detection.
         """
 
-        self.excitation_seq = np.array(list(excitation_seq))
-
         self.columns = columns
         """dict of column names in DataFrames. Defaults are taken from
         :py:attr:`config.columns`.
@@ -139,33 +130,6 @@ class SmFretAnalyzer:
         particle number and the value is the correction factor.
         """
         self.excitation_eff = 1.
-
-    @property
-    def excitation_seq(self):
-        """pandas.Series of CategoricalDtype describing the excitation
-        sequence. Typically, "d" would stand for donor, "a" for acceptor.
-
-        One needs only specify the shortest sequence that is repeated,
-        i. e. "ddddaddddadddda" is the same as "dddda".
-        """
-        return self._exc_seq
-
-    @property
-    def excitation_frames(self):
-        """dict mapping the excitation types in :py:attr:`excitation_seq` to
-        the corresponding frame numbers (modulo the length of
-        py:attr:`excitation_seq`).
-        """
-        return self._exc_frames
-
-    @excitation_seq.setter
-    def excitation_seq(self, v):
-        self._exc_seq = pd.Series(list(v), dtype="category")
-        exc_seq_np = self._exc_seq.to_numpy()
-        self._exc_frames = defaultdict(
-            lambda: np.empty(0, dtype=int),
-            {k: np.nonzero(exc_seq_np == k)[0]
-             for k in self._exc_seq.dtype.categories})
 
     def calc_fret_values(self, keep_d_mass=False, invalid_nan=True,
                          a_mass_interp="linear"):
