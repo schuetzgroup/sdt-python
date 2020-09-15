@@ -47,10 +47,11 @@ class ImageSelector(ipywidgets.HBox):
         self._frame_sel.observe(self._frame_changed, "value")
         super().__init__([self._file_sel, self._frame_sel], *args, **kwargs)
 
-        self.images = images
         self._cur_image = None
         self._cur_image_opened = False
         self._frame_changed_lock = threading.Lock()
+
+        self.images = images
 
     @traitlets.validate("images")
     def _make_images_list(self, proposal):
@@ -81,7 +82,7 @@ class ImageSelector(ipywidgets.HBox):
                 opts.append(img[0])
                 continue
             if isinstance(img, str):
-                img = Path(str)
+                img = Path(img)
             if isinstance(img, Path):
                 opts.append("{} ({})".format(img.name, str(img.parent)))
                 continue
