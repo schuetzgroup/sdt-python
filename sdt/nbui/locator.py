@@ -4,17 +4,16 @@
 
 import warnings
 
-import traitlets
+import ipywidgets
 import matplotlib.pyplot as plt
-from ipywidgets import (HBox, VBox, IntText, Select, Layout, Dropdown,
-                        BoundedIntText, FloatText, Checkbox, IntRangeSlider,
-                        Button)
-import pims
+import numpy as np
+import traitlets
 
 from sdt import loc
+from .image_display import ImageDisplay
 
 
-class D3DOptions(VBox):
+class D3DOptions(ipywidgets.GridBox):
     """Widget for setting :py:mod:`sdt.loc.daostorm_3d` options"""
     name = "3D-DAOSTORM"
     locate_func = loc.daostorm_3d.locate
@@ -22,47 +21,56 @@ class D3DOptions(VBox):
     locate_roi_func = loc.daostorm_3d.locate_roi
     batch_roi_func = loc.daostorm_3d.batch_roi
 
-    def __init__(self, *args, **kwargs):
-        """Parameters
-        ----------
-        *args, **kwargs
-            To be passed to the base class constructor
-        """
-        self._radius_sel = FloatText(value=1., step=0.1, description="radius")
-        self._thresh_sel = FloatText(value=100., step=10,
-                                     description="threshold")
-        self._model_sel = Dropdown(options=["2d_fixed", "2d", "3d"],
-                                   description="model", value="2d")
-        self._filter_sel = Dropdown(options=["Identity", "Crocker-Grier",
-                                             "Gaussian"],
-                                    description="find filter")
-        self._filter_cg_size_sel = IntText(value=3, description="feat. size",
-                                           layout=Layout(display="none"))
-        self._filter_gauss_sigma_sel = FloatText(value=1., step=0.1,
-                                                 description="sigma",
-                                                 layout=Layout(display="none"))
-        self._min_dist_check = Checkbox(description="Min. distance",
-                                        indent=False,
-                                        layout=Layout(width="auto"))
-        self._min_dist_sel = FloatText(value=1., step=0.1,
-                                       layout=Layout(width="auto"))
-        self._size_check = Checkbox(description="Size range", indent=False,
-                                    layout=Layout(width="auto"))
-        self._min_size_sel = FloatText(value=0.5, step=0.1, description="min.",
-                                       layout=Layout(display="none"))
-        self._max_size_sel = FloatText(value=2., step=0.1, description="max.",
-                                       layout=Layout(display="none"))
+    def __init__(self):
+        empty = ipywidgets.HTML()
 
-        self._filter_box = VBox([self._filter_sel,
-                                 self._filter_cg_size_sel,
-                                 self._filter_gauss_sigma_sel])
-        self._min_dist_box = HBox([self._min_dist_check, self._min_dist_sel])
-        self._size_box = VBox([self._size_check, self._min_size_sel,
-                               self._max_size_sel])
+        self._radius_sel = ipywidgets.FloatText(
+            value=1., step=0.1, description="radius")
+        self._thresh_sel = ipywidgets.FloatText(
+            value=100., step=10, description="threshold")
+        self._model_sel = ipywidgets.Dropdown(
+            options=["2d_fixed", "2d", "3d"], description="model", value="2d")
 
-        super().__init__([self._radius_sel, self._model_sel, self._thresh_sel,
-                          self._filter_box, self._min_dist_box,
-                          self._size_box], *args, **kwargs)
+        self._min_dist_check = ipywidgets.Checkbox(
+            indent=False, layout=ipywidgets.Layout(width="min-content"))
+        self._min_dist_sel = ipywidgets.FloatText(
+            description="Min. distance", value=1., step=0.1)
+
+        size_label = ipywidgets.Label("Size range")
+        self._size_check = ipywidgets.Checkbox(
+            indent=False, layout=ipywidgets.Layout(width="min-content"))
+        self._min_size_sel = ipywidgets.FloatText(
+            value=0.5, step=0.1, description="min.",
+            layout=ipywidgets.Layout(display="none"))
+        self._max_size_sel = ipywidgets.FloatText(
+            value=2., step=0.1, description="max.",
+            layout=ipywidgets.Layout(display="none"))
+        size_box = ipywidgets.VBox([size_label, self._min_size_sel,
+                                    self._max_size_sel])
+
+        self._filter_sel = ipywidgets.Dropdown(
+            options=["Identity", "Crocker-Grier", "Gaussian"],
+            description="find filter")
+        self._filter_cg_size_sel = ipywidgets.IntText(
+            value=3, description="feat. size",
+            layout=ipywidgets.Layout(display="none"))
+        self._filter_gauss_sigma_sel = ipywidgets.FloatText(
+            value=1., step=0.1, description="sigma",
+            layout=ipywidgets.Layout(display="none"))
+        self._filter_box = ipywidgets.VBox([
+            self._filter_sel, self._filter_cg_size_sel,
+            self._filter_gauss_sigma_sel])
+
+        children = [
+            empty, self._radius_sel,
+            empty, self._thresh_sel,
+            empty, self._model_sel,
+            empty, self._filter_box,
+            self._min_dist_check, self._min_dist_sel,
+            self._size_check, size_box]
+        super().__init__(
+            children, layout=ipywidgets.Layout(
+                grid_template_columns="min-content min-content"))
 
         self._filter_sel.observe(self._set_find_filter, names="value")
         self._size_check.observe(self._enable_size_range, names="value")
@@ -153,9 +161,9 @@ class D3DOptions(VBox):
         else:
             if v == "Gaussian":
                 self._filter_cg_size_sel.layout.display = "none"
-                self._filter_gauss_sigma_sel.layout.display = "inline"
+                self._filter_gauss_sigma_sel.layout.display = None
             elif v == "Crocker-Grier":
-                self._filter_cg_size_sel.layout.display = "inline"
+                self._filter_cg_size_sel.layout.display = None
                 self._filter_gauss_sigma_sel.layout.display = "none"
             self._filter_box.layout.border = "1px solid gray"
 
@@ -164,16 +172,14 @@ class D3DOptions(VBox):
     def _enable_size_range(self, change=None):
         """Size range check box was toggled"""
         if self._size_check.value:
-            self._min_size_sel.layout.display = "inline"
-            self._max_size_sel.layout.display = "inline"
-            self._size_box.layout.border = "1px solid gray"
+            self._min_size_sel.layout.display = None
+            self._max_size_sel.layout.display = None
         else:
             self._min_size_sel.layout.display = "none"
             self._max_size_sel.layout.display = "none"
-            self._size_box.layout.border = "none"
 
 
-class CGOptions(VBox):
+class CGOptions(ipywidgets.VBox):
     """Widget for setting :py:mod:`sdt.loc.cg` options"""
     name = "Crocker-Grier"
     locate_func = loc.cg.locate
@@ -181,20 +187,18 @@ class CGOptions(VBox):
     locate_roi_func = loc.cg.locate_roi
     batch_roi_func = loc.cg.batch_roi
 
-    def __init__(self, *args, **kwargs):
-        """Parameters
-        ----------
-        *args, **kwargs
-            To be passed to the base class constructor
-        """
-        self._radius_sel = IntText(value=3, description="radius")
-        self._signal_thresh_sel = IntText(value=100,
-                                          description="signal thresh.")
-        self._mass_thresh_sel = IntText(value=1000, step=10,
-                                        description="mass thresh.")
+    def __init__(self):
+        self._radius_sel = ipywidgets.IntText(value=3, description="radius")
+        self._signal_thresh_sel = ipywidgets.IntText(
+            value=100, description="signal thresh.")
+        self._mass_thresh_sel = ipywidgets.IntText(
+            value=1000, step=10, description="mass thresh.")
 
-        super().__init__([self._radius_sel, self._signal_thresh_sel,
-                          self._mass_thresh_sel], *args, **kwargs)
+        children = [self._radius_sel, self._signal_thresh_sel,
+                    self._mass_thresh_sel]
+        super().__init__(
+            children, layout=ipywidgets.Layout(
+                grid_template_columns="min-content min-content"))
 
         for w in (self._radius_sel, self._signal_thresh_sel,
                   self._mass_thresh_sel):
@@ -228,13 +232,15 @@ algorithms = [D3DOptions, CGOptions]
 """List of algorithm option widget classes"""
 
 
-class Locator(VBox, traitlets.HasTraits):
+class Locator(ipywidgets.HBox):
     """Notebook UI for finding parameters for single molecule localizations
 
     This allows for loading single molecule image data, setting localization
     algorithm parameters and inspecting the result.
 
     This requires the use of the `widget` (`ipympl`) matplotlib backend.
+
+    **Note that this is still experimental and may be subject to change.**
 
     Examples
     --------
@@ -244,9 +250,19 @@ class Locator(VBox, traitlets.HasTraits):
 
     In a notebook cell, create the UI:
 
-    >>> img_files = sorted(glob("*.tif"))
-    >>> locator = Locator(img_files)
+    >>> locator = nbui.Locator()
+
+    Set image data to localize and display the UI
+
+    >>> locator.input = img_array  # assuming this is an array of pixels
     >>> locator
+
+    or create an ImageSelector to go through multiple files
+
+    >>> files = sorted(pathlib.Path().glob("*.tif"))
+    >>> sel = nbui.ImageSelector(files)
+    >>> traitlets.link((sel, "output"), (locator, "input"))
+    >>> traitlets.VBox([sel, locator])
 
     Now one can play around with the parameters. Once a satisfactory
     combination has been found, get the parameters in another notebook cell:
@@ -268,88 +284,54 @@ class Locator(VBox, traitlets.HasTraits):
 
     >>> data = locator.batch_func(img_files, **par)  # loc.daostorm_3d.batch
     """
+    input: np.ndarray = traitlets.Instance(np.ndarray, allow_none=True)
+    """Image data"""
+    image_display: ImageDisplay
+    """Image display widget"""
 
-    def __init__(self, images=[], cmap="gray", figsize=None):
+    def __init__(self, cmap: str = "gray"):
         """Parameters
         ----------
-        images : list of str or dict of str: list-like of numpy.ndarray
-            Either a list of file names or a dict mapping an identifier (which
-            is displayed) to an image sequence.
-        cmap : str, optional
-            Colormap to use for displaying images. Defaults to "gray".
-        figsize : tuple of float, optional
-            Size of the figure.
+        cmap
+            Colormap to use for displaying images.
         """
         if plt.isinteractive():
             warnings.warn("Turning off matplotlib's interactive mode as it "
                           "is not compatible with this.")
             plt.ioff()
 
-        self.files = images
-
-        self._cur_img_seq = None
-        self._cur_img = None
-
         # General options
-        self._file_sel = Select(options=list(images), description="files",
-                                layout=Layout(width="auto"))
-        self._algo_sel = Dropdown(options=[A.name for A in algorithms],
-                                  description="algorithm")
-        general_box = VBox([self._file_sel, self._algo_sel], width="25%")
+        self._algo_sel = ipywidgets.Dropdown(
+            options=[A.name for A in algorithms], description="algorithm")
 
         self._loc_options = [A() for A in algorithms]
-        for l in self._loc_options:
-            l.observe(self._options_changed, "options")
+        for lo in self._loc_options:
+            lo.observe(self._options_changed, "options")
 
         # The figure
-        if figsize is not None:
-            self._fig, self._ax = plt.subplots(figsize=figsize)
-        else:
-            self._fig, self._ax = plt.subplots()
-        self._im_artist = None
-        self._scatter_artist = None
-        self._cmap = cmap
+        ax = plt.subplots()[1]
+        self.image_display = ImageDisplay(ax, cmap=cmap)
+        traitlets.directional_link((self, "input"),
+                                   (self.image_display, "input"))
 
         # Display preview
-        self._frame_sel = BoundedIntText(value=0, min=0, max=0,
-                                         description="frame")
-        self._img_scale_sel = IntRangeSlider(min=0, max=2**16-1,
-                                             layout=Layout(width="75%"),
-                                             description="contrast")
-        self._show_loc_check = Checkbox(description="Show loc.",
-                                        indent=False, value=True)
-        self._auto_scale_button = Button(description="Auto")
+        self._show_loc_check = ipywidgets.Checkbox(
+            description="Show loc.", indent=False, value=True)
+        self._scatter_artist = None
 
-        preview_box = HBox([self._frame_sel, self._img_scale_sel,
-                            self._show_loc_check, self._auto_scale_button])
+        left_box = ipywidgets.VBox([self._algo_sel, *self._loc_options,
+                                    self._show_loc_check])
+        super().__init__([left_box, self.image_display])
 
-        left_box = VBox([general_box] + self._loc_options)
-        main_box = HBox([left_box, self._fig.canvas])
-
-        self._algo_sel.observe(self._algo_selected, "value")
-        self.observe(self._algo_trait_changed, "algorithm")
-
-        super().__init__([main_box, preview_box])
-
+        traitlets.link((self._algo_sel, "value"), (self, "algorithm"))
         self.observe(self._update, "options")
         self.observe(self._options_trait_changed, "options")
-        self._file_sel.observe(self._cur_file_changed, names="value")
-        self._frame_sel.observe(self._frame_changed, names="value")
-        self._auto_scale_button.on_click(self.auto_scale)
-        self._img_scale_sel.observe(self._redraw_image, names="value")
         self._show_loc_check.observe(self._update, "value")
-        self.observe(self._files_trait_changed, "files")
-
-        self._algo_selected()
-        self._options_changed()
-        self._cur_file_changed()
-        self.auto_scale()
 
     algorithm = traitlets.Enum(values=[A.name for A in algorithms])
     """Name of the algorithm"""
     options = traitlets.Dict()
     """dict of options to the localizing function"""
-    files = traitlets.Union([traitlets.List(), traitlets.Dict()])
 
     @property
     def locate_func(self):
@@ -371,86 +353,30 @@ class Locator(VBox, traitlets.HasTraits):
         """Currently selected batch localization (+ ROI) function"""
         return algorithms[self._algo_sel.index].batch_roi_func
 
+    @traitlets.observe("algorithm")
     def _algo_selected(self, change=None):
-        """Algorithm selection was changed using the dropdown menu"""
         for i, a in enumerate(self._loc_options):
             if i == self._algo_sel.index:
-                a.layout.display = "inline"
+                a.layout.display = None
             else:
                 a.layout.display = "none"
 
-        self.algorithm = self._algo_sel.value
         self._options_changed()
 
-    def _algo_trait_changed(self, change=None):
-        """Algorithm selection was changed using `algorithm` traitlet"""
-        self._algo_sel.value = self.algorithm
-
-    def _files_trait_changed(self, change=None):
-        """`files` traitlet changed"""
-        self._file_sel.options = self.files
-
-    def _cur_file_changed(self, change=None):
-        """Currently selected file has changed"""
-        if self._file_sel.value is None:
-            if self._im_artist is not None:
-                self._im_artist.remove()
-                self._im_artist = None
-            if self._scatter_artist is not None:
-                self._scatter_artist.remove()
-                self._scatter_artist = None
-
-            self._frame_sel.max = 0
-            self._cur_img_seq = None
-
-            return
-
-        if isinstance(self.files, dict):
-            self._cur_img_seq = self._file_sel.value
-        else:
-            if self._cur_img_seq is not None:
-                self._cur_img_seq.close()
-            self._cur_img_seq = pims.open(self._file_sel.value)
-        self._frame_sel.max = len(self._cur_img_seq) - 1
-
-        self._frame_changed()
-
-    def _frame_changed(self, change=None):
-        """Currently selected frame has changed"""
-        if self._cur_img_seq is None:
-            return
-        self._cur_img = self._cur_img_seq[self._frame_sel.value]
-        self._redraw_image()
-        self._update()
-
-    def _redraw_image(self, change=None):
-        """Redraw the background image"""
-        if self._im_artist is not None:
-            self._im_artist.remove()
-        scale = self._img_scale_sel.value
-        self._im_artist = self._ax.imshow(self._cur_img, cmap=self._cmap,
-                                          vmin=scale[0], vmax=scale[1])
-        self._fig.canvas.draw()
-
-    def auto_scale(self, b=None):
-        """Auto-scale check box was toggled"""
-        if self._cur_img is None:
-            return
-        self._img_scale_sel.value = (self._cur_img.min(), self._cur_img.max())
-
+    @traitlets.observe("input")
     def _update(self, change=None):
         """Update displayed localizations"""
-        if self._cur_img is None:
+        if self.input is None:
             return
         if self._scatter_artist is not None:
             self._scatter_artist.remove()
             self._scatter_artist = None
 
         if self._show_loc_check.value:
-            loc = self.locate_func(self._cur_img, **self.options)
-            self._scatter_artist = self._ax.scatter(
+            loc = self.locate_func(self.input, **self.options)
+            self._scatter_artist = self.image_display.ax.scatter(
                 loc["x"], loc["y"], facecolor="none", edgecolor="y")
-        self._fig.canvas.draw()
+        self.image_display.ax.figure.canvas.draw_idle()
 
     def _options_changed(self, change=None):
         """Update `options` traitlet with current algorithm's options"""
