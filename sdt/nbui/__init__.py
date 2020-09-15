@@ -18,6 +18,8 @@ Currently, there is
   images
 - the :py:class:`FileDialog` class for selecting files
 - the :py:class:`ImageDisplay` class for displaying images
+- the :py:class:`ChannelSplitter` class for separating multiple channels
+  recorded using the same camera.
 
 
 Programming reference
@@ -34,7 +36,10 @@ Programming reference
     :members:
 .. autoclass:: ImageSelector
     :members:
+.. autoclass:: ChannelSplitter
+    :members:
 """
+from .channel_splitter import ChannelSplitter  # noqa: 401
 from .locator import Locator  # noqa: 401
 from .roi_selector import ROISelector  # noqa: 401
 from .thresholder import Thresholder  # noqa: 401
