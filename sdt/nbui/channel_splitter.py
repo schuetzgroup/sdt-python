@@ -146,10 +146,14 @@ class ChannelSplitter(ipywidgets.VBox):
         self._split_ver_button = ipywidgets.Button(
             description="split vertically")
         self._split_ver_button.on_click(self._split_ver)
+        # Button for swapping channels (i.e., reversing their order)
+        self._swap_button = ipywidgets.Button(description="swap channels")
+        self._swap_button.on_click(self._swap_chan)
 
         super().__init__([self._dimension_tabs,
                           ipywidgets.HBox([self._split_hor_button,
                                            self._split_ver_button,
+                                           self._swap_button,
                                            self._same_size_box]),
                           self.image_display])
 
@@ -186,6 +190,9 @@ class ChannelSplitter(ipywidgets.VBox):
                                   size=(self.input.shape[1], split_height))
                           for i in range(self._n_channels))
 
+    def _swap_chan(self, button=None):
+        """'swap channels' button pressed"""
+        self.rois = self.rois[::-1]
 
     def _active_channel_changed(self, change=None):
         """Active channel changed via tab"""
