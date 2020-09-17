@@ -10,8 +10,10 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import traitlets
+from typing import Tuple
 
 from .image_display import ImageDisplay
+from .. import roi
 
 
 class _ExtentsInput(ipywidgets.HBox):
@@ -94,6 +96,8 @@ class ChannelSplitter(ipywidgets.VBox):
     """If True, all channels are forced to be the same size"""
     colors: List[str] = ["C1", "C8", "C6", "C2", "C9"]
     """Colors to use for drawing the channel ROIs"""
+    rois: Tuple[roi.ROI, ...] = traitlets.Tuple()
+    """ROIs selected using the widget"""
 
     def __init__(self, n_channels=2, *args, **kwargs):
         """Parameters
@@ -151,6 +155,7 @@ class ChannelSplitter(ipywidgets.VBox):
 
         self._n_channels = n_channels
         self._update_extents_lock = threading.Lock()
+        self._update_rois_lock = threading.Lock()
 
         self._active_channel_changed()
 
@@ -168,28 +173,19 @@ class ChannelSplitter(ipywidgets.VBox):
         if self.input is None:
             return
         split_width = self.input.shape[1] // self._n_channels
-        ext = [(i * split_width, 0, split_width, self.input.shape[0])
-               for i in range(self._n_channels)]
-
-        with self._update_extents_lock:
-            for r, e in zip(self._dimension_tabs.children, ext):
-                r.extents = e
-
-        self._redraw_rois()
+        self.rois = tuple(roi.ROI((i * split_width, 0),
+                                  size=(split_width, self.input.shape[0]))
+                          for i in range(self._n_channels))
 
     def _split_ver(self, button=None):
         """'split vertically' button pressed"""
         if self.input is None:
             return
         split_height = self.input.shape[0] // self._n_channels
-        ext = [(0, i * split_height, self.input.shape[1], split_height)
-               for i in range(self._n_channels)]
+        self.rois = tuple(roi.ROI((0, i * split_height),
+                                  size=(self.input.shape[1], split_height))
+                          for i in range(self._n_channels))
 
-        with self._update_extents_lock:
-            for r, e in zip(self._dimension_tabs.children, ext):
-                r.extents = e
-
-        self._redraw_rois()
 
     def _active_channel_changed(self, change=None):
         """Active channel changed via tab"""
@@ -232,6 +228,9 @@ class ChannelSplitter(ipywidgets.VBox):
                     )
                     text.extents = new_e
 
+        with self._update_rois_lock:
+            self.rois = tuple(roi.ROI(c.extents[0:2], size=c.extents[2:4])
+                              for c in self._dimension_tabs.children)
         self._redraw_rois()
 
     def _redraw_rois(self):
@@ -240,3 +239,35 @@ class ChannelSplitter(ipywidgets.VBox):
                                self._mpl_rois):
             x, y, w, h = text.extents
             drawn.extents = (x - 0.5, x + w - 0.5, y - 0.5, y + h - 0.5)
+
+    @traitlets.validate("rois")
+    def _validate_rois_traitlet(self, proposal):
+        """Ensure the correct number of ROIs is set"""
+        rois = proposal["value"]
+        if len(rois) != self._n_channels:
+            raise traitlets.TraitError(
+                "Number of ROIs must match number of channels")
+        return rois
+
+    @traitlets.observe("rois")
+    def _rois_traitlet_changed(self, change=None):
+        """`rois` traitlet was changed"""
+        if self._update_rois_lock.locked():
+            # This was triggered by the _roi_extents_changed method
+            return
+
+        with self._update_extents_lock:
+            # Set self.same_size = False if ROIs have different sizes
+            r = self.rois[0]
+            sz = r.size if r is not None else (0, 0)
+            for r in self.rois[1:]:
+                if sz != (r.size if r is not None else (0, 0)):
+                    self.same_size = False
+                    break
+
+            for r, c in zip(self.rois, self._dimension_tabs.children):
+                if r is None:
+                    c.extents = (0,) * 4
+                else:
+                    c.extents = (*r.top_left, *r.size)
+        self._roi_extents_changed()
