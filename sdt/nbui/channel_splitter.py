@@ -54,21 +54,22 @@ class _ExtentsInput(ipywidgets.HBox):
 
     @traitlets.observe("width", "height")
     def _update_bounds(self, change=None):
-        """Width or height traitlets changed"""
-        self._x_box.max = self.width - self._w_box.value
-        self._y_box.max = self.height - self._h_box.value
-        self._w_box.max = self.width - self._x_box.value
-        self._h_box.max = self.height - self._y_box.value
+        """Update max values for text boxes"""
+        x, y, w, h = self.extents
+        self._x_box.max = self.width - w
+        self._y_box.max = self.height - h
+        self._w_box.max = self.width - x
+        self._h_box.max = self.height - y
 
     @traitlets.observe("extents")
     def _extents_changed(self, change=None):
         """Extents traitlet changed"""
         with self._update_extents_lock:
+            self._update_bounds()
             self._x_box.value = self.extents[0]
             self._y_box.value = self.extents[1]
             self._w_box.value = self.extents[2]
             self._h_box.value = self.extents[3]
-        self._update_bounds()
 
     def _box_value_changed(self, change=None):
         """One of the input box values was changed"""
