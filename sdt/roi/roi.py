@@ -140,9 +140,11 @@ class ROI(object):
         else:
             sl = tuple(slice(t, b) for t, b in zip(self.top_left[::-1],
                                                    self.bottom_right[::-1]))
+
             @pipeline
             def crop(img):
                 return img[sl]
+
             return crop(data)
 
     @config.set_columns
@@ -188,6 +190,10 @@ class ROI(object):
         """
         m = loader.construct_mapping(node)
         return cls(m["top_left"], m["bottom_right"])
+
+    def __repr__(self):
+        return "ROI(top_left={}, bottom_right={}, size={})".format(
+            self.top_left, self.bottom_right, self.size)
 
 
 class PathROI(object):
@@ -486,6 +492,9 @@ class PathROI(object):
         path = mpl.path.Path(vert, codes)
         return cls(path, buf)
 
+    def __repr__(self):
+        return "PathROI(<{} vertices>)".format(len(self.path.vertices))
+
 
 class RectangleROI(PathROI):
     """Rectangular region of interest in a picture
@@ -549,6 +558,10 @@ class RectangleROI(PathROI):
         buf = m.get("buffer", 0)
         return cls(m["top_left"], m["bottom_right"], buf)
 
+    def __repr__(self):
+        return "RectangleROI(top_left={}, bottom_right={})".format(
+            self.top_left, self.bottom_right)
+
 
 class EllipseROI(PathROI):
     """Elliptical region of interest in a picture
@@ -605,6 +618,10 @@ class EllipseROI(PathROI):
         buf = m.get("buffer", 0)
         angle = m.get("angle", 0)
         return cls(m["center"], m["axes"], angle, buf)
+
+    def __repr__(self):
+        return "EllipseROI(center={}, axes={}, angle={})".format(
+            self.center, self.axes, self.angle)
 
 
 with suppress(ImportError):
