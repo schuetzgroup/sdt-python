@@ -98,6 +98,8 @@ class ChannelSplitter(ipywidgets.VBox):
     """Colors to use for drawing the channel ROIs"""
     rois: Tuple[roi.ROI, ...] = traitlets.Tuple()
     """ROIs selected using the widget"""
+    channel_names: Tuple[str, ...] = traitlets.Tuple()
+    """Channel names as displayed in the tab titles"""
 
     def __init__(self, n_channels=2, *args, **kwargs):
         """Parameters
@@ -129,8 +131,6 @@ class ChannelSplitter(ipywidgets.VBox):
             r.active = False
             self._mpl_rois.append(r)
         self._dimension_tabs = ipywidgets.Tab(dt_children)
-        for i in range(n_channels):
-            self._dimension_tabs.set_title(i, f"channel {i+1}")
         self._dimension_tabs.observe(self._active_channel_changed,
                                      "selected_index")
 
@@ -158,6 +158,9 @@ class ChannelSplitter(ipywidgets.VBox):
                           self.image_display])
 
         self._n_channels = n_channels
+        self.channel_names = ["channel {}".format(i)
+                              for i in range(n_channels)]
+
         self._update_extents_lock = threading.Lock()
         self._update_rois_lock = threading.Lock()
 
@@ -278,3 +281,18 @@ class ChannelSplitter(ipywidgets.VBox):
                 else:
                     c.extents = (*r.top_left, *r.size)
         self._roi_extents_changed()
+
+    @traitlets.validate("channel_names")
+    def _validate_channel_names(self, proposal):
+        """Ensure the correct number of channel names is set"""
+        names = proposal["value"]
+        if len(names) != self._n_channels:
+            raise traitlets.TraitError(
+                "Number of channel names must match number of channels")
+        return names
+
+    @traitlets.observe("channel_names")
+    def _channel_names_changed(self, change=None):
+        """`channel_names` traitlet was changed"""
+        for i, name in enumerate(self.channel_names):
+            self._dimension_tabs.set_title(i, name)
