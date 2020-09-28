@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-"""Flat field correction
-=====================
+"""Flat-field correction
+====================
 
 The intensity cross section of a laser beam is usually not flat, but of
 Gaussian shape or worse. That means that fluorophores closer to the edges of
@@ -13,7 +13,7 @@ exciting laser light.
 A camera's pixels may differ in efficiency so that even a homogeneously
 illuminated sample will not look homogeneous.
 
-Errors as these can corrected for to some extent by *flat field correction*.
+Errors as these can corrected for to some extent by *flat-field correction*.
 The error is determined by recording a supposedly homogeneous (flat) sample
 (e.g. a homogeneously fluorescent surface) and can later be removed from
 other/real experimental data.
@@ -32,7 +32,7 @@ homogenous fluorescence label.
 
 These can now be used to create the :py:class:`Corrector` object:
 
->>> corr = Corrector(img1, img2, bg=baseline)
+>>> corr = Corrector([img1, img2], bg=baseline)
 
 With help of ``corr``, other images or even whole image sequences (when using
 :py:mod:`pims` to load them) can now be corrected.
@@ -52,30 +52,35 @@ Programming reference
     :members:
     :special-members: __call__
 """
+import numbers
+from pathlib import Path
+from typing import (BinaryIO, Dict, List, Mapping, Optional, Sequence, Tuple,
+                    Union)
+
 import pandas as pd
 import numpy as np
 import scipy.interpolate as sp_int
 from scipy import stats, optimize, ndimage
 
 from . import config, funcs, optimize as sdt_opt
-from .helper import pipeline
+from .helper import pipeline, Slicerator
 
 
-def _fit_result_to_list(r, no_offset=False):
+def _fit_result_to_list(r: Union[Mapping[str, float], None],
+                        no_offset: bool = False) -> List[float]:
     """Flatten fit result dict to list
 
     Parameters
     ----------
-    r : dict or None
+    r
         Fit results. If `None`, return empty list.
-    no_offset : bool, optional
+    no_offset
         Whether to exclude "offset" from the list. If `False`, it is put at the
-        end. Defaults to `False`.
+        end.
 
     Returns
     -------
-    list
-        Dict values or empty list if `r` was `None`.
+    Dict values or empty list if `r` was `None`.
 
     See also
     --------
@@ -90,20 +95,19 @@ def _fit_result_to_list(r, no_offset=False):
     return ret
 
 
-def _fit_result_from_list(a):
+def _fit_result_from_list(a: Sequence[float]) -> Union[Dict[str, float], None]:
     """Create fit result dict from list
 
     Inverts the action of :py:func:`_fit_result_to_list`.
 
     Parameters
     ----------
-    a : list-like
+    a
         Fit results
 
     Returns
     -------
-    dict or None
-        Dict values if list is not empty, else `None`.
+    Dict values if list is not empty, else `None`.
 
     See also
     --------
@@ -115,20 +119,20 @@ def _fit_result_from_list(a):
             "rotation": a[5], "offset": a[6] if len(a) > 6 else 0}
 
 
-def _do_fit_g2d(mass, x, y, weights=1):
+def _do_fit_g2d(mass: np.ndarray, x: np.ndarray, y: np.ndarray,
+                weights: Union[float, np.ndarray] = 1.0) -> Dict[str, float]:
     """Do the LSQ fitting of a 2D Gaussian
 
     Parameters
     ----------
-    mass, x, y : numpy.ndarray
+    mass, x, y
         Brightness values and corresponding x and y coordinates
-    weights : numpy.ndarray, optional
-        Weights of the data points. Defaults to 1.
+    weights
+        Weights of the data points.
 
     Returns
     -------
-    dict
-        Fit results
+    Fit results
     """
     g = sdt_opt.guess_gaussian_parameters(mass, x, y)
     p = _fit_result_to_list(g, no_offset=True)
@@ -174,37 +178,55 @@ class Corrector(object):
     properly.** This can be done by telling the `Corrector` object what the
     background is (or of course, before passing the data to the `Corrector`.)
     """
+    avg_img: np.ndarray
+    """Pixel-wise average image from `data` argument to :py:meth:`__init__`."""
+    corr_img: np.ndarray
+    """Pixel data used for correction of images. Any image to be corrected
+    is divided pixel-wise by `corr_img`.
+    """
+    fit_result: Optional[Dict]
+    """If a Gaussian fit was done, this holds the result. Otherwise, it is
+    `None`.
+    """
+    bg: Union[float, np.ndarray]
+    """Background to be subtracted from image data."""
+
     @config.set_columns
-    def __init__(self, *data, bg=0., gaussian_fit=True, shape=None,
-                 density_weight=False, smooth_sigma=0., columns={}):
+    def __init__(self, data: Union[np.ndarray, Sequence[np.ndarray],
+                                   Sequence[Sequence[np.ndarray]],
+                                   pd.DataFrame, Sequence[pd.DataFrame]],
+                 bg: Union[float, np.ndarray, Sequence[np.ndarray],
+                           Sequence[Sequence[np.ndarray]]] = 0.0,
+                 gaussian_fit: bool = True,
+                 shape: Optional[Tuple[int, int]] = None,
+                 density_weight: bool = False, smooth_sigma: float = 0.0,
+                 columns: Dict = {}):
         """Parameters
         ----------
-        *data : iterables of image data or pandas.DataFrames
+        data
             Collections of images fluorescent surfaces or single molecule
             data to use for determining the correction function.
-        bg : scalar or array-like, optional
-            Background that is subtracted from each image. This may be a
-            scalar or an array of the same size as the images in `data`. It
-            is not used on single molecule data. Also sets the
-            :py:attr`bg` attribute. Defaults to 0.
-        gaussian_fit : bool, optional
+        bg
+            Background that is subtracted from each image. It is not used on
+            single molecule data. Also sets the :py:attr`bg` attribute.
+        gaussian_fit
             Whether to fit a Gaussian to the averaged image. This is ignored
-            if `data` is single molecule data. Default: True
-        shape : tuple of int
+            if `data` is single molecule data.
+        shape
             If `data` is single molecule data and `shape` is not None, create
             :py:attr:`avg_img` and :py:attr:`corr_img` from the fit using the
-            given shape. Defaults to None.
-        density_weight : bool, optional
+            given shape.
+        density_weight
             If `data` is single molecule data, weigh data points inversely to
             their density for fitting so that areas with higher densities don't
-            have a higher impact on the result. Defaults to False.
-        smooth_sigma : float, optional
+            have a higher impact on the result.
+        smooth_sigma
             If > 0, smooth the image used for flatfield correction. Only
-            applicable if ``gaussian_fit=False``. Defaults to 0.
+            applicable if ``gaussian_fit=False``.
 
         Other parameters
         ----------------
-        columns : dict, optional
+        columns
             Override default column names as defined in
             :py:attr:`config.columns`. Only applicable of `data` are single
             molecule DataFrames. The relevant names are `coords` and `mass`.
@@ -213,24 +235,17 @@ class Corrector(object):
             ``columns={"coords": ["x", "z"], "mass": "alt_mass"}``.
         """
         self.avg_img = np.empty((0, 0))
-        """Pixel-wise average image from `data` argument to
-        :py:meth:`__init__`.
-        """
         self.corr_img = np.empty((0, 0))
-        """Pixel data used for correction of images. Any image to be corrected
-        is divided pixel-wise by `corr_img`.
-        """
         self.fit_result = None
-        """If a Gaussian fit was done, this holds the result. Otherwise, it is
-        `None`.
-        """
-        self.bg = bg
-        """Background to be subtracted from image data."""
+        self.bg = self._calc_bg(bg, smooth_sigma)
 
-        pos_columns = columns["coords"]
+        if (isinstance(data, pd.DataFrame) or
+                (isinstance(data, np.ndarray) and data.ndim == 2)):
+            data = [data]
 
         if isinstance(data[0], pd.DataFrame):
             # Get the beam shape from single molecule brightness values
+            pos_columns = columns["coords"]
             x = np.concatenate([d[pos_columns[0]].values for d in data])
             y = np.concatenate([d[pos_columns[1]].values for d in data])
             mass = np.concatenate([d[columns["mass"]].values for d in data])
@@ -257,16 +272,7 @@ class Corrector(object):
                 self.corr_img = self.avg_img
         else:
             # calculate the average profile image
-            self.avg_img = np.zeros(data[0][0].shape, dtype=np.float)
-            cnt = 0
-            for stack in data:
-                for img in stack:
-                    # divide by max so that intensity fluctuations don't affect
-                    # the results
-                    i2 = img - self.bg
-                    self.avg_img += i2 / i2.max()
-                    cnt += 1
-            self.avg_img /= cnt
+            self.avg_img = self._calc_avg_img(data)
 
             if gaussian_fit:
                 # do the fitting
@@ -285,35 +291,136 @@ class Corrector(object):
                     self.corr_img = self.avg_img / self.avg_img.max()
                 self._make_interp()
 
-    def _make_interp(self):
+    def _make_interp(self) -> sp_int.RegularGridInterpolator:
+        """Create interpolator form :py:attr:`corr_img`"""
         self.interp = sp_int.RegularGridInterpolator(
             [np.arange(i) for i in self.corr_img.shape], self.corr_img,
             bounds_error=False, fill_value=np.NaN)
 
+    @staticmethod
+    def _calc_bg(data: Union[float, np.ndarray, Sequence[np.ndarray],
+                             Sequence[Sequence[np.ndarray]]],
+                 smooth_sigma: float) -> Union[float, np.ndarray]:
+        """Calculate the background from input scalar, array, or array sequence
+
+        If a sequence or sequence of sequences (e.g., multiple PIMS image
+        sequences) are passed, calculate the mean. If desired, apply a Gaussian
+        filter.
+
+        Parameters
+        ----------
+        data
+            Background images (or scalar value)
+        smooth_sigma
+            If > 0, apply a Gaussian blur with given sigma.
+
+        Returns
+        -------
+        Background (scalar or array depending on `data` argument)
+        """
+        if isinstance(data, numbers.Number):
+            # Scalar
+            return data
+        if isinstance(data, np.ndarray) and data.ndim == 2:
+            # 2D array, i.e., single image.
+            ret = data
+        else:
+            summed = None
+            cnt = 0
+            for seq in data:
+                if isinstance(seq, np.ndarray) and seq.ndim == 2:
+                    # seq is a single image, turn it into a sequence
+                    seq = [seq]
+                for img in seq:
+                    # Sequence of image sequences
+                    if summed is None:
+                        summed = img.copy()
+                    else:
+                        summed += img
+                    cnt += 1
+
+            ret = summed / cnt
+        if smooth_sigma:
+            return ndimage.gaussian_filter(ret, smooth_sigma)
+        return ret
+
+    def _normalize_image(self, img: np.ndarray) -> np.ndarray:
+        """Normalize image data
+
+        Subtract background and divide by maximum so that the new maximum is 1.
+
+        Parameters
+        ----------
+        img
+            Image data
+
+        Returns
+        -------
+        Normalized image data
+        """
+        i2 = img.astype(float) - self.bg
+        i2 /= i2.max()
+        return i2
+
+    def _calc_avg_img(self, data: Union[Sequence[np.ndarray],
+                                        Sequence[Sequence[np.ndarray]]]
+                      ) -> np.ndarray:
+        """Calculate the average of normalized images
+
+        Parameters
+        ----------
+        data
+            Images
+
+        Returns
+        -------
+        Average of normalized image
+        """
+        summed = None
+        cnt = 0
+        for seq in data:
+            if isinstance(seq, np.ndarray) and seq.ndim == 2:
+                # seq is a single image, turn it into a sequence
+                seq = [seq]
+
+            for img in seq:
+                # Sequence of image sequences
+                norm_img = self._normalize_image(img)
+                if summed is None:
+                    summed = norm_img
+                else:
+                    summed += norm_img
+                cnt += 1
+
+        ret = summed / cnt
+        return ret
+
     @config.set_columns
-    def __call__(self, data, inplace=False, bg=None, columns={}):
+    def __call__(self, data: Union[pd.DataFrame, Slicerator, np.ndarray],
+                 inplace: bool = False,
+                 bg: Union[float, np.ndarray, None] = None,
+                 columns: Dict = {}
+                 ) -> Union[pd.DataFrame, Slicerator, np.ndarray]:
         """Do brightness correction on `features` intensities
 
         Parameters
         ----------
-        data : pandas.DataFrame or pims.FramesSequence or array-like
+        data
             data to be processed. If a pandas.Dataframe, correct the "mass"
             column according to the particle position in the laser beam.
             Otherwise, :py:class:`pipeline` is used to correct raw image data.
-        inplace : bool, optional
+        inplace
             Only has an effect if `data` is a DataFrame. If True, the
-            feature intensities will be corrected in place. Defaults to False.
-        bg : scalar or array-like, optional
+            feature intensities will be corrected in place.
+        bg
             Background to be subtracted from image data. If `None`, use the
             :py:attr:`bg` attribute. Ignored for single molecule data.
-            Defaults to `None`.
 
         Returns
         -------
-        pandas.DataFrame or pims.SliceableIterable or numpy.array
-            If `data` is a DataFrame and `inplace` is False, return the
-            corrected frame. If `data` is raw image data, return corrected
-            images
+        If `data` is a DataFrame and `inplace` is False, return the
+        corrected frame. If `data` is raw image data, return corrected
+        images
 
         Other parameters
         ----------------
@@ -351,7 +458,7 @@ class Corrector(object):
                 return (img - bg) / self.corr_img
             return corr(data)
 
-    def get_factors(self, x, y):
+    def get_factors(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """Get correction factors at positions x, y
 
         Depending on whether gaussian_fit was set to True or False in the
@@ -361,13 +468,13 @@ class Corrector(object):
 
         Parameters
         ----------
-        x, y : list of float
+        x, y
             x and y coordinates of features
 
         Returns
         -------
         numpy.ndarray
-            A list of correction factors corresponding to the features
+            1D array of correction factors corresponding to the features
         """
         if self.fit_result:
             return 1. / (funcs.gaussian_2d(x, y, **self.fit_result) /
@@ -375,12 +482,12 @@ class Corrector(object):
         else:
             return np.transpose(1. / self.interp(np.array([y, x]).T))
 
-    def save(self, file):
+    def save(self, file: Union[str, Path, BinaryIO]):
         """Save instance to disk
 
         Parameters
         ----------
-        file : str or file-like object
+        file
             Where to save. If `str`, the extension ".npz" will be appended if
             it is not present.
         """
@@ -389,14 +496,13 @@ class Corrector(object):
             fit_result=_fit_result_to_list(self.fit_result), bg=self.bg)
 
     @classmethod
-    def load(cls, file):
+    def load(cls, file: Union[str, Path, BinaryIO]):
         """Load from disk
 
         Parameters
         ----------
-        file : str or file-like
+        file
             Where to load from
-        old_format : bool, optional
 
         Returns
         -------
