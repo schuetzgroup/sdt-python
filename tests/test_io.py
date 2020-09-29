@@ -254,48 +254,46 @@ class TestYaml(unittest.TestCase):
         self.assertIsInstance(d, collections.OrderedDict)
 
 
-class TestTiff(unittest.TestCase):
-    def setUp(self):
+class TestTiff:
+    @pytest.fixture
+    def images(self):
         img1 = np.zeros((5, 5)).view(pims.Frame)
         img1[2, 2] = 1
         img1.metadata = dict(entry="test", entry2=3)
         img2 = img1.copy()
         img2[2, 2] = 3
-        self.frames = [img1, img2]
+        return [img1, img2]
 
-    def test_save_as_tiff(self):
+    def test_save_as_tiff(self, images, tmp_path):
         """io.save_as_tiff"""
-        with tempfile.TemporaryDirectory() as td:
-            fn = os.path.join(td, "test.tiff")
-            sdt.io.save_as_tiff(self.frames, fn)
+        fn = tmp_path / "test.tiff"
+        sdt.io.save_as_tiff(images, fn)
 
-            with tifffile.TiffFile(fn) as res:
-                np.testing.assert_allclose(res.asarray(), self.frames)
-                md = res.series[0].pages[0].tags["ImageDescription"].value
-                self.assertDictEqual(yaml.safe_load(md),
-                                     self.frames[0].metadata)
+        with tifffile.TiffFile(fn) as res:
+            np.testing.assert_allclose(res.asarray(), images)
+            md = res.pages[0].tags["ImageDescription"].value
+            assert yaml.safe_load(md) == images[0].metadata
 
     # Cannot run on Windows since close method is not implemented in PIMS.
     # TIFF is not closed and thus Windows raises an error when trying to
     # delete temporary directory.
     @pytest.mark.xfail(sys.platform == "win32",
                        reason="PIMS does not close files.")
-    def test_sdt_tiff_stack(self):
+    def test_sdt_tiff_stack(self, images, tmp_path):
         """io.SdtTiffStack"""
-        with tempfile.TemporaryDirectory() as td:
-            fn = os.path.join(td, "test.tiff")
-            dt = datetime(2000, 1, 1, 17, 0, 9)
-            self.frames[0].metadata["DateTime"] = dt
-            sdt.io.save_as_tiff(self.frames, fn)
+        fn = tmp_path / "test.tiff"
+        dt = datetime(2000, 1, 1, 17, 0, 9)
+        images[0].metadata["DateTime"] = dt
+        sdt.io.save_as_tiff(images, fn)
 
-            with sdt.io.SdtTiffStack(fn) as res:
-                np.testing.assert_allclose(res, self.frames)
-                md = res.metadata
-                md.pop("Software")
-                np.testing.assert_equal(md, self.frames[0].metadata)
-                md = res[0].metadata
-                md.pop("Software")
-                np.testing.assert_equal(md, self.frames[0].metadata)
+        with sdt.io.SdtTiffStack(fn) as res:
+            np.testing.assert_allclose(res, images)
+            md = res.metadata
+            md.pop("Software")
+            np.testing.assert_equal(md, images[0].metadata)
+            md = res[0].metadata
+            md.pop("Software")
+            np.testing.assert_equal(md, images[0].metadata)
 
     def test_sdt_tiff_stack_imagej(self):
         """io.SdtTiffStack: ImageJ metadata"""
@@ -310,7 +308,7 @@ class TestTiff(unittest.TestCase):
                'Software': 'sdt.io',
                'DateTime': datetime(2018, 6, 27, 13, 52, 58)}
         with sdt.io.SdtTiffStack(os.path.join(data_path, "ij.tif")) as t:
-            self.assertDictEqual(t.metadata, exp)
+            assert t.metadata == exp
 
 
 class TestFiles(unittest.TestCase):

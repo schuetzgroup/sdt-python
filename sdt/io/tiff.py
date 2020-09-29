@@ -44,10 +44,16 @@ def save_as_tiff(frames, filename):
                         "{}: Failed to serialize metadata to YAML".format(
                             filename))
 
+            # tifffile >=2020.9.3 has contiguous=False as default. PIMS
+            # only reads the first series, so set contiguous=True.
+            # Additionally, this makes TiffFile.asarray() return the whole
+            # stack.
+            save_args = {"description": desc, "datetime": dt,
+                         "contiguous": True}
             try:
-                tw.save(f, description=desc, datetime=dt, software="sdt.io")
+                tw.save(f, software="sdt.io", **save_args)
             except TypeError:
-                tw.save(f, description=desc, datetime=dt)
+                tw.save(f, **save_args)
 
 
 try:
@@ -70,7 +76,7 @@ try:
 
             try:
                 with tifffile.TiffFile(filename) as f:
-                    r = f.series[0].pages[0]
+                    r = f.pages[0]
                 self.metadata = self._read_metadata(r)
             except Exception:
                 self.metadata = {}
