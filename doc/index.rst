@@ -17,8 +17,8 @@ Overview
 
 - Handle regions of interest (ROIs) is possible by means of the
   :py:mod:`sdt.roi` module.
-- Overlay multiple channels and correct for chromatic aberrations using the
-  :py:mod:`sdt.chromatic` module.
+- Overlay multiple channels and correct for chromatic aberrations (i.e., 
+  perform image registration) using the :py:mod:`sdt.channel_reg` module.
 - Deal with multi-color data (colocalization, codiffusion, …)
   with help of functions featured in the :py:mod:`sdt.multicolor` module.
 - Determine parameters related to the motion and diffusion of single molecules
@@ -70,7 +70,7 @@ Table of contents
   :maxdepth: 2
 
   roi
-  chromatic
+  channel_reg
   multicolor
   motion
   brightness

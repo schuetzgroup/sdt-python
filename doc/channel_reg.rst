@@ -2,4 +2,4 @@
 
    SPDX-License-Identifier: CC-BY-4.0
 
-.. automodule:: sdt.chromatic
+.. automodule:: sdt.channel_reg
