@@ -56,7 +56,7 @@ def save_as_tiff(frames, filename):
                 tw.save(f, **save_args)
 
 
-try:
+with suppress(ImportError):
     import pims
 
     class SdtTiffStack(pims.TiffStack_tifffile):
@@ -121,7 +121,3 @@ try:
         def get_frame(self, j):
             f = super().get_frame(j)
             return f
-
-
-except ImportError:
-    pass
