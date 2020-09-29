@@ -19,13 +19,13 @@ except ImportError:
     trackpy_available = False
 
 
-class SmFretTracker:
+class SmFRETTracker:
     """Class for tracking of smFRET data
 
     There is support for dumping and loading to/from YAML using
     :py:mod:`sdt.io.yaml`.
     """
-    yaml_tag = "!SmFretTracker"
+    yaml_tag = "!SmFRETTracker"
     _yaml_keys = ("excitation_seq", "chromatic_corr", "link_options",
                   "min_length", "brightness_options", "interpolate",
                   "coloc_dist", "acceptor_channel", "neighbor_radius")
@@ -363,8 +363,9 @@ class SmFretTracker:
         valid = u[c >= self.min_length]
         ret = ret[ret["fret", "particle"].isin(valid)]
 
+        ret = ret.reset_index(drop=True)
         self.flag_excitation_type(ret)
-        return ret.reset_index(drop=True)
+        return ret
 
     def flag_excitation_type(self, tracks: pd.DataFrame):
         """Add a column indicating excitation type (donor/acceptor/...)
@@ -414,4 +415,4 @@ class SmFretTracker:
 
 with suppress(ImportError):
     from ..io import yaml
-    yaml.register_yaml_class(SmFretTracker)
+    yaml.register_yaml_class(SmFRETTracker)

@@ -7,7 +7,6 @@ import re
 from collections import OrderedDict
 
 import numpy as np
-import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
@@ -25,7 +24,7 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
     track_data : dict of str: pandas.DataFrame
         dict keys are used to identify the smFRET datasets (dict values).
         The DataFrames have to have the same format as e.g. produced by
-        :py:class:`SmFretTracker`.
+        :py:class:`SmFRETTracker`.
     x_data, y_data : tuple of str, optional
         Column indices of data to plot on the x (y) axis. Defaults to
         ``("fret", "eff")`` for `x_data` and ``("fret", "stoi")`` for
@@ -112,7 +111,7 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
     track_data : dict of str: pandas.DataFrame
         dict keys are used to identify the smFRET datasets (dict values).
         The DataFrames have to have the same format as e.g. produced by
-        :py:class:`SmFretTracker`.
+        :py:class:`SmFRETTracker`.
     data, y_data : tuple of str, optional
         Column indices of data. Defaults to ``("fret", "eff")``.
     frame : int or None, optional
@@ -218,7 +217,7 @@ def draw_track(tracks, track_no, donor_img, acceptor_img, size, n_cols=8,
     Parameters
     ----------
     tracks : pandas.DataFrame
-        smFRET tracking data as e.g. produced by :py:class:`SmFretTracker`
+        smFRET tracking data as e.g. produced by :py:class:`SmFRETTracker`
     track_no : int
         Track/particle number
     donor_img, acceptor_img : list-like of numpy.ndarray

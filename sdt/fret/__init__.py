@@ -9,8 +9,8 @@ The :py:mod:`sdt.fret` module provides functionality to analyze single
 molecule FRET data. This includes
 
 - tracking and measurement of FRET-related quantities using the
-  :py:class:`SmFretTracker` class.
-- analyzing and filtering of the data with help of :py:class:`SmFretAnalyzer`.
+  :py:class:`SmFRETTracker` class.
+- analyzing and filtering of the data with help of :py:class:`SmFRETAnalyzer`.
 - functions for plotting results, such as :py:func:`smfret_scatter`,
   :py:func:`smfret_hist`, and :py:func:`draw_track`.
 - selection of images in a FRET sequence according to excitation type using
@@ -33,13 +33,13 @@ from donor and acceptor channels, the actual tracking, getting the
 brightness of the donor and the acceptor for each localization from the
 raw images and much more.
 
->>> tracker = SmFretTracker("dddda", chromatic_corr)
+>>> tracker = SmFRETTracker("dddda", chromatic_corr)
 >>> trc = tracker.track(donor_img, acceptor_img, donor_loc, acceptor_loc)
 
 Now these data can be analyzed and filtered. Calculate FRET-related quantities
 such as FRET efficiency, stoichiometry, etc.:
 
->>> ana = SmFretAnalyzer(trc)
+>>> ana = SmFRETAnalyzer(trc)
 >>> ana.analyze(trc)
 
 Let us reject any tracks where the
@@ -59,7 +59,7 @@ Accept only localizations that lie in pixels where the boolean mask is `True`:
 >>> mask = numpy.load("mask.npy")
 >>> ana.image_mask(mask, "donor")
 
-Filtered data can be accessed via the :py:attr:`SmFretAnalyzer.tracks`
+Filtered data can be accessed via the :py:attr:`SmFRETAnalyzer.tracks`
 attribute.
 
 Draw a scatter plot of FRET efficiency vs. stoichiometry:
@@ -75,12 +75,12 @@ use :py:class:`FrameSelector`:
 
 Tracking
 ---------
-.. autoclass:: SmFretTracker
+.. autoclass:: SmFRETTracker
     :members:
 
 Analysis and Filtering
 ----------------------
-.. autoclass:: SmFretAnalyzer
+.. autoclass:: SmFRETAnalyzer
     :members:
 
 Plotting

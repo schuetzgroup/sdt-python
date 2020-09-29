@@ -64,7 +64,7 @@ def gaussian_mixture_split(data, n_components, columns=[("fret", "eff_app"),
     return [v for v in split.values() if len(v)]
 
 
-class SmFretAnalyzer:
+class SmFRETAnalyzer:
     """Class for analyzing and filtering of smFRET data
 
     This provides various analysis and filtering methods which act on the
@@ -81,8 +81,8 @@ class SmFretAnalyzer:
         """Parameters
         ----------
         tracks : pandas.DataFrame
-            smFRET tracking data as produced by :py:class:`SmFretTracker` by
-            running its :py:meth:`SmFretTracker.track` method.
+            smFRET tracking data as produced by :py:class:`SmFRETTracker` by
+            running its :py:meth:`SmFRETTracker.track` method.
         cp_detector : changepoint detector or None, optional
             If `None`, create a :py:class:`changepoint.Pelt` instance with
             ``model="l2"``, ``min_size=1``, and ``jump=1``.
@@ -173,7 +173,7 @@ class SmFretAnalyzer:
         ----------
         tracks : pandas.DataFrame
             smFRET tracking data as produced by the
-            :py:meth:`SmFretTracker.track`
+            :py:meth:`SmFRETTracker.track`
         keep_d_mass : bool, optional
             If a ``("fret", "d_mass")`` column is already present in `tracks`,
             use that instead of overwriting it with the sum of
