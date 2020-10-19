@@ -2,18 +2,22 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import math
+import threading
+from typing import Callable, Dict, List, Sequence, Union
 import warnings
-from collections import OrderedDict
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 import traitlets
-from ipywidgets import VBox, HBox, Dropdown, IntText, FloatText, Layout, Tab
+import ipywidgets
 
+from .image_display import ImageDisplay
+from .image_selector import ImageSelector
 from ..import image
 
 
-class AdaptiveOptions(HBox):
+class AdaptiveOptions(ipywidgets.GridBox):
     """UI for setting options for :py:func:`sdt.image.adaptive_thresh`"""
     name = "adaptive"
     """Method name ("adaptive")"""
@@ -28,47 +32,59 @@ class AdaptiveOptions(HBox):
             Passed to the :py:class:`HBox` constructor after the list of
             children
         """
-        self._block_size_sel = IntText(value=65, description="block size")
-        self._c_sel = FloatText(value=-5, description="const offset")
-        self._smoothing_sel = FloatText(value=1.5, description="smooth",
-                                        step=0.1)
-        self._method_sel = Dropdown(options=["mean", "gaussian"],
-                                    description="adaptive method")
+        self._block_size_sel = ipywidgets.IntText(
+            value=65, description="block size")
+        self._c_sel = ipywidgets.FloatText(
+            value=-5, description="const offset")
+        self._smoothing_sel = ipywidgets.FloatText(
+            value=1.5, description="smooth", step=0.1)
+        self._method_sel = ipywidgets.Dropdown(
+            options=["mean", "gaussian"], description="adaptive method")
 
-        super().__init__([VBox([self._block_size_sel, self._c_sel]),
-                          VBox([self._smoothing_sel, self._method_sel])],
-                          *args, **kwargs)
+        self._update_lock = threading.Lock()
+
+        super().__init__([self._block_size_sel, self._c_sel,
+                          self._smoothing_sel, self._method_sel],
+                         layout=ipywidgets.Layout(
+                             grid_template_columns="repeat(2, max-content)"),
+                         *args, **kwargs)
 
         for w in (self._block_size_sel, self._c_sel, self._smoothing_sel,
                   self._method_sel):
             w.observe(self._options_from_ui, "value")
 
         self._options_from_ui()
-        self.observe(self._options_to_ui, "options")
 
-    options = traitlets.Dict()
+    options: Dict = traitlets.Dict()
     """Options which can be passed directly to
     :py:func:`sdt.image.adaptive_thresh`
     """
 
     def _options_from_ui(self, change=None):
         """Set :py:attr:`options` from UI elements"""
+        if self._update_lock.locked():
+            return
         o = {"block_size": self._block_size_sel.value,
              "c": self._c_sel.value,
              "smooth": self._smoothing_sel.value,
              "method": self._method_sel.value}
-        self.options = o
+        with self._update_lock:
+            self.options = o
 
+    @traitlets.observe("options")
     def _options_to_ui(self, change=None):
         """Set UI element values from :py:attr:`options`"""
+        if self._update_lock.locked():
+            return
         o = self.options
-        self._block_size_sel.value = o["block_size"]
-        self._c_sel.value = o["c"]
-        self._smoothing_sel.value = o["smooth"]
-        self._method_sel.value = o["method"]
+        with self._update_lock:
+            self._block_size_sel.value = o["block_size"]
+            self._c_sel.value = o["c"]
+            self._smoothing_sel.value = o["smooth"]
+            self._method_sel.value = o["method"]
 
 
-class OtsuOptions(HBox):
+class OtsuOptions(ipywidgets.HBox):
     """UI for setting options for :py:func:`sdt.image.otsu_thresh`"""
     name = "otsu"
     """Method name ("otsu")"""
@@ -82,11 +98,12 @@ class OtsuOptions(HBox):
             Passed to the :py:class:`HBox` constructor after the list of
             children
         """
-        self._factor_sel = FloatText(value=1, step=0.1, description="mult.")
-        self._smoothing_sel = FloatText(value=1.5, description="smooth",
-                                        step=0.1)
-        super(HBox, self).__init__([self._factor_sel, self._smoothing_sel],
-                                   *args, **kwargs)
+        self._factor_sel = ipywidgets.FloatText(
+            value=1, step=0.1, description="mult.")
+        self._smoothing_sel = ipywidgets.FloatText(
+            value=1.5, description="smooth", step=0.1)
+        super().__init__([self._factor_sel, self._smoothing_sel],
+                         *args, **kwargs)
 
         for w in (self._factor_sel, self._smoothing_sel):
             w.observe(self._options_from_ui, "value")
@@ -94,7 +111,7 @@ class OtsuOptions(HBox):
         self._options_from_ui()
         self.observe(self._options_to_ui, "options")
 
-    options = traitlets.Dict()
+    options: Dict = traitlets.Dict()
     """Options which can be passed directly to
     :py:func:`sdt.image.otsu_thresh`
     """
@@ -112,7 +129,7 @@ class OtsuOptions(HBox):
         self._smoothing_sel.value = o["smooth"]
 
 
-class PercentileOptions(HBox):
+class PercentileOptions(ipywidgets.HBox):
     """UI for setting options for :py:func:`sdt.image.percentile_thresh`"""
     name = "percentile"
     """Method name ("percentile")"""
@@ -128,9 +145,10 @@ class PercentileOptions(HBox):
             Passed to the :py:class:`HBox` constructor after the list of
             children
         """
-        self._pct_sel = FloatText(value=75, description="percentile")
-        self._smoothing_sel = FloatText(value=1.5, description="smooth",
-                                        step=0.1)
+        self._pct_sel = ipywidgets.FloatText(
+            value=75, description="percentile")
+        self._smoothing_sel = ipywidgets.FloatText(
+            value=1.5, description="smooth", step=0.1)
         super().__init__([self._pct_sel, self._smoothing_sel],
                          *args, **kwargs)
 
@@ -140,7 +158,7 @@ class PercentileOptions(HBox):
         self._options_from_ui()
         self.observe(self._options_to_ui, "options")
 
-    options = traitlets.Dict()
+    options: Dict = traitlets.Dict()
     """Options which can be passed directly to
     :py:func:`sdt.image.percentile_thresh`
     """
@@ -158,10 +176,93 @@ class PercentileOptions(HBox):
         self._smoothing_sel.value = o["smooth"]
 
 
-algorithms = [AdaptiveOptions, OtsuOptions, PercentileOptions]
+algorithms: List[str] = [AdaptiveOptions, OtsuOptions, PercentileOptions]
 
 
-class Thresholder(VBox):
+class ThresholderModule(ipywidgets.Tab):
+    """Notebook UI element for thresholding images
+
+    This can be used as part of a larger Jupyter notebook UI and allows for
+    selecting thresholding algorithms and options. For a stand-alone UI
+    see :py:class:`Thresholder`.
+    """
+    input: Union[np.ndarray, None] = traitlets.Instance(
+        np.ndarray, allow_none=True)
+    """Image to apply thresholding algorithm"""
+    output: Union[np.ndarray, None] = traitlets.Instance(
+        np.ndarray, allow_none=True)
+    """Binary threshold image"""
+    algorithm: str = traitlets.Enum(values=[A.name for A in algorithms])
+    """Name of the algorithm"""
+    options: Dict = traitlets.Dict()
+    """Options to the thresholding function"""
+
+    def __init__(self, **kwargs):
+        """Parameters
+        ----------
+        **kwargs
+            Passed to the superclass constructor.
+        """
+        if plt.isinteractive():
+            warnings.warn("Turning off matplotlib's interactive mode as it "
+                          "is not compatible with this.")
+            plt.ioff()
+
+        super().__init__(**kwargs)
+        self.children = [A() for A in algorithms]
+        for i, a in enumerate(self.children):
+            self.set_title(i, a.name)
+            a.observe(self._options_changed, "options")
+
+        self._algo_selected()
+
+    def _get_current_opts(self) -> ipywidgets.Widget:
+        """Get currently selected algorithm options widget"""
+        idx = self.selected_index
+        if idx is None:
+            return None
+        return self.children[idx]
+
+    @property
+    def func(self) -> Callable:
+        """Processing function of the currently selected algorithm"""
+        return self._get_current_opts().__class__.func
+
+    @traitlets.observe("selected_index")
+    def _algo_selected(self, change=None):
+        """Algorithm selection was changed using the dropdown menu"""
+        self.algorithm = self._get_current_opts().name
+        self._options_changed()
+        self._update_output()
+
+    @traitlets.observe("algorithm")
+    def _algo_trait_changed(self, change=None):
+        """Algorithm selection was changed using `algorithm` traitlet"""
+        for i, a in enumerate(self.children):
+            if a.name == self.algorithm:
+                self.selected_index = i
+                return
+
+    def _options_changed(self, change=None):
+        """Update `options` traitlet with current algorithm's options"""
+        self.options = self._get_current_opts().options
+
+    @traitlets.observe("options")
+    def _options_trait_changed(self, change=None):
+        """Update current algorithm's options with `options` traitlet"""
+        self._get_current_opts().options = self.options
+
+    @traitlets.observe("options", "input")
+    def _update_output(self, change=None):
+        """Compute thresholded image"""
+        if self.input is None:
+            return
+
+        mask = self.func(self.input, **self._get_current_opts().options)
+        self.output = mask
+
+
+class Thresholder(ipywidgets.VBox):
     """Notebook UI for finding image thresholding parameters
 
     This allows for loading image data, setting thresholding algorithm
@@ -194,126 +295,62 @@ class Thresholder(VBox):
 
     >>> mask = th.func(img_list[0], **par)  # image.adaptive_thresh
     """
-    def __init__(self, images={}, cmap="gray", figsize=None):
+    algorithm: str = traitlets.Enum(values=[A.name for A in algorithms])
+    """Name of the algorithm"""
+    options: Dict = traitlets.Dict()
+    """Options to the thresholding function"""
+
+    def __init__(self, images: Union[Sequence, Dict] = []):
         """Parameters
-        ----------
-        images : list of array-like or dict of str: array-like
-            Either a list of images or a dict mapping identifiers (which are
-            displayed) to an image.
-        cmap : str, optional
-            Colormap to use for displaying images. Defaults to "gray".
-        figsize : tuple of float, optional
-            Size of the figure.
+        ---------
+        images
+            List of image (sequences) to populate to pass to
+            :py:class:`ImageSelector` instance.
         """
-        if plt.isinteractive():
-            warnings.warn("Turning off matplotlib's interactive mode as it "
-                          "is not compatible with this.")
-            plt.ioff()
+        self.image_selector = ImageSelector(images)
+        self.thresholder_module = ThresholderModule()
+        fig, ax = plt.subplots()
+        self.image_display = ImageDisplay(ax)
 
-        # The figure
-        if figsize is not None:
-            self._fig, self._ax = plt.subplots(1, 2, figsize=figsize)
-        else:
-            self._fig, self._ax = plt.subplots(1, 2)
-        for a in self._ax:
-            a.axis("off")
-        self._img_artist = [None, None]
-        self._cmap = cmap
+        super().__init__([self.image_selector, self.thresholder_module,
+                          self.image_display])
 
-        self._img_sel = Dropdown(description="image")
-        self._algo_sel = Tab()
-        self._algo_sel.children = [A() for A in algorithms]
-        for i, a in enumerate(self._algo_sel.children):
-            self._algo_sel.set_title(i, a.name)
-            a.observe(self._options_changed, "options")
+        self.image_selector.observe(self._image_changed, "output")
+        self.thresholder_module.observe(self._mask_changed, "output")
+        traitlets.link((self.thresholder_module, "algorithm"),
+                       (self, "algorithm"))
+        traitlets.link((self.thresholder_module, "options"),
+                       (self, "options"))
 
-        super().__init__([self._img_sel, self._algo_sel, self._fig.canvas])
-
-        self.observe(self._images_trait_changed, "images")
-        self.observe(self._update, "options")
-        self.observe(self._options_trait_changed, "options")
-        self._img_sel.observe(self._update, "value")
-        self._algo_sel.observe(self._algo_selected, "selected_index")
-        self.observe(self._algo_trait_changed, "algorithm")
-
-        self._img_dict = {}
-        self.images = images
-        self._algo_selected()
-
-    images = traitlets.Union([traitlets.Dict(), traitlets.List()])
-    """dict or list : Map of name -> image or list of images"""
-    algorithm = traitlets.Enum(values=[A.name for A in algorithms])
-    """str : Name of the algorithm"""
-    options = traitlets.Dict()
-    """dict : Options to the thresholding function"""
-
-    def _get_current_opts(self):
-        """Get currently selected algorithm options widget"""
-        idx = self._algo_sel.selected_index
-        if idx is None:
-            return None
-        return self._algo_sel.children[idx]
+        self._artists = []
+        self._image_changed()
 
     @property
-    def func(self):
+    def func(self) -> Callable:
         """Processing function of the currently selected algorithm"""
-        return self._get_current_opts().__class__.func
+        return self.thresholder_module.func
 
-    def _make_images_dict(self, images):
-        """Make name: image dict with auto-generated names from list of images
-        """
-        if isinstance(images, (list, tuple)):
-            n = int(math.log10(len(images)))
-            images = {f"<{{:0{n}}}>".format(j): img
-                      for j, img in enumerate(images)}
+    def _image_changed(self, change=None):
+        """A different image was selected"""
+        self.thresholder_module.input = self.image_selector.output
+        self.image_display.input = self.image_selector.output
 
-        return images
+    def _mask_changed(self, change=None):
+        """Mask needs to be redrawn"""
+        import cv2
 
-    def _images_trait_changed(self, change=None):
-        """`files` traitlet changed"""
-        self._img_dict = self._make_images_dict(self.images)
-        self._img_sel.options = list(self._img_dict)
+        while self._artists:
+            self._artists.pop().remove()
+        ax = self.image_display.ax
 
-    def _algo_selected(self, change=None):
-        """Algorithm selection was changed using the dropdown menu"""
-        self.algorithm = self._get_current_opts().name
-        self._options_changed()
-        self._update()
+        img = self.thresholder_module.output.astype(np.uint8)
+        cont = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        # Use cont[-2] as it works in OpenCV 3, where findContours returns
+        # three values, and in OpenCV 4, where it returns two.
+        for c in cont[-2]:
+            pth = mpl.path.Path(c[:, 0, :], closed=True)
+            pp = mpl.patches.PathPatch(pth, alpha=0.2, color="C1")
+            a = ax.add_patch(pp)
+            self._artists.append(a)
 
-    def _algo_trait_changed(self, change=None):
-        """Algorithm selection was changed using `algorithm` traitlet"""
-        for i, a in enumerate(self._algo_sel.children):
-            if a.name == self.algorithm:
-                self._algo_sel.selected_index = i
-                return
-
-    def _options_changed(self, change=None):
-        """Update `options` traitlet with current algorithm's options"""
-        self.options = self._get_current_opts().options
-
-    def _options_trait_changed(self, change=None):
-        """Update current algorithm's options with `options` traitlet"""
-        self._get_current_opts().options = self.options
-
-    def _update(self, change=None):
-        """Redraw"""
-        for a in self._img_artist:
-            if a is not None:
-                a.remove()
-        self._img_artist = [None, None]
-
-        if not self._img_sel.value:
-            return
-
-        img = self._img_dict[self._img_sel.value]
-        mask = self.func(img, **self._get_current_opts().options)
-
-        i = [img.copy(), img.copy()]
-        i[0][~mask] = 0
-        i[1][mask] = 0
-        imax = img.max() / 2
-        self._img_artist = [a.imshow(i_, vmax=imax, cmap=self._cmap)
-                            for a, i_ in zip(self._ax, i)]
-
-        self._fig.tight_layout()
-        self._fig.canvas.draw()
+        ax.figure.canvas.draw_idle()
