@@ -59,7 +59,7 @@ class ImageDisplay(ipywidgets.VBox):
 
     Additionally, a slider to set black and white points is provided.
     """
-    input: Optional[np.ndarray] = \
+    input: Union[np.ndarray, None] = \
         traitlets.Instance(np.ndarray, allow_none=True)
     """Image array to display"""
     ax: mpl.axes.Axes
