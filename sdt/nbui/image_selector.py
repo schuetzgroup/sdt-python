@@ -106,7 +106,7 @@ class ImageSelector(ipywidgets.HBox):
         img = self.images[self._file_sel.index]
         if isinstance(img, tuple):
             # TODO: What if there is a tuple of images instead of (key, value)?
-            img = img[0]
+            img = img[1]
 
         if isinstance(img, np.ndarray) and img.ndim == 2:
             # Single image
