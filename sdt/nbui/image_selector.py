@@ -121,7 +121,7 @@ class ImageSelector(ipywidgets.HBox):
         with self._frame_changed_lock:
             # Disable potential update at this point. Will be explicitly
             # updated below.
-            self._frame_sel.max = len(img)
+            self._frame_sel.max = len(img) - 1
 
         self._frame_changed()
 
