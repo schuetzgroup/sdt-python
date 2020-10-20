@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """Flat-field correction
-====================
+=====================
 
 The intensity cross section of a laser beam is usually not flat, but of
 Gaussian shape or worse. That means that fluorophores closer to the edges of

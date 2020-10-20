@@ -126,7 +126,7 @@ class SmFRETTracker:
             "search_range" and "memory" will be overwritten by the
             `link_radius` and `link_mem` parameters.
         link_quiet
-            If `True, call :py:func:`trackpy.quiet`.
+            If `True`, call :py:func:`trackpy.quiet`.
 
         Other parameters
         ----------------
