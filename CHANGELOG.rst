@@ -12,6 +12,12 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+15.1
+----
+
+- Slightly increase tolerance on one test for CI
+
+
 15.0
 ----
 
