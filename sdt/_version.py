@@ -4,4 +4,4 @@
 
 # setup.py needs to be able to read the version string using the reg ex
 # r"^__version__ = ['\"]([^'\"]*)['\"]"
-__version__ = "14.4"
+__version__ = "15.0"
