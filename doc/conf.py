@@ -27,8 +27,10 @@ import re
 from sphinx.ext.autodoc import (
     ClassLevelDocumenter, InstanceAttributeDocumenter)
 
+
 def iad_add_directive_header(self, sig):
     ClassLevelDocumenter.add_directive_header(self, sig)
+
 
 InstanceAttributeDocumenter.add_directive_header = iad_add_directive_header
 
@@ -51,6 +53,8 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
+    'sphinx.ext.autodoc.typehints',
+    # 'sphinx_autodoc_typehints'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -322,4 +326,8 @@ texinfo_documents = [
 
 autodoc_member_order = "bysource"
 autoclass_content = "both"
-napoleon_use_param = False
+autodoc_typehints = "description"
+
+# autodoc_typehints
+#always_document_param_types = True
+#typehints_document_rtype = True
