@@ -24,7 +24,7 @@ Examples
 
 Now fit model to the data:
 
->>> m = sdt.gaussian_fit.Gaussian1DModel()  # Create model
+>>> m = optimize.Gaussian1DModel()  # Create model
 >>> p = m.guess(y, x)  # Initial guess
 >>> res = m.fit(y, params=p, x=x)  # Do the fitting
 >>> res.best_values  # Show fitted parameters
@@ -47,7 +47,7 @@ Now fit model to the data:
 
 Do the fitting:
 
->>> m = sdt.gaussian_fit.Gaussian2DModel()  # Create model
+>>> m = optimize.Gaussian2DModel()  # Create model
 >>> p = m.guess(z, x, y)  # Initial guess
 >>> res = m.fit(z, params=p, x=x, y=y)  # Do the fitting
 >>> res.best_values  # Show fitted parameters
