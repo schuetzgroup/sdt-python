@@ -100,7 +100,7 @@ class TestRegistrator:
     def test_calc_local_coords(self, coords, local_coords):
         """channel_reg.Registrator._calc_local_coords"""
         res = channel_reg.Registrator._calc_local_coords(coords, 3)
-        np.testing.assert_allclose(res, local_coords)
+        np.testing.assert_allclose(res, local_coords, atol=1e-10)
 
     def test_signatures_from_local_coords(self, local_coords):
         """channel_reg.Registrator._signatures_from_local_coords"""
