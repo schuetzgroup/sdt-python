@@ -80,7 +80,7 @@ root folder (where this README is located) and run::
 Requirements
 ------------
 
-- Python >= 3.5
+- Python >= 3.6
 - matplotlib
 - numpy >= 1.10
 - pandas

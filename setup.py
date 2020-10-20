@@ -6,6 +6,7 @@ from setuptools import setup, find_packages
 
 
 setup(
+    python_requires=">=3.6",
     install_requires=["numpy>=1.10",
                       "pandas",
                       "tables",
