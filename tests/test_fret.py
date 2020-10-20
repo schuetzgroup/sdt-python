@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from sdt import fret, chromatic, image, changepoint, io, flatfield, helper
+from sdt import changepoint, channel_reg, flatfield, fret, helper, image, io
 
 try:
     import trackpy  # NoQA
@@ -92,11 +92,11 @@ class TestSmFRETTracker:
 
     @pytest.fixture
     def tracker_params(self):
-        corr = chromatic.Corrector()
+        corr = channel_reg.Registrator()
         corr.parameters1[0, -1] = self.x_shift
         corr.parameters2[0, -1] = -self.x_shift
 
-        return dict(chromatic_corr=corr, link_radius=4, link_mem=1,
+        return dict(registrator=corr, link_radius=4, link_mem=1,
                     min_length=5, feat_radius=self.feat_radius,
                     neighbor_radius=7.5)
 
@@ -202,10 +202,10 @@ class TestSmFRETTracker:
             orig[k] = getattr(tr, k)
             assert res == orig
 
-        np.testing.assert_allclose(tr_loaded.chromatic_corr.parameters1,
-                                   tr.chromatic_corr.parameters1)
-        np.testing.assert_allclose(tr_loaded.chromatic_corr.parameters2,
-                                   tr.chromatic_corr.parameters2)
+        np.testing.assert_allclose(tr_loaded.registrator.parameters1,
+                                   tr.registrator.parameters1)
+        np.testing.assert_allclose(tr_loaded.registrator.parameters2,
+                                   tr.registrator.parameters2)
         np.testing.assert_equal(tr_loaded.excitation_seq, tr.excitation_seq)
 
 
