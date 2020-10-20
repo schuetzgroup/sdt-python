@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Image filtering and processing &mdash; sdt-python 14.2 documentation</title>
+  <title>Image filtering and processing &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,18 +30,14 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Flat field correction" href="flatfield.html" />
+    <link rel="next" title="Flat-field correction" href="flatfield.html" />
     <link rel="prev" title="Single molecule FRET analysis" href="fret.html" /> 
 </head>
 
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -102,14 +104,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#utilities">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -117,6 +118,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -155,7 +157,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Image filtering and processing</li>
     
@@ -245,8 +247,8 @@ to single images or image sequences (as long as they are of type
 <li><p><strong>image</strong> (<em>numpy.ndarray</em>) – image data</p></li>
 <li><p><strong>feature_radius</strong> (<em>int</em>) – This should be a number a little greater than the radius of the
 peaks.</p></li>
-<li><p><strong>noise_radius</strong> (<em>float, optional</em>) – Noise correlation length in pixels. Defaults to 1.</p></li>
-<li><p><strong>nonneg</strong> (<em>bool, optional</em>) – If True, clip values of the filtered image to [0, infinity). Defaults
+<li><p><strong>noise_radius</strong> (<em>float</em><em>, </em><em>optional</em>) – Noise correlation length in pixels. Defaults to 1.</p></li>
+<li><p><strong>nonneg</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, clip values of the filtered image to [0, infinity). Defaults
 to True.</p></li>
 </ul>
 </dd>
@@ -304,11 +306,11 @@ Spectrosc, 2009, 63, 1370-1376</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>image</strong> (<em>Slicerator or numpy.ndarray</em>) – Image data. Either a sequence (Slicerator) or a single image.</p></li>
+<li><p><strong>image</strong> (<a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.Slicerator"><em>Slicerator</em></a><em> or </em><em>numpy.ndarray</em>) – Image data. Either a sequence (Slicerator) or a single image.</p></li>
 <li><p><strong>feat_thresh</strong> (<em>float</em>) – Consider everything that is brighter than the estimated background by
 at least <cite>threshold</cite> a feature and do not include it in the
 consecutive iteration of the background estimation process.</p></li>
-<li><p><strong>feat_mask</strong> (<em>int or numpy.ndarray or None, optional</em>) – Setting <cite>feat_thresh</cite> rather high will most probably cause unwanted
+<li><p><strong>feat_mask</strong> (<em>int</em><em> or </em><em>numpy.ndarray</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Setting <cite>feat_thresh</cite> rather high will most probably cause unwanted
 effects around the edges of a feature (since those, although above
 background, will be treated as background). The can <cite>feat_mask</cite> be used
 to increase the size of regions considered occupied by a feature by
@@ -319,23 +321,23 @@ use it as the mask for dilation. Defaults to <cite>None</cite>.</p></li>
 The dict may contain “wtype”, “wlevel”, “ext_mode”, and “detail” keys.
 If any of those is not given, use the corresponding parameters from
 the function call.</p></li>
-<li><p><strong>wtype</strong> (<em>str or pywt.Wavelet, optional</em>) – Wavelet type. See <code class="xref py py-func docutils literal notranslate"><span class="pre">pywt.wavelist()</span></code> for available wavelet types.
+<li><p><strong>wtype</strong> (<em>str</em><em> or </em><em>pywt.Wavelet</em><em>, </em><em>optional</em>) – Wavelet type. See <code class="xref py py-func docutils literal notranslate"><span class="pre">pywt.wavelist()</span></code> for available wavelet types.
 Defaults to “db4”.</p></li>
-<li><p><strong>wlevel</strong> (<em>int, optional</em>) – Wavelet decomposition level. The maximum level depends on the
+<li><p><strong>wlevel</strong> (<em>int</em><em>, </em><em>optional</em>) – Wavelet decomposition level. The maximum level depends on the
 wavelet type. See <code class="xref py py-func docutils literal notranslate"><span class="pre">pywt.dwt_max_level()</span></code> for details. Defaults
 to 3.</p></li>
-<li><p><strong>ext_mode</strong> (<em>str, optional</em>) – Signal extension mode for wavelet de/recomposition. Refer to the
+<li><p><strong>ext_mode</strong> (<em>str</em><em>, </em><em>optional</em>) – Signal extension mode for wavelet de/recomposition. Refer to the
 <cite>pywavelets</cite> documentation for details. Defaults to “smooth”.</p></li>
-<li><p><strong>max_iterations</strong> (<em>int, optional</em>) – Maximum number of cycles of background estimation and removing
+<li><p><strong>max_iterations</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of cycles of background estimation and removing
 features from the estimate. Defaults to 20.</p></li>
-<li><p><strong>detail</strong> (<em>int, optional</em>) – Number of wavelet detail coefficients to retain in the background
+<li><p><strong>detail</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of wavelet detail coefficients to retain in the background
 estimate. Defaults to 0, i. e. only use approximation coefficients.</p></li>
-<li><p><strong>conv_threshold</strong> (<em>float, optional</em>) – If the relative difference of estimates between two iterations is
+<li><p><strong>conv_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – If the relative difference of estimates between two iterations is
 less than <cite>conv_threshold</cite>, consider the result converged and return
 it. If this does not happen within <cite>max_iterations</cite>, raise a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">NoConvergence</span></code> exception instead (with the last result as
 its <cite>last_result</cite> attribute).</p></li>
-<li><p><strong>no_conv</strong> (<em>{“raise”, “ignore”} or number, optional</em>) – What to do if the result does not converge. “raise” will raise a
+<li><p><strong>no_conv</strong> (<em>{&quot;raise&quot;</em><em>, </em><em>&quot;ignore&quot;}</em><em> or </em><em>number</em><em>, </em><em>optional</em>) – What to do if the result does not converge. “raise” will raise a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">NoConvergence</span></code> exception. If a number is passed,
 construct an array of the same type and shape as the input that is
 filled with the scalar.</p></li>
@@ -380,8 +382,8 @@ package.</p>
 <li><p><strong>block_size</strong> (<em>int</em>) – <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">block_size</span> <span class="pre">+</span> <span class="pre">1</span></code> is passed as the the <cite>block_size</cite> parameter
 to <code class="xref py py-func docutils literal notranslate"><span class="pre">cv2.adaptiveThreshold()</span></code> (as it has to be an odd number).</p></li>
 <li><p><strong>c</strong> (<em>float</em>) – Passed as the <cite>C</cite> parameter to <code class="xref py py-func docutils literal notranslate"><span class="pre">cv2.adaptiveThreshold()</span></code>.</p></li>
-<li><p><strong>smooth</strong> (<em>float, optional</em>) – Gaussian smoothing radius. Set to 0 to disable. Defaults to 5.</p></li>
-<li><p><strong>method</strong> (<em>{“gaussian”, “mean”}, optional</em>) – Adaptive method. Defaults to “mean” (i.e.,
+<li><p><strong>smooth</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian smoothing radius. Set to 0 to disable. Defaults to 5.</p></li>
+<li><p><strong>method</strong> (<em>{&quot;gaussian&quot;</em><em>, </em><em>&quot;mean&quot;}</em><em>, </em><em>optional</em>) – Adaptive method. Defaults to “mean” (i.e.,
 <code class="docutils literal notranslate"><span class="pre">cv2.ADAPTIVE_THRESH_MEAN_C</span></code>).</p></li>
 </ul>
 </dd>
@@ -406,7 +408,7 @@ calculate a global threshold, which is then applied to the image data.</p>
 <li><p><strong>img</strong> (<em>array-like</em>) – Image data</p></li>
 <li><p><strong>factor</strong> (<em>float</em>) – Multiply the result of Otsu’s method with this factor to adjust the
 threshold.</p></li>
-<li><p><strong>smooth</strong> (<em>float, optional</em>) – Gaussian smoothing radius. Set to 0 to disable. Defaults to 5.</p></li>
+<li><p><strong>smooth</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian smoothing radius. Set to 0 to disable. Defaults to 5.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -430,7 +432,7 @@ image data.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>img</strong> (<em>array-like</em>) – Image data</p></li>
 <li><p><strong>percentile</strong> (<em>float</em>) – Percentile to be used as a threshold.</p></li>
-<li><p><strong>smooth</strong> (<em>float, optional</em>) – Gaussian smoothing radius. Set to 0 to disable. Defaults to 5.</p></li>
+<li><p><strong>smooth</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian smoothing radius. Set to 0 to disable. Defaults to 5.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -447,25 +449,27 @@ image data.</p>
 <h2>Masks<a class="headerlink" href="#masks" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="sdt.image.RectMask">
-<em class="property">class </em><code class="sig-prename descclassname">sdt.image.</code><code class="sig-name descname">RectMask</code><a class="reference internal" href="_modules/sdt/image/masks.html#RectMask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.image.RectMask" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sdt.image.</code><code class="sig-name descname">RectMask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ext</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#RectMask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.image.RectMask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boolean array representing a rectangular mask</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ext</strong> (<em>tuple of int</em>) – Extension (shape) of the masked rectangle</p></li>
-<li><p><strong>shape</strong> (<em>tuple of int, optional</em>) – Shape of the resulting array. If this is larger than <cite>ext</cite>, the
+<li><p><strong>ext</strong> (<a class="reference internal" href="loc.html#sdt.loc.z_fit.Parameters.Tuple" title="sdt.loc.z_fit.Parameters.Tuple"><em>Tuple</em></a><em>[</em><em>int</em><em>, </em><em>..</em><em>]</em>) – Extension (shape) of the masked rectangle</p></li>
+<li><p><strong>shape</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="loc.html#sdt.loc.z_fit.Parameters.Tuple" title="sdt.loc.z_fit.Parameters.Tuple"><em>Tuple</em></a><em>[</em><em>int</em><em>, </em><em>..</em><em>]</em><em>]</em>) – Shape of the resulting array. If this is larger than <cite>ext</cite>, the
 mask will be centered in the array. By default, the smallest
 possible size is chosen.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py class">
 <dt id="sdt.image.CircleMask">
-<em class="property">class </em><code class="sig-prename descclassname">sdt.image.</code><code class="sig-name descname">CircleMask</code><a class="reference internal" href="_modules/sdt/image/masks.html#CircleMask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.image.CircleMask" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sdt.image.</code><code class="sig-name descname">CircleMask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">radius</span></em>, <em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#CircleMask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.image.CircleMask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boolean array representing a circular mask</p>
-<p>The shape of the array is (2*radius+1, 2*radius+1)</p>
 <p>True for all coordinates <span class="math notranslate nohighlight">\(x, y\)</span> where <span class="math notranslate nohighlight">\(x^2 + y^2 &lt;= (r+e)^2\)</span>,
 where <span class="math notranslate nohighlight">\(r\)</span> is the <cite>radius</cite> argument to the constructor and <span class="math notranslate nohighlight">\(e\)</span>
 the <cite>extra</cite> argument. The origin (i. e. where <span class="math notranslate nohighlight">\(x, y\)</span> are 0) is the
@@ -489,13 +493,51 @@ center of the image.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>radius</strong> (<em>int</em>) – Circle radius and mask size. The shape of the created array is
-(2*radius+1, 2*radius+1)</p></li>
-<li><p><strong>extra</strong> (<em>float, optional</em>) – Add <cite>extra</cite> to the radius before determining which coordinates are
+<code class="docutils literal notranslate"><span class="pre">(2*radius+1,</span> <span class="pre">2*radius+1)</span></code>.</p></li>
+<li><p><strong>extra</strong> (<em>float</em>) – Add <cite>extra</cite> to the radius before determining which coordinates are
 inside the circle. Defaults to 0.</p></li>
-<li><p><strong>shape</strong> (<em>tuple of int, optional</em>) – Shape of the resulting array. If this is larger than the mask, it
+<li><p><strong>shape</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="loc.html#sdt.loc.z_fit.Parameters.Tuple" title="sdt.loc.z_fit.Parameters.Tuple"><em>Tuple</em></a><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em>) – Shape of the resulting array. If this is larger than the mask, it
 will be centered in the array. By default, the smallest possible
 size is chosen.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="sdt.image.DiamondMask">
+<em class="property">class </em><code class="sig-prename descclassname">sdt.image.</code><code class="sig-name descname">DiamondMask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">radius</span></em>, <em class="sig-param"><span class="n">extra</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#DiamondMask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.image.DiamondMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean array representing a diamond-shaped (rotated square) mask</p>
+<p>True for all coordinates <span class="math notranslate nohighlight">\(x, y\)</span> where <span class="math notranslate nohighlight">\(|x + y| &lt;= r + e\)</span>,
+where <span class="math notranslate nohighlight">\(r\)</span> is the <cite>radius</cite> argument to the constructor and <span class="math notranslate nohighlight">\(e\)</span>
+the <cite>extra</cite> argument. The origin (i. e. where <span class="math notranslate nohighlight">\(x, y\)</span> are 0) is the
+center of the image.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DiamondMask</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">array([[False, False,  True, False, False],</span>
+<span class="go">       [False,  True,  True,  True, False],</span>
+<span class="go">       [ True,  True,  True,  True,  True],</span>
+<span class="go">       [False,  True,  True,  True, False],</span>
+<span class="go">       [False, False,  True, False, False]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> (<em>int</em>) – Diamond radius and mask size. The shape of the created array is
+<code class="docutils literal notranslate"><span class="pre">(2</span> <span class="pre">*</span> <span class="pre">radius</span> <span class="pre">+</span> <span class="pre">1,</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">radius</span> <span class="pre">+</span> <span class="pre">1)</span></code>.</p></li>
+<li><p><strong>extra</strong> (<em>float</em>) – Add <cite>extra</cite> to the radius before determining which coordinates are
+inside the diamond.</p></li>
+<li><p><strong>shape</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="loc.html#sdt.loc.z_fit.Parameters.Tuple" title="sdt.loc.z_fit.Parameters.Tuple"><em>Tuple</em></a><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em>) – Shape of the resulting array. If this is larger than the mask, it
+will be centered in the array. By default, the smallest possible
+size is chosen.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -513,7 +555,7 @@ size is chosen.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>img</strong> (<em>array-like</em>) – Image data</p></li>
-<li><p><strong>dtype</strong> (<em>numpy.dtype or None, optional</em>) – dtype of the output array. Image will be scaled to fill the value range
+<li><p><strong>dtype</strong> (<em>numpy.dtype</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – dtype of the output array. Image will be scaled to fill the value range
 of the type. E.g. if <code class="docutils literal notranslate"><span class="pre">dtype=numpy.uint8</span></code>, the resulting image will
 take values between 0 and 255. If <cite>None</cite>, use <code class="docutils literal notranslate"><span class="pre">img.dtype</span></code>. Defaults
 to <cite>None</cite>.</p></li>
@@ -524,6 +566,29 @@ to <cite>None</cite>.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.image.center">
+<code class="sig-prename descclassname">sdt.image.</code><code class="sig-name descname">center</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/utils.html#center"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.image.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center an image in an array of different size</p>
+<p>If the new shape is larger, the image will be padded, otherwise it will be
+cropped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>numpy.ndarray</em>) – Image array</p></li>
+<li><p><strong>shape</strong> (<a class="reference internal" href="loc.html#sdt.loc.z_fit.Parameters.Tuple" title="sdt.loc.z_fit.Parameters.Tuple"><em>Tuple</em></a><em>[</em><em>int</em><em>, </em><em>..</em><em>]</em>) – Output shape</p></li>
+<li><p><strong>fill_value</strong> (<em>Any</em>) – Value to use for padding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>New array with <cite>obj</cite> centered.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -547,7 +612,7 @@ science, Elsevier, 1996, 179, 298-310</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="flatfield.html" class="btn btn-neutral float-right" title="Flat field correction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="flatfield.html" class="btn btn-neutral float-right" title="Flat-field correction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="fret.html" class="btn btn-neutral float-left" title="Single molecule FRET analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -559,11 +624,19 @@ science, Elsevier, 1996, 179, 298-310</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -574,7 +647,6 @@ science, Elsevier, 1996, 179, 298-310</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Simulation of microscopy-related data &mdash; sdt-python 14.2 documentation</title>
+  <title>Simulation of microscopy-related data &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Special functions" href="funcs.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -96,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation of microscopy-related data</a><ul>
@@ -108,8 +110,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -117,6 +118,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -155,7 +157,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Simulation of microscopy-related data</li>
     
@@ -234,9 +236,9 @@ image. This is a frontend to the lower level functions
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>tuple of int, len=2</em>) – Shape of the output image. First entry is the width, second is the
+<li><p><strong>shape</strong> (<em>tuple of int</em><em>, </em><em>len=2</em>) – Shape of the output image. First entry is the width, second is the
 height.</p></li>
-<li><p><strong>centers</strong> (<em>numpy.ndarray, shape=(n, 2)</em>) – Coordinates of the PSF centers</p></li>
+<li><p><strong>centers</strong> (<em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – Coordinates of the PSF centers</p></li>
 <li><p><strong>amplitudes</strong> (<em>array_like</em>) – Amplitudes of the PSFs. Either a scalar that is used for all Gaussians
 or an 1D array specifying the amplitude for each Gaussian. See also
 the <cite>mass</cite> parameter.</p></li>
@@ -245,12 +247,12 @@ array of two numbers will be interpreted as sigmas in x and y
 directions for all Gaussians. A one-dimensional array of length n
 can be used to specify sigma for each Gaussian, and a 2D array of shape
 (n, 2) gives sigmas in x and y directions for each Gaussian.</p></li>
-<li><p><strong>cutoff</strong> (<em>float, optional</em>) – Each Gaussian is only calculated in a box <cite>cutoff</cite> times sigma pixels
+<li><p><strong>cutoff</strong> (<em>float</em><em>, </em><em>optional</em>) – Each Gaussian is only calculated in a box <cite>cutoff</cite> times sigma pixels
 around the center. Does not apply if <cite>engine</cite> is “python_full”.
 Defaults to 5.</p></li>
-<li><p><strong>mass</strong> (<em>bool, optional</em>) – If True, the value(s) given by <cite>amplitude</cite> are the integrated
+<li><p><strong>mass</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the value(s) given by <cite>amplitude</cite> are the integrated
 Gaussians. If False, they are amplitudes. Defaults to False.</p></li>
-<li><p><strong>engine</strong> (<em>{“numba”, “python”, “python_full”}, optional</em>) – “numba” is a <code class="xref py py-mod docutils literal notranslate"><span class="pre">numba</span></code>-optimized version, which is by far the
+<li><p><strong>engine</strong> (<em>{&quot;numba&quot;</em><em>, </em><em>&quot;python&quot;</em><em>, </em><em>&quot;python_full&quot;}</em><em>, </em><em>optional</em>) – “numba” is a <code class="xref py py-mod docutils literal notranslate"><span class="pre">numba</span></code>-optimized version, which is by far the
 fastest. “python” is written in pure python. “python_full” is also
 pure python and calculates each Gaussian for the whole image
 (not only in a region around the center, where it is significant),
@@ -276,13 +278,13 @@ which makes it the slowest. Defaults to “numba”.</p></li>
 <li><p><strong>n_tracks</strong> (<em>int</em>) – Number of tracks to simulate</p></li>
 <li><p><strong>track_len</strong> (<em>int</em>) – Average track length (see also <cite>track_len_dist</cite> parameter )</p></li>
 <li><p><strong>d</strong> (<em>float</em>) – Diffusion coefficient</p></li>
-<li><p><strong>size</strong> (<em>tuple, optional</em>) – Size of the region where to simulate particles. If <cite>initial</cite> is <cite>None</cite>,
+<li><p><strong>size</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Size of the region where to simulate particles. If <cite>initial</cite> is <cite>None</cite>,
 this is used to randomly distribute the <cite>n_tracks</cite> particles.</p></li>
-<li><p><strong>initial</strong> (<em>array-like, shape(n_tracks, m), optional</em>) – Initial positions of the particles. If <cite>None</cite>, the particles will be
+<li><p><strong>initial</strong> (<em>array-like</em><em>, </em><em>shape</em><em>(</em><em>n_tracks</em><em>, </em><em>m</em><em>)</em><em>, </em><em>optional</em>) – Initial positions of the particles. If <cite>None</cite>, the particles will be
 placed randomly; in that case, <cite>size</cite> needs to be given.</p></li>
-<li><p><strong>pa</strong> (<em>float, optional</em>) – Positional (in)accuracy. Defaults to 0.</p></li>
+<li><p><strong>pa</strong> (<em>float</em><em>, </em><em>optional</em>) – Positional (in)accuracy. Defaults to 0.</p></li>
 <li><p><strong>lagt</strong> (<em>float</em>) – Time between two recorded positions. Defaults to 1.</p></li>
-<li><p><strong>track_len_dist</strong> (<em>{“const”, “exp”} or callable, optional</em>) – Track length distribution. If “const”, all tracks will be of length
+<li><p><strong>track_len_dist</strong> (<em>{&quot;const&quot;</em><em>, </em><em>&quot;exp&quot;}</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – Track length distribution. If “const”, all tracks will be of length
 <cite>track_len</cite>. If “exp”, track lengths will be exponentially distributed
 with mean <cite>track_len</cite>. A callable has to take two arguments
 (<cite>n_tracks</cite>, <cite>track_len</cite>) and return a 1D array of ints containing
@@ -324,11 +326,11 @@ time consuming.)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>tuple of int, len=2</em>) – Shape of the output image. First entry is the width, second is the
+<li><p><strong>shape</strong> (<em>tuple of int</em><em>, </em><em>len=2</em>) – Shape of the output image. First entry is the width, second is the
 height.</p></li>
-<li><p><strong>centers</strong> (<em>numpy.ndarray, shape=(n, 2)</em>) – Coordinates of the PSF centers</p></li>
-<li><p><strong>amplitudes</strong> (<em>list of float, len=n</em>) – Amplitudes of the Gaussians</p></li>
-<li><p><strong>sigmas</strong> (<em>numpy.ndarray, shape(n, 2)</em>) – x and y sigmas of the Gaussians</p></li>
+<li><p><strong>centers</strong> (<em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – Coordinates of the PSF centers</p></li>
+<li><p><strong>amplitudes</strong> (<em>list of float</em><em>, </em><em>len=n</em>) – Amplitudes of the Gaussians</p></li>
+<li><p><strong>sigmas</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – x and y sigmas of the Gaussians</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -351,11 +353,11 @@ image. For each emitter, the Gaussian is calculated only in a square of
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>tuple of int, len=2</em>) – Shape of the output image. First entry is the width, second is the
+<li><p><strong>shape</strong> (<em>tuple of int</em><em>, </em><em>len=2</em>) – Shape of the output image. First entry is the width, second is the
 height.</p></li>
-<li><p><strong>centers</strong> (<em>numpy.ndarray, shape=(n, 2)</em>) – Coordinates of the PSF centers</p></li>
-<li><p><strong>amplitudes</strong> (<em>list of float, len=n</em>) – Amplitudes of the Gaussians</p></li>
-<li><p><strong>sigmas</strong> (<em>numpy.ndarray, shape(n, 2)</em>) – x and y sigmas of the Gaussians</p></li>
+<li><p><strong>centers</strong> (<em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – Coordinates of the PSF centers</p></li>
+<li><p><strong>amplitudes</strong> (<em>list of float</em><em>, </em><em>len=n</em>) – Amplitudes of the Gaussians</p></li>
+<li><p><strong>sigmas</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – x and y sigmas of the Gaussians</p></li>
 <li><p><strong>cutoff</strong> (<em>float</em>) – Each Gaussian is only calculated in a box <cite>cutoff</cite> times sigma pixels
 around the center.</p></li>
 </ul>
@@ -381,11 +383,11 @@ which can make it considerably faster than <a class="reference internal" href="#
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>tuple of int, len=2</em>) – Shape of the output image. First entry is the width, second is the
+<li><p><strong>shape</strong> (<em>tuple of int</em><em>, </em><em>len=2</em>) – Shape of the output image. First entry is the width, second is the
 height.</p></li>
-<li><p><strong>centers</strong> (<em>numpy.ndarray, shape=(n, 2)</em>) – Coordinates of the PSF centers</p></li>
-<li><p><strong>amplitudes</strong> (<em>list of float, len=n</em>) – Amplitudes of the Gaussians</p></li>
-<li><p><strong>sigmas</strong> (<em>numpy.ndarray, shape(n, 2)</em>) – x and y sigmas of the Gaussians</p></li>
+<li><p><strong>centers</strong> (<em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – Coordinates of the PSF centers</p></li>
+<li><p><strong>amplitudes</strong> (<em>list of float</em><em>, </em><em>len=n</em>) – Amplitudes of the Gaussians</p></li>
+<li><p><strong>sigmas</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – x and y sigmas of the Gaussians</p></li>
 <li><p><strong>cutoff</strong> (<em>float</em>) – Each Gaussian is only calculated in a box <cite>cutoff</cite> times sigma pixels
 around the center.</p></li>
 </ul>
@@ -408,11 +410,11 @@ around the center.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>track_len</strong> (<em>int</em>) – Average track length (see also <cite>track_len_dist</cite> parameter )</p></li>
 <li><p><strong>d</strong> (<em>float</em>) – Diffusion coefficient</p></li>
-<li><p><strong>size</strong> (<em>tuple, optional</em>) – Size of the region where to simulate particles. If <cite>initial</cite> is <cite>None</cite>,
+<li><p><strong>size</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Size of the region where to simulate particles. If <cite>initial</cite> is <cite>None</cite>,
 this is used to randomly distribute the <cite>n_tracks</cite> particles.</p></li>
-<li><p><strong>initial</strong> (<em>array-like, shape(n_tracks, m), optional</em>) – Initial positions of the particles. If <cite>None</cite>, the particles will be
+<li><p><strong>initial</strong> (<em>array-like</em><em>, </em><em>shape</em><em>(</em><em>n_tracks</em><em>, </em><em>m</em><em>)</em><em>, </em><em>optional</em>) – Initial positions of the particles. If <cite>None</cite>, the particles will be
 placed randomly; in that case, <cite>size</cite> needs to be given.</p></li>
-<li><p><strong>pa</strong> (<em>float, optional</em>) – Positional (in)accuracy. Defaults to 0.</p></li>
+<li><p><strong>pa</strong> (<em>float</em><em>, </em><em>optional</em>) – Positional (in)accuracy. Defaults to 0.</p></li>
 <li><p><strong>lagt</strong> (<em>float</em>) – Time between two recorded positions. Defaults to 1.</p></li>
 </ul>
 </dd>
@@ -453,11 +455,19 @@ row.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -468,7 +478,6 @@ row.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

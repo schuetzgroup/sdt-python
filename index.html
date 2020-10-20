@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Documentation of the sdt python package &mdash; sdt-python 14.2 documentation</title>
+  <title>Documentation of the sdt python package &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Regions of interest (ROIs)" href="roi.html" /> 
@@ -50,7 +51,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> sdt-python
+            <a href="#" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -86,7 +88,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -95,14 +97,13 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -110,6 +111,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -148,7 +150,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
       <li>Documentation of the <cite>sdt</cite> python package</li>
     
@@ -176,8 +178,8 @@ microscopy.</p>
 <ul class="simple">
 <li><p>Handle regions of interest (ROIs) is possible by means of the
 <a class="reference internal" href="roi.html#module-sdt.roi" title="sdt.roi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.roi</span></code></a> module.</p></li>
-<li><p>Overlay multiple channels and correct for chromatic aberrations using the
-<a class="reference internal" href="chromatic.html#module-sdt.chromatic" title="sdt.chromatic"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.chromatic</span></code></a> module.</p></li>
+<li><p>Overlay multiple channels and correct for chromatic aberrations (i.e.,
+perform image registration) using the <a class="reference internal" href="channel_reg.html#module-sdt.channel_reg" title="sdt.channel_reg"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.channel_reg</span></code></a> module.</p></li>
 <li><p>Deal with multi-color data (colocalization, codiffusion, …)
 with help of functions featured in the <a class="reference internal" href="multicolor.html#module-sdt.multicolor" title="sdt.multicolor"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.multicolor</span></code></a> module.</p></li>
 <li><p>Determine parameters related to the motion and diffusion of single molecules
@@ -208,16 +210,10 @@ notebooks.</p></li>
 <li><p>With help of the <a class="reference internal" href="sim.html#module-sdt.sim" title="sdt.sim"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.sim</span></code></a> module, fluorescence microscopy data
 can be simulated.</p></li>
 <li><p>The <a class="reference internal" href="funcs.html#module-sdt.funcs" title="sdt.funcs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.funcs</span></code></a> module contains classes for creation of step
-functions and eCDFs.</p></li>
+functions and eCDFs as well as some special functions like Gaussians and
+sums of exponentials.</p></li>
 <li><p>Plot data with methods from <a class="reference internal" href="plot.html#module-sdt.plot" title="sdt.plot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.plot</span></code></a>.</p></li>
-</ul>
-<p>There are also some helper modules that contain helpful functions and that
-the above modules are built on top of:</p>
-<ul class="simple">
-<li><p>Fitting a sum of exponentials can be done using the <a class="reference internal" href="exp_fit.html#module-sdt.exp_fit" title="sdt.exp_fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.exp_fit</span></code></a>
-module.</p></li>
-<li><p><a class="reference internal" href="gaussian_fit.html#module-sdt.gaussian_fit" title="sdt.gaussian_fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.gaussian_fit</span></code></a> provides models for the <a class="reference external" href="http://lmfit.github.io/lmfit-py/">lmfit</a> package for non-linear least squares
-fitting of 1D and 2D Gaussian function parameters.</p></li>
+<li><p>Fitting routines are available in the <a class="reference internal" href="optimize.html#module-sdt.optimize" title="sdt.optimize"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.optimize</span></code></a> module.</p></li>
 <li><p>Some helpers for writing new code can be found in <a class="reference internal" href="helper.html#module-sdt.helper" title="sdt.helper"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.helper</span></code></a> and
 <a class="reference internal" href="helper.html#module-sdt.config" title="sdt.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.config</span></code></a>.</p></li>
 </ul>
@@ -237,8 +233,8 @@ fitting of 1D and 2D Gaussian function parameters.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="roi.html#imagej-roi-file-loading">ImageJ ROI file loading</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chromatic.html#programming-reference">Programming reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="channel_reg.html#programming-reference">Programming reference</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a><ul>
@@ -289,7 +285,7 @@ fitting of 1D and 2D Gaussian function parameters.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="image.html#utilities">Utilities</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="flatfield.html#programming-reference">Programming reference</a></li>
 </ul>
 </li>
@@ -319,15 +315,11 @@ fitting of 1D and 2D Gaussian function parameters.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="plot.html#programming-reference">Programming reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="exp_fit.html#high-level-api">High level API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exp_fit.html#low-level-functions">Low level functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exp_fit.html#theory">Theory</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gaussian_fit.html#models">Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gaussian_fit.html#auxiliary-functions">Auxiliary functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#fitting-of-1d-and-2d-gaussian-functions">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#random-sample-consensus-ransac">Random sample consensus (RANSAC)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#fitting-affine-transformations-to-point-pairs">Fitting affine transformations to point pairs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimize.html#fitting-of-a-sum-of-exponential-functions">Fitting of a sum of exponential functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a><ul>
@@ -336,17 +328,18 @@ fitting of 1D and 2D Gaussian function parameters.</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id1">14.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id2">14.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id3">14.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id4">13.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id5">13.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id6">13.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id7">13.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id8">13.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id9">12.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id10">11.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id11">11.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id1">15.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id2">14.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id3">14.3.1 – 14.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id4">14.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id5">14.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id6">14.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id7">14.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id8">13.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id9">13.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id10">13.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id11">13.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id12">13.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#older-versions">Older versions</a></li>
 </ul>
 </li>
@@ -381,11 +374,19 @@ fitting of 1D and 2D Gaussian function parameters.</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -396,7 +397,6 @@ fitting of 1D and 2D Gaussian function parameters.</p></li>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

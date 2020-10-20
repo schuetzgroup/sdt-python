@@ -2,6 +2,8 @@
 
    SPDX-License-Identifier: CC-BY-4.0
 
+.. py:module:: sdt
+
 .. _CHANGELOG:
 
 Change log
@@ -9,6 +11,47 @@ Change log
 
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
+
+15.0
+----
+
+- Add :py:class:`nbui.FileDialog` and :py:class:`nbui.ChannelSplitter` classes.
+- Rename :py:class:`chromatic.Corrector` ->
+  :py:class:`channel_reg.Registrator`.
+  Implement a more robust algorithm for pair finding and fitting of the
+  transformation (API break).
+- Reorganize fitting modules into :py:mod:`optimize` package (API break).
+- Add a RANSAC implementation to :py:mod:`optimize`.
+- nbui: Create widgets that can be chained to create data manipulation
+  pipelines with visual feedback. For instance, the
+  :py:class:`nbui.ImageSelector` widget can be used to select an image file and
+  a frame number and provides the corresponding image via its ``output``
+  traitlet, which can be used as ``input`` to e.g.
+  :py:class:`nbui.ThresholderModule` or :py:class:`nbui.ImageDisplay`.
+- Add :py:class:`image.DiamondMask`.
+- :py:class:`flatfield.Corrector`: Allow for image sequences for background
+  correction.
+- fret: Rename SmFret* -> SmFRET* for style guide compliance (API break)
+
+
+14.4
+----
+
+- motion.MsdDist: Ensure proper assignment of MSDs/weights to components
+- fret.SmFretAnalyzer.bleach_step: Suport donor-only and acceptor-only samples
+
+
+14.3.1 – 14.3.2
+---------------
+
+- Fix tests for OSX and Windows
+- Use exclusively bundled slicerator
+
+
+14.3
+----
+
+- Include license files via setup.cfg
 
 
 14.2
@@ -133,8 +176,11 @@ Bugfix release
 - Many fixes and improvements
 
 
+Older versions
+--------------
+
 12.0
-----
+~~~~
 - Major reorganization (API break)
 
   - Move :py:mod:`data` -> :py:mod:`io`.
@@ -167,7 +213,7 @@ Bugfix release
 
 
 11.1
-----
+~~~~
 - Implement transforming PathROIs using `chromatic.Corrector`
 - Bug fixes
 
@@ -177,7 +223,7 @@ Bugfix release
 
 
 11.0
-----
+~~~~
 - Ability to tag features with near neighbors in localization data
 - For smFRET tracking, (optionally) use above feature to select only
   localizations that don't have any near neighbors, otherwise the brightness
@@ -196,9 +242,6 @@ Bugfix release
 - Allow for not dropping non-colocalized data in
   :py:func:`multicolor.find_colocalizations`.
 
-
-Older versions
---------------
 
 10.3
 ~~~~

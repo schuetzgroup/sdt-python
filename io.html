@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data input/output &mdash; sdt-python 14.2 documentation</title>
+  <title>Data input/output &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Changepoint detection" href="changepoint.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -106,14 +108,13 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -121,6 +122,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -159,7 +161,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Data input/output</li>
     
@@ -186,7 +188,7 @@
 <a class="reference internal" href="#sdt.io.save_as_tiff" title="sdt.io.save_as_tiff"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_as_tiff()</span></code></a>, including metadata. Using the
 <a class="reference internal" href="#sdt.io.SdtTiffStack" title="sdt.io.SdtTiffStack"><code class="xref py py-class docutils literal notranslate"><span class="pre">SdtTiffStack</span></code></a> package, these files can be easily read again.</p></li>
 <li><p>There is support for reading single molecule data as produced by the
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code> package and various MATLAB tools using the <a class="reference internal" href="#sdt.io.load" title="sdt.io.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code></a>
+<a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package and various MATLAB tools using the <a class="reference internal" href="#sdt.io.load" title="sdt.io.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code></a>
 function. Most data formats can be written by <a class="reference internal" href="#sdt.io.save" title="sdt.io.save"><code class="xref py py-func docutils literal notranslate"><span class="pre">save()</span></code></a>.</p></li>
 <li><p>Further, there are helpers for common filesystem-related tasks, such as the
 <a class="reference internal" href="#sdt.io.chdir" title="sdt.io.chdir"><code class="xref py py-func docutils literal notranslate"><span class="pre">chdir()</span></code></a> and <a class="reference internal" href="#sdt.io.get_files" title="sdt.io.get_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_files()</span></code></a>.</p></li>
@@ -328,15 +330,15 @@ the <cite>fmt</cite> parameter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file</p></li>
-<li><p><strong>typ</strong> (<em>str, optional</em>) – If the file is HDF5, load this key (usually either “features” or
+<li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file</p></li>
+<li><p><strong>typ</strong> (<em>str</em><em>, </em><em>optional</em>) – If the file is HDF5, load this key (usually either “features” or
 “tracks”), unless it is “auto”. In that case try to read “tracks” and
 if that fails, try to read “features”.
 If the file is in particle_tracker format, this can be either “auto”,
 “features” or “tracks”. Defaults to “auto”.</p></li>
-<li><p><strong>fmt</strong> (<em>{“auto”, “hdf5”, “particle_tracker”, “pkc”, “pks”, “trc”, “csv”}, optional</em>) – Output format. If “auto”, infer the format from <cite>filename</cite>. Otherwise,
+<li><p><strong>fmt</strong> (<em>{&quot;auto&quot;</em><em>, </em><em>&quot;hdf5&quot;</em><em>, </em><em>&quot;particle_tracker&quot;</em><em>, </em><em>&quot;pkc&quot;</em><em>, </em><em>&quot;pks&quot;</em><em>, </em><em>&quot;trc&quot;</em><em>, </em><em>&quot;csv&quot;}</em><em>, </em><em>optional</em>) – Output format. If “auto”, infer the format from <cite>filename</cite>. Otherwise,
 write the given format.</p></li>
-<li><p><strong>color</strong> (<em>{“red”, “green”}, optional</em>) – For pkc files, specify whether to load the red (default) or green
+<li><p><strong>color</strong> (<em>{&quot;red&quot;</em><em>, </em><em>&quot;green&quot;}</em><em>, </em><em>optional</em>) – For pkc files, specify whether to load the red (default) or green
 channel.</p></li>
 </ul>
 </dd>
@@ -357,12 +359,12 @@ channel.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file to write to</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to write to</p></li>
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Data to save</p></li>
-<li><p><strong>typ</strong> (<em>{“auto”, “features”, “tracks”}</em>) – Specify whether to save feature data or tracking data. If “auto”,
+<li><p><strong>typ</strong> (<em>{&quot;auto&quot;</em><em>, </em><em>&quot;features&quot;</em><em>, </em><em>&quot;tracks&quot;}</em>) – Specify whether to save feature data or tracking data. If “auto”,
 consider <cite>data</cite> tracking data if a “particle” column is present,
 otherwise treat as feature data.</p></li>
-<li><p><strong>fmt</strong> (<em>{“auto”, “hdf5”, “particle_tracker”, “trc”}</em>) – Output format. If “auto”, infer the format from <cite>filename</cite>. Otherwise,
+<li><p><strong>fmt</strong> (<em>{&quot;auto&quot;</em><em>, </em><em>&quot;hdf5&quot;</em><em>, </em><em>&quot;particle_tracker&quot;</em><em>, </em><em>&quot;trc&quot;}</em>) – Output format. If “auto”, infer the format from <cite>filename</cite>. Otherwise,
 write the given format.</p></li>
 </ul>
 </dd>
@@ -379,9 +381,21 @@ write the given format.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file to load</p></li>
-<li><p><strong>Returns</strong></p></li>
-<li><p><strong>dict([d, stderr, qianerr, pa, emsd])</strong> – d is the diffusion coefficient in μm²/s, stderr its standard
+<li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p></li>
+<li><p><strong>Returns</strong> – </p></li>
+<li><p><strong>dict</strong><strong>(</strong><strong>[</strong><strong>d</strong> – d is the diffusion coefficient in μm²/s, stderr its standard
+error, qianerr its Qian error, pa the positional accuracy in nm and
+emsd a pandas.DataFrame containing the msd-vs.-tlag data.</p></li>
+<li><p><strong>stderr</strong> – d is the diffusion coefficient in μm²/s, stderr its standard
+error, qianerr its Qian error, pa the positional accuracy in nm and
+emsd a pandas.DataFrame containing the msd-vs.-tlag data.</p></li>
+<li><p><strong>qianerr</strong> – d is the diffusion coefficient in μm²/s, stderr its standard
+error, qianerr its Qian error, pa the positional accuracy in nm and
+emsd a pandas.DataFrame containing the msd-vs.-tlag data.</p></li>
+<li><p><strong>pa</strong> – d is the diffusion coefficient in μm²/s, stderr its standard
+error, qianerr its Qian error, pa the positional accuracy in nm and
+emsd a pandas.DataFrame containing the msd-vs.-tlag data.</p></li>
+<li><p><strong>emsd</strong><strong>]</strong><strong>)</strong> – d is the diffusion coefficient in μm²/s, stderr its standard
 error, qianerr its Qian error, pa the positional accuracy in nm and
 emsd a pandas.DataFrame containing the msd-vs.-tlag data.</p></li>
 </ul>
@@ -398,10 +412,10 @@ emsd a pandas.DataFrame containing the msd-vs.-tlag data.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file to load</p></li>
-<li><p><strong>typ</strong> (<em>{“features”, “tracks”}</em>) – Specify whether to load feature data (positions.mat) or tracking data
+<li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p></li>
+<li><p><strong>typ</strong> (<em>{&quot;features&quot;</em><em>, </em><em>&quot;tracks&quot;}</em>) – Specify whether to load feature data (positions.mat) or tracking data
 (tracks.mat)</p></li>
-<li><p><strong>load_protocol</strong> (<em>bool, optional</em>) – Look for a _protocol.mat file (i. e. replace the “_positions.mat” part
+<li><p><strong>load_protocol</strong> (<em>bool</em><em>, </em><em>optional</em>) – Look for a _protocol.mat file (i. e. replace the “_positions.mat” part
 of <cite>filename</cite> with “_protocol.mat”) in order to load the column names.
 This may be buggy for some older versions of particle_tracking_2D. If
 reading the protocol fails, this behaves as if load_protocol=False.
@@ -426,7 +440,7 @@ Defaults to True.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file to load</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p></li>
 <li><p><strong>green</strong> (<em>bool</em>) – If True, load <cite>pkmatrix_green</cite>, which is the right half of the image
 when using <code class="docutils literal notranslate"><span class="pre">prepare_peakposition</span></code> in 2 color mode. Otherwise,
 load <cite>pkmatrix</cite>. Defaults to False.</p></li>
@@ -449,7 +463,7 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file to load</p>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Loaded data.</p>
@@ -466,7 +480,7 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 <dd><p>Load tracking data from a .trc file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file to load</p>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Loaded data.</p>
@@ -483,7 +497,7 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 <dd><p>Load localization data from a CSV file created by ThunderSTORM</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file to load</p>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Single molecule data</p>
@@ -501,9 +515,9 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str or pathlib.Path</em>) – Name of the file to write to</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to write to</p></li>
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Data to save</p></li>
-<li><p><strong>typ</strong> (<em>{“features”, “tracks”}</em>) – Specify whether to save feature data or tracking data.</p></li>
+<li><p><strong>typ</strong> (<em>{&quot;features&quot;</em><em>, </em><em>&quot;tracks&quot;}</em>) – Specify whether to save feature data or tracking data.</p></li>
 </ul>
 </dd>
 </dl>
@@ -557,7 +571,7 @@ on the path relative to <cite>subdir</cite>. One can also define groups (using
 parenthesis), which will be returned in addition to the matching
 file names. <strong>A note to Windows users: Use a forward slash (/) for
 subdirectories.</strong></p></li>
-<li><p><strong>subdir</strong> (<em>str or pathlib.Path, optional</em>) – Any regular expression matching will be performed relative to <cite>subdir</cite>.
+<li><p><strong>subdir</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em>, </em><em>optional</em>) – Any regular expression matching will be performed relative to <cite>subdir</cite>.
 Defaults to <code class="docutils literal notranslate"><span class="pre">os.curdir</span></code>.</p></li>
 </ul>
 </dd>
@@ -636,7 +650,7 @@ as well, use the string.</p></li>
 <dt id="sdt.io.yaml.Loader">
 <em class="property">class </em><code class="sig-prename descclassname">sdt.io.yaml.</code><code class="sig-name descname">Loader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#Loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.io.yaml.Loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLoader</span></code> with support for many more types</p>
-<p>of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
+<p>of the <a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
 <p>Initialize the scanner.</p>
 </dd></dl>
 
@@ -644,7 +658,7 @@ as well, use the string.</p></li>
 <dt id="sdt.io.yaml.SafeLoader">
 <em class="property">class </em><code class="sig-prename descclassname">sdt.io.yaml.</code><code class="sig-name descname">SafeLoader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#SafeLoader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.io.yaml.SafeLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">SafeArrayLoader</span></code> with support for many more types</p>
-<p>of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
+<p>of the <a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
 <p>Initialize the scanner.</p>
 </dd></dl>
 
@@ -652,14 +666,14 @@ as well, use the string.</p></li>
 <dt id="sdt.io.yaml.Dumper">
 <em class="property">class </em><code class="sig-prename descclassname">sdt.io.yaml.</code><code class="sig-name descname">Dumper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span></em>, <em class="sig-param"><span class="n">default_style</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_flow_style</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">canonical</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">allow_unicode</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">line_break</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">explicit_start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">explicit_end</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tags</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sort_keys</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#Dumper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.io.yaml.Dumper" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayDumper</span></code> with support for many more types</p>
-<p>of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
+<p>of the <a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt id="sdt.io.yaml.SafeDumper">
 <em class="property">class </em><code class="sig-prename descclassname">sdt.io.yaml.</code><code class="sig-name descname">SafeDumper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stream</span></em>, <em class="sig-param"><span class="n">default_style</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">default_flow_style</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">canonical</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">indent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">width</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">allow_unicode</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">line_break</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">explicit_start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">explicit_end</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tags</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sort_keys</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#SafeDumper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.io.yaml.SafeDumper" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">SafeArrayDumper</span></code> with support for many more types</p>
-<p>of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
+<p>of the <a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -707,11 +721,19 @@ representing or constructing class instances (see PyYAML’s
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -722,7 +744,6 @@ representing or constructing class instances (see PyYAML’s
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

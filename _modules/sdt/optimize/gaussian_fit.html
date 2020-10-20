@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdt.gaussian_fit &mdash; sdt-python 14.2 documentation</title>
+  <title>sdt.optimize.gaussian_fit &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,25 +20,23 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> sdt-python
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -59,14 +60,14 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -84,31 +86,31 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../channel_reg.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat-field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -118,7 +120,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">sdt-python</a>
+          <a href="../../../index.html">sdt-python</a>
         
       </nav>
 
@@ -147,11 +149,11 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../index.html">Module code</a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>sdt.gaussian_fit</li>
+      <li>sdt.optimize.gaussian_fit</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -166,81 +168,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for sdt.gaussian_fit</h1><div class="highlight"><pre>
+  <h1>Source code for sdt.optimize.gaussian_fit</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="sd">&quot;&quot;&quot;Fitting of 1D and 2D Gaussian functions</span>
-<span class="sd">=======================================</span>
 
-<span class="sd">The :py:mod:`gaussian_fit` module provides models for the `lmfit</span>
-<span class="sd">&lt;http://lmfit.github.io/lmfit-py/&gt;`_ package for easy fitting of 1D and 2D</span>
-<span class="sd">Gaussian functions to data. For further information on how to use these, please</span>
-<span class="sd">refer to the :py:mod:`lmfit` documentation.</span>
-
-
-<span class="sd">Examples</span>
-<span class="sd">--------</span>
-
-<span class="sd">1D fit example: First create some data to work on.</span>
-
-<span class="sd">&gt;&gt;&gt; x = numpy.arange(100)  # Create some data</span>
-<span class="sd">&gt;&gt;&gt; y = numpy.exp(-(x - 50)**2 / 8)</span>
-
-<span class="sd">Now fit model to the data:</span>
-
-<span class="sd">&gt;&gt;&gt; m = sdt.gaussian_fit.Gaussian1DModel()  # Create model</span>
-<span class="sd">&gt;&gt;&gt; p = m.guess(y, x)  # Initial guess</span>
-<span class="sd">&gt;&gt;&gt; res = m.fit(y, params=p, x=x)  # Do the fitting</span>
-<span class="sd">&gt;&gt;&gt; res.best_values  # Show fitted parameters</span>
-<span class="sd">{&#39;offset&#39;: 4.4294473935549931e-136,</span>
-<span class="sd"> &#39;sigma&#39;: 1.9999999999999996,</span>
-<span class="sd"> &#39;center&#39;: 50.0,</span>
-<span class="sd"> &#39;amplitude&#39;: 1.0}</span>
-<span class="sd">&gt;&gt;&gt; res.eval(x=50.3)  # Evaluate fitted Gaussian at x=50.3</span>
-<span class="sd">0.98881304461123321</span>
-
-<span class="sd">2D fit example: Create data, a little more complicated in 2D.</span>
-
-<span class="sd">&gt;&gt;&gt; coords = numpy.indices((50, 100))  # Create data</span>
-<span class="sd">&gt;&gt;&gt; x, y = coords</span>
-<span class="sd">&gt;&gt;&gt; center = numpy.array([[20, 40]]).T</span>
-<span class="sd">&gt;&gt;&gt; centered_flat = coords.reshape((2, -1)) - center</span>
-<span class="sd">&gt;&gt;&gt; cov = numpy.linalg.inv(numpy.array([[8, 0], [0, 18]]))</span>
-<span class="sd">&gt;&gt;&gt; z = 2 * numpy.exp(-np.sum(centered_flat * (cov @ centered_flat), axis=0))</span>
-<span class="sd">&gt;&gt;&gt; z = z.reshape(x.shape)</span>
-
-<span class="sd">Do the fitting:</span>
-
-<span class="sd">&gt;&gt;&gt; m = sdt.gaussian_fit.Gaussian2DModel()  # Create model</span>
-<span class="sd">&gt;&gt;&gt; p = m.guess(z, x, y)  # Initial guess</span>
-<span class="sd">&gt;&gt;&gt; res = m.fit(z, params=p, x=x, y=y)  # Do the fitting</span>
-<span class="sd">&gt;&gt;&gt; res.best_values  # Show fitted parameters</span>
-<span class="sd">{&#39;rotation&#39;: 0.0,</span>
-<span class="sd"> &#39;offset&#39;: 2.6045547770814313e-55,</span>
-<span class="sd"> &#39;sigmay&#39;: 3.0,</span>
-<span class="sd"> &#39;centery&#39;: 40.0,</span>
-<span class="sd"> &#39;sigmax&#39;: 1.9999999999999996,</span>
-<span class="sd"> &#39;centerx&#39;: 20.0,</span>
-<span class="sd"> &#39;amplitude&#39;: 2.0}</span>
-<span class="sd">&gt;&gt;&gt; res.eval(x=20.5, y=40.5)  # Evaluate fitted Gaussian at x=20.5, y=40.5</span>
-<span class="sd">1.9117294272505907</span>
-
-
-<span class="sd">Models</span>
-<span class="sd">------</span>
-
-<span class="sd">.. autoclass:: Gaussian1DModel</span>
-<span class="sd">.. autoclass:: Gaussian2DModel</span>
-
-
-<span class="sd">Auxiliary functions</span>
-<span class="sd">-------------------</span>
-
-<span class="sd">.. autofunction:: guess_parameters</span>
-<span class="sd">.. autofunction:: gaussian_1d</span>
-<span class="sd">.. autofunction:: gaussian_2d</span>
+<span class="sd">This module provides models for fitting 1D and 2D Gaussians using the lmfit</span>
+<span class="sd">package. See the module-level documentation for details.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
@@ -248,7 +184,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="guess_parameters"><a class="viewcode-back" href="../../gaussian_fit.html#sdt.gaussian_fit.guess_parameters">[docs]</a><span class="k">def</span> <span class="nf">guess_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">indep_vars</span><span class="p">):</span>
+<div class="viewcode-block" id="guess_gaussian_parameters"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.guess_gaussian_parameters">[docs]</a><span class="k">def</span> <span class="nf">guess_gaussian_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">indep_vars</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Initial guess of parameters of the Gaussian</span>
 
 <span class="sd">    This function does a crude estimation of the parameters:</span>
@@ -326,80 +262,13 @@
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
-<div class="viewcode-block" id="gaussian_1d"><a class="viewcode-back" href="../../gaussian_fit.html#sdt.gaussian_fit.gaussian_1d">[docs]</a><span class="k">def</span> <span class="nf">gaussian_1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;1D gaussian</span>
-
-<span class="sd">    .. math:: A e^\frac{(x - c)^2}{2\sigma^2} + b</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : numpy.ndarray</span>
-<span class="sd">        Function arguments</span>
-<span class="sd">    amplitude : float, optional</span>
-<span class="sd">        `A` in the formula above. Defaults to 1.</span>
-<span class="sd">    center : float, optional</span>
-<span class="sd">        `c` in the formula above. Defaults to 0.</span>
-<span class="sd">    sigma : float, optional</span>
-<span class="sd">        :math:`\sigma` in the formula above. Defaults to 1.</span>
-<span class="sd">    offset : float, optional</span>
-<span class="sd">        `b` in the formula above. Defaults to 0.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        Function values</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">center</span><span class="p">)</span><span class="o">/</span><span class="n">sigma</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span></div>
-
-
-<div class="viewcode-block" id="gaussian_2d"><a class="viewcode-back" href="../../gaussian_fit.html#sdt.gaussian_fit.gaussian_2d">[docs]</a><span class="k">def</span> <span class="nf">gaussian_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span> <span class="n">sigma</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span>
-                <span class="n">offset</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;2D gaussian</span>
-
-<span class="sd">    .. math:: A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}</span>
-<span class="sd">        + \frac{(R(y - c_y))^2}{2\sigma_y^2}) + b,</span>
-
-<span class="sd">    where :math:`R` rotates the vector (x, y) by `rotation` radiants.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x, y : numpy.array</span>
-<span class="sd">        Function arguments</span>
-<span class="sd">    amplitude : float, optional</span>
-<span class="sd">        `A` in the formula above. Defaults to 1.</span>
-<span class="sd">    centerx, centery : float, optional</span>
-<span class="sd">        :math:`c_x`, :math:`c_y` in the formula above. Defaults to 0.</span>
-<span class="sd">    sigmax, sigmay : float, optional</span>
-<span class="sd">        :math:`\sigma_x`,  :math:`\sigma_y` in the formula above. Defaults</span>
-<span class="sd">        to 1.</span>
-<span class="sd">    offset : float, optional</span>
-<span class="sd">        `b` in the formula above. Defaults to 0.</span>
-<span class="sd">    rotation : float, optional</span>
-<span class="sd">        Rotate the Gaussian by that many radiants. Defaults to 0</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        Function values</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span>
-    <span class="n">sn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span>
-
-    <span class="n">xc_r</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cs</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">sn</span>  <span class="c1"># rotate center coordinates</span>
-    <span class="n">yc_r</span> <span class="o">=</span> <span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sn</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">cs</span>
-
-    <span class="n">x_r</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">cs</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">sn</span>  <span class="c1"># rotate independent variable</span>
-    <span class="n">y_r</span> <span class="o">=</span> <span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">sn</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">cs</span>
-
-    <span class="n">arg</span> <span class="o">=</span> <span class="p">((</span><span class="n">x_r</span> <span class="o">-</span> <span class="n">xc_r</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">y_r</span> <span class="o">-</span> <span class="n">yc_r</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
-    <span class="k">return</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">arg</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span></div>
-
-
 <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">lmfit</span>
 
+    <span class="kn">from</span> <span class="nn">..funcs</span> <span class="kn">import</span> <span class="n">gaussian_1d</span><span class="p">,</span> <span class="n">gaussian_2d_lmfit</span>
 
-<div class="viewcode-block" id="Gaussian1DModel"><a class="viewcode-back" href="../../gaussian_fit.html#sdt.gaussian_fit.Gaussian1DModel">[docs]</a>    <span class="k">class</span> <span class="nc">Gaussian1DModel</span><span class="p">(</span><span class="n">lmfit</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Gaussian1DModel"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.Gaussian1DModel">[docs]</a>    <span class="k">class</span> <span class="nc">Gaussian1DModel</span><span class="p">(</span><span class="n">lmfit</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Model class for fitting a 1D Gaussian</span>
 
 <span class="sd">        Derives from :class:`lmfit.Model`.</span>
@@ -413,7 +282,7 @@
 
         <span class="k">def</span> <span class="nf">guess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Make an initial guess using :func:`guess_parameters`&quot;&quot;&quot;</span>
-            <span class="n">pdict</span> <span class="o">=</span> <span class="n">guess_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">pdict</span> <span class="o">=</span> <span class="n">guess_gaussian_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
             <span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="n">pdict</span><span class="p">[</span><span class="s2">&quot;amplitude&quot;</span><span class="p">],</span>
                                     <span class="n">center</span><span class="o">=</span><span class="n">pdict</span><span class="p">[</span><span class="s2">&quot;center&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
                                     <span class="n">sigma</span><span class="o">=</span><span class="n">pdict</span><span class="p">[</span><span class="s2">&quot;sigma&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
@@ -421,13 +290,7 @@
             <span class="k">return</span> <span class="n">lmfit</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">update_param_vals</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_g2d_adaptor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">center0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sigma0</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
-                     <span class="n">sigma1</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">gaussian_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="p">(</span><span class="n">center0</span><span class="p">,</span> <span class="n">center1</span><span class="p">),</span>
-                           <span class="p">(</span><span class="n">sigma0</span><span class="p">,</span> <span class="n">sigma1</span><span class="p">),</span> <span class="n">offset</span><span class="p">,</span> <span class="n">rotation</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="Gaussian2DModel"><a class="viewcode-back" href="../../gaussian_fit.html#sdt.gaussian_fit.Gaussian2DModel">[docs]</a>    <span class="k">class</span> <span class="nc">Gaussian2DModel</span><span class="p">(</span><span class="n">lmfit</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<div class="viewcode-block" id="Gaussian2DModel"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.Gaussian2DModel">[docs]</a>    <span class="k">class</span> <span class="nc">Gaussian2DModel</span><span class="p">(</span><span class="n">lmfit</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Model class for fitting a 2D Gaussian</span>
 
 <span class="sd">        Derives from :class:`lmfit.Model`.</span>
@@ -437,7 +300,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span> <span class="o">+</span> <span class="n">lmfit</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">COMMON_DOC</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_g2d_adaptor</span><span class="p">,</span> <span class="n">independent_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">],</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">gaussian_2d_lmfit</span><span class="p">,</span> <span class="n">independent_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">],</span>
                              <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_param_hint</span><span class="p">(</span><span class="s2">&quot;sigma0&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_param_hint</span><span class="p">(</span><span class="s2">&quot;sigma1&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
@@ -445,7 +308,7 @@
 
         <span class="k">def</span> <span class="nf">guess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Make an initial guess using :func:`guess_parameters`&quot;&quot;&quot;</span>
-            <span class="n">pdict</span> <span class="o">=</span> <span class="n">guess_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">pdict</span> <span class="o">=</span> <span class="n">guess_gaussian_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
             <span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_params</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="n">pdict</span><span class="p">[</span><span class="s2">&quot;amplitude&quot;</span><span class="p">],</span>
                                     <span class="n">center0</span><span class="o">=</span><span class="n">pdict</span><span class="p">[</span><span class="s2">&quot;center&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
                                     <span class="n">center1</span><span class="o">=</span><span class="n">pdict</span><span class="p">[</span><span class="s2">&quot;center&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
@@ -466,11 +329,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -481,7 +352,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

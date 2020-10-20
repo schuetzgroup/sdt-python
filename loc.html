@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fluorescent feature localization &mdash; sdt-python 14.2 documentation</title>
+  <title>Fluorescent feature localization &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,19 +30,15 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="GUIs for the Jupyter notebook" href="nbui.html" />
-    <link rel="prev" title="Flat field correction" href="flatfield.html" /> 
+    <link rel="prev" title="Flat-field correction" href="flatfield.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -96,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Fluorescent feature localization</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-sdt.loc.daostorm_3d">daostorm_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-sdt.loc.cg">cg</a></li>
@@ -108,8 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -117,6 +118,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -155,7 +157,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Fluorescent feature localization</li>
     
@@ -262,7 +264,7 @@ relative to the bounding box of the ROI.</p>
 <li><p><strong>raw_image</strong> (<em>array-like</em>) – Raw image data</p></li>
 <li><p><strong>radius</strong> (<em>float</em>) – This is in units of pixels. Initial guess for the radius of the
 features.</p></li>
-<li><p><strong>model</strong> (<em>{“2dfixed”, “2d”, “3d”, “z”}</em>) – “2dfixed” will do fixed sigma 2d Gaussian fitting. “2d” does variable
+<li><p><strong>model</strong> (<em>{&quot;2dfixed&quot;</em><em>, </em><em>&quot;2d&quot;</em><em>, </em><em>&quot;3d&quot;</em><em>, </em><em>&quot;z&quot;}</em>) – “2dfixed” will do fixed sigma 2d Gaussian fitting. “2d” does variable
 sigma 2d Gaussian fitting. “3d” means that x, y sigma are independently
 variables (elliptical Gaussian, this is intened for determining the
 z position from astigmatism). When using “z”, the z position is
@@ -270,7 +272,7 @@ varied to fit the signal x and y sigmas.</p></li>
 <li><p><strong>threshold</strong> (<em>float</em>) – A number roughly equal to the value of the brightest pixel (minus the
 CCD baseline) in the dimmest peak to be detected. Local maxima with
 brightest pixels below this threshold will be discarded.</p></li>
-<li><p><strong>z_params</strong> (<em>z_fit.Parameters or str or pandas.DataFrame or None</em>) – Only necessary if the <cite>model</cite> is “z” (then it cannot be <cite>None</cite>),
+<li><p><strong>z_params</strong> (<a class="reference internal" href="#sdt.loc.z_fit.Parameters" title="sdt.loc.z_fit.Parameters"><em>z_fit.Parameters</em></a><em> or </em><em>str</em><em> or </em><em>pandas.DataFrame</em><em> or </em><em>None</em>) – Only necessary if the <cite>model</cite> is “z” (then it cannot be <cite>None</cite>),
 otherwise it is ignored. One may pass a <code class="xref py py-class docutils literal notranslate"><span class="pre">z_fit.Parameters</span></code>
 instance or a filename to load the parameters from or a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> with calibration data (<cite>z</cite> vs. <cite>size_x</cite>
@@ -285,11 +287,11 @@ the Crocker &amp; Grier bandpass filter, see
 Defaults to “Identity”.</p></li>
 <li><p><strong>find_filter_opts</strong> (<em>dict</em>) – Parameters to be passed to the filter. For “Cg”, this is
 “feature_radius”, for “Gaussian”, this is “sigma”</p></li>
-<li><p><strong>min_distance</strong> (<em>float or None, optional</em>) – Minimum distance between two features. This can be used to suppress
+<li><p><strong>min_distance</strong> (<em>float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Minimum distance between two features. This can be used to suppress
 detection of bright features as multiple overlapping ones if
 <cite>threshold</cite> is rather low. If <cite>None</cite>, use <cite>radius</cite> (original
 3D-DAOSTORM behavior). Defaults to None.</p></li>
-<li><p><strong>size_range</strong> (<em>list of float or None, optional</em>) – [min, max] of the feature sizes both in x and y direction. Features
+<li><p><strong>size_range</strong> (<em>list of float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – [min, max] of the feature sizes both in x and y direction. Features
 with sizes not in the range will be discarded, neighboring features
 will be re-fit. If None, use <code class="docutils literal notranslate"><span class="pre">[0.25*radius,</span> <span class="pre">inf]</span></code> (original
 3D-DAOSTORM behavior). Defaults to None.</p></li>
@@ -326,10 +328,10 @@ before calling <a class="reference internal" href="#sdt.loc.daostorm_3d.locate" 
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>image data</em>) – Passed to <a class="reference internal" href="#sdt.loc.daostorm_3d.locate" title="sdt.loc.daostorm_3d.locate"><code class="xref py py-func docutils literal notranslate"><span class="pre">locate()</span></code></a> as the first argument.</p></li>
-<li><p><strong>roi</strong> (<em>roi.PathROI or path</em>) – If this isn’t already a py:class:<cite>PathROI</cite>, use it to construct
+<li><p><strong>roi</strong> (<a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.PathROI"><em>roi.PathROI</em></a><em> or </em><em>path</em>) – If this isn’t already a py:class:<cite>PathROI</cite>, use it to construct
 one, i. e. it is passed as the first parameter to the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code> constructor.</p></li>
-<li><p><strong>rel_origin</strong> (<em>bool, optional</em>) – If True, the top-left corner coordinates of the path’s bounding
+<li><p><strong>rel_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the top-left corner coordinates of the path’s bounding
 rectangle will be subtracted off all feature coordinates, i. e.
 the top-left corner will be the new origin. Defaults to True.
 This is a keyword-only argument.</p></li>
@@ -386,10 +388,10 @@ before calling <a class="reference internal" href="#sdt.loc.daostorm_3d.batch" t
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>image data</em>) – Passed to <a class="reference internal" href="#sdt.loc.daostorm_3d.batch" title="sdt.loc.daostorm_3d.batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">batch()</span></code></a> as the first argument.</p></li>
-<li><p><strong>roi</strong> (<em>roi.PathROI or path</em>) – If this isn’t already a py:class:<cite>PathROI</cite>, use it to construct
+<li><p><strong>roi</strong> (<a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.PathROI"><em>roi.PathROI</em></a><em> or </em><em>path</em>) – If this isn’t already a py:class:<cite>PathROI</cite>, use it to construct
 one, i. e. it is passed as the first parameter to the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code> constructor.</p></li>
-<li><p><strong>rel_origin</strong> (<em>bool, optional</em>) – If True, the top-left corner coordinates of the path’s bounding
+<li><p><strong>rel_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the top-left corner coordinates of the path’s bounding
 rectangle will be subtracted off all feature coordinates, i. e.
 the top-left corner will be the new origin. Defaults to True.
 This is a keyword-only argument.</p></li>
@@ -464,7 +466,7 @@ before calling <a class="reference internal" href="#sdt.loc.cg.locate" title="sd
 <li><p><strong>data</strong> (<em>image data</em>) – Passed to <a class="reference internal" href="#sdt.loc.cg.locate" title="sdt.loc.cg.locate"><code class="xref py py-func docutils literal notranslate"><span class="pre">locate()</span></code></a> as the first argument.</p></li>
 <li><p><strong>roi</strong> (<em>path</em>) – This is used by the <a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.roi.PathROI</span></code></a> constructor
 to create the ROI</p></li>
-<li><p><strong>rel_origin</strong> (<em>bool, optional</em>) – If True, the top-left corner coordinates of the path’s bounding
+<li><p><strong>rel_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the top-left corner coordinates of the path’s bounding
 rectangle will be subtracted off all feature coordinates, i. e.
 the top-left corner will be the new origin. Defaults to True.
 This is a keyword-only argument.</p></li>
@@ -520,7 +522,7 @@ before calling <a class="reference internal" href="#sdt.loc.cg.batch" title="sdt
 <li><p><strong>data</strong> (<em>image data</em>) – Passed to <a class="reference internal" href="#sdt.loc.cg.batch" title="sdt.loc.cg.batch"><code class="xref py py-func docutils literal notranslate"><span class="pre">batch()</span></code></a> as the first argument.</p></li>
 <li><p><strong>roi</strong> (<em>path</em>) – This is used by the <a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.roi.PathROI</span></code></a> constructor
 to create the ROI</p></li>
-<li><p><strong>rel_origin</strong> (<em>bool, optional</em>) – If True, the top-left corner coordinates of the path’s bounding
+<li><p><strong>rel_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the top-left corner coordinates of the path’s bounding
 rectangle will be subtracted off all feature coordinates, i. e.
 the top-left corner will be the new origin. Defaults to True.
 This is a keyword-only argument.</p></li>
@@ -563,8 +565,8 @@ z position is determined by finding the minimum “distance” from the curve.</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> (<em>Parameters</em>) – Z fit parameters</p></li>
-<li><p><strong>resolution</strong> (<em>float, optional</em>) – Resolution, i. e. smallest z change detectable. Defaults to 1e-3.</p></li>
+<li><p><strong>params</strong> (<a class="reference internal" href="#sdt.loc.z_fit.Parameters" title="sdt.loc.z_fit.Parameters"><em>Parameters</em></a>) – Z fit parameters</p></li>
+<li><p><strong>resolution</strong> (<em>float</em><em>, </em><em>optional</em>) – Resolution, i. e. smallest z change detectable. Defaults to 1e-3.</p></li>
 </ul>
 </dd>
 </dl>
@@ -596,7 +598,7 @@ a_1 \left(\frac{z - c}{d}\right)^3 +
 a_2 \left(\frac{z - c}{d}\right)^4 + \ldots}\]</div>
 <dl class="py class">
 <dt id="sdt.loc.z_fit.Parameters.Tuple">
-<em class="property">class </em><code class="sig-name descname">Tuple</code><a class="reference internal" href="_modules/sdt/loc/z_fit.html#Parameters.Tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.loc.z_fit.Parameters.Tuple" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Tuple</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">w0</span></em>, <em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/loc/z_fit.html#Parameters.Tuple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.loc.z_fit.Parameters.Tuple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Named tuple of the parameters for one axis</p>
 <dl class="py attribute">
 <dt>
@@ -692,7 +694,7 @@ y direction.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>z</strong> (<em>numpy.ndarray</em>) – Array of z positions</p></li>
-<li><p><strong>factor</strong> (<em>numpy.ndarray or None, optional</em>) – Result of <a class="reference internal" href="#sdt.loc.z_fit.Parameters.exp_factor_from_z" title="sdt.loc.z_fit.Parameters.exp_factor_from_z"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exp_factor_from_z()</span></code></a> call. If <cite>None</cite>, it
+<li><p><strong>factor</strong> (<em>numpy.ndarray</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Result of <a class="reference internal" href="#sdt.loc.z_fit.Parameters.exp_factor_from_z" title="sdt.loc.z_fit.Parameters.exp_factor_from_z"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exp_factor_from_z()</span></code></a> call. If <cite>None</cite>, it
 will be called in this method. The purpose of this is to speed
 up computation if the exponential factor has already been
 calculated.</p></li>
@@ -714,7 +716,7 @@ row is for the y direction.</p>
 <dd><p>Save parameters to a yaml file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file</strong> (<em>str or file-like object</em>) – File name or file to write to</p>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em><em> or </em><em>file-like object</em>) – File name or file to write to</p>
 </dd>
 </dl>
 </dd></dl>
@@ -725,7 +727,7 @@ row is for the y direction.</p>
 <dd><p>Load parameters from a yaml file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file</strong> (<em>str or file-like object</em>) – File name or file to read from</p>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em><em> or </em><em>file-like object</em>) – File name or file to read from</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Class instance with parameters loaded from file</p>
@@ -746,7 +748,7 @@ row is for the y direction.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>loc</strong> (<em>pandas.DataFrame</em>) – Localization data of a calibration sample. <cite>z</cite>, <cite>size_x</cite>, and
 <cite>size_y</cite> columns need to be present.</p></li>
-<li><p><strong>guess</strong> (<em>ParamTuple, optional</em>) – Initial guess for the parameter fitting. The length of the
+<li><p><strong>guess</strong> (<em>ParamTuple</em><em>, </em><em>optional</em>) – Initial guess for the parameter fitting. The length of the
 <cite>guess.a</cite> array also determines the number of polynomial parameters
 to be fitted. Defaults to (1., 0., 1., np.ones(2)).</p></li>
 <li><p><strong>z_range</strong> (<em>tuple of float</em>) – Minimum and maximum valid z positions. Defaults to (-0.5, 0.5).</p></li>
@@ -824,7 +826,7 @@ science, Elsevier, 1996, 179, 298-310</p>
         <a href="nbui.html" class="btn btn-neutral float-right" title="GUIs for the Jupyter notebook" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="flatfield.html" class="btn btn-neutral float-left" title="Flat field correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="flatfield.html" class="btn btn-neutral float-left" title="Flat-field correction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -833,11 +835,19 @@ science, Elsevier, 1996, 179, 298-310</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -848,7 +858,6 @@ science, Elsevier, 1996, 179, 298-310</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

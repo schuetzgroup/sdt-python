@@ -1,0 +1,518 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.nbui.channel_splitter &mdash; sdt-python 15.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                15.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../channel_reg.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat-field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.nbui.channel_splitter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.nbui.channel_splitter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">ipywidgets</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">traitlets</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">.image_display</span> <span class="kn">import</span> <span class="n">ImageDisplay</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">roi</span>
+
+
+<span class="k">class</span> <span class="nc">_ExtentsInput</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Collection of numeric input widgets to specify a rectangle</span>
+
+<span class="sd">    by supplying origin coordinates, width, and height.</span>
+
+<span class="sd">    **Note that this is still experimental and may be subject to change.**</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">extents</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Tuple</span><span class="p">(</span><span class="n">default_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="sd">&quot;&quot;&quot;x coordinate, y coordinate, width, height of the rectangle&quot;&quot;&quot;</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Int</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Canvas width. The right border of the rectangle cannot go beyond.&quot;&quot;&quot;</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Int</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Canvas height. The bottom border of the rectangle cannot go beyond.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">BoundedIntText</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">BoundedIntText</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">BoundedIntText</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_h_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">BoundedIntText</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_extents_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_h_box</span><span class="p">:</span>
+            <span class="n">b</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_box_value_changed</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Color input boxes</span>
+        <span class="n">rgb</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">to_rgb</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">style</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&lt;style&gt;.chan_</span><span class="si">{}</span><span class="s2"> input {{background-color: &quot;</span>
+                 <span class="s2">&quot;rgba(</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">) !important}}&lt;/style&gt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                     <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">*</span><span class="p">[</span><span class="n">r</span> <span class="o">*</span> <span class="mi">255</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rgb</span><span class="p">],</span> <span class="n">alpha</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_style_html</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_style_html</span><span class="p">,</span>
+                          <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_box</span><span class="p">]),</span>
+                          <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_w_box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_h_box</span><span class="p">])])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_class</span><span class="p">(</span><span class="s2">&quot;chan_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="s2">&quot;height&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_update_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update max values for text boxes&quot;&quot;&quot;</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extents</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_box</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">w</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_box</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w_box</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_h_box</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">y</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;extents&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_extents_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extents traitlet changed&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_extents_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_bounds</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_x_box</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_y_box</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_w_box</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_h_box</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extents</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_box_value_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;One of the input box values was changed&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_extents_lock</span><span class="o">.</span><span class="n">locked</span><span class="p">():</span>
+            <span class="c1"># This was triggered by updating the extents traitlet. Do not</span>
+            <span class="c1"># update here.</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_box</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_box</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_w_box</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_h_box</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ChannelSplitter"><a class="viewcode-back" href="../../../nbui.html#sdt.nbui.ChannelSplitter">[docs]</a><span class="k">class</span> <span class="nc">ChannelSplitter</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find regions of different imaging channels recorded with same camera</span>
+
+<span class="sd">    If several channels are recorded side-by-side on the same camera chip,</span>
+<span class="sd">    find the region for each channel by drawing corresponding rectangles on</span>
+<span class="sd">    representative images.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Instance</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Image to display&quot;&quot;&quot;</span>
+    <span class="n">same_size</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Bool</span><span class="p">(</span><span class="n">default_value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;If True, all channels are forced to be the same size&quot;&quot;&quot;</span>
+    <span class="n">colors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="s2">&quot;C8&quot;</span><span class="p">,</span> <span class="s2">&quot;C6&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&quot;</span><span class="p">,</span> <span class="s2">&quot;C9&quot;</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Colors to use for drawing the channel ROIs&quot;&quot;&quot;</span>
+    <span class="n">rois</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">roi</span><span class="o">.</span><span class="n">ROI</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Tuple</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;ROIs selected using the widget&quot;&quot;&quot;</span>
+    <span class="n">channel_names</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Tuple</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;Channel names as displayed in the tab titles&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_channels</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_channels</span>
+<span class="sd">            Number of channels present on the images</span>
+<span class="sd">        *args, **kwargs</span>
+<span class="sd">            Passed to superclass constructor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_display</span> <span class="o">=</span> <span class="n">ImageDisplay</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+
+        <span class="c1"># Create boxes for entering ROI dimensions</span>
+        <span class="n">dt_children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_rois</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_channels</span><span class="p">):</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+            <span class="n">c</span> <span class="o">=</span> <span class="n">_ExtentsInput</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_extents_changed</span><span class="p">,</span> <span class="s2">&quot;extents&quot;</span><span class="p">)</span>
+            <span class="n">dt_children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+            <span class="n">r</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">RectangleSelector</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">image_display</span><span class="o">.</span><span class="n">ax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_drawn</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">rectprops</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;facecolor&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">alpha</span><span class="p">},</span>
+                <span class="n">useblit</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_rois</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Tab</span><span class="p">(</span><span class="n">dt_children</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active_channel_changed</span><span class="p">,</span>
+                                     <span class="s2">&quot;selected_index&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Checkbox to force same size on all channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_same_size_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Checkbox</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Same size&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">traitlets</span><span class="o">.</span><span class="n">link</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;same_size&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_same_size_box</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Buttons for splitting horizontally and vertically</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_hor_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;split horizontally&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_hor_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_hor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_ver_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;split vertically&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_ver_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_ver</span><span class="p">)</span>
+        <span class="c1"># Button for swapping channels (i.e., reversing their order)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_swap_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;swap channels&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_swap_button</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_swap_chan</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="p">,</span>
+                          <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_split_hor_button</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_split_ver_button</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_swap_button</span><span class="p">,</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_same_size_box</span><span class="p">]),</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">image_display</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_channels</span> <span class="o">=</span> <span class="n">n_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;channel </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_channels</span><span class="p">)]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_extents_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_rois_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_active_channel_changed</span><span class="p">()</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_input_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Callback if the `input` traitlet was changed&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_display</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="k">def</span> <span class="nf">_split_hor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&#39;split horizontally&#39; button pressed&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">split_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">ROI</span><span class="p">((</span><span class="n">i</span> <span class="o">*</span> <span class="n">split_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                  <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">split_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_channels</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_split_ver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&#39;split vertically&#39; button pressed&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">split_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">ROI</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">split_height</span><span class="p">),</span>
+                                  <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">split_height</span><span class="p">))</span>
+                          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_channels</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_swap_chan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&#39;swap channels&#39; button pressed&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rois</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_active_channel_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Active channel changed via tab&quot;&quot;&quot;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">selected_index</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mpl_rois</span><span class="p">):</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">idx</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_roi_drawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">click</span><span class="p">,</span> <span class="n">release</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A new ROI was drawn using the GUI&quot;&quot;&quot;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">selected_index</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mpl_rois</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">extents</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="n">ext</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ext</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ext</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ext</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">ext</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;same_size&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_roi_extents_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ROI extents changed by setting them via text boxes</span>
+
+<span class="sd">        Update the size of the other ROIs if :py:attr:`same_size` is True.</span>
+<span class="sd">        Redraw UI elements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_extents_lock</span><span class="o">.</span><span class="n">locked</span><span class="p">():</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_same_size_box</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">selected_index</span>
+            <span class="n">new_w</span><span class="p">,</span> <span class="n">new_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">extents</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_extents_lock</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">idx</span><span class="p">:</span>
+                        <span class="c1"># This widget caused the changes, no need to change it</span>
+                        <span class="k">continue</span>
+                    <span class="n">old_e</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">extents</span>
+                    <span class="n">new_e</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="nb">min</span><span class="p">(</span><span class="n">old_e</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_w</span><span class="p">),</span>
+                        <span class="nb">min</span><span class="p">(</span><span class="n">old_e</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">new_h</span><span class="p">),</span>
+                        <span class="n">new_w</span><span class="p">,</span>
+                        <span class="n">new_h</span>
+                    <span class="p">)</span>
+                    <span class="n">text</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="n">new_e</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_rois_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">ROI</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">extents</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">c</span><span class="o">.</span><span class="n">extents</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+                              <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_rois</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_redraw_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Redraw the ROIs with values from the text boxes&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">drawn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">children</span><span class="p">,</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_rois</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">extents</span>
+            <span class="n">drawn</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="s2">&quot;rois&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_validate_rois_traitlet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proposal</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ensure the correct number of ROIs is set&quot;&quot;&quot;</span>
+        <span class="n">rois</span> <span class="o">=</span> <span class="n">proposal</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rois</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_channels</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">TraitError</span><span class="p">(</span>
+                <span class="s2">&quot;Number of ROIs must match number of channels&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rois</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;rois&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_rois_traitlet_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`rois` traitlet was changed&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_rois_lock</span><span class="o">.</span><span class="n">locked</span><span class="p">():</span>
+            <span class="c1"># This was triggered by the _roi_extents_changed method</span>
+            <span class="k">return</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_extents_lock</span><span class="p">:</span>
+            <span class="c1"># Set self.same_size = False if ROIs have different sizes</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rois</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sz</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">size</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rois</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                <span class="k">if</span> <span class="n">sz</span> <span class="o">!=</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">size</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">same_size</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+
+            <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rois</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">children</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">4</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">extents</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">r</span><span class="o">.</span><span class="n">top_left</span><span class="p">,</span> <span class="o">*</span><span class="n">r</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_extents_changed</span><span class="p">()</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="s2">&quot;channel_names&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_validate_channel_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proposal</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ensure the correct number of channel names is set&quot;&quot;&quot;</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">proposal</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_channels</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">TraitError</span><span class="p">(</span>
+                <span class="s2">&quot;Number of channel names must match number of channels&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">names</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;channel_names&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_channel_names_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;`channel_names` traitlet was changed&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dimension_tabs</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

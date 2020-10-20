@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Diffusion analysis &mdash; sdt-python 14.2 documentation</title>
+  <title>Diffusion analysis &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Brightness analysis" href="brightness.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Diffusion analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#msd-calculation">MSD calculation</a></li>
@@ -101,14 +103,13 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -116,6 +117,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -154,7 +156,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Diffusion analysis</li>
     
@@ -312,17 +314,17 @@ DataFrame that identify mobile and immobile parts of trajectories. Where
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame or iterable of pandas.DataFrame</em>) – Tracking data. Either a single DataFrame or a collection of
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>iterable of pandas.DataFrame</em>) – Tracking data. Either a single DataFrame or a collection of
 DataFrames.</p></li>
 <li><p><strong>frame_rate</strong> (<em>float</em>) – Frame rate</p></li>
-<li><p><strong>n_lag</strong> (<em>int or inf, optional</em>) – Number of lag times (time steps) to consider at most. Defaults to
+<li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Number of lag times (time steps) to consider at most. Defaults to
 100.</p></li>
-<li><p><strong>n_boot</strong> (<em>int, optional</em>) – Number of bootstrapping iterations for calculation of errors.
+<li><p><strong>n_boot</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bootstrapping iterations for calculation of errors.
 Set to 0 to turn off bootstrapping for performance gain, in which
 case there will be no errors on the fit results. Defaults to 100.</p></li>
-<li><p><strong>ensemble</strong> (<em>bool, optional</em>) – Whether to calculate the MSDs for the whole data set or for each
+<li><p><strong>ensemble</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate the MSDs for the whole data set or for each
 trajectory individually. Defaults to True.</p></li>
-<li><p><strong>pixel_size</strong> (<em>float, optional</em>) – Pixel size; multiply coordinates by this factor. Defaults to 1
+<li><p><strong>pixel_size</strong> (<em>float</em><em>, </em><em>optional</em>) – Pixel size; multiply coordinates by this factor. Defaults to 1
 (no scaling).</p></li>
 </ul>
 </dd>
@@ -346,15 +348,15 @@ and <cite>time</cite>. This means, if your DataFrame has coordinate columns
 <dt id="sdt.motion.Msd.Result">
 <em class="property">class </em><code class="sig-name descname">Result</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msd</span></em>, <em class="sig-param"><span class="n">msd_err</span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.Msd.Result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of Result(msd, msd_err)</p>
-<dl class="py attribute">
+<dl class="py method">
 <dt id="sdt.motion.Msd.Result.msd">
-<code class="sig-name descname">msd</code><a class="headerlink" href="#sdt.motion.Msd.Result.msd" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">msd</code><a class="headerlink" href="#sdt.motion.Msd.Result.msd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
-<dl class="py attribute">
+<dl class="py method">
 <dt id="sdt.motion.Msd.Result.msd_err">
-<code class="sig-name descname">msd_err</code><a class="headerlink" href="#sdt.motion.Msd.Result.msd_err" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">msd_err</code><a class="headerlink" href="#sdt.motion.Msd.Result.msd_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
@@ -375,7 +377,7 @@ be one row with index <cite>e_name</cite>.</p>
 only one row.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>series</strong> (<em>bool, optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
+<dd class="field-odd"><p><strong>series</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
 <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code> in the constructor), <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>
 objects will be returned. Otherwise, return
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. Defaults to <cite>True</cite>.</p>
@@ -401,11 +403,11 @@ number of samples.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>{“anomalous”, “brownian”}, optional</em>) – Type of model to fit. Defaults to “brownian”.</p></li>
-<li><p><strong>n_lag</strong> (<em>int or inf, optional</em>) – Number of lag times to use for fitting. Defaults to 2 for the
+<li><p><strong>model</strong> (<em>{&quot;anomalous&quot;</em><em>, </em><em>&quot;brownian&quot;}</em><em>, </em><em>optional</em>) – Type of model to fit. Defaults to “brownian”.</p></li>
+<li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Number of lag times to use for fitting. Defaults to 2 for the
 Brownian model and <cite>inf</cite> for anomalous diffusion.</p></li>
-<li><p><strong>exposure_time</strong> (<em>float, optional</em>) – Exposure time. Defaults to 0, i.e. no exposure time compensation</p></li>
-<li><p><strong>initial</strong> (<em>tuple of float, len 3, optional</em>) – Initial guess for fitting anomalous diffusion. The tuple entries
+<li><p><strong>exposure_time</strong> (<em>float</em><em>, </em><em>optional</em>) – Exposure time. Defaults to 0, i.e. no exposure time compensation</p></li>
+<li><p><strong>initial</strong> (<em>tuple of float</em><em>, </em><em>len 3</em><em>, </em><em>optional</em>) – Initial guess for fitting anomalous diffusion. The tuple entries
 are diffusion coefficient, positional accuracy, and alpha.</p></li>
 </ul>
 </dd>
@@ -416,7 +418,7 @@ are diffusion coefficient, positional accuracy, and alpha.</p></li>
 
 <dl class="py class">
 <dt id="sdt.motion.MsdDist">
-<em class="property">class </em><code class="sig-prename descclassname">sdt.motion.</code><code class="sig-name descname">MsdDist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">frame_rate</span></em>, <em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">n_lag</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">n_boot</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ensemble</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fit_method</span><span class="o">=</span><span class="default_value">'lsq'</span></em>, <em class="sig-param"><span class="n">poly_order</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">e_name</span><span class="o">=</span><span class="default_value">'ensemble'</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pixel_size</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd_dist.html#MsdDist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.motion.MsdDist" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sdt.motion.</code><code class="sig-name descname">MsdDist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">frame_rate</span></em>, <em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">n_lag</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">n_boot</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ensemble</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fit_method</span><span class="o">=</span><span class="default_value">'lsq'</span></em>, <em class="sig-param"><span class="n">poly_order</span><span class="o">=</span><span class="default_value">30</span></em>, <em class="sig-param"><span class="n">e_name</span><span class="o">=</span><span class="default_value">'ensemble'</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pixel_size</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">assign_method</span><span class="o">=</span><span class="default_value">'msd'</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd_dist.html#MsdDist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.motion.MsdDist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and analyze mean square displacement (MSD) distribution</p>
 <p>from single moleclue tracking data. This differs from
 <a class="reference internal" href="#sdt.motion.Msd" title="sdt.motion.Msd"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.motion.Msd</span></code></a> by the fact that the distributions
@@ -426,24 +428,28 @@ components with different diffusion coefficients <a class="reference internal" h
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame or iterable of pandas.DataFrame</em>) – Tracking data. Either a single DataFrame or a collection of
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>iterable of pandas.DataFrame</em>) – Tracking data. Either a single DataFrame or a collection of
 DataFrames.</p></li>
 <li><p><strong>frame_rate</strong> (<em>float</em>) – Frame rate</p></li>
-<li><p><strong>n_components</strong> (<em>int, optional</em>) – Number of diffusing components. Defaults to 2.</p></li>
-<li><p><strong>n_lag</strong> (<em>int or inf, optional</em>) – Number of lag times (time steps) to consider at most. Defaults to
+<li><p><strong>n_components</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of diffusing components. Defaults to 2.</p></li>
+<li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Number of lag times (time steps) to consider at most. Defaults to
 10.</p></li>
-<li><p><strong>n_boot</strong> (<em>int, optional</em>) – Number of bootstrapping iterations for calculation of errors.
+<li><p><strong>n_boot</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bootstrapping iterations for calculation of errors.
 Set to 0 to turn off bootstrapping for performance gain, in which
 case there will be no errors on the fit results. Defaults to 0.</p></li>
-<li><p><strong>ensemble</strong> (<em>bool, optional</em>) – Whether to calculate the MSDs for the whole data set or for each
+<li><p><strong>ensemble</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to calculate the MSDs for the whole data set or for each
 trajectory individually. Defaults to True.</p></li>
-<li><p><strong>fit_method</strong> (<em>{“prony”, “lsq”, “weighted-lsq”}, optional</em>) – Method to use for cumulative distribution function (CDF) fitting.
+<li><p><strong>fit_method</strong> (<em>{&quot;prony&quot;</em><em>, </em><em>&quot;lsq&quot;</em><em>, </em><em>&quot;weighted-lsq&quot;}</em><em>, </em><em>optional</em>) – Method to use for cumulative distribution function (CDF) fitting.
 “prony” is a modified Prony’s method, “lsq” is least squares
 fitting, and “weighted-lsq” is weighted least squares fitting to
 account for the fact that the CDF data are concentrated at x=0.
 Defaults to “lsq”.</p></li>
-<li><p><strong>pixel_size</strong> (<em>float, optional</em>) – Pixel size; multiply coordinates by this factor. Defaults to 1
+<li><p><strong>pixel_size</strong> (<em>float</em><em>, </em><em>optional</em>) – Pixel size; multiply coordinates by this factor. Defaults to 1
 (no scaling).</p></li>
+<li><p><strong>assign_method</strong> (<em>{&quot;msd&quot;</em><em>, </em><em>&quot;weight&quot;}</em><em>, </em><em>optional</em>) – If “msd”, components are assigned according to increasing MSDs,
+i.e., lowest MSD will be component 1, next will be component 2,
+and so on. If “weight”, components are assigned according to
+increasing weights. Defaults to “msd”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Other Parameters</dt>
@@ -466,27 +472,27 @@ and <cite>time</cite>. This means, if your DataFrame has coordinate columns
 <dt id="sdt.motion.MsdDist.Result">
 <em class="property">class </em><code class="sig-name descname">Result</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msd</span></em>, <em class="sig-param"><span class="n">msd_err</span></em>, <em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">weight_err</span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.MsdDist.Result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of Result(msd, msd_err, weight, weight_err)</p>
-<dl class="py attribute">
+<dl class="py method">
 <dt id="sdt.motion.MsdDist.Result.msd">
-<code class="sig-name descname">msd</code><a class="headerlink" href="#sdt.motion.MsdDist.Result.msd" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">msd</code><a class="headerlink" href="#sdt.motion.MsdDist.Result.msd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
-<dl class="py attribute">
+<dl class="py method">
 <dt id="sdt.motion.MsdDist.Result.msd_err">
-<code class="sig-name descname">msd_err</code><a class="headerlink" href="#sdt.motion.MsdDist.Result.msd_err" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">msd_err</code><a class="headerlink" href="#sdt.motion.MsdDist.Result.msd_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
-<dl class="py attribute">
+<dl class="py method">
 <dt id="sdt.motion.MsdDist.Result.weight">
-<code class="sig-name descname">weight</code><a class="headerlink" href="#sdt.motion.MsdDist.Result.weight" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">weight</code><a class="headerlink" href="#sdt.motion.MsdDist.Result.weight" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 2</p>
 </dd></dl>
 
-<dl class="py attribute">
+<dl class="py method">
 <dt id="sdt.motion.MsdDist.Result.weight_err">
-<code class="sig-name descname">weight_err</code><a class="headerlink" href="#sdt.motion.MsdDist.Result.weight_err" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">weight_err</code><a class="headerlink" href="#sdt.motion.MsdDist.Result.weight_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 3</p>
 </dd></dl>
 
@@ -506,7 +512,7 @@ be one row with index <cite>e_name</cite>.</p>
 return a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> or a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>series</strong> (<em>bool, optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
+<dd class="field-odd"><p><strong>series</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
 <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code> in the constructor), <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>
 objects will be returned. Otherwise, return
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. Defaults to <cite>True</cite>.</p>
@@ -534,11 +540,11 @@ errors are <cite>NaN</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>model</strong> (<em>{“anomalous”, “brownian”}</em>) – Type of model to fit</p></li>
-<li><p><strong>n_lag</strong> (<em>int or inf, optional</em>) – Number of lag times to use for fitting. Defaults to 2 for the
+<li><p><strong>model</strong> (<em>{&quot;anomalous&quot;</em><em>, </em><em>&quot;brownian&quot;}</em>) – Type of model to fit</p></li>
+<li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Number of lag times to use for fitting. Defaults to 2 for the
 Brownian model and <cite>inf</cite> for anomalous diffusion.</p></li>
-<li><p><strong>exposure_time</strong> (<em>float, optional</em>) – Exposure time. Defaults to 0, i.e. no exposure time compensation</p></li>
-<li><p><strong>initial</strong> (<em>tuple of float, len 3, optional</em>) – Initial guess for fitting anomalous diffusion. The tuple entries
+<li><p><strong>exposure_time</strong> (<em>float</em><em>, </em><em>optional</em>) – Exposure time. Defaults to 0, i.e. no exposure time compensation</p></li>
+<li><p><strong>initial</strong> (<em>tuple of float</em><em>, </em><em>len 3</em><em>, </em><em>optional</em>) – Initial guess for fitting anomalous diffusion. The tuple entries
 are diffusion coefficient, positional accuracy, and alpha.</p></li>
 </ul>
 </dd>
@@ -563,10 +569,10 @@ to the tlag-vs.-MSD graph, where <span class="math notranslate nohighlight">\(D\
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msd_data</strong> (<em>msd_base.MsdData</em>) – MSD data</p></li>
-<li><p><strong>n_lag</strong> (<em>int or inf, optional</em>) – Maximum number of lag times to use for fitting. Defaults to
+<li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Maximum number of lag times to use for fitting. Defaults to
 <cite>inf</cite>, i.e. using all.</p></li>
-<li><p><strong>exposure_time</strong> (<em>float, optional</em>) – Exposure time. Defaults to 0, i.e. no exposure time correction</p></li>
-<li><p><strong>initial</strong> (<em>tuple of float, optional</em>) – Initial guesses for the fitting for <span class="math notranslate nohighlight">\(D\)</span>, <span class="math notranslate nohighlight">\(\epsilon\)</span>,
+<li><p><strong>exposure_time</strong> (<em>float</em><em>, </em><em>optional</em>) – Exposure time. Defaults to 0, i.e. no exposure time correction</p></li>
+<li><p><strong>initial</strong> (<em>tuple of float</em><em>, </em><em>optional</em>) – Initial guesses for the fitting for <span class="math notranslate nohighlight">\(D\)</span>, <span class="math notranslate nohighlight">\(\epsilon\)</span>,
 and <span class="math notranslate nohighlight">\(\alpha\)</span>. Defaults to <code class="docutils literal notranslate"><span class="pre">(0.5,</span> <span class="pre">0.05,</span> <span class="pre">1.)</span></code>.</p></li>
 </ul>
 </dd>
@@ -593,7 +599,7 @@ computed numerically using a sufficiently large <cite>n</cite> (100 by default).
 <li><p><strong>t</strong> (<em>numpy.ndarray</em>) – Lag times</p></li>
 <li><p><strong>alpha</strong> (<em>float</em>) – Anomalous diffusion exponent</p></li>
 <li><p><strong>exposure_time</strong> (<em>float</em>) – Exposure time</p></li>
-<li><p><strong>n</strong> (<em>int, optional</em>) – Number of summands for the numeric calculation. The complexity
+<li><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of summands for the numeric calculation. The complexity
 of the algorithm is O(n²). Defaults to 100.</p></li>
 </ul>
 </dd>
@@ -622,12 +628,12 @@ takes into account particle motion during exposure; see
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>t</strong> (<em>array-like or scalar</em>) – Lag times</p></li>
+<li><p><strong>t</strong> (<em>array-like</em><em> or </em><em>scalar</em>) – Lag times</p></li>
 <li><p><strong>d</strong> (<em>float</em>) – Diffusion coefficient</p></li>
 <li><p><strong>eps</strong> (<em>float</em>) – Positional accuracy.</p></li>
-<li><p><strong>alpha</strong> (<em>float, optional</em>) – Anomalous diffusion exponent. Defaults to 1.</p></li>
-<li><p><strong>exposure_time</strong> (<em>float, optional</em>) – Exposure time. Defaults to 0.</p></li>
-<li><p><strong>squeeze_result</strong> (<em>bool, optional</em>) – If <cite>True</cite>, return the result as a scalar type or 1D array if
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Anomalous diffusion exponent. Defaults to 1.</p></li>
+<li><p><strong>exposure_time</strong> (<em>float</em><em>, </em><em>optional</em>) – Exposure time. Defaults to 0.</p></li>
+<li><p><strong>squeeze_result</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite>, return the result as a scalar type or 1D array if
 possible. Otherwise, always return a 2D array. Defaults to <cite>True</cite>.</p></li>
 </ul>
 </dd>
@@ -644,15 +650,15 @@ possible. Otherwise, always return a 2D array. Defaults to <cite>True</cite>.</p
 <dt id="sdt.motion.AnomalousDiffusion.Result">
 <em class="property">class </em><code class="sig-name descname">Result</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fit</span></em>, <em class="sig-param"><span class="n">fit_err</span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of Result(fit, fit_err)</p>
-<dl class="py attribute">
+<dl class="py method">
 <dt id="sdt.motion.AnomalousDiffusion.Result.fit">
-<code class="sig-name descname">fit</code><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result.fit" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">fit</code><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
-<dl class="py attribute">
+<dl class="py method">
 <dt id="sdt.motion.AnomalousDiffusion.Result.fit_err">
-<code class="sig-name descname">fit_err</code><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result.fit_err" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">fit_err</code><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result.fit_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
@@ -670,7 +676,7 @@ tuple identifying both the DataFrame and the particle; c.f.
 return a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> or a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>series</strong> (<em>bool, optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
+<dd class="field-odd"><p><strong>series</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
 <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code> in the <a class="reference internal" href="#sdt.motion.Msd" title="sdt.motion.Msd"><code class="xref py py-class docutils literal notranslate"><span class="pre">Msd</span></code></a> constructor),
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code> objects will be returned. Otherwise,
 return <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. Defaults to <cite>True</cite>.</p>
@@ -694,8 +700,8 @@ for calculation of MSDs, this is all NaNs.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>show_legend</strong> (<em>bool, optional</em>) – Whether to add a legend to the plot. Defaults to <cite>True</cite>.</p></li>
-<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes or None, optional</em>) – Axes to use for plotting. If <cite>None</cite>, use <code class="docutils literal notranslate"><span class="pre">pyplot.gca()</span></code>.
+<li><p><strong>show_legend</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to add a legend to the plot. Defaults to <cite>True</cite>.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Axes to use for plotting. If <cite>None</cite>, use <code class="docutils literal notranslate"><span class="pre">pyplot.gca()</span></code>.
 Defaults to <cite>None</cite>.</p></li>
 </ul>
 </dd>
@@ -722,8 +728,8 @@ the tlag-vs.-MSD graph, where <span class="math notranslate nohighlight">\(D\)</
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msd_data</strong> (<em>msd_base.MsdData</em>) – MSD data</p></li>
-<li><p><strong>n_lag</strong> (<em>int or inf, optional</em>) – Maximum number of lag times to use for fitting. Defaults to 2.</p></li>
-<li><p><strong>exposure_time</strong> (<em>float, optional</em>) – Exposure time. Defaults to 0, i.e. no exposure time correction</p></li>
+<li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Maximum number of lag times to use for fitting. Defaults to 2.</p></li>
+<li><p><strong>exposure_time</strong> (<em>float</em><em>, </em><em>optional</em>) – Exposure time. Defaults to 0, i.e. no exposure time correction</p></li>
 </ul>
 </dd>
 </dl>
@@ -739,12 +745,12 @@ account particle motion during exposure; see
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>t</strong> (<em>array-like or scalar</em>) – Lag times</p></li>
+<li><p><strong>t</strong> (<em>array-like</em><em> or </em><em>scalar</em>) – Lag times</p></li>
 <li><p><strong>d</strong> (<em>float</em>) – Diffusion coefficient</p></li>
 <li><p><strong>eps</strong> (<em>float</em>) – Positional accuracy.</p></li>
-<li><p><strong>alpha</strong> (<em>float, optional</em>) – Anomalous diffusion exponent. Defaults to 1.</p></li>
-<li><p><strong>exposure_time</strong> (<em>float, optional</em>) – Exposure time. Defaults to 0.</p></li>
-<li><p><strong>squeeze_result</strong> (<em>bool, optional</em>) – If <cite>True</cite>, return the result as a scalar type or 1D array if
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Anomalous diffusion exponent. Defaults to 1.</p></li>
+<li><p><strong>exposure_time</strong> (<em>float</em><em>, </em><em>optional</em>) – Exposure time. Defaults to 0.</p></li>
+<li><p><strong>squeeze_result</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite>, return the result as a scalar type or 1D array if
 possible. Otherwise, always return a 2D array. Defaults to <cite>True</cite>.</p></li>
 </ul>
 </dd>
@@ -786,16 +792,16 @@ immobilized</p></li>
 for a part of a trajectory to be considered immobilized. Duration
 is the difference of the maximum frame number and the minimum frame
 number. E. g. if the frames 1, 2, and 4 would lead to a duration of 3.</p></li>
-<li><p><strong>label_mobile</strong> (<em>bool, optional</em>) – Whether to give each mobile track section a distinct label (a negative
+<li><p><strong>label_mobile</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to give each mobile track section a distinct label (a negative
 number starting at -2). Defaults to True.</p></li>
-<li><p><strong>longest_only</strong> (<em>bool, optional</em>) – If True, search only for the longest immobilzation in each track to
+<li><p><strong>longest_only</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, search only for the longest immobilzation in each track to
 speed up the process. Defaults to False.</p></li>
-<li><p><strong>rtol</strong> (<em>float, optional</em>) – The fraction of localizations that may not be within <cite>max_dist</cite> of
+<li><p><strong>rtol</strong> (<em>float</em><em>, </em><em>optional</em>) – The fraction of localizations that may not be within <cite>max_dist</cite> of
 the center of mass while still recognizing the sub-track as immobile.
 One also has to set the <cite>a_tol</cite> parameter to something non-zero if
 using this since a sub-track will not be considered immobile if either
 <cite>r_tol</cite> or <cite>a_tol</cite> are exceeded. Defaults to 0.</p></li>
-<li><p><strong>atol</strong> (<em>int, optional</em>) – The number of localizations that may not be within <cite>max_dist</cite> of
+<li><p><strong>atol</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of localizations that may not be within <cite>max_dist</cite> of
 the center of mass while still recognizing the sub-track as immobile.
 One also has to set the <cite>r_tol</cite> parameter to something non-zero if
 using this since a sub-track will not be considered immobile if either
@@ -886,9 +892,9 @@ immobilized</p></li>
 for a part of a trajectory to be considered immobilized. Duration
 is the difference of the maximum frame number and the minimum frame
 number. E. g. if the frames 1, 2, and 4 would lead to a duration of 3.</p></li>
-<li><p><strong>label_mobile</strong> (<em>bool, optional</em>) – Whether to give each mobile track section a distinct label (a negative
+<li><p><strong>label_mobile</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to give each mobile track section a distinct label (a negative
 number starting at -2). Defaults to True.</p></li>
-<li><p><strong>longest_only</strong> (<em>bool, optional</em>) – If True, search only for the longest immobilzation in each track to
+<li><p><strong>longest_only</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, search only for the longest immobilzation in each track to
 speed up the process. Defaults to False.</p></li>
 </ul>
 </dd>
@@ -953,11 +959,19 @@ Journal, Elsevier BV, 1997, 73, 1073–1080</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -968,7 +982,6 @@ Journal, Elsevier BV, 1997, 73, 1073–1080</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

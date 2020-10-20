@@ -1,16 +1,18 @@
 
 
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; sdt-python 14.2 documentation</title>
+  <title>Index &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -18,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -26,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -77,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -86,7 +87,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -95,14 +96,13 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -110,6 +110,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -148,7 +149,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Index</li>
     
@@ -200,7 +201,7 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.__call__">__call__() (sdt.chromatic.Corrector method)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.__call__">__call__() (sdt.channel_reg.Registrator method)</a>
 
       <ul>
         <li><a href="flatfield.html#sdt.flatfield.Corrector.__call__">(sdt.flatfield.Corrector method)</a>
@@ -210,6 +211,14 @@
         <li><a href="funcs.html#sdt.funcs.ECDF.__call__">(sdt.funcs.ECDF method)</a>
 </li>
         <li><a href="funcs.html#sdt.funcs.StepFunction.__call__">(sdt.funcs.StepFunction method)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.AffineModel.__call__">(sdt.optimize.AffineModel method)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.AffineModelResult.__call__">(sdt.optimize.AffineModelResult method)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.ExpSumModel.__call__">(sdt.optimize.ExpSumModel method)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.ExpSumModelResult.__call__">(sdt.optimize.ExpSumModelResult method)</a>
 </li>
         <li><a href="roi.html#sdt.roi.MaskROI.__call__">(sdt.roi.MaskROI method)</a>
 </li>
@@ -226,9 +235,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="loc.html#sdt.loc.z_fit.Parameters.Tuple.a">a (sdt.loc.z_fit.Parameters.Tuple attribute)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.acceptor_channel">acceptor_channel (sdt.fret.SmFretTracker attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.acceptor_channel">acceptor_channel (sdt.fret.SmFRETTracker attribute)</a>
 </li>
       <li><a href="image.html#sdt.image.adaptive_thresh">adaptive_thresh() (in module sdt.image)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.AffineModel">AffineModel (class in sdt.optimize)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.AffineModelResult">AffineModelResult (class in sdt.optimize)</a>
 </li>
       <li><a href="nbui.html#sdt.nbui.Locator.algorithm">algorithm (sdt.nbui.Locator attribute)</a>
 
@@ -236,10 +249,10 @@
         <li><a href="nbui.html#sdt.nbui.Thresholder.algorithm">(sdt.nbui.Thresholder attribute)</a>
 </li>
       </ul></li>
-      <li><a href="motion.html#sdt.motion.AnomalousDiffusion">AnomalousDiffusion (class in sdt.motion)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="motion.html#sdt.motion.AnomalousDiffusion">AnomalousDiffusion (class in sdt.motion)</a>
+</li>
       <li><a href="motion.html#sdt.motion.AnomalousDiffusion.Result">AnomalousDiffusion.Result (class in sdt.motion)</a>
 </li>
       <li><a href="roi.html#sdt.roi.PathROI.area">area (sdt.roi.PathROI attribute)</a>
@@ -248,9 +261,11 @@
 </li>
       <li><a href="nbui.html#sdt.nbui.ROISelector.auto_category">auto_category (sdt.nbui.ROISelector attribute)</a>
 </li>
-      <li><a href="nbui.html#sdt.nbui.Locator.auto_scale">auto_scale() (sdt.nbui.Locator method)</a>
+      <li><a href="nbui.html#sdt.nbui.ImageDisplay.auto_scale">auto_scale() (sdt.nbui.ImageDisplay method)</a>
 </li>
       <li><a href="flatfield.html#sdt.flatfield.Corrector.avg_img">avg_img (sdt.flatfield.Corrector attribute)</a>
+</li>
+      <li><a href="nbui.html#sdt.nbui.ImageDisplay.ax">ax (sdt.nbui.ImageDisplay attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -278,11 +293,17 @@
 </li>
       <li><a href="changepoint.html#sdt.changepoint.BayesOnline">BayesOnline (class in sdt.changepoint)</a>
 </li>
+      <li><a href="optimize.html#sdt.optimize.AffineModelResult.best_values">best_values (sdt.optimize.AffineModelResult attribute)</a>
+
+      <ul>
+        <li><a href="optimize.html#sdt.optimize.ExpSumModelResult.best_values">(sdt.optimize.ExpSumModelResult attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="flatfield.html#sdt.flatfield.Corrector.bg">bg (sdt.flatfield.Corrector attribute)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.bleach_step">bleach_step() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.bleach_step">bleach_step() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
       <li><a href="roi.html#sdt.roi.ROI.bottom_right">bottom_right (sdt.roi.ROI attribute)</a>
 </li>
@@ -290,7 +311,7 @@
 </li>
       <li><a href="roi.html#sdt.roi.PathROI.bounding_box_int">bounding_box_int (sdt.roi.PathROI attribute)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.brightness_options">brightness_options (sdt.fret.SmFretTracker attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.brightness_options">brightness_options (sdt.fret.SmFRETTracker attribute)</a>
 </li>
       <li><a href="sim.html#sdt.sim.brownian_track">brownian_track() (in module sdt.sim)</a>
 </li>
@@ -304,15 +325,15 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.calc_detection_eff">calc_detection_eff() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.calc_detection_eff">calc_detection_eff() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.calc_direct_excitation">calc_direct_excitation() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.calc_direct_excitation">calc_direct_excitation() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.calc_excitation_eff">calc_excitation_eff() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.calc_excitation_eff">calc_excitation_eff() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.calc_fret_values">calc_fret_values() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.calc_fret_values">calc_fret_values() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.calc_leakage">calc_leakage() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.calc_leakage">calc_leakage() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
       <li><a href="multicolor.html#sdt.multicolor.calc_pair_distance">calc_pair_distance() (in module sdt.multicolor)</a>
 </li>
@@ -320,32 +341,40 @@
 </li>
       <li><a href="nbui.html#sdt.nbui.ROISelector.categories">categories (sdt.nbui.ROISelector attribute)</a>
 </li>
+      <li><a href="image.html#sdt.image.center">center() (in module sdt.image)</a>
+</li>
       <li><a href="image.html#sdt.image.cg">cg() (in module sdt.image)</a>
 </li>
       <li><a href="image.html#sdt.image.cg_bg">cg_bg() (in module sdt.image)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.channel_names">channel_names (sdt.chromatic.Corrector attribute)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.channel_names">channel_names (sdt.channel_reg.Registrator attribute)</a>
+
+      <ul>
+        <li><a href="nbui.html#sdt.nbui.ChannelSplitter.channel_names">(sdt.nbui.ChannelSplitter attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="nbui.html#sdt.nbui.ChannelSplitter">ChannelSplitter (class in sdt.nbui)</a>
 </li>
       <li><a href="io.html#sdt.io.chdir">chdir() (in module sdt.io)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.chromatic_corr">chromatic_corr (sdt.fret.SmFretTracker attribute)</a>
-</li>
       <li><a href="image.html#sdt.image.CircleMask">CircleMask (class in sdt.image)</a>
-</li>
-      <li><a href="exp_fit.html#sdt.exp_fit.OdeSolver.coefficients">coefficients() (sdt.exp_fit.OdeSolver property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.coloc_dist">coloc_dist (sdt.fret.SmFretTracker attribute)</a>
+      <li><a href="nbui.html#sdt.nbui.ImageDisplay.cmap">cmap (sdt.nbui.ImageDisplay attribute)</a>
+</li>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.coloc_dist">coloc_dist (sdt.fret.SmFRETTracker attribute)</a>
+</li>
+      <li><a href="nbui.html#sdt.nbui.ChannelSplitter.colors">colors (sdt.nbui.ChannelSplitter attribute)</a>
 </li>
       <li><a href="helper.html#sdt.config.columns">columns (in module sdt.config)</a>
 
       <ul>
-        <li><a href="chromatic.html#sdt.chromatic.Corrector.columns">(sdt.chromatic.Corrector attribute)</a>
+        <li><a href="channel_reg.html#sdt.channel_reg.Registrator.columns">(sdt.channel_reg.Registrator attribute)</a>
 </li>
-        <li><a href="fret.html#sdt.fret.SmFretAnalyzer.columns">(sdt.fret.SmFretAnalyzer attribute)</a>
+        <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.columns">(sdt.fret.SmFRETAnalyzer attribute)</a>
 </li>
-        <li><a href="fret.html#sdt.fret.SmFretTracker.columns">(sdt.fret.SmFretTracker attribute)</a>
+        <li><a href="fret.html#sdt.fret.SmFRETTracker.columns">(sdt.fret.SmFRETTracker attribute)</a>
 </li>
       </ul></li>
       <li><a href="changepoint.html#sdt.changepoint.ConstHazard">ConstHazard (class in sdt.changepoint)</a>
@@ -354,12 +383,8 @@
 </li>
       <li><a href="flatfield.html#sdt.flatfield.Corrector.corr_img">corr_img (sdt.flatfield.Corrector attribute)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector">Corrector (class in sdt.chromatic)</a>
-
-      <ul>
-        <li><a href="flatfield.html#sdt.flatfield.Corrector">(class in sdt.flatfield)</a>
+      <li><a href="flatfield.html#sdt.flatfield.Corrector">Corrector (class in sdt.flatfield)</a>
 </li>
-      </ul></li>
       <li><a href="changepoint.html#sdt.changepoint.CostL1.cost">cost() (sdt.changepoint.CostL1 method)</a>
 
       <ul>
@@ -370,7 +395,9 @@
 </li>
       <li><a href="changepoint.html#sdt.changepoint.CostL2">CostL2 (class in sdt.changepoint)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.cp_detector">cp_detector (sdt.fret.SmFretAnalyzer attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.cp_detector">cp_detector (sdt.fret.SmFRETAnalyzer attribute)</a>
+</li>
+      <li><a href="nbui.html#sdt.nbui.FileDialog.cur_dir">cur_dir (sdt.nbui.FileDialog attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -380,11 +407,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="plot.html#sdt.plot.density_scatter">density_scatter() (in module sdt.plot)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.detection_eff">detection_eff (sdt.fret.SmFretAnalyzer attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.detection_eff">detection_eff (sdt.fret.SmFRETAnalyzer attribute)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.determine_parameters">determine_parameters() (sdt.chromatic.Corrector method)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.determine_parameters">determine_parameters() (sdt.channel_reg.Registrator method)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.direct_excitation">direct_excitation (sdt.fret.SmFretAnalyzer attribute)</a>
+      <li><a href="image.html#sdt.image.DiamondMask">DiamondMask (class in sdt.image)</a>
+</li>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.direct_excitation">direct_excitation (sdt.fret.SmFRETAnalyzer attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -408,14 +437,22 @@
 </li>
       <li><a href="roi.html#sdt.roi.EllipseROI">EllipseROI (class in sdt.roi)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.eval">eval() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.eval">eval() (sdt.fret.SmFRETAnalyzer method)</a>
+
+      <ul>
+        <li><a href="optimize.html#sdt.optimize.AffineModel.eval">(sdt.optimize.AffineModel static method)</a>
 </li>
+        <li><a href="optimize.html#sdt.optimize.AffineModelResult.eval">(sdt.optimize.AffineModelResult method)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.ExpSumModel.eval">(sdt.optimize.ExpSumModel static method)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.ExpSumModelResult.eval">(sdt.optimize.ExpSumModelResult method)</a>
+</li>
+      </ul></li>
       <li><a href="fret.html#sdt.fret.FrameSelector.excitation_frames">excitation_frames() (sdt.fret.FrameSelector property)</a>
 
       <ul>
-        <li><a href="fret.html#sdt.fret.SmFretAnalyzer.excitation_frames">(sdt.fret.SmFretAnalyzer property)</a>
-</li>
-        <li><a href="fret.html#sdt.fret.SmFretTracker.excitation_frames">(sdt.fret.SmFretTracker property)</a>
+        <li><a href="fret.html#sdt.fret.SmFRETTracker.excitation_frames">(sdt.fret.SmFRETTracker property)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -423,18 +460,24 @@
       <li><a href="fret.html#sdt.fret.FrameSelector.excitation_seq">excitation_seq() (sdt.fret.FrameSelector property)</a>
 
       <ul>
-        <li><a href="fret.html#sdt.fret.SmFretAnalyzer.excitation_seq">(sdt.fret.SmFretAnalyzer property)</a>
-</li>
-        <li><a href="fret.html#sdt.fret.SmFretTracker.excitation_seq">(sdt.fret.SmFretTracker property)</a>
+        <li><a href="fret.html#sdt.fret.SmFRETTracker.excitation_seq">(sdt.fret.SmFRETTracker property)</a>
 </li>
       </ul></li>
+      <li><a href="optimize.html#sdt.optimize.ExpSumModelResult.exp">exp (sdt.optimize.ExpSumModelResult attribute)</a>
+</li>
       <li><a href="loc.html#sdt.loc.z_fit.Parameters.exp_factor_der">exp_factor_der() (sdt.loc.z_fit.Parameters method)</a>
 </li>
       <li><a href="loc.html#sdt.loc.z_fit.Parameters.exp_factor_from_z">exp_factor_from_z() (sdt.loc.z_fit.Parameters method)</a>
 </li>
-      <li><a href="exp_fit.html#sdt.exp_fit.exp_sum">exp_sum() (in module sdt.exp_fit)</a>
+      <li><a href="funcs.html#sdt.funcs.exp_sum">exp_sum() (in module sdt.funcs)</a>
+</li>
+      <li><a href="funcs.html#sdt.funcs.exp_sum_lmfit">exp_sum_lmfit() (in module sdt.funcs)</a>
 </li>
       <li><a href="motion.html#sdt.motion.AnomalousDiffusion.exposure_time_corr">exposure_time_corr() (sdt.motion.AnomalousDiffusion static method)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.ExpSumModel">ExpSumModel (class in sdt.optimize)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.ExpSumModelResult">ExpSumModelResult (class in sdt.optimize)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -442,9 +485,11 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.feat1">feat1 (sdt.chromatic.Corrector attribute)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.feat1">feat1 (sdt.channel_reg.Registrator attribute)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.feat2">feat2 (sdt.chromatic.Corrector attribute)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.feat2">feat2 (sdt.channel_reg.Registrator attribute)</a>
+</li>
+      <li><a href="nbui.html#sdt.nbui.FileDialog">FileDialog (class in sdt.nbui)</a>
 </li>
       <li><a href="image.html#sdt.image.fill_gamut">fill_gamut() (in module sdt.image)</a>
 </li>
@@ -466,41 +511,47 @@
 </li>
       <li><a href="motion.html#sdt.motion.find_immobilizations_int">find_immobilizations_int() (in module sdt.motion)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.find_pairs">find_pairs() (sdt.chromatic.Corrector method)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.find_pairs">find_pairs() (sdt.channel_reg.Registrator method)</a>
 </li>
-      <li><a href="motion.html#sdt.motion.AnomalousDiffusion.Result.fit">fit (sdt.motion.AnomalousDiffusion.Result attribute)</a>
-</li>
-      <li><a href="exp_fit.html#sdt.exp_fit.fit">fit() (in module sdt.exp_fit)</a>
+      <li><a href="loc.html#sdt.loc.z_fit.Fitter.fit">fit() (sdt.loc.z_fit.Fitter method)</a>
 
       <ul>
-        <li><a href="loc.html#sdt.loc.z_fit.Fitter.fit">(sdt.loc.z_fit.Fitter method)</a>
+        <li><a href="motion.html#sdt.motion.AnomalousDiffusion.Result.fit">(sdt.motion.AnomalousDiffusion.Result property)</a>
 </li>
         <li><a href="motion.html#sdt.motion.Msd.fit">(sdt.motion.Msd method)</a>
 </li>
         <li><a href="motion.html#sdt.motion.MsdDist.fit">(sdt.motion.MsdDist method)</a>
 </li>
-      </ul></li>
-      <li><a href="motion.html#sdt.motion.AnomalousDiffusion.Result.fit_err">fit_err (sdt.motion.AnomalousDiffusion.Result attribute)</a>
+        <li><a href="optimize.html#sdt.optimize.AffineModel.fit">(sdt.optimize.AffineModel method)</a>
 </li>
+        <li><a href="optimize.html#sdt.optimize.ExpSumModel.fit">(sdt.optimize.ExpSumModel method)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.ProbExpSumModel.fit">(sdt.optimize.ProbExpSumModel method)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.RANSAC.fit">(sdt.optimize.RANSAC method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.fit_parameters">fit_parameters() (sdt.chromatic.Corrector method)</a>
+      <li><a href="motion.html#sdt.motion.AnomalousDiffusion.Result.fit_err">fit_err() (sdt.motion.AnomalousDiffusion.Result property)</a>
+</li>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.fit_parameters">fit_parameters() (sdt.channel_reg.Registrator method)</a>
 </li>
       <li><a href="flatfield.html#sdt.flatfield.Corrector.fit_result">fit_result (sdt.flatfield.Corrector attribute)</a>
 </li>
       <li><a href="loc.html#sdt.loc.z_fit.Fitter">Fitter (class in sdt.loc.z_fit)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.flag_excitation_type">flag_excitation_type() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.flag_excitation_type">flag_excitation_type() (sdt.fret.SmFRETTracker method)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.flatfield_correction">flatfield_correction() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.flatfield_correction">flatfield_correction() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
       <li><a href="helper.html#sdt.helper.flatten_multiindex">flatten_multiindex() (in module sdt.helper)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.frame_selector">frame_selector (sdt.fret.SmFretTracker attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.frame_selector">frame_selector (sdt.fret.SmFRETTracker attribute)</a>
 </li>
       <li><a href="fret.html#sdt.fret.FrameSelector">FrameSelector (class in sdt.fret)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.fret_correction">fret_correction() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.fret_correction">fret_correction() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
       <li><a href="helper.html#sdt.helper.Slicerator.from_class">from_class() (sdt.helper.Slicerator class method)</a>
 </li>
@@ -508,10 +559,10 @@
 </li>
       <li><a href="brightness.html#sdt.brightness.from_raw_image">from_raw_image() (in module sdt.brightness)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.from_yaml">from_yaml() (sdt.chromatic.Corrector class method)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.from_yaml">from_yaml() (sdt.channel_reg.Registrator class method)</a>
 
       <ul>
-        <li><a href="fret.html#sdt.fret.SmFretTracker.from_yaml">(sdt.fret.SmFretTracker class method)</a>
+        <li><a href="fret.html#sdt.fret.SmFRETTracker.from_yaml">(sdt.fret.SmFRETTracker class method)</a>
 </li>
         <li><a href="roi.html#sdt.roi.MaskROI.from_yaml">(sdt.roi.MaskROI class method)</a>
 </li>
@@ -536,13 +587,13 @@
 </li>
       <li><a href="sim.html#sdt.sim.gauss_psf_numba">gauss_psf_numba() (in module sdt.sim)</a>
 </li>
-      <li><a href="gaussian_fit.html#sdt.gaussian_fit.Gaussian1DModel">Gaussian1DModel (class in sdt.gaussian_fit)</a>
+      <li><a href="optimize.html#sdt.optimize.Gaussian1DModel">Gaussian1DModel (class in sdt.optimize)</a>
 </li>
-      <li><a href="gaussian_fit.html#sdt.gaussian_fit.Gaussian2DModel">Gaussian2DModel (class in sdt.gaussian_fit)</a>
+      <li><a href="optimize.html#sdt.optimize.Gaussian2DModel">Gaussian2DModel (class in sdt.optimize)</a>
 </li>
-      <li><a href="gaussian_fit.html#sdt.gaussian_fit.gaussian_1d">gaussian_1d() (in module sdt.gaussian_fit)</a>
+      <li><a href="funcs.html#sdt.funcs.gaussian_1d">gaussian_1d() (in module sdt.funcs)</a>
 </li>
-      <li><a href="gaussian_fit.html#sdt.gaussian_fit.gaussian_2d">gaussian_2d() (in module sdt.gaussian_fit)</a>
+      <li><a href="funcs.html#sdt.funcs.gaussian_2d">gaussian_2d() (in module sdt.funcs)</a>
 </li>
       <li><a href="image.html#sdt.image.gaussian_filter">gaussian_filter() (in module sdt.image)</a>
 </li>
@@ -550,11 +601,9 @@
 </li>
       <li><a href="changepoint.html#sdt.changepoint.GaussianObsLikelihood">GaussianObsLikelihood (class in sdt.changepoint)</a>
 </li>
-      <li><a href="changepoint.html#sdt.changepoint.GeometricPrior">GeometricPrior (class in sdt.changepoint)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="exp_fit.html#sdt.exp_fit.get_exponential_coeffs">get_exponential_coeffs() (in module sdt.exp_fit)</a>
+      <li><a href="changepoint.html#sdt.changepoint.GeometricPrior">GeometricPrior (class in sdt.changepoint)</a>
 </li>
       <li><a href="flatfield.html#sdt.flatfield.Corrector.get_factors">get_factors() (sdt.flatfield.Corrector method)</a>
 </li>
@@ -576,7 +625,7 @@
 </li>
       <li><a href="brightness.html#sdt.brightness.Distribution.graph">graph (sdt.brightness.Distribution attribute)</a>
 </li>
-      <li><a href="gaussian_fit.html#sdt.gaussian_fit.guess_parameters">guess_parameters() (in module sdt.gaussian_fit)</a>
+      <li><a href="optimize.html#sdt.optimize.guess_gaussian_parameters">guess_gaussian_parameters() (in module sdt.optimize)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -598,33 +647,49 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="changepoint.html#sdt.changepoint.IfmObsLikelihood">IfmObsLikelihood (class in sdt.changepoint)</a>
 </li>
+      <li><a href="nbui.html#sdt.nbui.Locator.image_display">image_display (sdt.nbui.Locator attribute)</a>
+</li>
       <li><a href="roi.html#sdt.roi.PathROI.image_mask">image_mask (sdt.roi.PathROI attribute)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.image_mask">image_mask() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.image_mask">image_mask() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
-      <li><a href="nbui.html#sdt.nbui.ROISelector.images">images (sdt.nbui.ROISelector attribute)</a>
+      <li><a href="nbui.html#sdt.nbui.ImageDisplay">ImageDisplay (class in sdt.nbui)</a>
+</li>
+      <li><a href="nbui.html#sdt.nbui.ImageSelector.images">images (sdt.nbui.ImageSelector attribute)</a>
 
       <ul>
-        <li><a href="nbui.html#sdt.nbui.Thresholder.images">(sdt.nbui.Thresholder attribute)</a>
+        <li><a href="nbui.html#sdt.nbui.ROISelector.images">(sdt.nbui.ROISelector attribute)</a>
 </li>
       </ul></li>
+      <li><a href="nbui.html#sdt.nbui.ImageSelector">ImageSelector (class in sdt.nbui)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.RANSAC.independent_vars">independent_vars (sdt.optimize.RANSAC attribute)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.RANSAC.initial_guess">initial_guess (sdt.optimize.RANSAC attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="helper.html#sdt.helper.Singleton.initialize">initialize() (sdt.helper.Singleton method)</a>
 
       <ul>
         <li><a href="helper.html#sdt.helper.ThreadSafeSingleton.initialize">(sdt.helper.ThreadSafeSingleton method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="nbui.html#sdt.nbui.ChannelSplitter.input">input (sdt.nbui.ChannelSplitter attribute)</a>
+
+      <ul>
+        <li><a href="nbui.html#sdt.nbui.ImageDisplay.input">(sdt.nbui.ImageDisplay attribute)</a>
+</li>
+        <li><a href="nbui.html#sdt.nbui.Locator.input">(sdt.nbui.Locator attribute)</a>
+</li>
+      </ul></li>
       <li><a href="helper.html#sdt.helper.Singleton.instance">instance() (sdt.helper.Singleton property)</a>
 
       <ul>
         <li><a href="helper.html#sdt.helper.ThreadSafeSingleton.instance">(sdt.helper.ThreadSafeSingleton property)</a>
 </li>
       </ul></li>
-      <li><a href="exp_fit.html#sdt.exp_fit.int_mat_legendre">int_mat_legendre() (in module sdt.exp_fit)</a>
-</li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.interpolate">interpolate (sdt.fret.SmFretTracker attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.interpolate">interpolate (sdt.fret.SmFRETTracker attribute)</a>
 </li>
       <li><a href="spatial.html#sdt.spatial.interpolate_coords">interpolate_coords() (in module sdt.spatial)</a>
 </li>
@@ -642,7 +707,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="motion.html#sdt.motion.label_mobile">label_mobile() (in module sdt.motion)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.leakage">leakage (sdt.fret.SmFretAnalyzer attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.leakage">leakage (sdt.fret.SmFRETAnalyzer attribute)</a>
 </li>
       <li><a href="changepoint.html#sdt.changepoint.FullCovObsLikelihood.likelihood">likelihood() (sdt.changepoint.FullCovObsLikelihood method)</a>
 
@@ -652,14 +717,14 @@
         <li><a href="changepoint.html#sdt.changepoint.IfmObsLikelihood.likelihood">(sdt.changepoint.IfmObsLikelihood method)</a>
 </li>
       </ul></li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.link_options">link_options (sdt.fret.SmFretTracker attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.link_options">link_options (sdt.fret.SmFRETTracker attribute)</a>
 </li>
       <li><a href="io.html#sdt.io.load">load() (in module sdt.io)</a>
 
       <ul>
         <li><a href="io.html#sdt.io.yaml.load">(in module sdt.io.yaml)</a>
 </li>
-        <li><a href="chromatic.html#sdt.chromatic.Corrector.load">(sdt.chromatic.Corrector static method)</a>
+        <li><a href="channel_reg.html#sdt.channel_reg.Registrator.load">(sdt.channel_reg.Registrator class method)</a>
 </li>
         <li><a href="flatfield.html#sdt.flatfield.Corrector.load">(sdt.flatfield.Corrector class method)</a>
 </li>
@@ -712,17 +777,23 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="optimize.html#sdt.optimize.ExpSumModelResult.mant">mant (sdt.optimize.ExpSumModelResult attribute)</a>
+</li>
       <li><a href="roi.html#sdt.roi.MaskROI.mask">mask (sdt.roi.MaskROI attribute)</a>
 </li>
       <li><a href="roi.html#sdt.roi.MaskROI.mask_origin">mask_origin (sdt.roi.MaskROI attribute)</a>
 </li>
       <li><a href="roi.html#sdt.roi.MaskROI">MaskROI (class in sdt.roi)</a>
 </li>
+      <li><a href="optimize.html#sdt.optimize.RANSAC.max_error">max_error (sdt.optimize.RANSAC attribute)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.RANSAC.max_outliers">max_outliers (sdt.optimize.RANSAC attribute)</a>
+</li>
       <li><a href="brightness.html#sdt.brightness.Distribution.mean">mean() (sdt.brightness.Distribution method)</a>
 </li>
       <li><a href="multicolor.html#sdt.multicolor.merge_channels">merge_channels() (in module sdt.multicolor)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.min_length">min_length (sdt.fret.SmFretTracker attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.min_length">min_length (sdt.fret.SmFRETTracker attribute)</a>
 </li>
       <li><a href="changepoint.html#sdt.changepoint.CostL1.min_size">min_size (sdt.changepoint.CostL1 attribute)</a>
 
@@ -732,27 +803,33 @@
       </ul></li>
       <li><a href="brightness.html#sdt.brightness.Distribution.mode">mode() (sdt.brightness.Distribution method)</a>
 </li>
+      <li><a href="optimize.html#sdt.optimize.AffineModelResult.model">model (sdt.optimize.AffineModelResult attribute)</a>
+
+      <ul>
+        <li><a href="optimize.html#sdt.optimize.ExpSumModelResult.model">(sdt.optimize.ExpSumModelResult attribute)</a>
+</li>
+        <li><a href="optimize.html#sdt.optimize.RANSAC.model">(sdt.optimize.RANSAC attribute)</a>
+</li>
+      </ul></li>
       <li>
     module
 
       <ul>
+        <li><a href="CHANGELOG.html#module-sdt">sdt</a>
+</li>
         <li><a href="brightness.html#module-sdt.brightness">sdt.brightness</a>
 </li>
         <li><a href="changepoint.html#module-sdt.changepoint">sdt.changepoint</a>
 </li>
-        <li><a href="chromatic.html#module-sdt.chromatic">sdt.chromatic</a>
+        <li><a href="channel_reg.html#module-sdt.channel_reg">sdt.channel_reg</a>
 </li>
         <li><a href="helper.html#module-sdt.config">sdt.config</a>
-</li>
-        <li><a href="exp_fit.html#module-sdt.exp_fit">sdt.exp_fit</a>
 </li>
         <li><a href="flatfield.html#module-sdt.flatfield">sdt.flatfield</a>
 </li>
         <li><a href="fret.html#module-sdt.fret">sdt.fret</a>
 </li>
         <li><a href="funcs.html#module-sdt.funcs">sdt.funcs</a>
-</li>
-        <li><a href="gaussian_fit.html#module-sdt.gaussian_fit">sdt.gaussian_fit</a>
 </li>
         <li><a href="helper.html#module-sdt.helper">sdt.helper</a>
 </li>
@@ -774,6 +851,8 @@
 </li>
         <li><a href="nbui.html#module-sdt.nbui">sdt.nbui</a>
 </li>
+        <li><a href="optimize.html#module-sdt.optimize">sdt.optimize</a>
+</li>
         <li><a href="plot.html#module-sdt.plot">sdt.plot</a>
 </li>
         <li><a href="roi.html#module-sdt.roi">sdt.roi</a>
@@ -789,18 +868,18 @@
 </li>
       <li><a href="motion.html#sdt.motion.Msd">Msd (class in sdt.motion)</a>
 </li>
-      <li><a href="motion.html#sdt.motion.Msd.Result.msd">msd (sdt.motion.Msd.Result attribute)</a>
+      <li><a href="motion.html#sdt.motion.Msd.Result.msd">msd() (sdt.motion.Msd.Result property)</a>
 
       <ul>
-        <li><a href="motion.html#sdt.motion.MsdDist.Result.msd">(sdt.motion.MsdDist.Result attribute)</a>
+        <li><a href="motion.html#sdt.motion.MsdDist.Result.msd">(sdt.motion.MsdDist.Result property)</a>
 </li>
       </ul></li>
       <li><a href="motion.html#sdt.motion.Msd.Result">Msd.Result (class in sdt.motion)</a>
 </li>
-      <li><a href="motion.html#sdt.motion.Msd.Result.msd_err">msd_err (sdt.motion.Msd.Result attribute)</a>
+      <li><a href="motion.html#sdt.motion.Msd.Result.msd_err">msd_err() (sdt.motion.Msd.Result property)</a>
 
       <ul>
-        <li><a href="motion.html#sdt.motion.MsdDist.Result.msd_err">(sdt.motion.MsdDist.Result attribute)</a>
+        <li><a href="motion.html#sdt.motion.MsdDist.Result.msd_err">(sdt.motion.MsdDist.Result property)</a>
 </li>
       </ul></li>
       <li><a href="motion.html#sdt.motion.MsdDist">MsdDist (class in sdt.motion)</a>
@@ -813,12 +892,20 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="changepoint.html#sdt.changepoint.NegBinomialPrior">NegBinomialPrior (class in sdt.changepoint)</a>
+      <li><a href="optimize.html#sdt.optimize.ExpSumModel.n_exp">n_exp (sdt.optimize.ExpSumModel attribute)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.neighbor_radius">neighbor_radius (sdt.fret.SmFretTracker attribute)</a>
+      <li><a href="optimize.html#sdt.optimize.RANSAC.n_fit">n_fit (sdt.optimize.RANSAC attribute)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.RANSAC.n_iter">n_iter (sdt.optimize.RANSAC attribute)</a>
+</li>
+      <li><a href="changepoint.html#sdt.changepoint.NegBinomialPrior">NegBinomialPrior (class in sdt.changepoint)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.neighbor_radius">neighbor_radius (sdt.fret.SmFRETTracker attribute)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.RANSAC.norm">norm (sdt.optimize.RANSAC attribute)</a>
+</li>
       <li><a href="brightness.html#sdt.brightness.Distribution.num_data">num_data (sdt.brightness.Distribution attribute)</a>
 </li>
       <li><a href="fret.html#sdt.fret.numeric_exc_type">numeric_exc_type() (in module sdt.fret)</a>
@@ -831,7 +918,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="funcs.html#sdt.funcs.ECDF.observations">observations() (sdt.funcs.ECDF property)</a>
 </li>
-      <li><a href="exp_fit.html#sdt.exp_fit.OdeSolver">OdeSolver (class in sdt.exp_fit)</a>
+      <li><a href="optimize.html#sdt.optimize.ExpSumModelResult.ode_coeff">ode_coeff (sdt.optimize.ExpSumModelResult attribute)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.ExpSumModelResult.offset">offset (sdt.optimize.ExpSumModelResult attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -843,21 +932,23 @@
       </ul></li>
       <li><a href="image.html#sdt.image.otsu_thresh">otsu_thresh() (in module sdt.image)</a>
 </li>
+      <li><a href="nbui.html#sdt.nbui.ImageSelector.output">output (sdt.nbui.ImageSelector attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.pairs">pairs (sdt.chromatic.Corrector attribute)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.pairs">pairs (sdt.channel_reg.Registrator attribute)</a>
 </li>
       <li><a href="loc.html#sdt.loc.z_fit.Parameters">Parameters (class in sdt.loc.z_fit)</a>
 </li>
       <li><a href="loc.html#sdt.loc.z_fit.Parameters.Tuple">Parameters.Tuple (class in sdt.loc.z_fit)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.parameters1">parameters1 (sdt.chromatic.Corrector attribute)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.parameters1">parameters1 (sdt.channel_reg.Registrator attribute)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.parameters2">parameters2 (sdt.chromatic.Corrector attribute)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.parameters2">parameters2 (sdt.channel_reg.Registrator attribute)</a>
 </li>
       <li><a href="roi.html#sdt.roi.PathROI.path">path (sdt.roi.PathROI attribute)</a>
 </li>
@@ -869,10 +960,10 @@
 </li>
       <li><a href="image.html#sdt.image.percentile_thresh">percentile_thresh() (in module sdt.image)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="helper.html#sdt.helper.Pipeline">Pipeline (class in sdt.helper)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="helper.html#sdt.helper.pipeline">pipeline() (in module sdt.helper)</a>
 </li>
       <li><a href="roi.html#sdt.roi.MaskROI.pixel_size">pixel_size (sdt.roi.MaskROI attribute)</a>
@@ -887,6 +978,8 @@
 </li>
       <li><a href="multicolor.html#sdt.multicolor.plot_codiffusion">plot_codiffusion() (in module sdt.multicolor)</a>
 </li>
+      <li><a href="optimize.html#sdt.optimize.ExpSumModel.poly_order">poly_order (sdt.optimize.ExpSumModel attribute)</a>
+</li>
       <li><a href="spatial.html#sdt.spatial.polygon_area">polygon_area() (in module sdt.spatial)</a>
 </li>
       <li><a href="changepoint.html#sdt.changepoint.ConstPrior.prior">prior() (sdt.changepoint.ConstPrior method)</a>
@@ -895,17 +988,19 @@
         <li><a href="changepoint.html#sdt.changepoint.GeometricPrior.prior">(sdt.changepoint.GeometricPrior method)</a>
 </li>
       </ul></li>
+      <li><a href="optimize.html#sdt.optimize.ProbExpSumModel">ProbExpSumModel (class in sdt.optimize)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.query">query() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.query">query() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.query_particles">query_particles() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.query_particles">query_particles() (sdt.fret.SmFRETAnalyzer method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -913,6 +1008,10 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="optimize.html#sdt.optimize.RANSAC.random_state">random_state (sdt.optimize.RANSAC attribute)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.RANSAC">RANSAC (class in sdt.optimize)</a>
+</li>
       <li><a href="helper.html#sdt.config.rc">rc (in module sdt.config)</a>
 </li>
       <li><a href="roi.html#sdt.roi.RectangleROI">RectangleROI (class in sdt.roi)</a>
@@ -923,12 +1022,16 @@
 </li>
       <li><a href="io.html#sdt.io.yaml.register_yaml_class">register_yaml_class() (in module sdt.io.yaml)</a>
 </li>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator">Registrator (class in sdt.channel_reg)</a>
+</li>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.registrator">registrator (sdt.fret.SmFRETTracker attribute)</a>
+</li>
       <li><a href="changepoint.html#sdt.changepoint.BayesOnline.reset">reset() (sdt.changepoint.BayesOnline method)</a>
 
       <ul>
         <li><a href="changepoint.html#sdt.changepoint.StudentT.reset">(sdt.changepoint.StudentT method)</a>
 </li>
-        <li><a href="fret.html#sdt.fret.SmFretAnalyzer.reset">(sdt.fret.SmFretAnalyzer method)</a>
+        <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.reset">(sdt.fret.SmFRETAnalyzer method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -945,8 +1048,12 @@
 </li>
       <li><a href="roi.html#sdt.roi.ROI">ROI (class in sdt.roi)</a>
 </li>
-      <li><a href="nbui.html#sdt.nbui.ROISelector.rois">rois (sdt.nbui.ROISelector attribute)</a>
+      <li><a href="nbui.html#sdt.nbui.ChannelSplitter.rois">rois (sdt.nbui.ChannelSplitter attribute)</a>
+
+      <ul>
+        <li><a href="nbui.html#sdt.nbui.ROISelector.rois">(sdt.nbui.ROISelector attribute)</a>
 </li>
+      </ul></li>
       <li><a href="nbui.html#sdt.nbui.ROISelector">ROISelector (class in sdt.nbui)</a>
 </li>
   </ul></td>
@@ -967,10 +1074,12 @@
 </li>
       <li><a href="io.html#sdt.io.yaml.SafeLoader">SafeLoader (class in sdt.io.yaml)</a>
 </li>
+      <li><a href="nbui.html#sdt.nbui.ChannelSplitter.same_size">same_size (sdt.nbui.ChannelSplitter attribute)</a>
+</li>
       <li><a href="io.html#sdt.io.save">save() (in module sdt.io)</a>
 
       <ul>
-        <li><a href="chromatic.html#sdt.chromatic.Corrector.save">(sdt.chromatic.Corrector method)</a>
+        <li><a href="channel_reg.html#sdt.channel_reg.Registrator.save">(sdt.channel_reg.Registrator method)</a>
 </li>
         <li><a href="flatfield.html#sdt.flatfield.Corrector.save">(sdt.flatfield.Corrector method)</a>
 </li>
@@ -983,6 +1092,13 @@
 </li>
       <li><a href="io.html#sdt.io.save_trc">save_trc() (in module sdt.io)</a>
 </li>
+      <li>
+    sdt
+
+      <ul>
+        <li><a href="CHANGELOG.html#module-sdt">module</a>
+</li>
+      </ul></li>
       <li>
     sdt.brightness
 
@@ -998,10 +1114,10 @@
 </li>
       </ul></li>
       <li>
-    sdt.chromatic
+    sdt.channel_reg
 
       <ul>
-        <li><a href="chromatic.html#module-sdt.chromatic">module</a>
+        <li><a href="channel_reg.html#module-sdt.channel_reg">module</a>
 </li>
       </ul></li>
       <li>
@@ -1009,13 +1125,6 @@
 
       <ul>
         <li><a href="helper.html#module-sdt.config">module</a>
-</li>
-      </ul></li>
-      <li>
-    sdt.exp_fit
-
-      <ul>
-        <li><a href="exp_fit.html#module-sdt.exp_fit">module</a>
 </li>
       </ul></li>
       <li>
@@ -1037,13 +1146,6 @@
 
       <ul>
         <li><a href="funcs.html#module-sdt.funcs">module</a>
-</li>
-      </ul></li>
-      <li>
-    sdt.gaussian_fit
-
-      <ul>
-        <li><a href="gaussian_fit.html#module-sdt.gaussian_fit">module</a>
 </li>
       </ul></li>
       <li>
@@ -1119,6 +1221,13 @@
 </li>
       </ul></li>
       <li>
+    sdt.optimize
+
+      <ul>
+        <li><a href="optimize.html#module-sdt.optimize">module</a>
+</li>
+      </ul></li>
+      <li>
     sdt.plot
 
       <ul>
@@ -1148,7 +1257,9 @@
       </ul></li>
       <li><a href="io.html#sdt.io.SdtTiffStack">SdtTiffStack (class in sdt.io)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.segment_mass">segment_mass() (sdt.fret.SmFretAnalyzer method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.segment_mass">segment_mass() (sdt.fret.SmFRETAnalyzer method)</a>
+</li>
+      <li><a href="nbui.html#sdt.nbui.FileDialog.selected">selected (sdt.nbui.FileDialog attribute)</a>
 </li>
       <li><a href="helper.html#sdt.config.set_columns">set_columns() (in module sdt.config)</a>
 </li>
@@ -1184,11 +1295,9 @@
 </li>
       <li><a href="fret.html#sdt.fret.smfret_scatter">smfret_scatter() (in module sdt.fret)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer">SmFretAnalyzer (class in sdt.fret)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer">SmFRETAnalyzer (class in sdt.fret)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker">SmFretTracker (class in sdt.fret)</a>
-</li>
-      <li><a href="exp_fit.html#sdt.exp_fit.OdeSolver.solve">solve() (sdt.exp_fit.OdeSolver method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker">SmFRETTracker (class in sdt.fret)</a>
 </li>
       <li><a href="helper.html#sdt.helper.split_dataframe">split_dataframe() (in module sdt.helper)</a>
 </li>
@@ -1204,9 +1313,7 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="exp_fit.html#sdt.exp_fit.OdeSolver.tangent">tangent() (sdt.exp_fit.OdeSolver method)</a>
-</li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.test">test() (sdt.chromatic.Corrector method)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.test">test() (sdt.channel_reg.Registrator method)</a>
 </li>
       <li><a href="motion.html#sdt.motion.AnomalousDiffusion.theoretical">theoretical() (sdt.motion.AnomalousDiffusion static method)</a>
 
@@ -1218,10 +1325,10 @@
 </li>
       <li><a href="nbui.html#sdt.nbui.Thresholder">Thresholder (class in sdt.nbui)</a>
 </li>
-      <li><a href="chromatic.html#sdt.chromatic.Corrector.to_yaml">to_yaml() (sdt.chromatic.Corrector class method)</a>
+      <li><a href="channel_reg.html#sdt.channel_reg.Registrator.to_yaml">to_yaml() (sdt.channel_reg.Registrator class method)</a>
 
       <ul>
-        <li><a href="fret.html#sdt.fret.SmFretTracker.to_yaml">(sdt.fret.SmFretTracker class method)</a>
+        <li><a href="fret.html#sdt.fret.SmFRETTracker.to_yaml">(sdt.fret.SmFRETTracker class method)</a>
 </li>
         <li><a href="roi.html#sdt.roi.MaskROI.to_yaml">(sdt.roi.MaskROI class method)</a>
 </li>
@@ -1234,11 +1341,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="roi.html#sdt.roi.ROI.top_left">top_left (sdt.roi.ROI attribute)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretTracker.track">track() (sdt.fret.SmFretTracker method)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETTracker.track">track() (sdt.fret.SmFRETTracker method)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.tracks">tracks (sdt.fret.SmFretAnalyzer attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.tracks">tracks (sdt.fret.SmFRETAnalyzer attribute)</a>
 </li>
-      <li><a href="fret.html#sdt.fret.SmFretAnalyzer.tracks_orig">tracks_orig (sdt.fret.SmFretAnalyzer attribute)</a>
+      <li><a href="fret.html#sdt.fret.SmFRETAnalyzer.tracks_orig">tracks_orig (sdt.fret.SmFRETAnalyzer attribute)</a>
+</li>
+      <li><a href="optimize.html#sdt.optimize.AffineModelResult.transform">transform (sdt.optimize.AffineModelResult attribute)</a>
 </li>
       <li><a href="roi.html#sdt.roi.PathROI.transform">transform() (sdt.roi.PathROI method)</a>
 </li>
@@ -1268,9 +1377,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="motion.html#sdt.motion.MsdDist.Result.weight">weight (sdt.motion.MsdDist.Result attribute)</a>
+      <li><a href="motion.html#sdt.motion.MsdDist.Result.weight">weight() (sdt.motion.MsdDist.Result property)</a>
 </li>
-      <li><a href="motion.html#sdt.motion.MsdDist.Result.weight_err">weight_err (sdt.motion.MsdDist.Result attribute)</a>
+      <li><a href="motion.html#sdt.motion.MsdDist.Result.weight_err">weight_err() (sdt.motion.MsdDist.Result property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1319,11 +1428,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1334,7 +1451,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

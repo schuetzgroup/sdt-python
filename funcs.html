@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Special functions &mdash; sdt-python 14.2 documentation</title>
+  <title>Special functions &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Plotting utilities" href="plot.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -96,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
@@ -105,8 +107,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -114,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -152,7 +154,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Special functions</li>
     
@@ -179,6 +181,9 @@ kinds of functions,</p>
 <li><p><a class="reference internal" href="#sdt.funcs.StepFunction" title="sdt.funcs.StepFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">StepFunction</span></code></a> for step functions,</p></li>
 <li><p><a class="reference internal" href="#sdt.funcs.ECDF" title="sdt.funcs.ECDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">ECDF</span></code></a> for empirical cumulative distribution functions.</p></li>
 </ul>
+<p>Additionally, 1D and 2D Gaussians can be evaluated using <a class="reference internal" href="#sdt.funcs.gaussian_1d" title="sdt.funcs.gaussian_1d"><code class="xref py py-func docutils literal notranslate"><span class="pre">gaussian_1d()</span></code></a>
+and <a class="reference internal" href="#sdt.funcs.gaussian_2d" title="sdt.funcs.gaussian_2d"><code class="xref py py-func docutils literal notranslate"><span class="pre">gaussian_2d()</span></code></a>, respectively. Sums of exponentials are implemented
+by <a class="reference internal" href="#sdt.funcs.exp_sum" title="sdt.funcs.exp_sum"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp_sum()</span></code></a> and <a class="reference internal" href="#sdt.funcs.exp_sum_lmfit" title="sdt.funcs.exp_sum_lmfit"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp_sum_lmfit()</span></code></a>.</p>
 <p class="rubric">Examples</p>
 <p>Create a step function:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -228,16 +233,17 @@ construct a function that is constant inbetween.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x, y</strong> (<em>array-like</em>) – Function graph</p></li>
-<li><p><strong>fill_value</strong> (<em>float or (float, float) or “extrapolate”, optional</em>) – Values to use for <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&lt;</span> <span class="pre">x[0]</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&gt;</span> <span class="pre">x[-1]</span></code>. If this is
+<li><p><strong>x</strong> (<em>array-like</em>) – Function graph</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – Function graph</p></li>
+<li><p><strong>fill_value</strong> (<em>float</em><em> or </em><em>(</em><em>float</em><em>, </em><em>float</em><em>) or </em><em>&quot;extrapolate&quot;</em><em>, </em><em>optional</em>) – Values to use for <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&lt;</span> <span class="pre">x[0]</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&gt;</span> <span class="pre">x[-1]</span></code>. If this is
 “extrapolate”, use <code class="docutils literal notranslate"><span class="pre">x[0]</span></code> and <code class="docutils literal notranslate"><span class="pre">x[-1]</span></code>, respectively. If a
 float is given, use it in both cases. If a pair of floats is given,
 the first entry is used on the lower end, the second on the upper
 end. Defaults to “extrapolate”.</p></li>
-<li><p><strong>sort</strong> (<em>bool, optional</em>) – Whether to sort data such that <cite>x</cite> is in ascending order. Set to
+<li><p><strong>sort</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to sort data such that <cite>x</cite> is in ascending order. Set to
 <cite>False</cite> if <cite>x</cite> is already sorted to avoid re-sorting. Defaults to
 <cite>True</cite>.</p></li>
-<li><p><strong>side</strong> (<em>{“left”, “right”}, optional</em>) – The step function will yield <code class="docutils literal notranslate"><span class="pre">y[i+1]</span></code> for any x in the interval
+<li><p><strong>side</strong> (<em>{&quot;left&quot;</em><em>, </em><em>&quot;right&quot;}</em><em>, </em><em>optional</em>) – The step function will yield <code class="docutils literal notranslate"><span class="pre">y[i+1]</span></code> for any x in the interval
 (<code class="docutils literal notranslate"><span class="pre">x[i]</span></code>, <code class="docutils literal notranslate"><span class="pre">x[i+1]</span></code>] if <code class="docutils literal notranslate"><span class="pre">side=&quot;left&quot;</span></code> (thus making the step
 function continuos from the left). It will yield <code class="docutils literal notranslate"><span class="pre">y[i]</span></code> and for
 x in the interval [<code class="docutils literal notranslate"><span class="pre">x[i]</span></code>, <code class="docutils literal notranslate"><span class="pre">x[i+1]</span></code>) if <code class="docutils literal notranslate"><span class="pre">side=&quot;right&quot;</span></code>
@@ -263,7 +269,7 @@ x in the interval [<code class="docutils literal notranslate"><span class="pre">
 <dd><p>Get step function value(s) at <cite>x</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>number or array-like</em>) – Where to evaluate the step function</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>number</em><em> or </em><em>array-like</em>) – Where to evaluate the step function</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Function value(s) at <cite>x</cite></p>
@@ -293,10 +299,10 @@ x in the interval [<code class="docutils literal notranslate"><span class="pre">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obs</strong> (<em>array-like</em>) – List of observations</p></li>
-<li><p><strong>interp</strong> (<em>None or int, optional</em>) – Which interpolation to use. <cite>None</cite> will create a right-continuous
+<li><p><strong>interp</strong> (<em>None</em><em> or </em><em>int</em><em>, </em><em>optional</em>) – Which interpolation to use. <cite>None</cite> will create a right-continuous
 step function. Using an integer, the interpolating spline order
 can be specified. Defaults to <cite>None</cite>.</p></li>
-<li><p><strong>sort</strong> (<em>bool, optional</em>) – If obs is already sorted in ascending order, set to <cite>False</cite> to
+<li><p><strong>sort</strong> (<em>bool</em><em>, </em><em>optional</em>) – If obs is already sorted in ascending order, set to <cite>False</cite> to
 avoid re-sorting. Defaults to <cite>True</cite>.</p></li>
 </ul>
 </dd>
@@ -307,7 +313,7 @@ avoid re-sorting. Defaults to <cite>True</cite>.</p></li>
 <dd><p>Get eCDF value(s) at <cite>x</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<em>number or array-like</em>) – Where to evaluate the step function</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>number</em><em> or </em><em>array-like</em>) – Where to evaluate the step function</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>eCDF value(s) at <cite>x</cite></p>
@@ -324,6 +330,134 @@ avoid re-sorting. Defaults to <cite>True</cite>.</p></li>
 <dd><p>Array of observations</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.funcs.gaussian_1d">
+<code class="sig-prename descclassname">sdt.funcs.</code><code class="sig-name descname">gaussian_1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">amplitude</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">center</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">offset</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/funcs.html#gaussian_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.funcs.gaussian_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>1D Gaussian</p>
+<div class="math notranslate nohighlight">
+\[A e^\frac{(x - c)^2}{2\sigma^2} + b\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – Independent variable</p></li>
+<li><p><strong>amplitude</strong> (<em>float</em>) – <cite>A</cite> in the formula above.</p></li>
+<li><p><strong>center</strong> (<em>float</em>) – <cite>c</cite> in the formula above.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – <span class="math notranslate nohighlight">\(\sigma\)</span> in the formula above.</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – <cite>b</cite> in the formula above.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Function values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.funcs.gaussian_2d">
+<code class="sig-prename descclassname">sdt.funcs.</code><code class="sig-name descname">gaussian_2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">amplitude</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">center</span><span class="o">=</span><span class="default_value">0.0, 0.0</span></em>, <em class="sig-param"><span class="n">sigma</span><span class="o">=</span><span class="default_value">1.0, 1.0</span></em>, <em class="sig-param"><span class="n">offset</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">rotation</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/funcs.html#gaussian_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.funcs.gaussian_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D Gaussian</p>
+<div class="math notranslate nohighlight">
+\[A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}
++ \frac{(R(y - c_y))^2}{2\sigma_y^2}) + b,\]</div>
+<p>where <span class="math notranslate nohighlight">\(R\)</span> rotates the vector (x, y) by <cite>rotation</cite> radiants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – Independent variables</p></li>
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – Independent variables</p></li>
+<li><p><strong>amplitude</strong> (<em>float</em>) – <cite>A</cite> in the formula above.</p></li>
+<li><p><strong>center</strong> (<a class="reference internal" href="loc.html#sdt.loc.z_fit.Parameters.Tuple" title="sdt.loc.z_fit.Parameters.Tuple"><em>Tuple</em></a><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – <span class="math notranslate nohighlight">\(c_x\)</span>, <span class="math notranslate nohighlight">\(c_y\)</span> in the formula above.</p></li>
+<li><p><strong>sigma</strong> (<a class="reference internal" href="loc.html#sdt.loc.z_fit.Parameters.Tuple" title="sdt.loc.z_fit.Parameters.Tuple"><em>Tuple</em></a><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – <span class="math notranslate nohighlight">\(\sigma_x\)</span>,  <span class="math notranslate nohighlight">\(\sigma_y\)</span> in the formula above.</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – <cite>b</cite> in the formula above.</p></li>
+<li><p><strong>rotation</strong> (<em>float</em>) – Rotate the Gaussian by that many radiants.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Function values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.funcs.exp_sum">
+<code class="sig-prename descclassname">sdt.funcs.</code><code class="sig-name descname">exp_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">offset</span></em>, <em class="sig-param"><span class="n">mant</span></em>, <em class="sig-param"><span class="n">exp</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/funcs.html#exp_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.funcs.exp_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum of exponentials</p>
+<p>Return <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">+</span> <span class="pre">mant[0]</span> <span class="pre">*</span> <span class="pre">exponential(exp[0]</span> <span class="pre">*</span> <span class="pre">x)</span> <span class="pre">+</span> <span class="pre">mant[1]</span> <span class="pre">*</span>
+<span class="pre">exponential(exp[1]</span> <span class="pre">*</span> <span class="pre">x)</span> <span class="pre">+</span> <span class="pre">…</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – Independent variable</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – Additive parameter</p></li>
+<li><p><strong>mant</strong> (<em>numpy.ndarray</em>) – Mantissa coefficients</p></li>
+<li><p><strong>exp</strong> (<em>numpy.ndarray</em>) – Coefficients in the exponent</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Function values</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exp_sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mant</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">],</span> <span class="n">exp</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">])</span>
+<span class="go">array([ 0.        ,  0.02699265,  0.05209491,  0.07547993,  0.09730444,</span>
+<span class="go">        0.11771033,  0.13682605,  0.15476788,  0.17164113,  0.18754112])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="sdt.funcs.exp_sum_lmfit">
+<code class="sig-prename descclassname">sdt.funcs.</code><code class="sig-name descname">exp_sum_lmfit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">offset</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">params</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/funcs.html#exp_sum_lmfit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.funcs.exp_sum_lmfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum of exponentials, usable for <code class="xref py py-class docutils literal notranslate"><span class="pre">lmfit.Model</span></code></p>
+<p>Return <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">+</span> <span class="pre">mant0</span> <span class="pre">*</span> <span class="pre">exponential(exp0</span> <span class="pre">*</span> <span class="pre">x)</span> <span class="pre">+</span> <span class="pre">mant1</span> <span class="pre">*</span>
+<span class="pre">exponential(exp1</span> <span class="pre">*</span> <span class="pre">x)</span> <span class="pre">+</span> <span class="pre">…</span></code>. This is more suitable for fitting using
+<code class="xref py py-class docutils literal notranslate"><span class="pre">lmfit.Model</span></code> than <a class="reference internal" href="#sdt.funcs.exp_sum" title="sdt.funcs.exp_sum"><code class="xref py py-func docutils literal notranslate"><span class="pre">exp_sum()</span></code></a>. See the example below.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – Independent variable</p></li>
+<li><p><strong>offset</strong> (<em>float</em>) – Additive parameter</p></li>
+<li><p><strong>**params</strong> – To get the sum of <cite>n+1</cite> exponentials, one needs to supply floats
+<cite>mant0</cite>, <cite>mant1</cite>, …, <cite>mantn</cite> as mantissa coefficients and <cite>exp0</cite>, …,
+<cite>expn</cite> as coefficients in the exponent.</p></li>
+<li><p><strong>params</strong> (<em>float</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Function values</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>  <span class="c1"># x values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>  <span class="c1"># y values</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mant_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mant</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">num_exp</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exp_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;exp</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">num_exp</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">lmfit</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">funcs</span><span class="o">.</span><span class="n">exp_sum_lmfit</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span><span class="o">.</span><span class="n">set_param_hint</span><span class="p">(</span><span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mant_names</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">m</span><span class="o">.</span><span class="n">set_param_hint</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">exp_names</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">m</span><span class="o">.</span><span class="n">set_param_hint</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">make_params</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -349,11 +483,19 @@ avoid re-sorting. Defaults to <cite>True</cite>.</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -364,7 +506,6 @@ avoid re-sorting. Defaults to <cite>True</cite>.</p></li>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

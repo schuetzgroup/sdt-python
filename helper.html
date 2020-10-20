@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Helpers for writing new code &mdash; sdt-python 14.2 documentation</title>
+  <title>Helpers for writing new code &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,19 +30,15 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Change log" href="CHANGELOG.html" />
-    <link rel="prev" title="Fitting of 1D and 2D Gaussian functions" href="gaussian_fit.html" /> 
+    <link rel="prev" title="Optimization and fitting algorithms" href="optimize.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -96,14 +98,13 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Helpers for writing new code</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#helper-classes-and-functions">Helper classes and functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#programming-reference">Programming reference</a></li>
@@ -121,6 +122,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -159,7 +161,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Helpers for writing new code</li>
     
@@ -277,14 +279,14 @@ faster.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame to be split</p></li>
 <li><p><strong>split_column</strong> (<em>column identifier</em>) – Column to group/split data by.</p></li>
-<li><p><strong>columns</strong> (<em>column identifier or list of column identifiers or None, optional</em>) – Column(s) to return. If None, use all columns. Defaults to None.</p></li>
-<li><p><strong>sort</strong> (<em>bool, optional</em>) – For this function to work, the DataFrame needs to be sorted. If
+<li><p><strong>columns</strong> (<em>column identifier</em><em> or </em><em>list of column identifiers</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Column(s) to return. If None, use all columns. Defaults to None.</p></li>
+<li><p><strong>sort</strong> (<em>bool</em><em>, </em><em>optional</em>) – For this function to work, the DataFrame needs to be sorted. If
 this parameter is True, do the sorting in the function. If the
 DataFrame is already sorted (according to <cite>split_column</cite>), set this to
 <cite>False</cite> for efficiency. Defaults to True.</p></li>
-<li><p><strong>type</strong> (<em>{“array”, “DataFrame”}, optional</em>) – If “array”, return split data as <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> (fast) or
+<li><p><strong>type</strong> (<em>{&quot;array&quot;</em><em>, </em><em>&quot;DataFrame&quot;}</em><em>, </em><em>optional</em>) – If “array”, return split data as <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> (fast) or
 as <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> (slow). Defaults to “array”.</p></li>
-<li><p><strong>keep_index</strong> (<em>bool, optional</em>) – If <cite>True</cite>, the index of the DataFrame <cite>df</cite> will is prependend to the
+<li><p><strong>keep_index</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite>, the index of the DataFrame <cite>df</cite> will is prependend to the
 columns of the split array. Only applicable if <code class="docutils literal notranslate"><span class="pre">type=&quot;array&quot;</span></code>.
 Defaults to <cite>False</cite>.</p></li>
 </ul>
@@ -318,7 +320,7 @@ the <cite>type</cite> parameter.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>idx</strong> (<em>pandas.MultiIndex</em>) – MultiIndex to flatten</p></li>
-<li><p><strong>sep</strong> (<em>str, optional</em>) – String to separate index levels. Defaults to “_”.</p></li>
+<li><p><strong>sep</strong> (<em>str</em><em>, </em><em>optional</em>) – String to separate index levels. Defaults to “_”.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -355,7 +357,10 @@ the <cite>type</cite> parameter.</p>
 <dd><p>Initialize singleton object if it has not been initialized</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>*args, **kwargs</strong> – Passed to the singleton object’s <code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Passed to the singleton object’s <code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p></li>
+<li><p><strong>**kwargs</strong> – Passed to the singleton object’s <code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -389,7 +394,10 @@ the <cite>type</cite> parameter.</p>
 <dd><p>Initialize singleton object if it has not been initialized</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>*args, **kwargs</strong> – Passed to the singleton object’s <code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Passed to the singleton object’s <code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p></li>
+<li><p><strong>**kwargs</strong> – Passed to the singleton object’s <code class="docutils literal notranslate"><span class="pre">__init__()</span></code></p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -425,13 +433,13 @@ with <cite>index_attr</cite>. They also have to be present in the
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ancestor</strong> (<em>object</em>)</p></li>
+<li><p><strong>ancestor</strong> (<em>object</em>) – </p></li>
 <li><p><strong>indices</strong> (<em>iterable</em>) – Giving indices into <cite>ancestor</cite>.
 Required if len(ancestor) is invalid.</p></li>
 <li><p><strong>length</strong> (<em>integer</em>) – length of indices
 This is required if <cite>indices</cite> is a generator,
 that is, if <cite>len(indices)</cite> is invalid</p></li>
-<li><p><strong>propagate_attrs</strong> (<em>list of str, optional</em>) – list of attributes to be propagated into Slicerator</p></li>
+<li><p><strong>propagate_attrs</strong> (<em>list of str</em><em>, </em><em>optional</em>) – list of attributes to be propagated into Slicerator</p></li>
 </ul>
 </dd>
 </dl>
@@ -464,7 +472,7 @@ impossible:</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em>) – callable that accepts an integer as its argument</p></li>
 <li><p><strong>length</strong> (<em>int</em>) – number of elements; used to supposed revserse slicing like [-1]</p></li>
-<li><p><strong>propagate_attrs</strong> (<em>list, optional</em>) – list of attributes to be propagated into Slicerator</p></li>
+<li><p><strong>propagate_attrs</strong> (<em>list</em><em>, </em><em>optional</em>) – list of attributes to be propagated into Slicerator</p></li>
 </ul>
 </dd>
 </dl>
@@ -503,8 +511,8 @@ produce a <a class="reference internal" href="#sdt.helper.Slicerator" title="sdt
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>some_class</strong> (<em>type</em>)</p></li>
-<li><p><strong>propagated_attrs</strong> (<em>list, optional</em>) – list of attributes to be propagated into Slicerator
+<li><p><strong>some_class</strong> (<em>type</em>) – </p></li>
+<li><p><strong>propagated_attrs</strong> (<em>list</em><em>, </em><em>optional</em>) – list of attributes to be propagated into Slicerator
 this will overwrite any other propagation list</p></li>
 </ul>
 </dd>
@@ -526,11 +534,11 @@ ancestor modified with a process function.</p>
 acts element-wise and is only evaluated when data is actually
 returned</p></li>
 <li><p><strong>*ancestors</strong> (<em>objects</em>) – Object to be processed.</p></li>
-<li><p><strong>propagate_attrs</strong> (<em>set of str or None, optional</em>) – Names of attributes to be propagated through the pipeline. If this
+<li><p><strong>propagate_attrs</strong> (<em>set of str</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Names of attributes to be propagated through the pipeline. If this
 is <cite>None</cite>, go through ancestors and look at <cite>_propagate_attrs</cite>
 and <cite>propagate_attrs</cite> attributes and search for attributes having
 a <cite>_propagate_flag</cite> attribute. Defaults to <cite>None</cite>.</p></li>
-<li><p><strong>propagate_how</strong> (<em>{‘first’, ‘last’} or int, optional</em>) – Where to look for attributes to propagate. If this is an integer,
+<li><p><strong>propagate_how</strong> (<em>{'first'</em><em>, </em><em>'last'}</em><em> or </em><em>int</em><em>, </em><em>optional</em>) – Where to look for attributes to propagate. If this is an integer,
 it specifies the index of the ancestor (in <cite>ancestors</cite>). If it is
 ‘first’, go through all ancestors starting with the first one until
 one is found that has the attribute. If it is ‘last’, go through
@@ -567,10 +575,10 @@ normal behavior.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable or type</em>) – Function or class type for lazy evaluation</p></li>
-<li><p><strong>retain_doc</strong> (<em>bool, optional</em>) – If True, don’t modify <cite>func</cite>’s doc string to say that it has been
+<li><p><strong>func</strong> (<em>callable</em><em> or </em><em>type</em>) – Function or class type for lazy evaluation</p></li>
+<li><p><strong>retain_doc</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, don’t modify <cite>func</cite>’s doc string to say that it has been
 made lazy. Defaults to False</p></li>
-<li><p><strong>ancestor_count</strong> (<em>int or ‘all’, optional</em>) – Number of inputs to the pipeline. For instance,
+<li><p><strong>ancestor_count</strong> (<em>int</em><em> or </em><em>'all'</em><em>, </em><em>optional</em>) – Number of inputs to the pipeline. For instance,
 a function taking three parameters that adds up the elements of
 two <code class="xref py py-class docutils literal notranslate"><span class="pre">Slicerators</span></code> and a constant offset would have
 <code class="docutils literal notranslate"><span class="pre">ancestor_count=2</span></code>. If ‘all’, all the function’s arguments are used
@@ -779,7 +787,7 @@ set its value to what is specified in <a class="reference internal" href="#sdt.c
         <a href="CHANGELOG.html" class="btn btn-neutral float-right" title="Change log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="gaussian_fit.html" class="btn btn-neutral float-left" title="Fitting of 1D and 2D Gaussian functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="optimize.html" class="btn btn-neutral float-left" title="Optimization and fitting algorithms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -788,11 +796,19 @@ set its value to what is specified in <a class="reference internal" href="#sdt.c
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -803,7 +819,6 @@ set its value to what is specified in <a class="reference internal" href="#sdt.c
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

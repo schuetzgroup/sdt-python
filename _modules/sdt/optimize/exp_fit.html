@@ -1,0 +1,639 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sdt.optimize.exp_fit &mdash; sdt-python 15.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                15.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../channel_reg.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat-field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>sdt.optimize.exp_fit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for sdt.optimize.exp_fit</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fitting sums of exponential functions</span>
+
+<span class="sd">This module provides routines to fit a sum of exponential functions. See the</span>
+<span class="sd">module-level documentation for details.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.polynomial.legendre</span> <span class="kn">import</span> <span class="n">legint</span><span class="p">,</span> <span class="n">legval</span><span class="p">,</span> <span class="n">legvander</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">lu_factor</span><span class="p">,</span> <span class="n">lu_solve</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">leastsq</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">funcs</span>
+
+
+<span class="k">def</span> <span class="nf">_int_mat_legendre</span><span class="p">(</span><span class="n">n_coeff</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">int_order</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Legendre polynomial integration matrix</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_coeff</span>
+<span class="sd">        Number of Legendre coefficients</span>
+<span class="sd">    int_order</span>
+<span class="sd">        Order of integration</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Legendre integral matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">legint</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_coeff</span><span class="p">),</span> <span class="n">int_order</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_ODESolver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for solving the ODE involved in fitting&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_exp</span>
+<span class="sd">            Number of exponentials to fit to the data</span>
+<span class="sd">        poly_order</span>
+<span class="sd">            Highest order Legendre polynomial in the series expansion</span>
+<span class="sd">            approximating the actual fit model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_poly_order</span> <span class="o">=</span> <span class="n">poly_order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">=</span> <span class="n">n_exp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_exp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_res_coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_exp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">poly_order</span><span class="p">)</span>
+
+        <span class="c1"># For improved conditioning, we don&#39;t actually look at the k-th</span>
+        <span class="c1"># differentiation, but at the (p - k)-th integration; i. e.</span>
+        <span class="c1"># integrate ODE p times (integration matrix B)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">iml</span> <span class="o">=</span> <span class="n">_int_mat_legendre</span><span class="p">(</span><span class="n">poly_order</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iml</span><span class="p">[</span><span class="n">n_exp</span><span class="p">:</span><span class="o">-</span><span class="n">n</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;1D array of coefficients of the ODE&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span>
+
+    <span class="nd">@coefficients</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span> <span class="ow">is</span> <span class="n">coeffs</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span> <span class="o">=</span> <span class="n">coeffs</span>
+
+        <span class="c1"># \sum_{k=1}^p a_k D^k \hat{y} = e_1 is equivalent to</span>
+        <span class="c1"># \sum_{k=1}^p a_k B^{p-k} \hat{y} = B^p e_1</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_poly_order</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poly_order</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">a</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coeffs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># first n_exp coefficients are determined by residual orthogonal</span>
+        <span class="c1"># requirement, therefore only consider a[:, n_exp:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_factors</span> <span class="o">=</span> <span class="n">lu_factor</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res_coeffs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Solve the ODE</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        res_coeffs</span>
+<span class="sd">            The first ``n_exp`` (where ``n_exp`` is the number of exponentials</span>
+<span class="sd">            in the fit) Legendre coefficients, which can be calculated from the</span>
+<span class="sd">            residual condition</span>
+<span class="sd">        rhs</span>
+<span class="sd">            Right hand side of the ODE. For a fit with a constant offset,</span>
+<span class="sd">            this is the (1, 0, 0, …, 0), without offset it is (0, 0, …, 0)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        1D array of Legendre coefficients of the numerical solution of</span>
+<span class="sd">        the ODE</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_res_coeffs</span> <span class="o">=</span> <span class="n">res_coeffs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">]</span> <span class="o">=</span> <span class="n">res_coeffs</span>
+        <span class="c1"># since residual orthogonal requirement already yields coefficients</span>
+        <span class="c1"># subtract from RHS</span>
+        <span class="n">reduced_rhs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">@</span> <span class="n">rhs</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cond</span> <span class="o">@</span> <span class="n">res_coeffs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">:]</span> <span class="o">=</span> <span class="n">lu_solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_factors</span><span class="p">,</span> <span class="n">reduced_rhs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">tangent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="n">d_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_poly_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">b_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_leg_coeffs</span>
+            <span class="n">d_y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_exp</span><span class="p">:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">lu_solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_factors</span><span class="p">,</span> <span class="n">b_y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">d_y</span>
+
+
+<div class="viewcode-block" id="ExpSumModel"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ExpSumModel">[docs]</a><span class="k">class</span> <span class="nc">ExpSumModel</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit a sum of exponential functions to data</span>
+
+<span class="sd">    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by</span>
+<span class="sd">    fitting :math:`y(x) = \alpha + \sum_{k=1}^p \beta_k</span>
+<span class="sd">    \text{e}^{\lambda_k x}` to the data using a modified Prony&#39;s method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">n_exp</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;Number of exponential summands&quot;&quot;&quot;</span>
+    <span class="n">poly_order</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;Order of polynomial used for approximation&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_exp</span>
+<span class="sd">            Number of exponential summands</span>
+<span class="sd">        poly_order</span>
+<span class="sd">            Order of polynomial used for approximation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_exp</span> <span class="o">=</span> <span class="n">n_exp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">poly_order</span> <span class="o">=</span> <span class="n">poly_order</span>
+
+    <span class="k">def</span> <span class="nf">_get_exp_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                        <span class="n">initial_guess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the exponential coefficients</span>
+
+<span class="sd">        As a first step to fitting, calculate the exponential &quot;rate&quot; factors</span>
+<span class="sd">        :math:`\lambda_k`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y</span>
+<span class="sd">            Function values corresponding to `x`.</span>
+<span class="sd">        x</span>
+<span class="sd">            Independent variable values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        exp_coeff</span>
+<span class="sd">            List of exponential coefficients</span>
+<span class="sd">        ode_coeff</span>
+<span class="sd">            Optimal coefficients of the ODE involved in calculating the</span>
+<span class="sd">            exponential coefficients.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        initial_guess</span>
+<span class="sd">            An initial guess for determining the parameters of the ODE (if you</span>
+<span class="sd">            don&#39;t know what this is about, don&#39;t bother). The array is 1D and</span>
+<span class="sd">            has `n_exp` + 1 entries. If `None`, use ``numpy.ones(n_exp + 1)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">initial_guess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">initial_guess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">_ODESolver</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_exp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">poly_order</span><span class="p">)</span>
+
+        <span class="c1"># Map x to [-1, 1]</span>
+        <span class="n">x_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x_mapped</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_min</span><span class="p">)</span> <span class="o">/</span> <span class="n">x_range</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="c1"># Weights (trapezoidal)</span>
+        <span class="n">d_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">d_x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">w</span> <span class="o">/=</span> <span class="n">x_range</span>
+
+        <span class="n">leg</span> <span class="o">=</span> <span class="n">legvander</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_exp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="n">coeffs</span><span class="p">):</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="n">coeffs</span>
+            <span class="c1"># The following is the residual condition</span>
+            <span class="c1"># \hat{y}_k = (k + 1 / 2) \sum_{i=1}^n w_i z_i P(t_i)</span>
+            <span class="n">rc</span> <span class="o">=</span> <span class="n">leg</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">w</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">rc</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_exp</span><span class="p">)</span>
+            <span class="c1"># Solve the ODE in Legendre space</span>
+            <span class="c1"># \sum_{k=0}^p a_k D^k \hat{y} = e_1</span>
+            <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poly_order</span><span class="p">)</span>
+            <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">sol_hat</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rc</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+            <span class="c1"># transform to real space</span>
+            <span class="n">sol</span> <span class="o">=</span> <span class="n">legval</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">sol_hat</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">y</span> <span class="o">-</span> <span class="n">sol</span>
+
+        <span class="k">def</span> <span class="nf">jacobian</span><span class="p">(</span><span class="n">coeffs</span><span class="p">):</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="n">coeffs</span>
+            <span class="n">jac</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+            <span class="n">tan</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">tangent</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_exp</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">jac</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">legval</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">tan</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="n">jac</span>
+
+        <span class="n">ode_coeff</span> <span class="o">=</span> <span class="n">leastsq</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="n">initial_guess</span><span class="p">,</span> <span class="n">Dfun</span><span class="o">=</span><span class="n">jacobian</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">exp_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roots</span><span class="p">(</span><span class="n">ode_coeff</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">x_range</span>
+
+        <span class="k">return</span> <span class="n">exp_coeff</span><span class="p">,</span> <span class="n">ode_coeff</span>
+
+<div class="viewcode-block" id="ExpSumModel.fit"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ExpSumModel.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="n">initial_guess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ExpSumModelResult&quot;</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Perform the fit</span>
+
+<span class="sd">        Determine the best parameters :math:`\alpha, \beta_k, \lambda_k`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y</span>
+<span class="sd">            Function values corresponding to `x`.</span>
+<span class="sd">        x</span>
+<span class="sd">            Independent variable values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Fit result.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        initial_guess</span>
+<span class="sd">            An initial guess for determining the parameters of the ODE (if you</span>
+<span class="sd">            don&#39;t know what this is about, don&#39;t bother). The array is 1D and</span>
+<span class="sd">            has `n_exp` + 1 entries. If `None`, use ``numpy.ones(n_exp + 1)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exp_coeff</span><span class="p">,</span> <span class="n">ode_coeff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_exp_coeffs</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">initial_guess</span><span class="p">)</span>
+        <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">exp_coeff</span><span class="p">])))</span>
+        <span class="n">lsq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">lsq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mant_coeff</span> <span class="o">=</span> <span class="n">lsq</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">return</span> <span class="n">ExpSumModelResult</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">mant_coeff</span><span class="p">,</span> <span class="n">exp_coeff</span><span class="p">,</span>
+                                 <span class="n">ode_coeff</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO: Use numpy ArrayLike typehint once it is available</span>
+<div class="viewcode-block" id="ExpSumModel.eval"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ExpSumModel.eval">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">mant</span><span class="p">,</span> <span class="n">exp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the sum of exponentials</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            Independent variable</span>
+<span class="sd">        offset</span>
+<span class="sd">            Additive parameter</span>
+<span class="sd">        mant</span>
+<span class="sd">            Mantissa coefficients</span>
+<span class="sd">        exp</span>
+<span class="sd">            Coefficients in the exponent</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Function values at x.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">funcs</span><span class="o">.</span><span class="n">exp_sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">mant</span><span class="p">,</span> <span class="n">exp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExpSumModel.__call__"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ExpSumModel.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for :py:meth:`eval`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ExpSumModelResult"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ExpSumModelResult">[docs]</a><span class="k">class</span> <span class="nc">ExpSumModelResult</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Result of fitting a sum of exponential functions to data&quot;&quot;&quot;</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">ExpSumModel</span>
+    <span class="sd">&quot;&quot;&quot;Model instance used for fitting&quot;&quot;&quot;</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Additive parameter :math:`\alpha`&quot;&quot;&quot;</span>
+    <span class="n">mant</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mantissa coefficients :math:`\beta_k`&quot;&quot;&quot;</span>
+    <span class="n">exp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Mantissa coefficients :math:`\lambda_k`&quot;&quot;&quot;</span>
+    <span class="n">ode_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="sd">&quot;&quot;&quot;ODE coefficients (from the modified Prony&#39;s method)&quot;&quot;&quot;</span>
+    <span class="n">best_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;Fit parameters in a lmfit-compatible way&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">ExpSumModel</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mant</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                 <span class="n">exp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">ode_coeff</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model</span>
+<span class="sd">            Model used for fitting</span>
+<span class="sd">        x</span>
+<span class="sd">            Independent variable</span>
+<span class="sd">        offset</span>
+<span class="sd">            Additive parameter</span>
+<span class="sd">        mant</span>
+<span class="sd">            Mantissa coefficients</span>
+<span class="sd">        exp</span>
+<span class="sd">            Coefficients in the exponent</span>
+<span class="sd">        ode_coeff</span>
+<span class="sd">            ODE coefficients (from the modified Prony&#39;s method)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mant</span> <span class="o">=</span> <span class="n">mant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp</span> <span class="o">=</span> <span class="n">exp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ode_coeff</span> <span class="o">=</span> <span class="n">ode_coeff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_values</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">{</span><span class="s2">&quot;mant</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">m</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mant</span><span class="p">)},</span>
+            <span class="o">**</span><span class="p">{</span><span class="s2">&quot;exp</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">m</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">exp</span><span class="p">)}</span>
+        <span class="p">}</span>  <span class="c1"># compatibility with lmfit</span>
+
+    <span class="c1"># TODO: Use numpy ArrayLike typehint once it is available</span>
+<div class="viewcode-block" id="ExpSumModelResult.eval"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ExpSumModelResult.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the sum of exponentials with fitted parameters</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            Independent variable</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Function values at x.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">funcs</span><span class="o">.</span><span class="n">exp_sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExpSumModelResult.__call__"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ExpSumModelResult.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for :py:meth:`eval`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ProbExpSumModel"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ProbExpSumModel">[docs]</a><span class="k">class</span> <span class="nc">ProbExpSumModel</span><span class="p">(</span><span class="n">ExpSumModel</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit a mixture of exponential distribution CDFs</span>
+
+<span class="sd">    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting</span>
+<span class="sd">    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}`. Additionally,</span>
+<span class="sd">    there are the constraints :math:`\sum_{k=1}^p -\beta_k = 1` and</span>
+<span class="sd">    :math:`\alpha = 1`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Since :math:`\sum_{i=1}^p -\beta_i = 1` and :math:`\alpha = 1`, assuming</span>
+<span class="sd">    :math:`\lambda_k` already known (since they are gotten by fitting the</span>
+<span class="sd">    coefficients of the ODE), there is only the constrained linear least</span>
+<span class="sd">    squares problem</span>
+
+<span class="sd">    .. math:: 1 + \sum_{k=1}^{p-1} \beta_k \text{e}^{\lambda_k t} +</span>
+<span class="sd">        (-1 - \sum_{k=1}^{p-1} \beta_k) \text{e}^{\lambda_p t} = y</span>
+
+<span class="sd">    left to solve. This is equivalent to</span>
+
+<span class="sd">    .. math:: \sum_{k=1}^{p-1} \beta_k</span>
+<span class="sd">        (\text{e}^{\lambda_k t} - \text{e}^{\lambda_p t}) =</span>
+<span class="sd">        y - 1 + \text{e}^{\lambda_p t},</span>
+
+<span class="sd">    which yields :math:`\beta_1, …, \beta_{p-1}`. :math:`\beta_p` can then be</span>
+<span class="sd">    determined from the constraint.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ProbExpSumModel.fit"><a class="viewcode-back" href="../../../optimize.html#sdt.optimize.ProbExpSumModel.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="n">initial_guess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ExpSumModelResult&quot;</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Perform the fit</span>
+
+<span class="sd">        Determine the best parameters :math:`\alpha, \beta_k, \lambda_k`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y</span>
+<span class="sd">            Function values corresponding to `x`.</span>
+<span class="sd">        x</span>
+<span class="sd">            Independent variable values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Fit result.</span>
+
+<span class="sd">        Other parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        initial_guess</span>
+<span class="sd">            An initial guess for determining the parameters of the ODE (if you</span>
+<span class="sd">            don&#39;t know what this is about, don&#39;t bother). The array is 1D and</span>
+<span class="sd">            has `n_exp` + 1 entries. If `None`, use ``numpy.ones(n_exp + 1)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="c1"># get exponent coefficients as usual</span>
+        <span class="n">exp_coeff</span><span class="p">,</span> <span class="n">ode_coeff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_exp_coeffs</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">initial_guess</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_exp</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># for only one exponential, the mantissa coefficient is -1</span>
+            <span class="n">mant_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Solve the equivalent linear lsq problem (see notes section of the</span>
+            <span class="c1"># docstring).</span>
+            <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exp_coeff</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">restr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">exp_coeff</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">mat</span> <span class="o">-=</span> <span class="n">restr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">lsq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">restr</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">lsq</span> <span class="o">=</span> <span class="n">lsq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Also recover the last mantissa coefficient from the constraint</span>
+            <span class="n">mant_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">lsq</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lsq</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+
+        <span class="k">return</span> <span class="n">ExpSumModelResult</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">mant_coeff</span><span class="p">,</span> <span class="n">exp_coeff</span><span class="p">,</span>
+                                 <span class="n">ode_coeff</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2015—2018, Lukas Schrangl
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

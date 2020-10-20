@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Changepoint detection &mdash; sdt-python 14.2 documentation</title>
+  <title>Changepoint detection &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Analyze spatial aspects of data" href="spatial.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -116,14 +118,13 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -131,6 +132,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -169,7 +171,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Changepoint detection</li>
     
@@ -279,14 +281,14 @@ implementation from <a class="reference external" href="https://github.com/deepc
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cost</strong> (<em>cost class or cost class instance or str, optional</em>) – If “l1”, use <a class="reference internal" href="#sdt.changepoint.CostL1" title="sdt.changepoint.CostL1"><code class="xref py py-class docutils literal notranslate"><span class="pre">CostL1</span></code></a>, “l2”, use <a class="reference internal" href="#sdt.changepoint.CostL2" title="sdt.changepoint.CostL2"><code class="xref py py-class docutils literal notranslate"><span class="pre">CostL2</span></code></a>.
+<li><p><strong>cost</strong> (<em>cost class</em><em> or </em><em>cost class instance</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – If “l1”, use <a class="reference internal" href="#sdt.changepoint.CostL1" title="sdt.changepoint.CostL1"><code class="xref py py-class docutils literal notranslate"><span class="pre">CostL1</span></code></a>, “l2”, use <a class="reference internal" href="#sdt.changepoint.CostL2" title="sdt.changepoint.CostL2"><code class="xref py py-class docutils literal notranslate"><span class="pre">CostL2</span></code></a>.
 A cost class type or instance can be passed directly.</p></li>
-<li><p><strong>min_size</strong> (<em>int, optional</em>) – Minimum length of segments between change points. Defaults to 2.</p></li>
-<li><p><strong>jump</strong> (<em>int, optional</em>) – Consider only every <cite>jump</cite>-th data point to speed up calculation.
+<li><p><strong>min_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum length of segments between change points. Defaults to 2.</p></li>
+<li><p><strong>jump</strong> (<em>int</em><em>, </em><em>optional</em>) – Consider only every <cite>jump</cite>-th data point to speed up calculation.
 Defaults to 5.</p></li>
-<li><p><strong>cost_params</strong> (<em>dict, optional</em>) – Parameters to pass to the cost class’s <cite>__init__</cite>. Only relevant
+<li><p><strong>cost_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Parameters to pass to the cost class’s <cite>__init__</cite>. Only relevant
 if <cite>cost</cite> is not a class instance. Defaults to {}.</p></li>
-<li><p><strong>engine</strong> (<em>{“python”, “numba”}, optional</em>) – If “numba”, use the numba-accelerated implementation. Defaults to
+<li><p><strong>engine</strong> (<em>{&quot;python&quot;</em><em>, </em><em>&quot;numba&quot;}</em><em>, </em><em>optional</em>) – If “numba”, use the numba-accelerated implementation. Defaults to
 “numba”.</p></li>
 </ul>
 </dd>
@@ -298,9 +300,9 @@ if <cite>cost</cite> is not a class instance. Defaults to {}.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>numpy.ndarray, shape(n, m)</em>) – m datasets of n data points</p></li>
+<li><p><strong>data</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>m</em><em>)</em>) – m datasets of n data points</p></li>
 <li><p><strong>penalty</strong> (<em>float</em>) – Penalty of creating a new changepoint</p></li>
-<li><p><strong>max_exp_cp</strong> (<em>int, optional</em>) – Expected maximum number of changepoints. Memory for at least this
+<li><p><strong>max_exp_cp</strong> (<em>int</em><em>, </em><em>optional</em>) – Expected maximum number of changepoints. Memory for at least this
 many changepoints will be pre-allocated. If there are more, a
 larger array will be allocated, but this incurs some overhead.
 Defaults to 10.</p></li>
@@ -342,7 +344,7 @@ Defaults to 10.</p></li>
 <dd><p>Set data for cost function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray, shape(n, m)</em>) – m datasets of n data points</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>m</em><em>)</em>) – m datasets of n data points</p>
 </dd>
 </dl>
 </dd></dl>
@@ -353,7 +355,10 @@ Defaults to 10.</p></li>
 <dd><p>Calculate cost from time <cite>t</cite> to time <cite>s</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>t, s</strong> (<em>int</em>) – Start and end point</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – Start and end point</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – Start and end point</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Cost</p>
@@ -389,7 +394,7 @@ duration of the segment.</p>
 <dd><p>Set data for cost function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray, shape(n, m)</em>) – m datasets of n data points</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>m</em><em>)</em>) – m datasets of n data points</p>
 </dd>
 </dl>
 </dd></dl>
@@ -400,7 +405,10 @@ duration of the segment.</p>
 <dd><p>Calculate cost from time <cite>t</cite> to time <cite>s</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>t, s</strong> (<em>int</em>) – Start and end point</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – Start and end point</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – Start and end point</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Cost</p>
@@ -428,10 +436,10 @@ duration of the segment.</p>
 <p>This is an implementation of <a class="reference internal" href="#fear2006" id="id7"><span>[Fear2006]</span></a> based on the one from the
 <a class="reference external" href="https://github.com/hildensia/bayesian_changepoint_detection">bayesian_changepoint_detection</a> python
 package.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul>
-<li><p><strong>prior</strong> (<em>{“const”, “geometric”, “neg_binomial”} or prior class, optional</em>) – Prior probabiltiy. This can either be a string describing the
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prior</strong> (<em>{&quot;const&quot;</em><em>, </em><em>&quot;geometric&quot;</em><em>, </em><em>&quot;neg_binomial&quot;}</em><em> or </em><em>prior class</em><em>, </em><em>optional</em>) – <p>Prior probabiltiy. This can either be a string describing the
 prior or a type or instance of a class implementing the prior, as
 for example <a class="reference internal" href="#sdt.changepoint.ConstPrior" title="sdt.changepoint.ConstPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstPrior</span></code></a>, <a class="reference internal" href="#sdt.changepoint.GeometricPrior" title="sdt.changepoint.GeometricPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeometricPrior</span></code></a>, or
 <a class="reference internal" href="#sdt.changepoint.NegBinomialPrior" title="sdt.changepoint.NegBinomialPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">NegBinomialPrior</span></code></a>.</p>
@@ -440,8 +448,8 @@ passing <cite>prior_params</cite> to <code class="docutils literal notranslate">
 <p>If “const”, use <a class="reference internal" href="#sdt.changepoint.ConstPrior" title="sdt.changepoint.ConstPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstPrior</span></code></a>. If “geometric”, use
 <a class="reference internal" href="#sdt.changepoint.GeometricPrior" title="sdt.changepoint.GeometricPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeometricPrior</span></code></a>. If “neg_binomial”, use
 <a class="reference internal" href="#sdt.changepoint.GeometricPrior" title="sdt.changepoint.GeometricPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeometricPrior</span></code></a>. Defaults to “const”.</p>
-</li>
-<li><p><strong>obs_likelihood</strong> (<em>{“gauss”, “ifm”, “full_cov”} or likelihood class, opt.</em>) – Observation likelhood. This can either be a string describing the
+</p></li>
+<li><p><strong>obs_likelihood</strong> (<em>{&quot;gauss&quot;</em><em>, </em><em>&quot;ifm&quot;</em><em>, </em><em>&quot;full_cov&quot;}</em><em> or </em><em>likelihood class</em><em>, </em><em>opt.</em>) – <p>Observation likelhood. This can either be a string describing the
 likelihood or a type or instance of a class implementing the
 likelihood, as for example <a class="reference internal" href="#sdt.changepoint.GaussianObsLikelihood" title="sdt.changepoint.GaussianObsLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">GaussianObsLikelihood</span></code></a>,
 <a class="reference internal" href="#sdt.changepoint.IfmObsLikelihood" title="sdt.changepoint.IfmObsLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">IfmObsLikelihood</span></code></a>, or <a class="reference internal" href="#sdt.changepoint.FullCovObsLikelihood" title="sdt.changepoint.FullCovObsLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">FullCovObsLikelihood</span></code></a>.</p>
@@ -451,12 +459,12 @@ passing <cite>obs_likelihood_params</cite> to <code class="docutils literal notr
 If “ifm”, use <a class="reference internal" href="#sdt.changepoint.IfmObsLikelihood" title="sdt.changepoint.IfmObsLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">IfmObsLikelihood</span></code></a>. If “full_cov”, use
 <a class="reference internal" href="#sdt.changepoint.FullCovObsLikelihood" title="sdt.changepoint.FullCovObsLikelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">FullCovObsLikelihood</span></code></a>. Defaults to “gauss”.</p>
 <p>For multivariate data, “ifm” or “full_cov” is recommended.</p>
-</li>
-<li><p><strong>prior_params</strong> (<em>dict, optional</em>) – Parameters to <cite>prior</cite>’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> if it needs to be
+</p></li>
+<li><p><strong>prior_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Parameters to <cite>prior</cite>’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> if it needs to be
 constructed. Defaults to {}.</p></li>
-<li><p><strong>obs_likelihood_params</strong> (<em>dict, optional</em>) – Parameters to <cite>obs_likelihood</cite>’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> if it needs to be
+<li><p><strong>obs_likelihood_params</strong> (<em>dict</em><em>, </em><em>optional</em>) – Parameters to <cite>obs_likelihood</cite>’s <code class="docutils literal notranslate"><span class="pre">__init__</span></code> if it needs to be
 constructed. Defaults to {}.</p></li>
-<li><p><strong>engine</strong> (<em>{“python”, “numba”}, optional</em>) – If “numba”, use the numba-accelerated implementation. Defaults to
+<li><p><strong>engine</strong> (<em>{&quot;python&quot;</em><em>, </em><em>&quot;numba&quot;}</em><em>, </em><em>optional</em>) – If “numba”, use the numba-accelerated implementation. Defaults to
 “numba”.</p></li>
 </ul>
 </dd>
@@ -473,11 +481,11 @@ use <code class="xref py py-func docutils literal notranslate"><span class="pre"
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>array-like</em>) – Data array</p></li>
-<li><p><strong>prob_threshold</strong> (<em>float or None, optional</em>) – If this is a float, local maxima in the changepoint probabilities
+<li><p><strong>prob_threshold</strong> (<em>float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – If this is a float, local maxima in the changepoint probabilities
 are considered changepoints, if they are above the threshold. In
 that case, an array of changepoints is returned. If <cite>None</cite>,
 an array of probabilities is returned. Defaults to <cite>None</cite>.</p></li>
-<li><p><strong>full_output</strong> (<em>bool, optional</em>) – Whether to return only the probabilities for a changepoint as a
+<li><p><strong>full_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return only the probabilities for a changepoint as a
 function of time or the full information. Defaults to False, i.e.
 only probabilities.</p></li>
 </ul>
@@ -524,7 +532,7 @@ threshold. Set to <code class="docutils literal notranslate"><span class="pre">-
 <dd><p>Set data for calculation of the prior</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray, shape(n, m)</em>) – m datasets of n data points</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>m</em><em>)</em>) – m datasets of n data points</p>
 </dd>
 </dl>
 </dd></dl>
@@ -564,7 +572,7 @@ threshold. Set to <code class="docutils literal notranslate"><span class="pre">-
 <dd><p>Set data for calculation of the prior</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray, shape(n, m)</em>) – m datasets of n data points</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>m</em><em>)</em>) – m datasets of n data points</p>
 </dd>
 </dl>
 </dd></dl>
@@ -618,7 +626,10 @@ threshold. Set to <code class="docutils literal notranslate"><span class="pre">-
 <dd><p>Get likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>t, s</strong> (<em>int</em>) – First and last time point to consider</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – First and last time point to consider</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – First and last time point to consider</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>likelihood</p>
@@ -635,7 +646,7 @@ threshold. Set to <code class="docutils literal notranslate"><span class="pre">-
 <dd><p>Set data for calculation of the likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray, shape(n, m)</em>) – m datasets of n data points</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>m</em><em>)</em>) – m datasets of n data points</p>
 </dd>
 </dl>
 </dd></dl>
@@ -654,7 +665,10 @@ Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 <dd><p>Get likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>t, s</strong> (<em>int</em>) – First and last time point to consider</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – First and last time point to consider</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – First and last time point to consider</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>likelihood</p>
@@ -671,7 +685,7 @@ Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 <dd><p>Set data for calculation of the likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray, shape(n, m)</em>) – m datasets of n data points</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>m</em><em>)</em>) – m datasets of n data points</p>
 </dd>
 </dl>
 </dd></dl>
@@ -690,7 +704,10 @@ in Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 <dd><p>Get likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>t, s</strong> (<em>int</em>) – First and last time point to consider</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – First and last time point to consider</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – First and last time point to consider</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>likelihood</p>
@@ -707,7 +724,7 @@ in Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 <dd><p>Set data for calculation of the likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray, shape(n, m)</em>) – m datasets of n data points</p>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>m</em><em>)</em>) – m datasets of n data points</p>
 </dd>
 </dl>
 </dd></dl>
@@ -736,17 +753,17 @@ probabilities from <code class="xref py py-attr docutils literal notranslate"><s
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>hazard_func</strong> (<em>“const” or callable, optional</em>) – Hazard function. This has to take two parameters, the first
+<li><p><strong>hazard_func</strong> (<em>&quot;const&quot;</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – Hazard function. This has to take two parameters, the first
 being an array of runlengths, the second an array of parameters.
 See the <cite>hazard_params</cite> parameter for details. It has to return
 the hazards corresponding to the runlengths.
 If “const”, use <code class="xref py py-func docutils literal notranslate"><span class="pre">constant_hazard()</span></code>. Defaults to “const”.</p></li>
-<li><p><strong>obs_likelihood</strong> (<em>“student_t” or type</em>) – Class implementing the observation likelihood. See
+<li><p><strong>obs_likelihood</strong> (<em>&quot;student_t&quot;</em><em> or </em><em>type</em>) – Class implementing the observation likelihood. See
 <code class="xref py py-class docutils literal notranslate"><span class="pre">StudentTPython</span></code> for an example. If “student_t”, use
 <code class="xref py py-class docutils literal notranslate"><span class="pre">StudentTPython</span></code>. Defaults to “student_t”.</p></li>
-<li><p><strong>hazard_params</strong> (<em>numpy.ndarray, optional</em>) – Parameters to pass as second argument to the hazard function.
+<li><p><strong>hazard_params</strong> (<em>numpy.ndarray</em><em>, </em><em>optional</em>) – Parameters to pass as second argument to the hazard function.
 Defaults to <code class="docutils literal notranslate"><span class="pre">numpy.array([250])</span></code>.</p></li>
-<li><p><strong>obs_params</strong> (<em>list, optional</em>) – Parameters to pass to the <cite>observation_likelihood</cite> constructor.
+<li><p><strong>obs_params</strong> (<em>list</em><em>, </em><em>optional</em>) – Parameters to pass to the <cite>observation_likelihood</cite> constructor.
 Defaults to <code class="docutils literal notranslate"><span class="pre">[0.1,</span> <span class="pre">0.01,</span> <span class="pre">1.,</span> <span class="pre">0.]</span></code>.</p></li>
 </ul>
 </dd>
@@ -780,11 +797,11 @@ points.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>array-like</em>) – Dataset</p></li>
-<li><p><strong>past</strong> (<em>int, optional</em>) – How many datapoints into the past to look. Larger values will
+<li><p><strong>past</strong> (<em>int</em><em>, </em><em>optional</em>) – How many datapoints into the past to look. Larger values will
 increase robustness, but also latency, meaning that if <cite>past</cite>
 equals some number <cite>x</cite>, a changepoint within the last <cite>x</cite> data
 points cannot be detected. Defaults to 3.</p></li>
-<li><p><strong>prob_threshold</strong> (<em>float or None, optional</em>) – If this is a float, local maxima in the changepoint probabilities
+<li><p><strong>prob_threshold</strong> (<em>float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – If this is a float, local maxima in the changepoint probabilities
 are considered changepoints, if they are above the threshold. In
 that case, an array of changepoints is returned. If <cite>None</cite>,
 an array of probabilities is returned. Defaults to <cite>None</cite>.</p></li>
@@ -876,7 +893,12 @@ the array equals the number of datapoints - <cite>past</cite>.</p>
 <dd><p>Student T observation likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>alpha, beta, kappa, mu</strong> (<em>float</em>) – Distribution parameters</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>alpha</strong> (<em>float</em>) – Distribution parameters</p></li>
+<li><p><strong>beta</strong> (<em>float</em>) – Distribution parameters</p></li>
+<li><p><strong>kappa</strong> (<em>float</em>) – Distribution parameters</p></li>
+<li><p><strong>mu</strong> (<em>float</em>) – Distribution parameters</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
@@ -924,16 +946,16 @@ the array equals the number of datapoints - <cite>past</cite>.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>numpy.ndarray</em>) – Data points in time series</p></li>
 <li><p><strong>changepoints</strong> (<em>list-like of int</em>) – Indices of changepoints</p></li>
-<li><p><strong>time</strong> (<em>numpy.ndarray or None</em>) – x axis values. If <cite>None</cite> (the default), use 1, 2, 3…</p></li>
-<li><p><strong>style</strong> (<em>{“shade”, “line”}, optional</em>) – How to indicate changepoints. If “shade” (default), draw the
+<li><p><strong>time</strong> (<em>numpy.ndarray</em><em> or </em><em>None</em>) – x axis values. If <cite>None</cite> (the default), use 1, 2, 3…</p></li>
+<li><p><strong>style</strong> (<em>{&quot;shade&quot;</em><em>, </em><em>&quot;line&quot;}</em><em>, </em><em>optional</em>) – How to indicate changepoints. If “shade” (default), draw the
 background of the segments separated by changepoints in different
 colors. If “lines”, draw vertical lines at the positions of th
 changepoints.</p></li>
-<li><p><strong>segment_alpha</strong> (<em>float, optional</em>) – Alpha value of the background color in case of <code class="docutils literal notranslate"><span class="pre">style=&quot;shade&quot;</span></code>.
+<li><p><strong>segment_alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – Alpha value of the background color in case of <code class="docutils literal notranslate"><span class="pre">style=&quot;shade&quot;</span></code>.
 Defaults to 0.2.</p></li>
 <li><p><strong>segment_colors</strong> (<em>list of str</em>) – Sequence of background colors for use with <code class="docutils literal notranslate"><span class="pre">style=&quot;shade&quot;</span></code>. Defaults
 to <code class="docutils literal notranslate"><span class="pre">[&quot;#4286f4&quot;,</span> <span class="pre">&quot;#f44174&quot;]</span></code>, which are purple and pink.</p></li>
-<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes or None</em>) – Axes object to plot on. If <cite>None</cite> (the default), get it by calling
+<li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em> or </em><em>None</em>) – Axes object to plot on. If <cite>None</cite> (the default), get it by calling
 pyplot’s <code class="docutils literal notranslate"><span class="pre">gca()</span></code>.</p></li>
 </ul>
 </dd>
@@ -986,11 +1008,19 @@ Detection”, <a class="reference external" href="https://arxiv.org/abs/0710.374
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1001,7 +1031,6 @@ Detection”, <a class="reference external" href="https://arxiv.org/abs/0710.374
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdt.fret.sm_track &mdash; sdt-python 14.2 documentation</title>
+  <title>sdt.fret.sm_track &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,7 +87,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
@@ -94,14 +96,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
@@ -109,6 +110,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -147,7 +149,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -174,11 +176,12 @@
 <span class="sd">&quot;&quot;&quot;Module containing a class for tracking smFRET data &quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">multicolor</span><span class="p">,</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">channel_reg</span><span class="p">,</span> <span class="n">multicolor</span><span class="p">,</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">FrameSelector</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -188,75 +191,117 @@
     <span class="n">trackpy_available</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<div class="viewcode-block" id="SmFretTracker"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretTracker">[docs]</a><span class="k">class</span> <span class="nc">SmFretTracker</span><span class="p">:</span>
+<div class="viewcode-block" id="SmFRETTracker"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker">[docs]</a><span class="k">class</span> <span class="nc">SmFRETTracker</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Class for tracking of smFRET data</span>
 
 <span class="sd">    There is support for dumping and loading to/from YAML using</span>
 <span class="sd">    :py:mod:`sdt.io.yaml`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!SmFretTracker&quot;</span>
-    <span class="n">_yaml_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;excitation_seq&quot;</span><span class="p">,</span> <span class="s2">&quot;chromatic_corr&quot;</span><span class="p">,</span> <span class="s2">&quot;link_options&quot;</span><span class="p">,</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!SmFRETTracker&quot;</span>
+    <span class="n">_yaml_keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;excitation_seq&quot;</span><span class="p">,</span> <span class="s2">&quot;registrator&quot;</span><span class="p">,</span> <span class="s2">&quot;link_options&quot;</span><span class="p">,</span>
                   <span class="s2">&quot;min_length&quot;</span><span class="p">,</span> <span class="s2">&quot;brightness_options&quot;</span><span class="p">,</span> <span class="s2">&quot;interpolate&quot;</span><span class="p">,</span>
                   <span class="s2">&quot;coloc_dist&quot;</span><span class="p">,</span> <span class="s2">&quot;acceptor_channel&quot;</span><span class="p">,</span> <span class="s2">&quot;neighbor_radius&quot;</span><span class="p">)</span>
 
+    <span class="n">frame_selector</span><span class="p">:</span> <span class="n">FrameSelector</span>
+    <span class="sd">&quot;&quot;&quot;A :py:class:`FrameSelector` instance with the matching</span>
+<span class="sd">    :py:attr:`excitation_seq`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">registrator</span><span class="p">:</span> <span class="n">channel_reg</span><span class="o">.</span><span class="n">Registrator</span>
+    <span class="sd">&quot;&quot;&quot;channel_reg.Registrator used to overlay channels&quot;&quot;&quot;</span>
+    <span class="n">link_options</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="sd">&quot;&quot;&quot;Options passed to :py:func:`trackpy.link_df`&quot;&quot;&quot;</span>
+    <span class="n">min_length</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;Minimum length of tracks&quot;&quot;&quot;</span>
+    <span class="n">neighbor_radius</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="sd">&quot;&quot;&quot;How far two features may be apart while still being considered close</span>
+<span class="sd">    enough so that one influences the brightness measurement of the other.</span>
+<span class="sd">    This is related to the `radius` option of</span>
+<span class="sd">    :py:func:`brightness.from_raw_image`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">brightness_options</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="sd">&quot;&quot;&quot;Options passed to :py:func:`brightness.from_raw_image`. Make sure to</span>
+<span class="sd">    adjust :py:attr:`neighbor_radius` if you change either the `mask` or the</span>
+<span class="sd">    `radius` option!</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">interpolate</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="sd">&quot;&quot;&quot;Whether to interpolate coordinates of features that have been missed</span>
+<span class="sd">    by the localization algorithm.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">coloc_dist</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="sd">&quot;&quot;&quot;After overlaying donor and acceptor channel features, this gives the</span>
+<span class="sd">    maximum distance up to which donor and acceptor signal are considered</span>
+<span class="sd">    to come from the same molecule.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">acceptor_channel</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;Can be either 1 or 2, depending the acceptor is the first or the</span>
+<span class="sd">    second channel in :py:attr:`registrator`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="sd">&quot;&quot;&quot;Column names in DataFrames. Defaults are taken from</span>
+<span class="sd">    :py:attr:`config.columns`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excitation_seq</span><span class="o">=</span><span class="s2">&quot;da&quot;</span><span class="p">,</span> <span class="n">chromatic_corr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">link_radius</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                 <span class="n">link_mem</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">feat_radius</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">bg_frame</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                 <span class="n">bg_estimator</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="n">neighbor_radius</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">interpolate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">coloc_dist</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">acceptor_channel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">link_quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">link_options</span><span class="o">=</span><span class="p">{},</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excitation_seq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;da&quot;</span><span class="p">,</span>
+                 <span class="n">registrator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">channel_reg</span><span class="o">.</span><span class="n">Registrator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">link_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">link_mem</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">min_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">feat_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+                 <span class="n">bg_frame</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                 <span class="n">bg_estimator</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span>
+                                     <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                 <span class="n">neighbor_radius</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                 <span class="n">interpolate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">coloc_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+                 <span class="n">acceptor_channel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">link_quiet</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">link_options</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        excitation_seq : str or list-like of characters, optional</span>
-<span class="sd">            Set the :py:attr:`excitation_seq` attribute. Defaults to &quot;da&quot;.</span>
-<span class="sd">        chromatic_corr : chromatic.Corrector or None, optional</span>
-<span class="sd">            Corrector used to overlay channels. If `None`, create a Corrector</span>
-<span class="sd">            with the identity transform. Defaults to `None`.</span>
-<span class="sd">        link_radius : float, optional</span>
+<span class="sd">        excitation_seq</span>
+<span class="sd">            Set the :py:attr:`excitation_seq` attribute.</span>
+<span class="sd">        registrator</span>
+<span class="sd">            Registrator used to overlay channels. If `None`, use the identity</span>
+<span class="sd">            transform.</span>
+<span class="sd">        link_radius</span>
 <span class="sd">            Maximum movement of features between frames. See `search_range`</span>
-<span class="sd">            option of :py:func:`trackpy.link_df`. Defaults to 5.</span>
-<span class="sd">        link_mem : int, optional</span>
+<span class="sd">            option of :py:func:`trackpy.link_df`.</span>
+<span class="sd">        link_mem</span>
 <span class="sd">            Maximum number of frames for which a feature may not be detected.</span>
-<span class="sd">            See `memory` option of :py:func:`trackpy.link_df`. Defaults to 1.</span>
-<span class="sd">        min_length : int, optional</span>
-<span class="sd">            Minimum length of tracks. Defaults to 1.</span>
-<span class="sd">        feat_radius : int, optional</span>
+<span class="sd">            See `memory` option of :py:func:`trackpy.link_df`.</span>
+<span class="sd">        min_length</span>
+<span class="sd">            Minimum length of tracks.</span>
+<span class="sd">        feat_radius</span>
 <span class="sd">            Radius of circle that is a little larger than features. See</span>
 <span class="sd">            `radius` option of :py:func:`brightness.from_raw_image`.</span>
-<span class="sd">            Defaults to 4.</span>
-<span class="sd">        bg_frame : int, optional</span>
+<span class="sd">        bg_frame</span>
 <span class="sd">            Size of frame around features for background determination. See</span>
 <span class="sd">            `bg_frame` option of :py:func:`brightness.from_raw_image`.</span>
-<span class="sd">            Defaults to 2.</span>
-<span class="sd">        bg_estimator : {&quot;mean&quot;, &quot;median&quot;}, optional</span>
+<span class="sd">        bg_estimator</span>
 <span class="sd">            Statistic to estimate background. See `bg_estimator` option of</span>
-<span class="sd">            :py:func:`brightness.from_raw_image`. Defaults to &quot;mean&quot;.</span>
-<span class="sd">        neighbor_radius : float or &quot;auto&quot;</span>
+<span class="sd">            :py:func:`brightness.from_raw_image`.</span>
+<span class="sd">        neighbor_radius</span>
 <span class="sd">            How far two features may be apart while still being considered</span>
 <span class="sd">            close enough so that one influences the brightness measurement of</span>
 <span class="sd">            the other. This is related to the `radius` option of</span>
 <span class="sd">            :py:func:`brightness.from_raw_image`. If &quot;auto&quot;, use the smallest</span>
-<span class="sd">            value that avoids overlaps. Defaults to &quot;auto&quot;.</span>
-<span class="sd">        interpolate : bool, optional</span>
+<span class="sd">            value that avoids overlaps.</span>
+<span class="sd">        interpolate</span>
 <span class="sd">            Whether to interpolate coordinates of features that have been</span>
-<span class="sd">            missed by the localization algorithm. Defaults to `True`.</span>
-<span class="sd">        coloc_dist : float</span>
+<span class="sd">            missed by the localization algorithm.</span>
+<span class="sd">        coloc_dist</span>
 <span class="sd">            After overlaying donor and acceptor channel features, this gives</span>
 <span class="sd">            the maximum distance up to which donor and acceptor signal are</span>
-<span class="sd">            considered to come from the same molecule. Defaults to 2.</span>
-<span class="sd">        acceptor_channel : {1, 2}, optional</span>
-<span class="sd">            Whether the acceptor channel is number 1 or 2 in `chromatic_corr`.</span>
-<span class="sd">            Defaults to 2</span>
-<span class="sd">        link_options : dict, optional</span>
+<span class="sd">            considered to come from the same molecule.</span>
+<span class="sd">        acceptor_channel</span>
+<span class="sd">            Whether the acceptor channel is number 1 or 2 in `registrator`.</span>
+<span class="sd">        link_options</span>
 <span class="sd">            Specify additional options to :py:func:`trackpy.link_df`.</span>
 <span class="sd">            &quot;search_range&quot; and &quot;memory&quot; will be overwritten by the</span>
-<span class="sd">            `link_radius` and `link_mem` parameters. Defaults to {}.</span>
-<span class="sd">        link_quiet : bool, optional</span>
-<span class="sd">            If `True, call :py:func:`trackpy.quiet`. Defaults to `True`.</span>
+<span class="sd">            `link_radius` and `link_mem` parameters.</span>
+<span class="sd">        link_quiet</span>
+<span class="sd">            If `True`, call :py:func:`trackpy.quiet`.</span>
 
 <span class="sd">        Other parameters</span>
 <span class="sd">        ----------------</span>
-<span class="sd">        columns : dict, optional</span>
+<span class="sd">        columns</span>
 <span class="sd">            Override default column names as defined in</span>
 <span class="sd">            :py:attr:`config.columns`. Relevant names are `coords`, `time`,</span>
 <span class="sd">            `mass`, `signal`, `bg`, `bg_dev`. This means, if your DataFrame has</span>
@@ -265,63 +310,34 @@
 <span class="sd">            parameters sets the :py:attr:`columns` attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span> <span class="o">=</span> <span class="n">FrameSelector</span><span class="p">(</span><span class="n">excitation_seq</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;A :py:class:`FrameSelector` instance with the matching</span>
-<span class="sd">        :py:attr:`excitation_seq`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chromatic_corr</span> <span class="o">=</span> <span class="n">chromatic_corr</span>
-        <span class="sd">&quot;&quot;&quot;chromatic.Corrector used to overlay channels&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registrator</span> <span class="o">=</span> <span class="p">(</span><span class="n">registrator</span> <span class="k">if</span> <span class="n">registrator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                            <span class="k">else</span> <span class="n">channel_reg</span><span class="o">.</span><span class="n">Registrator</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">link_options</span> <span class="o">=</span> <span class="n">link_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="sd">&quot;&quot;&quot;dict of options passed to :py:func:`trackpy.link_df`&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">link_options</span><span class="p">[</span><span class="s2">&quot;search_range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_radius</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">link_options</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_mem</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span> <span class="o">=</span> <span class="n">min_length</span>
-        <span class="sd">&quot;&quot;&quot;Minimum length of tracks&quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">brightness_options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">radius</span><span class="o">=</span><span class="n">feat_radius</span><span class="p">,</span>
             <span class="n">bg_frame</span><span class="o">=</span><span class="n">bg_frame</span><span class="p">,</span>
             <span class="n">bg_estimator</span><span class="o">=</span><span class="n">bg_estimator</span><span class="p">,</span>
             <span class="n">mask</span><span class="o">=</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;dict of options passed to :py:func:`brightness.from_raw_image`.</span>
-<span class="sd">        Make sure to adjust :py:attr:`neighbor_radius` if you change either the</span>
-<span class="sd">        `mask` or the `radius` option!</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">interpolate</span> <span class="o">=</span> <span class="n">interpolate</span>
-        <span class="sd">&quot;&quot;&quot;Whether to interpolate coordinates of features that have been missed</span>
-<span class="sd">        by the localization algorithm.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coloc_dist</span> <span class="o">=</span> <span class="n">coloc_dist</span>
-        <span class="sd">&quot;&quot;&quot;After overlaying donor and acceptor channel features, this gives the</span>
-<span class="sd">        maximum distance up to which donor and acceptor signal are considered</span>
-<span class="sd">        to come from the same molecule.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acceptor_channel</span> <span class="o">=</span> <span class="n">acceptor_channel</span>
-        <span class="sd">&quot;&quot;&quot;Can be either 1 or 2, depending the acceptor is the first or the</span>
-<span class="sd">        second channel in :py:attr:`chromatic_corr`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
-        <span class="sd">&quot;&quot;&quot;dict of column names in DataFrames. Defaults are taken from</span>
-<span class="sd">        :py:attr:`config.columns`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">neighbor_radius</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># auto radius</span>
             <span class="n">neighbor_radius</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">feat_radius</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">neighbor_radius</span> <span class="o">=</span> <span class="n">neighbor_radius</span>
-        <span class="sd">&quot;&quot;&quot;How far two features may be apart while still being considered close</span>
-<span class="sd">        enough so that one influences the brightness measurement of the other.</span>
-<span class="sd">        This is related to the `radius` option of</span>
-<span class="sd">        :py:func:`brightness.from_raw_image`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">link_quiet</span> <span class="ow">and</span> <span class="n">trackpy_available</span><span class="p">:</span>
             <span class="n">trackpy</span><span class="o">.</span><span class="n">quiet</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Excitation sequence. &quot;d&quot; stands for donor, &quot;a&quot; for acceptor,</span>
 <span class="sd">        anything else describes other kinds of frames which are irrelevant for</span>
 <span class="sd">        tracking.</span>
@@ -332,41 +348,47 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="o">.</span><span class="n">excitation_seq</span>
 
     <span class="nd">@excitation_seq</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="o">.</span><span class="n">excitation_seq</span> <span class="o">=</span> <span class="n">seq</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">excitation_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">excitation_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;dict mapping the excitation types in :py:attr:`excitation_seq` to</span>
 <span class="sd">        the corresponding frame numbers (modulo the length of</span>
 <span class="sd">        py:attr:`excitation_seq`).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="o">.</span><span class="n">excitation_frames</span>
 
-<div class="viewcode-block" id="SmFretTracker.track"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretTracker.track">[docs]</a>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_img</span><span class="p">,</span> <span class="n">acceptor_img</span><span class="p">,</span> <span class="n">donor_loc</span><span class="p">,</span> <span class="n">acceptor_loc</span><span class="p">,</span>
-              <span class="n">d_mass</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETTracker.track"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.track">[docs]</a>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_img</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+              <span class="n">acceptor_img</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">donor_loc</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+              <span class="n">acceptor_loc</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">d_mass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Track smFRET data</span>
 
 <span class="sd">        Localization data for both the donor and the acceptor channel is</span>
 <span class="sd">        merged (since a FRET construct has to be visible in at least one</span>
-<span class="sd">        channel) taking into account chromatic aberrations. The merged data</span>
-<span class="sd">        is than linked into trajectories using :py:func:`trackpy.link_df`.</span>
-<span class="sd">        For this the :py:mod:`trackpy` package needs to be installed.</span>
-<span class="sd">        Additionally, the feature brightness is determined for both donor</span>
-<span class="sd">        and acceptor for raw image data using</span>
+<span class="sd">        channel). The merged data is than linked into trajectories using</span>
+<span class="sd">        py:func:`trackpy.link_df`. For this the :py:mod:`trackpy` package needs</span>
+<span class="sd">        to be installed. Additionally, the feature brightness is determined for</span>
+<span class="sd">        both donor and acceptor for raw image data using</span>
 <span class="sd">        :py:func:`brightness.from_raw_image`. These data are written into a</span>
 <span class="sd">        a :py:class:`pandas.DataFrame` whose columns have a MultiIndex</span>
 <span class="sd">        containing the &quot;donor&quot; and &quot;acceptor&quot; items in the top level.</span>
 
+<span class="sd">        A column specifying whether the entry originates from donor or</span>
+<span class="sd">        acceptor excitation is also added: (&quot;fret&quot;, &quot;exc_type&quot;). It is &quot;d&quot;</span>
+<span class="sd">        for donor and &quot;a&quot; for acceptor excitation; see the</span>
+<span class="sd">        :py:meth:`flag_excitation_type` method.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        donor_img, acceptor_img : list of numpy.ndarray</span>
+<span class="sd">        donor_img, acceptor_img</span>
 <span class="sd">            Raw image frames for donor and acceptor channel. This need to be</span>
 <span class="sd">            of type `list`, but anything that returns image data when indexed</span>
 <span class="sd">            with a frame number will do.</span>
-<span class="sd">        donor_loc, acceptor_loc : pandas.DataFrame</span>
+<span class="sd">        donor_loc, acceptor_loc</span>
 <span class="sd">            Localization data for donor and acceptor channel</span>
-<span class="sd">        d_mass : bool, optional</span>
+<span class="sd">        d_mass</span>
 <span class="sd">            If `True`, get total brightness upon donor excitation by</span>
 <span class="sd">            from the sum of donor and acceptor image. If `False`, the</span>
 <span class="sd">            donor excitation brightness can still be calculated as the sum of</span>
@@ -380,15 +402,14 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        pandas.DataFrame</span>
-<span class="sd">            The columns are indexed with a :py:class:`pandas.MultiIndex`.</span>
-<span class="sd">            The top index level consists of &quot;donor&quot; (tracking data for the</span>
-<span class="sd">            donor channel), &quot;acceptor&quot; (tracking data for the acceptor</span>
-<span class="sd">            channel), and &quot;fret&quot;. The latter contains a column with the</span>
-<span class="sd">            particle number (&quot;particle&quot;), an indicator (0 / 1) whether there</span>
-<span class="sd">            is a near neighbor (&quot;has_neighbor&quot;), and an indicator whether the</span>
-<span class="sd">            data point was interpolated (&quot;interp&quot;) because it was not in the</span>
-<span class="sd">            localization data in either channel.</span>
+<span class="sd">        The columns are indexed with a :py:class:`pandas.MultiIndex`.</span>
+<span class="sd">        The top index level consists of &quot;donor&quot; (tracking data for the</span>
+<span class="sd">        donor channel), &quot;acceptor&quot; (tracking data for the acceptor</span>
+<span class="sd">        channel), and &quot;fret&quot;. The latter contains a column with the</span>
+<span class="sd">        particle number (&quot;particle&quot;), an indicator (0 / 1) whether there</span>
+<span class="sd">        is a near neighbor (&quot;has_neighbor&quot;), and an indicator whether the</span>
+<span class="sd">        data point was interpolated (&quot;interp&quot;) because it was not in the</span>
+<span class="sd">        localization data in either channel.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">trackpy_available</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;`trackpy` package required but not installed.&quot;</span><span class="p">)</span>
@@ -407,7 +428,7 @@
                 <span class="n">df</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
 
         <span class="n">donor_channel</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptor_channel</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="mi">2</span>
-        <span class="n">donor_loc_corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic_corr</span><span class="p">(</span><span class="n">donor_loc</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">donor_channel</span><span class="p">)</span>
+        <span class="n">donor_loc_corr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">registrator</span><span class="p">(</span><span class="n">donor_loc</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">donor_channel</span><span class="p">)</span>
 
         <span class="c1"># Create FRET tracks (in the acceptor channel)</span>
         <span class="c1"># Acceptor channel is used because in ALEX there are frames without</span>
@@ -487,8 +508,7 @@
             <span class="n">ret</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">posf_cols</span><span class="p">)]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">values</span>
 
         <span class="c1"># get feature brightness from raw image data</span>
-        <span class="n">ret_d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic_corr</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="s2">&quot;donor&quot;</span><span class="p">],</span>
-                                    <span class="n">channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptor_channel</span><span class="p">)</span>
+        <span class="n">ret_d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">registrator</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="s2">&quot;donor&quot;</span><span class="p">],</span> <span class="n">channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptor_channel</span><span class="p">)</span>
         <span class="n">ret_a</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;acceptor&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">brightness</span><span class="o">.</span><span class="n">from_raw_image</span><span class="p">(</span><span class="n">ret_d</span><span class="p">,</span> <span class="n">donor_img</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">brightness_options</span><span class="p">,</span>
                                   <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
@@ -502,9 +522,9 @@
             <span class="c1"># is released, load everything into memory</span>
             <span class="n">overlay</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">di</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">donor_img</span><span class="p">,</span> <span class="n">acceptor_img</span><span class="p">):</span>
-                <span class="n">o</span> <span class="o">=</span> <span class="n">di</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromatic_corr</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
-                                             <span class="n">channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptor_channel</span><span class="p">,</span>
-                                             <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+                <span class="n">o</span> <span class="o">=</span> <span class="n">di</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">registrator</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">cval</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+                                          <span class="n">channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptor_channel</span><span class="p">,</span>
+                                          <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
                 <span class="n">overlay</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">ret_d</span><span class="p">[</span><span class="n">posf_cols</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">brightness</span><span class="o">.</span><span class="n">from_raw_image</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">overlay</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">brightness_options</span><span class="p">)</span>
@@ -526,9 +546,32 @@
         <span class="n">valid</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span><span class="p">]</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="n">ret</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">valid</span><span class="p">)]</span>
 
-        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag_excitation_type</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="SmFretTracker.to_yaml"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretTracker.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SmFRETTracker.flag_excitation_type"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.flag_excitation_type">[docs]</a>    <span class="k">def</span> <span class="nf">flag_excitation_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracks</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a column indicating excitation type (donor/acceptor/...)</span>
+
+<span class="sd">        Add  (&quot;fret&quot;, &quot;exc_type&quot;) column in place. It is of &quot;category&quot; type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tracks</span>
+<span class="sd">            Result of :py:meth:`track`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># FIXME: Don&#39;t force convert to int, but raise an error (?)</span>
+        <span class="c1"># First, the track method needs to preserve the data type of the time</span>
+        <span class="c1"># column</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">et</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">[</span><span class="n">frames</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">)],</span>
+                       <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;category&quot;</span><span class="p">)</span>
+        <span class="c1"># Assignment to dataframe is done by matching indices, not line-wise</span>
+        <span class="c1"># Thus copy index</span>
+        <span class="n">et</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">tracks</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">et</span></div>
+
+<div class="viewcode-block" id="SmFRETTracker.to_yaml"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
 
@@ -539,7 +582,7 @@
         <span class="n">m</span><span class="p">[</span><span class="s2">&quot;excitation_seq&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;excitation_seq&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFretTracker.from_yaml"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretTracker.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SmFRETTracker.from_yaml"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
 
@@ -555,7 +598,7 @@
 
 <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">..io</span> <span class="kn">import</span> <span class="n">yaml</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">SmFretTracker</span><span class="p">)</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">SmFRETTracker</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -568,11 +611,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -583,7 +634,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

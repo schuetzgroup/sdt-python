@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Regions of interest (ROIs) &mdash; sdt-python 14.2 documentation</title>
+  <title>Regions of interest (ROIs) &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,18 +30,14 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Overlay color channels" href="chromatic.html" />
+    <link rel="next" title="Overlay color channels" href="channel_reg.html" />
     <link rel="prev" title="Documentation of the sdt python package" href="index.html" /> 
 </head>
 
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -93,7 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#imagej-roi-file-loading">ImageJ ROI file loading</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -102,14 +104,13 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -117,6 +118,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -155,7 +157,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Regions of interest (ROIs)</li>
     
@@ -266,10 +268,10 @@ or restrict data (such as feature localization data) to a specified region.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>top_left</strong> (<em>tuple of int</em>) – Coordinates of the top-left corner. Pixels with coordinates
 greater or equal than these are excluded from the ROI.</p></li>
-<li><p><strong>bottom_right</strong> (<em>tuple of int or None, optional</em>) – Coordinates of the bottom-right corner. Pixels with
+<li><p><strong>bottom_right</strong> (<em>tuple of int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Coordinates of the bottom-right corner. Pixels with
 coordinates greater or equal than these are excluded from the ROI.
 Either this or <cite>size</cite> need to specified.</p></li>
-<li><p><strong>size</strong> (<em>tuple of int or None, optional</em>) – Size of the ROI. Specifying <cite>size</cite> is equivalent to
+<li><p><strong>size</strong> (<em>tuple of int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Size of the ROI. Specifying <cite>size</cite> is equivalent to
 <code class="docutils literal notranslate"><span class="pre">bottom_right=[t+s</span> <span class="pre">for</span> <span class="pre">t,</span> <span class="pre">s</span> <span class="pre">in</span> <span class="pre">zip(top_left,</span> <span class="pre">shape)]</span></code>.
 Either this or <cite>bottom_right</cite> need to specified.</p></li>
 </ul>
@@ -299,13 +301,13 @@ cropped to the rectangle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame or pims.FramesSequence or array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>pims.FramesSequence</em><em> or </em><em>array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
 lines with coordinate values within the ROI. Crop the image.</p></li>
-<li><p><strong>rel_origin</strong> (<em>bool, optional</em>) – If True, the top-left corner coordinates will be subtracted off
+<li><p><strong>rel_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the top-left corner coordinates will be subtracted off
 all feature coordinates, i. e. the top-left corner of the ROI will
 be the new origin. Only valid if <cite>invert</cite> is False. Defaults to
 True.</p></li>
-<li><p><strong>invert</strong> (<em>bool, optional</em>) – If True, only datapoints outside the ROI are selected. Works only
+<li><p><strong>invert</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, only datapoints outside the ROI are selected. Works only
 if <cite>data</cite> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
@@ -377,14 +379,14 @@ channel (i. e. grayscale) images.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<em>list of vertices or matplotlib.path.Path</em>) – Description of the path. Either a list of vertices that will
+<li><p><strong>path</strong> (<em>list of vertices</em><em> or </em><em>matplotlib.path.Path</em>) – Description of the path. Either a list of vertices that will
 be used to construct a <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.path.Path</span></code> or a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.path.Path</span></code> instance that will be copied.</p></li>
-<li><p><strong>buffer</strong> (<em>float, optional</em>) – Add extra space around the path. This, however, does not
+<li><p><strong>buffer</strong> (<em>float</em><em>, </em><em>optional</em>) – Add extra space around the path. This, however, does not
 affect the size of the cropped image, which is just the size of
 the bounding box of the <a class="reference internal" href="#sdt.roi.PathROI.path" title="sdt.roi.PathROI.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">path</span></code></a>, without <cite>buffer</cite>.
 Defaults to 0.</p></li>
-<li><p><strong>no_image</strong> (<em>bool, optional</em>) – If True, don’t compute the image mask (which is quite time
+<li><p><strong>no_image</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, don’t compute the image mask (which is quite time
 consuming). This implies that this instance only works for
 DataFrames. Defaults to False.</p></li>
 </ul>
@@ -443,12 +445,12 @@ contained in the path are set to <cite>fill_value</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame or pims.FramesSequence or array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>pims.FramesSequence</em><em> or </em><em>array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
 lines with coordinate values within the ROI path (+ buffer).
 Otherwise, <cite>slicerator.pipeline</cite> is used to crop image data to the
 bounding rectangle of the path and set all pixels not within the
 path to <cite>fill_value</cite></p></li>
-<li><p><strong>rel_origin</strong> (<em>bool, optional</em>) – If True, the top-left corner coordinates of the path’s bounding
+<li><p><strong>rel_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the top-left corner coordinates of the path’s bounding
 rectangle will be subtracted off all feature coordinates, i. e.
 the top-left corner will be the new origin. If a coordinate of the
 bounding rectangle is negative, 0 will be used as the origin
@@ -456,13 +458,13 @@ instead. This is necessary to ensure that localization data to
 which the ROI is applied is consistent with image data to which
 the ROI is applied. Only valid if <cite>invert</cite> is False. Defaults to
 <cite>True</cite>.</p></li>
-<li><p><strong>fill_value</strong> (<em>number or callable, optional</em>) – Fill value for pixels that are not contained in the path. If
+<li><p><strong>fill_value</strong> (<em>number</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – Fill value for pixels that are not contained in the path. If
 callable, it should take the array of pixels within the mask as its
 argument and return a scalar that is used as the fill value. Not
 applicable for single molecule data. Defaults to 0.</p></li>
-<li><p><strong>invert</strong> (<em>bool, optional</em>) – If True, only datapoints/pixels outside the path are selected.
+<li><p><strong>invert</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, only datapoints/pixels outside the path are selected.
 Defaults to <cite>False</cite>.</p></li>
-<li><p><strong>crop</strong> (<em>bool, optional</em>) – If True, crop image data to the (integer) bounding box of the
+<li><p><strong>crop</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, crop image data to the (integer) bounding box of the
 path. Defaults to True.</p></li>
 </ul>
 </dd>
@@ -505,10 +507,10 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 <dt id="sdt.roi.PathROI.transform">
 <code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trafo</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">linear</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">trans</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.roi.PathROI.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new PathROI instance with a transformed path</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul>
-<li><p><strong>trafo</strong> (<em>matplotlib.transforms.Transform or numpy.ndarray, shape(3, 3), optional</em>) – Full transform. If given as a matrix, it has to have the form</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trafo</strong> (<em>matplotlib.transforms.Transform</em><em> or </em><em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em><em>, </em><em>optional</em>) – <p>Full transform. If given as a matrix, it has to have the form</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>a c e
 b d f
 0 0 1,
@@ -517,10 +519,10 @@ b d f
 <p>where a, b, c, d give the linear part of the transform (see
 <cite>linear</cite> below) and e, f give the translation part (see <cite>trans</cite>
 below).</p>
-</li>
-<li><p><strong>linear</strong> (<em>numpy.ndarray, shape(2, 2), optional</em>) – Linear part (rotation, scaling, shear) of the transform. Only used
+</p></li>
+<li><p><strong>linear</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>2</em><em>, </em><em>2</em><em>)</em><em>, </em><em>optional</em>) – Linear part (rotation, scaling, shear) of the transform. Only used
 if <cite>trafo</cite> is not given.</p></li>
-<li><p><strong>trans</strong> (<em>numpy.ndarray, shape(2), optional</em>) – Translation. Only used if <cite>trafo</cite> is not given.</p></li>
+<li><p><strong>trans</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>2</em><em>)</em><em>, </em><em>optional</em>) – Translation. Only used if <cite>trafo</cite> is not given.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -563,12 +565,13 @@ mask is only created if this instance has an image mask.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>top_left</strong> (<em>tuple of float</em>) – x and y coordinates of the top-left corner.</p></li>
-<li><p><strong>bottom_right</strong> (<em>tuple of float or None, optional</em>) – x and y coordinates of the bottom-right corner.
+<li><p><strong>bottom_right</strong> (<em>tuple of float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – x and y coordinates of the bottom-right corner.
 Either this or <cite>shape</cite> need to specified.</p></li>
-<li><p><strong>size</strong> (<em>tuple of float or None, optional</em>) – Size of the ROI. Specifying <cite>size</cite> is equivalent to
+<li><p><strong>size</strong> (<em>tuple of float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Size of the ROI. Specifying <cite>size</cite> is equivalent to
 <code class="docutils literal notranslate"><span class="pre">bottom_right=[t+s</span> <span class="pre">for</span> <span class="pre">t,</span> <span class="pre">s</span> <span class="pre">in</span> <span class="pre">zip(top_left,</span> <span class="pre">shape)]</span></code>.
 Either this or <cite>bottom_right</cite> need to specified.</p></li>
-<li><p><strong>buffer, no_image</strong> – see <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code></a>.</p></li>
+<li><p><strong>buffer</strong> – see <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code></a>.</p></li>
+<li><p><strong>no_image</strong> – see <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -582,10 +585,11 @@ Either this or <cite>bottom_right</cite> need to specified.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>center</strong> (<em>tuple of float</em>)</p></li>
+<li><p><strong>center</strong> (<em>tuple of float</em>) – </p></li>
 <li><p><strong>axes</strong> (<em>tuple of float</em>) – Lengths of first and second axis.</p></li>
-<li><p><strong>angle</strong> (<em>float, optional</em>) – Angle of rotation (counterclockwise, in radian). Defaults to 0.</p></li>
-<li><p><strong>buffer, no_image</strong> – see <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code></a>.</p></li>
+<li><p><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em>) – Angle of rotation (counterclockwise, in radian). Defaults to 0.</p></li>
+<li><p><strong>buffer</strong> – see <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code></a>.</p></li>
+<li><p><strong>no_image</strong> – see <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -605,9 +609,9 @@ localization data) to a specified region.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mask</strong> (<em>numpy.ndarray, dtype(bool)</em>) – Set the <a class="reference internal" href="#sdt.roi.MaskROI.mask" title="sdt.roi.MaskROI.mask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask</span></code></a> attribute.</p></li>
-<li><p><strong>mask_origin</strong> (<em>tuple of float, optional</em>) – Set the <a class="reference internal" href="#sdt.roi.MaskROI.mask_origin" title="sdt.roi.MaskROI.mask_origin"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask_origin</span></code></a> attribute. Defaults to (0, 0).</p></li>
-<li><p><strong>pixel_size</strong> (<em>float, optional</em>) – Set the <a class="reference internal" href="#sdt.roi.MaskROI.pixel_size" title="sdt.roi.MaskROI.pixel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pixel_size</span></code></a> attribute. Defaults to 1.</p></li>
+<li><p><strong>mask</strong> (<em>numpy.ndarray</em><em>, </em><em>dtype</em><em>(</em><em>bool</em><em>)</em>) – Set the <a class="reference internal" href="#sdt.roi.MaskROI.mask" title="sdt.roi.MaskROI.mask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask</span></code></a> attribute.</p></li>
+<li><p><strong>mask_origin</strong> (<em>tuple of float</em><em>, </em><em>optional</em>) – Set the <a class="reference internal" href="#sdt.roi.MaskROI.mask_origin" title="sdt.roi.MaskROI.mask_origin"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask_origin</span></code></a> attribute. Defaults to (0, 0).</p></li>
+<li><p><strong>pixel_size</strong> (<em>float</em><em>, </em><em>optional</em>) – Set the <a class="reference internal" href="#sdt.roi.MaskROI.pixel_size" title="sdt.roi.MaskROI.pixel_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pixel_size</span></code></a> attribute. Defaults to 1.</p></li>
 </ul>
 </dd>
 </dl>
@@ -644,19 +648,19 @@ for which the mask evaluates to <cite>False</cite> are set to <cite>fill_value</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame or pims.FramesSequence or array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>pims.FramesSequence</em><em> or </em><em>array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
 lines with coordinate values within the ROI path (+ buffer).
-Otherwise, <cite>slicerator.pipeline</cite> is used to crop image data to the
+Otherwise, <code class="xref py py-class docutils literal notranslate"><span class="pre">pipeline</span></code> is used to crop image data to the
 bounding rectangle of the path and set all pixels not within the
 path to <cite>fill_value</cite></p></li>
-<li><p><strong>rel_origin</strong> (<em>bool, optional</em>) – If True, <a class="reference internal" href="#sdt.roi.MaskROI.mask_origin" title="sdt.roi.MaskROI.mask_origin"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask_origin</span></code></a> will be subtracted off all feature
+<li><p><strong>rel_origin</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, <a class="reference internal" href="#sdt.roi.MaskROI.mask_origin" title="sdt.roi.MaskROI.mask_origin"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask_origin</span></code></a> will be subtracted off all feature
 coordinates, i. e. <a class="reference internal" href="#sdt.roi.MaskROI.mask_origin" title="sdt.roi.MaskROI.mask_origin"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask_origin</span></code></a> will be the new origin.
 Only used if <cite>invert</cite> is False. Defaults to True.</p></li>
-<li><p><strong>fill_value</strong> (<em>number or callable, optional</em>) – Fill value for pixels that are not contained in the mask. If
+<li><p><strong>fill_value</strong> (<em>number</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – Fill value for pixels that are not contained in the mask. If
 callable, it should take the array of pixels within the mask as its
 argument and return a scalar that is used as the fill value. Not
 applicable for single molecule data. Defaults to 0.</p></li>
-<li><p><strong>invert</strong> (<em>bool, optional</em>) – If True, only datapoints/pixels outside the mask are selected.
+<li><p><strong>invert</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, only datapoints/pixels outside the mask are selected.
 Defaults to <cite>False</cite>.</p></li>
 </ul>
 </dd>
@@ -664,7 +668,7 @@ Defaults to <cite>False</cite>.</p></li>
 <dd class="field-even"><p>Data restricted to the ROI represented by this class.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pandas.DataFrame or slicerator.Slicerator or numpy.array</p>
+<dd class="field-odd"><p>pandas.DataFrame or <a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.Slicerator">helper.Slicerator</a> or numpy.array</p>
 </dd>
 <dt class="field-even">Other Parameters</dt>
 <dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in
@@ -728,7 +732,7 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 <dd><p>Load ROI from ImageJ ROI file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file_or_data</strong> (<em>str or pathlib.Path or bytes or file</em>) – Source data. A <cite>str</cite> or <cite>pathlib.Path</cite> has to point to a file that
+<dd class="field-odd"><p><strong>file_or_data</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em> or </em><em>bytes</em><em> or </em><em>file</em>) – Source data. A <cite>str</cite> or <cite>pathlib.Path</cite> has to point to a file that
 can be opened for binary reading and is seekable. If <cite>bytes</cite>,
 this has to be the contents of a ROI file. A file has to be opened to
 allow mem-mapping (“r+b”).</p>
@@ -748,7 +752,7 @@ allow mem-mapping (“r+b”).</p>
 <dd><p>Load ROIs from ImageJ zip file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file</strong> (<em>str or pathlib.Path or zipfile.ZipFile</em>) – Name/path of the zip file or ZipFile opened for reading</p>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em> or </em><em>zipfile.ZipFile</em>) – Name/path of the zip file or ZipFile opened for reading</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Use the ROI names inside the zip as keys and the return values
@@ -771,7 +775,7 @@ allow mem-mapping (“r+b”).</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="chromatic.html" class="btn btn-neutral float-right" title="Overlay color channels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="channel_reg.html" class="btn btn-neutral float-right" title="Overlay color channels" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Documentation of the sdt python package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -783,11 +787,19 @@ allow mem-mapping (“r+b”).</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -798,7 +810,6 @@ allow mem-mapping (“r+b”).</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

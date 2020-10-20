@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdt.funcs &mdash; sdt-python 14.2 documentation</title>
+  <title>sdt.funcs &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> sdt-python
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,7 +87,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
@@ -94,14 +96,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
 </ul>
@@ -109,6 +110,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -147,7 +149,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -179,6 +181,10 @@
 
 <span class="sd">- :py:class:`StepFunction` for step functions,</span>
 <span class="sd">- :py:class:`ECDF` for empirical cumulative distribution functions.</span>
+
+<span class="sd">Additionally, 1D and 2D Gaussians can be evaluated using :py:func:`gaussian_1d`</span>
+<span class="sd">and :py:func:`gaussian_2d`, respectively. Sums of exponentials are implemented</span>
+<span class="sd">by :py:func:`exp_sum` and :py:func:`exp_sum_lmfit`.</span>
 
 
 <span class="sd">Examples</span>
@@ -218,7 +224,13 @@
 <span class="sd">.. autoclass:: ECDF</span>
 <span class="sd">    :members:</span>
 <span class="sd">    :special-members: __call__</span>
+<span class="sd">.. autofunction:: gaussian_1d</span>
+<span class="sd">.. autofunction:: gaussian_2d</span>
+<span class="sd">.. autofunction:: exp_sum</span>
+<span class="sd">.. autofunction:: exp_sum_lmfit</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
 
@@ -353,6 +365,195 @@
     <span class="k">def</span> <span class="nf">observations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Array of observations&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span><span class="o">.</span><span class="n">x</span></div>
+
+
+<span class="c1"># TODO: Use numpy ArrayLike typehint once it is available</span>
+<div class="viewcode-block" id="gaussian_1d"><a class="viewcode-back" href="../../funcs.html#sdt.funcs.gaussian_1d">[docs]</a><span class="k">def</span> <span class="nf">gaussian_1d</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">center</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
+                <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;1D Gaussian</span>
+
+<span class="sd">    .. math:: A e^\frac{(x - c)^2}{2\sigma^2} + b</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Independent variable</span>
+<span class="sd">    amplitude</span>
+<span class="sd">        `A` in the formula above.</span>
+<span class="sd">    center</span>
+<span class="sd">        `c` in the formula above.</span>
+<span class="sd">    sigma</span>
+<span class="sd">        :math:`\sigma` in the formula above.</span>
+<span class="sd">    offset</span>
+<span class="sd">        `b` in the formula above.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Function values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">center</span><span class="p">)</span><span class="o">/</span><span class="n">sigma</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span></div>
+
+
+<span class="c1"># TODO: Use numpy ArrayLike typehint once it is available</span>
+<div class="viewcode-block" id="gaussian_2d"><a class="viewcode-back" href="../../funcs.html#sdt.funcs.gaussian_2d">[docs]</a><span class="k">def</span> <span class="nf">gaussian_2d</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+                <span class="n">center</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
+                <span class="n">sigma</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span>
+                <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">rotation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;2D Gaussian</span>
+
+<span class="sd">    .. math:: A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}</span>
+<span class="sd">        + \frac{(R(y - c_y))^2}{2\sigma_y^2}) + b,</span>
+
+<span class="sd">    where :math:`R` rotates the vector (x, y) by `rotation` radiants.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x, y</span>
+<span class="sd">        Independent variables</span>
+<span class="sd">    amplitude</span>
+<span class="sd">        `A` in the formula above.</span>
+<span class="sd">    center</span>
+<span class="sd">        :math:`c_x`, :math:`c_y` in the formula above.</span>
+<span class="sd">    sigma</span>
+<span class="sd">        :math:`\sigma_x`,  :math:`\sigma_y` in the formula above.</span>
+<span class="sd">    offset</span>
+<span class="sd">        `b` in the formula above.</span>
+<span class="sd">    rotation</span>
+<span class="sd">        Rotate the Gaussian by that many radiants.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Function values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span>
+    <span class="n">sn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span>
+
+    <span class="n">xc_r</span> <span class="o">=</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">cs</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">sn</span>  <span class="c1"># rotate center coordinates</span>
+    <span class="n">yc_r</span> <span class="o">=</span> <span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">sn</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">cs</span>
+
+    <span class="n">x_r</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">cs</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">sn</span>  <span class="c1"># rotate independent variable</span>
+    <span class="n">y_r</span> <span class="o">=</span> <span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">sn</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">cs</span>
+
+    <span class="n">arg</span> <span class="o">=</span> <span class="p">((</span><span class="n">x_r</span> <span class="o">-</span> <span class="n">xc_r</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">((</span><span class="n">y_r</span> <span class="o">-</span> <span class="n">yc_r</span><span class="p">)</span> <span class="o">/</span> <span class="n">sigma</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+    <span class="k">return</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">arg</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span></div>
+
+
+<span class="c1"># TODO: Use numpy ArrayLike typehint once it is available</span>
+<span class="k">def</span> <span class="nf">gaussian_2d_lmfit</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+                      <span class="n">center0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">center1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
+                      <span class="n">sigma0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">sigma1</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+                      <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">rotation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;2D Gaussian, usable for :py:class:`lmfit.Model`</span>
+
+<span class="sd">    Version of :py:func:`gaussian_2d` that uses only scalar parameters.</span>
+
+<span class="sd">    .. math:: A \exp(\frac{(R(x - c_x))^2}{2\sigma_x^2}</span>
+<span class="sd">        + \frac{(R(y - c_y))^2}{2\sigma_y^2}) + b,</span>
+
+<span class="sd">    where :math:`R` rotates the vector (x, y) by `rotation` radiants.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x, y</span>
+<span class="sd">        Independent variables</span>
+<span class="sd">    amplitude</span>
+<span class="sd">        `A` in the formula above.</span>
+<span class="sd">    center0, center1</span>
+<span class="sd">        :math:`c_x`, :math:`c_y` in the formula above.</span>
+<span class="sd">    sigma0, sigma1</span>
+<span class="sd">        :math:`\sigma_x`,  :math:`\sigma_y` in the formula above.</span>
+<span class="sd">    offset</span>
+<span class="sd">        `b` in the formula above.</span>
+<span class="sd">    rotation</span>
+<span class="sd">        Rotate the Gaussian by that many radiants.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Function values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">gaussian_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="p">(</span><span class="n">center0</span><span class="p">,</span> <span class="n">center1</span><span class="p">),</span> <span class="p">(</span><span class="n">sigma0</span><span class="p">,</span> <span class="n">sigma1</span><span class="p">),</span>
+                       <span class="n">offset</span><span class="p">,</span> <span class="n">rotation</span><span class="p">)</span>
+
+
+<span class="c1"># TODO: Use numpy ArrayLike typehint once it is available</span>
+<div class="viewcode-block" id="exp_sum"><a class="viewcode-back" href="../../funcs.html#sdt.funcs.exp_sum">[docs]</a><span class="k">def</span> <span class="nf">exp_sum</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mant</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Sum of exponentials</span>
+
+<span class="sd">    Return ``offset + mant[0] * exponential(exp[0] * x) + mant[1] *</span>
+<span class="sd">    exponential(exp[1] * x) + …``</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Independent variable</span>
+<span class="sd">    offset</span>
+<span class="sd">        Additive parameter</span>
+<span class="sd">    mant</span>
+<span class="sd">        Mantissa coefficients</span>
+<span class="sd">    exp</span>
+<span class="sd">        Coefficients in the exponent</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Function values</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; exp_sum(np.arange(10), offset=1, mant=[-0.2, -0.8], exp=[-0.1, -0.01])</span>
+<span class="sd">    array([ 0.        ,  0.02699265,  0.05209491,  0.07547993,  0.09730444,</span>
+<span class="sd">            0.11771033,  0.13682605,  0.15476788,  0.17164113,  0.18754112])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">mant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mant</span><span class="p">)</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mant</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">exp</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span></div>
+
+
+<span class="c1"># TODO: Use numpy ArrayLike typehint once it is available</span>
+<div class="viewcode-block" id="exp_sum_lmfit"><a class="viewcode-back" href="../../funcs.html#sdt.funcs.exp_sum_lmfit">[docs]</a><span class="k">def</span> <span class="nf">exp_sum_lmfit</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">:</span> <span class="nb">float</span>
+                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Sum of exponentials, usable for :py:class:`lmfit.Model`</span>
+
+<span class="sd">    Return ``offset + mant0 * exponential(exp0 * x) + mant1 *</span>
+<span class="sd">    exponential(exp1 * x) + …``. This is more suitable for fitting using</span>
+<span class="sd">    :py:class:`lmfit.Model` than :py:func:`exp_sum`. See the example below.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Independent variable</span>
+<span class="sd">    offset</span>
+<span class="sd">        Additive parameter</span>
+<span class="sd">    **params</span>
+<span class="sd">        To get the sum of `n+1` exponentials, one needs to supply floats</span>
+<span class="sd">        `mant0`, `mant1`, …, `mantn` as mantissa coefficients and `exp0`, …,</span>
+<span class="sd">        `expn` as coefficients in the exponent.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Function values</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = numpy.array(...)  # x values</span>
+<span class="sd">    &gt;&gt;&gt; y = numpy.array(...)  # y values</span>
+
+<span class="sd">    &gt;&gt;&gt; mant_names = [&quot;mant{}&quot;.format(i) for i in num_exp]</span>
+<span class="sd">    &gt;&gt;&gt; exp_names = [&quot;exp{}&quot;.format(i) for i in num_exp]</span>
+<span class="sd">    &gt;&gt;&gt; m = lmfit.Model(funcs.exp_sum_lmfit)</span>
+<span class="sd">    &gt;&gt;&gt; m.set_param_hint(&quot;offset&quot;, ...)</span>
+<span class="sd">    &gt;&gt;&gt; for m in mant_names:</span>
+<span class="sd">    ...     m.set_param_hint(m, ...)</span>
+<span class="sd">    &gt;&gt;&gt; for e in exp_names:</span>
+<span class="sd">    ...     m.set_param_hint(e, ...)</span>
+<span class="sd">    &gt;&gt;&gt; p = m.make_params()</span>
+<span class="sd">    &gt;&gt;&gt; f = m.fit(y, params=p, t=x)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_exp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="k">return</span> <span class="n">exp_sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
+                   <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;mant</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_exp</span><span class="p">)],</span>
+                   <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;exp</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_exp</span><span class="p">)])</span></div>
 </pre></div>
 
            </div>
@@ -365,11 +566,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -380,7 +589,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

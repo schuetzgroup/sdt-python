@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Flat field correction &mdash; sdt-python 14.2 documentation</title>
+  <title>Flat-field correction &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Fluorescent feature localization" href="loc.html" />
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> sdt-python
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,7 +89,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -96,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image filtering and processing</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Flat field correction</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Flat-field correction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#programming-reference">Programming reference</a></li>
 </ul>
 </li>
@@ -105,8 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -114,6 +115,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -152,9 +154,9 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Flat field correction</li>
+      <li>Flat-field correction</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -172,14 +174,14 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-sdt.flatfield"></span><div class="section" id="flat-field-correction">
-<h1>Flat field correction<a class="headerlink" href="#flat-field-correction" title="Permalink to this headline">¶</a></h1>
+<h1>Flat-field correction<a class="headerlink" href="#flat-field-correction" title="Permalink to this headline">¶</a></h1>
 <p>The intensity cross section of a laser beam is usually not flat, but of
 Gaussian shape or worse. That means that fluorophores closer to the edges of
 the image will appear dimmer simply because they do not receive so much
 exciting laser light.</p>
 <p>A camera’s pixels may differ in efficiency so that even a homogeneously
 illuminated sample will not look homogeneous.</p>
-<p>Errors as these can corrected for to some extent by <em>flat field correction</em>.
+<p>Errors as these can corrected for to some extent by <em>flat-field correction</em>.
 The error is determined by recording a supposedly homogeneous (flat) sample
 (e.g. a homogeneously fluorescent surface) and can later be removed from
 other/real experimental data.</p>
@@ -193,7 +195,7 @@ homogenous fluorescence label.</p>
 </pre></div>
 </div>
 <p>These can now be used to create the <a class="reference internal" href="#sdt.flatfield.Corrector" title="sdt.flatfield.Corrector"><code class="xref py py-class docutils literal notranslate"><span class="pre">Corrector</span></code></a> object:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">corr</span> <span class="o">=</span> <span class="n">Corrector</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="n">baseline</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">corr</span> <span class="o">=</span> <span class="n">Corrector</span><span class="p">([</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">],</span> <span class="n">bg</span><span class="o">=</span><span class="n">baseline</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>With help of <code class="docutils literal notranslate"><span class="pre">corr</span></code>, other images or even whole image sequences (when using
@@ -211,7 +213,7 @@ homogenous fluorescence label.</p>
 <h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="sdt.flatfield.Corrector">
-<em class="property">class </em><code class="sig-prename descclassname">sdt.flatfield.</code><code class="sig-name descname">Corrector</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">data</span></em>, <em class="sig-param"><span class="n">bg</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">gaussian_fit</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">density_weight</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">smooth_sigma</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.flatfield.Corrector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">sdt.flatfield.</code><code class="sig-name descname">Corrector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">bg</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">gaussian_fit</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">density_weight</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">smooth_sigma</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.flatfield.Corrector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flat field correction</p>
 <p>This works by multiplying features’ integrated intensities (“mass”) by
 a position-dependent correction factor. The factor can be calculated from
@@ -237,26 +239,25 @@ background is (or of course, before passing the data to the <cite>Corrector</cit
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>*data</strong> (<em>iterables of image data or pandas.DataFrames</em>) – Collections of images fluorescent surfaces or single molecule
+<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>numpy.ndarray</em><em>, </em><em>Sequence</em><em>[</em><em>numpy.ndarray</em><em>]</em><em>, </em><em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>numpy.ndarray</em><em>]</em><em>]</em><em>, </em><em>pandas.core.frame.DataFrame</em><em>, </em><em>Sequence</em><em>[</em><em>pandas.core.frame.DataFrame</em><em>]</em><em>]</em>) – Collections of images fluorescent surfaces or single molecule
 data to use for determining the correction function.</p></li>
-<li><p><strong>bg</strong> (<em>scalar or array-like, optional</em>) – Background that is subtracted from each image. This may be a
-scalar or an array of the same size as the images in <cite>data</cite>. It
-is not used on single molecule data. Also sets the
-:py:attr`bg` attribute. Defaults to 0.</p></li>
-<li><p><strong>gaussian_fit</strong> (<em>bool, optional</em>) – Whether to fit a Gaussian to the averaged image. This is ignored
-if <cite>data</cite> is single molecule data. Default: True</p></li>
-<li><p><strong>shape</strong> (<em>tuple of int</em>) – If <cite>data</cite> is single molecule data and <cite>shape</cite> is not None, create
+<li><p><strong>bg</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>numpy.ndarray</em><em>, </em><em>Sequence</em><em>[</em><em>numpy.ndarray</em><em>]</em><em>, </em><em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>numpy.ndarray</em><em>]</em><em>]</em><em>]</em>) – Background that is subtracted from each image. It is not used on
+single molecule data. Also sets the :py:attr`bg` attribute.</p></li>
+<li><p><strong>gaussian_fit</strong> (<em>bool</em>) – Whether to fit a Gaussian to the averaged image. This is ignored
+if <cite>data</cite> is single molecule data.</p></li>
+<li><p><strong>shape</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="loc.html#sdt.loc.z_fit.Parameters.Tuple" title="sdt.loc.z_fit.Parameters.Tuple"><em>Tuple</em></a><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>]</em>) – If <cite>data</cite> is single molecule data and <cite>shape</cite> is not None, create
 <a class="reference internal" href="#sdt.flatfield.Corrector.avg_img" title="sdt.flatfield.Corrector.avg_img"><code class="xref py py-attr docutils literal notranslate"><span class="pre">avg_img</span></code></a> and <a class="reference internal" href="#sdt.flatfield.Corrector.corr_img" title="sdt.flatfield.Corrector.corr_img"><code class="xref py py-attr docutils literal notranslate"><span class="pre">corr_img</span></code></a> from the fit using the
-given shape. Defaults to None.</p></li>
-<li><p><strong>density_weight</strong> (<em>bool, optional</em>) – If <cite>data</cite> is single molecule data, weigh data points inversely to
+given shape.</p></li>
+<li><p><strong>density_weight</strong> (<em>bool</em>) – If <cite>data</cite> is single molecule data, weigh data points inversely to
 their density for fitting so that areas with higher densities don’t
-have a higher impact on the result. Defaults to False.</p></li>
-<li><p><strong>smooth_sigma</strong> (<em>float, optional</em>) – If &gt; 0, smooth the image used for flatfield correction. Only
-applicable if <code class="docutils literal notranslate"><span class="pre">gaussian_fit=False</span></code>. Defaults to 0.</p></li>
+have a higher impact on the result.</p></li>
+<li><p><strong>smooth_sigma</strong> (<em>float</em>) – If &gt; 0, smooth the image used for flatfield correction. Only
+applicable if <code class="docutils literal notranslate"><span class="pre">gaussian_fit=False</span></code>.</p></li>
+<li><p><strong>columns</strong> (<em>Dict</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in
+<dd class="field-even"><p><strong>columns</strong> – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. Only applicable of <cite>data</cite> are single
 molecule DataFrames. The relevant names are <cite>coords</cite> and <cite>mass</cite>.
 That means, if the DataFrames have coordinate columns “x” and “z”
@@ -273,8 +274,7 @@ and a mass column “alt_mass”, set
 <dl class="py attribute">
 <dt id="sdt.flatfield.Corrector.avg_img">
 <code class="sig-name descname">avg_img</code><a class="headerlink" href="#sdt.flatfield.Corrector.avg_img" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pixel-wise average image from <cite>data</cite> argument to
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code>.</p>
+<dd><p>Pixel-wise average image from <cite>data</cite> argument to <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -298,26 +298,26 @@ is divided pixel-wise by <cite>corr_img</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame or pims.FramesSequence or array-like</em>) – data to be processed. If a pandas.Dataframe, correct the “mass”
+<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>pandas.core.frame.DataFrame</em><em>, </em><em>sdt.helper.slicerator.Slicerator</em><em>, </em><em>numpy.ndarray</em><em>]</em>) – data to be processed. If a pandas.Dataframe, correct the “mass”
 column according to the particle position in the laser beam.
-Otherwise, <cite>slicerator.pipeline</cite> is used to correct raw image data.</p></li>
-<li><p><strong>inplace</strong> (<em>bool, optional</em>) – Only has an effect if <cite>data</cite> is a DataFrame. If True, the
-feature intensities will be corrected in place. Defaults to False.</p></li>
-<li><p><strong>bg</strong> (<em>scalar or array-like, optional</em>) – Background to be subtracted from image data. If <cite>None</cite>, use the
-<a class="reference internal" href="#sdt.flatfield.Corrector.bg" title="sdt.flatfield.Corrector.bg"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bg</span></code></a> attribute. Ignored for single molecule data.
-Defaults to <cite>None</cite>.</p></li>
+Otherwise, <code class="xref py py-class docutils literal notranslate"><span class="pre">pipeline</span></code> is used to correct raw image data.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Only has an effect if <cite>data</cite> is a DataFrame. If True, the
+feature intensities will be corrected in place.</p></li>
+<li><p><strong>bg</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>numpy.ndarray</em><em>]</em><em>]</em>) – Background to be subtracted from image data. If <cite>None</cite>, use the
+<a class="reference internal" href="#sdt.flatfield.Corrector.bg" title="sdt.flatfield.Corrector.bg"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bg</span></code></a> attribute. Ignored for single molecule data.</p></li>
+<li><p><strong>columns</strong> (<em>Dict</em>) – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>If <cite>data</cite> is a DataFrame and <cite>inplace</cite> is False, return the
-corrected frame. If <cite>data</cite> is raw image data, return corrected
-images</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p>If <cite>data</cite> is a DataFrame and <cite>inplace</cite> is False, return the</p></li>
+<li><p>corrected frame. If <cite>data</cite> is raw image data, return corrected</p></li>
+<li><p><em>images</em></p></li>
+</ul>
+</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pandas.DataFrame or pims.SliceableIterable or numpy.array</p>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in
+<dt class="field-odd">Other Parameters</dt>
+<dd class="field-odd"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. Only applicable of <cite>data</cite> are single
 molecule DataFrames. The relevant names are <cite>coords</cite>, <cite>signal</cite>, and
 <cite>mass</cite>. That means, if the DataFrames have coordinate columns “x”
@@ -325,6 +325,9 @@ and “z” and a mass column “alt_mass”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span> <span class="pre">&quot;mass&quot;:</span> <span class="pre">&quot;alt_mass&quot;}</span></code>.
 It is also possible to give a list of columns to correct by adding
 the “corr” key, e.g. <code class="docutils literal notranslate"><span class="pre">columns={&quot;corr&quot;:</span> <span class="pre">[&quot;mass&quot;,</span> <span class="pre">&quot;alt_mass&quot;]}</span></code>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Union[pandas.core.frame.DataFrame, sdt.helper.slicerator.Slicerator, numpy.ndarray]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -339,10 +342,13 @@ an x and a y coordinate is calculated either from the Gaussian fit
 or the average image itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x, y</strong> (<em>list of float</em>) – x and y coordinates of features</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – x and y coordinates of features</p></li>
+<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – x and y coordinates of features</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A list of correction factors corresponding to the features</p>
+<dd class="field-even"><p>1D array of correction factors corresponding to the features</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
@@ -356,7 +362,7 @@ or the average image itself.</p>
 <dd><p>Save instance to disk</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file</strong> (<em>str or file-like object</em>) – Where to save. If <cite>str</cite>, the extension “.npz” will be appended if
+<dd class="field-odd"><p><strong>file</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>pathlib.Path</em><em>, </em><em>BinaryIO</em><em>]</em>) – Where to save. If <cite>str</cite>, the extension “.npz” will be appended if
 it is not present.</p>
 </dd>
 </dl>
@@ -368,10 +374,7 @@ it is not present.</p>
 <dd><p>Load from disk</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> (<em>str or file-like</em>) – Where to load from</p></li>
-<li><p><strong>old_format</strong> (<em>bool, optional</em>)</p></li>
-</ul>
+<dd class="field-odd"><p><strong>file</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>pathlib.Path</em><em>, </em><em>BinaryIO</em><em>]</em>) – Where to load from</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Loaded instance</p>
@@ -407,11 +410,19 @@ it is not present.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -422,7 +433,6 @@ it is not present.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

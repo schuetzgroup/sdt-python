@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdt.fret.sm_analyzer &mdash; sdt-python 14.2 documentation</title>
+  <title>sdt.fret.sm_analyzer &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,7 +87,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
@@ -94,14 +96,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
@@ -109,6 +110,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -147,7 +149,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -172,63 +174,15 @@
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="sd">&quot;&quot;&quot;Module containing a class for analyzing and filtering smFRET data&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
 
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">helper</span><span class="p">,</span> <span class="n">changepoint</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">roi</span>
-
-
-<div class="viewcode-block" id="numeric_exc_type"><a class="viewcode-back" href="../../../fret.html#sdt.fret.numeric_exc_type">[docs]</a><span class="nd">@contextmanager</span>
-<span class="k">def</span> <span class="nf">numeric_exc_type</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Context manager temporarily turning (&quot;fret&quot;, &quot;exc_type&quot;) column to int</span>
-
-<span class="sd">    This is useful e.g. in :py:func:`helper.split_dataframe` so that the</span>
-<span class="sd">    resulting split array does not have `object` dtype due to</span>
-<span class="sd">    (&quot;fret&quot;, &quot;exc_type&quot;) being categorical.</span>
-
-<span class="sd">    Example</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; tracks[&quot;fret&quot;, &quot;exc_type&quot;].dtype</span>
-<span class="sd">    CategoricalDtype(categories=[&#39;a&#39;, &#39;d&#39;], ordered=False)</span>
-<span class="sd">    &gt;&gt;&gt; with numeric_exc_type(tracks) as exc_cats:</span>
-<span class="sd">    &gt;&gt;&gt;     tracks[&quot;fret&quot;, &quot;exc_type&quot;].dtype</span>
-<span class="sd">    dtype(&#39;int64&#39;)</span>
-<span class="sd">    &gt;&gt;&gt;     exc_cats[0]</span>
-<span class="sd">    &quot;a&quot;</span>
-
-<span class="sd">    ``exc_cats`` is an array that holds old categories. It can be used to find</span>
-<span class="sd">    out which (new) integer corresponds to which category</span>
-
-<span class="sd">    When leaving the ``with`` block, the old categorical column is restored.</span>
-<span class="sd">    This works only for the original DataFrame, but not for any copies made</span>
-<span class="sd">    within the block!</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    df : pandas.DataFrame</span>
-<span class="sd">        Dataframe for which to temporarily use an integer (&quot;fret&quot;, &quot;exc_type&quot;)</span>
-<span class="sd">        column.</span>
-
-<span class="sd">    Yields</span>
-<span class="sd">    ------</span>
-<span class="sd">    pandas.Index</span>
-<span class="sd">        Maps integers to categories</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exc_types</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">exc_cats</span> <span class="o">=</span> <span class="n">exc_types</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">exc_types</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exc_cats</span><span class="p">)))</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exc_types</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">exc_cats</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">exc_types</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="n">exc_cats</span>
-        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exc_types</span></div>
 
 
 <div class="viewcode-block" id="gaussian_mixture_split"><a class="viewcode-back" href="../../../fret.html#sdt.fret.gaussian_mixture_split">[docs]</a><span class="k">def</span> <span class="nf">gaussian_mixture_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;eff_app&quot;</span><span class="p">),</span>
@@ -270,7 +224,7 @@
     <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">data</span><span class="p">[</span><span class="s2">&quot;__gmm_labels__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
 
-    <span class="n">split</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">l</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">))])</span>
+    <span class="n">split</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">lab</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">lab</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">))])</span>
 
     <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">helper</span><span class="o">.</span><span class="n">split_dataframe</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">),</span>
                                        <span class="p">[</span><span class="s2">&quot;__gmm_labels__&quot;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">):</span>
@@ -281,7 +235,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">split</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="SmFretAnalyzer"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer">[docs]</a><span class="k">class</span> <span class="nc">SmFretAnalyzer</span><span class="p">:</span>
+<div class="viewcode-block" id="SmFRETAnalyzer"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer">[docs]</a><span class="k">class</span> <span class="nc">SmFRETAnalyzer</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Class for analyzing and filtering of smFRET data</span>
 
 <span class="sd">    This provides various analysis and filtering methods which act on the</span>
@@ -294,19 +248,12 @@
 <span class="sd">    the different excitation efficiencies according to [Lee2005]_.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">excitation_seq</span><span class="p">,</span> <span class="n">cp_detector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracks</span><span class="p">,</span> <span class="n">cp_detector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        tracks : pandas.DataFrame</span>
-<span class="sd">            smFRET tracking data as produced by :py:class:`SmFretTracker` by</span>
-<span class="sd">            running its :py:meth:`SmFretTracker.track` method.</span>
-<span class="sd">        excitation_seq : str or list-like of characters</span>
-<span class="sd">            Excitation sequence. &quot;d&quot; stands for donor, &quot;a&quot; for acceptor,</span>
-<span class="sd">            anything else describes other kinds of frames which are to be</span>
-<span class="sd">            ignored.</span>
-
-<span class="sd">            One needs only specify the shortest sequence that is repeated,</span>
-<span class="sd">            i. e. &quot;ddddaddddadddda&quot; is the same as &quot;dddda&quot;.</span>
+<span class="sd">            smFRET tracking data as produced by :py:class:`SmFRETTracker` by</span>
+<span class="sd">            running its :py:meth:`SmFRETTracker.track` method.</span>
 <span class="sd">        cp_detector : changepoint detector or None, optional</span>
 <span class="sd">            If `None`, create a :py:class:`changepoint.Pelt` instance with</span>
 <span class="sd">            ``model=&quot;l2&quot;``, ``min_size=1``, and ``jump=1``.</span>
@@ -332,8 +279,6 @@
 <span class="sd">        bleaching detection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">excitation_seq</span><span class="p">))</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
         <span class="sd">&quot;&quot;&quot;dict of column names in DataFrames. Defaults are taken from</span>
 <span class="sd">        :py:attr:`config.columns`.</span>
@@ -357,34 +302,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">excitation_eff</span> <span class="o">=</span> <span class="mf">1.</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;pandas.Series of CategoricalDtype describing the excitation</span>
-<span class="sd">        sequence. Typically, &quot;d&quot; would stand for donor, &quot;a&quot; for acceptor.</span>
-
-<span class="sd">        One needs only specify the shortest sequence that is repeated,</span>
-<span class="sd">        i. e. &quot;ddddaddddadddda&quot; is the same as &quot;dddda&quot;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exc_seq</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">excitation_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;dict mapping the excitation types in :py:attr:`excitation_seq` to</span>
-<span class="sd">        the corresponding frame numbers (modulo the length of</span>
-<span class="sd">        py:attr:`excitation_seq`).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exc_frames</span>
-
-    <span class="nd">@excitation_seq</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_exc_seq</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;category&quot;</span><span class="p">)</span>
-        <span class="n">exc_seq_np</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exc_seq</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_exc_frames</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
-            <span class="k">lambda</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
-            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">exc_seq_np</span> <span class="o">==</span> <span class="n">k</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exc_seq</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">categories</span><span class="p">})</span>
-
-<div class="viewcode-block" id="SmFretAnalyzer.calc_fret_values"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.calc_fret_values">[docs]</a>    <span class="k">def</span> <span class="nf">calc_fret_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_d_mass</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">invalid_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_fret_values"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_fret_values">[docs]</a>    <span class="k">def</span> <span class="nf">calc_fret_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_d_mass</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">invalid_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                          <span class="n">a_mass_interp</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate FRET-related values</span>
 
@@ -398,11 +316,6 @@
 <span class="sd">        brightness (mass) upon direct excitation, which is interpolated for</span>
 <span class="sd">        donor excitation datapoints in order to allow for calculation of</span>
 <span class="sd">        stoichiometries.</span>
-
-<span class="sd">        A column specifying whether the entry originates from donor or</span>
-<span class="sd">        acceptor excitation is also added: (&quot;fret&quot;, &quot;exc_type&quot;). It is &quot;d&quot;</span>
-<span class="sd">        for donor and &quot;a&quot; for acceptor excitation; see the</span>
-<span class="sd">        :py:meth:`flag_excitation_type` method.</span>
 
 <span class="sd">        For each localization in `tracks`, the total brightness upon donor</span>
 <span class="sd">        excitation is calculated by taking the sum of ``(&quot;donor&quot;, &quot;mass&quot;)``</span>
@@ -431,7 +344,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        tracks : pandas.DataFrame</span>
 <span class="sd">            smFRET tracking data as produced by the</span>
-<span class="sd">            :py:meth:`SmFretTracker.track`</span>
+<span class="sd">            :py:meth:`SmFRETTracker.track`</span>
 <span class="sd">        keep_d_mass : bool, optional</span>
 <span class="sd">            If a ``(&quot;fret&quot;, &quot;d_mass&quot;)`` column is already present in `tracks`,</span>
 <span class="sd">            use that instead of overwriting it with the sum of</span>
@@ -449,9 +362,6 @@
             <span class="p">[(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])],</span>
             <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># Excitation type, needed below</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flag_excitation_type</span><span class="p">()</span>
-
         <span class="c1"># Calculate brightness upon acceptor excitation. This requires</span>
         <span class="c1"># interpolation</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]),</span>
@@ -467,7 +377,7 @@
         <span class="n">a_mass</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="s2">&quot;a&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">:</span>
             <span class="c1"># Calculate direct acceptor excitation</span>
-            <span class="k">with</span> <span class="n">numeric_exc_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc_cats</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">numeric_exc_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc_cats</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">helper</span><span class="o">.</span><span class="n">split_dataframe</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">),</span> <span class="n">cols</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
                     <span class="n">ad_p_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">exc_cats</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
@@ -531,16 +441,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;a_mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a_mass</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">sortlevel</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.flag_excitation_type"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.flag_excitation_type">[docs]</a>    <span class="k">def</span> <span class="nf">flag_excitation_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a column indicating excitation type (donor/acceptor/...)</span>
-
-<span class="sd">        Add  (&quot;fret&quot;, &quot;exc_type&quot;) column. It is of &quot;category&quot; type.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">[</span>
-             <span class="n">frames</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">)]</span><span class="o">.</span><span class="n">values</span></div>
-
-<div class="viewcode-block" id="SmFretAnalyzer.segment_mass"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.segment_mass">[docs]</a>    <span class="k">def</span> <span class="nf">segment_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.segment_mass"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.segment_mass">[docs]</a>    <span class="k">def</span> <span class="nf">segment_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Segment tracks by changepoint detection in brightness</span>
 
 <span class="sd">        Changepoint detection is run on the donor or acceptor brightness time</span>
@@ -583,7 +484,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`channel` has to be </span><span class="se">\&quot;</span><span class="s2">donor</span><span class="se">\&quot;</span><span class="s2"> or </span><span class="se">\&quot;</span><span class="s2">acceptor</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="n">numeric_exc_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc_cats</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">numeric_exc_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc_cats</span><span class="p">:</span>
             <span class="n">trc_split</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">split_dataframe</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">),</span>
                 <span class="p">[(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="n">mass_col</span><span class="p">),</span> <span class="n">time_col</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">)],</span>
@@ -621,7 +522,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="n">out_col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.bleach_step"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.bleach_step">[docs]</a>    <span class="k">def</span> <span class="nf">bleach_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_thresh</span><span class="p">,</span> <span class="n">acceptor_thresh</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.bleach_step"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.bleach_step">[docs]</a>    <span class="k">def</span> <span class="nf">bleach_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_thresh</span><span class="p">,</span> <span class="n">acceptor_thresh</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">special</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find tracks wwith acceptable fluorophore bleaching behavior</span>
 
 <span class="sd">        &quot;Acceptable&quot; means that the acceptor bleaches to a value less than</span>
@@ -649,6 +551,10 @@
 <span class="sd">            median is below this value.</span>
 <span class="sd">        truncate : bool, optional</span>
 <span class="sd">            If `True`, remove data after the bleach step. Defaults to `True`.</span>
+<span class="sd">        special : {&quot;none&quot;, &quot;don-only&quot;, &quot;acc-only&quot;}, optional</span>
+<span class="sd">            Donor-only (&quot;don-only&quot;) and acceptor-only (&quot;acc-only&quot;) datasets</span>
+<span class="sd">            require special treatment to ignore the missing fluorophore.</span>
+<span class="sd">            Defaults to &quot;none&quot;, nothing special.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -658,12 +564,12 @@
 <span class="sd">        acceptable bleaching behavior. Of the other tracks, only keep data from</span>
 <span class="sd">        before any bleaching.</span>
 
-<span class="sd">        &gt;&gt;&gt; filt.acceptor_bleach_step(800, 500, truncate=True)</span>
+<span class="sd">        &gt;&gt;&gt; ana.bleach_step(800, 500, truncate=True)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">time_col</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">),</span> <span class="n">time_col</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="n">numeric_exc_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc_cats</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">utils</span><span class="o">.</span><span class="n">numeric_exc_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc_cats</span><span class="p">:</span>
             <span class="n">trc_split</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">split_dataframe</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">),</span>
                 <span class="p">[(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;d_mass&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;d_seg&quot;</span><span class="p">),</span>
@@ -675,33 +581,47 @@
 
             <span class="n">good</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">trc_p</span> <span class="ow">in</span> <span class="n">trc_split</span><span class="p">:</span>
-                <span class="c1"># Make step functions</span>
-                <span class="n">cps_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># changepoints</span>
-                <span class="n">split_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span> <span class="n">cps_d</span><span class="p">)</span>
-                <span class="n">med_d</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">don_exc_num</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-                         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">split_d</span><span class="p">]</span>
+                <span class="n">is_good</span> <span class="o">=</span> <span class="kc">True</span>
 
-                <span class="n">cps_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># changepoints</span>
-                <span class="n">split_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[:,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span> <span class="n">cps_a</span><span class="p">)</span>
-                <span class="n">med_a</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">acc_exc_num</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-                         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">split_a</span><span class="p">]</span>
+                <span class="c1"># No reason for checking acceptor if donor-only</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">special</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_good</span><span class="p">:</span>
+                    <span class="c1"># Get change changepoints from segments</span>
+                    <span class="n">cps_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">split_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[:,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span> <span class="n">cps_a</span><span class="p">)</span>
+                    <span class="n">med_a</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">acc_exc_num</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">split_a</span><span class="p">]</span>
 
-                <span class="c1"># See if only the first step of the acceptor brightness is</span>
-                <span class="c1"># above acceptor_thresh and if there are either no steps in</span>
-                <span class="c1"># the donor mass or if only the first step in the donor</span>
-                <span class="c1"># brightness is above donor_thresh</span>
-                <span class="n">is_good</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">med_a</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span>
-                           <span class="nb">all</span><span class="p">(</span><span class="n">m</span> <span class="o">&lt;</span> <span class="n">acceptor_thresh</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">med_a</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="ow">and</span>
-                           <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">med_d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">all</span><span class="p">(</span><span class="n">m</span> <span class="o">&lt;</span> <span class="n">donor_thresh</span>
-                                                   <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">med_d</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
+                    <span class="c1"># See if only the first step of the acceptor brightness is</span>
+                    <span class="c1"># above acceptor_thresh.</span>
+                    <span class="n">is_good</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">med_a</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span>
+                               <span class="nb">all</span><span class="p">(</span><span class="n">m</span> <span class="o">&lt;</span> <span class="n">acceptor_thresh</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">med_a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># For truncation below</span>
+                    <span class="n">cps_a</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="c1"># No reason for checking donor if acceptor-only</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">special</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_good</span><span class="p">:</span>
+                    <span class="c1"># Get change changepoints from segments</span>
+                    <span class="n">cps_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">split_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[:,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span> <span class="n">cps_d</span><span class="p">)</span>
+                    <span class="n">med_d</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">s</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">don_exc_num</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">split_d</span><span class="p">]</span>
+                    <span class="c1"># See if there are either no steps in the donor mass or if</span>
+                    <span class="c1"># only the first step in the donor brightness is above</span>
+                    <span class="c1"># donor_thresh</span>
+                    <span class="n">is_good</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">med_d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span>
+                               <span class="nb">all</span><span class="p">(</span><span class="n">m</span> <span class="o">&lt;</span> <span class="n">donor_thresh</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">med_d</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># For truncation below</span>
+                    <span class="n">cps_d</span> <span class="o">=</span> <span class="p">[]</span>
+
                 <span class="k">if</span> <span class="n">is_good</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">truncate</span><span class="p">:</span>
                         <span class="c1"># Add data before bleach step</span>
                         <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trc_p</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cps_d</span><span class="p">):</span>
-                            <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cps_d</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cps_a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">stop</span> <span class="o">=</span> <span class="n">cps_a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">stop</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+                                   <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">cps_d</span><span class="p">,</span> <span class="n">cps_a</span><span class="p">])</span>
+                        <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">stop</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
                         <span class="n">g</span><span class="p">[:</span><span class="n">stop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trc_p</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
@@ -712,7 +632,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">good</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.eval"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">,</span> <span class="n">mi_sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.eval"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.eval">[docs]</a>    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">,</span> <span class="n">mi_sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Call ``eval(expr)`` for `tracks`</span>
 
 <span class="sd">        Flatten the column MultiIndex and call the resulting DataFrame&#39;s</span>
@@ -761,7 +681,7 @@
 
         <span class="k">return</span> <span class="n">e</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.query"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">,</span> <span class="n">mi_sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.query"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">,</span> <span class="n">mi_sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter features according to column values</span>
 
 <span class="sd">        Flatten the column MultiIndex and filter the resulting DataFrame&#39;s</span>
@@ -787,7 +707,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">mi_sep</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.query_particles"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.query_particles">[docs]</a>    <span class="k">def</span> <span class="nf">query_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">,</span> <span class="n">min_abs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_rel</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">mi_sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.query_particles"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.query_particles">[docs]</a>    <span class="k">def</span> <span class="nf">query_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">,</span> <span class="n">min_abs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_rel</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">mi_sep</span><span class="o">=</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Remove particles that don&#39;t fulfill `expr` enough times</span>
 
 <span class="sd">        Any particle that does not fulfill `expr` at least `min_abs` times AND</span>
@@ -853,7 +773,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">good_p</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.image_mask"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.image_mask">[docs]</a>    <span class="k">def</span> <span class="nf">image_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.image_mask"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.image_mask">[docs]</a>    <span class="k">def</span> <span class="nf">image_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Filter using a boolean mask image</span>
 
 <span class="sd">        Remove all lines where coordinates lie in a region where `mask` is</span>
@@ -937,14 +857,14 @@
                 <span class="n">ret</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">keys</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.reset"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.reset"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Undo any filtering</span>
 
 <span class="sd">        Reset :py:attr:`tracks` to the initial state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks_orig</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.flatfield_correction"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.flatfield_correction">[docs]</a>    <span class="k">def</span> <span class="nf">flatfield_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_corr</span><span class="p">,</span> <span class="n">acceptor_corr</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.flatfield_correction"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.flatfield_correction">[docs]</a>    <span class="k">def</span> <span class="nf">flatfield_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_corr</span><span class="p">,</span> <span class="n">acceptor_corr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Apply flatfield correction to donor and acceptor localization data</span>
 
 <span class="sd">        This affects only the donor and acceptor &quot;mass&quot; and &quot;signal&quot; columns.</span>
@@ -968,7 +888,7 @@
                                                 <span class="s2">&quot;corr&quot;</span><span class="p">:</span> <span class="n">corr_cols</span><span class="p">})</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="n">corr_cols</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">corr_cols</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.calc_leakage"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.calc_leakage">[docs]</a>    <span class="k">def</span> <span class="nf">calc_leakage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_leakage"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_leakage">[docs]</a>    <span class="k">def</span> <span class="nf">calc_leakage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate donor leakage (bleed-through) into the acceptor channel</span>
 
 <span class="sd">        For this to work, :py:attr:`tracks` must be a dataset of donor-only</span>
@@ -997,7 +917,7 @@
         <span class="n">m_eff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;eff_app&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">leakage</span> <span class="o">=</span> <span class="n">m_eff</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">m_eff</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.calc_direct_excitation"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.calc_direct_excitation">[docs]</a>    <span class="k">def</span> <span class="nf">calc_direct_excitation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_direct_excitation"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_direct_excitation">[docs]</a>    <span class="k">def</span> <span class="nf">calc_direct_excitation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate direct acceptor excitation by the donor laser</span>
 
 <span class="sd">        For this to work, :py:attr:`tracks` must be a dataset of acceptor-only</span>
@@ -1026,7 +946,7 @@
         <span class="n">m_stoi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;stoi_app&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direct_excitation</span> <span class="o">=</span> <span class="n">m_stoi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">m_stoi</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.calc_detection_eff"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.calc_detection_eff">[docs]</a>    <span class="k">def</span> <span class="nf">calc_detection_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_part_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;individual&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_detection_eff"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_detection_eff">[docs]</a>    <span class="k">def</span> <span class="nf">calc_detection_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_part_len</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;individual&quot;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate detection efficiency ratio of dyes</span>
 
 <span class="sd">        The detection efficiency ratio is the ratio of decrease in acceptor</span>
@@ -1108,7 +1028,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`how` must be </span><span class="se">\&quot;</span><span class="s2">individual</span><span class="se">\&quot;</span><span class="s2"> or a function &quot;</span>
                              <span class="s2">&quot;accepting an array as its argument.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.calc_excitation_eff"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.calc_excitation_eff">[docs]</a>    <span class="k">def</span> <span class="nf">calc_excitation_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_excitation_eff"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_excitation_eff">[docs]</a>    <span class="k">def</span> <span class="nf">calc_excitation_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate excitation efficiency ratio of dyes</span>
 
 <span class="sd">        This is a measure of how efficient the direct acceptor excitation is</span>
@@ -1175,7 +1095,7 @@
         <span class="n">s_gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">((</span><span class="n">f_dd</span> <span class="o">+</span> <span class="n">f_da</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">f_dd</span> <span class="o">+</span> <span class="n">f_da</span> <span class="o">+</span> <span class="n">i_aa</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">excitation_eff</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s_gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">s_gamma</span></div>
 
-<div class="viewcode-block" id="SmFretAnalyzer.fret_correction"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFretAnalyzer.fret_correction">[docs]</a>    <span class="k">def</span> <span class="nf">fret_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.fret_correction"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.fret_correction">[docs]</a>    <span class="k">def</span> <span class="nf">fret_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_nan</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply corrections to calculate real FRET-related values</span>
 
 <span class="sd">        By correcting the measured acceptor and donor intensities upon</span>
@@ -1246,11 +1166,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1261,7 +1189,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

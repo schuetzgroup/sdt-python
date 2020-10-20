@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>sdt.motion.msd_dist &mdash; sdt-python 14.2 documentation</title>
+  <title>sdt.motion.msd_dist &mdash; sdt-python 15.0 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -25,15 +30,11 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
           
 
           
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                14.2
+                15.0
               </div>
             
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,7 +87,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chromatic.html">Overlay color channels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
@@ -94,14 +96,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat-field correction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../exp_fit.html">Fit of a sum of exponential functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../gaussian_fit.html">Fitting of 1D and 2D Gaussian functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
@@ -109,6 +110,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -147,7 +149,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -179,19 +181,14 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">sp_opt</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">msd_base</span><span class="p">,</span> <span class="n">msd</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">exp_fit</span><span class="p">,</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">funcs</span><span class="p">,</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">sdt_opt</span>
 
 
 <span class="k">def</span> <span class="nf">_fit_cdf_prony</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Variant of `exp_fit.fit` for the model of the CDF</span>
-
-<span class="sd">    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting</span>
-<span class="sd">    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data</span>
-<span class="sd">    using a modified Prony&#39;s method. Additionally, there are the constraints</span>
-<span class="sd">    :math:`\sum_{k=1}^p -\beta_k = 1` and :math:`\alpha = 1`.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Use :py:class:`sdt_op.ProbExpSumModel` to fit the CDF</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -212,9 +209,6 @@
 <span class="sd">        Mantissa coefficients (:math:`\beta_k`)</span>
 <span class="sd">    exp_coeff : numpy.ndarray</span>
 <span class="sd">        List of exponential coefficients (:math:`\lambda_k`)</span>
-<span class="sd">    ode_coeff : numpy.ndarray</span>
-<span class="sd">        Optimal coefficienst of the ODE involved in calculating the exponential</span>
-<span class="sd">        coefficients.</span>
 
 <span class="sd">    Other parameters</span>
 <span class="sd">    ----------------</span>
@@ -223,45 +217,9 @@
 <span class="sd">        don&#39;t know what this is about, don&#39;t bother). The array is 1D and has</span>
 <span class="sd">        `n_exp` + 1 entries. If None, use ``numpy.ones(n_exp + 1)``.</span>
 <span class="sd">        Defaults to None.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Since :math:`\sum_{i=1}^p -\beta_i = 1` and :math:`\alpha = 1`, assuming</span>
-<span class="sd">    :math:`\lambda_k` already known (since they are gotten by fitting the</span>
-<span class="sd">    coefficients of the ODE), there is only the constrained linear least</span>
-<span class="sd">    squares problem</span>
-
-<span class="sd">    ..math:: 1 + \sum_{k=1}^{p-1} \beta_k \text{e}^{\lambda_k t} +</span>
-<span class="sd">        (-1 - \sum_{k=1}^{p-1} \beta_k) \text{e}^{\lambda_p t} = y</span>
-
-<span class="sd">    left to solve. This is equivalent to</span>
-
-<span class="sd">    ..math:: \sum_{k=1}^{p-1} \beta_k</span>
-<span class="sd">        (\text{e}^{\lambda_k t} - \text{e}^{\lambda_p t}) =</span>
-<span class="sd">        y - 1 + \text{e}^{\lambda_p t},</span>
-
-<span class="sd">    which yields :math:`\beta_1, …, \beta_{p-1}`. :math:`\beta_p` can then be</span>
-<span class="sd">    determined from the constraint.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># get exponent coefficients as usual</span>
-    <span class="n">exp_coeff</span><span class="p">,</span> <span class="n">ode_coeff</span> <span class="o">=</span> <span class="n">exp_fit</span><span class="o">.</span><span class="n">get_exponential_coeffs</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">n_exp</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="c1"># for only one exponential, the mantissa coefficient is -1</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">exp_coeff</span>
-
-    <span class="c1"># Solve the equivalent linear lsq problem (see notes section of the</span>
-    <span class="c1"># docstring).</span>
-    <span class="n">V</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exp_coeff</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-    <span class="n">restr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">exp_coeff</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">V</span> <span class="o">-=</span> <span class="n">restr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">lsq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">restr</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">lsq</span> <span class="o">=</span> <span class="n">lsq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># Also recover the last mantissa coefficient from the constraint</span>
-    <span class="n">mant_coeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">lsq</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lsq</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
-
-    <span class="k">return</span> <span class="n">mant_coeff</span><span class="p">,</span> <span class="n">exp_coeff</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">sdt_opt</span><span class="o">.</span><span class="n">ProbExpSumModel</span><span class="p">(</span><span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">initial_guess</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">mant</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">exp</span>
 
 
 <span class="k">def</span> <span class="nf">_fit_cdf_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initial_b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initial_l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -302,7 +260,7 @@
         <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
         <span class="n">beta</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">beta</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">exp_fit</span><span class="o">.</span><span class="n">exp_sum</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">funcs</span><span class="o">.</span><span class="n">exp_sum</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
 
     <span class="n">bounds_low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_exp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_exp</span><span class="p">)</span>
     <span class="n">bounds_high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_exp</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_exp</span><span class="p">)</span>
@@ -325,9 +283,9 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">w</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">constrained_func</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span>
-                                    <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">bounds_low</span><span class="p">,</span> <span class="n">bounds_high</span><span class="p">),</span>
-                                    <span class="n">sigma</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">sp_opt</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">constrained_func</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span>
+                                  <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="n">bounds_low</span><span class="p">,</span> <span class="n">bounds_high</span><span class="p">),</span>
+                                  <span class="n">sigma</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
 
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_exp</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">b</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">popt</span><span class="p">[:</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -418,6 +376,53 @@
     <span class="k">return</span> <span class="n">msds</span><span class="p">,</span> <span class="n">weights</span>
 
 
+<span class="k">def</span> <span class="nf">_assign_components</span><span class="p">(</span><span class="n">msds</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">how</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Assign MSDs and weights to components</span>
+
+<span class="sd">    Which of the MSDs / weights gets assigned to which component in</span>
+<span class="sd">    :py:func:`_msd_from_cdf` depends on the order the fitting function</span>
+<span class="sd">    returns them, which is not predictable.</span>
+<span class="sd">    E.g., the slow MSD could be assigned sometimes to component 1, sometimes</span>
+<span class="sd">    to component 2, etc.</span>
+
+<span class="sd">    This function tries to resolve the problem.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    msds, weights : numpy.ndarray</span>
+<span class="sd">        Arrays as returned by :py:func:`_msd_from_cdf`</span>
+<span class="sd">    how : {&quot;msd&quot;, &quot;weight&quot;}</span>
+<span class="sd">        If &quot;msd&quot;, components are assigned according to increasing MSDs. If</span>
+<span class="sd">        &quot;weight&quot;, components are assigned according to increasing weights.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    msds_assigned : numpy.ndarray</span>
+<span class="sd">        MSDs assigned to components. ``msds_assigned[i, j, k]`` is the</span>
+<span class="sd">        MSD of the i-th component, the j-th lag time, and the k-th bootstrap</span>
+<span class="sd">        run.</span>
+<span class="sd">    weights_assigned : numpy.ndarray</span>
+<span class="sd">        Weights assigned to components. ``weights_assigned[i, j, k]`` is the</span>
+<span class="sd">        weight of the i-th component, the j-th lag time, and the k-th bootstrap</span>
+<span class="sd">        run.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">&quot;msd&quot;</span><span class="p">:</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">msds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">how</span> <span class="o">==</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown assignment method: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">how</span><span class="p">))</span>
+
+    <span class="c1"># Assign</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">msds</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">labels</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="n">msds_assigned</span> <span class="o">=</span> <span class="n">msds</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">weights_assigned</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">msds_assigned</span><span class="p">,</span> <span class="n">weights_assigned</span>
+
+
 <div class="viewcode-block" id="MsdDist"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist">[docs]</a><span class="k">class</span> <span class="nc">MsdDist</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Calculate and analyze mean square displacement (MSD) distribution</span>
 
@@ -432,7 +437,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">ensemble</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_method</span><span class="o">=</span><span class="s2">&quot;lsq&quot;</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                  <span class="n">e_name</span><span class="o">=</span><span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+                 <span class="n">assign_method</span><span class="o">=</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data : pandas.DataFrame or iterable of pandas.DataFrame</span>
@@ -461,6 +466,11 @@
 <span class="sd">        pixel_size : float, optional</span>
 <span class="sd">            Pixel size; multiply coordinates by this factor. Defaults to 1</span>
 <span class="sd">            (no scaling).</span>
+<span class="sd">        assign_method : {&quot;msd&quot;, &quot;weight&quot;}, optional</span>
+<span class="sd">            If &quot;msd&quot;, components are assigned according to increasing MSDs,</span>
+<span class="sd">            i.e., lowest MSD will be component 1, next will be component 2,</span>
+<span class="sd">            and so on. If &quot;weight&quot;, components are assigned according to</span>
+<span class="sd">            increasing weights. Defaults to &quot;msd&quot;.</span>
 
 <span class="sd">        Other parameters</span>
 <span class="sd">        ----------------</span>
@@ -490,8 +500,10 @@
         <span class="k">for</span> <span class="n">p_id</span><span class="p">,</span> <span class="n">p_sds</span> <span class="ow">in</span> <span class="n">square_disp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">msds</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">_msd_from_cdf</span><span class="p">(</span><span class="n">p_sds</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">fit_method</span><span class="p">,</span>
                                           <span class="n">n_boot</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">)</span>
-            <span class="n">msd_set</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">msds</span>
-            <span class="n">weight_set</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span>
+            <span class="n">msds_ass</span><span class="p">,</span> <span class="n">weights_ass</span> <span class="o">=</span> <span class="n">_assign_components</span><span class="p">(</span><span class="n">msds</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span>
+                                                       <span class="n">assign_method</span><span class="p">)</span>
+            <span class="n">msd_set</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">msds_ass</span>
+            <span class="n">weight_set</span><span class="p">[</span><span class="n">p_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights_ass</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -900,11 +912,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2015—2018, Lukas Schrangl
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -915,7 +935,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
