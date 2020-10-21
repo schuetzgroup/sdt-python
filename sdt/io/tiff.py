@@ -83,10 +83,11 @@ with suppress(ImportError):
 
         def _read_metadata(self, tiff):
             md = {}
+            tags = tiff.keyframe.tags
             for k in ("ImageDescription", "DateTime", "Software",
                       "DocumentName"):
                 with suppress(KeyError):
-                    md[k] = tiff.tags[k].value
+                    md[k] = tags[k].value
 
             # Deal with special metadata
             if tiff.parent.is_imagej:
@@ -107,8 +108,10 @@ with suppress(ImportError):
                 # Try YAML
                 with suppress(Exception):
                     yaml_md = yaml.safe_load(md["ImageDescription"])
-                    md.pop("ImageDescription")
-                    md.update(yaml_md)
+                    # YAML could be anything: plain string, list, …
+                    if isinstance(yaml_md, dict):
+                        md.pop("ImageDescription")
+                        md.update(yaml_md)
 
             try:
                 md["DateTime"] = datetime.strptime(md["DateTime"],
