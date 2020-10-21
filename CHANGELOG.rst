@@ -12,6 +12,13 @@ Change log
 Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
+
+15.2
+----
+
+- Fix reading metadata in :py:class:`io.SdtTiffStack`.
+
+
 15.1
 ----
 
