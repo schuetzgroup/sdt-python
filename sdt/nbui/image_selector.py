@@ -47,7 +47,18 @@ class ImageSelector(ipywidgets.HBox):
         self._frame_sel = ipywidgets.BoundedIntText(description="frame",
                                                     min=0, max=0)
         self._frame_sel.observe(self._frame_changed, "value")
-        super().__init__([self._file_sel, self._frame_sel], **kwargs)
+
+        self._prev_button = ipywidgets.Button(icon="arrow-left")
+        self._prev_button.on_click(self._prev_button_clicked)
+        self._next_button = ipywidgets.Button(icon="arrow-right")
+        self._next_button.on_click(self._next_button_clicked)
+        for b in self._prev_button, self._next_button:
+            b.layout.width = "auto"
+            b.disabled = True
+        self.show_file_buttons = False
+
+        super().__init__([self._prev_button, self._file_sel, self._next_button,
+                          self._frame_sel], **kwargs)
 
         self._cur_image = None
         self._cur_image_opened = False
@@ -103,7 +114,13 @@ class ImageSelector(ipywidgets.HBox):
                 self._frame_sel.max = 0
             self._cur_image = None
             self.output = None
+            self._prev_button.disabled = True
+            self._next_button.disabled = True
             return
+
+        self._prev_button.disabled = self._file_sel.index <= 0
+        self._next_button.disabled = (self._file_sel.index >=
+                                      len(self.images) - 1)
 
         img = self.images[self._file_sel.index]
         if isinstance(img, tuple):
@@ -132,3 +149,19 @@ class ImageSelector(ipywidgets.HBox):
         if self._frame_changed_lock.locked():
             return
         self.output = self._cur_image[self._frame_sel.value]
+
+    def _prev_button_clicked(self, button=None):
+        self._file_sel.index -= 1
+
+    def _next_button_clicked(self, button=None):
+        self._file_sel.index += 1
+
+    @property
+    def show_file_buttons(self) -> bool:
+        """Whether to show "back" and "forward" buttons for file selection"""
+        return self._prev_button.layout.display is None
+
+    @show_file_buttons.setter
+    def show_file_buttons(self, s):
+        for b in self._prev_button, self._next_button:
+            b.layout.display = None if s else "none"
