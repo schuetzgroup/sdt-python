@@ -33,6 +33,8 @@ class ImageSelector(ipywidgets.HBox):
     """
     output = traitlets.Instance(np.ndarray, allow_none=True)
     """2D array representing the currently selected frame."""
+    index = traitlets.Int(allow_none=True)
+    """Currently selected index (w.r.t. :py:attr:`images`)"""
 
     def __init__(self, images: Union[Sequence, Dict] = [], **kwargs):
         """Parameters
@@ -56,6 +58,8 @@ class ImageSelector(ipywidgets.HBox):
             b.layout.width = "auto"
             b.disabled = True
         self.show_file_buttons = False
+
+        traitlets.link((self._file_sel, "index"), (self, "index"))
 
         super().__init__([self._prev_button, self._file_sel, self._next_button,
                           self._frame_sel], **kwargs)
