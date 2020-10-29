@@ -69,7 +69,7 @@ class ImageDisplay(ipywidgets.VBox):
 
     def __init__(self, ax: mpl.axes.Axes, input: Optional[np.ndarray] = None,
                  cmap: Union[str, mpl.colors.Colormap] = "gray",
-                 *args, **kwargs):
+                 **kwargs):
         """Parameters
         ----------
         ax
@@ -78,8 +78,8 @@ class ImageDisplay(ipywidgets.VBox):
             Image array to display
         cmap
             Colormap for image display
-        *args, **kwargs
-            Passed to superclass constructor
+        **kwargs
+            Passed to parent ``__init__``.
         """
         self.ax = ax
         self.cmap = cmap
@@ -96,8 +96,8 @@ class ImageDisplay(ipywidgets.VBox):
 
         super().__init__([
             self.ax.figure.canvas,
-            ipywidgets.HBox([self._img_scale_sel, self._auto_scale_button]),
-        ], *args, **kwargs)
+            ipywidgets.HBox([self._img_scale_sel, self._auto_scale_button])],
+            **kwargs)
 
         self._redraw_lock = threading.Lock()
 

@@ -34,18 +34,20 @@ class ImageSelector(ipywidgets.HBox):
     output = traitlets.Instance(np.ndarray, allow_none=True)
     """2D array representing the currently selected frame."""
 
-    def __init__(self, images: Union[Sequence, Dict] = [], *args, **kwargs):
+    def __init__(self, images: Union[Sequence, Dict] = [], **kwargs):
         """Parameters
         ---------
         images
             List of image (sequences) to populate :py:attr:`images`.
+        **kwargs
+            Passed to parent ``__init__``.
         """
         self._file_sel = ipywidgets.Dropdown(description="image")
         self._file_sel.observe(self._file_changed, "value")
         self._frame_sel = ipywidgets.BoundedIntText(description="frame",
                                                     min=0, max=0)
         self._frame_sel.observe(self._frame_changed, "value")
-        super().__init__([self._file_sel, self._frame_sel], *args, **kwargs)
+        super().__init__([self._file_sel, self._frame_sel], **kwargs)
 
         self._cur_image = None
         self._cur_image_opened = False
