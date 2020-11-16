@@ -12,7 +12,6 @@ python tools. So far it can read data from
 - check_fit (i. e. pks files)
 - msdplot.
 """
-import os
 import collections
 import logging
 from pathlib import Path
