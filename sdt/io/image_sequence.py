@@ -49,7 +49,7 @@ class ImageSequence:
     file.
     """
     _slicerator_flag = True  # Make it work with slicerator
-    
+
     def __init__(self, uri: Union[str, Path, bytes, IO],
                  format: Optional[str] = None, mode: str = "?", **kwargs):
         """Parameters
