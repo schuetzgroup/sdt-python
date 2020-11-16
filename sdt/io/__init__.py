@@ -160,10 +160,12 @@ YAML
 """
 from contextlib import suppress
 
-from .sm import *
-from .fs import *
-from .tiff import save_as_tiff
+from .fs import chdir, get_files  # noqa: F401
+from .image_sequence import ImageSequence  # noqa: F401
+from .sm import (load, load_csv, load_msdplot, load_pkmatrix,  # noqa: F401
+                 load_pks, load_pt2d, load_trc, save, save_pt2d, save_trc)
+from .tiff import save_as_tiff  # noqa: F401
 with suppress(ImportError):
-    from .tiff import SdtTiffStack
+    from .tiff import SdtTiffStack  # noqa: F401
 with suppress(ImportError):
-    from . import yaml
+    from . import yaml  # noqa: F401
