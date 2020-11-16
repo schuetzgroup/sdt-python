@@ -241,7 +241,7 @@ class Slicerator:
     def __getitem__(self, key):
         """for data access"""
         if not (isinstance(key, slice) or
-                isinstance(key, collections.Iterable)):
+                isinstance(key, collections.abc.Iterable)):
             return self._get(self._map_index(key))
         else:
             rel_indices, new_length = key_to_indices(key, len(self))
@@ -293,7 +293,7 @@ def key_to_indices(key, length):
         indices = range(start, stop, step)
         return indices, len(indices)
 
-    if isinstance(key, collections.Iterable):
+    if isinstance(key, collections.abc.Iterable):
         # if the input is an iterable, doing 'fancy' indexing
         if hasattr(key, '__array__') and hasattr(key, 'dtype'):
             if key.dtype == bool:
@@ -490,7 +490,7 @@ class Pipeline:
     def __getattr__(self, name):
         # to avoid infinite recursion, always check if public field is there
         pa = self.__dict__.get('_propagate_attrs', [])
-        if not isinstance(pa, collections.Iterable):
+        if not isinstance(pa, collections.abc.Iterable):
             raise TypeError('_propagate_attrs is not iterable')
         if name in pa:
             for a in self._get_prop_ancestors():
@@ -722,7 +722,7 @@ def index_attr(func):
     @wraps(func)
     def wrapper(obj, key, *args, **kwargs):
         indices = key_to_indices(key, len(obj))[0]
-        if isinstance(indices, collections.Iterable):
+        if isinstance(indices, collections.abc.Iterable):
             return (func(obj, i, *args, **kwargs) for i in indices)
         else:
             return func(obj, indices, *args, **kwargs)
@@ -768,7 +768,7 @@ class SliceableAttribute(object):
 
     def __call__(self, key, *args, **kwargs):
         if not (isinstance(key, slice) or
-                isinstance(key, collections.Iterable)):
+                isinstance(key, collections.abc.Iterable)):
             return self._get(self._map_index(key), *args, **kwargs)
         else:
             rel_indices, new_length = key_to_indices(key, len(self))
