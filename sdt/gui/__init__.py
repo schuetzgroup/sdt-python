@@ -2,4 +2,4 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from .qml_wrapper import Component, Window
+from .qml_wrapper import Component, Window, messageHandler

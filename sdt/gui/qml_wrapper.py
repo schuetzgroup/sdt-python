@@ -2,10 +2,14 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import logging
 from pathlib import Path
 from typing import List, Optional, Union
 
 from PySide2 import QtCore, QtGui, QtQml
+
+
+_logger = logging.getLogger("Qt")
 
 
 class Component:
@@ -137,3 +141,21 @@ Window {{
     def close(self):
         """Close the window"""
         self.window_.close()
+
+
+_msgHandlerMap = {
+    QtCore.QtMsgType.QtDebugMsg: _logger.debug,
+    QtCore.QtMsgType.QtInfoMsg: _logger.info,
+    QtCore.QtMsgType.QtWarningMsg: _logger.warning,
+    QtCore.QtMsgType.QtCriticalMsg: _logger.error,
+    QtCore.QtMsgType.QtFatalMsg: _logger.critical}
+
+
+def messageHandler(msg_type, context, msg):
+    """Pass messages from Qt to Python logging
+
+    Use :py:func:`QtCore.qInstallMessageHandler` to enable.
+    """
+    # full_msg = f"{context.file}:{context.function}:{context.line}: {msg}"
+    full_msg = msg
+    _msgHandlerMap[msg_type](full_msg)
