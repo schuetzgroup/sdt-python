@@ -2,4 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from .qml_wrapper import Component, Window, messageHandler
+from .qml_wrapper import Component, Window, messageHandler, qmlPath
+
+# QML types
+from .image_selector import ImageSelectorModule

@@ -12,6 +12,10 @@ from PySide2 import QtCore, QtGui, QtQml
 _logger = logging.getLogger("Qt")
 
 
+qmlPath: str = str(Path(__file__).absolute().parent)
+"""Path to QML module. Add as import path to QML engines."""
+
+
 class Component:
     """Easily instantiate a QML component
 
@@ -44,6 +48,7 @@ class Component:
         elif isinstance(qmlFile, (str, Path)):
             qmlFile = QtCore.QUrl.fromLocalFile(str(qmlFile))
         self.engine_ = QtQml.QQmlEngine()
+        self.engine_.addImportPath(qmlPath)
         self.component_ = QtQml.QQmlComponent(self.engine_)
         self.component_.setData(qmlSrc.encode("utf-8"), qmlFile)
         if self.component_.isError():
@@ -96,6 +101,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.2
+import SdtGui 1.0
 
 Window {{
     id: root

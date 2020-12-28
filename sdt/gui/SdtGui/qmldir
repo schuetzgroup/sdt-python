@@ -1,0 +1,3 @@
+module SdtGui
+
+ImageSelectorModule 1.0 ImageSelectorModule.qml
