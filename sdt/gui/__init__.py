@@ -7,3 +7,4 @@ from .qml_wrapper import Component, Window, messageHandler, qmlPath
 # QML types
 from .image_display import ImageDisplayModule
 from .image_selector import ImageSelectorModule
+from .locator import LocatorModule
