@@ -17,7 +17,7 @@ class DictListModel(QtCore.QAbstractListModel):
     """
     def __init__(self, data: List[Dict] = [],
                  roles: Optional[List[str]] = None,
-                 default_role: Optional[str] = None,
+                 defaultRole: Optional[str] = None,
                  parent: Optional[QtCore.QObject] = None):
         """Parameters
         ----------
@@ -26,7 +26,7 @@ class DictListModel(QtCore.QAbstractListModel):
         roles
             Names of the dict keys / roles to use. If not given, use all keys
             from the first entry of ``data``.
-        default_role
+        defaultRole
             Name of the default role. If not given, the first role is used.
         parent
             Parent QObject.
@@ -39,9 +39,9 @@ class DictListModel(QtCore.QAbstractListModel):
             roles = data[0]
         roles = list(roles)
         self._roles = dict(enumerate(roles, QtCore.Qt.UserRole+1))
-        self._default_role = QtCore.Qt.UserRole + 1
-        if default_role is not None:
-            self._default_role += roles.index(default_role)
+        self._defaultRole = QtCore.Qt.UserRole + 1
+        if defaultRole is not None:
+            self._defaultRole += roles.index(defaultRole)
         self._data = data.copy()
 
     def roleNames(self) -> Dict[int, bytes]:
@@ -87,7 +87,7 @@ class DictListModel(QtCore.QAbstractListModel):
         if not index.isValid() or r > self.rowCount():
             return None
         if role == QtCore.Qt.DisplayRole:
-            role = self._default_role
+            role = self._defaultRole
         if role > QtCore.Qt.UserRole:
             return self._data[r][self._roles[role]]
         return None

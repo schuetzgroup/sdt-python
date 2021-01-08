@@ -31,7 +31,7 @@ class ImageSelectorModule(QtQuick.QQuickItem):
         self._cur_image_opened = False
         self._output = None
         self._file_list = DictListModel(roles=["display", "images"],
-                                        default_role="display")
+                                        defaultRole="display")
         self.images = []
 
     @staticmethod
