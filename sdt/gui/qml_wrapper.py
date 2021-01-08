@@ -149,6 +149,77 @@ Window {{
         self.window_.close()
 
 
+class QmlDefinedProperty:
+    """Make a property defined in QML accessible as a Python attribute
+
+    For instance, create a Python QtQuick item
+
+    .. code-block:: python
+
+        class MyItem(QtQuick.QQuickItem):
+            myProp = QmlDefinedProperty()
+
+    which is instantiated in QML
+
+    .. code-block:: qml
+
+        MyItem {
+            property var myProp: 42
+        }
+
+    After obtaining the instance in Python (e.g., using
+    ``QObject.findChild()``), the property can be accessed directly:
+
+    .. code-block:: python
+
+        myItemInstance.myProp  # 42
+        myItemInstance.myProp = 20
+    """
+    def __init__(self, name: Optional[str] = None):
+        """Parameters
+        ----------
+        name
+            Name of property to wrap. If not specified, the name of the Python
+            attribute is used.
+        """
+        self._name = name
+
+    def __set_name__(self, owner, name):
+        if not isinstance(self._name, str):
+            self._name = name
+
+    def _getProp(self, obj: QtCore.QObject) -> QtQml.QQmlProperty:
+        """Get the QML property instance
+
+        Parameters
+        ----------
+        obj:
+            QObject to get property from
+
+        Returns
+        -------
+        Property object
+
+        Raises
+        ------
+        AttributeError
+            The QObject does not have such a propery
+        """
+        p = QtQml.QQmlProperty(obj, self._name)
+        if not p.isValid():
+            raise AttributeError(f"no QML-defined property named {self._name}")
+        return p
+
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        return self._getProp(obj).read()
+
+    def __set__(self, obj, value):
+        if not self._getProp(obj).write(value):
+            raise AttributeError(f"could not write property {self._name}")
+
+
 _msgHandlerMap = {
     QtCore.QtMsgType.QtDebugMsg: _logger.debug,
     QtCore.QtMsgType.QtInfoMsg: _logger.info,
