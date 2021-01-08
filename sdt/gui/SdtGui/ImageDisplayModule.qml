@@ -11,8 +11,8 @@ import SdtGui.Impl 1.0
 ImageDisplayImpl {
     id: root
 
-    implicitHeight: rootLayout.Layout.minimumHeight
-    implicitWidth: rootLayout.Layout.minimumWidth
+    implicitHeight: rootLayout.implicitHeight
+    implicitWidth: rootLayout.implicitWidth
 
     property list<Item> overlays
 
