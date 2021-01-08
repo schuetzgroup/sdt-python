@@ -9,3 +9,6 @@ from .image_display import ImageDisplayModule
 from .image_selector import ImageSelectorModule
 from .loc_display import LocDisplayModule
 from .locator import LocatorModule
+from .roi_selector import ROISelectorModule
+# import to register QML types only
+from . import _mpl_path_elements
