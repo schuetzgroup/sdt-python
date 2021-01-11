@@ -5,9 +5,8 @@
 import math
 from typing import Optional, Union
 
+from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import numpy as np
-
-from PySide2 import QtCore, QtGui, QtQml, QtQuick
 
 from . import py_image  # Register PyImage QML type
 
@@ -36,27 +35,27 @@ class ImageDisplayModule(QtQuick.QQuickItem):
     that is 2 pixels wide and 3 pixels high irrespectively of how much the
     image is zoomed in or out.
     """
-    def __init__(self, parent: Optional[QtCore.QObject] = None):
+    def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
         ----------
         parent
-            Parent QObject
+            Parent item
         """
         super().__init__(parent)
         self._input = None
         self._inputMinVal = 0.0
         self._inputMaxVal = 0.0
 
-    inputChanged = QtCore.Signal(np.ndarray)
+    inputChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Input image was changed"""
 
-    @QtCore.Property(np.ndarray, notify=inputChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=inputChanged)
     def input(self) -> Union[np.ndarray, None]:
         """Image to display"""
         return self._input
 
     @input.setter
-    def setInput(self, input: Union[np.ndarray, None]):
+    def input(self, input: Union[np.ndarray, None]):
         if self._input is input:
             return
         self._input = input
@@ -66,16 +65,16 @@ class ImageDisplayModule(QtQuick.QQuickItem):
         self._inputMinChanged.emit(self._inputMin)
         self._inputMaxChanged.emit(self._inputMax)
 
-    _inputMinChanged = QtCore.Signal(float)
+    _inputMinChanged = QtCore.pyqtSignal(float)
 
-    @QtCore.Property(float, notify=_inputMinChanged)
+    @QtCore.pyqtProperty(float, notify=_inputMinChanged)
     def _inputMin(self) -> float:
         """Minimum value in input image. Used for QML property binding."""
         return self._inputMinVal
 
-    _inputMaxChanged = QtCore.Signal(float)
+    _inputMaxChanged = QtCore.pyqtSignal(float)
 
-    @QtCore.Property(float, notify=_inputMaxChanged)
+    @QtCore.pyqtProperty(float, notify=_inputMaxChanged)
     def _inputMax(self):
         """Maximum value in input image. Used for QML property binding."""
         return self._inputMaxVal

@@ -5,7 +5,7 @@
 import math
 from typing import Optional, Union
 
-from PySide2 import QtCore, QtGui, QtQml, QtQuick
+from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import numpy as np
 import pandas as pd
 
@@ -50,23 +50,23 @@ class LocDisplayModule(QtQuick.QQuickPaintedItem):
         self.locDataChanged.connect(self.update)
         self._scaleFactor = 1.0
 
-    locDataChanged = QtCore.Signal(pd.DataFrame)
+    locDataChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Localization data was changed"""
 
-    @QtCore.Property(pd.DataFrame, notify=locDataChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=locDataChanged)
     def locData(self) -> pd.DataFrame:
         """Localization data to display"""
         return self._locData
 
     @locData.setter
-    def setLocData(self, val):
+    def locData(self, val):
         self._locData = val
         self.locDataChanged.emit(val)
 
-    scaleFactorChanged = QtCore.Signal(float)
+    scaleFactorChanged = QtCore.pyqtSignal(float)
     """Scale factor has changed"""
 
-    @QtCore.Property(float, notify=scaleFactorChanged)
+    @QtCore.pyqtProperty(float, notify=scaleFactorChanged)
     def scaleFactor(self) -> float:
         """Zoom factor of the underlying image. Used to transform image
         coordinates to GUI coordinates.
@@ -74,7 +74,7 @@ class LocDisplayModule(QtQuick.QQuickPaintedItem):
         return self._scaleFactor
 
     @scaleFactor.setter
-    def setScaleFactor(self, fac):
+    def scaleFactor(self, fac):
         if math.isclose(self._scaleFactor, fac):
             return
         self._scaleFactor = fac

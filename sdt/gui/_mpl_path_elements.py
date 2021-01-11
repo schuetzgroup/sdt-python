@@ -4,7 +4,7 @@
 
 from typing import Dict, List, Union
 
-from PySide2 import QtCore, QtQml
+from PyQt5 import QtCore, QtQml
 import matplotlib as mpl
 import numpy as np
 
@@ -28,16 +28,16 @@ class MplPathElements(QtCore.QObject):
         self._path = mpl.path.Path(np.empty((0, 2)))
         self._elements = {}
 
-    pathChanged = QtCore.Signal(mpl.path.Path)
+    pathChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Path property was changed"""
 
-    @QtCore.Property(mpl.path.Path, notify=pathChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=pathChanged)
     def path(self) -> mpl.path.Path:
         """Input path"""
         return self._path
 
     @path.setter
-    def setPath(self, path: mpl.path.Path):
+    def path(self, path: mpl.path.Path):
         if self._path == path:
             return
         self._path = path
@@ -58,10 +58,10 @@ class MplPathElements(QtCore.QObject):
         self.pathChanged.emit(path)
         self.elementsChanged.emit(elements)
 
-    elementsChanged = QtCore.Signal("QVariantList")
+    elementsChanged = QtCore.pyqtSignal(list)
     """Path elements changed"""
 
-    @QtCore.Property("QVariantList", notify=elementsChanged)
+    @QtCore.pyqtProperty(list, notify=elementsChanged)
     def elements(self) -> List[Dict[str, Union[int, List[float]]]]:
         return self._elements
 

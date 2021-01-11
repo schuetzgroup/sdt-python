@@ -5,7 +5,7 @@
 import math
 from typing import Optional, Union
 
-from PySide2 import QtCore, QtGui, QtQml, QtQuick
+from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import numpy as np
 
 
@@ -28,10 +28,10 @@ class PyImage(QtQuick.QQuickPaintedItem):
         self._black = 0.0
         self._white = 1.0
 
-    blackChanged = QtCore.Signal(float)
+    blackChanged = QtCore.pyqtSignal(float)
     """Black point changed"""
 
-    @QtCore.Property(float, notify=blackChanged)
+    @QtCore.pyqtProperty(float, notify=blackChanged)
     def black(self) -> float:
         """Black point. Every pixel with a value less than or equal to this
         will be displayed black.
@@ -39,16 +39,16 @@ class PyImage(QtQuick.QQuickPaintedItem):
         return self._black
 
     @black.setter
-    def setBlack(self, b: float):
+    def black(self, b: float):
         if math.isclose(self._black, b):
             return
         self._black = b
         self.blackChanged.emit(b)
         self._sourceToQImage()
 
-    whiteChanged = QtCore.Signal(float)
+    whiteChanged = QtCore.pyqtSignal(float)
 
-    @QtCore.Property(float, notify=whiteChanged)
+    @QtCore.pyqtProperty(float, notify=whiteChanged)
     def white(self) -> float:
         """White point. Every pixel with a value greater than or equal to this
         will be displayed white.
@@ -56,17 +56,17 @@ class PyImage(QtQuick.QQuickPaintedItem):
         return self._white
 
     @white.setter
-    def setWhite(self, w: float):
+    def white(self, w: float):
         if math.isclose(self._white, w):
             return
         self._white = w
         self.whiteChanged.emit(w)
         self._sourceToQImage()
 
-    sourceChanged = QtCore.Signal(np.ndarray)
+    sourceChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Source image data changed"""
 
-    @QtCore.Property(np.ndarray, notify=sourceChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=sourceChanged)
     def source(self) -> Union[np.ndarray, None]:
         """Image data array. For now, only single-channel (grayscale) data
         are supported.
@@ -74,7 +74,7 @@ class PyImage(QtQuick.QQuickPaintedItem):
         return self._source
 
     @source.setter
-    def setSource(self, data: Union[np.ndarray, None]):
+    def source(self, data: Union[np.ndarray, None]):
         if self._source is data:
             return
         self._source = data
@@ -115,18 +115,18 @@ class PyImage(QtQuick.QQuickPaintedItem):
                           QtCore.QRect(0, 0, self.sourceWidth,
                                        self.sourceHeight))
 
-    sourceWidthChanged = QtCore.Signal(int)
+    sourceWidthChanged = QtCore.pyqtSignal(int)
     """Width of the image changed."""
 
-    @QtCore.Property(int, notify=sourceWidthChanged)
+    @QtCore.pyqtProperty(int, notify=sourceWidthChanged)
     def sourceWidth(self) -> int:
         """Width of the image."""
         return self._source.shape[1] if self._source is not None else 0
 
-    sourceHeightChanged = QtCore.Signal(int)
+    sourceHeightChanged = QtCore.pyqtSignal(int)
     """Height of the image changed."""
 
-    @QtCore.Property(int, notify=sourceHeightChanged)
+    @QtCore.pyqtProperty(int, notify=sourceHeightChanged)
     def sourceHeight(self) -> int:
         """Height of the image."""
         return self._source.shape[0] if self._source is not None else 0

@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
-from PySide2 import QtCore, QtQml, QtQuick
+from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 import pims
 
@@ -20,11 +20,11 @@ class ImageSelectorModule(QtQuick.QQuickItem):
     property. The image array of the selected frame is exposed via the
     :py:attr:`output` property.
     """
-    def __init__(self, parent: Optional[QtCore.QObject] = None):
+    def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
         ---------
         parent
-            Parent QObject
+            Parent item
         """
         super().__init__(parent)
         self._cur_image = None
@@ -102,11 +102,10 @@ class ImageSelectorModule(QtQuick.QQuickItem):
                           "images": img})
         return files
 
-    imagesChanged = QtCore.Signal("QVariantList")
+    imagesChanged = QtCore.pyqtSignal(list)
     """:py:attr:`images` was changed."""
 
-    # Use QVariantList for automatic conversion to Python list by PySide2
-    @QtCore.Property("QVariantList", notify=imagesChanged)
+    @QtCore.pyqtProperty(list, notify=imagesChanged)
     def images(self) -> List:
         """Image sequences to choose from
 
@@ -120,27 +119,27 @@ class ImageSelectorModule(QtQuick.QQuickItem):
         return self._images
 
     @images.setter
-    def setImages(self, img: Union[Dict[str, Any],
-                                   Iterable[Union[Tuple[str, Any],
-                                                  Path, str, Any]]]):
+    def images(self,
+               img: Union[Dict[str, Any], Iterable[Union[Tuple[str, Any],
+                                                         Path, str, Any]]]):
         self._images = self._validate_images(img)
         self._file_list.resetWithData(self._make_file_list(img))
         self.imagesChanged.emit(self._images)
 
-    outputChanged = QtCore.Signal(np.ndarray)
+    outputChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """:py:attr:`output` has changed."""
 
-    @QtCore.Property(np.ndarray, notify=outputChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=outputChanged)
     def output(self) -> np.ndarray:
         """Selected frame from selected image sequence"""
         return self._output
 
-    @QtCore.Property(QtCore.QObject, constant=True)
+    @QtCore.pyqtProperty(QtCore.QObject, constant=True)
     def _qmlFileList(self) -> DictListModel:
         """Expose the file list model to QML"""
         return self._file_list
 
-    @QtCore.Slot(int)
+    @QtCore.pyqtSlot(int)
     def _fileChanged(self, index: int):
         """Callback upon change of currently selected file
 
@@ -174,16 +173,16 @@ class ImageSelectorModule(QtQuick.QQuickItem):
         self._cur_image = img
         self._qmlNFramesChanged.emit(self._qmlNFrames)
 
-    _qmlNFramesChanged = QtCore.Signal(int)
+    _qmlNFramesChanged = QtCore.pyqtSignal(int)
 
-    @QtCore.Property(int, notify=_qmlNFramesChanged)
+    @QtCore.pyqtProperty(int, notify=_qmlNFramesChanged)
     def _qmlNFrames(self) -> int:
         """Expose the number of frames of current sequnece to QML"""
         if self._cur_image is None:
             return 0
         return len(self._cur_image)
 
-    @QtCore.Slot(int)
+    @QtCore.pyqtSlot(int)
     def _frameChanged(self, index: int):
         """Callback upon change of currently selected frame
 

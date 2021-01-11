@@ -4,7 +4,7 @@
 
 from typing import Any, Dict, List, Optional
 
-from PySide2 import QtCore
+from PyQt5 import QtCore
 
 
 class DictListModel(QtCore.QAbstractListModel):

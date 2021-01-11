@@ -6,7 +6,7 @@ import multiprocessing, multiprocessing.connection
 import threading
 from typing import Any, Callable, Optional
 
-from PySide2 import QtCore
+from PyQt5 import QtCore
 
 
 class ProcessWorker(QtCore.QObject):
@@ -62,26 +62,26 @@ class ProcessWorker(QtCore.QObject):
         self._pipe.send(args)
         self._pipe.send(kwargs)
 
-    _listenerFinished = QtCore.Signal(object)
+    _listenerFinished = QtCore.pyqtSignal(object)
     """Thread listening for return value received said return value."""
-    finished = QtCore.Signal(object)
+    finished = QtCore.pyqtSignal(object)
     """Function call finished. Signal argument is the return value."""
-    error = QtCore.Signal(Exception)
+    error = QtCore.pyqtSignal(Exception)
     """An error occured while executing function call. Signal argument is
     the exception that was raised.
     """
-    busyChanged = QtCore.Signal(bool)
+    busyChanged = QtCore.pyqtSignal(bool)
     """Busy status changed"""
 
-    @QtCore.Property(bool, notify=busyChanged)
+    @QtCore.pyqtProperty(bool, notify=busyChanged)
     def busy(self) -> bool:
         """True if a function call is currently executed."""
         return self._busy
 
-    enabledChanged = QtCore.Signal(bool)
+    enabledChanged = QtCore.pyqtSignal(bool)
     """Enabled status changed"""
 
-    @QtCore.Property(bool, notify=enabledChanged)
+    @QtCore.pyqtProperty(bool, notify=enabledChanged)
     def enabled(self) -> bool:
         """If enabled, a worker process is running in the background and
         waiting to execute a function call. Disabling terminates the worker
@@ -90,7 +90,7 @@ class ProcessWorker(QtCore.QObject):
         return self._workerProcess is not None
 
     @enabled.setter
-    def setEnabled(self, e: bool):
+    def enabled(self, e: bool):
         if e == self.enabled:
             return
         if e:

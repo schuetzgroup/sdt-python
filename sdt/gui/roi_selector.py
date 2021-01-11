@@ -5,10 +5,12 @@
 import math
 from typing import Dict, Iterable, List, Union
 
-from PySide2 import QtCore, QtGui, QtQml, QtQuick
+from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import matplotlib as mpl
 import numpy as np
 
+from . import _mpl_path_elements  #  Register QML type
+from .qml_wrapper import QmlDefinedProperty
 from .. import roi as sdt_roi
 
 
@@ -45,10 +47,10 @@ class ROISelectorModule(QtQuick.QQuickItem):
         super().__init__(parent)
         self._rois = {}
 
-    namesChanged = QtCore.Signal("QVariantList")
+    namesChanged = QtCore.pyqtSignal(list)
     """ROI names changed"""
 
-    @QtCore.Property("QVariantList", notify=namesChanged)
+    @QtCore.pyqtProperty(list, notify=namesChanged)
     def names(self) -> List[str]:
         """ROI names. List of keys in :py:attr:`rois` property. Setting
         this property will associate no ROIs with names that are newly added.
@@ -57,19 +59,19 @@ class ROISelectorModule(QtQuick.QQuickItem):
         return list(self._rois)
 
     @names.setter
-    def setNames(self, names: Iterable[str]):
+    def names(self, names: Iterable[str]):
         self.rois = {n: self._rois.get(n, None) for n in names}
 
-    roisChanged = QtCore.Signal("QVariantMap")
+    roisChanged = QtCore.pyqtSignal("QVariantMap")
     """ROIs changed"""
 
-    @QtCore.Property("QVariantMap", notify=roisChanged)
+    @QtCore.pyqtProperty("QVariantMap", notify=roisChanged)
     def rois(self) -> Dict[str, Union[sdt_roi.PathROI, None]]:
         """ROI names and associated ROIs"""
         return self._rois
 
     @rois.setter
-    def setRois(self, rois: Dict[str, Union[sdt_roi.PathROI, None]]):
+    def rois(self, rois: Dict[str, Union[sdt_roi.PathROI, None]]):
         if rois == self._rois:
             return
         oldNames = set(self._rois)
@@ -78,7 +80,10 @@ class ROISelectorModule(QtQuick.QQuickItem):
         if oldNames != set(rois):
             self.namesChanged.emit(self.names)
 
-    @QtCore.Slot(str, float, float, float, float)
+    overlay = QmlDefinedProperty()
+    """Item to be added to :py:attr:`ImageDisplayModule.overlays`"""
+
+    @QtCore.pyqtSlot(str, float, float, float, float)
     def _setRectangleRoi(self, name: str, x: float, y: float,
                          w: float, h: float):
         """Set rectangular ROI for name
@@ -98,7 +103,7 @@ class ROISelectorModule(QtQuick.QQuickItem):
         self.rois[name] = sdt_roi.RectangleROI((x, y), size=(w, h))
         self.roisChanged.emit(self._rois)
 
-    @QtCore.Slot(str, float, float, float, float)
+    @QtCore.pyqtSlot(str, float, float, float, float)
     def _setEllipseRoi(self, name, x, y, w, h):
         """Set elliptical ROI for name
 
@@ -158,10 +163,10 @@ class ROIItem(QtQuick.QQuickItem):
         self._scaleFactor = 1.0
         self.scaleFactorChanged.connect(self._onScaleFactorChanged)
 
-    scaleFactorChanged = QtCore.Signal(float)
+    scaleFactorChanged = QtCore.pyqtSignal(float)
     """Scale factor changed"""
 
-    @QtCore.Property(float, notify=scaleFactorChanged)
+    @QtCore.pyqtProperty(float, notify=scaleFactorChanged)
     def scaleFactor(self) -> float:
         """Factor for scaling the ROI path. Typically bound to the
         ImageDisplayModule overlay item's `scaleFactor`.
@@ -169,23 +174,22 @@ class ROIItem(QtQuick.QQuickItem):
         return self._scaleFactor
 
     @scaleFactor.setter
-    def setScaleFactor(self, f: float):
+    def scaleFactor(self, f: float):
         if math.isclose(self._scaleFactor, f):
             return
         self._scaleFactor = f
         self.scaleFactorChanged.emit(f)
 
-    # Use QVariant instead of PathROI to allow assigning None/null
-    roiChanged = QtCore.Signal("QVariant")
+    roiChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """ROI changed"""
 
-    @QtCore.Property("QVariant", notify=roiChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=roiChanged)
     def roi(self) -> Union[sdt_roi.PathROI, None]:
         """ROI to draw / calculate scaled path for"""
         return self._roi
 
     @roi.setter
-    def setRoi(self, roi: Union[sdt_roi.PathROI, None]):
+    def roi(self, roi: Union[sdt_roi.PathROI, None]):
         if self._roi is roi:
             return
         self._roi = roi
@@ -193,10 +197,10 @@ class ROIItem(QtQuick.QQuickItem):
         self.roiChanged.emit(self.roi)
         self.pathChanged.emit(self.path)
 
-    pathChanged = QtCore.Signal(mpl.path.Path)
+    pathChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Path changed either because ROI changed or scaleFactor changed"""
 
-    @QtCore.Property(mpl.path.Path, notify=pathChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=pathChanged)
     def path(self) -> mpl.path.Path:
         """Scaled path representing :py:attr:`roi`."""
         return self._path

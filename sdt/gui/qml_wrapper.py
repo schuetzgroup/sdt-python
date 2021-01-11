@@ -2,15 +2,15 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import enum
 import logging
 from pathlib import Path
 from typing import List, Optional, Union
 
-from PySide2 import QtCore, QtGui, QtQml
+from PyQt5 import QtCore, QtGui, QtQml
 
 
 _logger = logging.getLogger("Qt")
-
 
 qmlPath: str = str(Path(__file__).absolute().parent)
 """Path to QML module. Add as import path to QML engines."""
@@ -23,15 +23,14 @@ class Component:
     instantiate the component. The instance's QML properties are exposed as
     python attributes.
     """
-
-    nonQtProperties: List[str] = ["engine_", "component_", "instance_"]
-    """Attribute names which should not be interpreted as Qt properties."""
-    engine_: QtQml.QQmlEngine
-    """QML engine used to create `component_`"""
-    component_: QtQml.QQmlComponent
-    """Component create from QML source"""
-    instance_: QtCore.QObject
-    """Component instance"""
+    class Status(enum.Enum):
+        """Status of the QML component instance"""
+        Loading = enum.auto()
+        """Instance is being created"""
+        Ready = enum.auto()
+        """Instance is ready to use"""
+        Error = enum.auto()
+        """An error occured. Error message was written via ``qWarning().``"""
 
     def __init__(self, qmlSrc: str,
                  qmlFile: Optional[Union[str, Path, QtCore.QUrl]] = None):
@@ -43,50 +42,82 @@ class Component:
             Behave as if the source had been loaded from a file named
             `qmlFile`.
         """
+        self._status = self.Status.Error
         if qmlFile is None:
             qmlFile = QtCore.QUrl()
         elif isinstance(qmlFile, (str, Path)):
             qmlFile = QtCore.QUrl.fromLocalFile(str(qmlFile))
-        self.engine_ = QtQml.QQmlEngine()
-        self.engine_.addImportPath(qmlPath)
-        self.component_ = QtQml.QQmlComponent(self.engine_)
-        self.component_.setData(qmlSrc.encode("utf-8"), qmlFile)
-        if self.component_.isError():
-            err = self.component_.errors()
-            raise RuntimeError(err[-1].toString())
-        self.instance_ = self.component_.create()
+        self._engine = QtQml.QQmlApplicationEngine()
+        self._engine.addImportPath(qmlPath)
+        self._engine.objectCreated.connect(self._instanceCreated)
+        self._status = self.Status.Loading
+        self._engine.loadData(qmlSrc.encode(), qmlFile)
 
-    def __del__(self):
-        self.instance_.deleteLater()
-        self.component_.deleteLater()
-        self.engine_.deleteLater()
+    def _instanceCreated(self, instance: Union[QtCore.QObject, None],
+                         url: QtCore.QUrl):
+        """Set status after self._engine finished object creation
 
-    def _findMetaProperty(self, name):
-        mo = self.instance_.metaObject()
-        idx = mo.indexOfProperty(name)
-        if idx < 0:
-            return None
-        return mo.property(idx)
+        Parameters
+        ----------
+        instance
+            The instance which was created. `None` in case of an error.
+        url
+            Full URL of the source file.
+        """
+        if instance is None:
+            self._status = self.Status.Error
+            return
+        self._status = self.Status.Ready
+
+    @property
+    def status_(self) -> Status:
+        """Status of object creation. Can be `Loading`, `Ready`, or `Error`."""
+        return self._status
+
+    @property
+    def instance_(self) -> QtCore.QObject:
+        """QML root object instance."""
+        try:
+            return self._engine.rootObjects()[0]
+        except IndexError:
+            raise AttributeError("No object instance has been created.")
+
+    def _getProp(self, name: str) -> QtQml.QQmlProperty:
+        """Get the QML property instance
+
+        Parameters
+        ----------
+        name
+            Property name
+
+        Returns
+        -------
+        Property object
+
+        Raises
+        ------
+        AttributeError
+            The :py:attr:`instance_` does not have such a propery
+        """
+        p = QtQml.QQmlProperty(self.instance_, name, self._engine)
+        if not p.isValid():
+            raise AttributeError(f"'{type(self.instance_)}' has no property "
+                                 f"'{name}'")
+        return p
 
     def __getattr__(self, name):
-        if name in self.nonQtProperties:
-            return super().__getattr__(name)
-        mp = self._findMetaProperty(name)
-        if mp is None:
-            raise AttributeError(f"'{type(self.instance_)}' has no property "
-                                 f"'{name}'")
-        return mp.read(self.instance_)
+        if name.startswith("_"):
+            return super().__getattribute__(name)
+        p = self._getProp(name)
+        return p.read()
 
     def __setattr__(self, name, value):
-        if name in self.nonQtProperties:
+        if name.startswith("_"):
             super().__setattr__(name, value)
             return
-        mp = self._findMetaProperty(name)
-        if mp is None:
-            raise AttributeError(f"'{type(self.instance_)}' has no property "
-                                 f"'{name}'")
-        if not mp.write(self.instance_, value):
-            raise AttributeError(f"failed to set Qt property '{name}'")
+        p = self._getProp(name)
+        if not p.write(value):
+            raise AttributeError(f"failed to set QML property '{name}'")
 
 
 class Window(Component):
@@ -115,10 +146,6 @@ Window {{
 }}
 """
     _objectName = "sdtGuiWrappedObject"
-    # Unfortunately cannot use just ``__mro__[1].nonQtProperties``
-    nonQtProperties = Component.nonQtProperties + ["window_"]
-    window_: QtGui.QWindow
-    """Window containing the QML item"""
 
     def __init__(self, item: str,
                  qmlFile: Optional[Union[str, Path, QtCore.QUrl]] = None):
@@ -132,13 +159,16 @@ Window {{
         src = self._qmlSrc.format(component=item,
                                   objectName=self._objectName)
         super().__init__(src, qmlFile)
-        self.window_ = self.instance_
-        self.instance_ = self.window_.findChild(QtCore.QObject,
-                                                self._objectName)
 
-    def __del__(self):
-        self.instance_ = self.window_
-        super().__del__()
+    @property
+    def window_(self) -> QtGui.QWindow:
+        """Window containing the QML item"""
+        return super().instance_
+
+    @property
+    def instance_(self) -> QtCore.QObject:
+        """QML item instance"""
+        return self.window_.findChild(QtCore.QObject, self._objectName)
 
     def show(self):
         """Show the window"""

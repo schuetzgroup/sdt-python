@@ -4,7 +4,7 @@
 
 from typing import Any, Dict, Mapping, Optional
 
-from PySide2 import QtCore, QtQml, QtQuick
+from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 import pandas as pd
 import sdt.loc
@@ -48,10 +48,10 @@ class LocatorModule(QtQuick.QQuickItem):
         self._worker.error.connect(self._workerError)
 
     # Properties
-    inputChanged = QtCore.Signal(np.ndarray)
+    inputChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Input image was changed"""
 
-    @QtCore.Property(np.ndarray, notify=inputChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=inputChanged)
     def input(self) -> np.ndarray:
         """Image data to find preview localizations, which are exposed via
         the :py:attr:`locData` property.
@@ -59,16 +59,16 @@ class LocatorModule(QtQuick.QQuickItem):
         return self._input
 
     @input.setter
-    def setInput(self, input):
+    def input(self, input):
         if self._input is input:
             return
         self._input = input
         self.inputChanged.emit(self._input)
 
-    algorithmChanged = QtCore.Signal(str)
+    algorithmChanged = QtCore.pyqtSignal(str)
     """Selected algorithm was changed"""
 
-    @QtCore.Property(str, notify=algorithmChanged)
+    @QtCore.pyqtProperty(str, notify=algorithmChanged)
     def algorithm(self) -> str:
         """Localization algorithm to use. Currently ``"daostorm_3d"`` and
         ``"cg"`` are supported. See also :py:mod:`sdt.loc`.
@@ -76,16 +76,16 @@ class LocatorModule(QtQuick.QQuickItem):
         return self._algorithm
 
     @algorithm.setter
-    def setAlgorithm(self, algorithm):
+    def algorithm(self, algorithm):
         if self._algorithm == algorithm:
             return
         self._algorithm = algorithm
         self.algorithmChanged.emit(self._algorithm)
 
-    optionsChanged = QtCore.Signal("QVariantMap")
+    optionsChanged = QtCore.pyqtSignal("QVariantMap")
     """Localization options were changed"""
 
-    @QtCore.Property("QVariantMap", notify=optionsChanged)
+    @QtCore.pyqtProperty("QVariantMap", notify=optionsChanged)
     def options(self) -> Dict:
         """Options to the localization algorithm. See
         :py:func:`sdt.loc.daostorm_3d.locate` and :py:func:`sdt.loc.cg.locate`.
@@ -93,16 +93,16 @@ class LocatorModule(QtQuick.QQuickItem):
         return self._options
 
     @options.setter
-    def setOptions(self, options):
+    def options(self, options):
         if self._options == options:
             return
         self._options = options
         self.optionsChanged.emit(self.options)
 
-    previewEnabledChanged = QtCore.Signal(bool)
+    previewEnabledChanged = QtCore.pyqtSignal(bool)
     """Preview status was changed"""
 
-    @QtCore.Property(bool, notify=previewEnabledChanged)
+    @QtCore.pyqtProperty(bool, notify=previewEnabledChanged)
     def previewEnabled(self) -> bool:
         """If True, run the localization algorithm on the :py:attr:`input`
         image with :py:attr:`options` and present the results via
@@ -111,13 +111,13 @@ class LocatorModule(QtQuick.QQuickItem):
         return self._worker.enabled
 
     @previewEnabled.setter
-    def setPreviewEnabled(self, e):
+    def previewEnabled(self, e):
         self._worker.enabled = e
 
-    locDataChanged = QtCore.Signal(pd.DataFrame)
+    locDataChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """New output of the localization algorithm"""
 
-    @QtCore.Property(pd.DataFrame, notify=locDataChanged)
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=locDataChanged)
     def locData(self) -> pd.DataFrame:
         """Result of running the localization algorithm on the :py:attr:`input`
         image with :py:attr:`options`.
