@@ -15,7 +15,14 @@ LocatorImpl {
         // Use Binding type so that setting options from outside does not
         // break binding
         id: optionsBinding
-        value: d3dLayout.options
+        value: rootLayout.algoItems[algoSel.currentIndex].options
+    }
+    onOptionsChanged: {
+        rootLayout.algoItems[algoSel.currentIndex].setOptions(options)
+    }
+
+    Binding on algorithm {
+        value: rootLayout.algoPyNames[algoSel.currentIndex]
     }
 
     implicitWidth: rootLayout.implicitWidth
@@ -25,42 +32,17 @@ LocatorImpl {
         id: rootLayout
         anchors.fill: parent
 
-        // Place states here instead of root to hide them from public
-        state: root.algorithm
-        states: [
-            State {
-                name: "daostorm_3d"
-                PropertyChanges {
-                    target: optionsBinding
-                    value: d3dLayout.options
-                }
-                PropertyChanges {
-                    target: root
-                    onOptionsChanged: { d3dLayout.setOptions(options) }
-                }
-            },
-            State {
-                name: "cg"
-                PropertyChanges {
-                    target: optionsBinding
-                    value: cgLayout.options
-                }
-                PropertyChanges {
-                    target: root
-                    onOptionsChanged: { cgLayout.setOptions(options) }
-                }
-            }
-        ]
+        // Keep private properties here
+        // Make sure that the three lists below have matching order
+        property var algoPyNames: ["daostorm_3d", "cg"]
+        property var algoDisplayNames: ["3D-DAOSTORM", "Crocker-Grier"]
+        property var algoItems: [d3dLayout, cgLayout]
 
         ComboBox {
             id: algoSel
-            property var algorithms: ["daostorm_3d", "cg"]
-            model: ["3D-DAOSTORM", "Crocker-Grier"]
+            model: rootLayout.algoDisplayNames
+            currentIndex: rootLayout.algoPyNames.indexOf(root.algorithm)
             Layout.fillWidth: true
-            currentIndex: algorithms.indexOf(root.algorithm)
-            onCurrentIndexChanged: {
-                root.algorithm = algorithms[currentIndex]
-            }
         }
 
         StackLayout {
