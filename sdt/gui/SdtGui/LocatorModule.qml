@@ -15,10 +15,10 @@ LocatorImpl {
         // Use Binding type so that setting options from outside does not
         // break binding
         id: optionsBinding
-        value: rootLayout.algoItems[algoSel.currentIndex].options
+        value: optionStack.children[algoSel.currentIndex].options
     }
     onOptionsChanged: {
-        rootLayout.algoItems[algoSel.currentIndex].setOptions(options)
+        optionStack.children[algoSel.currentIndex].setOptions(options)
     }
 
     Binding on algorithm {
@@ -33,10 +33,10 @@ LocatorImpl {
         anchors.fill: parent
 
         // Keep private properties here
-        // Make sure that the three lists below have matching order
+        // Make sure that the lists below and optionsStack children have
+        // matching order
         property var algoPyNames: ["daostorm_3d", "cg"]
         property var algoDisplayNames: ["3D-DAOSTORM", "Crocker-Grier"]
-        property var algoItems: [d3dLayout, cgLayout]
 
         ComboBox {
             id: algoSel
