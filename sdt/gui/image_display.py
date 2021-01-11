@@ -9,7 +9,7 @@ import numpy as np
 
 from PySide2 import QtCore, QtGui, QtQml, QtQuick
 
-from . import qimage  # Register QImage QML type
+from . import py_image  # Register PyImage QML type
 
 
 class ImageDisplayModule(QtQuick.QQuickItem):
@@ -65,36 +65,6 @@ class ImageDisplayModule(QtQuick.QQuickItem):
         self.inputChanged.emit(input)
         self._inputMinChanged.emit(self._inputMin)
         self._inputMaxChanged.emit(self._inputMax)
-
-    @QtCore.Slot(float, float, result=QtGui.QImage)
-    def _getQImage(self, vmin: float, vmax: float) -> QtGui.QImage:
-        """Convert input image into a QImage for display
-
-        Parameters
-        ----------
-        vmin
-            Black level
-        vmax
-            White level
-
-        Returns
-        -------
-        8 bit grayscale QImage
-        """
-        if self._input is None:
-            self._qimg_data = None
-            return QtGui.QImage()
-        if math.isclose(vmin, vmax):
-            img = np.zeros_like(self._input, dtype=np.uint8)
-        else:
-            img = np.clip((self._input - vmin) / (vmax - vmin), 0.0, 1.0) * 255
-            img = img.astype(np.uint8)
-        self._qimg_data = img.tobytes()  # Must not be garbage-collected
-        qimg = QtGui.QImage(
-            self._qimg_data, img.shape[1], img.shape[0],
-            img.shape[1],  # bytesPerLine
-            QtGui.QImage.Format_Grayscale8)
-        return qimg
 
     _inputMinChanged = QtCore.Signal(float)
 
