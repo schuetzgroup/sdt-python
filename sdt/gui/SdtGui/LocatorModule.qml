@@ -11,20 +11,11 @@ import SdtGui.Impl 1.0
 LocatorImpl {
     id: root
 
-    onOptionsChanged: {
-        /* Upon initialization, state may not yet be set correctly. In this
-           case, determine the appropriate Item manually.
-           Let's hope QML first initializes all properties and only then
-           processes the signals so that both `algorithm` and `options` are
-           set up. */
-        switch (algorithm) {
-            case "daostorm_3d":
-                d3dLayout.setOptions(options)
-                break;
-            case "cg":
-                cgLayout.setOptions(options)
-                break;
-        }
+    Binding on options {
+        // Use Binding type so that setting options from outside does not
+        // break binding
+        id: optionsBinding
+        value: d3dLayout.options
     }
 
     implicitWidth: rootLayout.implicitWidth
@@ -40,16 +31,22 @@ LocatorImpl {
             State {
                 name: "daostorm_3d"
                 PropertyChanges {
+                    target: optionsBinding
+                    value: d3dLayout.options
+                }
+                PropertyChanges {
                     target: root
-                    options: d3dLayout.options
                     onOptionsChanged: { d3dLayout.setOptions(options) }
                 }
             },
             State {
                 name: "cg"
                 PropertyChanges {
+                    target: optionsBinding
+                    value: cgLayout.options
+                }
+                PropertyChanges {
                     target: root
-                    options: cgLayout.options
                     onOptionsChanged: { cgLayout.setOptions(options) }
                 }
             }
