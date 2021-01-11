@@ -109,20 +109,14 @@ ImageDisplayImpl {
                 contentWidth: Math.max(availableWidth, img.width)
                 contentHeight: Math.max(availableHeight, img.height)
 
-                QImage {
+                PyImage {
                     id: img
                     anchors.centerIn: parent
-                    image: updateImage(root.input, rootLayout.contrastMin,
-                                       rootLayout.contrastMax)
+                    source: root.input
+                    black: rootLayout.contrastMin
+                    white: rootLayout.contrastMax
                     width: sourceWidth * scroll.scaleFactor
                     height: sourceHeight * scroll.scaleFactor
-
-                    function updateImage(img, vmin, vmax) {
-                        // This wraps _getQImage with additional img
-                        // parameter, which is not used but enables
-                        // property binding.
-                        return root._getQImage(vmin, vmax)
-                    }
                 }
             }
         }
