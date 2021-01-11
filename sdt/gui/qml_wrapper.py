@@ -80,7 +80,9 @@ class Component:
         try:
             return self._engine.rootObjects()[0]
         except IndexError:
-            raise AttributeError("No object instance has been created.")
+            e = RuntimeError("No object instance has been created.")
+            e.__suppress_context__ = True
+            raise e
 
     def _getProp(self, name: str) -> QtQml.QQmlProperty:
         """Get the QML property instance
