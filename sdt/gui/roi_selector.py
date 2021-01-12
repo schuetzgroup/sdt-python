@@ -149,7 +149,7 @@ class ROIItem(QtQuick.QQuickItem):
         }
     """
     # Reuse empty path and prevent garbage collection
-    _emptyPath = mpl.path.Path(np.empty((0, 2)))
+    _emptyPath = mpl.path.Path(np.zeros((1, 2)))
 
     def __init__(self, parent: QtQuick.QQuickItem = None):
         """Parameters
@@ -191,6 +191,10 @@ class ROIItem(QtQuick.QQuickItem):
     @roi.setter
     def roi(self, roi: Union[sdt_roi.PathROI, None]):
         if self._roi is roi:
+            return
+        if (self._roi is not None and roi is not None and
+                np.allclose(self._roi.path.vertices, roi.path.vertices, equal_nan=True) and
+                np.array_equal(self._roi.path.codes, roi.path.codes)):
             return
         self._roi = roi
         self._scalePath()

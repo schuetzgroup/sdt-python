@@ -14,6 +14,11 @@ Shape {
     property alias fillColor: shapePath.fillColor
     property alias path: pathElements.path
 
+    x: pathElements.x
+    y: pathElements.y
+    width: pathElements.width
+    height: pathElements.height
+
     MplPathElements {
         id: pathElements
 

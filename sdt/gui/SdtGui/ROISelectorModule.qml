@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Controls 2.7
 import QtQuick.Layouts 1.7
 import QtQuick.Shapes 1.0
@@ -76,21 +76,42 @@ ROISelectorImpl {
 
         ROIItem {
             id: roiItem
+            // TOOD: property bool resizable
             roi: root.rois[modelData]
             scaleFactor: overlay.scaleFactor
             anchors.fill: overlay
 
             MplPathShape {
-                anchors.fill: parent
+                id: pathShape
                 strokeColor: "transparent"
                 fillColor: "#60FF0000"
                 path: roiItem.path
             }
-
             Label {
                 text: modelData
                 color: "#FFFF0000"
-                anchors.centerIn: parent
+                anchors.centerIn: pathShape
+            }
+            Rectangle {
+                id: handleRect
+                color: "transparent"
+
+                Binding on x { value: pathShape.x; delayed: true }
+                Binding on y { value: pathShape.y; delayed: true }
+                Binding on width { value: pathShape.width; delayed: true }
+                Binding on height { value: pathShape.height; delayed: true }
+
+                function setRectangleRoi() {
+                    root._setRectangleRoi(modelData,
+                                          x / scaleFactor, y / scaleFactor,
+                                          width / scaleFactor, height / scaleFactor)
+                }
+                onXChanged: { setRectangleRoi() }
+                onYChanged: { setRectangleRoi() }
+                onWidthChanged: { setRectangleRoi() }
+                onHeightChanged: { setRectangleRoi() }
+
+                ResizeHandles {}
             }
         }
     }
