@@ -252,6 +252,59 @@ class QmlDefinedProperty:
             raise AttributeError(f"could not write property {self._name}")
 
 
+class QmlDefinedMethod:
+    """Make a function defined in QML accessible as a Python method
+
+    For instance, create a Python QtQuick item
+
+    .. code-block:: python
+
+        class MyItem(QtQuick.QQuickItem):
+            multiply = QmlDefinedMethod()
+
+    which is instantiated in QML
+
+    .. code-block:: qml
+
+        MyItem {
+            function multiply(x, y) { return x * y }
+        }
+
+    Note that no types are specified for function arguments.
+
+    After obtaining the instance in Python (e.g., using
+    ``QObject.findChild()``), the property can be accessed directly:
+
+    .. code-block:: python
+
+        myItemInstance.multiply(2, 3)  # returns 6
+    """
+    def __init__(self, name: Optional[str] = None):
+        """Parameters
+        ----------
+        name
+            Name of method to wrap. If not specified, the name of the Python
+            attribute is used.
+        """
+        self._name = name
+
+    def __set_name__(self, owner, name):
+        if not isinstance(self._name, str):
+            self._name = name
+
+    def __get__(self, obj, objtype=None):
+        if obj is None:
+            return self
+        mo = obj.metaObject()
+
+        def call(*args):
+            return QtCore.QMetaObject.invokeMethod(
+                obj, self._name, QtCore.Q_RETURN_ARG(QtCore.QVariant),
+                *[QtCore.Q_ARG(QtCore.QVariant, a) for a in args])
+
+        return call
+
+
 _msgHandlerMap = {
     QtCore.QtMsgType.QtDebugMsg: _logger.debug,
     QtCore.QtMsgType.QtInfoMsg: _logger.info,
