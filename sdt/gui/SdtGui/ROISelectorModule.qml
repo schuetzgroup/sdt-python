@@ -13,6 +13,17 @@ ROISelectorImpl {
     id: root
     property bool showAll: true
 
+    function _getRoi(name) {
+        var idx = root.names.indexOf(name)
+        var ri = overlayRep.itemAt(idx).item
+        return ri === null ? null : ri.roi
+    }
+
+    function _setRoi(name, roi, type) {
+        var idx = root.names.indexOf(name)
+        overlayRep.itemAt(idx).setRoi(roi, type)
+    }
+
     // This should be added to ImageDisplayModule.overlays
     property var overlay: Item {
         id: overlay
@@ -21,14 +32,40 @@ ROISelectorImpl {
         Repeater {
             id: overlayRep
             model: root.names
-            delegate: roiComponent
+            delegate: Item {
+                id: roiItem
+                property var item: null
+
+                function setRoi(roi, type) {
+                    if (item !== null)
+                        item.destroy()
+                    switch (type) {
+                        case ROISelectorImpl.ROIType.Null:
+                            item = null
+                            return
+                        case ROISelectorImpl.ROIType.Rectangle:
+                            item = rectRoiComponent.createObject(
+                                roiItem, {roi: roi}
+                            )
+                            return
+                        case ROISelectorImpl.ROIType.Ellipse:
+                            item = ellipseRoiComponent.createObject(
+                                roiItem, {roi: roi}
+                            )
+                            return
+                    }
+                }
+            }
         }
 
         MouseArea {
             id: overlayMouse
             anchors.fill: parent
             visible: false
-            property var tmpItem: null
+
+            property var shapeComponent: null
+            property var newItem: null
+            property var itemData: null
         }
     }
 
@@ -72,173 +109,98 @@ ROISelectorImpl {
     }
 
     Component {
-        id: roiComponent
+        id: rectRoiComponent
 
-        ROIItem {
-            id: roiItem
-            // TOOD: property bool resizable
-            roi: root.rois[modelData]
+        ShapeROIItem {
             scaleFactor: overlay.scaleFactor
-            anchors.fill: overlay
-
-            MplPathShape {
-                id: pathShape
-                strokeColor: "transparent"
-                fillColor: "#60FF0000"
-                path: roiItem.path
-            }
-            Label {
-                text: modelData
-                color: "#FFFF0000"
-                anchors.centerIn: pathShape
-            }
+            shape: ShapeROIItem.Shape.Rectangle
             Rectangle {
-                id: handleRect
-                color: "transparent"
-
-                Binding on x { value: pathShape.x; delayed: true }
-                Binding on y { value: pathShape.y; delayed: true }
-                Binding on width { value: pathShape.width; delayed: true }
-                Binding on height { value: pathShape.height; delayed: true }
-
-                function setRectangleRoi() {
-                    root._setRectangleRoi(modelData,
-                                          x / scaleFactor, y / scaleFactor,
-                                          width / scaleFactor, height / scaleFactor)
-                }
-                onXChanged: { setRectangleRoi() }
-                onYChanged: { setRectangleRoi() }
-                onWidthChanged: { setRectangleRoi() }
-                onHeightChanged: { setRectangleRoi() }
-
-                ResizeHandles {}
+                color: "#60FF0000"
+                anchors.fill: parent
             }
+            ResizeHandles {}
+        }
+    }
+    Component {
+        id: ellipseRoiComponent
+
+        ShapeROIItem {
+            id: ellipseRoiItem
+            scaleFactor: overlay.scaleFactor
+            shape: ShapeROIItem.Shape.Ellipse
+            property alias color: shapePath.fillColor
+
+            Shape {
+                ShapePath {
+                    id: shapePath
+
+                    fillColor: "#60FF0000"
+                    strokeColor: "transparent"
+                    startX: 0
+                    startY: ellipseRoiItem.height / 2
+                    PathArc {
+                        x: ellipseRoiItem.width
+                        y: ellipseRoiItem.height / 2
+                        radiusX: ellipseRoiItem.width / 2
+                        radiusY: ellipseRoiItem.height / 2
+                    }
+                    PathArc {
+                        x: 0
+                        y: ellipseRoiItem.height / 2
+                        radiusX: ellipseRoiItem.width / 2
+                        radiusY: ellipseRoiItem.height / 2
+                    }
+                }
+            }
+            ResizeHandles {}
         }
     }
 
     states: [
         State {
-            name: "drawingSimple"
+            name: "drawingShape"
             PropertyChanges {
                 target: overlayMouse
                 visible: true
                 onPressed: {
-                    tmpItem = simpleDrawComponent.createObject(overlay, {color: "green", shape: newShapeButtons.simpleShape})
-                    tmpItem.x0 = mouse.x
-                    tmpItem.x1 = mouse.x
-                    tmpItem.y0 = mouse.y
-                    tmpItem.y1 = mouse.y
+                    var ri = overlayRep.itemAt(nameSel.currentIndex)
+                    if (ri.item !== null)
+                        ri.item.destroy()
+                    newItem = ri.item = shapeComponent.createObject(ri)
+                    newItem.x = mouse.x
+                    newItem.y = mouse.y
+                    itemData = {x0: mouse.x, y0: mouse.y}
                 }
                 onPositionChanged: {
-                    tmpItem.x1 = mouse.x
-                    tmpItem.y1 = mouse.y
+                    newItem.x = Math.min(itemData.x0, mouse.x)
+                    newItem.y = Math.min(itemData.y0, mouse.y)
+                    newItem.width = Math.abs(itemData.x0 - mouse.x)
+                    newItem.height = Math.abs(itemData.y0 - mouse.y)
                 }
                 onReleased: {
-                    root[tmpItem.setMethod](
-                        nameSel.currentText,
-                        tmpItem.x / overlay.scaleFactor,
-                        tmpItem.y / overlay.scaleFactor,
-                        tmpItem.width / overlay.scaleFactor,
-                        tmpItem.height / overlay.scaleFactor)
-                    tmpItem.destroy()
+                    newItem = null
+                    itemData = null
                     newShapeButtons.checkedButton = null
                 }
             }
         },
         State {
             name: "drawingRectangle"
-            extend: "drawingSimple"
+            extend: "drawingShape"
             when: rectangleButton.checked
             PropertyChanges {
-                target: newShapeButtons
-                simpleShape: rectangle
+                target: overlayMouse
+                shapeComponent: rectRoiComponent
             }
         },
         State {
             name: "drawingEllipse"
-            extend: "drawingSimple"
+            extend: "drawingShape"
             when: ellipseButton.checked
             PropertyChanges {
-                target: newShapeButtons
-                simpleShape: ellipse
+                target: overlayMouse
+                shapeComponent: ellipseRoiComponent
             }
-        },
-        State {
-            name: "drawingPolygon"
-        },
-        State {
-            name: "drawingLasso"
         }
     ]
-
-    Component {
-        // Component for drawing a simple shape (rectangle, ellipse) by
-        // placing and sizing the bounding rectangle
-        id: simpleDrawComponent
-        Item {
-            id: simpleDrawItem
-
-            // Set these coordinates on initial click
-            property real x0: 0.0
-            property real y0: 0.0
-            // Update these with current mouse position
-            property real x1: 0.0
-            property real y1: 0.0
-
-            x: Math.min(x0, x1)
-            y: Math.min(y0, y1)
-            width: Math.abs(x0 - x1)
-            height: Math.abs(y0 - y1)
-
-            // Component containing the Item to fill the drawn bounding rect
-            property var shape: rectangle
-            // Fill color
-            property color color: "red"
-            // Name
-            property string setMethod: ""
-
-            Loader {
-                id: ldr
-                sourceComponent: simpleDrawItem.shape
-                onLoaded: {
-                    item.color = Qt.binding(function() { return simpleDrawItem.color })
-                    simpleDrawItem.setMethod = item.setMethod
-                }
-                anchors.fill: parent
-            }
-        }
-    }
-
-    Component {
-        id: rectangle
-        Rectangle { property string setMethod: "_setRectangleRoi" }
-    }
-
-    Component {
-        id: ellipse
-        Shape {
-            id: shape
-            property string setMethod: "_setEllipseRoi"
-            property alias color: shapePath.fillColor
-            ShapePath {
-                id: shapePath
-
-                strokeColor: "transparent"
-                startX: 0
-                startY: shape.height / 2
-                PathArc {
-                    x: shape.width
-                    y: shape.height / 2
-                    radiusX: shape.width / 2
-                    radiusY: shape.height / 2
-                }
-                PathArc {
-                    x: 0
-                    y: shape.height / 2
-                    radiusX: shape.width / 2
-                    radiusY: shape.height / 2
-                }
-            }
-        }
-    }
 }

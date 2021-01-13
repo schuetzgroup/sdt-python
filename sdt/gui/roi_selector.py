@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import enum
 import math
 from typing import Dict, Iterable, List, Union
 
@@ -10,7 +11,7 @@ import matplotlib as mpl
 import numpy as np
 
 from . import _mpl_path_elements  #  Register QML type
-from .qml_wrapper import QmlDefinedProperty
+from .qml_wrapper import QmlDefinedMethod, QmlDefinedProperty
 from .. import roi as sdt_roi
 
 
@@ -38,6 +39,13 @@ class ROISelectorModule(QtQuick.QQuickItem):
 
     The resulting ROIs can be retrieved via the :py:attr:`rois` property.
     """
+    class ROIType(enum.IntEnum):
+        Null = enum.auto()
+        Rectangle = enum.auto()
+        Ellipse = enum.auto()
+
+    QtCore.Q_ENUM(ROIType)
+
     def __init__(self, parent: QtQuick.QQuickItem = None):
         """Parameters
         ---------
@@ -46,6 +54,7 @@ class ROISelectorModule(QtQuick.QQuickItem):
         """
         super().__init__(parent)
         self._rois = {}
+        self._names = []
 
     namesChanged = QtCore.pyqtSignal(list)
     """ROI names changed"""
@@ -56,100 +65,77 @@ class ROISelectorModule(QtQuick.QQuickItem):
         this property will associate no ROIs with names that are newly added.
         To set ROIs, use the :py:attr:`rois` property.
         """
-        return list(self._rois)
+        return self._names
 
     @names.setter
     def names(self, names: Iterable[str]):
-        self.rois = {n: self._rois.get(n, None) for n in names}
+        if self._names == names:
+            return
+        self._names = names
+        self.namesChanged.emit(names)
 
-    roisChanged = QtCore.pyqtSignal("QVariantMap")
+    roisChanged = QtCore.pyqtSignal()
     """ROIs changed"""
 
     @QtCore.pyqtProperty("QVariantMap", notify=roisChanged)
     def rois(self) -> Dict[str, Union[sdt_roi.PathROI, None]]:
         """ROI names and associated ROIs"""
-        return self._rois
+        return {n: self._getRoi(n) for n in self._names}
 
     @rois.setter
     def rois(self, rois: Dict[str, Union[sdt_roi.PathROI, None]]):
-        if rois == self._rois:
-            return
-        oldNames = set(self._rois)
-        self._rois = rois
-        self.roisChanged.emit(rois)
-        if oldNames != set(rois):
-            self.namesChanged.emit(self.names)
+        self.names = list(rois)
+        for k, v in rois.items():
+            if v is None:
+                t = self.ROIType.Null
+            elif isinstance(v, sdt_roi.RectangleROI):
+                t = self.ROIType.Rectangle
+            elif isinstance(v, sdt_roi.EllipseROI):
+                t = self.ROIType.Ellipse
+            self._setRoi(k, v, t)
 
     overlay = QmlDefinedProperty()
     """Item to be added to :py:attr:`ImageDisplayModule.overlays`"""
 
-    @QtCore.pyqtSlot(str, float, float, float, float)
-    def _setRectangleRoi(self, name: str, x: float, y: float,
-                         w: float, h: float):
-        """Set rectangular ROI for name
+    _getRoi = QmlDefinedMethod()
+    """Get ROI from QtQuick item
 
-        Called from QML after a rectangular ROI was drawn.
+    Parameters
+    ----------
+    name : str
+        ROI name
 
-        Parameters
-        ----------
-        name
-            ROI name
-        x, y
-            Upper left corner of bounding box
-        w, h
-            Width and height of bounding box
-        """
-        # TODO: Handle invalid `name`
-        self.rois[name] = sdt_roi.RectangleROI((x, y), size=(w, h))
-        self.roisChanged.emit(self._rois)
-
-    @QtCore.pyqtSlot(str, float, float, float, float)
-    def _setEllipseRoi(self, name, x, y, w, h):
-        """Set elliptical ROI for name
-
-        Called from QML after a elliptical ROI was drawn.
-
-        Parameters
-        ----------
-        name
-            ROI name
-        x, y
-            Upper left corner of bounding box
-        w, h
-            Width and height of bounding box
-        """
-        # TODO: Handle invalid `name`
-        self.rois[name] = sdt_roi.EllipseROI((x + w / 2, y + h / 2),
-                                             (w / 2, h / 2))
-        self.roisChanged.emit(self._rois)
-
-
-class ROIItem(QtQuick.QQuickItem):
-    """QtQuick item for drawing a ROI on an ImageDisplayModule overlay item
-
-    This takes a :py:class:`roi.PathROI` (:py:attr:`roi`) and exposes the
-    scaled (:py:attr:`scaleFactor`) path describing the ROI (:py:attr:`path`),
-    which can be used as input to the MplPathShape QML type for displaying.
-
-    .. code-block:: qml
-
-        ROIItem {
-            id: roiItem
-            roi: root.rois[modelData]  // get the ROI from somewhere
-            // `overlay` is the item appended to ImageDisplayModule.overlays
-            anchors.fill: overlay
-            scaleFactor: overlay.scaleFactor
-
-            MplPathShape {
-                anchors.fill: parent
-                strokeColor: "transparent"
-                fillColor: "#60FF0000"
-                path: roiItem.path
-            }
-        }
+    Returns
+    -------
+    roi.PathROI or None
     """
-    # Reuse empty path and prevent garbage collection
-    _emptyPath = mpl.path.Path(np.zeros((1, 2)))
+
+    _setRoi = QmlDefinedMethod()
+    """Get ROI in QtQuick item
+
+    Parameters
+    ----------
+    name : str
+        ROI name
+    roi : roi.PathROI or None
+        ROI
+    type : ROIType
+        Tell QML the ROI type since it can not infer from Python type
+    """
+
+
+class ShapeROIItem(QtQuick.QQuickItem):
+    """QtQuick item representing a simply-shaped ROI
+
+    This ROI is defined by its bounding box. Currently rectangular and
+    ellipticial ROIs are supported.
+    """
+    class Shape(enum.IntEnum):
+        """Available ROI shapes"""
+        Rectangle = enum.auto()
+        Ellipse = enum.auto()
+
+    QtCore.Q_ENUM(Shape)
 
     def __init__(self, parent: QtQuick.QQuickItem = None):
         """Parameters
@@ -158,10 +144,12 @@ class ROIItem(QtQuick.QQuickItem):
             Parent item
         """
         super().__init__(parent)
-        self._roi = None
-        self._path = self._emptyPath
         self._scaleFactor = 1.0
-        self.scaleFactorChanged.connect(self._onScaleFactorChanged)
+        self._shape = self.Shape.Rectangle
+        self.xChanged.connect(self.roiChanged)
+        self.yChanged.connect(self.roiChanged)
+        self.widthChanged.connect(self.roiChanged)
+        self.heightChanged.connect(self.roiChanged)
 
     scaleFactorChanged = QtCore.pyqtSignal(float)
     """Scale factor changed"""
@@ -177,55 +165,64 @@ class ROIItem(QtQuick.QQuickItem):
     def scaleFactor(self, f: float):
         if math.isclose(self._scaleFactor, f):
             return
+        r = f / self._scaleFactor  # FIXME: leads to rounding errors
         self._scaleFactor = f
+        self.setX(self.x() * r)
+        self.setY(self.y() * r)
+        self.setWidth(self.width() * r)
+        self.setHeight(self.height() * r)
         self.scaleFactorChanged.emit(f)
 
-    roiChanged = QtCore.pyqtSignal(QtCore.QVariant)
+    shapeChanged = QtCore.pyqtSignal(Shape)
+    """Shape changed"""
+
+    @QtCore.pyqtProperty(Shape, notify=shapeChanged)
+    def shape(self) -> Shape:
+        """Shape of the ROI"""
+        return self._shape
+
+    @shape.setter
+    def shape(self, s: Shape):
+        if self._shape == s:
+            return
+        self._shape = s
+        self.shapeChanged.emit(s)
+        self.roiChanged.emit()
+
+    roiChanged = QtCore.pyqtSignal()
     """ROI changed"""
 
     @QtCore.pyqtProperty(QtCore.QVariant, notify=roiChanged)
     def roi(self) -> Union[sdt_roi.PathROI, None]:
-        """ROI to draw / calculate scaled path for"""
-        return self._roi
+        """Region of interest"""
+        if not self.width() or not self.height():
+            return None
+        if self.shape == self.Shape.Rectangle:
+            return sdt_roi.RectangleROI(
+                (self.x() / self.scaleFactor, self.y() / self.scaleFactor),
+                 size=(self.width() / self.scaleFactor,
+                       self.height() / self.scaleFactor))
+        if self.shape == self.Shape.Ellipse:
+            return sdt_roi.EllipseROI(
+                ((self.x() + self.width() / 2) / self.scaleFactor,
+                 (self.y() + self.height() / 2) / self.scaleFactor),
+                (self.width() / 2 / self.scaleFactor,
+                 self.height() / 2 / self.scaleFactor))
 
     @roi.setter
     def roi(self, roi: Union[sdt_roi.PathROI, None]):
-        if self._roi is roi:
-            return
-        if (self._roi is not None and roi is not None and
-                np.allclose(self._roi.path.vertices, roi.path.vertices, equal_nan=True) and
-                np.array_equal(self._roi.path.codes, roi.path.codes)):
-            return
-        self._roi = roi
-        self._scalePath()
-        self.roiChanged.emit(self.roi)
-        self.pathChanged.emit(self.path)
-
-    pathChanged = QtCore.pyqtSignal(QtCore.QVariant)
-    """Path changed either because ROI changed or scaleFactor changed"""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=pathChanged)
-    def path(self) -> mpl.path.Path:
-        """Scaled path representing :py:attr:`roi`."""
-        return self._path
-
-    def _scalePath(self):
-        """Calculate scaled path from ROI"""
-        if self._roi is None:
-            self._path = self._emptyPath
-            return
-        self._path = mpl.path.Path(self._roi.path.vertices * self._scaleFactor,
-                                   self._roi.path.codes)
-
-    def _onScaleFactorChanged(self):
-        """Callback for change of scaleFactor
-
-        Rescale path.
-        """
-        self._scalePath()
-        self.pathChanged.emit(self.path)
+        x, y, w, h = (roi.path.get_extents().bounds if roi is not None
+                      else (0, 0, 0, 0))
+        x *= self.scaleFactor
+        y *= self.scaleFactor
+        w *= self.scaleFactor
+        h *= self.scaleFactor
+        math.isclose(x, self.x()) or self.setX(x)
+        math.isclose(y, self.x()) or self.setY(y)
+        math.isclose(w, self.width()) or self.setWidth(w)
+        math.isclose(h, self.height()) or self.setHeight(h)
 
 
 QtQml.qmlRegisterType(ROISelectorModule, "SdtGui.Impl", 1, 0,
                       "ROISelectorImpl")
-QtQml.qmlRegisterType(ROIItem, "SdtGui.Impl", 1, 0, "ROIItem")
+QtQml.qmlRegisterType(ShapeROIItem, "SdtGui.Impl", 1, 0, "ShapeROIItem")
