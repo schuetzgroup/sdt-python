@@ -43,9 +43,14 @@ ROISelectorImpl {
                         case ROISelectorImpl.ROIType.Null:
                             item = null
                             return
+                        case ROISelectorImpl.ROIType.IntRectangle:
+                            item = rectRoiComponent.createObject(
+                                roiItem, {roi: roi, integer: true}
+                            )
+                            return
                         case ROISelectorImpl.ROIType.Rectangle:
                             item = rectRoiComponent.createObject(
-                                roiItem, {roi: roi}
+                                roiItem, {roi: roi, integer: false}
                             )
                             return
                         case ROISelectorImpl.ROIType.Ellipse:
@@ -113,7 +118,8 @@ ROISelectorImpl {
 
         ShapeROIItem {
             scaleFactor: overlay.scaleFactor
-            shape: ShapeROIItem.Shape.Rectangle
+            property bool integer: false
+            shape: integer ? ShapeROIItem.Shape.IntRectangle : ShapeROIItem.Shape.Rectangle
             Rectangle {
                 color: "#60FF0000"
                 anchors.fill: parent
