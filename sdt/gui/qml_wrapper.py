@@ -110,8 +110,11 @@ class Component:
     def __getattr__(self, name):
         if name.startswith("_"):
             return super().__getattribute__(name)
-        p = self._getProp(name)
-        return p.read()
+        ret = self._getProp(name).read()
+        if isinstance(ret, QtQml.QJSValue):
+            # Happens with dict and list properties
+            return ret.toVariant()
+        return ret
 
     def __setattr__(self, name, value):
         if name.startswith("_"):
@@ -245,7 +248,11 @@ class QmlDefinedProperty:
     def __get__(self, obj, objtype=None):
         if obj is None:
             return self
-        return self._getProp(obj).read()
+        ret = self._getProp(obj).read()
+        if isinstance(ret, QtQml.QJSValue):
+            # Happens with dict and list properties
+            return ret.toVariant()
+        return ret
 
     def __set__(self, obj, value):
         if not self._getProp(obj).write(value):
@@ -254,6 +261,11 @@ class QmlDefinedProperty:
 
 class QmlDefinedMethod:
     """Make a function defined in QML accessible as a Python method
+
+    QML-defined functions are automatically callable as Python methods.
+    However, `list` and `dict` return values are returned as
+    :py:class:`QtQml.QJSValue`. When using this class, the
+    py:class:`QtQml.QJSValue` are converted to the corresponding Python types.
 
     For instance, create a Python QtQuick item
 
@@ -270,10 +282,8 @@ class QmlDefinedMethod:
             function multiply(x, y) { return x * y }
         }
 
-    Note that no types are specified for function arguments.
-
     After obtaining the instance in Python (e.g., using
-    ``QObject.findChild()``), the property can be accessed directly:
+    ``QObject.findChild()``), the method can be accessed directly:
 
     .. code-block:: python
 
@@ -298,9 +308,13 @@ class QmlDefinedMethod:
         mo = obj.metaObject()
 
         def call(*args):
-            return QtCore.QMetaObject.invokeMethod(
+            ret = QtCore.QMetaObject.invokeMethod(
                 obj, self._name, QtCore.Q_RETURN_ARG(QtCore.QVariant),
                 *[QtCore.Q_ARG(QtCore.QVariant, a) for a in args])
+            if isinstance(ret, QtQml.QJSValue):
+                # Happens with dict and list properties
+                return ret.toVariant()
+            return ret
 
         return call
 
