@@ -92,18 +92,23 @@ ROISelectorImpl {
             id: nameSel
             model: root.names
         }
-        Label { text: "shape" }
+        Label {
+            text: "shape"
+            enabled: nameSel.currentIndex != -1
+        }
         Button {
             id: rectangleButton
             text: "rectangle"
             checkable: true
             ButtonGroup.group: newShapeButtons
+            enabled: nameSel.currentIndex != -1
         }
         Button {
             id: ellipseButton
             text: "ellipse"
             checkable: true
             ButtonGroup.group: newShapeButtons
+            enabled: nameSel.currentIndex != -1
         }
         ToolButton {
             icon.name: "process-stop"
