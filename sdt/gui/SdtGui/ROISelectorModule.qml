@@ -11,7 +11,7 @@ import SdtGui.Impl 1.0
 
 ROISelectorImpl {
     id: root
-    property bool showAll: true
+    property bool showAll: true  // TODO
 
     function _getRoi(name) {
         var idx = root.names.indexOf(name)
@@ -21,11 +21,14 @@ ROISelectorImpl {
 
     function _setRoi(name, roi, type) {
         var idx = root.names.indexOf(name)
-        overlayRep.itemAt(idx).setRoi(roi, type)
+        var ri = overlayRep.itemAt(idx)
+        ri.setROI(roi, type)
+        if (ri.item)
+            ri.item.roiChanged.connect(function() { root.roiChanged(name) })
     }
 
     // This should be added to ImageDisplayModule.overlays
-    property var overlay: Item {
+    property Item overlay: Item {
         id: overlay
         property real scaleFactor: 1.0
 
@@ -80,7 +83,6 @@ ROISelectorImpl {
     ButtonGroup {
         id: newShapeButtons
         exclusive: true
-        property var simpleShape: null
     }
 
     RowLayout {

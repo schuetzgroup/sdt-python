@@ -75,8 +75,11 @@ class ROISelectorModule(QtQuick.QQuickItem):
         self._names = names
         self.namesChanged.emit(names)
 
+    roiChanged = QtCore.pyqtSignal(str, arguments=["name"])
+    """A ROI has changed. ROI name is given by `name` argument."""
+
     roisChanged = QtCore.pyqtSignal()
-    """ROIs changed"""
+    """:py:attr:`rois` property changed"""
 
     @QtCore.pyqtProperty("QVariantMap", notify=roisChanged)
     def rois(self) -> Dict[str, Union[sdt_roi.PathROI, None]]:
