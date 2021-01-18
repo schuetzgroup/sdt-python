@@ -84,26 +84,40 @@ class ROISelectorModule(QtQuick.QQuickItem):
     @QtCore.pyqtProperty("QVariantMap", notify=roisChanged)
     def rois(self) -> Dict[str, Union[sdt_roi.PathROI, None]]:
         """ROI names and associated ROIs"""
-        return {n: self._getRoi(n) for n in self._names}
+        return {n: self._getROI(n) for n in self._names}
 
     @rois.setter
-    def rois(self, rois: Dict[str, Union[sdt_roi.PathROI, None]]):
+    def rois(self, rois: Dict[str, Union[sdt_roi.ROI, sdt_roi.PathROI, None]]):
         self.names = list(rois)
         for k, v in rois.items():
-            if v is None:
-                t = self.ROIType.Null
-            elif isinstance(v, sdt_roi.ROI):
-                t = self.ROIType.IntRectangle
-            elif isinstance(v, sdt_roi.RectangleROI):
-                t = self.ROIType.Rectangle
-            elif isinstance(v, sdt_roi.EllipseROI):
-                t = self.ROIType.Ellipse
-            self._setRoi(k, v, t)
+            self.setROI(k, v)
+
+    @QtCore.pyqtSlot(QtCore.QVariant, QtCore.QVariant)
+    def setROI(self, name: str,
+               roi: Union[sdt_roi.ROI, sdt_roi.PathROI, None]):
+        """Set a ROI
+
+        Parameters
+        ----------
+        name
+            ROI name
+        roi
+            Object describing the ROI
+        """
+        if roi is None:
+            t = self.ROIType.Null
+        elif isinstance(roi, sdt_roi.ROI):
+            t = self.ROIType.IntRectangle
+        elif isinstance(roi, sdt_roi.RectangleROI):
+            t = self.ROIType.Rectangle
+        elif isinstance(roi, sdt_roi.EllipseROI):
+            t = self.ROIType.Ellipse
+        self._setROI(name, roi, t)
 
     overlay = QmlDefinedProperty()
     """Item to be added to :py:attr:`ImageDisplayModule.overlays`"""
 
-    _getRoi = QmlDefinedMethod()
+    _getROI = QmlDefinedMethod()
     """Get ROI from QtQuick item
 
     Parameters
@@ -116,7 +130,7 @@ class ROISelectorModule(QtQuick.QQuickItem):
     roi.ROI or roi.PathROI or None
     """
 
-    _setRoi = QmlDefinedMethod()
+    _setROI = QmlDefinedMethod()
     """Get ROI in QtQuick item
 
     Parameters

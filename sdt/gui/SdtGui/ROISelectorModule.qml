@@ -13,13 +13,13 @@ ROISelectorImpl {
     id: root
     property bool showAll: true  // TODO
 
-    function _getRoi(name) {
+    function _getROI(name) {
         var idx = root.names.indexOf(name)
         var ri = overlayRep.itemAt(idx).item
         return ri === null ? null : ri.roi
     }
 
-    function _setRoi(name, roi, type) {
+    function _setROI(name, roi, type) {
         var idx = root.names.indexOf(name)
         var ri = overlayRep.itemAt(idx)
         ri.setROI(roi, type)
@@ -39,7 +39,7 @@ ROISelectorImpl {
                 id: roiItem
                 property var item: null
 
-                function setRoi(roi, type) {
+                function setROI(roi, type) {
                     if (item !== null)
                         item.destroy()
                     switch (type) {
