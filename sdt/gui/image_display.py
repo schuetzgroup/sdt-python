@@ -61,9 +61,9 @@ class ImageDisplayModule(QtQuick.QQuickItem):
         self._input = input
         self._inputMinVal = input.min() if input is not None else 0.0
         self._inputMaxVal = input.max() if input is not None else 0.0
-        self.inputChanged.emit(input)
         self._inputMinChanged.emit(self._inputMin)
         self._inputMaxChanged.emit(self._inputMax)
+        self.inputChanged.emit(input)
 
     _inputMinChanged = QtCore.pyqtSignal(float)
 

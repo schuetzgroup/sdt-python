@@ -32,6 +32,13 @@ ImageDisplayImpl {
                 a.scaleFactor = Qt.binding(function() { return scroll.scaleFactor })
         }
     }
+    onInputChanged: {
+        // First time an image is loaded automatically set contrast
+        if (!rootLayout.imageLoaded) {
+            contrastAutoButton.clicked()
+            rootLayout.imageLoaded = true
+        }
+    }
 
     ColumnLayout {
         id: rootLayout
@@ -40,6 +47,7 @@ ImageDisplayImpl {
         // Put here instead of in root to make them private
         property real contrastMin: 0.0
         property real contrastMax: 0.0
+        property bool imageLoaded: false
 
         RowLayout{
             ColumnLayout {
