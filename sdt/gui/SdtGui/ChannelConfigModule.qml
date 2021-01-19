@@ -8,7 +8,7 @@ import SdtGui.Impl 1.0
 ChannelConfigImpl {
     id: root
 
-    readonly property alias fileCount: rootLayout.fileCount
+    readonly property alias fileCount: roiConfigList.count
     property alias sameSize: sameSizeCheck.checked
 
     implicitWidth: rootLayout.implicitWidth
@@ -40,19 +40,38 @@ ChannelConfigImpl {
         var cnt = -1
         for (var i = 0; i < srcConfigRep.count; i++)
             cnt = Math.max(cnt, srcConfigRep.itemAt(i).fileId)
-        rootLayout.fileCount = cnt + 1
+        cnt += 1
+
+        var cntDiff = roiConfigList.count - cnt
+        if (cntDiff < 0) {
+            for (var i = roiConfigList.count; i < cnt; i++)
+                roiConfigList.append({"index": i})
+        } else if (cntDiff > 0) {
+            roiConfigList.remove(cnt, cntDiff)
+        }
     }
+
+    onFileCountChanged: { if (fileCount > 1) srcConfigCheck.checked = true }
 
     ColumnLayout {
         id: rootLayout
         anchors.fill: parent
         spacing: 15
 
-        // private properties
-        property int fileCount: 0
+        Switch {
+            id: srcConfigCheck
+            text: "Source configuration (multiple inputs)"
+            checked: false
+            onCheckedChanged: {
+                if (!checked) {
+                    for (var i = 0; i < srcConfigRep.count; i++)
+                        srcConfigRep.itemAt(i).fileId = 0
+                }
+            }
+        }
 
         GroupBox {
-            title: "Source configuration (multiple inputs)"
+            visible: srcConfigCheck.checked
             Layout.fillWidth: true
 
             GridLayout {
@@ -68,19 +87,26 @@ ChannelConfigImpl {
         }
 
         GroupBox {
+            id: roiGroup
             label: Row {
                 leftPadding: parent.padding
                 rightPadding: parent.padding
                 spacing: 10
                 Label {
-                    text: "ROI configuration for source"
+                    text: "ROI configuration"
+                    anchors.verticalCenter: roiSourceSel.verticalCenter
+                }
+                Label {
+                    text: "source"
+                    visible: srcConfigCheck.checked
                     anchors.verticalCenter: roiSourceSel.verticalCenter
                 }
                 SpinBox {
                     id: roiSourceSel
+                    visible: srcConfigCheck.checked
                     to: root.fileCount - 1
                 }
-                CheckBox {
+                Switch {
                     id: sameSizeCheck
                     text: "same size"
                     checked: true
@@ -95,11 +121,15 @@ ChannelConfigImpl {
                 currentIndex: roiSourceSel.value
                 Repeater {
                     id: roiSelRep
-                    model: root.fileCount
+                    model: roiConfigList
                     delegate: roiConfig
                 }
             }
         }
+    }
+
+    ListModel {
+        id: roiConfigList
     }
 
     Component {
@@ -112,9 +142,29 @@ ChannelConfigImpl {
             SpinBox {
                 id: idSel
                 to: root.channelNames.length - 1
+                property int oldValue: { oldValue = value }
                 onValueChanged: {
-                    root._updateFileCount()
-                    root.setChannelFile(modelData, value)
+                    // Value was increased, so it may be necessary to create
+                    // new ROISelectorModule
+                    if (value > oldValue)
+                        root._updateFileCount()
+                    // Get old ROISelectorModule
+                    var oldRS = roiSelRep.itemAt(oldValue)
+                    var oldROIs = oldRS.rois
+                    // The new ROISelectorModule is given by the current file
+                    // ID.
+                    var newRS = roiSelRep.itemAt(value)
+                    var newROIs = newRS.rois
+                    // Move ROI and exit loop
+                    newROIs[modelData] = oldROIs[modelData]
+                    newRS.rois = newROIs
+                    delete oldROIs[modelData]
+                    oldRS.rois = oldROIs
+                    // Value was decreased, so it may be necessary to remove
+                    // old ROISelectorModule
+                    if (value < oldValue)
+                        root._updateFileCount()
+                    oldValue = value
                 }
             }
             Item {
