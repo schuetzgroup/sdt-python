@@ -63,6 +63,9 @@ ROISelectorImpl {
                             return
                     }
                 }
+                // If not explicitly destroyed, there will be lots of errors
+                // from the resize handles
+                Component.onDestruction: { if (item !== null) item.destroy() }
             }
         }
 
