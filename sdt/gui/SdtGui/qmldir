@@ -4,6 +4,7 @@
 
 module SdtGui
 
+ChannelConfigModule 1.0 ChannelConfigModule.qml
 ImageDisplayModule 1.0 ImageDisplayModule.qml
 ImageSelectorModule 1.0 ImageSelectorModule.qml
 LocatorModule 1.0 LocatorModule.qml
