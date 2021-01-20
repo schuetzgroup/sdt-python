@@ -1,7 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import QtQuick.Dialogs 1.3
 import SdtGui.Impl 1.0
 
 
@@ -184,10 +183,6 @@ ChannelConfigImpl {
 
             RowLayout {
                 Button {
-                    text: "Load image file…"
-                    onClicked: { fileDialog.open() }
-                }
-                Button {
                     text: "split horizontally"
                     enabled: imSel.images.length != 0
                     onClicked: { root._splitHorizontally(index, imSel.output) }
@@ -214,17 +209,6 @@ ChannelConfigImpl {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
-        }
-    }
-
-    FileDialog {
-        id: fileDialog
-        title: "Choose image file"
-        selectMultiple: true
-
-        onAccepted: {
-            var fileNames = fileDialog.fileUrls.map(function(u) { return u.substring(7) })  // remove file://
-            roiSelStack.children[roiSelStack.currentIndex].images = fileNames
         }
     }
 }
