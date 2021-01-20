@@ -4,12 +4,15 @@
 
 import QtQuick 2.0
 import QtQuick.Controls 2.7
+import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.7
 import SdtGui.Impl 1.0
 
 
 ImageSelectorImpl {
     id: root
+
+    property bool imageListEditable: true
 
     implicitHeight: layout.Layout.minimumHeight
     implicitWidth: layout.Layout.minimumWidth
@@ -33,13 +36,48 @@ ImageSelectorImpl {
                 root._fileChanged(currentIndex)
                 root._frameChanged(frameSel.value)
             }
+
+            popup: Popup {
+                y: fileSel.height - 1
+                width: fileSel.width
+                implicitHeight: contentItem.implicitHeight + 2 * padding
+                padding: 1
+
+                contentItem: ListView {
+                    id: fileSelListView
+                    header: root.imageListEditable ? imageListEditorComponent : null
+                    clip: true
+                    Layout.fillHeight: true
+                    implicitHeight: contentHeight
+                    model: fileSel.popup.visible ? fileSel.delegateModel : null
+                    currentIndex: fileSel.highlightedIndex
+                    ScrollIndicator.vertical: ScrollIndicator {}
+                }
+            }
+            delegate: ItemDelegate {
+                id: fileSelDelegate
+                width: fileSel.width
+                highlighted: fileSel.highlightedIndex === index
+                contentItem: Item {
+                    Text {
+                        text: model.display
+                        anchors.left: parent.left
+                        anchors.right: fileDeleteButton.left
+                        elide: Text.ElideRight
+                    }
+                    ToolButton {
+                        id: fileDeleteButton
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        icon.name: "edit-delete"
+                        visible: root.imageListEditable
+                        onClicked: { fileSel.model.remove(model.index) }
+                    }
+                }
+            }
         }
-        Item {
-            width: 20
-        }
-        Label {
-            text: "frame"
-        }
+        Item { width: 20 }
+        Label { text: "frame" }
         SpinBox {
             id: frameSel
             from: 0
@@ -55,5 +93,32 @@ ImageSelectorImpl {
     Connections {
         target: root._qmlFileList
         onModelAboutToBeReset: { fileSel.currentIndex = -1 }
+    }
+
+    FileDialog {
+        id: fileDialog
+        title: "Choose image file(s)…"
+        selectMultiple: true
+
+        onAccepted: {
+            var fileNames = fileDialog.fileUrls.map(function(u) { return u.substring(7) })  // remove file://
+            root.images = fileNames
+        }
+    }
+
+    Component {
+        id: imageListEditorComponent
+        Row {
+            id: imageListEditor
+            ToolButton {
+                id: fileOpenButton
+                icon.name: "document-open"
+                onClicked: { fileDialog.open() }
+            }
+            ToolButton {
+                icon.name: "edit-delete"
+                onClicked: root.images = []
+            }
+        }
     }
 }
