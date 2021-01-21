@@ -9,3 +9,5 @@ ImageDisplayModule 1.0 ImageDisplayModule.qml
 ImageSelectorModule 1.0 ImageSelectorModule.qml
 LocatorModule 1.0 LocatorModule.qml
 ROISelectorModule 1.0 ROISelectorModule.qml
+
+singleton Common 1.0 Common.qml

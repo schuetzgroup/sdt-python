@@ -25,8 +25,8 @@ Item {
 
         property real factor: Math.pow(10, decimals)
 
-        from: clampInt(root.from * factor)
-        to: clampInt(root.to * factor)
+        from: Common.clampInt(root.from * factor)
+        to: Common.clampInt(root.to * factor)
         value: root.value * factor
         stepSize: root.stepSize * factor
         editable: root.editable
@@ -51,17 +51,6 @@ Item {
             var realValue = value / factor
             root.value = realValue
             root.valueModified(realValue)
-        }
-
-        function clamp(x, min, max) {
-            return Math.min(Math.max(x, min), max)
-        }
-
-        // used only below to get integer range
-        property var intValidator: IntValidator {}
-
-        function clampInt(x) {
-            return clamp(x, intValidator.bottom, intValidator.top)
         }
     }
 }

@@ -148,7 +148,7 @@ LocatorImpl {
                 SpinBox {
                     id: d3dFindFilterCgSizeSel
                     from: 0
-                    to: optionStack.intValidator.top
+                    to: Common.intMax
                     value: 3
                     editable: true
                     Layout.alignment: Qt.AlignRight
@@ -245,7 +245,7 @@ LocatorImpl {
                 SpinBox {
                     id: cgRadiusSel
                     from: 0
-                    to: optionStack.intValidator.top
+                    to: Common.intMax
                     value: 2
                     editable: true
                     Layout.alignment: Qt.AlignRight
@@ -279,9 +279,6 @@ LocatorImpl {
                     Layout.alignment: Qt.AlignRight
                 }
             }
-
-            // used only to get integer range
-            property var intValidator: IntValidator {}
         }
     }
 }
