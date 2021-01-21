@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
@@ -199,6 +203,8 @@ ChannelConfigImpl {
             }
             ROISelectorModule {
                 id: roiSel
+                limits: imSel.output
+                drawingTools: ROISelectorModule.DrawingTools.IntRectangleTool
                 overlay.visible: imSel.output != null
                 onRoiChanged: { if (root.sameSize) root._resizeROIs(name) }
             }
@@ -212,3 +218,7 @@ ChannelConfigImpl {
         }
     }
 }
+
+// FIXME:
+// * Resizing does not work for channels in different files
+// * Resizing can make ROIs exceed image boundaries
