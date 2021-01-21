@@ -185,28 +185,44 @@ ChannelConfigImpl {
 
             function setROI(name, roi) { roiSel.setROI(name, roi) }
 
-            RowLayout {
-                Button {
-                    text: "split horizontally"
-                    enabled: imSel.images.length != 0
-                    onClicked: { root._splitHorizontally(index, imSel.output) }
-                }
-                Button {
-                    text: "split vertically"
-                    enabled: imSel.images.length != 0
-                    onClicked: { root._splitVertically(index, imSel.output) }
-                }
-            }
             ImageSelectorModule {
                 id: imSel
                 Layout.fillWidth: true
             }
-            ROISelectorModule {
-                id: roiSel
-                limits: imSel.output
-                drawingTools: ROISelectorModule.DrawingTools.IntRectangleTool
-                overlay.visible: imSel.output != null
-                onRoiChanged: { if (root.sameSize) root._resizeROIs(name) }
+            RowLayout {
+                Label { text: "split" }
+                ToolButton {
+                    icon.name: "view-split-left-right"
+                    enabled: imSel.images.length != 0
+                    onClicked: { root._splitHorizontally(index, imSel.output) }
+                    hoverEnabled: true
+                    ToolTip.visible: hovered
+                    ToolTip.text: qsTr("Split horizontally")
+                }
+                ToolButton {
+                    icon.name: "view-split-top-bottom"
+                    enabled: imSel.images.length != 0
+                    onClicked: { root._splitVertically(index, imSel.output) }
+                    hoverEnabled: true
+                    ToolTip.visible: hovered
+                    ToolTip.text: qsTr("Split vertically")
+                }
+                ToolButton {
+                    icon.name: "reverse"
+                    enabled: imSel.images.length != 0
+                    // onClicked: TODO
+                    hoverEnabled: true
+                    ToolTip.visible: hovered
+                    ToolTip.text: qsTr("Swap channels")
+                }
+                Item { width: 3 }
+                ROISelectorModule {
+                    id: roiSel
+                    limits: imSel.output
+                    drawingTools: ROISelectorModule.DrawingTools.IntRectangleTool
+                    overlay.visible: imSel.output != null
+                    onRoiChanged: { if (root.sameSize) root._resizeROIs(name) }
+                }
             }
             ImageDisplayModule {
                 id: imDisp
