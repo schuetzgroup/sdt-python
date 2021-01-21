@@ -54,8 +54,8 @@ class ROISelectorModule(QtQuick.QQuickItem):
             Parent item
         """
         super().__init__(parent)
-        self._rois = {}
         self._names = []
+        self._limits = [np.inf, np.inf]
 
     namesChanged = QtCore.pyqtSignal(list)
     """ROI names changed"""
@@ -114,6 +114,23 @@ class ROISelectorModule(QtQuick.QQuickItem):
             t = self.ROIType.Ellipse
         self._setROI(name, roi, t)
 
+    limitsChanged = QtCore.pyqtSignal(QtCore.QVariant)
+
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=limitsChanged)
+    def limits(self) -> List[float]:
+        return self._limits
+
+    @limits.setter
+    def limits(self, lim):
+        if isinstance(lim, np.ndarray) and lim.ndim > 1:
+            lim = list(lim.shape[1::-1])
+        elif lim is None:
+            lim = [np.inf, np.inf]
+        if np.allclose(lim, self._limits):
+            return
+        self._limits = lim
+        self.limitsChanged.emit(lim)
+
     overlay = QmlDefinedProperty()
     """Item to be added to :py:attr:`ImageDisplayModule.overlays`"""
 
@@ -168,6 +185,7 @@ class ShapeROIItem(QtQuick.QQuickItem):
         self._scaleFactor = 1.0
         self._shape = self.Shape.Rectangle
         self._coords = np.zeros(4, dtype=float)
+        self._limits = [np.inf, np.inf]
         self.xChanged.connect(lambda: self._onResized(self.x, 0))
         self.yChanged.connect(lambda: self._onResized(self.y, 1))
         self.widthChanged.connect(lambda: self._onResized(self.width, 2))
@@ -232,6 +250,19 @@ class ShapeROIItem(QtQuick.QQuickItem):
         else:
             self._coords[:] = roi.path.get_extents().bounds
         self._resizeShape()
+
+    limitsChanged = QtCore.pyqtSignal(list)
+
+    @QtCore.pyqtProperty(list, notify=limitsChanged)
+    def limits(self) -> List[float]:
+        return self._limits
+
+    @limits.setter
+    def limits(self, lim):
+        if np.allclose(lim, self._limits):
+            return
+        self._limits = lim
+        self.limitsChanged.emit(lim)
 
     def _resizeShape(self):
         """Resize the QtQuick item according to ROI extents"""

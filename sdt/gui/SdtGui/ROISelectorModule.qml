@@ -47,13 +47,13 @@ ROISelectorImpl {
                             item = null
                             return
                         case ROISelectorImpl.ROIType.IntRectangle:
-                            item = rectRoiComponent.createObject(
-                                roiItem, {roi: roi, integer: true, name: modelData}
+                            item = intRectRoiComponent.createObject(
+                                roiItem, {roi: roi, name: modelData}
                             )
                             return
                         case ROISelectorImpl.ROIType.Rectangle:
                             item = rectRoiComponent.createObject(
-                                roiItem, {roi: roi, integer: false, name: modelData}
+                                roiItem, {roi: roi, name: modelData}
                             )
                             return
                         case ROISelectorImpl.ROIType.Ellipse:
@@ -95,28 +95,59 @@ ROISelectorImpl {
             id: nameSel
             model: root.names
         }
+        Item { width: 1 }
         Label {
-            text: "shape"
+            text: "draw"
+            enabled: nameSel.currentIndex != -1
+        }
+        Button {
+            id: intRectangleButton
+            icon.name: "draw-rectangle"
+            icon.color: "steelblue"
+            hoverEnabled: true
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Draw rectangle with integer coordinates")
+            Layout.preferredWidth: height
+            checkable: true
+            ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
         }
         Button {
             id: rectangleButton
-            text: "rectangle"
+            icon.name: "draw-rectangle"
+            hoverEnabled: true
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Draw rectangle with floating-point coordinates")
+            Layout.preferredWidth: height
             checkable: true
             ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
         }
         Button {
             id: ellipseButton
-            text: "ellipse"
+            icon.name: "draw-ellipse"
+            hoverEnabled: true
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Draw ellipse")
+            Layout.preferredWidth: height
             checkable: true
             ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
         }
         ToolButton {
             icon.name: "process-stop"
-            ButtonGroup.group: newShapeButtons
+            hoverEnabled: true
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Abort drawing")
+            enabled: newShapeButtons.checkedButton != null
             onClicked: { newShapeButtons.checkedButton = null }
+        }
+        ToolButton {
+            icon.name: "edit-delete"
+            hoverEnabled: true
+            ToolTip.visible: hovered
+            ToolTip.text: qsTr("Delete ROI")
+            onClicked: { root._setROI(nameSel.currentText, null, ROISelectorImpl.ROIType.Null) }
         }
     }
 
@@ -125,16 +156,37 @@ ROISelectorImpl {
 
         ShapeROIItem {
             scaleFactor: overlay.scaleFactor
-            property bool integer: false
             property alias name: label.text
-            shape: integer ? ShapeROIItem.Shape.IntRectangle : ShapeROIItem.Shape.Rectangle
+            shape: ShapeROIItem.Shape.Rectangle
             Rectangle {
                 id: rect
                 color: "#60FF0000"
                 anchors.fill: parent
             }
             ROILabel { id: label }
-            ResizeHandles {}
+        }
+    }
+    Component {
+        id: intRectRoiComponent
+
+        ShapeROIItem {
+            scaleFactor: overlay.scaleFactor
+            property alias name: label.text
+            shape: ShapeROIItem.Shape.IntRectangle
+            limits: root.limits
+            Rectangle {
+                id: rect
+                color: "#60FF0000"
+                anchors.fill: parent
+            }
+            ROILabel { id: label }
+            ResizeHandles {
+                id: hdl
+                minX: 0
+                maxX: limits[0] * scaleFactor
+                minY: 0
+                maxY: limits[1] * scaleFactor
+            }
         }
     }
     Component {
@@ -201,6 +253,15 @@ ROISelectorImpl {
                     itemData = null
                     newShapeButtons.checkedButton = null
                 }
+            }
+        },
+        State {
+            name: "drawingIntRectangle"
+            extend: "drawingShape"
+            when: intRectangleButton.checked
+            PropertyChanges {
+                target: overlayMouse
+                shapeComponent: intRectRoiComponent
             }
         },
         State {
