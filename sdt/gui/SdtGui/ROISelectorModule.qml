@@ -48,17 +48,17 @@ ROISelectorImpl {
                             return
                         case ROISelectorImpl.ROIType.IntRectangle:
                             item = rectRoiComponent.createObject(
-                                roiItem, {roi: roi, integer: true}
+                                roiItem, {roi: roi, integer: true, name: modelData}
                             )
                             return
                         case ROISelectorImpl.ROIType.Rectangle:
                             item = rectRoiComponent.createObject(
-                                roiItem, {roi: roi, integer: false}
+                                roiItem, {roi: roi, integer: false, name: modelData}
                             )
                             return
                         case ROISelectorImpl.ROIType.Ellipse:
                             item = ellipseRoiComponent.createObject(
-                                roiItem, {roi: roi}
+                                roiItem, {roi: roi, name: modelData}
                             )
                             return
                     }
@@ -118,9 +118,6 @@ ROISelectorImpl {
             ButtonGroup.group: newShapeButtons
             onClicked: { newShapeButtons.checkedButton = null }
         }
-        ToolButton {
-            icon.name: "document-properties"
-        }
     }
 
     Component {
@@ -129,11 +126,14 @@ ROISelectorImpl {
         ShapeROIItem {
             scaleFactor: overlay.scaleFactor
             property bool integer: false
+            property alias name: label.text
             shape: integer ? ShapeROIItem.Shape.IntRectangle : ShapeROIItem.Shape.Rectangle
             Rectangle {
+                id: rect
                 color: "#60FF0000"
                 anchors.fill: parent
             }
+            ROILabel { id: label }
             ResizeHandles {}
         }
     }
@@ -145,6 +145,7 @@ ROISelectorImpl {
             scaleFactor: overlay.scaleFactor
             shape: ShapeROIItem.Shape.Ellipse
             property alias color: shapePath.fillColor
+            property alias name: label.text
 
             Shape {
                 ShapePath {
@@ -168,6 +169,7 @@ ROISelectorImpl {
                     }
                 }
             }
+            ROILabel { id: label }
             ResizeHandles {}
         }
     }
@@ -182,7 +184,8 @@ ROISelectorImpl {
                     var ri = overlayRep.itemAt(nameSel.currentIndex)
                     if (ri.item !== null)
                         ri.item.destroy()
-                    newItem = ri.item = shapeComponent.createObject(ri)
+                    newItem = ri.item = shapeComponent.createObject(
+                        ri, {name: nameSel.currentText})
                     newItem.x = mouse.x
                     newItem.y = mouse.y
                     itemData = {x0: mouse.x, y0: mouse.y}
