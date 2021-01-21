@@ -23,8 +23,6 @@ ROISelectorImpl {
         var idx = root.names.indexOf(name)
         var ri = overlayRep.itemAt(idx)
         ri.setROI(roi, type)
-        if (ri.item)
-            ri.item.roiChanged.connect(function() { root.roiChanged(name) })
     }
 
     // This should be added to ImageDisplayModule.overlays
@@ -50,18 +48,19 @@ ROISelectorImpl {
                             item = intRectRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
-                            return
+                            break
                         case ROISelectorImpl.ROIType.Rectangle:
                             item = rectRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
-                            return
+                            break
                         case ROISelectorImpl.ROIType.Ellipse:
                             item = ellipseRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
-                            return
+                            break
                     }
+                    item.roiChanged.connect(function() { root.roiChanged(modelData) })
                 }
                 // If not explicitly destroyed, there will be lots of errors
                 // from the resize handles
@@ -249,6 +248,8 @@ ROISelectorImpl {
                     newItem.height = Math.abs(itemData.y0 - mouse.y)
                 }
                 onReleased: {
+                    newItem.roiChanged.connect(function() { root.roiChanged(newItem.name) })
+                    newItem.roiChanged()
                     newItem = null
                     itemData = null
                     newShapeButtons.checkedButton = null
