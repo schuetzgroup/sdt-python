@@ -14,6 +14,10 @@ Item {
     property bool handlesActive: true
     property var resizeItem: parent
     property int handlePlacement: Handle.Placement.Edge
+    property real minX: -Infinity
+    property real minY: -Infinity
+    property real maxX: Infinity
+    property real maxY: Infinity
 
     Repeater {
         model: ListModel {
@@ -36,6 +40,10 @@ Item {
                 color: root.handleColor
                 active: root.handlesActive
                 resizeItem: root.resizeItem
+                minX: root.minX
+                maxX: root.maxX
+                minY: root.minY
+                maxY: root.maxY
             }
         }
     }

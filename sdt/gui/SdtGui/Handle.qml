@@ -18,6 +18,10 @@ Rectangle {
     property int placement: Handle.Placement.Edge  // TODO
     property var resizeItem: parent
     property bool active: mouse.active
+    property real minX: -Infinity
+    property real minY: -Infinity
+    property real maxX: Infinity
+    property real maxY: Infinity
 
     width: handleSize
     height: handleSize
@@ -57,35 +61,54 @@ Rectangle {
         drag.axis: getDragAxis(root.horizontalPosition,
                                root.verticalPosition)
         onMouseXChanged: {
-            if(drag.active && drag.axis & Drag.XAxis){
+            if(pressed && drag.axis & Drag.XAxis){
                 var dx = mouseX - x
                 switch (root.horizontalPosition) {
                     case Handle.HorizontalPosition.Left:
-                        root.resizeItem.x += dx
-                        root.resizeItem.width -= dx
+                        var newX = Common.clamp(
+                            root.resizeItem.x + dx, root.minX,
+                            root.resizeItem.x + root.resizeItem.width
+                        )
+                        root.resizeItem.width += root.resizeItem.x - newX
+                        root.resizeItem.x = newX
                         break
                     case Handle.HorizontalPosition.Center:
-                        root.resizeItem.x += dx
+                        root.resizeItem.x = Common.clamp(
+                            resizeItem.x + dx, 0,
+                            root.maxX - root.resizeItem.width
+                        )
                         break
                     case Handle.HorizontalPosition.Right:
-                        root.resizeItem.width += dx
+                        root.resizeItem.width = Common.clamp(
+                            root.resizeItem.width + dx,
+                            0, root.maxX - root.resizeItem.x)
                         break
                 }
             }
         }
         onMouseYChanged: {
-            if(drag.active && drag.axis & Drag.YAxis){
+            if(pressed && drag.axis & Drag.YAxis){
                 var dy = mouseY - y
                 switch (root.verticalPosition) {
                     case Handle.VerticalPosition.Top:
-                        root.resizeItem.y += dy
-                        root.resizeItem.height -= dy
+                        var newY = Common.clamp(
+                            root.resizeItem.y + dy, root.minY,
+                            root.resizeItem.y + root.resizeItem.height
+                        )
+                        root.resizeItem.height += root.resizeItem.y - newY
+                        root.resizeItem.y = newY
                         break
                     case Handle.VerticalPosition.Center:
-                        root.resizeItem.y += dy
+                        root.resizeItem.y = Common.clamp(
+                            resizeItem.y + dy, 0,
+                            root.maxY - root.resizeItem.height
+                        )
                         break
                     case Handle.VerticalPosition.Bottom:
-                        root.resizeItem.height += dy
+                        root.resizeItem.height = Common.clamp(
+                            root.resizeItem.height + dy, 0,
+                            root.maxY - root.resizeItem.y
+                        )
                         break
                 }
             }
