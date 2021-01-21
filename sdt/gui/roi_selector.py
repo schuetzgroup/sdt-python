@@ -40,12 +40,19 @@ class ROISelectorModule(QtQuick.QQuickItem):
     The resulting ROIs can be retrieved via the :py:attr:`rois` property.
     """
     class ROIType(enum.IntEnum):
-        Null = enum.auto()
-        Rectangle = enum.auto()
-        IntRectangle = enum.auto()
-        Ellipse = enum.auto()
+        NullShape = 0
+        RectangleShape = enum.auto()
+        IntRectangleShape = enum.auto()
+        EllipseShape = enum.auto()
 
     QtCore.Q_ENUM(ROIType)
+
+    class DrawingTools(enum.IntEnum):
+        """Which drawing tools to display"""
+        IntRectangleTool = 0
+        PathROITools = enum.auto()
+
+    QtCore.Q_ENUM(DrawingTools)
 
     def __init__(self, parent: QtQuick.QQuickItem = None):
         """Parameters
@@ -105,19 +112,27 @@ class ROISelectorModule(QtQuick.QQuickItem):
             Object describing the ROI
         """
         if roi is None:
-            t = self.ROIType.Null
+            t = self.ROIType.NullShape
         elif isinstance(roi, sdt_roi.ROI):
-            t = self.ROIType.IntRectangle
+            t = self.ROIType.IntRectangleShape
         elif isinstance(roi, sdt_roi.RectangleROI):
-            t = self.ROIType.Rectangle
+            t = self.ROIType.RectangleShape
         elif isinstance(roi, sdt_roi.EllipseROI):
-            t = self.ROIType.Ellipse
+            t = self.ROIType.EllipseShape
         self._setROI(name, roi, t)
 
     limitsChanged = QtCore.pyqtSignal(QtCore.QVariant)
+    """Limits changed"""
 
     @QtCore.pyqtProperty(QtCore.QVariant, notify=limitsChanged)
     def limits(self) -> List[float]:
+        """Set limits for integer rectangular ROIs. The :py:class:roi.ROI`
+        class only works correctly if there are no negative coordinates and
+        if coordinates don't exceed the images they are applied to. This
+        property should therefore be set to ``[width, height]`` of the
+        images. When setting, also an image array can be used, in which case
+        the limits are infered from the array shape.
+        """
         return self._limits
 
     @limits.setter
@@ -133,6 +148,12 @@ class ROISelectorModule(QtQuick.QQuickItem):
 
     overlay = QmlDefinedProperty()
     """Item to be added to :py:attr:`ImageDisplayModule.overlays`"""
+
+    drawingTools = QmlDefinedProperty()
+    """Whether to display drawing tools for integer rectangular ROIs
+    (:py:class:`roi.ROI`) or path-based ROIs (:py:class:`roi.PathROI` and
+    subclasses).
+    """
 
     _getROI = QmlDefinedMethod()
     """Get ROI from QtQuick item
@@ -169,9 +190,9 @@ class ShapeROIItem(QtQuick.QQuickItem):
     """
     class Shape(enum.IntEnum):
         """Available ROI shapes"""
-        Rectangle = ROISelectorModule.ROIType.Rectangle
-        IntRectangle = ROISelectorModule.ROIType.IntRectangle
-        Ellipse = ROISelectorModule.ROIType.Ellipse
+        RectangleShape = ROISelectorModule.ROIType.RectangleShape
+        IntRectangleShape = ROISelectorModule.ROIType.IntRectangleShape
+        EllipseShape = ROISelectorModule.ROIType.EllipseShape
 
     QtCore.Q_ENUM(Shape)
 
@@ -183,7 +204,7 @@ class ShapeROIItem(QtQuick.QQuickItem):
         """
         super().__init__(parent)
         self._scaleFactor = 1.0
-        self._shape = self.Shape.Rectangle
+        self._shape = self.Shape.RectangleShape
         self._coords = np.zeros(4, dtype=float)
         self._limits = [np.inf, np.inf]
         self.xChanged.connect(lambda: self._onResized(self.x, 0))
@@ -234,11 +255,11 @@ class ShapeROIItem(QtQuick.QQuickItem):
         if not self.width() or not self.height():
             return None
         x, y, w, h = self._coords
-        if self.shape == self.Shape.Rectangle:
+        if self.shape == self.Shape.RectangleShape:
             return sdt_roi.RectangleROI((x, y), size=(w, h))
-        if self.shape == self.Shape.Ellipse:
+        if self.shape == self.Shape.EllipseShape:
             return sdt_roi.EllipseROI((x + w/2, y + h/2), (w/2, h/2))
-        if self.shape == self.Shape.IntRectangle:
+        if self.shape == self.Shape.IntRectangleShape:
             return sdt_roi.ROI((round(x), round(y)), size=(round(w), round(h)))
 
     @roi.setter
@@ -252,9 +273,16 @@ class ShapeROIItem(QtQuick.QQuickItem):
         self._resizeShape()
 
     limitsChanged = QtCore.pyqtSignal(list)
+    """Limits changed"""
 
     @QtCore.pyqtProperty(list, notify=limitsChanged)
     def limits(self) -> List[float]:
+        """Set limits for integer rectangular ROIs. The :py:class:roi.ROI`
+        class only works correctly if there are no negative coordinates and
+        if coordinates don't exceed the images they are applied to. This
+        property should therefore be set to ``[width, height]`` of the
+        images.
+        """
         return self._limits
 
     @limits.setter
@@ -288,7 +316,7 @@ class ShapeROIItem(QtQuick.QQuickItem):
             3 for height.
         """
         new = prop() / self.scaleFactor
-        if self.shape == self.Shape.IntRectangle:
+        if self.shape == self.Shape.IntRectangleShape:
             if idx < 2:
                 new = math.floor(new)
             else:

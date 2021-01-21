@@ -11,7 +11,7 @@ import SdtGui.Impl 1.0
 
 ROISelectorImpl {
     id: root
-    property bool showAll: true  // TODO
+    property int drawingTools: ROISelectorModule.DrawingTools.PathROITools
 
     function _getROI(name) {
         var idx = root.names.indexOf(name)
@@ -41,20 +41,20 @@ ROISelectorImpl {
                     if (item !== null)
                         item.destroy()
                     switch (type) {
-                        case ROISelectorImpl.ROIType.Null:
+                        case ROISelectorModule.ROIType.NullShape:
                             item = null
                             return
-                        case ROISelectorImpl.ROIType.IntRectangle:
+                        case ROISelectorModule.ROIType.IntRectangleShape:
                             item = intRectRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
                             break
-                        case ROISelectorImpl.ROIType.Rectangle:
+                        case ROISelectorModule.ROIType.RectangleShape:
                             item = rectRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
                             break
-                        case ROISelectorImpl.ROIType.Ellipse:
+                        case ROISelectorModule.ROIType.EllipseShape:
                             item = ellipseRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
@@ -89,15 +89,10 @@ ROISelectorImpl {
 
     RowLayout {
         id: rootLayout
-        Label { text: "ROI" }
+        Label { text: "draw" }
         ComboBox {
             id: nameSel
             model: root.names
-        }
-        Item { width: 1 }
-        Label {
-            text: "draw"
-            enabled: nameSel.currentIndex != -1
         }
         Button {
             id: intRectangleButton
@@ -110,6 +105,7 @@ ROISelectorImpl {
             checkable: true
             ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
+            visible: root.drawingTools == ROISelectorModule.DrawingTools.IntRectangleTool
         }
         Button {
             id: rectangleButton
@@ -121,6 +117,7 @@ ROISelectorImpl {
             checkable: true
             ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
+            visible: root.drawingTools == ROISelectorModule.DrawingTools.PathROITools
         }
         Button {
             id: ellipseButton
@@ -132,6 +129,7 @@ ROISelectorImpl {
             checkable: true
             ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
+            visible: root.drawingTools == ROISelectorModule.DrawingTools.PathROITools
         }
         ToolButton {
             icon.name: "process-stop"
@@ -146,7 +144,7 @@ ROISelectorImpl {
             hoverEnabled: true
             ToolTip.visible: hovered
             ToolTip.text: qsTr("Delete ROI")
-            onClicked: { root._setROI(nameSel.currentText, null, ROISelectorImpl.ROIType.Null) }
+            onClicked: { root._setROI(nameSel.currentText, null, ROISelectorModule.ROIType.Null) }
         }
     }
 
@@ -156,13 +154,14 @@ ROISelectorImpl {
         ShapeROIItem {
             scaleFactor: overlay.scaleFactor
             property alias name: label.text
-            shape: ShapeROIItem.Shape.Rectangle
+            shape: ShapeROIItem.Shape.RectangleShape
             Rectangle {
                 id: rect
                 color: "#60FF0000"
                 anchors.fill: parent
             }
             ROILabel { id: label }
+            ResizeHandles {}
         }
     }
     Component {
@@ -171,7 +170,7 @@ ROISelectorImpl {
         ShapeROIItem {
             scaleFactor: overlay.scaleFactor
             property alias name: label.text
-            shape: ShapeROIItem.Shape.IntRectangle
+            shape: ShapeROIItem.Shape.IntRectangleShape
             limits: root.limits
             Rectangle {
                 id: rect
@@ -194,7 +193,7 @@ ROISelectorImpl {
         ShapeROIItem {
             id: ellipseRoiItem
             scaleFactor: overlay.scaleFactor
-            shape: ShapeROIItem.Shape.Ellipse
+            shape: ShapeROIItem.Shape.EllipseShape
             property alias color: shapePath.fillColor
             property alias name: label.text
 
@@ -285,3 +284,6 @@ ROISelectorImpl {
         }
     ]
 }
+
+// FIXME:
+// * IntRectangle ROIs change size upon resizing the overlays
