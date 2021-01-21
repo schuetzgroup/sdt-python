@@ -103,6 +103,7 @@ ImageSelectorImpl {
         onAccepted: {
             var fileNames = fileDialog.fileUrls.map(function(u) { return u.substring(7) })  // remove file://
             root.images = fileNames
+            fileSel.popup.close()
         }
     }
 
