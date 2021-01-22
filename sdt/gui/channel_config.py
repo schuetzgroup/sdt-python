@@ -203,6 +203,24 @@ class ChannelConfigModule(QtQuick.QQuickItem):
              for i, c in enumerate(fileChans)}
         self._setROIs(fileId, r)
 
+    @QtCore.pyqtSlot(int)
+    def _swapChannels(self, fileId: int):
+        """Reverse ROIs
+
+        I.e., the first channel will get the last channel's ROI and so on.
+
+        Parameters
+        ----------
+        fileId
+            File ID to swap ROIs for
+        """
+        rs = list(self._getROIs(fileId).items())
+        ret = {}
+        for orig, new in zip(rs[:round(len(rs) / 2)], reversed(rs)):
+            ret[orig[0]] = new[1]
+            ret[new[0]] = orig[1]
+        self._setROIs(fileId, ret)
+
     @QtCore.pyqtSlot(str)
     def _resizeROIs(self, model: str):
         """Resize all ROIs to `model`'s size

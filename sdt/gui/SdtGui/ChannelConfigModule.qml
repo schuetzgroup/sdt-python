@@ -210,7 +210,7 @@ ChannelConfigImpl {
                 ToolButton {
                     icon.name: "reverse"
                     enabled: imSel.images.length != 0
-                    // onClicked: TODO
+                    onClicked: { root._swapChannels(index) }
                     hoverEnabled: true
                     ToolTip.visible: hovered
                     ToolTip.text: qsTr("Swap channels")
