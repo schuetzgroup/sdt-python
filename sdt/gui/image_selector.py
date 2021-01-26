@@ -10,6 +10,7 @@ from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 import pims
 
+from .item_models import DictListModel
 from .qml_wrapper import QmlDefinedProperty
 
 
@@ -17,7 +18,7 @@ ImageSequence = Union[str, Path, np.ndarray]
 """Types that can be interpreted as an image sequence"""
 
 
-class ImageListModel(QtCore.QAbstractListModel):
+class ImageListModel(DictListModel):
     """List of image sequences
 
     Each sequence can be described by a tuple of (name, data), where data
@@ -25,45 +26,15 @@ class ImageListModel(QtCore.QAbstractListModel):
     pointing to a file; or just a list-like of 2D arrays, for which a name
     will be automatically created.
     """
-    class Role(enum.IntEnum):
-        """Qt model roles"""
-        ImageSequence = QtCore.Qt.UserRole
+    class Roles(enum.IntEnum):
+        display = QtCore.Qt.UserRole
+        imageSequence = enum.auto()
 
     def __init__(self, parent: QtCore.QObject = None):
-        """Parameters
-        ----------
-        parent
-            Parent QObject
-        """
         super().__init__(parent)
-        self._data = []
-
-    def roleNames(self) -> Dict[int, bytes]:
-        """Get a map of role id -> role name
-
-        Returns
-        -------
-        Dict mapping role id -> role name
-        """
-        return {**super().roleNames(),
-                self.Role.ImageSequence: b"imagesequence"}
-
-    def rowCount(self, parent: QtCore.QModelIndex = QtCore.QModelIndex()):
-        """Get row count
-
-        Parameters
-        ----------
-        parent
-            Ignored.
-
-        Returns
-        -------
-        Number of image sequences
-        """
-        return len(self._data)
 
     def data(self, index: QtCore.QModelIndex,
-             role: int = QtCore.Qt.DisplayRole) -> Any:
+             role: int = QtCore.Qt.UserRole) -> Any:
         """Get data for an image sequence
 
         This implements :py:meth:`QAbstractListModel.data`.
@@ -80,62 +51,28 @@ class ImageListModel(QtCore.QAbstractListModel):
             Requested data
         """
         r = index.row()
-        if not index.isValid() or r > self.rowCount():
+        if not (index.isValid() and 0 <= r < self.rowCount()):
             return None
 
         d = self._data[r]
         if isinstance(d, str):
             d = Path(d)
-        if role == QtCore.Qt.DisplayRole:
+        if role == self.Roles.display:
             if isinstance(d, tuple):
                 return d[0]
             if isinstance(d, Path):
                 return f"{d.name} ({str(d.parent)})"
             return f"<{r:03}>"
-        if role == self.Role.ImageSequence:
+        if role == self.Roles.imageSequence:
             if isinstance(d, tuple):
                 return d[1]
             return d
         return None
 
-    @QtCore.pyqtSlot(int)
-    @QtCore.pyqtSlot(int, int)
-    def remove(self, index: int, count: int = 1):
-        """Remove image sequence(s) from list
-
-        Parameters
-        ----------
-        index
-            First index to remove
-        count
-            Number of items to remove
-        """
-        self.removeRows(index, count)
-
-    def removeRows(self, row: int, count: int,
-                   parent: QtCore.QModelIndex = QtCore.QModelIndex()):
-        """Remove image sequence(s) from list
-
-        This implements :py:meth:`QAbstractListModel.removeRows`. For a more
-        convient way to remove sequences, see :py:meth:`remove`.
-
-        Parameters
-        ----------
-        index
-            First index to remove
-        count
-            Number of items to remove
-        parent
-            Ignored
-        """
-        self.beginRemoveRows(parent, row, row + count - 1)
-        del self._data[row:row+count]
-        self.endRemoveRows()
-
     def resetWithData(self,
                       data: Union[Dict[str, ImageSequence],
                                   Iterable[Union[Tuple[str, ImageSequence],
-                                                 ImageSequence]]] = []):
+                                                 ImageSequence]]]):
         """Set new data for model
 
         Parameters
@@ -143,20 +80,13 @@ class ImageListModel(QtCore.QAbstractListModel):
         data
             New data
         """
-        self.beginResetModel()
-        if len(data) < 1:
-            self._data = []
-        elif isinstance(data, dict):
-            self._data = list(data.items())
-        else:
-            self._data = list(data)
-        self.endResetModel()
-
-    @property
-    def imageList(self) -> List[Union[Tuple[str, ImageSequence],
-                                      ImageSequence]]:
-        """List of image sequences"""
-        return self._data.copy()
+        with self._resetModel():
+            if len(data) < 1:
+                self._data = []
+            elif isinstance(data, dict):
+                self._data = list(data.items())
+            else:
+                self._data = list(data)
 
 
 class ImageSelectorModule(QtQuick.QQuickItem):
@@ -192,7 +122,7 @@ class ImageSelectorModule(QtQuick.QQuickItem):
         If the property is set with a dict, it will be automatically converted
         to a list of (key, value) tuples.
         """
-        return self._imageList.imageList
+        return self._imageList.toList()
 
     @images.setter
     def images(self, img: Union[Dict[str, ImageSequence],
