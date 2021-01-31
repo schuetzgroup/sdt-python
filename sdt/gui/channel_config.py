@@ -16,9 +16,9 @@ class ChannelConfigModule(QtQuick.QQuickItem):
     """QtQuick item that allows for configuration of emission channels
 
     Typically, a microscopy recording consists of one or more image sequences
-    (`inputs`), each of which may contain one or more spatially separated
-    emission channels. This item allows for mapping inputs and regions within
-    inputs to named channels.
+    (`sources`), each of which may contain one or more spatially separated
+    emission channels. This item allows for mapping sources and regions within
+    sources to named channels.
 
     Example for dealing with FRET data with donor and acceptor emision
     channels:
@@ -36,7 +36,6 @@ class ChannelConfigModule(QtQuick.QQuickItem):
             Parent item
         """
         super().__init__(parent)
-        self._channelNames = []
 
     channelNamesChanged = QtCore.pyqtSignal(list)
     """channel names changed"""
@@ -44,55 +43,73 @@ class ChannelConfigModule(QtQuick.QQuickItem):
     @QtCore.pyqtProperty(list, notify=channelNamesChanged)
     def channelNames(self) -> List[str]:
         """Channel names. Setting this property is equivalent to setting
-        :py:attr:`channelsPerFile` with all channels assigned to the first
-        file with `None` as ROI.
+        :py:attr:`channelsPerSource` with all channels assigned to the first
+        source with `None` as ROI.
         """
-        return list(self._channelNames)
+        return self._getChannelNames()
 
     @channelNames.setter
     def channelNames(self, channels: Iterable[str]):
-        if set(channels) == set(self._channelNames):
+        if set(channels) == set(self._getChannelNames()):
             return
-        self.channelsPerFile = [{c: None for c in channels}]
+        self.channelsPerSource = [{c: None for c in channels}]
 
-    channelsPerFileChanged = QtCore.pyqtSignal()
-    """:py:attr:`channelsPerFile` changed"""
+    channelsPerSourceChanged = QtCore.pyqtSignal()
+    """:py:attr:`channelsPerSource` changed"""
 
-    @QtCore.pyqtProperty(list, notify=channelsPerFileChanged)
-    def channelsPerFile(self) -> List[Dict[str, Union[None, sdt_roi.ROI,
-                                                      sdt_roi.PathROI]]]:
-        """Map of name -> ROI for each input file"""
+    @QtCore.pyqtProperty(list, notify=channelsPerSourceChanged)
+    def channelsPerSource(self) -> List[Dict[str, Union[None, sdt_roi.ROI,
+                                                         sdt_roi.PathROI]]]:
+        """Map of name -> ROI for each source"""
         ret = []
-        for i in range(self.fileCount):
+        for i in range(self.sourceCount):
             ret.append(self._getROIs(i))
         return ret
 
-    @channelsPerFile.setter
-    def channelsPerFile(self, chanList: Iterable[
+    @channelsPerSource.setter
+    def channelsPerSource(self, chanList: Iterable[
             Mapping[str, Union[None, sdt_roi.ROI, sdt_roi.PathROI]]]):
         # change channelNames if necessary
         newNames = list(itertools.chain(*chanList))
         if set(newNames) != set(self.channelNames):
-            self._channelNames = newNames
+            self._setChannelNames(newNames)
             self.channelNamesChanged.emit(newNames)
-        self._updateFileCount()
+        self._setSourceCount(len(chanList))
 
         # Create ROISelectorModule instances
         for i, ch in enumerate(chanList):
-            for name, roi in ch.items():
-                self.setChannelFile(name, i)
+            for name in ch.keys():
+                self._setChannelSource(name, i)
 
         # Set ROIs in the ROISelectorModule instances
         for i, ch in enumerate(chanList):
             self._setROIs(i, ch)
 
-    fileCount = QmlDefinedProperty()
-    """Number of configured input files"""
+    sourceCount = QmlDefinedProperty()
+    """Number of configured sources"""
     sameSize = QmlDefinedProperty()
     """Whether ROIs are resized to have the same size"""
 
-    getChannelFile = QmlDefinedMethod()
-    """Get file ID for channel
+    _getChannelNames = QmlDefinedMethod()
+    """Get list of channel names
+
+    Returns
+    -------
+    list of str
+        Channel names
+    """
+
+    _setChannelNames = QmlDefinedMethod()
+    """Set channel names
+
+    Parameters
+    ----------
+    names : list of str
+        Channel names
+    """
+
+    _getChannelSource = QmlDefinedMethod()
+    """Get source ID for channel
 
     Parameters
     ----------
@@ -102,27 +119,27 @@ class ChannelConfigModule(QtQuick.QQuickItem):
     Returns
     -------
     int
-        File ID
+        Source ID
     """
 
-    setChannelFile = QmlDefinedMethod()
-    """Set file ID for channel
+    _setChannelSource = QmlDefinedMethod()
+    """Set source ID for channel
 
     Parameters
     ----------
     name: str
         Channel name
-    fileId: int
-        File ID
+    sourceId: int
+        Source ID
     """
 
     _getROIs = QmlDefinedMethod()
-    """Get ROIs for file ID
+    """Get ROIs for source
 
     Parameters
     ----------
-    fileId: int
-        File ID to get ROIs for
+    sourceId: int
+        Source ID to get ROIs for
 
     Returns
     -------
@@ -134,13 +151,13 @@ class ChannelConfigModule(QtQuick.QQuickItem):
     _setROI = QmlDefinedMethod()
     """Set a single ROI
 
-    This cannot be used to change file id or add a new channel. I.e., only an
+    This cannot be used to change source id or add a new channel. I.e., only an
     existing ROI can be modified.
 
     Parameters
     ----------
-    fileId: int
-        File ID to get ROIs for
+    sourceId: int
+        Source ID to get ROIs for
     name: str
         Channel name
     roi: None or roi.ROI or roi.PathROI
@@ -148,78 +165,83 @@ class ChannelConfigModule(QtQuick.QQuickItem):
     """
 
     _setROIs = QmlDefinedMethod()
-    """Set all ROIs for a file
+    """Set all ROIs for a source
 
     Parameters
     ----------
-    fileId: int
-        File ID to get ROIs for
+    sourceId: int
+        Source ID to get ROIs for
     rois: Map of str -> None or roi.ROI or roi.PathROI
         Map channel name to ROI.
     """
 
-    _updateFileCount = QmlDefinedMethod()
-    """Update :py:attr:`fileCount`
+    _setSourceCount = QmlDefinedMethod()
+    """Set :py:attr:`SourceCount`
 
     This should be called after setting the channel names to update the
-    QML Repeater that creates the ROI selection items.
+    QML ObjectModel that holds the ROI selection items.
+
+    Parameters
+    ----------
+    count : int
+        New source count
     """
 
     @QtCore.pyqtSlot(int, QtCore.QVariant)
-    def _splitHorizontally(self, fileId: int, image: np.ndarray):
+    def _splitHorizontally(self, sourceId: int, image: np.ndarray):
         """Create ROIs by evenly splitting the image's width
 
         Parameters
         ----------
-        fileId
-            File ID to create ROIs for
+        sourceId
+            Source ID to create ROIs for
         image
             Image to get total dimensions from
         """
         height, width = getattr(image, "shape", (0, 0))
-        fileChans = self.channelsPerFile[fileId]
-        split_width = width // len(fileChans)
+        sourceChans = self.channelsPerSource[sourceId]
+        split_width = width // len(sourceChans)
         r = {c: sdt_roi.ROI(
                 (i * split_width, 0), size=(split_width, height))
-             for i, c in enumerate(fileChans)}
-        self._setROIs(fileId, r)
+             for i, c in enumerate(sourceChans)}
+        self._setROIs(sourceId, r)
 
     @QtCore.pyqtSlot(int, QtCore.QVariant)
-    def _splitVertically(self, fileId: int, image: np.ndarray):
+    def _splitVertically(self, sourceId: int, image: np.ndarray):
         """Create ROIs by evenly splitting the image's height
 
         Parameters
         ----------
-        fileId
-            File ID to create ROIs for
+        sourceId
+            Source ID to create ROIs for
         image
             Image to get total dimensions from
         """
         height, width = getattr(image, "shape", (0, 0))
-        fileChans = self.channelsPerFile[fileId]
-        split_height = height // len(fileChans)
+        sourceChans = self.channelsPerSource[sourceId]
+        split_height = height // len(sourceChans)
         r = {c: sdt_roi.ROI(
                 (0, i * split_height), size=(width, split_height))
-             for i, c in enumerate(fileChans)}
-        self._setROIs(fileId, r)
+             for i, c in enumerate(sourceChans)}
+        self._setROIs(sourceId, r)
 
     @QtCore.pyqtSlot(int)
-    def _swapChannels(self, fileId: int):
+    def _swapChannels(self, sourceId: int):
         """Reverse ROIs
 
         I.e., the first channel will get the last channel's ROI and so on.
 
         Parameters
         ----------
-        fileId
-            File ID to swap ROIs for
+        sourceId
+            Source ID to swap ROIs for
         """
-        rs = list(self._getROIs(fileId).items())
+        rs = list(self._getROIs(sourceId).items())
         ret = {}
         for orig, new in zip(rs[:round(len(rs) / 2)], reversed(rs)):
             ret[orig[0]] = new[1]
             ret[new[0]] = orig[1]
-        self._setROIs(fileId, ret)
+        self._setROIs(sourceId, ret)
 
     @QtCore.pyqtSlot(str)
     def _resizeROIs(self, model: str):
@@ -233,9 +255,9 @@ class ChannelConfigModule(QtQuick.QQuickItem):
         model
             Name of the channel to get the ROI size from
         """
-        modelFileId = self.getChannelFile(model)
-        allRois = self.channelsPerFile
-        modelRoi = allRois[modelFileId][model]
+        modelSourceId = self._getChannelSource(model)
+        allRois = self.channelsPerSource
+        modelRoi = allRois[modelSourceId][model]
         for f in allRois:
             for n, r in f.items():
                 if n == model or r is None:

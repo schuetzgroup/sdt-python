@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
+import QtQml.Models 2.12
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
@@ -11,50 +12,81 @@ import SdtGui.Impl 1.0
 ChannelConfigImpl {
     id: root
 
-    readonly property alias fileCount: roiConfigList.count
+    readonly property alias sourceCount: roiConfigList.count
     property alias sameSize: sameSizeCheck.checked
 
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
 
-    function _getROIs(fileId) {
-        return roiSelRep.itemAt(fileId).rois
+    function _getChannelNames() {
+        var ret = []
+        for (var i = 0; i < srcConfigList.count; i++)
+            ret.push(srcConfigList.get(i).name)
+        return ret
     }
 
-    function _setROI(fileId, name, roi) {
-        roiSelRep.itemAt(fileId).setROI(name, roi)
+    function _setChannelNames(names) {
+        for (var i = 0; i < srcConfigList.count; i++)
+            srcConfigList.get(i).destroy()
+        srcConfigList.clear()
+        for (var n of names) {
+            // Need to set a parent, otherwise the new object is garbage-collected
+            var obj = srcConfig.createObject(srcConfigRep, {name: n})
+            srcConfigList.append(obj)
+        }
     }
 
-    function _setROIs(fileId, rois) {
-        roiSelRep.itemAt(fileId).rois = rois
+    function _getChannelSource(name) {
+        for (var i = 0; i < srcConfigList.count; i++) {
+            var obj = srcConfigList.get(i)
+            if (obj.name == name)
+                return obj.sourceId
+        }
     }
 
-    function getChannelFile(name) {
-        var idx = channelNames.indexOf(name)
-        return srcConfigRep.itemAt(idx).fileId
+    function _setChannelSource(name, sourceId) {
+        for (var i = 0; i < srcConfigList.count; i++) {
+            var obj = srcConfigList.get(i)
+            if (obj.name == name) {
+                obj.sourceId = sourceId
+                return
+            }
+        }
     }
 
-    function setChannelFile(name, fileId) {
-        var idx = channelNames.indexOf(name)
-        srcConfigRep.itemAt(idx).fileId = fileId
+    function _getROIs(sourceId) {
+        return roiConfigList.get(sourceId).rois
     }
 
-    function _updateFileCount() {
+    function _setROI(sourceId, name, roi) {
+        roiConfigList.get(sourceId).setROI(name, roi)
+    }
+
+    function _setROIs(sourceId, rois) {
+        roiConfigList.get(sourceId).rois = rois
+    }
+
+
+    function _updateSourceCount() {
         var cnt = -1
         for (var i = 0; i < srcConfigRep.count; i++)
-            cnt = Math.max(cnt, srcConfigRep.itemAt(i).fileId)
+            cnt = Math.max(cnt, srcConfigList.get(i).sourceId)
         cnt += 1
 
+        _setSourceCount(cnt)
+    }
+
+    function _setSourceCount(cnt) {
         var cntDiff = roiConfigList.count - cnt
         if (cntDiff < 0) {
             for (var i = roiConfigList.count; i < cnt; i++)
-                roiConfigList.append({"index": i})
+                roiConfigList.append(roiConfig.createObject())
         } else if (cntDiff > 0) {
             roiConfigList.remove(cnt, cntDiff)
         }
     }
 
-    onFileCountChanged: { if (fileCount > 1) srcConfigCheck.checked = true }
+    onSourceCountChanged: { if (sourceCount > 1) srcConfigCheck.checked = true }
 
     ColumnLayout {
         id: rootLayout
@@ -68,7 +100,7 @@ ChannelConfigImpl {
             onCheckedChanged: {
                 if (!checked) {
                     for (var i = 0; i < srcConfigRep.count; i++)
-                        srcConfigRep.itemAt(i).fileId = 0
+                        srcConfigRep.itemAt(i).sourceId = 0
                 }
             }
         }
@@ -83,8 +115,7 @@ ChannelConfigImpl {
                 columns: 3
                 Repeater {
                     id: srcConfigRep
-                    model: root.channelNames
-                    delegate: srcConfig
+                    model: srcConfigList
                 }
             }
         }
@@ -107,7 +138,7 @@ ChannelConfigImpl {
                 SpinBox {
                     id: roiSourceSel
                     visible: srcConfigCheck.checked
-                    to: root.fileCount - 1
+                    to: root.sourceCount - 1
                 }
                 Switch {
                     id: sameSizeCheck
@@ -125,54 +156,61 @@ ChannelConfigImpl {
                 Repeater {
                     id: roiSelRep
                     model: roiConfigList
-                    delegate: roiConfig
                 }
             }
         }
     }
 
-    ListModel {
+    ObjectModel {
+        id: srcConfigList
+    }
+
+    ObjectModel {
         id: roiConfigList
     }
 
     Component {
         id: srcConfig
         RowLayout {
-            property alias fileId: idSel.value
+            id: scLayout
+            property string name: ""
+            property alias sourceId: idSel.value
             Label {
-                text: modelData + " source id"
+                text: name + " source #"
             }
             SpinBox {
                 id: idSel
-                to: root.channelNames.length - 1
+                to: srcConfigList.count - 1
                 property int oldValue: { oldValue = value }
                 onValueChanged: {
                     // Value was increased, so it may be necessary to create
                     // new ROISelectorModule
                     if (value > oldValue)
-                        root._updateFileCount()
+                        root._updateSourceCount()
                     // Get old ROISelectorModule
-                    var oldRS = roiSelRep.itemAt(oldValue)
+                    var oldRS = roiConfigList.get(oldValue)
                     var oldROIs = oldRS.rois
-                    // The new ROISelectorModule is given by the current file
+                    // The new ROISelectorModule is given by the current source
                     // ID.
-                    var newRS = roiSelRep.itemAt(value)
+                    var newRS = roiConfigList.get(value)
                     var newROIs = newRS.rois
                     // Move ROI and exit loop
-                    newROIs[modelData] = oldROIs[modelData]
+                    newROIs[name] = oldROIs[name]
                     newRS.rois = newROIs
-                    delete oldROIs[modelData]
+                    delete oldROIs[name]
                     oldRS.rois = oldROIs
                     // Value was decreased, so it may be necessary to remove
                     // old ROISelectorModule
                     if (value < oldValue)
-                        root._updateFileCount()
+                        root._updateSourceCount()
                     oldValue = value
                 }
             }
             Item {
-                Layout.fillWidth: ((index % srcConfigLayout.columns != srcConfigLayout.columns - 1) &&
-                                   (index < root.channelNames.length - 1))
+                Layout.fillWidth: (
+                    (scLayout.ObjectModel.index % srcConfigLayout.columns != srcConfigLayout.columns - 1) &&
+                    (scLayout.ObjectModel.index < srcConfigList.count - 1)
+                )
             }
         }
     }
