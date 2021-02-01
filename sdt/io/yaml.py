@@ -202,13 +202,16 @@ def dict_representer(dumper, data):
                                     ((k, v) for k, v in data.items()))
 
 
-# Load mappings as ordered dicts
-def odict_constructor(loader, data):
-    return collections.OrderedDict(loader.construct_pairs(data))
+# Load mappings as dicts, which preserve the order since Python >=3.7
+def dict_constructor(loader, data):
+    return dict(loader.construct_pairs(data))
 
 
 Dumper.add_representer(slice, slice_representer)
 SafeDumper.add_representer(slice, slice_representer)
+# Use dict_representer on dicts since that preserves the order
+Dumper.add_representer(dict, dict_representer)
+SafeDumper.add_representer(dict, dict_representer)
 SafeDumper.add_representer(collections.OrderedDict, dict_representer)
 
 # Represent numpy scalars as standard types
@@ -226,9 +229,9 @@ for D in (Dumper, SafeDumper):
 Loader.add_constructor("!slice", slice_constructor)
 SafeLoader.add_constructor("!slice", slice_constructor)
 Loader.add_constructor(yaml.resolver.Resolver.DEFAULT_MAPPING_TAG,
-                       odict_constructor)
+                       dict_constructor)
 SafeLoader.add_constructor(yaml.resolver.Resolver.DEFAULT_MAPPING_TAG,
-                           odict_constructor)
+                           dict_constructor)
 
 
 def _class_representer_factory(cls):
