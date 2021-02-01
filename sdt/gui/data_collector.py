@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import contextlib
 import enum
 from pathlib import Path
 from typing import Dict, Iterable, List, Union
@@ -216,17 +217,20 @@ class DatasetModel(ListModel):
         """
         if self._dataDir == d:
             return
-        for i in range(self.rowCount()):
-            new = []
-            for f in self.get(i):
-                if f is None:
-                    new.append(None)
-                elif not d:
-                    new.append(str(Path(self._dataDir, f)))
-                else:
-                    new.append(str(Path(self._dataDir, f).relative_to(d)))
-            self.set(i, new)
-        self._dataDir = d
+        with contextlib.suppress(ValueError):
+            # ValueError can be raised by `Path.relative_to`
+            # TODO: Make more robust
+            for i in range(self.rowCount()):
+                new = []
+                for f in self.get(i):
+                    if f is None:
+                        new.append(None)
+                    elif not d:
+                        new.append(str(Path(self._dataDir, f)))
+                    else:
+                        new.append(str(Path(self._dataDir, f).relative_to(d)))
+                self.set(i, new)
+            self._dataDir = d
 
 
 class DataCollectorModule(QtQuick.QQuickItem):

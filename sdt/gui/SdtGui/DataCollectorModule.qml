@@ -4,14 +4,14 @@
 
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.12
+import Qt.labs.platform 1.1
 import SdtGui.Impl 1.0
 
 
 DataCollectorImpl {
     id: root
-    property string dataDir: ""
+    property alias dataDir: dataDirEdit.text
     property int sourceCount: 1
 
     implicitWidth: rootLayout.implicitWidth
@@ -20,6 +20,28 @@ DataCollectorImpl {
     ColumnLayout {
         id: rootLayout
         anchors.fill: parent
+
+        RowLayout {
+            Label { text: "Data folder:" }
+            TextInput {
+                id: dataDirEdit
+                Layout.fillWidth: true
+                selectByMouse: true
+            }
+            ToolButton {
+                id: dataDirButton
+                icon.name: "document-open"
+                onClicked: { dataDirDialog.open() }
+            }
+            FolderDialog {
+                id: dataDirDialog
+                title: "Choose data folder…"
+
+                onAccepted: {
+                    dataDirEdit.text = folder.toString().substring(7)  // remove file://
+                }
+            }
+        }
 
         RowLayout {
             ComboBox {
@@ -88,10 +110,11 @@ DataCollectorImpl {
                             FileDialog {
                                 id: fileDialog
                                 title: "Choose image file(s)…"
-                                selectMultiple: true
+                                // selectMultiple: true
+                                fileMode: FileDialog.OpenFiles
 
                                 onAccepted: {
-                                    var fileNames = fileDialog.fileUrls.map(function(u) { return u.substring(7) })  // remove file://
+                                    var fileNames = fileDialog.files.map(function(u) { return u.substring(7) })  // remove file://
                                     fileListView.model.setFiles(index, fileNames)
                                 }
                             }
