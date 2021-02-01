@@ -16,16 +16,16 @@ qmlPath: str = str(Path(__file__).absolute().parent)
 """Path to QML module. Add as import path to QML engines."""
 
 
-class Component:
+class Component(QtCore.QObject):
     """Easily instantiate a QML component
 
     Create a QML engine, use it to create a QML component from a string and
     instantiate the component. The instance's QML properties are exposed as
     python attributes.
     """
-    class Status(enum.Enum):
+    class Status(enum.IntEnum):
         """Status of the QML component instance"""
-        Loading = enum.auto()
+        Loading = 0
         """Instance is being created"""
         Ready = enum.auto()
         """Instance is ready to use"""
@@ -33,7 +33,8 @@ class Component:
         """An error occured. Error message was written via ``qWarning().``"""
 
     def __init__(self, qmlSrc: str,
-                 qmlFile: Optional[Union[str, Path, QtCore.QUrl]] = None):
+                 qmlFile: Optional[Union[str, Path, QtCore.QUrl]] = None,
+                 parent: QtCore.QObject = None):
         """Parameters
         ----------
         qmlSrc
@@ -41,7 +42,10 @@ class Component:
         qmlFile
             Behave as if the source had been loaded from a file named
             `qmlFile`.
+        parent
+            Parent QObject
         """
+        super().__init__(parent)
         self._status = self.Status.Error
         if qmlFile is None:
             qmlFile = QtCore.QUrl()
@@ -51,6 +55,7 @@ class Component:
         self._engine.addImportPath(qmlPath)
         self._engine.objectCreated.connect(self._instanceCreated)
         self._status = self.Status.Loading
+        self.status_Changed.emit(self._status)
         self._engine.loadData(qmlSrc.encode(), qmlFile)
 
     def _instanceCreated(self, instance: Union[QtCore.QObject, None],
@@ -66,10 +71,14 @@ class Component:
         """
         if instance is None:
             self._status = self.Status.Error
-            return
-        self._status = self.Status.Ready
+        else:
+            self._status = self.Status.Ready
+        self.status_Changed.emit(self._status)
 
-    @property
+    status_Changed = QtCore.pyqtSignal(int)
+    """:py:attr:`status_` property changed"""
+
+    @QtCore.pyqtProperty(int, notify=status_Changed)
     def status_(self) -> Status:
         """Status of object creation. Can be `Loading`, `Ready`, or `Error`."""
         return self._status
@@ -153,17 +162,20 @@ Window {{
     _objectName = "sdtGuiWrappedObject"
 
     def __init__(self, item: str,
-                 qmlFile: Optional[Union[str, Path, QtCore.QUrl]] = None):
+                 qmlFile: Optional[Union[str, Path, QtCore.QUrl]] = None,
+                 parent: QtCore.QObject = None):
         """Parameters
         ----------
         item
             Name of the QML item to display in the window.
         qmlFile
             Behave as if the window was defined in a file named `qmlFile`.
+        parent
+            Parent QObject
         """
         src = self._qmlSrc.format(component=item,
                                   objectName=self._objectName)
-        super().__init__(src, qmlFile)
+        super().__init__(src, qmlFile, parent)
 
     @property
     def window_(self) -> QtGui.QWindow:
