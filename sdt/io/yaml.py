@@ -58,10 +58,8 @@ class ArrayDumperBase:
         self.process_anchor("&")
         self.process_tag()
         self.increase_indent()
-        t = np.get_printoptions()["threshold"]
-        np.set_printoptions(threshold=np.inf)
-        s = np.array2string(self.event.value, separator=", ")
-        np.set_printoptions(threshold=t)
+        with np.printoptions(threshold=np.inf):
+            s = np.array2string(self.event.value, separator=", ")
         for l in s.split("\n"):
             self.write_indent()
             self.write_plain(l)
