@@ -11,7 +11,7 @@ import SdtGui.Impl 1.0
 
 ROISelectorImpl {
     id: root
-    property int drawingTools: ROISelectorModule.DrawingTools.PathROITools
+    property int drawingTools: ROISelector.DrawingTools.PathROITools
 
     function _getROI(name) {
         var idx = root.names.indexOf(name)
@@ -25,7 +25,7 @@ ROISelectorImpl {
         ri.setROI(roi, type)
     }
 
-    // This should be added to ImageDisplayModule.overlays
+    // This should be added to ImageDisplay.overlays
     property Item overlay: Item {
         id: overlay
         property real scaleFactor: 1.0
@@ -41,20 +41,20 @@ ROISelectorImpl {
                     if (item !== null)
                         item.destroy()
                     switch (type) {
-                        case ROISelectorModule.ROIType.NullShape:
+                        case ROISelector.ROIType.NullShape:
                             item = null
                             return
-                        case ROISelectorModule.ROIType.IntRectangleShape:
+                        case ROISelector.ROIType.IntRectangleShape:
                             item = intRectRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
                             break
-                        case ROISelectorModule.ROIType.RectangleShape:
+                        case ROISelector.ROIType.RectangleShape:
                             item = rectRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
                             break
-                        case ROISelectorModule.ROIType.EllipseShape:
+                        case ROISelector.ROIType.EllipseShape:
                             item = ellipseRoiComponent.createObject(
                                 roiItem, {roi: roi, name: modelData}
                             )
@@ -105,7 +105,7 @@ ROISelectorImpl {
             checkable: true
             ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
-            visible: root.drawingTools == ROISelectorModule.DrawingTools.IntRectangleTool
+            visible: root.drawingTools == ROISelector.DrawingTools.IntRectangleTool
         }
         Button {
             id: rectangleButton
@@ -117,7 +117,7 @@ ROISelectorImpl {
             checkable: true
             ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
-            visible: root.drawingTools == ROISelectorModule.DrawingTools.PathROITools
+            visible: root.drawingTools == ROISelector.DrawingTools.PathROITools
         }
         Button {
             id: ellipseButton
@@ -129,7 +129,7 @@ ROISelectorImpl {
             checkable: true
             ButtonGroup.group: newShapeButtons
             enabled: nameSel.currentIndex != -1
-            visible: root.drawingTools == ROISelectorModule.DrawingTools.PathROITools
+            visible: root.drawingTools == ROISelector.DrawingTools.PathROITools
         }
         ToolButton {
             icon.name: "process-stop"
@@ -144,7 +144,7 @@ ROISelectorImpl {
             hoverEnabled: true
             ToolTip.visible: hovered
             ToolTip.text: qsTr("Delete ROI")
-            onClicked: { root._setROI(nameSel.currentText, null, ROISelectorModule.ROIType.Null) }
+            onClicked: { root._setROI(nameSel.currentText, null, ROISelector.ROIType.Null) }
         }
     }
 

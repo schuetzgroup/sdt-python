@@ -4,11 +4,11 @@
 
 module SdtGui
 
-ChannelConfigModule 1.0 ChannelConfigModule.qml
+ChannelConfig 1.0 ChannelConfig.qml
 DataCollectorModule 1.0 DataCollectorModule.qml
-ImageDisplayModule 1.0 ImageDisplayModule.qml
-ImageSelectorModule 1.0 ImageSelectorModule.qml
+ImageDisplay 1.0 ImageDisplay.qml
+ImageSelector 1.0 ImageSelector.qml
 LocatorModule 1.0 LocatorModule.qml
-ROISelectorModule 1.0 ROISelectorModule.qml
+ROISelector 1.0 ROISelector.qml
 
 singleton Common 1.0 Common.qml

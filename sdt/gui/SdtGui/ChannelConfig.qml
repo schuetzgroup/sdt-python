@@ -184,13 +184,13 @@ ChannelConfigImpl {
                 property int oldValue: { oldValue = value }
                 onValueChanged: {
                     // Value was increased, so it may be necessary to create
-                    // new ROISelectorModule
+                    // new ROISelector
                     if (value > oldValue)
                         root._updateSourceCount()
-                    // Get old ROISelectorModule
+                    // Get old ROISelector
                     var oldRS = roiConfigList.get(oldValue)
                     var oldROIs = oldRS.rois
-                    // The new ROISelectorModule is given by the current source
+                    // The new ROISelector is given by the current source
                     // ID.
                     var newRS = roiConfigList.get(value)
                     var newROIs = newRS.rois
@@ -200,7 +200,7 @@ ChannelConfigImpl {
                     delete oldROIs[name]
                     oldRS.rois = oldROIs
                     // Value was decreased, so it may be necessary to remove
-                    // old ROISelectorModule
+                    // old ROISelector
                     if (value < oldValue)
                         root._updateSourceCount()
                     oldValue = value
@@ -223,7 +223,7 @@ ChannelConfigImpl {
 
             function setROI(name, roi) { roiSel.setROI(name, roi) }
 
-            ImageSelectorModule {
+            ImageSelector {
                 id: imSel
                 Layout.fillWidth: true
             }
@@ -260,15 +260,15 @@ ChannelConfigImpl {
                     ToolTip.text: qsTr("Swap channels")
                 }
                 Item { width: 3 }
-                ROISelectorModule {
+                ROISelector {
                     id: roiSel
                     limits: imSel.output
-                    drawingTools: ROISelectorModule.DrawingTools.IntRectangleTool
+                    drawingTools: ROISelector.DrawingTools.IntRectangleTool
                     overlay.visible: imSel.output != null
                     onRoiChanged: { if (root.sameSize) root._resizeROIs(name) }
                 }
             }
-            ImageDisplayModule {
+            ImageDisplay {
                 id: imDisp
                 input: imSel.output
                 overlays: roiSel.overlay

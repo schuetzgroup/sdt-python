@@ -12,7 +12,7 @@ from .qml_wrapper import QmlDefinedMethod, QmlDefinedProperty
 from .. import roi as sdt_roi
 
 
-class ChannelConfigModule(QtQuick.QQuickItem):
+class ChannelConfig(QtQuick.QQuickItem):
     """QtQuick item that allows for configuration of emission channels
 
     Typically, a microscopy recording consists of one or more image sequences
@@ -265,5 +265,4 @@ class ChannelConfigModule(QtQuick.QQuickItem):
                 self._setROI(f, n, sdt_roi.ROI(r.top_left, size=modelRoi.size))
 
 
-QtQml.qmlRegisterType(ChannelConfigModule, "SdtGui.Impl", 1, 0,
-                      "ChannelConfigImpl")
+QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Impl", 1, 0, "ChannelConfigImpl")

@@ -126,7 +126,7 @@ class ImageList(DictListModel):
         super().reset(data)
 
 
-class ImageSelectorModule(QtQuick.QQuickItem):
+class ImageSelector(QtQuick.QQuickItem):
     """Select an image (sequence) and frame
 
     The image (sequences) to choose from can be set via the :py:attr:`images`
@@ -252,5 +252,4 @@ class ImageSelectorModule(QtQuick.QQuickItem):
         self.outputChanged.emit(self._output)
 
 
-QtQml.qmlRegisterType(ImageSelectorModule, "SdtGui.Impl", 1, 0,
-                      "ImageSelectorImpl")
+QtQml.qmlRegisterType(ImageSelector, "SdtGui.Impl", 1, 0, "ImageSelectorImpl")

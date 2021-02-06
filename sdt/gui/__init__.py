@@ -5,10 +5,10 @@
 from .qml_wrapper import Component, Window, messageHandler, qmlPath
 
 # QML types
-from .channel_config import ChannelConfigModule
+from .channel_config import ChannelConfig
 from .data_collector import DataCollectorModule
-from .image_display import ImageDisplayModule
-from .image_selector import ImageSelectorModule
-from .loc_display import LocDisplayModule
 from .locator import LocatorModule
-from .roi_selector import ROISelectorModule
+from .image_display import ImageDisplay
+from .image_selector import ImageSelector
+from .loc_display import LocDisplay
+from .roi_selector import ROISelector

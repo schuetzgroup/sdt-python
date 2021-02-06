@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 
-class LocDisplayModule(QtQuick.QQuickPaintedItem):
+class LocDisplay(QtQuick.QQuickPaintedItem):
     """Display feature localizations
 
     Draw the result of running a localization algorithm on an image as
@@ -22,17 +22,17 @@ class LocDisplayModule(QtQuick.QQuickPaintedItem):
         import QtQuick 2.0
         import SdtGui 1.0
 
-        ImageDisplayModule {
+        ImageDisplay {
             // …
             overlays: [
-                LocDisplayModule {
-                    locData: src.locData  // `src` could be e.g. LocatorModule
+                LocDisplay {
+                    locData: src.locData  // `src` could be e.g. Locator
                 }
             ]
         }
 
     In this case, the :py:attr:`scaleFactor` property is automatically updated
-    by the parent :py:class:`ImageDisplayModule` depending on the zoom level of
+    by the parent :py:class:`ImageDisplay` depending on the zoom level of
     the displayed image. Otherwise, :py:attr:`scaleFactor` needs to be set
     manually.
 
@@ -141,4 +141,4 @@ class LocDisplayModule(QtQuick.QQuickPaintedItem):
             painter.drawEllipse(x, y, sz_x, sz_y)
 
 
-QtQml.qmlRegisterType(LocDisplayModule, "SdtGui", 1, 0, "LocDisplayModule")
+QtQml.qmlRegisterType(LocDisplay, "SdtGui", 1, 0, "LocDisplay")

@@ -11,7 +11,7 @@ import numpy as np
 from . import py_image  # Register PyImage QML type
 
 
-class ImageDisplayModule(QtQuick.QQuickItem):
+class ImageDisplay(QtQuick.QQuickItem):
     """QtQuick item that allows for displaying a grayscale image
 
     Black and white point can be set via a slider. In QML it is possible to
@@ -19,7 +19,7 @@ class ImageDisplayModule(QtQuick.QQuickItem):
 
     .. code-block:: qml
 
-        ImageDisplayModule {
+        ImageDisplay {
             overlays: [
                 Rectangle {
                     property real scaleFactor: 1.0  // automatically updated
@@ -80,5 +80,4 @@ class ImageDisplayModule(QtQuick.QQuickItem):
         return self._inputMaxVal
 
 
-QtQml.qmlRegisterType(ImageDisplayModule, "SdtGui.Impl", 1, 0,
-                      "ImageDisplayImpl")
+QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Impl", 1, 0, "ImageDisplayImpl")

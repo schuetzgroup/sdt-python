@@ -15,23 +15,23 @@ from .qml_wrapper import QmlDefinedMethod, QmlDefinedProperty
 from .. import roi as sdt_roi
 
 
-class ROISelectorModule(QtQuick.QQuickItem):
+class ROISelector(QtQuick.QQuickItem):
     """QtQuick item for selecting ROIs
 
     Allows for drawing ROIs in conjunction with the
-    :py:class:`ImageDisplayModule` class.
+    :py:class:`ImageDisplay` class.
 
     .. code-block:: qml
 
-        ImageSelectorModule {
+        ImageSelector {
             id: imSel
             Layout.fillWidth: true
         }
-        ROISelectorModule {
+        ROISelector {
             id: roiSel
             names: ["channel1", "channel2"]
         }
-        ImageDisplayModule {
+        ImageDisplay {
             id: imDisp
             input: imSel.output
             overlays: roiSel.overlay
@@ -147,7 +147,7 @@ class ROISelectorModule(QtQuick.QQuickItem):
         self.limitsChanged.emit(lim)
 
     overlay = QmlDefinedProperty()
-    """Item to be added to :py:attr:`ImageDisplayModule.overlays`"""
+    """Item to be added to :py:attr:`ImageDisplay.overlays`"""
 
     drawingTools = QmlDefinedProperty()
     """Whether to display drawing tools for integer rectangular ROIs
@@ -190,9 +190,9 @@ class ShapeROIItem(QtQuick.QQuickItem):
     """
     class Shape(enum.IntEnum):
         """Available ROI shapes"""
-        RectangleShape = ROISelectorModule.ROIType.RectangleShape
-        IntRectangleShape = ROISelectorModule.ROIType.IntRectangleShape
-        EllipseShape = ROISelectorModule.ROIType.EllipseShape
+        RectangleShape = ROISelector.ROIType.RectangleShape
+        IntRectangleShape = ROISelector.ROIType.IntRectangleShape
+        EllipseShape = ROISelector.ROIType.EllipseShape
 
     QtCore.Q_ENUM(Shape)
 
@@ -218,7 +218,7 @@ class ShapeROIItem(QtQuick.QQuickItem):
     @QtCore.pyqtProperty(float, notify=scaleFactorChanged)
     def scaleFactor(self) -> float:
         """Factor for scaling the ROI path. Typically bound to the
-        ImageDisplayModule overlay item's `scaleFactor`.
+        ImageDisplay overlay item's `scaleFactor`.
         """
         return self._scaleFactor
 
@@ -326,6 +326,5 @@ class ShapeROIItem(QtQuick.QQuickItem):
             self.roiChanged.emit()
 
 
-QtQml.qmlRegisterType(ROISelectorModule, "SdtGui.Impl", 1, 0,
-                      "ROISelectorImpl")
+QtQml.qmlRegisterType(ROISelector, "SdtGui.Impl", 1, 0, "ROISelectorImpl")
 QtQml.qmlRegisterType(ShapeROIItem, "SdtGui.Impl", 1, 0, "ShapeROIItem")
