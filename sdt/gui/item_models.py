@@ -280,6 +280,7 @@ class DictListModel(ListModel):
     class Roles(enum.IntEnum):
         """Model roles"""
         # no predefined roles, these should be set via `roles` property
+        # or by redefining Roles as a subclass of IntEnum
         pass
 
     rolesChanged = QtCore.pyqtSignal(list)
@@ -302,7 +303,7 @@ class DictListModel(ListModel):
         self.Roles = enum.IntEnum(
             "Roles", {n: i for i, n in enumerate(names, QtCore.Qt.UserRole)})
         self._roleNumToName = {v: k for k, v in self.Roles.__members__.items()}
-        self.roleNamesChanged.emit(list(names))
+        self.rolesChanged.emit(list(names))
 
     def data(self, index: QtCore.QModelIndex, role: int = QtCore.Qt.UserRole
              ) -> Any:
