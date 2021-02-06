@@ -218,7 +218,7 @@ ChannelConfigImpl {
     Component {
         id: roiConfig
         ColumnLayout {
-            property alias images: imSel.images
+            id: rcLayout
             property alias rois: roiSel.rois
 
             function setROI(name, roi) { roiSel.setROI(name, roi) }
@@ -231,24 +231,30 @@ ChannelConfigImpl {
                 Label { text: "split" }
                 ToolButton {
                     icon.name: "view-split-left-right"
-                    enabled: imSel.images.length != 0
-                    onClicked: { root._splitHorizontally(index, imSel.output) }
+                    enabled: imSel.dataset.count != 0
+                    onClicked: {
+                        root._splitHorizontally(rcLayout.ObjectModel.index,
+                                                imSel.output)
+                    }
                     hoverEnabled: true
                     ToolTip.visible: hovered
                     ToolTip.text: qsTr("Split horizontally")
                 }
                 ToolButton {
                     icon.name: "view-split-top-bottom"
-                    enabled: imSel.images.length != 0
-                    onClicked: { root._splitVertically(index, imSel.output) }
+                    enabled: imSel.dataset.count != 0
+                    onClicked: {
+                        root._splitVertically(rcLayout.ObjectModel.index,
+                                              imSel.output)
+                    }
                     hoverEnabled: true
                     ToolTip.visible: hovered
                     ToolTip.text: qsTr("Split vertically")
                 }
                 ToolButton {
                     icon.name: "reverse"
-                    enabled: imSel.images.length != 0
-                    onClicked: { root._swapChannels(index) }
+                    enabled: imSel.dataset.count != 0
+                    onClicked: { root._swapChannels(rcLayout.ObjectModel.index) }
                     hoverEnabled: true
                     ToolTip.visible: hovered
                     ToolTip.text: qsTr("Swap channels")

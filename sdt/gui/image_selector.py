@@ -8,8 +8,8 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
-import pims
 
+from .. import io
 from .item_models import DictListModel
 from .qml_wrapper import QmlDefinedProperty
 
@@ -18,7 +18,7 @@ ImageSequence = Union[str, Path, np.ndarray]
 """Types that can be interpreted as an image sequence"""
 
 
-class ImageListModel(DictListModel):
+class ImageList(DictListModel):
     """List of image sequences
 
     Each sequence can be described by a tuple of (name, data), where data
@@ -28,10 +28,7 @@ class ImageListModel(DictListModel):
     """
     class Roles(enum.IntEnum):
         display = QtCore.Qt.UserRole
-        imageSequence = enum.auto()
-
-    def __init__(self, parent: QtCore.QObject = None):
-        super().__init__(parent)
+        image = enum.auto()
 
     def data(self, index: QtCore.QModelIndex,
              role: int = QtCore.Qt.UserRole) -> Any:
@@ -50,43 +47,83 @@ class ImageListModel(DictListModel):
         -------
             Requested data
         """
-        r = index.row()
-        if not (index.isValid() and 0 <= r < self.rowCount()):
-            return None
+        d = super().data(index, role)
 
-        d = self._data[r]
-        if isinstance(d, str):
-            d = Path(d)
         if role == self.Roles.display:
-            if isinstance(d, tuple):
-                return d[0]
+            if isinstance(d, str):
+                return d
             if isinstance(d, Path):
                 return f"{d.name} ({str(d.parent)})"
-            return f"<{r:03}>"
-        if role == self.Roles.imageSequence:
-            if isinstance(d, tuple):
-                return d[1]
+            return f"<{index.row():03}>"
+        if role == self.Roles.image:
+            if isinstance(d, (str, Path)):
+                return io.ImageSequence(d).open()
             return d
-        return None
 
-    def resetWithData(self,
-                      data: Union[Dict[str, ImageSequence],
-                                  Iterable[Union[Tuple[str, ImageSequence],
-                                                 ImageSequence]]]):
+    @staticmethod
+    def _makeEntry(obj: Union[Dict[Union[str, Path], ImageSequence],
+                              Tuple[Union[str, Path], ImageSequence],
+                              ImageSequence, QtCore.QUrl]
+                   ) -> Dict[Union[str, Path, None], ImageSequence]:
+        """Make a dict suitable for insertion into the model
+
+        Supports a multitude of inputs (paths, arrays, …)
+
+        Parameters
+        ----------
+        obj
+            Item to add to the model
+
+        Returns
+        -------
+        dict with "display" and "image" keys. The former is used to display
+        the element in the QML item, while the latter describes the image
+        sequence.
+        """
+        if isinstance(obj, QtCore.QUrl):
+            obj = Path(obj.toLocalFile())
+        if isinstance(obj, (str, Path)):
+            obj = {"display": obj, "image": obj}
+        elif isinstance(obj, np.ndarray) and img.ndim == 2:
+            # Single image
+            obj = {"display": None, "image": obj[None, ...]}
+        elif isinstance(obj, (tuple, list)):
+            obj = {"display": obj[0], "image": obj[1]}
+        return obj
+
+    def insert(self, index: int,
+               obj: Union[Dict[Union[str, Path], ImageSequence],
+                          Tuple[Union[str, Path], ImageSequence],
+                          ImageSequence, QtCore.QUrl]):
+        """Insert element into the list
+
+        Overrides the superclass's method.
+
+        Parameters
+        ----------
+        index
+            Index the new element will have
+        obj
+            Element to insert
+        """
+        super().insert(index, self._makeEntry(obj))
+
+    def reset(self, data: Union[Dict[str, ImageSequence],
+                                Iterable[Union[Tuple[str, ImageSequence],
+                                               ImageSequence]]]):
         """Set new data for model
+
+        Overrides the superclass's method.
 
         Parameters
         ----------
         data
             New data
         """
-        with self._resetModel():
-            if len(data) < 1:
-                self._data = []
-            elif isinstance(data, dict):
-                self._data = list(data.items())
-            else:
-                self._data = list(data)
+        if isinstance(data, dict):
+            data = data.items()
+        data = list(map(self._makeEntry, data))
+        super().reset(data)
 
 
 class ImageSelectorModule(QtQuick.QQuickItem):
@@ -103,34 +140,53 @@ class ImageSelectorModule(QtQuick.QQuickItem):
             Parent item
         """
         super().__init__(parent)
-        self._cur_image = None
-        self._cur_image_opened = False
+        self._curImage = None
         self._output = None
-        self._imageList = ImageListModel()
+        # _dataset needs self as parent, otherwise there will be a segfault
+        # when setting dataset property
+        self._dataset = ImageList(self)
 
-    imagesChanged = QtCore.pyqtSignal()
-    """:py:attr:`images` was changed."""
+    datasetChanged = QtCore.pyqtSignal(QtCore.QVariant)
+    """:py:attr:`dataset` was changed"""
 
-    @QtCore.pyqtProperty(list, notify=imagesChanged)
-    def images(self) -> List:
-        """Image sequences to choose from
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=datasetChanged)
+    def dataset(self) -> QtCore.QAbstractListModel:
+        """Model holding the image sequences to choose from
 
-        Entries can be tuples of (name, sequence data), file names as
-        :py:class:`str` or :py:class:`pathlib.Path`, or sequence data such as
-        3D :py:class:`numpy.ndarray` or :py:class:`pims.FramesSequence`.
+        This can either be a custom model (see also :py:attr:`textRole` and
+        :py:attr:`imageRole` properties) or, by default, an
+        :py:class:`ImageList` instance.
 
-        If the property is set with a dict, it will be automatically converted
-        to a list of (key, value) tuples.
+        This property can be set using a list of file paths, a dict mapping
+        :py:class:`str` or :py:class:`Path` to an image sequence (i.e., a
+        path, an array, an :py:class:`io.ImageSequence` instance or similar),
+        a list of key-value tuples, …
+
+        Note that :py:attr:`datasetChanged` is only emitted if this property
+        is set, but not when e.g. the image sequence list was modified using
+        the GUI controls. Use the model's signals to be notified about such
+        events.
         """
-        return self._imageList.toList()
+        return self._dataset
 
-    @images.setter
-    def images(self, img: Union[Dict[str, ImageSequence],
-                                Iterable[Union[Tuple[str, ImageSequence],
-                                               ImageSequence]]]):
-        self._imageList.resetWithData(img)
-        # TODO: This should be connected to model signals
-        self.imagesChanged.emit()
+    @dataset.setter
+    def dataset(self, d):
+        if d is self._dataset:
+            return
+        if isinstance(d, QtQml.QJSValue):
+            d = d.toVariant()
+        if not isinstance(d, QtCore.QAbstractItemModel):
+            m = ImageList(self)
+            if d is not None:
+                m.reset(d)
+            d = m
+        if self._dataset.parent() is self:
+            self._dataset.deleteLater()
+        # If _dataset had not self as parent, the garbage collector would
+        # destroy it here while QML or something is still trying to access it
+        # -> segfault
+        self._dataset = d
+        self.datasetChanged.emit(d)
 
     outputChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """:py:attr:`output` has changed."""
@@ -140,63 +196,59 @@ class ImageSelectorModule(QtQuick.QQuickItem):
         """Selected frame from selected image sequence"""
         return self._output
 
-    imageListEditable = QmlDefinedProperty()
+    editable = QmlDefinedProperty()
     """If `True` show widgets to manipulate the image sequence list"""
-
-    @QtCore.pyqtProperty(QtCore.QObject, constant=True)
-    def _qmlFileList(self) -> ImageListModel:
-        """Expose the file list model to QML"""
-        return self._imageList
+    textRole = QmlDefinedProperty()
+    """When using a custom model for :py:attr:`datasets`, use this role to
+    retrieve the text displayed in the GUI item to choose among sequences.
+    """
+    imageRole = QmlDefinedProperty()
+    """When using a custom model for :py:attr:`datasets`, use this role to
+    retrieve image sequence. The returned sequence should be a list of 3D numpy
+    arrays, a :py:class:`io.ImageSequence` instance or similar.
+    """
 
     @QtCore.pyqtSlot(int)
     def _fileChanged(self, index: int):
         """Callback upon change of currently selected file
 
+        Parameters
+        ----------
         index
-            Index of currently selected file w.r.t. to :py:attr:`images`
+            Index of currently selected file w.r.t. to :py:attr:`dataset`
         """
-        if self._cur_image_opened:
-            self._cur_image.close()
-            self._cur_image_opened = False
-
         if index < 0:
             # No file selected
-            self._cur_image = None
+            self._curImage = None
             self._output = None
             self.outputChanged.emit(None)
             return
 
-        img = self.images[index]
-        if isinstance(img, tuple):
-            img = img[1]
-        if isinstance(img, np.ndarray) and img.ndim == 2:
-            # Single image
-            img = img[None, ...]
-        elif isinstance(img, (str, Path)):
-            # Open…
-            img = pims.open(str(img))
-            self._cur_image_opened = True
-
-        self._cur_image = img
+        self._curImage = self.dataset.getProperty(index, self.imageRole)
         self._qmlNFramesChanged.emit(self._qmlNFrames)
 
     _qmlNFramesChanged = QtCore.pyqtSignal(int)
 
     @QtCore.pyqtProperty(int, notify=_qmlNFramesChanged)
     def _qmlNFrames(self) -> int:
-        """Expose the number of frames of current sequnece to QML"""
-        if self._cur_image is None:
+        """Expose the number of frames of current sequence to QML"""
+        if self._curImage is None:
             return 0
-        return len(self._cur_image)
+        return len(self._curImage)
 
     @QtCore.pyqtSlot(int)
     def _frameChanged(self, index: int):
         """Callback upon change of currently selected frame
 
+        Parameters
+        ----------
         index
             Index of currently selected frame
         """
-        self._output = self._cur_image[index]
+        if self._curImage is None:
+            self._output = None
+        else:
+            self._output = self._curImage[index]
         self.outputChanged.emit(self._output)
 
 

@@ -12,7 +12,9 @@ import SdtGui.Impl 1.0
 ImageSelectorImpl {
     id: root
 
-    property bool imageListEditable: true
+    property bool editable: true
+    property string textRole: "display"
+    property string imageRole: "image"
 
     implicitHeight: layout.Layout.minimumHeight
     implicitWidth: layout.Layout.minimumWidth
@@ -21,15 +23,12 @@ ImageSelectorImpl {
         id: layout
         anchors.fill: parent
 
-        Label {
-            id: fileLabel
-            text: "file"
-        }
+        Label { text: "file" }
         ComboBox {
             id: fileSel
             Layout.fillWidth: true
-            model: root._qmlFileList
-            textRole: "display"
+            model: root.dataset
+            textRole: root.textRole
 
             onCountChanged: { if (count > 0) currentIndex = 0 }
             onCurrentIndexChanged: {
@@ -45,7 +44,7 @@ ImageSelectorImpl {
 
                 contentItem: ListView {
                     id: fileSelListView
-                    header: root.imageListEditable ? imageListEditorComponent : null
+                    header: root.editable ? imageListEditorComponent : null
                     clip: true
                     Layout.fillHeight: true
                     implicitHeight: contentHeight
@@ -60,7 +59,7 @@ ImageSelectorImpl {
                 highlighted: fileSel.highlightedIndex === index
                 contentItem: Item {
                     Text {
-                        text: model.display
+                        text: model[root.textRole]
                         anchors.left: parent.left
                         anchors.right: fileDeleteButton.left
                         elide: Text.ElideRight
@@ -70,7 +69,7 @@ ImageSelectorImpl {
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
                         icon.name: "edit-delete"
-                        visible: root.imageListEditable
+                        visible: root.editable
                         onClicked: { fileSel.model.remove(model.index) }
                     }
                 }
@@ -90,19 +89,13 @@ ImageSelectorImpl {
         }
     }
 
-    Connections {
-        target: root._qmlFileList
-        onModelAboutToBeReset: { fileSel.currentIndex = -1 }
-    }
-
     FileDialog {
         id: fileDialog
         title: "Choose image file(s)…"
         selectMultiple: true
 
         onAccepted: {
-            var fileNames = fileDialog.fileUrls.map(function(u) { return u.substring(7) })  // remove file://
-            root.images = fileNames
+            root.dataset = fileUrls
             fileSel.popup.close()
         }
     }
