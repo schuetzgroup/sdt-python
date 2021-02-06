@@ -111,7 +111,7 @@ ImageSelectorImpl {
             }
             ToolButton {
                 icon.name: "edit-delete"
-                onClicked: root.images = []
+                onClicked: { root.dataset.clear() }
             }
         }
     }

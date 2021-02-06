@@ -110,7 +110,7 @@ class ImageList(DictListModel):
 
     def reset(self, data: Union[Dict[str, ImageSequence],
                                 Iterable[Union[Tuple[str, ImageSequence],
-                                               ImageSequence]]]):
+                                               ImageSequence]]] = []):
         """Set new data for model
 
         Overrides the superclass's method.
