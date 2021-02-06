@@ -28,6 +28,9 @@ class ListModel(QtCore.QAbstractListModel):
         super().__init__(parent)
         self._data = []
         self._roleNumToName = {v: k for k, v in self.Roles.__members__.items()}
+        self.modelReset.connect(self.countChanged)
+        self.rowsInserted.connect(self.countChanged)
+        self.rowsRemoved.connect(self.countChanged)
 
     def rowCount(self, parent: QtCore.QModelIndex = QtCore.QModelIndex()):
         """Get row count
@@ -266,6 +269,12 @@ class ListModel(QtCore.QAbstractListModel):
         Data list
         """
         return self._data.copy()
+
+    countChanged = QtCore.pyqtSignal()
+
+    @QtCore.pyqtProperty(int, notify=countChanged)
+    def count(self) -> int:
+        return self.rowCount()
 
 
 class DictListModel(ListModel):
