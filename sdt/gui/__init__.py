@@ -8,6 +8,7 @@ from .qml_wrapper import Component, Window, messageHandler, qmlPath
 from .channel_config import ChannelConfig
 from .data_collector import DataCollectorModule
 from .locator import LocatorModule
+from .dataset import DatasetCollection, Dataset
 from .image_display import ImageDisplay
 from .image_selector import ImageSelector
 from .loc_display import LocDisplay
