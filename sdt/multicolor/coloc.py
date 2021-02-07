@@ -496,7 +496,7 @@ def plot_codiffusion(data, particle, ax=None, cmap=None, show_legend=True,
         d_iter = (data.loc[data[c, columns["particle"]] == particle, c]
                   for c in channel_names)
     else:
-        if not isinstance(particle, collections.Iterable):
+        if not isinstance(particle, collections.abc.Iterable):
             particle = (particle,) * len(data)
         d_iter = (d[d[columns["particle"]] == p] for d, p in zip(data,
                                                                  particle))
