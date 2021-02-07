@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 from .. import channel_reg, multicolor, spatial, brightness, config
-from .utils import FrameSelector
+
 
 try:
     import trackpy
@@ -31,7 +31,7 @@ class SmFRETTracker:
                   "min_length", "brightness_options", "interpolate",
                   "coloc_dist", "acceptor_channel", "neighbor_radius")
 
-    frame_selector: FrameSelector
+    frame_selector: multicolor.FrameSelector
     """A :py:class:`FrameSelector` instance with the matching
     :py:attr:`excitation_seq`.
     """
@@ -138,7 +138,7 @@ class SmFRETTracker:
             ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This
             parameters sets the :py:attr:`columns` attribute.
         """
-        self.frame_selector = FrameSelector(excitation_seq)
+        self.frame_selector = multicolor.FrameSelector(excitation_seq)
         self.registrator = (registrator if registrator is not None
                             else channel_reg.Registrator())
 

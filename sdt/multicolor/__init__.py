@@ -5,12 +5,16 @@
 """Multi-color data analysis
 =========================
 
-This module provides functions to analyze multi-color single molecule data.
+This module provides functions to analyze multi-color data.
 In particular, there is support for
 
-- finding colocalizations
-- detecting and plotting codiffusion
-- merging data from different channels.
+- finding single-molecule colocalizations (:py:func:`find_colocalizations`)
+- detecting and plotting single-molecule codiffusion
+  (:py:func:`find_codiffusion`, :py:func:`plot_codiffusion`)
+- merging single-molecule data from different channels
+  (:py:func:`merge_channels`)
+- selection of images and single-molecule data according to excitation type
+  (:py:class:`FrameSelector`)
 
 Single molecule data have to be aligned first using e.g.
 :py:class:`sdt.chromatic.Corrector`.
@@ -64,7 +68,8 @@ Programming reference
 .. autofunction:: find_codiffusion
 .. autofunction:: plot_codiffusion
 .. autofunction:: merge_channels
-.. autofunction:: find_closest_pairs
+.. autoclass:: FrameSelector
+    :members:
 
 
 Low level helper functions
@@ -75,3 +80,4 @@ Low level helper functions
 from .coloc import (calc_pair_distance, find_closest_pairs,
                     find_colocalizations, find_codiffusion, merge_channels,
                     plot_codiffusion)
+from .frame_selector import FrameSelector
