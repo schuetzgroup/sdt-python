@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from sdt import changepoint, channel_reg, flatfield, fret, image, io
+from sdt import changepoint, flatfield, fret, image, io, multicolor
 
 try:
     import trackpy  # NoQA
@@ -92,7 +92,7 @@ class TestSmFRETTracker:
 
     @pytest.fixture
     def tracker_params(self):
-        corr = channel_reg.Registrator()
+        corr = multicolor.Registrator()
         corr.parameters1[0, -1] = self.x_shift
         corr.parameters2[0, -1] = -self.x_shift
 

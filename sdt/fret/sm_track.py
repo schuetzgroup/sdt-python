@@ -10,7 +10,7 @@ from typing import Callable, Dict, Optional, Sequence, Union
 import numpy as np
 import pandas as pd
 
-from .. import channel_reg, multicolor, spatial, brightness, config
+from .. import brightness, config, multicolor, spatial
 
 
 try:
@@ -35,8 +35,8 @@ class SmFRETTracker:
     """A :py:class:`FrameSelector` instance with the matching
     :py:attr:`excitation_seq`.
     """
-    registrator: channel_reg.Registrator
-    """channel_reg.Registrator used to overlay channels"""
+    registrator: multicolor.Registrator
+    """multicolor.Registrator used to overlay channels"""
     link_options: Dict
     """Options passed to :py:func:`trackpy.link_df`"""
     min_length: int
@@ -72,7 +72,7 @@ class SmFRETTracker:
 
     @config.set_columns
     def __init__(self, excitation_seq: Union[str, Sequence[str]] = "da",
-                 registrator: Optional[channel_reg.Registrator] = None,
+                 registrator: Optional[multicolor.Registrator] = None,
                  link_radius: float = 5, link_mem: int = 1,
                  min_length: int = 1, feat_radius: int = 4,
                  bg_frame: int = 2,
@@ -140,7 +140,7 @@ class SmFRETTracker:
         """
         self.frame_selector = multicolor.FrameSelector(excitation_seq)
         self.registrator = (registrator if registrator is not None
-                            else channel_reg.Registrator())
+                            else multicolor.Registrator())
 
         self.link_options = link_options.copy()
         self.link_options["search_range"] = link_radius

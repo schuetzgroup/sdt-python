@@ -8,6 +8,9 @@
 This module provides functions to analyze multi-color data.
 In particular, there is support for
 
+- registration of color channels, i.e., finding transforms for mapping
+  coordinates between channels (:py:class:`Registrator`) as a prerequisite
+  for finding colocalizations
 - finding single-molecule colocalizations (:py:func:`find_colocalizations`)
 - detecting and plotting single-molecule codiffusion
   (:py:func:`find_codiffusion`, :py:func:`plot_codiffusion`)
@@ -15,9 +18,6 @@ In particular, there is support for
   (:py:func:`merge_channels`)
 - selection of images and single-molecule data according to excitation type
   (:py:class:`FrameSelector`)
-
-Single molecule data have to be aligned first using e.g.
-:py:class:`sdt.chromatic.Corrector`.
 
 
 Examples
@@ -63,6 +63,9 @@ appear once using :py:func:`merge_channels`:
 Programming reference
 ---------------------
 
+.. autoclass:: Registrator
+    :members:
+    :special-members: __call__
 .. autofunction:: find_colocalizations
 .. autofunction:: calc_pair_distance
 .. autofunction:: find_codiffusion
@@ -70,6 +73,7 @@ Programming reference
 .. autofunction:: merge_channels
 .. autoclass:: FrameSelector
     :members:
+    :special-members: __call__
 
 
 Low level helper functions
@@ -81,3 +85,4 @@ from .coloc import (calc_pair_distance, find_closest_pairs,
                     find_colocalizations, find_codiffusion, merge_channels,
                     plot_codiffusion)
 from .frame_selector import FrameSelector
+from .registrator import Registrator

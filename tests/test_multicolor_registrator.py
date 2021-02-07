@@ -10,7 +10,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from sdt import channel_reg, io
+from sdt import multicolor, io
+from sdt.multicolor import registrator
 
 
 class TestAffineTrafo:
@@ -27,13 +28,13 @@ class TestAffineTrafo:
         return np.array([[3, 8], [7, 14], [11, 20]])
 
     def test_affine_trafo_square(self, params, locs, result):
-        """channel_reg._affine_trafo: (n + 1, n + 1) params"""
-        t = channel_reg._affine_trafo(params, locs)
+        """multicolor.registrator.._affine_trafo: (n + 1, n + 1) params"""
+        t = registrator._affine_trafo(params, locs)
         np.testing.assert_allclose(t, result)
 
     def test_affine_trafo_rect(self, params, locs, result):
-        """channel_reg._affine_trafo: (n, n + 1) params"""
-        t = channel_reg._affine_trafo(params[:-1, :], locs)
+        """multicolor.registrator._affine_trafo: (n, n + 1) params"""
+        t = registrator._affine_trafo(params[:-1, :], locs)
         np.testing.assert_allclose(t, result)
 
 
@@ -93,27 +94,27 @@ class TestRegistrator:
         return pd.DataFrame(exp, columns=cols)
 
     def test_calc_bases(self, coords, nearest_idx, bases):
-        """channel_reg.Registrator._calc_bases"""
-        res = channel_reg.Registrator._calc_bases(coords, nearest_idx)
+        """multicolor.Registrator._calc_bases"""
+        res = multicolor.Registrator._calc_bases(coords, nearest_idx)
         np.testing.assert_allclose(res, bases)
 
     def test_calc_local_coords(self, coords, local_coords):
-        """channel_reg.Registrator._calc_local_coords"""
-        res = channel_reg.Registrator._calc_local_coords(coords, 3)
+        """multicolor.Registrator._calc_local_coords"""
+        res = multicolor.Registrator._calc_local_coords(coords, 3)
         np.testing.assert_allclose(res, local_coords, atol=1e-10)
 
     def test_signatures_from_local_coords(self, local_coords):
-        """channel_reg.Registrator._signatures_from_local_coords"""
+        """multicolor.Registrator._signatures_from_local_coords"""
         n_dim = local_coords.shape[1]
         n_neighbors = local_coords.shape[2]
         triu = np.triu_indices(n=n_dim, m=n_neighbors, k=1)
-        res = channel_reg.Registrator._signatures_from_local_coords(
+        res = multicolor.Registrator._signatures_from_local_coords(
             local_coords, triu)
         exp = local_coords[:, [0, 0, 1], [1, 0, 0]]
         np.testing.assert_array_equal(res, exp)
 
     def test_pairs_from_signatures(self):
-        """channel_reg.Registrator._pairs_from_signatures"""
+        """multicolor.Registrator._pairs_from_signatures"""
         coords1 = np.array([0, 1, 2, 3])
         coords2 = np.array([0, 1, 2])
         # 2 and 3 are ambiguous
@@ -122,27 +123,27 @@ class TestRegistrator:
         sig2 = np.array([[10, 11, 13], [1, 2, 4], [100, 101, 103]])
 
         # Check with len(coords[0]) > len(coords[1])
-        res = channel_reg.Registrator._pairs_from_signatures(
+        res = multicolor.Registrator._pairs_from_signatures(
             (coords1, coords2), (sig1, sig2), 5)
         np.testing.assert_array_equal(res[0], [1, 0])
         np.testing.assert_array_equal(res[1], [0, 1])
 
         # Check with len(coords[0]) < len(coords[1])
-        res = channel_reg.Registrator._pairs_from_signatures(
+        res = multicolor.Registrator._pairs_from_signatures(
             (coords2, coords1), (sig2, sig1), 5)
         np.testing.assert_array_equal(res[0], [1, 0])
         np.testing.assert_array_equal(res[1], [0, 1])
 
     def test_find_pairs_no_frame(self, dataframes, dataframe_pairs):
-        """channel_reg.Registrator.find_pairs, no "frame" column"""
-        cc = channel_reg.Registrator(dataframes[0], dataframes[1])
+        """multicolor.Registrator.find_pairs, no "frame" column"""
+        cc = multicolor.Registrator(dataframes[0], dataframes[1])
         cc.find_pairs()
         res = cc.pairs.sort_values(("channel1", "x")).reset_index(drop=True)
         pd.testing.assert_frame_equal(res, dataframe_pairs)
 
     def test_find_pairs_multi_file(self, dataframes, dataframe_pairs):
-        """channel_reg.Registrator.find_pairs, list of input features"""
-        cc = channel_reg.Registrator([dataframes[0]]*2, [dataframes[1]]*2)
+        """multicolor.Registrator.find_pairs, list of input features"""
+        cc = multicolor.Registrator([dataframes[0]]*2, [dataframes[1]]*2)
         cc.find_pairs()
         res = cc.pairs.sort_values(("channel1", "x")).reset_index(drop=True)
         exp = pd.concat([dataframe_pairs]*2)
@@ -150,14 +151,14 @@ class TestRegistrator:
         pd.testing.assert_frame_equal(res, exp)
 
     def test_find_pairs_multi_frame(self, dataframes, dataframe_pairs):
-        """channel_reg.Registrator.find_pairs, multiple frames"""
+        """multicolor.Registrator.find_pairs, multiple frames"""
         dfs = []
         for d in dataframes:
             d1 = d.copy()
             d["frame"] = 0
             d1["frame"] = 1
             dfs.append(pd.concat([d, d1], ignore_index=True))
-        cc = channel_reg.Registrator(dfs[0], dfs[1])
+        cc = multicolor.Registrator(dfs[0], dfs[1])
         cc.find_pairs()
         res = cc.pairs.sort_values(("channel1", "x")).reset_index(drop=True)
         exp = pd.concat([dataframe_pairs]*2)
@@ -165,8 +166,8 @@ class TestRegistrator:
         pd.testing.assert_frame_equal(res, exp)
 
     def test_fit_parameters(self, dataframe_pairs, trafo):
-        """channel_reg.Registrator.fit_parameters"""
-        cc = channel_reg.Registrator(None, None)
+        """multicolor.Registrator.fit_parameters"""
+        cc = multicolor.Registrator(None, None)
         # Add outlier
         dataframe_pairs.loc[dataframe_pairs.index.max() + 1] = \
             [10., 12., -70., -110.]
@@ -180,8 +181,8 @@ class TestRegistrator:
         np.testing.assert_allclose(cc.parameters2, np.linalg.inv(trafo))
 
     def test_determine_parameters(self, dataframes, dataframe_pairs, trafo):
-        """channel_reg.Registrator.determine_parameters"""
-        cc = channel_reg.Registrator(dataframes[0], dataframes[1])
+        """multicolor.Registrator.determine_parameters"""
+        cc = multicolor.Registrator(dataframes[0], dataframes[1])
         cc.determine_parameters()
         res = cc.pairs.sort_values(("channel1", "x")).reset_index(drop=True)
         pd.testing.assert_frame_equal(res, dataframe_pairs)
@@ -190,12 +191,12 @@ class TestRegistrator:
 
     def test_determine_parameters_mirrored(self, dataframes, dataframe_pairs,
                                            trafo):
-        """channel_reg.Registrator.determine_parameters, mirrored 1st axis"""
+        """multicolor.Registrator.determine_parameters, mirrored 1st axis"""
         mirror_x = dataframes[0]["x"].max()
         dataframes[0]["x"] = mirror_x - dataframes[0]["x"]
         dataframe_pairs["channel1", "x"] = \
             mirror_x - dataframe_pairs["channel1", "x"]
-        cc = channel_reg.Registrator(dataframes[0], dataframes[1])
+        cc = multicolor.Registrator(dataframes[0], dataframes[1])
         cc.determine_parameters()
         res = cc.pairs.sort_values(("channel1", "x"), ascending=False)
         res = res.reset_index(drop=True)
@@ -205,8 +206,8 @@ class TestRegistrator:
         np.testing.assert_allclose(cc.parameters2, np.linalg.inv(trafo))
 
     def test_call_dataframe(self, dataframes):
-        """channel_reg.Registrator.__call__: DataFrame arg"""
-        cc = channel_reg.Registrator(*dataframes)
+        """multicolor.Registrator.__call__: DataFrame arg"""
+        cc = multicolor.Registrator(*dataframes)
         cc.determine_parameters()
 
         res = cc.pairs["channel1"].copy()
@@ -221,8 +222,8 @@ class TestRegistrator:
         pd.testing.assert_frame_equal(res2, exp)
 
     def test_call_img(self):
-        """channel_reg.Registrator.__call__: image arg"""
-        cc = channel_reg.Registrator(None, None)
+        """multicolor.Registrator.__call__: image arg"""
+        cc = multicolor.Registrator(None, None)
         img = np.arange(50)[:, np.newaxis] + np.arange(100)[np.newaxis, :]
         cc.parameters1 = np.array([[-1, 0, img.shape[1] - 1],
                                    [0, 1, 0],
@@ -233,8 +234,8 @@ class TestRegistrator:
         np.testing.assert_allclose(img_corr, img[:, ::-1])
 
     def test_call_img_callable_cval(self):
-        """channel_reg.Registrator.__call__: image arg with callable `cval`"""
-        cc = channel_reg.Registrator(None, None)
+        """multicolor.Registrator.__call__: image arg with callable `cval`"""
+        cc = multicolor.Registrator(None, None)
         img = np.arange(50)[:, np.newaxis] + np.arange(100)[np.newaxis, :]
         cc.parameters1 = np.array([[-1, 0, img.shape[1] // 2 - 1],
                                    [0, 1, 0],
@@ -252,8 +253,8 @@ class TestRegistrator:
         return request.param
 
     def test_save_load(self, save_fmt, trafo):
-        """channel_reg.Registrator: save to/load from binary file"""
-        cc = channel_reg.Registrator()
+        """multicolor.Registrator: save to/load from binary file"""
+        cc = multicolor.Registrator()
         cc.parameters1 = trafo
         cc.parameters2 = np.linalg.inv(trafo)
         data_keys = ("c1", "c2")
@@ -262,7 +263,7 @@ class TestRegistrator:
         with tempfile.TemporaryFile() as f:
             cc.save(f, fmt=save_fmt, key=data_keys)
             f.seek(0)
-            cc_loaded_file = channel_reg.Registrator.load(
+            cc_loaded_file = multicolor.Registrator.load(
                 f, fmt=save_fmt, key=data_keys)
         np.testing.assert_allclose(cc_loaded_file.parameters1, trafo)
         np.testing.assert_allclose(cc_loaded_file.parameters2,
@@ -272,7 +273,7 @@ class TestRegistrator:
         with tempfile.TemporaryDirectory() as td:
             fname = Path(td, "bla." + save_fmt)
             cc.save(fname, fmt=save_fmt, key=data_keys)
-            cc_loaded_fname = channel_reg.Registrator.load(
+            cc_loaded_fname = multicolor.Registrator.load(
                 fname, fmt=save_fmt, key=data_keys)
         np.testing.assert_allclose(cc_loaded_fname.parameters1, trafo)
         np.testing.assert_allclose(cc_loaded_fname.parameters2,
@@ -280,8 +281,8 @@ class TestRegistrator:
 
     @pytest.mark.skipif(not hasattr(io, "yaml"), reason="YAML not found")
     def test_yaml(self, trafo):
-        """channel_reg.Registrator: save to/load from YAML"""
-        cc = channel_reg.Registrator()
+        """multicolor.Registrator: save to/load from YAML"""
+        cc = multicolor.Registrator()
         cc.parameters1 = trafo
         cc.parameters2 = np.linalg.inv(trafo)
         sio = StringIO()
