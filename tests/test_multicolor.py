@@ -402,6 +402,9 @@ class TestFrameSelector:
         np.testing.assert_array_equal(
             multicolor.FrameSelector("a + ? * bc + de").eval_seq(9),
             np.fromiter("abcbcbcde", "U1"))
+        np.testing.assert_array_equal(
+            multicolor.FrameSelector("a + ? * bc + de").eval_seq(-1),
+            np.fromiter("abcde", "U1"))
 
     def test_renumber(self, selector, call_results):
         """multicolor.FrameSelector._renumber"""

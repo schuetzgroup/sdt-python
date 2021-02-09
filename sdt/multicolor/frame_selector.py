@@ -171,7 +171,9 @@ class FrameSelector:
             Number of frames. This needs to be given if sequence is flexible,
             i.e., contains multiplication by ``?``. In this case, ``?``
             evaluates to a number such that the total sequence length is
-            `n_frames`.
+            `n_frames`. If `n_frames` is equal to -1, ``?`` is replaced by
+            1. This is useful for testing and finding e.g. the first occurence
+            of a frame without depending on actual data.
 
         Returns
         -------
@@ -195,7 +197,10 @@ class FrameSelector:
         if post_pos >= 0:
             n_fixed += len(self._eval_simple(seq[post_pos+1:]))
 
-        mul = _FlexMul(n_frames - n_fixed)
+        if n_frames < 0:
+            mul = 1
+        else:
+            mul = _FlexMul(n_frames - n_fixed)
         eseq = self._eval_simple(seq.replace("?", "_", 1), loc={"_": mul})
         return np.fromiter(eseq, "U1", len(eseq))
 
