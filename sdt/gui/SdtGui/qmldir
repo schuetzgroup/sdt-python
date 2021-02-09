@@ -6,6 +6,7 @@ module SdtGui
 
 ChannelConfig 1.0 ChannelConfig.qml
 DataCollectorModule 1.0 DataCollectorModule.qml
+FrameSelector 1.0 FrameSelector.qml
 ImageDisplay 1.0 ImageDisplay.qml
 ImageSelector 1.0 ImageSelector.qml
 LocatorModule 1.0 LocatorModule.qml
