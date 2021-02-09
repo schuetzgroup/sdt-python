@@ -80,11 +80,12 @@ ImageSelectorImpl {
             id: frameSel
             from: 0
             to: Math.max(0, root._qmlNFrames - 1)
-
+            editable: true
             // Only act on interactive changes as to not trigger multiple
             // updates when e.g. the current file is changed and as a result
             // the `to` property which could in turn change the value
             onValueModified: { root._frameChanged(value) }
+            Component.onCompleted: { contentItem.selectByMouse = true }
         }
     }
 
