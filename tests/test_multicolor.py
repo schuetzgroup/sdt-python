@@ -405,6 +405,7 @@ class TestFrameSelector:
         np.testing.assert_array_equal(
             multicolor.FrameSelector("a + ? * bc + de").eval_seq(-1),
             np.fromiter("abcde", "U1"))
+        assert multicolor.FrameSelector("").eval_seq().size == 0
 
     def test_renumber(self, selector, call_results):
         """multicolor.FrameSelector._renumber"""
@@ -430,6 +431,14 @@ class TestFrameSelector:
         r = multicolor.FrameSelector._renumber(
             np.array(["d", "a"]), ar, "d", restore=False)
         np.testing.assert_equal(r, np.arange(len(ar)))
+
+        # Test empty sequence and empty `which`
+        ar2 = np.arange(21)
+        r = multicolor.FrameSelector._renumber(
+            np.array([], dtype="U1"), ar2, "d", restore=False)
+        np.testing.assert_equal(r, ar2)
+        r = multicolor.FrameSelector._renumber(
+            np.array(["d", "a"], dtype="U1"), ar2, "", restore=False)
 
     def test_call(self, selector, flex_selector, call_results):
         """multicolor.FrameSelector.__call__"""
@@ -464,6 +473,20 @@ class TestFrameSelector:
         np.testing.assert_array_equal(selector(lst, "da"), call_results["da"])
         pd.testing.assert_frame_equal(selector(df, "da"),
                                       df.loc[call_results["da"]])
+
+        # Empty sequence
+        null_selector = multicolor.FrameSelector("")
+        np.testing.assert_equal(null_selector(ar, "d"), ar)
+        np.testing.assert_array_equal(null_selector(lst, "d"), lst)
+        pd.testing.assert_frame_equal(null_selector(df, "d"), df)
+
+        # Empty `which`
+        np.testing.assert_equal(selector(ar, ""), ar)
+        np.testing.assert_array_equal(selector(lst, ""), lst)
+        pd.testing.assert_frame_equal(selector(df, ""), df)
+        np.testing.assert_equal(flex_selector(ar, ""), ar)
+        np.testing.assert_array_equal(flex_selector(lst, ""), lst)
+        pd.testing.assert_frame_equal(flex_selector(df, ""), df)
 
         # For non-DataFrames, n_frames is deduced from length
         ar2 = np.arange(10)
@@ -506,3 +529,14 @@ class TestFrameSelector:
         flex_selector.restore_frame_numbers(
             df3, "da", n_frames=len(selector.excitation_seq))
         np.testing.assert_array_equal(df3["frame"], exp)
+
+        df4 = df.copy()
+        selector.restore_frame_numbers(df4, "")
+        pd.testing.assert_frame_equal(df4, df)
+        df5 = df.copy()
+        flex_selector.restore_frame_numbers(df5, "")
+        pd.testing.assert_frame_equal(df5, df)
+        null_selector = multicolor.FrameSelector("")
+        df6 = df.copy()
+        null_selector.restore_frame_numbers(df5, "d")
+        pd.testing.assert_frame_equal(df5, df)

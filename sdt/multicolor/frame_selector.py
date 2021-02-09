@@ -160,6 +160,8 @@ class FrameSelector:
         Evaluated sequence string
         """
         re_seq = self._letter_re.sub(r'"\1"', seq)
+        if not re_seq:
+            return ""
         return eval(re_seq, glob, loc)
 
     def eval_seq(self, n_frames: Optional[int] = None) -> np.ndarray:
@@ -231,6 +233,8 @@ class FrameSelector:
         -------
         New frame numbers
         """
+        if not (len(eval_seq) and len(which)):
+            return frame_nos
         frame_nos = np.asanyarray(frame_nos, dtype=int)
         good_frame_mask = np.isin(eval_seq, list(which))
         max_frame = np.max(frame_nos)
@@ -308,6 +312,8 @@ class FrameSelector:
             That means, if the DataFrame has frame number columns "frame2",
             set ``columns={"time": "frame2"}``.
         """
+        if not (self.excitation_seq and len(which)):
+            return data
         if not isinstance(data, pd.DataFrame) and n_frames is None:
             # Use length of image sequence
             n_frames = len(data)
@@ -367,7 +373,8 @@ class FrameSelector:
             That means, if the DataFrame has frame number columns "frame2",
             set ``columns={"time": "frame2"}``.
         """
-        if not data.empty:
-            eval_seq = self.eval_seq(n_frames)
-            data[columns["time"]] = self._renumber(
-                eval_seq, data[columns["time"]].to_numpy(), which, True)
+        if not (self.excitation_seq and len(which)) or data.empty:
+            return
+        eval_seq = self.eval_seq(n_frames)
+        data[columns["time"]] = self._renumber(
+            eval_seq, data[columns["time"]].to_numpy(), which, True)
