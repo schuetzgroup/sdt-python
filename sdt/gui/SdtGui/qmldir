@@ -9,6 +9,7 @@ DataCollectorModule 1.0 DataCollectorModule.qml
 FrameSelector 1.0 FrameSelector.qml
 ImageDisplay 1.0 ImageDisplay.qml
 ImageSelector 1.0 ImageSelector.qml
+ImageViewer 1.0 ImageViewer.qml
 LocatorModule 1.0 LocatorModule.qml
 ROISelector 1.0 ROISelector.qml
 
