@@ -358,111 +358,148 @@ class TestFrameSelector:
         return multicolor.FrameSelector("cddddaa")
 
     @pytest.fixture
+    def flex_selector(self):
+        return multicolor.FrameSelector("c + d*? + a*2")
+
+    @pytest.fixture
     def call_results(self):
         res = {"d": [1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18],
                "a": [5, 6, 12, 13, 19, 20]}
         res["da"] = sorted(res["d"] + res["a"])
         return res
 
-    def test_init(self, selector):
-        """multicolor.FrameSelector.__init__"""
-        np.testing.assert_equal(selector.excitation_frames["c"], [0])
-        np.testing.assert_equal(selector.excitation_frames["d"], [1, 2, 3, 4])
-        np.testing.assert_equal(selector.excitation_frames["a"], [5, 6])
+    def test_flex_mul(self):
+        """multicolor.frame_selector._FlexMul helper class"""
+        from sdt.multicolor.frame_selector import _FlexMul
 
-    def test_call_array(self, selector, call_results):
-        """multicolor.FrameSelector.__call__: array arg
+        m = _FlexMul(10)
+        assert m.n_flex_frames == 10
+        assert "da" * m == "da" * 5
+        assert m * "da" == "da" * 5
+        with pytest.raises(ValueError):
+            "abc" * m  # n_flex_frames is not divisible by 3
+        with pytest.raises(ValueError):
+            m * "abc"
 
-        Arrays support advanced indexing. Therefore, the return type should be
-        an array again.
-        """
+    def test_eval_simple(self, selector):
+        """multicolor.FrameSelector._eval_simple"""
+        assert selector._eval_simple("a +bc * 3 + 2*de") == "abcbcbcdede"
+        assert selector._eval_simple("bc * _", loc={"_": 2}) == "bcbc"
+
+    def test_eval_seq(self, selector):
+        """multicolor.FrameSelector.eval_seq"""
+        np.testing.assert_array_equal(
+            selector.eval_seq(),
+            np.fromiter(selector.excitation_seq, "U1"))
+        np.testing.assert_array_equal(
+            multicolor.FrameSelector("a +bc * 3 + 2*de").eval_seq(),
+            np.fromiter("abcbcbcdede", "U1"))
+        np.testing.assert_array_equal(
+            multicolor.FrameSelector("a +bc * ? + 2*de").eval_seq(9),
+            np.fromiter("abcbcdede", "U1"))
+        with pytest.raises(ValueError):
+            multicolor.FrameSelector("a +bc * ? + 2*de").eval_seq(10)
+        np.testing.assert_array_equal(
+            multicolor.FrameSelector("a + ? * bc + de").eval_seq(9),
+            np.fromiter("abcbcbcde", "U1"))
+
+    def test_renumber(self, selector, call_results):
+        """multicolor.FrameSelector._renumber"""
+        drop_frame = 3
+        seq = np.fromiter(selector.excitation_seq, "U1")
+        for k, v in call_results.items():
+            v = np.array(v)
+            mask = v != drop_frame
+            v = v[mask]
+
+            r = multicolor.FrameSelector._renumber(seq, v, k, restore=False)
+            np.testing.assert_equal(r, np.arange(len(mask))[mask])
+
+            r2 = multicolor.FrameSelector._renumber(
+                seq, np.arange(len(mask))[mask], k, restore=True)
+            np.testing.assert_equal(r2, v)
+
+        # There was a bug when the max frame number was divisible by the
+        # length of the excitation sequence, resulting in f_map_inv being too
+        # short. Ensure that this is fixed by using an array with max == 10
+        # and the sequence "da".
+        ar = np.arange(0, 11, 2)
+        r = multicolor.FrameSelector._renumber(
+            np.array(["d", "a"]), ar, "d", restore=False)
+        np.testing.assert_equal(r, np.arange(len(ar)))
+
+    def test_call(self, selector, flex_selector, call_results):
+        """multicolor.FrameSelector.__call__"""
         ar = np.arange(21)
+        n = len(selector.excitation_seq)
         for k, v in call_results.items():
             r = selector(ar, k)
-            np.testing.assert_equal(r, v)
-            assert isinstance(r, type(ar))
+            np.testing.assert_array_equal(r, v)
+            assert isinstance(r, np.ndarray)
+            fr = flex_selector(ar, k, n_frames=n)
+            np.testing.assert_array_equal(fr, v)
+            assert isinstance(fr, np.ndarray)
 
-    def test_call_list(self, selector, call_results):
-        """multicolor.FrameSelector.__call__: list arg
-
-        Lists do not support advanced indexing. Therefore, the return type
-        should be a Slicerator.
-        """
-        ar = list(range(21))
+        lst = list(ar)
         for k, v in call_results.items():
-            r = selector(ar, k)
-            np.testing.assert_equal(list(r), v)
+            r = selector(lst, k)
+            np.testing.assert_array_equal(r, v)
             assert isinstance(r, helper.Slicerator)
+            fr = flex_selector(lst, k, n_frames=n)
+            np.testing.assert_array_equal(fr, v)
+            assert isinstance(fr, helper.Slicerator)
 
-    def test_call_dataframe(self, selector, call_results):
-        """multicolor.FrameSelector.__call__: DataFrame arg"""
-        df = pd.DataFrame(np.arange(21)[:, None], columns=["frame"])
+        df = pd.DataFrame(ar[:, None], columns=["frame"])
         for k, v in call_results.items():
             r = selector(df, k)
             pd.testing.assert_frame_equal(r, df.loc[v])
+            fr = flex_selector(df, k, n_frames=n)
+            pd.testing.assert_frame_equal(fr, df.loc[v])
 
-    def test_renumber(self, selector, call_results):
-        """multicolor.FrameSelector._renumber: restore=False"""
-        drop_frame = 3
-        for k, v in call_results.items():
-            v = np.array(v)
-            mask = v != drop_frame
-            v = v[mask]
+        # Selecting multiple frame types
+        np.testing.assert_equal(selector(ar, "da"), call_results["da"])
+        np.testing.assert_array_equal(selector(lst, "da"), call_results["da"])
+        pd.testing.assert_frame_equal(selector(df, "da"),
+                                      df.loc[call_results["da"]])
 
-            r = selector._renumber(v, k, restore=False)
-            np.testing.assert_equal(r, np.arange(len(mask))[mask])
-
-    def test_renumber_plusone(self, selector):
-        """multicolor.FrameSelector._renumber: restore=False, check off-by-one
-
-        There was a bug when the max frame number was divisible by the
-        length of the excitation sequence, resulting in f_map_inv being too
-        short. Ensure that this is fixed by using an array with max == 10
-        and the sequence "da".
-        """
-        selector = multicolor.FrameSelector("da")
-        ar = np.arange(0, 11, 2)
-        r = selector._renumber(ar, "d", restore=False)
-        np.testing.assert_equal(r, np.arange(len(ar)))
-
-    def test_renumber_restore(self, selector, call_results):
-        """multicolor.FrameSelector._renumber: restore=True"""
-        drop_frame = 3
-        for k, v in call_results.items():
-            v = np.array(v)
-            mask = v != drop_frame
-            v = v[mask]
-
-            r = selector._renumber(np.arange(len(mask))[mask], k, restore=True)
-            np.testing.assert_equal(r, v)
-
-    def test_call_dataframe_renumber(self, selector, call_results):
-        """multicolor.FrameSelector.__call__: DataFrame arg, renumber=True"""
-        df = pd.DataFrame(np.arange(21)[:, None], columns=["frame"])
+        # For non-DataFrames, n_frames is deduced from length
+        ar2 = np.arange(10)
+        np.testing.assert_equal(flex_selector(ar2, "c"), [0])
+        np.testing.assert_equal(flex_selector(ar2, "d"), [1, 2, 3, 4, 5, 6, 7])
+        np.testing.assert_equal(flex_selector(ar2, "a"), [8, 9])
+        # For DataFrames, there should be an error
+        with pytest.raises(ValueError):
+            flex_selector(df, "d")
 
         # drop a frame which should leave a gap when renumbering
         drop_frame = 3
-        df = df.drop(drop_frame)
-
+        df2 = df.drop(drop_frame)
         for k, v in call_results.items():
-            r = selector(df, k, renumber=True)
             data = np.arange(len(v))[:, None]
-
             # deal with dropped frame
             v = np.array(v)
             mask = v != drop_frame
             v = v[mask]
             data = data[mask]
 
+            r = selector(df2, k, renumber=True)
             np.testing.assert_equal(r.index, v)
             np.testing.assert_equal(r.to_numpy(), data)
+            fr = flex_selector(df2, k, renumber=True, n_frames=n)
+            np.testing.assert_equal(fr.index, v)
+            np.testing.assert_equal(fr.to_numpy(), data)
 
-    def test_restore_frame_numbers(self, selector):
+    def test_restore_frame_numbers(self, selector, flex_selector):
         """multicolor.FrameSelector.restore_frame_numbers"""
         ar = np.arange(14)
         ar = ar[ar != 7]
         df = pd.DataFrame(ar[:, None], columns=["frame"])
+        exp = [1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 15, 16]
+
         df2 = df.copy()
         selector.restore_frame_numbers(df2, "da")
-        np.testing.assert_allclose(
-                df2["frame"], [1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 15, 16])
+        np.testing.assert_array_equal(df2["frame"], exp)
+        df3 = df.copy()
+        flex_selector.restore_frame_numbers(
+            df3, "da", n_frames=len(selector.excitation_seq))
+        np.testing.assert_array_equal(df3["frame"], exp)

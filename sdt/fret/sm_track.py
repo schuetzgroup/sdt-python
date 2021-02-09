@@ -180,14 +180,6 @@ class SmFRETTracker:
     def excitation_seq(self, seq: Union[str, Sequence[str]]):
         self.frame_selector.excitation_seq = seq
 
-    @property
-    def excitation_frames(self) -> Dict[str, np.ndarray]:
-        """dict mapping the excitation types in :py:attr:`excitation_seq` to
-        the corresponding frame numbers (modulo the length of
-        py:attr:`excitation_seq`).
-        """
-        return self.frame_selector.excitation_frames
-
     def track(self, donor_img: Sequence[np.ndarray],
               acceptor_img: Sequence[np.ndarray], donor_loc: pd.DataFrame,
               acceptor_loc: pd.DataFrame, d_mass: bool = False
@@ -392,9 +384,9 @@ class SmFRETTracker:
         # FIXME: Don't force convert to int, but raise an error (?)
         # First, the track method needs to preserve the data type of the time
         # column
+        eseq = self.frame_selector.eval_seq()
         frames = tracks["donor", self.columns["time"]].to_numpy(dtype=int)
-        et = pd.Series(self.excitation_seq[frames % len(self.excitation_seq)],
-                       dtype="category")
+        et = pd.Series(eseq[frames % len(eseq)], dtype="category")
         # Assignment to dataframe is done by matching indices, not line-wise
         # Thus copy index
         et.index = tracks.index
