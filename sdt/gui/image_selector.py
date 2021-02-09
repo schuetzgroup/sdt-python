@@ -9,7 +9,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 
-from .. import io
+from .. import io, multicolor
 from .item_models import DictListModel
 from .qml_wrapper import QmlDefinedProperty
 
@@ -29,6 +29,55 @@ class ImageList(DictListModel):
     class Roles(enum.IntEnum):
         display = QtCore.Qt.UserRole
         image = enum.auto()
+
+    def __init__(self, parent: QtCore.QObject = None):
+        """Parameters
+        ----------
+        parent
+            Parent QObject
+        """
+        super().__init__(parent)
+        self._frameSel = multicolor.FrameSelector("")
+        self._curType = ""
+        self.excitationSeqChanged.connect(self._onExcTypeChanged)
+        self.currentExcitationTypeChanged.connect(self._onExcTypeChanged)
+
+    def _onExcTypeChanged(self):
+        """Emit :py:meth:`dataChanged` if exc seq or current type change"""
+        self.dataChanged.emit(self.index(0), self.index(self.count - 1),
+                              [int(self.Roles.image)])
+
+    excitationSeqChanged = QtCore.pyqtSignal()
+    """:py:attr:`excitationSeq` changed"""
+
+    @QtCore.pyqtProperty(str, notify=excitationSeqChanged)
+    def excitationSeq(self) -> str:
+        """Excitation sequence. See :py:class:`multicolor.FrameSelector` for
+        details. No error checking es performend here.
+        """
+        return self._frameSel.excitation_seq
+
+    @excitationSeq.setter
+    def excitationSeq(self, seq: str):
+        if seq == self.excitationSeq:
+            return
+        self._frameSel.excitation_seq = seq
+        self.excitationSeqChanged.emit()
+
+    currentExcitationTypeChanged = QtCore.pyqtSignal()
+    """:py:attr:`currentExcitationType` changed"""
+
+    @QtCore.pyqtProperty(str, notify=currentExcitationTypeChanged)
+    def currentExcitationType(self) -> str:
+        """Excitation type to use in :py:attr:`output`"""
+        return self._curType
+
+    @currentExcitationType.setter
+    def currentExcitationType(self, t: str):
+        if t == self._curType:
+            return
+        self._curType = t
+        self.currentExcitationTypeChanged.emit()
 
     def data(self, index: QtCore.QModelIndex,
              role: int = QtCore.Qt.UserRole) -> Any:
@@ -57,8 +106,8 @@ class ImageList(DictListModel):
             return f"<{index.row():03}>"
         if role == self.Roles.image:
             if isinstance(d, (str, Path)):
-                return io.ImageSequence(d).open()
-            return d
+                d = io.ImageSequence(d).open()
+            return self._frameSel(d, self.currentExcitationType)
 
     @staticmethod
     def _makeEntry(obj: Union[Dict[Union[str, Path], ImageSequence],
@@ -140,11 +189,13 @@ class ImageSelector(QtQuick.QQuickItem):
             Parent item
         """
         super().__init__(parent)
+        self._curIndex = -1
         self._curImage = None
         self._output = None
         # _dataset needs self as parent, otherwise there will be a segfault
         # when setting dataset property
         self._dataset = ImageList(self)
+        self._dataset.dataChanged.connect(self._onDataChanged)
 
     datasetChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """:py:attr:`dataset` was changed"""
@@ -185,7 +236,9 @@ class ImageSelector(QtQuick.QQuickItem):
         # If _dataset had not self as parent, the garbage collector would
         # destroy it here while QML or something is still trying to access it
         # -> segfault
+        self._dataset.dataChanged.disconnect(self._onDataChanged)
         self._dataset = d
+        self._dataset.dataChanged.connect(self._onDataChanged)
         self.datasetChanged.emit(d)
 
     outputChanged = QtCore.pyqtSignal(QtCore.QVariant)
@@ -208,6 +261,15 @@ class ImageSelector(QtQuick.QQuickItem):
     arrays, a :py:class:`io.ImageSequence` instance or similar.
     """
 
+    def _onDataChanged(self, topLeft: QtCore.QModelIndex,
+                       bottomRight: QtCore.QModelIndex, roles: List[int]):
+        """Update output if model data changed"""
+        if not topLeft.row() <= self._curIndex <= bottomRight.row():
+            return
+        if roles and self.dataset.Roles[self.imageRole] not in roles:
+            return
+        self._fileChanged(self._curIndex)
+
     @QtCore.pyqtSlot(int)
     def _fileChanged(self, index: int):
         """Callback upon change of currently selected file
@@ -217,6 +279,7 @@ class ImageSelector(QtQuick.QQuickItem):
         index
             Index of currently selected file w.r.t. to :py:attr:`dataset`
         """
+        self._curIndex = index
         if index < 0:
             # No file selected
             self._curImage = None

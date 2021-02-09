@@ -33,7 +33,6 @@ ImageSelectorImpl {
             onCountChanged: { if (count > 0) currentIndex = 0 }
             onCurrentIndexChanged: {
                 root._fileChanged(currentIndex)
-                root._frameChanged(frameSel.value)
             }
 
             popup: Popup {
@@ -75,7 +74,7 @@ ImageSelectorImpl {
                 }
             }
         }
-        Item { width: 20 }
+        Item { width: 5 }
         Label { text: "frame" }
         SpinBox {
             id: frameSel
@@ -115,4 +114,6 @@ ImageSelectorImpl {
             }
         }
     }
+
+    on_QmlNFramesChanged: { _frameChanged(frameSel.value) }
 }
