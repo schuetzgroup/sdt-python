@@ -247,7 +247,8 @@ ROISelectorImpl {
                     newItem.height = Math.abs(itemData.y0 - mouse.y)
                 }
                 onReleased: {
-                    newItem.roiChanged.connect(function() { root.roiChanged(newItem.name) })
+                    var name = newItem.name
+                    newItem.roiChanged.connect(function() { root.roiChanged(name) })
                     newItem.roiChanged()
                     newItem = null
                     itemData = null
