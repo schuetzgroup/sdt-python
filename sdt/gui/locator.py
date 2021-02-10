@@ -12,14 +12,14 @@ import sdt.loc
 from .process_worker import ProcessWorker
 
 
-class LocatorModule(QtQuick.QQuickItem):
+class LocateOptions(QtQuick.QQuickItem):
     """Set localization options and find localizations in an image
 
     The typical use-case for this is to find the proper options for feature
     localization. When setting options in the GUI, the localization algorithm
     is run on the :py:attr:`input` image. The result is exposed via the
     :py:attr:`locData` property, which can be used e.g. by
-    :py:class:`LocDisplayModule` in :py:class:`ImageDisplayModule`'s
+    :py:class:`LocDisplay` in :py:class:`ImageDisplay`'s
     ``overlays`` for visual feedback.
     """
     def __init__(self, parent: Optional[QtCore.QObject] = None):
@@ -184,7 +184,7 @@ class LocatorModule(QtQuick.QQuickItem):
         print(f"worker error: {exc}")
 
 
-QtQml.qmlRegisterType(LocatorModule, "SdtGui.Impl", 1, 0, "LocatorImpl")
+QtQml.qmlRegisterType(LocateOptions, "SdtGui.Templates", 1, 0, "LocateOptions")
 
 
 if __name__ == "__main__":
