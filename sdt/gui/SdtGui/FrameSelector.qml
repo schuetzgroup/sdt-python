@@ -11,6 +11,7 @@ import SdtGui.Templates 1.0 as T
 T.FrameSelector {
     id: root
 
+    property bool showTypeSelector: true
     property alias currentExcitationType: excSel.currentText
 
     implicitHeight: rootLayout.Layout.minimumHeight
@@ -27,11 +28,18 @@ T.FrameSelector {
             text: root.excitationSeq
             onTextEdited: { root.excitationSeq = text }
         }
-        Item { width: 5 }
-        Label { text: "type" }
+        Item {
+            width: 5
+            visible: root.showTypeSelector
+        }
+        Label {
+            text: "show"
+            visible: root.showTypeSelector
+        }
         ComboBox {
             id: excSel
-            model: root.excitationTypes
+            model: visible ? root.excitationTypes : null
+            visible: root.showTypeSelector
         }
     }
 
