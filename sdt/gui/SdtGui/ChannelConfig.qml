@@ -219,6 +219,7 @@ ChannelConfigImpl {
         id: roiConfig
         ColumnLayout {
             id: rcLayout
+            property alias dataset: imSel.dataset
             property alias rois: roiSel.rois
 
             function setROI(name, roi) { roiSel.setROI(name, roi) }
@@ -279,6 +280,14 @@ ChannelConfigImpl {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
+        }
+    }
+    DropArea {
+        anchors.fill: parent
+        keys: "text/uri-list"
+        onDropped: {
+            for (var u of drop.urls)
+                roiSelRep.itemAt(roiSelRep.currentIndex).dataset.append(u)
         }
     }
 }
