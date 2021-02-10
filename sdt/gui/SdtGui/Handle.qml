@@ -15,7 +15,7 @@ Rectangle {
     property real handleSize: 10.0
     property int horizontalPosition: Handle.HorizontalPosition.Center
     property int verticalPosition: Handle.VerticalPosition.Center
-    property int placement: Handle.Placement.Edge  // TODO
+    // property int placement: Handle.Placement.Edge  // TODO
     property var resizeItem: parent
     property bool active: mouse.active
     property real minX: -Infinity
@@ -58,11 +58,20 @@ Rectangle {
             if (vPos != Handle.VerticalPosition.Center) ret |= Drag.YAxis
             return ret ? ret : Drag.XAndYAxis  // Center handle if vPos == hPos == Center
         }
+        property real pressX
+        property real pressY
+
         drag.axis: getDragAxis(root.horizontalPosition,
                                root.verticalPosition)
+        onPressed: {
+            pressX = mouse.x
+            pressY = mouse.y
+            mouse.accepted = true
+        }
+
         onMouseXChanged: {
             if(pressed && drag.axis & Drag.XAxis){
-                var dx = mouseX - x
+                var dx = mouseX - pressX
                 switch (root.horizontalPosition) {
                     case Handle.HorizontalPosition.Left:
                         var newX = Common.clamp(
@@ -88,7 +97,7 @@ Rectangle {
         }
         onMouseYChanged: {
             if(pressed && drag.axis & Drag.YAxis){
-                var dy = mouseY - y
+                var dy = mouseY - pressY
                 switch (root.verticalPosition) {
                     case Handle.VerticalPosition.Top:
                         var newY = Common.clamp(
