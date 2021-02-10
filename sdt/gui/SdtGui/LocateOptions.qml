@@ -5,10 +5,10 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.7
 import QtQuick.Layouts 1.7
-import SdtGui.Impl 1.0
+import SdtGui.Templates 1.0 as T
 
 
-LocatorImpl {
+T.LocateOptions {
     id: root
 
     Binding on options {
@@ -170,7 +170,7 @@ LocatorImpl {
                     Layout.alignment: Qt.AlignRight
                     visible: d3dFindFilterSel.currentIndex == 2
                 }
-                CheckBox {
+                Switch {
                     id: d3dMinDistCheck
                     text: "min. distance"
                     Layout.fillWidth: true
@@ -186,7 +186,7 @@ LocatorImpl {
                     Layout.alignment: Qt.AlignRight
                     enabled: d3dMinDistCheck.checked
                 }
-                CheckBox {
+                Switch {
                     id: d3dSizeRangeCheck
                     text: "size range"
                     Layout.fillWidth: true
