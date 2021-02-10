@@ -77,6 +77,10 @@ class FrameSelector(QtQuick.QQuickItem):
         """
         return self._error
 
+    showTypeSelector = QmlDefinedProperty()
+    """Whether to show the dropdown menu for selecting
+    :py:attr:`currentExcitationType`
+    """
     currentExcitationType = QmlDefinedProperty()
     """Currently selected (via GUI) excitation type"""
 
