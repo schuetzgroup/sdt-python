@@ -6,8 +6,8 @@ from .qml_wrapper import Component, Window, messageHandler, qmlPath
 
 # QML types
 from .channel_config import ChannelConfig
-from .data_collector import DataCollectorModule
 from .locator import LocatorModule
+from .data_collector import DataCollector
 from .dataset import DatasetCollection, Dataset
 from .frame_selector import FrameSelector
 from .image_display import ImageDisplay

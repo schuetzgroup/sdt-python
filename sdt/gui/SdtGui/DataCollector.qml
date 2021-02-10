@@ -6,10 +6,10 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.12
-import SdtGui.Impl 1.0
+import SdtGui.Templates 1.0 as T
 
 
-DataCollectorImpl {
+T.DataCollector {
     id: root
     property alias datasets: datasetSel.model
     property var sourceNames: 1

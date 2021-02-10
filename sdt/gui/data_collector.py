@@ -10,7 +10,7 @@ from PyQt5 import QtCore, QtQml, QtQuick
 from .qml_wrapper import QmlDefinedProperty
 
 
-class DataCollectorModule(QtQuick.QQuickItem):
+class DataCollector(QtQuick.QQuickItem):
     """QtQuick item which allows for defining datasets and associated files
 
     This supports defining multiple files per dataset entry, which can
@@ -46,5 +46,4 @@ class DataCollectorModule(QtQuick.QQuickItem):
         self._model.datasets = dsets
 
 
-QtQml.qmlRegisterType(DataCollectorModule, "SdtGui.Impl", 1, 0,
-                      "DataCollectorImpl")
+QtQml.qmlRegisterType(DataCollector, "SdtGui.Templates", 1, 0, "DataCollector")
