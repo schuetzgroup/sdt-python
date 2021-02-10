@@ -52,38 +52,38 @@ class ChannelConfig(QtQuick.QQuickItem):
     def channelNames(self, channels: Iterable[str]):
         if set(channels) == set(self._getChannelNames()):
             return
-        self.channelsPerSource = [{c: None for c in channels}]
+        self.channels = {c: {"source_id": 0, "roi": None} for c in channels}
 
-    channelsPerSourceChanged = QtCore.pyqtSignal()
-    """:py:attr:`channelsPerSource` changed"""
+    channelsChanged = QtCore.pyqtSignal()
+    channelsModified = QtCore.pyqtSignal()
 
-    @QtCore.pyqtProperty(list, notify=channelsPerSourceChanged)
-    def channelsPerSource(self) -> List[Dict[str, Union[None, sdt_roi.ROI,
-                                                         sdt_roi.PathROI]]]:
-        """Map of name -> ROI for each source"""
-        ret = []
+    @QtCore.pyqtProperty("QVariantMap", notify=channelsChanged)
+    def channels(self):
+        ret = {}
         for i in range(self.sourceCount):
-            ret.append(self._getROIs(i))
+            for n, r in self._getROIs(i).items():
+                ret[n] = {"source_id": i, "roi": r}
         return ret
 
-    @channelsPerSource.setter
-    def channelsPerSource(self, chanList: Iterable[
-            Mapping[str, Union[None, sdt_roi.ROI, sdt_roi.PathROI]]]):
-        # change channelNames if necessary
-        newNames = list(itertools.chain(*chanList))
+    @channels.setter
+    def channels(self, ch: Mapping[str, Mapping]):
+        newNames = list(ch)
         if set(newNames) != set(self.channelNames):
             self._setChannelNames(newNames)
             self.channelNamesChanged.emit(newNames)
-        self._setSourceCount(len(chanList))
 
-        # Create ROISelectorModule instances
-        for i, ch in enumerate(chanList):
-            for name in ch.keys():
-                self._setChannelSource(name, i)
+        srcCount = max((c["source_id"] for c in ch.values()), default=-1) + 1
+        self._setSourceCount(srcCount)
+
+        # Create ROISelector instances
+        for k, v in ch.items():
+            self._setChannelSource(k, v["source_id"])
 
         # Set ROIs in the ROISelectorModule instances
-        for i, ch in enumerate(chanList):
-            self._setROIs(i, ch)
+        for i in range(srcCount):
+            self._setROIs(i, {k: v["roi"]
+                              for k, v in ch.items() if v["source_id"] == i})
+        self.channelsChanged.emit()
 
     sourceCount = QmlDefinedProperty()
     """Number of configured sources"""
@@ -255,14 +255,14 @@ class ChannelConfig(QtQuick.QQuickItem):
         model
             Name of the channel to get the ROI size from
         """
-        modelSourceId = self._getChannelSource(model)
-        allRois = self.channelsPerSource
-        modelRoi = allRois[modelSourceId][model]
-        for f in allRois:
-            for n, r in f.items():
-                if n == model or r is None:
-                    continue
-                self._setROI(f, n, sdt_roi.ROI(r.top_left, size=modelRoi.size))
+        allRois = self.channels
+        modelRoi = allRois[model]
+        for n, v in allRois.items():
+            r = v.get("roi", None)
+            if n == model or r is None:
+                continue
+            self._setROI(v.get("source_id", 0), n,
+                         sdt_roi.ROI(r.top_left, size=modelRoi.size))
 
 
 QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Impl", 1, 0, "ChannelConfigImpl")

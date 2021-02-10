@@ -265,7 +265,11 @@ ChannelConfigImpl {
                     limits: imSel.output
                     drawingTools: ROISelector.DrawingTools.IntRectangleTool
                     overlay.visible: imSel.output != null
-                    onRoiChanged: { if (root.sameSize) root._resizeROIs(name) }
+                    onRoiChanged: {
+                        if (root.sameSize) root._resizeROIs(name)
+                        root.channelsChanged()
+                        root.channelsModified()
+                    }
                 }
             }
             ImageDisplay {
