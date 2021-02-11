@@ -4,7 +4,8 @@
 
 import contextlib
 import enum
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
+from typing import (Any, Dict, Iterable, List, Mapping, Optional, Sequence,
+                    Tuple, Union)
 
 from PyQt5 import QtCore, QtQml
 
@@ -27,7 +28,6 @@ class ListModel(QtCore.QAbstractListModel):
         """
         super().__init__(parent)
         self._data = []
-        self._roleNumToName = {v: k for k, v in self.Roles.__members__.items()}
         self.modelReset.connect(self.countChanged)
         self.rowsInserted.connect(self.countChanged)
         self.rowsRemoved.connect(self.countChanged)
@@ -53,7 +53,7 @@ class ListModel(QtCore.QAbstractListModel):
         -------
         Dict mapping role id -> role name
         """
-        return {k: v.encode() for k, v in self._roleNumToName.items()}
+        return {v: k.encode() for k, v in self.Roles.__members__.items()}
 
     def data(self, index: QtCore.QModelIndex, role: int = Roles.modelData
              ) -> Any:
@@ -77,7 +77,7 @@ class ListModel(QtCore.QAbstractListModel):
         if not (index.isValid() and 0 <= row < self.rowCount() and
                 role == self.Roles.modelData):
             return None
-        return self._data[row]
+        return self.get(row)
 
     def setData(self, index: QtCore.QModelIndex, value: Any,
                 role: int = Roles.modelData) -> bool:
@@ -104,9 +104,27 @@ class ListModel(QtCore.QAbstractListModel):
         if not (index.isValid() and 0 <= row < self.rowCount() and
                 role == self.Roles.modelData):
             return False
-        self._data[row] = value
-        self.dataChanged.emit(index, index, [role])
-        return True
+        return self.set(row, value)
+
+    def _notifyChange(self, index: int, count: int = 1,
+                      roles: Iterable[str] = []):
+        """Emit :py:meth:`QtCore.QAbstractListModel.dataChanged` signal
+
+        Parameters
+        ----------
+        index
+            First changed index
+        count
+            Number of changed items
+        roles
+            List of affected roles. An empty list means that all roles are
+            affected.
+        """
+        # TODO: create a signal similar to dataChanged but with same
+        # arguments as this function
+        tl = self.index(index)
+        br = self.index(index + count - 1)
+        self.dataChanged.emit(tl, br, [self.Roles[r] for r in roles])
 
     @contextlib.contextmanager
     def _insertRows(self, index, count):
@@ -166,10 +184,9 @@ class ListModel(QtCore.QAbstractListModel):
         -------
         Selected list element
         """
-        try:
-            return self._data[index]
-        except IndexError:
+        if not 0 <= index <= self.rowCount():
             return None
+        return self._data[index]
 
     @QtCore.pyqtSlot(int, QtCore.QVariant)
     def insert(self, index: int, obj: Any):
@@ -220,8 +237,7 @@ class ListModel(QtCore.QAbstractListModel):
         if not 0 <= index < self.rowCount():
             return False
         self._data[index] = obj
-        mi = self.index(index)
-        self.dataChanged.emit(mi, mi)
+        self._notifyChange(index)
         return True
 
     @QtCore.pyqtSlot(int)
@@ -307,11 +323,10 @@ class DictListModel(ListModel):
 
     @roles.setter
     def roles(self, names: List[str]):
-        if names == self.roles:
+        if set(names) == set(self.roles):
             return
         self.Roles = enum.IntEnum(
             "Roles", {n: i for i, n in enumerate(names, QtCore.Qt.UserRole)})
-        self._roleNumToName = {v: k for k, v in self.Roles.__members__.items()}
         self.rolesChanged.emit(list(names))
 
     def data(self, index: QtCore.QModelIndex, role: int = QtCore.Qt.UserRole
@@ -333,14 +348,14 @@ class DictListModel(ListModel):
         -------
             Dict value
         """
-        row = index.row()
-        if not (index.isValid() and 0 <= row < self.rowCount()):
+        if not index.isValid():
             return None
         try:
-            return self._data[row][self._roleNumToName[role]]
-        except KeyError:
-            # Role does not exist
+            prop = self.Roles(role)
+        except ValueError:
+            # role does not exist
             return None
+        return self.getProperty(index.row(), prop.name)
 
     def setData(self, index: QtCore.QModelIndex, value: Any,
                 role: int = QtCore.Qt.UserRole) -> bool:
@@ -364,56 +379,49 @@ class DictListModel(ListModel):
         -------
         `True` if successful, `False` otherwise.
         """
-        row = index.row()
-        if not (index.isValid() and 0 <= row < self.rowCount()):
+        if not index.isValid():
             return False
         try:
-            d = self._data[row]
-            rl = self._roleNumToName[role]
-            if d[rl] is not value:
-                d[rl] = value
-                self.dataChanged.emit(index, index, [role])
-            return True
-        except KeyError:
-            # Role does not exist
+            prop = self.Roles(role)
+        except ValueError:
+            # role does not exist
             return False
+        return self.setProperty(index.row(), prop.name, value)
 
     @QtCore.pyqtSlot(int, str, result=QtCore.QVariant)
-    def getProperty(self, index: int, property: str) -> Any:
+    def getProperty(self, index: int, role: str) -> Any:
         """Get dict value
 
-        Return the value associated with the key `property` in the `index`-th
+        Return the value associated with the key `role` in the `index`-th
         dict.
 
         Parameters
         ----------
         index
             Index of the dict in the list
-        property
+        role
             Key of the value in the selected dict
 
         Returns
         -------
         Dict value
         """
-        try:
-            return self.data(self.index(index), self.Roles[property])
-        except KeyError:
-            # role does not exist
+        if not (0 <= index <= self.rowCount() and role in self.roles):
             return None
+        return self._data[index].get(role, None)
 
     @QtCore.pyqtSlot(int, str, QtCore.QVariant, result=bool)
-    def setProperty(self, index: int, property: str, obj: Any):
+    def setProperty(self, index: int, role: str, obj: Any):
         """Set dict value
 
-        Set the value associated with the key `property` in the `index`-th
+        Set the value associated with the key `role` in the `index`-th
         dict.
 
         Parameters
         ----------
         index
             Index of the dict in the list
-        property
+        role
             Key of the value in the selected dict
         obj
             New value
@@ -422,11 +430,13 @@ class DictListModel(ListModel):
         -------
         `True` if successful, `False` otherwise.
         """
-        try:
-            return self.setData(self.index(index), obj, self.Roles[property])
-        except KeyError:
-            # role does not exist
+        if not (0 <= index < self.rowCount() and role in self.roles):
             return False
+        d = self._data[index]
+        if d.get(role, None) is not obj:
+            d[role] = obj
+            self._notifyChange(index, roles=[role])
+        return True
 
     def resetWithDict(self, data: Mapping,
                       roles : Sequence[str] = ["key", "value"]):

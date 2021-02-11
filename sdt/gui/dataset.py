@@ -311,7 +311,7 @@ class DatasetCollection(DictListModel):
     fileListsChanged = QtCore.pyqtSignal()
     """:py:attr:`fileLists` property changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=fileListsChanged)
+    @QtCore.pyqtProperty("QVariantMap", notify=fileListsChanged)
     def fileLists(self) -> Dict[str, List[Dict[str, str]]]:
         """Map of dataset key -> file list. Each file list contains
         dicts mapping a file role -> file. See also :py:attr:`fileRoles`.

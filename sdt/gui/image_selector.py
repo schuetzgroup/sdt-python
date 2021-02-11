@@ -44,8 +44,7 @@ class ImageList(DictListModel):
 
     def _onExcTypeChanged(self):
         """Emit :py:meth:`dataChanged` if exc seq or current type change"""
-        self.dataChanged.emit(self.index(0), self.index(self.count - 1),
-                              [int(self.Roles.image)])
+        self._notifyChanged(0, self.rowCount(), ["image"])
 
     excitationSeqChanged = QtCore.pyqtSignal()
     """:py:attr:`excitationSeq` changed"""
@@ -79,35 +78,31 @@ class ImageList(DictListModel):
         self._curType = t
         self.currentExcitationTypeChanged.emit()
 
-    def data(self, index: QtCore.QModelIndex,
-             role: int = QtCore.Qt.UserRole) -> Any:
+    def getProperty(self, index: int, role: str) -> Any:
         """Get data for an image sequence
 
-        This implements :py:meth:`QAbstractListModel.data`.
+        This implements :py:meth:`DictListModel.getProperty`.
 
         Parameters
         ----------
         index
-            QModelIndex containing the list index via ``row()``
+            List index
         role
-            Which dict value to get. See also :py:meth:`roleNames`.
+            Which value to get
 
         Returns
         -------
-            Requested data
+        Requested data
         """
-        d = super().data(index, role)
-
-        if role == self.Roles.display:
-            if isinstance(d, str):
-                return d
-            if isinstance(d, Path):
-                return f"{d.name} ({str(d.parent)})"
+        d = super().getProperty(index, role)
+        if role == "display" and not isinstance(d, str):
             return f"<{index.row():03}>"
-        if role == self.Roles.image:
+        if role == "image":
             if isinstance(d, (str, Path)):
+                # TODO: Error handling
                 d = io.ImageSequence(d).open()
             return self._frameSel(d, self.currentExcitationType)
+        return d
 
     @staticmethod
     def _makeEntry(obj: Union[Dict[Union[str, Path], ImageSequence],
