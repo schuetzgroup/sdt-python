@@ -12,12 +12,14 @@ higher level functions. This includes
   of it (:py:class:`ThreadSafeSingleton`)
 - functions for common tasks involving :py:class:`pandas.DataFrame`:
   :py:func:`flatten_multiindex`, :py:func:`split_dataframe`
-- The :py:class:`Slicerator` and :py:class:`Pipeline` classes as well as the
+- the :py:class:`Slicerator` and :py:class:`Pipeline` classes as well as the
   :py:func:`pipeline` decorator for creation of lazy-loading, fancy-slicable
   iterators.
 - the :py:mod:`numba` module, which define stubs for important numba objects in
   case numba is not installed. That way, things like the ``jit`` decorator
   will not raise an error during import if numba is not present.
+- the :py:func:`raise_in_thread` function, which allows for raising exceptions
+  in specific threads.
 
 
 Examples
@@ -105,7 +107,9 @@ Programming reference
 .. autoclass:: Pipeline
     :members:
 .. autofunction:: pipeline
+.. autofunction:: raise_in_thread
 """
-from .singleton import Singleton, ThreadSafeSingleton
 from .pandas import *
+from .raise_in_thread import raise_in_thread
+from .singleton import Singleton, ThreadSafeSingleton
 from .slicerator import Slicerator, Pipeline, pipeline
