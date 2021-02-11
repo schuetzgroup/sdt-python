@@ -13,5 +13,5 @@ from .frame_selector import FrameSelector
 from .image_display import ImageDisplay
 from .image_selector import ImageSelector
 from .loc_display import LocDisplay
-from .locator import LocateOptions
+from .locate_options import LocateOptions
 from .roi_selector import ROISelector
