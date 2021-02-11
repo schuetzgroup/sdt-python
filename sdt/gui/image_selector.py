@@ -28,6 +28,7 @@ class ImageList(DictListModel):
     """
     class Roles(enum.IntEnum):
         display = QtCore.Qt.UserRole
+        key = enum.auto()
         image = enum.auto()
 
     def __init__(self, parent: QtCore.QObject = None):
@@ -126,13 +127,16 @@ class ImageList(DictListModel):
         """
         if isinstance(obj, QtCore.QUrl):
             obj = Path(obj.toLocalFile())
+        if isinstance(obj, str) and obj.startswith("file://"):
+            obj = Path(obj[7:])
         if isinstance(obj, (str, Path)):
-            obj = {"display": obj, "image": obj}
+            obj = {"display": f"{obj.name} ({str(obj.parent)})", "key": obj,
+                   "image": obj}
         elif isinstance(obj, np.ndarray) and img.ndim == 2:
             # Single image
-            obj = {"display": None, "image": obj[None, ...]}
+            obj = {"display": None, "key": None, "image": obj[None, ...]}
         elif isinstance(obj, (tuple, list)):
-            obj = {"display": obj[0], "image": obj[1]}
+            obj = {"display": obj[0], "key": obj[0], "image": obj[1]}
         return obj
 
     def insert(self, index: int,

@@ -14,4 +14,5 @@ from .image_display import ImageDisplay
 from .image_selector import ImageSelector
 from .loc_display import LocDisplay
 from .locate_options import LocateOptions
+from .locator import Locator
 from .roi_selector import ROISelector
