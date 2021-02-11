@@ -7,9 +7,9 @@ from typing import Any, Dict, Mapping, Optional
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 import pandas as pd
-import sdt.loc
 
-from .process_worker import ProcessWorker
+from .. import loc
+from .thread_worker import ThreadWorker
 
 
 class LocateOptions(QtQuick.QQuickItem):
@@ -35,14 +35,14 @@ class LocateOptions(QtQuick.QQuickItem):
         self._locData = None
 
         self._inputTimer = QtCore.QTimer()
-        self._inputTimer.setInterval(50)
+        self._inputTimer.setInterval(100)
         self._inputTimer.setSingleShot(True)
         self._inputTimer.timeout.connect(self._triggerLocalize)
 
         self.inputChanged.connect(self._inputsChanged)
         self.optionsChanged.connect(self._inputsChanged)
 
-        self._worker = ProcessWorker(self._localize)
+        self._worker = ThreadWorker(self._localize)
         self._worker.enabledChanged.connect(self.previewEnabledChanged)
         self._worker.finished.connect(self._workerFinished)
         self._worker.error.connect(self._workerError)
@@ -169,7 +169,7 @@ class LocateOptions(QtQuick.QQuickItem):
         -------
         Localization data
         """
-        algo_mod = getattr(sdt.loc, algorithm)
+        algo_mod = getattr(loc, algorithm)
         result = algo_mod.locate(image, **loc_options)
         return result
 
