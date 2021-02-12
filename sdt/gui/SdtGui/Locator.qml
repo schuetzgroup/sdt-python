@@ -15,7 +15,6 @@ T.Locator {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 5
         ImageSelector {
             id: imSel
             Layout.fillWidth: true
@@ -79,12 +78,14 @@ T.Locator {
         closePolicy: Popup.NoAutoClose
         modal: true
         standardButtons: (batchWorker.progress == batchWorker.count ?
-                          Dialog.SaveAll | Dialog.Discard :
+                          Dialog.SaveAll | Dialog.Close :
                           Dialog.Abort)
 
-        onDiscarded: { close() }
         onAccepted: { root.saveAll() }
-        onRejected: { batchWorker.abort() }
+        onRejected: {
+            if (batchWorker.progress < batchWorker.count)
+                batchWorker.abort()
+        }
 
         ColumnLayout {
             anchors.fill: parent

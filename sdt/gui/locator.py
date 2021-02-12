@@ -33,12 +33,11 @@ class Locator(QtQuick.QQuickItem):
         for i in range(self.dataset.rowCount()):
             file = self.dataset.getProperty(i, "key")
             ld = self.dataset.getProperty(i, "locData")
-            io.save(file.with_suffix(".new.h5"), ld)
-            with file.with_suffix(".new.yaml").open("w") as yf:
+            io.save(file.with_suffix(".h5"), ld)
+            with file.with_suffix(".yaml").open("w") as yf:
                 io.yaml.safe_dump(
                     {"algorithm": self.algorithm, "options": self.options,
                      "roi": [], "filter": ""}, yf)
-
 
 
 QtQml.qmlRegisterType(Locator, "SdtGui.Templates", 1, 0, "Locator")
@@ -67,6 +66,7 @@ ApplicationWindow {
     Locator {
         id: loc
         anchors.fill: parent
+        anchors.margins: 5
     }
     Settings {
         id: settings
