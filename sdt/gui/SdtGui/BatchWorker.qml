@@ -11,8 +11,8 @@ import SdtGui.Templates 1.0 as T
 T.BatchWorker {
     id: root
 
-    implicitWidth: rootLayout.Layout.minimumWidth
-    implicitHeight: rootLayout.Layout.minimumHeight
+    implicitWidth: rootLayout.implicitWidth
+    implicitHeight: rootLayout.implicitHeight
 
     ColumnLayout {
         id: rootLayout
