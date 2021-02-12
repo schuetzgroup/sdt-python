@@ -102,6 +102,8 @@ class Dataset(DictListModel):
             dataset entries, unspecified values will removed.
             Any entries with no data after this will be deleted from the model.
         """
+        if isinstance(files, QtQml.QJSValue):
+            files = files.toVariant()
         i = -1
         remove = []
         for i, f in enumerate(files):
