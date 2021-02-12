@@ -106,6 +106,7 @@ class ThreadWorker(QtCore.QObject):
             return
         if e:
             self._workerThread = threading.Thread(target=self._workerFunc)
+            self._callEvent.clear()
             self._workerThread.start()
         else:
             helper.raise_in_thread(self._workerThread.ident, _StopThread)
