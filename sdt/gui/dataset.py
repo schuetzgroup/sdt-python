@@ -124,7 +124,7 @@ class Dataset(DictListModel):
             else:
                 self.append({fileRole: f})
         for j in range(i + 1, self.rowCount()):
-            new = self.get(i).copy()
+            new = self.get(j).copy()
             new.pop(fileRole, None)
             if not new:
                 remove.append(j)
