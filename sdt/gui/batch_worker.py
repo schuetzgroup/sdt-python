@@ -134,10 +134,10 @@ class BatchWorker(QtQuick.QQuickItem):
         processing has finished.
         """
         if isinstance(self._dataset, DatasetCollection):
-            cnt = sum(self._datset.getProperty(i, "dataset").count
+            cnt = sum(self._dataset.getProperty(i, "dataset").count
                       for i in range(self._dataset.count))
             # TODO: Handle empty
-            self._curDset = self._datset.getProperty(0, "dataset")
+            self._curDset = self._dataset.getProperty(0, "dataset")
         else:
             cnt = self._dataset.count
             self._curDset = self._dataset
