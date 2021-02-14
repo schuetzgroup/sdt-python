@@ -146,7 +146,7 @@ class Window(Component):
     accessed via :py:attr:`instance_`.
     """
     _qmlSrc = """
-import QtQuick 2.0
+import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.2
@@ -155,11 +155,14 @@ import SdtGui 1.0
 Window {{
     id: root
     visible: true
+    width: wrappedObject.implicitWidth
+    height: wrappedObject.implicitHeight
 
     {component} {{
         id: wrappedObject
         objectName: "{objectName}"
         anchors.fill: parent
+        anchors.margins: 5
     }}
 }}
 """
