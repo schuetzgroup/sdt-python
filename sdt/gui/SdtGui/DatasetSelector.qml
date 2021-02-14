@@ -12,4 +12,13 @@ ComboBox {
     readonly property var currentDataset: model.getProperty(currentIndex, "dataset")
     model: DatasetCollection {}
     textRole: "key"
+
+    Connections {
+        target: model
+        ignoreUnknownSignals: true  // in case model has no `count` property
+        onCountChanged: {
+            if (currentIndex < 0 && model.rowCount() > 0)
+                currentIndex = 0
+        }
+    }
 }
