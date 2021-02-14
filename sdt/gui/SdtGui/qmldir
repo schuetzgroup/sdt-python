@@ -8,6 +8,7 @@ BatchWorker 1.0 BatchWorker.qml
 ChannelConfig 1.0 ChannelConfig.qml
 DataCollector 1.0 DataCollector.qml
 DatasetSelector 1.0 DatasetSelector.qml
+EditableSpinBox 1.0 EditableSpinBox.qml
 FrameSelector 1.0 FrameSelector.qml
 ImageDisplay 1.0 ImageDisplay.qml
 ImageSelector 1.0 ImageSelector.qml
@@ -15,5 +16,6 @@ ImageViewer 1.0 ImageViewer.qml
 LocateOptions 1.0 LocateOptions.qml
 Locator 1.0 Locator.qml
 ROISelector 1.0 ROISelector.qml
+RealSpinBox 1.0 RealSpinBox.qml
 
 singleton Common 1.0 Common.qml
