@@ -289,13 +289,13 @@ class ImageSelector(QtQuick.QQuickItem):
             return
 
         self._curImage = self.dataset.getProperty(index, self.imageRole)
-        self._qmlNFramesChanged.emit(self._qmlNFrames)
+        self.currentFrameCountChanged.emit()
 
-    _qmlNFramesChanged = QtCore.pyqtSignal(int)
+    currentFrameCountChanged = QtCore.pyqtSignal()
 
-    @QtCore.pyqtProperty(int, notify=_qmlNFramesChanged)
-    def _qmlNFrames(self) -> int:
-        """Expose the number of frames of current sequence to QML"""
+    @QtCore.pyqtProperty(int, notify=currentFrameCountChanged)
+    def currentFrameCount(self) -> int:
+        """Number of frames in current image sequence"""
         if self._curImage is None:
             return 0
         return len(self._curImage)
@@ -314,6 +314,11 @@ class ImageSelector(QtQuick.QQuickItem):
         else:
             self._output = self._curImage[index]
         self.outputChanged.emit(self._output)
+
+    currentIndex = QmlDefinedProperty()
+    """Index w.r.t :py:attr:`dataset` of currently selected image sequence"""
+    currentFrame = QmlDefinedProperty()
+    """Currently selected frame number"""
 
 
 QtQml.qmlRegisterType(ImageSelector, "SdtGui.Impl", 1, 0, "ImageSelectorImpl")

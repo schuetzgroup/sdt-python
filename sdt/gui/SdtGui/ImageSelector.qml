@@ -15,6 +15,8 @@ ImageSelectorImpl {
     property bool editable: true
     property string textRole: "display"
     property string imageRole: "image"
+    property alias currentIndex: fileSel.currentIndex
+    property alias currentFrame: frameSel.value
 
     implicitHeight: layout.Layout.minimumHeight
     implicitWidth: layout.Layout.minimumWidth
@@ -76,16 +78,14 @@ ImageSelectorImpl {
         }
         Item { width: 5 }
         Label { text: "frame" }
-        SpinBox {
+        EditableSpinBox {
             id: frameSel
             from: 0
-            to: Math.max(0, root._qmlNFrames - 1)
-            editable: true
+            to: Math.max(0, root.currentFrameCount - 1)
             // Only act on interactive changes as to not trigger multiple
             // updates when e.g. the current file is changed and as a result
             // the `to` property which could in turn change the value
             onValueModified: { root._frameChanged(value) }
-            Component.onCompleted: { contentItem.selectByMouse = true }
         }
     }
 
@@ -95,7 +95,7 @@ ImageSelectorImpl {
         selectMultiple: true
 
         onAccepted: {
-            root.dataset = fileUrls
+            for (var u of fileUrls) root.dataset.append(u)
             fileSel.popup.close()
         }
     }
@@ -116,5 +116,5 @@ ImageSelectorImpl {
         }
     }
 
-    on_QmlNFramesChanged: { _frameChanged(frameSel.value) }
+    onCurrentFrameCountChanged: { _frameChanged(frameSel.value) }
 }
