@@ -14,13 +14,13 @@ Item {
     property real value: 0
     property int decimals: 2
     property real stepSize: 1.0
-    property bool editable: false
+    property alias editable: spin.editable
     signal valueModified(real value)
 
     implicitWidth: spin.implicitWidth
     implicitHeight: spin.implicitHeight
 
-    SpinBox {
+    EditableSpinBox {
         id: spin
 
         property real factor: Math.pow(10, decimals)
@@ -29,7 +29,6 @@ Item {
         to: Common.clampInt(root.to * factor)
         value: root.value * factor
         stepSize: root.stepSize * factor
-        editable: root.editable
 
         anchors.fill: parent
 
