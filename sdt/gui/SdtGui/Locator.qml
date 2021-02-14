@@ -13,7 +13,12 @@ T.Locator {
     property alias locData: loc.locData
     property alias previewEnabled: loc.previewEnabled
 
+    implicitHeight: rootLayout.implicitHeight
+    implicitWidth: rootLayout.implicitWidth
+
     ColumnLayout {
+        id: rootLayout
+
         anchors.fill: parent
         ImageSelector {
             id: imSel

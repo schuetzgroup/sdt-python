@@ -14,8 +14,8 @@ T.FrameSelector {
     property bool showTypeSelector: true
     property alias currentExcitationType: excSel.currentText
 
-    implicitHeight: rootLayout.Layout.minimumHeight
-    implicitWidth: rootLayout.Layout.minimumWidth
+    implicitHeight: rootLayout.implicitHeight
+    implicitWidth: rootLayout.implicitWidth
 
     RowLayout {
         id: rootLayout

@@ -11,8 +11,8 @@ Item {
     id: root
     property alias dataset: imSel.dataset
 
-    implicitHeight: rootLayout.Layout.minimumHeight
-    implicitWidth: rootLayout.Layout.minimumWidth
+    implicitHeight: rootLayout.implicitHeight
+    implicitWidth: rootLayout.implicitWidth
 
     ColumnLayout {
         id: rootLayout
