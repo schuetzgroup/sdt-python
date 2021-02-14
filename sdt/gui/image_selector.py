@@ -45,7 +45,7 @@ class ImageList(DictListModel):
 
     def _onExcTypeChanged(self):
         """Emit :py:meth:`dataChanged` if exc seq or current type change"""
-        self._notifyChanged(0, self.rowCount(), ["image"])
+        self._notifyChange(0, self.rowCount(), ["image"])
 
     excitationSeqChanged = QtCore.pyqtSignal()
     """:py:attr:`excitationSeq` changed"""
@@ -97,7 +97,7 @@ class ImageList(DictListModel):
         """
         d = super().getProperty(index, role)
         if role == "display" and not isinstance(d, str):
-            return f"<{index.row():03}>"
+            return f"<{index:03}>"
         if role == "image":
             if isinstance(d, (str, Path)):
                 # TODO: Error handling
@@ -128,8 +128,10 @@ class ImageList(DictListModel):
         if isinstance(obj, QtCore.QUrl):
             obj = Path(obj.toLocalFile())
         if isinstance(obj, str) and obj.startswith("file://"):
-            obj = Path(obj[7:])
-        if isinstance(obj, (str, Path)):
+            obj = obj[7:]
+        if isinstance(obj, str):
+            obj = Path(obj)
+        if isinstance(obj, Path):
             obj = {"display": f"{obj.name} ({str(obj.parent)})", "key": obj,
                    "image": obj}
         elif isinstance(obj, np.ndarray) and img.ndim == 2:
