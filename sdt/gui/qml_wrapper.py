@@ -32,16 +32,17 @@ class Component(QtCore.QObject):
         Error = enum.auto()
         """An error occured. Error message was written via ``qWarning().``"""
 
-    def __init__(self, qmlSrc: str,
+    def __init__(self, qmlSrc: Union[str, Path],
                  qmlFile: Optional[Union[str, Path, QtCore.QUrl]] = None,
                  parent: QtCore.QObject = None):
         """Parameters
         ----------
         qmlSrc
-            QML source
+            Either QML source code or :py:class:`Path` pointing to source
+            file.
         qmlFile
-            Behave as if the source had been loaded from a file named
-            `qmlFile`.
+            If `qmlSrc` is source code, behave as if it had been loaded from a
+            file named `qmlFile`.
         parent
             Parent QObject
         """
@@ -56,7 +57,10 @@ class Component(QtCore.QObject):
         self._engine.objectCreated.connect(self._instanceCreated)
         self._status = self.Status.Loading
         self.status_Changed.emit(self._status)
-        self._engine.loadData(qmlSrc.encode(), qmlFile)
+        if isinstance(qmlSrc, Path):
+            self._engine.load(str(qmlSrc))
+        else:
+            self._engine.loadData(qmlSrc.encode(), qmlFile)
 
     def _instanceCreated(self, instance: Union[QtCore.QObject, None],
                          url: QtCore.QUrl):
