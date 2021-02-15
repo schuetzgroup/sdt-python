@@ -332,5 +332,5 @@ class DatasetCollection(DictListModel):
         self.reset(models)
 
 
-QtQml.qmlRegisterType(DatasetCollection, "SdtGui.Impl", 1, 0,
-                      "DatasetCollection")
+QtQml.qmlRegisterType(Dataset, "SdtGui", 1, 0, "Dataset")
+QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 1, 0, "DatasetCollection")

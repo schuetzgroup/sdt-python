@@ -4,7 +4,7 @@
 
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import SdtGui.Impl 1.0
+import SdtGui 1.0
 
 
 ComboBox {
