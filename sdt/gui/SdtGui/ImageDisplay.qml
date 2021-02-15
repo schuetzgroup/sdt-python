@@ -50,6 +50,21 @@ T.ImageDisplay {
         property real contrastMax: 0.0
         property bool imageLoaded: false
 
+        function calcScaleFactor(srcW, srcH, sclW, sclH) {
+            var xf, yf
+            if (srcW == 0) {
+                xf = 1
+            } else {
+                xf = sclW / srcW
+            }
+            if (srcH == 0) {
+                yf = 1
+            } else {
+                yf = sclH / srcH
+            }
+            return Math.min(xf, yf)
+        }
+
         RowLayout{
             ColumnLayout {
                 ToolButton {
@@ -71,15 +86,6 @@ T.ImageDisplay {
                     id: zoomFitButton
                     icon.name: "zoom-fit-best"
                     checkable: true
-                    onCheckedChanged: {
-                        if (checked)
-                            scroll.scaleFactor = Qt.binding(function() {
-                                return scroll.calcScaleFactor(
-                                    img.sourceWidth, img.sourceHeight,
-                                    scroll.width, scroll.height
-                                )
-                            })
-                    }
                 }
                 ToolButton {
                     icon.name: "zoom-in"
@@ -98,22 +104,14 @@ T.ImageDisplay {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                function calcScaleFactor(srcW, srcH, sclW, sclH) {
-                    var xf, yf
-                    if (srcW == 0) {
-                        xf = 1
-                    } else {
-                        xf = sclW / srcW
-                    }
-                    if (srcH == 0) {
-                        yf = 1
-                    } else {
-                        yf = sclH / srcH
-                    }
-                    return Math.min(xf, yf)
-                }
-
                 property real scaleFactor: 1.0
+                Binding on scaleFactor {
+                    when: zoomFitButton.checked
+                    value: rootLayout.calcScaleFactor(
+                        img.sourceWidth, img.sourceHeight,
+                        scroll.width, scroll.height
+                    )
+                }
 
                 contentWidth: Math.max(availableWidth, img.width)
                 contentHeight: Math.max(availableHeight, img.height)
