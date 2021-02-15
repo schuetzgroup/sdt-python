@@ -55,6 +55,10 @@ class Component(QtCore.QObject):
         self._engine = QtQml.QQmlApplicationEngine()
         self._engine.addImportPath(qmlPath)
         self._engine.objectCreated.connect(self._instanceCreated)
+        # TODO: A user can only connect to status_Changed after __init__
+        # finishes and will therefore miss this signal and also the one
+        # emitted by _instanceCreated. Maybe add callback parameter to
+        # __init__?
         self._status = self.Status.Loading
         self.status_Changed.emit(self._status)
         if isinstance(qmlSrc, Path):
@@ -150,19 +154,32 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.2
+import Qt.labs.settings 1.0
 import SdtGui 1.0
 
 Window {{
     id: root
     visible: true
-    width: wrappedObject.implicitWidth
-    height: wrappedObject.implicitHeight
 
     {component} {{
         id: wrappedObject
         objectName: "{objectName}"
         anchors.fill: parent
         anchors.margins: 5
+    }}
+    Settings {{
+        id: settings
+        category: "{component}Window"
+        property int width: 800
+        property int height: 600
+    }}
+    Component.onCompleted: {{
+        width = settings.width
+        height = settings.height
+    }}
+    onClosing: {{
+        settings.setValue("width", width)
+        settings.setValue("height", height)
     }}
 }}
 """
