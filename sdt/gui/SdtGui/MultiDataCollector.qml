@@ -21,34 +21,12 @@ T.MultiDataCollector {
         id: rootLayout
         anchors.fill: parent
 
-        RowLayout {
-            Label { text: "Data folder:" }
-            TextField {
-                id: dataDirEdit
-                Layout.fillWidth: true
-                selectByMouse: true
-                Binding on text {
-                    when: root.datasets !== undefined
-                    value: root.datasets.dataDir
-                }
-                onTextChanged: {
-                    datasetSel.model.dataDir = text
-                }
-            }
-            ToolButton {
-                id: dataDirButton
-                icon.name: "document-open"
-                onClicked: { dataDirDialog.open() }
-            }
-            FileDialog {
-                id: dataDirDialog
-                title: "Choose data folder…"
-                selectFolder: true
-
-                onAccepted: {
-                    dataDirEdit.text = fileUrl.toString().substring(7)  // remove file://
-                }
-            }
+        DirSelector {
+            id: dataDirSel
+            label: "Data folder:"
+            dataDir: root.datasets !== undefined ? root.datasets.dataDir : ""
+            onDataDirChanged: { root.datasets.dataDir = dataDir }
+            Layout.fillWidth: true
         }
         RowLayout {
             DatasetSelector {

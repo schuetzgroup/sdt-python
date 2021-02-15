@@ -14,7 +14,7 @@ T.DataCollector {
     id: root
     property alias dataset: fileListView.model
     property var sourceNames: 0
-    property alias showDataDirSelector: dataDirLayout.visible
+    property alias showDataDirSelector: dataDirSel.visible
 
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
@@ -23,34 +23,13 @@ T.DataCollector {
         id: rootLayout
         anchors.fill: parent
 
-        RowLayout {
-            id: dataDirLayout
-            Label { text: "Data folder:" }
-            TextField {
-                id: dataDirEdit
-                Layout.fillWidth: true
-                selectByMouse: true
-                Binding on text {
-                    when: root.dataset !== undefined
-                    value: root.dataset !== undefined ? root.dataset.dataDir : ""
-                }
-                onTextChanged: { root.dataset.dataDir = text }
-            }
-            ToolButton {
-                id: dataDirButton
-                icon.name: "document-open"
-                onClicked: { dataDirDialog.open() }
-            }
-            FileDialog {
-                id: dataDirDialog
-                title: "Choose data folder…"
-                selectFolder: true
-                onAccepted: {
-                    dataDirEdit.text = fileUrl.toString().substring(7)  // remove file://
-                }
-            }
+        DirSelector {
+            id: dataDirSel
+            label: "Data folder:"
+            dataDir: root.dataset !== undefined ? root.dataset.dataDir : ""
+            onDataDirChanged: { root.dataset.dataDir = dataDir }
+            Layout.fillWidth: true
         }
-
         ListView {
             id: fileListView
 
