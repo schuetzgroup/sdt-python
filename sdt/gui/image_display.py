@@ -80,4 +80,4 @@ class ImageDisplay(QtQuick.QQuickItem):
         return self._inputMaxVal
 
 
-QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Impl", 1, 0, "ImageDisplayImpl")
+QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Templates", 1, 0, "ImageDisplay")

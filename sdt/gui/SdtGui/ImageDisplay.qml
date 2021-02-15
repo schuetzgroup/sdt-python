@@ -5,10 +5,11 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.7
 import QtQuick.Layouts 1.7
-import SdtGui.Impl 1.0
+import SdtGui 1.0
+import SdtGui.Templates 1.0 as T
 
 
-ImageDisplayImpl {
+T.ImageDisplay {
     id: root
 
     implicitHeight: rootLayout.implicitHeight
