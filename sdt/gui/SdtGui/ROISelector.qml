@@ -76,6 +76,31 @@ ROISelectorImpl {
             property var shapeComponent: null
             property var newItem: null
             property var itemData: null
+
+            onPressed: {
+                var ri = overlayRep.itemAt(nameSel.currentIndex)
+                if (ri.item !== undefined)
+                    ri.item.destroy()
+                newItem = ri.item = shapeComponent.createObject(
+                    ri, {name: nameSel.currentText})
+                newItem.x = mouse.x
+                newItem.y = mouse.y
+                itemData = {x0: mouse.x, y0: mouse.y}
+            }
+            onPositionChanged: {
+                newItem.x = Math.min(itemData.x0, mouse.x)
+                newItem.y = Math.min(itemData.y0, mouse.y)
+                newItem.width = Math.abs(itemData.x0 - mouse.x)
+                newItem.height = Math.abs(itemData.y0 - mouse.y)
+            }
+            onReleased: {
+                var name = newItem.name
+                newItem.roiChanged.connect(function() { root.roiChanged(name) })
+                newItem.roiChanged()
+                newItem = undefined
+                itemData = undefined
+                newShapeButtons.checkedButton = undefined
+            }
         }
     }
 
@@ -226,60 +251,29 @@ ROISelectorImpl {
 
     states: [
         State {
-            name: "drawingShape"
-            PropertyChanges {
-                target: overlayMouse
-                visible: true
-                onPressed: {
-                    var ri = overlayRep.itemAt(nameSel.currentIndex)
-                    if (ri.item !== null)
-                        ri.item.destroy()
-                    newItem = ri.item = shapeComponent.createObject(
-                        ri, {name: nameSel.currentText})
-                    newItem.x = mouse.x
-                    newItem.y = mouse.y
-                    itemData = {x0: mouse.x, y0: mouse.y}
-                }
-                onPositionChanged: {
-                    newItem.x = Math.min(itemData.x0, mouse.x)
-                    newItem.y = Math.min(itemData.y0, mouse.y)
-                    newItem.width = Math.abs(itemData.x0 - mouse.x)
-                    newItem.height = Math.abs(itemData.y0 - mouse.y)
-                }
-                onReleased: {
-                    var name = newItem.name
-                    newItem.roiChanged.connect(function() { root.roiChanged(name) })
-                    newItem.roiChanged()
-                    newItem = null
-                    itemData = null
-                    newShapeButtons.checkedButton = null
-                }
-            }
-        },
-        State {
             name: "drawingIntRectangle"
-            extend: "drawingShape"
             when: intRectangleButton.checked
             PropertyChanges {
                 target: overlayMouse
+                visible: true
                 shapeComponent: intRectRoiComponent
             }
         },
         State {
             name: "drawingRectangle"
-            extend: "drawingShape"
             when: rectangleButton.checked
             PropertyChanges {
                 target: overlayMouse
+                visible: true
                 shapeComponent: rectRoiComponent
             }
         },
         State {
             name: "drawingEllipse"
-            extend: "drawingShape"
             when: ellipseButton.checked
             PropertyChanges {
                 target: overlayMouse
+                visible: true
                 shapeComponent: ellipseRoiComponent
             }
         }

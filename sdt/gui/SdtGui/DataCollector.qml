@@ -59,20 +59,14 @@ T.DataCollector {
                             ToolButton {
                                 id: fileOpenButton
                                 icon.name: "document-open"
-                                onClicked: { fileDialog.open() }
+                                onClicked: {
+                                    fileDialog.targetRole = modelData
+                                    fileDialog.open()
+                                }
                             }
                             ToolButton {
                                 icon.name: "edit-delete"
                                 onClicked: root.dataset.setFiles(modelData, [])
-                            }
-                            FileDialog {
-                                id: fileDialog
-                                title: "Choose image file(s)…"
-                                selectMultiple: true
-
-                                onAccepted: {
-                                    root.dataset.setFiles(modelData, fileDialog.fileUrls)
-                                }
                             }
                         }
                     }
@@ -127,6 +121,17 @@ T.DataCollector {
             Layout.fillWidth: true
             Layout.fillHeight: true
             ScrollBar.vertical: ScrollBar {}
+        }
+    }
+
+    FileDialog {
+        id: fileDialog
+        title: "Choose image file(s)…"
+        selectMultiple: true
+        property string targetRole
+
+        onAccepted: {
+            root.dataset.setFiles(targetRole, fileDialog.fileUrls)
         }
     }
 
