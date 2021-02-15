@@ -25,25 +25,10 @@ class DataCollector(QtQuick.QQuickItem):
         """
         super().__init__(self, parent)
 
-    sourceCount = QmlDefinedProperty()
-    """Number of source files per dataset entry"""
-
-    datasetsChanged = QtCore.pyqtSignal()
-
-    @QtCore.pyqtProperty("QVariantMap", notify=datasetsChanged)
-    def datasets(self) -> Dict[str, Union[List[str], List[List[str]]]]:
-        """Datasets in a Python-friendly format
-
-        A dict mapping dataset names to file lists. Each file list can be
-        either a list of str in case :py:attr:`sourceCount` equals 1 or a
-        list of lists of str, where each second-level list contains the
-        file names belonging to a single dataset element.
-        """
-        return self._model.datasets
-
-    @datasets.setter
-    def datasets(self, dsets: Dict[str, Union[List[str], List[List[str]]]]):
-        self._model.datasets = dsets
+    sourceNames = QmlDefinedProperty()
+    """Number of source files per dataset entry or list of source names"""
+    datasets = QmlDefinedProperty()
+    """:py:class:`DatasetCollection` that is used by this item"""
 
 
 QtQml.qmlRegisterType(DataCollector, "SdtGui.Templates", 1, 0, "DataCollector")
