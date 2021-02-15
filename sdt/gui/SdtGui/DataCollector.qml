@@ -53,8 +53,6 @@ T.DataCollector {
                 id: datasetSel
                 Layout.fillWidth: true
                 editable: root.editable && currentIndex >= 0
-                // selectTextByMouse: true  // Qt >=5.15
-                Component.onCompleted: { contentItem.selectByMouse = true }
                 onEditTextChanged: {
                     if (currentIndex >= 0 && editText)
                         model.setProperty(currentIndex, "key", editText)

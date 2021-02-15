@@ -21,4 +21,6 @@ ComboBox {
                 currentIndex = 0
         }
     }
+    // selectTextByMouse: true  // Qt >=5.15
+    Component.onCompleted: { contentItem.selectByMouse = true }
 }
