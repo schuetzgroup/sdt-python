@@ -7,7 +7,7 @@ from .qml_wrapper import Component, Window, messageHandler, qmlPath
 # QML types
 from .batch_worker import BatchWorker
 from .channel_config import ChannelConfig
-from .data_collector import DataCollector
+from .data_collector import DataCollector, MultiDataCollector
 from .dataset import DatasetCollection, Dataset
 from .frame_selector import FrameSelector
 from .image_display import ImageDisplay

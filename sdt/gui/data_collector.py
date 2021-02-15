@@ -11,19 +11,24 @@ from .qml_wrapper import QmlDefinedProperty
 
 
 class DataCollector(QtQuick.QQuickItem):
-    """QtQuick item which allows for defining datasets and associated files
+    """QtQuick item which allows for defining a dataset and associated files
 
     This supports defining multiple files per dataset entry, which can
     appear, for instance, when using multiple cameras simultaneously; see
-    the :py:attr:`sourceCount` property.
+    the :py:attr:`sourceNames` property.
     """
-    def __init__(self, parent: QtQuick.QQuickItem = None):
-        """Parameters
-        ----------
-        parent
-            Parent item
-        """
-        super().__init__(self, parent)
+
+    sourceNames = QmlDefinedProperty()
+    """Number of source files per dataset entry or list of source names"""
+    dataset = QmlDefinedProperty()
+    """:py:class:`Dataset` that is used by this item"""
+
+
+class MultiDataCollector(QtQuick.QQuickItem):
+    """QtQuick item which allows for defining datasets and associated files
+
+    This supports defining multiple datasets using :py:class:`DataCollector`.
+    """
 
     sourceNames = QmlDefinedProperty()
     """Number of source files per dataset entry or list of source names"""
@@ -32,3 +37,5 @@ class DataCollector(QtQuick.QQuickItem):
 
 
 QtQml.qmlRegisterType(DataCollector, "SdtGui.Templates", 1, 0, "DataCollector")
+QtQml.qmlRegisterType(MultiDataCollector, "SdtGui.Templates", 1, 0,
+                      "MultiDataCollector")

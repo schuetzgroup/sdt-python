@@ -6,14 +6,15 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.12
+import SdtGui 1.0
 import SdtGui.Templates 1.0 as T
 
 
 T.DataCollector {
     id: root
-    property alias datasets: datasetSel.model
+    property alias dataset: fileListView.model
     property var sourceNames: 0
-    property bool editable: true
+    property alias showDataDirSelector: dataDirLayout.visible
 
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
@@ -23,14 +24,17 @@ T.DataCollector {
         anchors.fill: parent
 
         RowLayout {
-            visible: root.editable
+            id: dataDirLayout
             Label { text: "Data folder:" }
             TextField {
                 id: dataDirEdit
                 Layout.fillWidth: true
                 selectByMouse: true
-                Binding on text { value: root.datasets.dataDir }
-                onTextChanged: { root.datasets.dataDir = text }
+                Binding on text {
+                    when: root.dataset !== undefined
+                    value: root.dataset !== undefined ? root.dataset.dataDir : ""
+                }
+                onTextChanged: { root.dataset.dataDir = text }
             }
             ToolButton {
                 id: dataDirButton
@@ -41,66 +45,37 @@ T.DataCollector {
                 id: dataDirDialog
                 title: "Choose data folder…"
                 selectFolder: true
-
                 onAccepted: {
                     dataDirEdit.text = fileUrl.toString().substring(7)  // remove file://
                 }
             }
         }
 
-        RowLayout {
-            DatasetSelector {
-                id: datasetSel
-                Layout.fillWidth: true
-                editable: root.editable && currentIndex >= 0
-                onEditTextChanged: {
-                    if (currentIndex >= 0 && editText)
-                        model.setProperty(currentIndex, "key", editText)
-                }
-            }
-            ToolButton {
-                icon.name: "list-add"
-                visible: root.editable
-                onClicked: {
-                    datasetSel.model.append("<new>")
-                    datasetSel.currentIndex = datasetSel.model.rowCount() - 1
-                    datasetSel.focus = true
-                    datasetSel.contentItem.selectAll()
-                }
-            }
-            ToolButton {
-                icon.name: "list-remove"
-                visible: root.editable
-                enabled: datasetSel.currentIndex >= 0
-                onClicked: { datasetSel.model.remove(datasetSel.currentIndex) }
-            }
-        }
         ListView {
             id: fileListView
 
-            visible: root.editable
-            model: datasetSel.currentDataset
+            model: Dataset {}
             header: Item {
                 id: headerRoot
                 width: fileListView.width
                 implicitHeight: headerLayout.implicitHeight
-                visible: datasetSel.currentIndex >= 0
+                visible: root.dataset !== undefined
                 RowLayout {
                     id: headerLayout
                     anchors.left: parent.left
                     anchors.right: parent.right
                     Repeater {
-                        model: root.datasets.fileRoles
+                        model: root.dataset !== undefined ? root.dataset.fileRoles : undefined
                         Row {
                             Label {
                                 text: modelData
-                                visible: root.datasets.fileRoles.length > 1
+                                visible: root.dataset.fileRoles.length > 1
                                 anchors.verticalCenter: parent.verticalCenter
                             }
                             Item {
                                 width: 10
                                 height: 1
-                                visible: root.datasets.fileRoles.length > 1
+                                visible: root.dataset.fileRoles.length > 1
                             }
                             ToolButton {
                                 id: fileOpenButton
@@ -109,7 +84,7 @@ T.DataCollector {
                             }
                             ToolButton {
                                 icon.name: "edit-delete"
-                                onClicked: fileListView.model.setFiles(modelData, [])
+                                onClicked: root.dataset.setFiles(modelData, [])
                             }
                             FileDialog {
                                 id: fileDialog
@@ -117,7 +92,7 @@ T.DataCollector {
                                 selectMultiple: true
 
                                 onAccepted: {
-                                    fileListView.model.setFiles(modelData, fileDialog.fileUrls)
+                                    root.dataset.setFiles(modelData, fileDialog.fileUrls)
                                 }
                             }
                         }
@@ -133,7 +108,7 @@ T.DataCollector {
                     id: delegateLayout
                     Repeater {
                         id: delegateRep
-                        model: root.datasets.fileRoles
+                        model: root.dataset.fileRoles
                         ItemDelegate {
                             text: delegateRoot.modelData[modelData]
                             highlighted: hov.hovered
@@ -148,16 +123,17 @@ T.DataCollector {
                 anchors.fill: parent
                 anchors.topMargin: fileListView.headerItem.height
                 Repeater {
-                    model: root.datasets.fileRoles
+                    id: dropRep
+                    model: root.dataset !== undefined ? root.dataset.fileRoles : undefined
 
                     DropArea {
                         height: parent.height
-                        width: parent.width / 2
+                        width: dropRep.count > 0 ? parent.width / dropRep.count : 0
                         keys: "text/uri-list"
-                        visible: fileListView.model !== undefined
+                        visible: root.dataset !== undefined
 
                         onDropped: {
-                            fileListView.model.setFiles(modelData, drop.urls)
+                            root.dataset.setFiles(modelData, drop.urls)
                         }
 
                         Rectangle {
@@ -177,15 +153,18 @@ T.DataCollector {
 
     SystemPalette { id: palette }
 
-    onSourceNamesChanged: {
-        if (Number.isInteger(sourceNames))
-        {
-            var names = []
-            for (var i = 0; i < sourceNames; i++)
-                names.push("source_" + i)
-            datasets.fileRoles = names
-        } else {
-            datasets.fileRoles = sourceNames
+    function fileRolesFromSourceNames(names)
+    {
+        if (Number.isInteger(names)) {
+            var newNames = []
+            for (var i = 0; i < names; i++)
+                newNames.push("source_" + i)
+            return newNames
         }
+        return names
+    }
+
+    onSourceNamesChanged: {
+        dataset.fileRoles = fileRolesFromSourceNames(sourceNames)
     }
 }

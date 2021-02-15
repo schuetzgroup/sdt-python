@@ -15,6 +15,7 @@ ImageSelector 1.0 ImageSelector.qml
 ImageViewer 1.0 ImageViewer.qml
 LocateOptions 1.0 LocateOptions.qml
 Locator 1.0 Locator.qml
+MultiDataCollector 1.0 MultiDataCollector.qml
 ROISelector 1.0 ROISelector.qml
 RealSpinBox 1.0 RealSpinBox.qml
 
