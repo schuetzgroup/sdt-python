@@ -12,7 +12,7 @@ import SdtGui.Templates 1.0 as T
 T.DataCollector {
     id: root
     property alias datasets: datasetSel.model
-    property var sourceNames: 1
+    property var sourceNames: 0
     property bool editable: true
 
     implicitWidth: rootLayout.implicitWidth
@@ -144,13 +144,38 @@ T.DataCollector {
                     }
                 }
             }
+            Row {
+                anchors.fill: parent
+                anchors.topMargin: fileListView.headerItem.height
+                Repeater {
+                    model: root.datasets.fileRoles
 
+                    DropArea {
+                        height: parent.height
+                        width: parent.width / 2
+                        keys: "text/uri-list"
+                        visible: fileListView.model !== undefined
+
+                        onDropped: {
+                            fileListView.model.setFiles(modelData, drop.urls)
+                        }
+
+                        Rectangle {
+                            color: palette.alternateBase
+                            visible: parent.containsDrag
+                            anchors.fill: parent
+                        }
+                    }
+                }
+            }
             clip: true
             Layout.fillWidth: true
             Layout.fillHeight: true
             ScrollBar.vertical: ScrollBar {}
         }
     }
+
+    SystemPalette { id: palette }
 
     onSourceNamesChanged: {
         if (Number.isInteger(sourceNames))
