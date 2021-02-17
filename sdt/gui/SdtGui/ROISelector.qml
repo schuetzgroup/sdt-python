@@ -17,7 +17,7 @@ ROISelectorImpl {
     function _getROI(name) {
         var idx = root.names.indexOf(name)
         var ri = overlayRep.itemAt(idx).item
-        return ri === null ? null : ri.roi
+        return ri ? ri.roi : null
     }
 
     function _setROI(name, roi, type) {
@@ -39,7 +39,7 @@ ROISelectorImpl {
                 property var item: null
 
                 function setROI(roi, type) {
-                    if (item !== null)
+                    if (item)
                         item.destroy()
                     switch (type) {
                         case ROISelector.ROIType.NullShape:
@@ -65,7 +65,7 @@ ROISelectorImpl {
                 }
                 // If not explicitly destroyed, there will be lots of errors
                 // from the resize handles
-                Component.onDestruction: { if (item !== null) item.destroy() }
+                Component.onDestruction: { if (item) item.destroy() }
             }
         }
 
@@ -80,7 +80,7 @@ ROISelectorImpl {
 
             onPressed: {
                 var ri = overlayRep.itemAt(nameSel.currentIndex)
-                if (ri.item !== undefined)
+                if (ri.item)
                     ri.item.destroy()
                 newItem = ri.item = shapeComponent.createObject(
                     ri, {name: nameSel.currentText})
@@ -100,7 +100,7 @@ ROISelectorImpl {
                 newItem.roiChanged()
                 newItem = undefined
                 itemData = undefined
-                newShapeButtons.checkedButton = undefined
+                newShapeButtons.checkedButton = null
             }
         }
     }
