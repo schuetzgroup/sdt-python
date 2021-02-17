@@ -117,4 +117,5 @@ ImageSelectorImpl {
     }
 
     onCurrentFrameCountChanged: { _frameChanged(frameSel.value) }
+    onImageRoleChanged: { _fileChanged(fileSel.currentIndex) }
 }
