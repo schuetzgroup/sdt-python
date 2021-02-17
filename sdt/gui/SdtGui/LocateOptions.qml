@@ -280,5 +280,11 @@ T.LocateOptions {
                 }
             }
         }
+        Item { Layout.fillHeight: true }
+        Switch {
+            text: "Show preview"
+            checked: root.previewEnabled
+            onCheckedChanged: { root.previewEnabled = checked }
+        }
     }
 }

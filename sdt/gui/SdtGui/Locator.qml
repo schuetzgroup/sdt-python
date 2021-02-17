@@ -34,12 +34,7 @@ T.Locator {
                     id: loc
                     input: imSel.output
                     Layout.alignment: Qt.AlignTop
-                }
-                Item { Layout.fillHeight: true }
-                Switch {
-                    text: "Show preview"
-                    checked: loc.previewEnabled
-                    onCheckedChanged: { loc.previewEnabled = checked }
+                    Layout.fillHeight: true
                 }
                 RowLayout {
                     Button {
@@ -68,7 +63,7 @@ T.Locator {
                 input: imSel.output
                 overlays: LocDisplay {
                     locData: loc.locData
-                    visible: root.previewEnabled
+                    visible: loc.previewEnabled
                 }
                 Layout.fillWidth: true
                 Layout.fillHeight: true
