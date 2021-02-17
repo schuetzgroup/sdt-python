@@ -41,6 +41,7 @@ class LocateOptions(QtQuick.QQuickItem):
 
         self.inputChanged.connect(self._inputsChanged)
         self.optionsChanged.connect(self._inputsChanged)
+        self.previewEnabledChanged.connect(self._inputsChanged)
 
         self._worker = ThreadWorker(self._localize)
         self._worker.enabledChanged.connect(self.previewEnabledChanged)
