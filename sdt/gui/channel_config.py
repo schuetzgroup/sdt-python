@@ -199,7 +199,8 @@ class ChannelConfig(QtQuick.QQuickItem):
             Image to get total dimensions from
         """
         height, width = getattr(image, "shape", (0, 0))
-        sourceChans = self.channelsPerSource[sourceId]
+        sourceChans = {k: v for k, v in self.channels.items()
+                       if v["source_id"] == sourceId}
         split_width = width // len(sourceChans)
         r = {c: sdt_roi.ROI(
                 (i * split_width, 0), size=(split_width, height))
@@ -218,7 +219,8 @@ class ChannelConfig(QtQuick.QQuickItem):
             Image to get total dimensions from
         """
         height, width = getattr(image, "shape", (0, 0))
-        sourceChans = self.channelsPerSource[sourceId]
+        sourceChans = {k: v for k, v in self.channels.items()
+                       if v["source_id"] == sourceId}
         split_height = height // len(sourceChans)
         r = {c: sdt_roi.ROI(
                 (0, i * split_height), size=(width, split_height))
@@ -256,7 +258,7 @@ class ChannelConfig(QtQuick.QQuickItem):
             Name of the channel to get the ROI size from
         """
         allRois = self.channels
-        modelRoi = allRois[model]
+        modelRoi = allRois[model]["roi"]
         for n, v in allRois.items():
             r = v.get("roi", None)
             if n == model or r is None:
