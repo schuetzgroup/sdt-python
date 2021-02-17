@@ -18,18 +18,20 @@ T.ImageDisplay {
     property list<Item> overlays
 
     onOverlaysChanged: {
-        while (scroll.contentChildren.length > 1) {
-            // Don't pop the image
-            scroll.contentChildren.pop()
-            // TODO: Can the above cause memory leaks?
-        }
+        var cld = []
+        cld.push(img)
+        for (var i = 0; i < overlays.length; i++)
+            cld.push(overlays[i])
+        // Set contentChildren to re-parent items. Otherwise setting anchors
+        // below will not work.
+        scroll.contentChildren = cld
+
         for (var i = 0; i < overlays.length; i++) {
             var a = overlays[i]
-            scroll.contentChildren.push(a)
             a.anchors.fill = img
             a.z = i
             // Check if scaleFactor property exists
-            if (typeof a.scaleFactor !== "undefined")
+            if (typeof a.scaleFactor !== undefined)
                 a.scaleFactor = Qt.binding(function() { return scroll.scaleFactor })
         }
     }
