@@ -79,9 +79,13 @@ ChannelConfigImpl {
     function _setSourceCount(cnt) {
         var cntDiff = roiConfigList.count - cnt
         if (cntDiff < 0) {
-            for (var i = roiConfigList.count; i < cnt; i++)
-                roiConfigList.append(roiConfig.createObject())
+            for (var i = roiConfigList.count; i < cnt; i++) {
+                // Need to set a parent to prevent garbage collection
+                roiConfigList.append(roiConfig.createObject(roiSelRep))
+            }
         } else if (cntDiff > 0) {
+            for (var j = cnt; j < roiConfigList.count; j++)
+                roiConfigList.get(j).destroy()
             roiConfigList.remove(cnt, cntDiff)
         }
     }
