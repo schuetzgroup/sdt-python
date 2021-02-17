@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 from .. import io, loc
-from .qml_wrapper import Component, QmlDefinedProperty
+from .qml_wrapper import Window, QmlDefinedProperty
 
 
 class Locator(QtQuick.QQuickItem):
@@ -74,50 +74,6 @@ class Locator(QtQuick.QQuickItem):
 QtQml.qmlRegisterType(Locator, "SdtGui.Templates", 1, 0, "Locator")
 
 
-qmlCode = """
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import Qt.labs.settings 1.0
-import SdtGui 1.0
-
-
-ApplicationWindow {
-    id: win
-
-    property alias dataset: loc.dataset
-    property alias algorithm: loc.algorithm
-    property alias options: loc.options
-    property alias locData: loc.locData
-    property alias previewEnabled: loc.previewEnabled
-
-    visible: true
-    width: 800
-    height: 600
-    Locator {
-        id: loc
-        anchors.fill: parent
-        anchors.margins: 5
-    }
-    Settings {
-        id: settings
-        category: "Window"
-        property int width: 640
-        property int height: 400
-    }
-    Component.onCompleted: {
-        width = settings.width
-        height = settings.height
-    }
-    onClosing: {
-        loc.previewEnabled = false
-        settings.setValue("width", width)
-        settings.setValue("height", height)
-    }
-}
-"""
-
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setOrganizationName("schuetzgroup")
@@ -130,7 +86,7 @@ if __name__ == "__main__":
         description="Locate single molecules in fluorsecent microscopy images")
     ap.add_argument("--legacy", help="start legacy app", action="store_true")
     ap.add_argument("-p", "--no-preview", action="store_true",
-                    help="Don't show preview on start-up (legacy only)")
+                    help="Don't show preview on start-up")
     ap.add_argument("files", help="image sequences to open", nargs="*")
     args = ap.parse_args()
 
@@ -152,17 +108,10 @@ if __name__ == "__main__":
 
         w.showPreview = not args.no_preview
     else:
-        def statusHandler(status):
-            if status == Component.Status.Error:
-                QtCore.QCoreApplication.exit(1)
-                return
-            if status == Component.Status.Ready:
-                comp.dataset = args.files
-                comp.previewEnabled = not args.no_preview
-                return
-
-        comp = Component(qmlCode)
-        comp.status_Changed.connect(statusHandler)
-        QtCore.QTimer.singleShot(0, lambda: statusHandler(comp.status_))
+        win = Window("Locator")
+        if win.status_ == Window.Status.Error:
+            sys.exit(1)
+        win.dataset = args.files
+        win.previewEnabled = not args.no_preview
 
     sys.exit(app.exec_())
