@@ -12,6 +12,7 @@ import SdtGui.Impl 1.0
 ROISelectorImpl {
     id: root
     property int drawingTools: ROISelector.DrawingTools.PathROITools
+    property bool showNameSelector: true
 
     function _getROI(name) {
         var idx = root.names.indexOf(name)
@@ -114,10 +115,14 @@ ROISelectorImpl {
 
     RowLayout {
         id: rootLayout
-        Label { text: "draw" }
+        Label {
+            text: "draw"
+            visible: root.showNameSelector
+        }
         ComboBox {
             id: nameSel
             model: root.names
+            visible: root.showNameSelector
         }
         Button {
             id: intRectangleButton
