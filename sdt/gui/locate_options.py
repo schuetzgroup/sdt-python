@@ -48,6 +48,14 @@ class LocateOptions(QtQuick.QQuickItem):
         self._worker.finished.connect(self._workerFinished)
         self._worker.error.connect(self._workerError)
 
+        app = QtCore.QCoreApplication.instance()
+        if app is None:
+            warnings.warn("QCoreApplication not initialized. Manually set "
+                          "LocateOptions.previewEnabled = False on closing, "
+                          "otherwise app will hang.")
+        else:
+            app.aboutToQuit.connect(self._disablePreview)
+
     # Properties
     inputChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Input image was changed"""
@@ -183,6 +191,9 @@ class LocateOptions(QtQuick.QQuickItem):
         """Callback for when worker encounters an error while localizing"""
         # TODO: Implement status widget or something
         print(f"worker error: {exc}")
+
+    def _disablePreview(self):
+        self.previewEnabled = False
 
 
 QtQml.qmlRegisterType(LocateOptions, "SdtGui.Templates", 1, 0, "LocateOptions")
