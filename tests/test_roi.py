@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import yaml
 import pims
-from matplotlib.transforms import Affine2D
+import matplotlib as mpl
 
 from sdt import roi
 from sdt.io import yaml
@@ -129,6 +129,15 @@ class TestRoi(TestCaseBase):
         d = self.roi(self.loc, rel_origin=True)
         self.roi.reset_origin(d)
         pd.testing.assert_frame_equal(d, self.loc_roi)
+
+    def test_eq(self):
+        """.__eq__"""
+        r1 = roi.ROI((10, 12), (35, 40))
+        r2 = roi.ROI(r1.top_left, r1.bottom_right)
+        assert r1 == r2
+        r3 = roi.ROI(r1.top_left, (150, 160))
+        assert r1 != r3
+        r4 = roi.ROI((100, 110), r1.bottom_right)
 
 
 class TestPathRoi(TestRoi):
@@ -250,6 +259,23 @@ class TestPathRoi(TestRoi):
         np.testing.assert_equal(actual.path.codes, desired.path.codes)
         np.testing.assert_allclose(actual.buffer, desired.buffer)
 
+    def test_eq(self):
+        """.__eq__"""
+        path = self.roi.path
+        r1 = roi.PathROI(path, buffer=0)
+        r2 = roi.PathROI(path, buffer=0)
+        assert r1 == r2
+        v3 = path.vertices.copy()
+        v3[1] += 0.5
+        r3 = roi.PathROI(mpl.path.Path(v3, path.codes), buffer=0)
+        assert r1 != r3
+        c4 = path.codes.copy()
+        c4[1] = 1
+        r4 = roi.PathROI(mpl.path.Path(path.vertices, c4), buffer=0)
+        assert r1 != r4
+        r5 = roi.PathROI(path, buffer=0.5)
+        assert r1 != r5
+
 
 class TestPathRoiTransform(unittest.TestCase):
     def setUp(self):
@@ -258,7 +284,7 @@ class TestPathRoiTransform(unittest.TestCase):
 
     def test_transform(self):
         """roi.PathROI.transform: Affine2D arg"""
-        t = Affine2D([[2, 0, 1], [0, 3, 2], [0, 0, 1]])
+        t = mpl.transforms.Affine2D([[2, 0, 1], [0, 3, 2], [0, 0, 1]])
         # linear and trans args should be ignored
         roi2 = self.roi.transform(t, linear="bla", trans="blub")
 
@@ -685,6 +711,18 @@ class TestMaskRoi(TestRoi):
         np.testing.assert_equal(actual.mask, desired.mask)
         np.testing.assert_equal(actual.mask_origin, desired.mask_origin)
         np.testing.assert_equal(actual.pixel_size, desired.pixel_size)
+
+    def test_eq(self):
+        """.__eq__"""
+        r1 = roi.MaskROI(self.mask, (1, 2), 2)
+        r2 = roi.MaskROI(r1.mask, r1.mask_origin, r1.pixel_size)
+        assert r1 == r2
+        r3 = roi.MaskROI(r1.mask + 0.5, r1.mask_origin, r1.pixel_size)
+        assert r1 != r3
+        r4 = roi.MaskROI(r1.mask, (10, 12), r1.pixel_size)
+        assert r1 != r4
+        r5 = roi.MaskROI(r1.mask, r1.mask_origin, r1.pixel_size + 1)
+        assert r1 != r5
 
 
 class TestImagej(unittest.TestCase):

@@ -4,12 +4,12 @@
 
 """Classes for dealing with regions of interest in microscopy data"""
 from contextlib import suppress
+import math
 import warnings
 
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
-from matplotlib.transforms import Affine2D
 
 from .. import spatial, config
 from ..helper import pipeline
@@ -194,6 +194,12 @@ class ROI(object):
     def __repr__(self):
         return "ROI(top_left={}, bottom_right={}, size={})".format(
             self.top_left, self.bottom_right, self.size)
+
+    def __eq__(self, other):
+        if not self.__class__ is other.__class__:
+            return False
+        return (self.top_left == other.top_left and
+                self.bottom_right == other.bottom_right)
 
 
 class PathROI(object):
@@ -449,7 +455,7 @@ class PathROI(object):
         """
         if trafo is not None:
             if isinstance(trafo, np.ndarray):
-                t = Affine2D(trafo)
+                t = mpl.transforms.Affine2D(trafo)
             else:
                 # Assume it is already a Transform object
                 t = trafo
@@ -459,7 +465,7 @@ class PathROI(object):
                 trafo[:2, :2] = linear
             if trans is not None:
                 trafo[:2, 2] = trans
-            t = Affine2D(trafo)
+            t = mpl.transforms.Affine2D(trafo)
 
         return PathROI(self.path.transformed(t), self.buffer,
                        self.image_mask is None)
@@ -494,6 +500,13 @@ class PathROI(object):
 
     def __repr__(self):
         return "PathROI(<{} vertices>)".format(len(self.path.vertices))
+
+    def __eq__(self, other):
+        if not self.__class__ is other.__class__:
+            return False
+        return (np.allclose(self.path.vertices, other.path.vertices) and
+                np.array_equal(self.path.codes, other.path.codes) and
+                math.isclose(self.buffer, other.buffer))
 
 
 class RectangleROI(PathROI):

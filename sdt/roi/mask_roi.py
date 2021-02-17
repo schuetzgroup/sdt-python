@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 from contextlib import suppress
+import math
 
 import numpy as np
 import pandas as pd
@@ -196,6 +197,13 @@ class MaskROI:
     def area(self):
         """Area of `True` pixels in the mask"""
         return np.count_nonzero(self.mask) * self.pixel_size**self.mask.ndim
+
+    def __eq__(self, other):
+        if not self.__class__ is other.__class__:
+            return False
+        return (np.allclose(self.mask, other.mask) and
+                np.allclose(self.mask_origin, other.mask_origin) and
+                math.isclose(self.pixel_size, other.pixel_size))
 
 
 with suppress(ImportError):
