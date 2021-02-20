@@ -26,7 +26,7 @@ T.DataCollector {
         DirSelector {
             id: dataDirSel
             label: "Data folder:"
-            dataDir: root.dataset !== undefined ? root.dataset.dataDir : ""
+            dataDir: root.dataset ? root.dataset.dataDir : ""
             onDataDirChanged: { root.dataset.dataDir = dataDir }
             Layout.fillWidth: true
         }
@@ -38,13 +38,13 @@ T.DataCollector {
                 id: headerRoot
                 width: fileListView.width
                 implicitHeight: headerLayout.implicitHeight
-                visible: root.dataset !== undefined
+                visible: root.dataset
                 RowLayout {
                     id: headerLayout
                     anchors.left: parent.left
                     anchors.right: parent.right
                     Repeater {
-                        model: root.dataset !== undefined ? root.dataset.fileRoles : undefined
+                        model: root.dataset ? root.dataset.fileRoles : undefined
                         Row {
                             Label {
                                 text: modelData
@@ -97,13 +97,13 @@ T.DataCollector {
                 anchors.topMargin: fileListView.headerItem.height
                 Repeater {
                     id: dropRep
-                    model: root.dataset !== undefined ? root.dataset.fileRoles : undefined
+                    model: root.dataset ? root.dataset.fileRoles : undefined
 
                     DropArea {
                         height: parent.height
                         width: dropRep.count > 0 ? parent.width / dropRep.count : 0
                         keys: "text/uri-list"
-                        visible: root.dataset !== undefined
+                        visible: root.dataset
 
                         onDropped: {
                             root.dataset.setFiles(modelData, drop.urls)
