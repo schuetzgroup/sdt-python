@@ -11,7 +11,8 @@ import SdtGui.Templates 1.0 as T
 
 T.MultiDataCollector {
     id: root
-    property alias datasets: datasetSel.model
+    property alias datasets: datasetSel.datasets
+    property alias specialDatasets: datasetSel.specialDatasets
     property var sourceNames: 0
 
     implicitWidth: rootLayout.implicitWidth
@@ -24,7 +25,7 @@ T.MultiDataCollector {
         DirSelector {
             id: dataDirSel
             label: "Data folder:"
-            dataDir: root.datasets !== undefined ? root.datasets.dataDir : ""
+            dataDir: root.datasets ? root.datasets.dataDir : ""
             onDataDirChanged: { root.datasets.dataDir = dataDir }
             Layout.fillWidth: true
         }
@@ -32,24 +33,22 @@ T.MultiDataCollector {
             DatasetSelector {
                 id: datasetSel
                 Layout.fillWidth: true
-                editable: currentIndex >= 0
-                onEditTextChanged: {
-                    if (currentIndex >= 0 && editText)
-                        model.setProperty(currentIndex, "key", editText)
-                }
+                editable: true
             }
             ToolButton {
                 icon.name: "list-add"
                 onClicked: {
-                    datasetSel.model.append("<new>")
-                    datasetSel.currentIndex = datasetSel.model.rowCount() - 1
-                    datasetSel.focus = true
-                    datasetSel.contentItem.selectAll()
+                    datasetSel.datasets.append("<new>")
+                    datasetSel.select(datasetSel.datasets.rowCount() - 1)
+                    //FIXME datasetSel.focus = true
+                    //FIXME datasetSel.contentItem.selectAll()
                 }
             }
             ToolButton {
                 icon.name: "list-remove"
-                enabled: datasetSel.currentIndex >= 0
+                enabled: (datasetSel.currentIndex >= 0 &&
+                          datasetSel.model.getProperty(
+                              datasetSel.currentIndex, "category") == undefined)
                 onClicked: { datasetSel.model.remove(datasetSel.currentIndex) }
             }
         }
@@ -63,6 +62,8 @@ T.MultiDataCollector {
     }
 
     onSourceNamesChanged: {
-        datasets.fileRoles = coll.fileRolesFromSourceNames(sourceNames)
+        var r = coll.fileRolesFromSourceNames(sourceNames)
+        datasets.fileRoles = r
+        specialDatasets.fileRoles = r
     }
 }
