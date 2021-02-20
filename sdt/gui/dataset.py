@@ -185,6 +185,7 @@ class DatasetCollection(DictListModel):
         self._fileRoles = []
         self._dataRoles = []
         self.countChanged.connect(self.fileListsChanged)
+        self.countChanged.connect(self.keysChanged)
         self.elementsChanged.connect(self._onElementsChanged)
 
     def makeDataset(self) -> Dataset:
@@ -329,6 +330,14 @@ class DatasetCollection(DictListModel):
             ds.fileList = lst
             models.append({"key": key, "dataset": ds})
         self.reset(models)
+
+    keysChanged = QtCore.pyqtSignal()
+    """py:attr:`keys` property changed```
+
+    @QtCore.pyqtProperty(list, notify=keysChanged)
+    def keys(self) -> List[str]:
+        """List of all keys currently present in the model"""
+        return [self.getProperty(i, "key") for i in range(self.rowCount())]
 
     def _onElementsChanged(self, index: int, count: int,
                            roles: Iterable[str] = []):
