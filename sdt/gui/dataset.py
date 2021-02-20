@@ -332,7 +332,7 @@ class DatasetCollection(DictListModel):
         self.reset(models)
 
     keysChanged = QtCore.pyqtSignal()
-    """py:attr:`keys` property changed``"""`
+    """py:attr:`keys` property changed``"""
 
     @QtCore.pyqtProperty(list, notify=keysChanged)
     def keys(self) -> List[str]:
