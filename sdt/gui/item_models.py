@@ -31,6 +31,7 @@ class ListModel(QtCore.QAbstractListModel):
         self.modelReset.connect(self.countChanged)
         self.rowsInserted.connect(self.countChanged)
         self.rowsRemoved.connect(self.countChanged)
+        self.elementsChanged.connect(self._emitDataChanged)
 
     def rowCount(self, parent: QtCore.QModelIndex = QtCore.QModelIndex()):
         """Get row count
@@ -106,9 +107,12 @@ class ListModel(QtCore.QAbstractListModel):
             return False
         return self.set(row, value)
 
-    def _notifyChange(self, index: int, count: int = 1,
-                      roles: Iterable[str] = []):
-        """Emit :py:meth:`QtCore.QAbstractListModel.dataChanged` signal
+    def notifyChange(self, index: int, count: int = 1,
+                     roles: Optional[Iterable[str]] = []):
+        """Emit :py:meth:`elementsChanged` signal
+
+        Note that this will in turn emit Qt's standard
+        :py:meth:`dataChanged` signal.
 
         Parameters
         ----------
@@ -117,14 +121,38 @@ class ListModel(QtCore.QAbstractListModel):
         count
             Number of changed items
         roles
-            List of affected roles. An empty list means that all roles are
-            affected.
+            List of affected roles. `None` means that all roles are affected.
         """
-        # TODO: create a signal similar to dataChanged but with same
-        # arguments as this function
+        self.elementsChanged.emit(index, count, roles)
+
+    def _emitDataChanged(self, index: int, count: int,
+                         roles: Optional[Iterable[str]] = []):
+        """Emit :py:meth:`dataChanged` signal
+
+        This is a slot connected to :py:meth:`elementsChanged`.
+
+        Parameters
+        ----------
+        index
+            First changed index
+        count
+            Number of changed items
+        roles
+            List of affected roles. `None` means that all roles are affected.
+        """
         tl = self.index(index)
         br = self.index(index + count - 1)
         self.dataChanged.emit(tl, br, [self.Roles[r] for r in roles])
+
+    elementsChanged = QtCore.pyqtSignal(int, int, list,
+                                        arguments=["index", "count", "roles"])
+    """One or more list element(s) were changed. `index` is the index of the
+    first changed element, `count` is the number of subsequent modified
+    elements, and `role` holds the affected roles. If the list is empty, all
+    roles are affected.
+    Emitting this signal also emits Qt's standard :py:meth:`dataChanged`
+    signal.
+    """
 
     @contextlib.contextmanager
     def _insertRows(self, index, count):
@@ -237,7 +265,7 @@ class ListModel(QtCore.QAbstractListModel):
         if not 0 <= index < self.rowCount():
             return False
         self._data[index] = obj
-        self._notifyChange(index)
+        self.notifyChange(index)
         return True
 
     @QtCore.pyqtSlot(int)
@@ -435,7 +463,7 @@ class DictListModel(ListModel):
         d = self._data[index]
         if d.get(role, None) is not obj:
             d[role] = obj
-            self._notifyChange(index, roles=[role])
+            self.notifyChange(index, roles=[role])
         return True
 
     def resetWithDict(self, data: Mapping,

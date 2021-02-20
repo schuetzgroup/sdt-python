@@ -31,7 +31,7 @@ class Dataset(DictListModel):
         self._dataDir = ""
         self._fileRoles = []
         self._dataRoles = []
-        self.dataChanged.connect(self._onDataChanged)
+        self.elementsChanged.connect(self._onElementsChanged)
         self.countChanged.connect(self.fileListChanged)
 
     dataDirChanged = QtCore.pyqtSignal(str)
@@ -149,11 +149,9 @@ class Dataset(DictListModel):
         self.fileRoles = list(set(itertools.chain(*fl)))
         self.reset(fl)
 
-    def _onDataChanged(self, topLeft: QtCore.QModelIndex,
-                       bottomRight: QtCore.QModelIndex, roles: List[int]):
+    def _onElementsChanged(self, index: int, count: int, roles: Iterable[str]):
         """Emit :py:attr:`fileListChanged` if model data changed"""
-        if (not roles
-                or set(roles) & set(self.Roles[r] for r in self.fileRoles)):
+        if roles is None or set(roles) & set(self.fileRoles):
             self.fileListChanged.emit()
 
 
@@ -187,6 +185,7 @@ class DatasetCollection(DictListModel):
         self._fileRoles = []
         self._dataRoles = []
         self.countChanged.connect(self.fileListsChanged)
+        self.elementsChanged.connect(self._onElementsChanged)
 
     def makeDataset(self) -> Dataset:
         """Create a dateset model
@@ -330,6 +329,12 @@ class DatasetCollection(DictListModel):
             ds.fileList = lst
             models.append({"key": key, "dataset": ds})
         self.reset(models)
+
+    def _onElementsChanged(self, index: int, count: int,
+                           roles: Iterable[str] = []):
+        """Emit :py:attr:`keysChanged` if model data changed"""
+        if roles is None or "key" in roles:
+            self.keysChanged.emit()
 
 
 QtQml.qmlRegisterType(Dataset, "SdtGui", 1, 0, "Dataset")
