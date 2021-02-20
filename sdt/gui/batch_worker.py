@@ -29,6 +29,7 @@ class BatchWorker(QtQuick.QQuickItem):
         self._func = None
         self._worker = None
         self._argRoles = []
+        self._kwargRoles = []
         self._resultRole = ""
         self._count = -1
         self._progress = 0
@@ -77,8 +78,8 @@ class BatchWorker(QtQuick.QQuickItem):
 
     @QtCore.pyqtProperty(list, notify=argRolesChanged)
     def argRoles(self) -> List[str]:
-        """For each dataset entry, these roles are passed as keyword arguments
-        to :py:attr:`func`.
+        """For each dataset entry, these roles are passed as positional
+        arguments to :py:attr:`func`.
         """
         return self._argRoles
 
@@ -88,6 +89,23 @@ class BatchWorker(QtQuick.QQuickItem):
             return
         self._argRoles = r
         self.argRolesChanged.emit()
+
+    kwargRolesChanged = QtCore.pyqtSignal()
+    """:py:attr:`kwargRoles` was changed"""
+
+    @QtCore.pyqtProperty(list, notify=kwargRolesChanged)
+    def kwargRoles(self) -> List[str]:
+        """For each dataset entry, these roles are passed as keyword arguments
+        to :py:attr:`func`.
+        """
+        return self._kwargRoles
+
+    @kwargRoles.setter
+    def kwargRoles(self, r: List[str]):
+        if r == self._kwargRoles:
+            return
+        self._kwargRoles = r
+        self.kwargRolesChanged.emit()
 
     resultRoleChanged = QtCore.pyqtSignal()
     """:py:attr:`resultRole` was changed"""
@@ -175,9 +193,11 @@ class BatchWorker(QtQuick.QQuickItem):
             self._curDset = self._dataset.getProperty(self._curDsetIndex,
                                                       "dataset")
 
-        args = {r: self._curDset.getProperty(self._curIndex, r)
-                for r in self._argRoles}
-        self._worker(**args)
+        args = [self._curDset.getProperty(self._curIndex, r)
+                for r in self._argRoles]
+        kwargs = {r: self._curDset.getProperty(self._curIndex, r)
+                  for r in self._kwargRoles}
+        self._worker(*args, **kwargs)
 
     def _workerFinished(self, retval: Any):
         """Worker has finished
