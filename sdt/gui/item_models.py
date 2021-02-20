@@ -4,6 +4,7 @@
 
 import contextlib
 import enum
+import math
 from typing import (Any, Dict, Iterable, List, Mapping, Optional, Sequence,
                     Tuple, Union)
 
@@ -461,9 +462,15 @@ class DictListModel(ListModel):
         if not (0 <= index < self.rowCount() and role in self.roles):
             return False
         d = self._data[index]
-        if d.get(role, None) is not obj:
-            d[role] = obj
-            self.notifyChange(index, roles=[role])
+        old = d.get(role, None)
+        # Check if new entry is different for some basic types
+        if (type(old) is type(obj) and
+                ((isinstance(old, (int, str)) and old == obj) or
+                 (isinstance(old, float) and math.isclose(old, obj)) or
+                 old is obj)):
+            return True
+        d[role] = obj
+        self.notifyChange(index, roles=[role])
         return True
 
     def resetWithDict(self, data: Mapping,
