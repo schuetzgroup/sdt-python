@@ -26,7 +26,10 @@ T.MultiDataCollector {
             id: dataDirSel
             label: "Data folder:"
             dataDir: root.datasets ? root.datasets.dataDir : ""
-            onDataDirChanged: { root.datasets.dataDir = dataDir }
+            onDataDirChanged: {
+                root.datasets.dataDir = dataDir
+                root.specialDatasets.dataDir = dataDir
+            }
             Layout.fillWidth: true
         }
         RowLayout {
