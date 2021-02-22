@@ -2,7 +2,9 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from typing import Any, Dict, Mapping, Optional
+import functools
+from typing import Any, Callable, Dict, Iterable, Mapping, Optional
+import warnings
 
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
@@ -132,6 +134,19 @@ class LocateOptions(QtQuick.QQuickItem):
         image with :py:attr:`options`.
         """
         return self._locData
+
+    @QtCore.pyqtSlot(result=QtCore.QVariant)
+    def getBatchFunc(self) -> Callable[[Iterable[np.ndarray]], pd.DataFrame]:
+        """Get a function for batch localization using current settings
+
+        Returns
+        -------
+        A version of the currently selected algorithm's ``batch()`` function
+        (e.g., :py:func:`loc.daostorm_3d.batch` with options set according
+        to the GUI. The only remaining argument is the image sequence.
+        """
+        func = getattr(loc, self.algorithm).batch
+        return functools.partial(func, **self.options)
 
     # Slots
     def _inputsChanged(self):
