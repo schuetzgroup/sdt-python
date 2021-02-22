@@ -172,7 +172,7 @@ class ROISelector(QtQuick.QQuickItem):
     """
 
     _setROI = QmlDefinedMethod()
-    """Get ROI in QtQuick item
+    """Set ROI in QtQuick item
 
     Parameters
     ----------
