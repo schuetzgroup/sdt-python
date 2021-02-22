@@ -18,6 +18,7 @@ LocateOptions 1.0 LocateOptions.qml
 Locator 1.0 Locator.qml
 MultiDataCollector 1.0 MultiDataCollector.qml
 ROISelector 1.0 ROISelector.qml
+Registrator 1.0 Registrator.qml
 RealSpinBox 1.0 RealSpinBox.qml
 
 singleton Common 1.0 Common.qml
