@@ -111,6 +111,8 @@ class ROISelector(QtQuick.QQuickItem):
         roi
             Object describing the ROI
         """
+        if self._getROI(name) == roi:
+            return
         if roi is None:
             t = self.ROIType.NullShape
         elif isinstance(roi, sdt_roi.ROI):
