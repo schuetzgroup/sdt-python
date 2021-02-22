@@ -116,8 +116,8 @@ class DatasetSelector(QtQuick.QQuickItem):
 
     def _makeKeys(self):
         """Populate :py:attr:`_keyList`"""
-        self._keyList.reset(getattr(self._datasets, "keys", []) +
-                            getattr(self._specialDatasets, "keys", []))
+        self._keyList.reset(getattr(self._specialDatasets, "keys", []) +
+                            getattr(self._datasets, "keys", []))
 
     def _changeKey(self, index: int, count: int, roles: Iterable[str]):
         """Change :py:attr:`_keyList` element(s)
