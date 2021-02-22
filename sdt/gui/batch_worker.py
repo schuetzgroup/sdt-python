@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Optional
 
 from PyQt5 import QtCore, QtQuick, QtQml
 
@@ -18,11 +18,11 @@ class BatchWorker(QtQuick.QQuickItem):
     This is useful when some calculation should be done with each entry of
     a dataset.
     """
-    def __init__(self, parent: QtCore.QObject = None):
+    def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
         ----------
         parent
-            Parent QObject
+            Parent QQuickItem
         """
         super().__init__(parent)
         self._dataset = DictListModel()
