@@ -150,12 +150,13 @@ class ROISelector(QtQuick.QQuickItem):
 
     overlay = QmlDefinedProperty()
     """Item to be added to :py:attr:`ImageDisplay.overlays`"""
-
     drawingTools = QmlDefinedProperty()
     """Whether to display drawing tools for integer rectangular ROIs
     (:py:class:`roi.ROI`) or path-based ROIs (:py:class:`roi.PathROI` and
     subclasses).
     """
+    showNameSelector = QmlDefinedProperty()
+    """Show the an item for selecting the ROI name to draw"""
 
     _getROI = QmlDefinedMethod()
     """Get ROI from QtQuick item
