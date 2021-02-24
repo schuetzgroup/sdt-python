@@ -400,13 +400,16 @@ class SimpleQtProperty:
     For classes with many such simple properties, this can save a lot of
     boiler-plate code.
     """
-    def __init__(self, type: Union[type, str],
+    def __init__(self, type: Union[type, str], readOnly: bool = False,
                  comp: Callable[[Any, Any], bool] = operator.eq,
                  name: Optional[str] = None):
         """Parameters
         ----------
         type
             Data type for Qt. Either a Python type or type name string.
+        readOnly
+            If `True`, don't allow for writing the property. A change signal
+            is created anyways, as the property may change implicitly.
         comp
             Used to compare old and new values when setting the property.
             A change signal is emitted only if this returns `False`.
@@ -417,6 +420,7 @@ class SimpleQtProperty:
         """
         self._name = name
         self._type = type
+        self._readOnly = readOnly
         self._comp = comp
 
     def __set_name__(self, owner, name):
@@ -442,7 +446,9 @@ class SimpleQtProperty:
             getattr(instance, sigName).emit()
 
         # Override this descriptor
-        prop = QtCore.pyqtProperty(self._type, getter, setter, notify=sig)
+        prop = QtCore.pyqtProperty(self._type, getter,
+                                   None if self._readOnly else setter,
+                                   notify=sig)
         setattr(owner, name, prop)
 
 
