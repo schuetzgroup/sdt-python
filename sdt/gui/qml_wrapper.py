@@ -4,8 +4,9 @@
 
 import enum
 import logging
+import operator
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Any, Callable, List, Optional, Union
 
 from PyQt5 import QtCore, QtGui, QtQml
 
@@ -353,6 +354,96 @@ class QmlDefinedMethod:
             return ret
 
         return call
+
+
+class SimpleQtProperty:
+    """Create a Qt property including a change signal
+
+    The property is backed by a private attribute with the same name,
+    but starting with an underscore. This private attribute has to be
+    created before first access, e.g. in :py:meth:`__init__`.
+    A signal named ``<property name> + "Changed"`` is also created, which is
+    emitted when setting the property if the new value is different from the
+    old.
+
+    .. code-block:: python
+
+        class A(QtCore.QObject):
+            def __init__(self, parent=None):
+                super().__init__(parent)
+                self._prop = "bla"
+
+            prop = SimpleQtProperty(str)
+
+    is equivalent to
+
+    .. code-block:: python
+
+        class A(QtCore.QObject):
+            def __init__(self, parent=None):
+                super().__init__(parent)
+                self._prop = "bla"
+
+            propChanged = QtCore.pyqtSignal()
+
+            @QtCore.pyqtProperty(str, notify=propChanged)
+            def prop(self):
+                return self._prop
+
+            @prop.setter
+            def prop(self, p):
+                if self._prop == p:
+                    return
+                self._prop = p
+                self.propChanged.emit()
+
+    For classes with many such simple properties, this can save a lot of
+    boiler-plate code.
+    """
+    def __init__(self, type: Union[type, str],
+                 comp: Callable[[Any, Any], bool] = operator.eq,
+                 name: Optional[str] = None):
+        """Parameters
+        ----------
+        type
+            Data type for Qt. Either a Python type or type name string.
+        comp
+            Used to compare old and new values when setting the property.
+            A change signal is emitted only if this returns `False`.
+        name
+            Name of the property. Creates a ``name + "Changed"`` signal and
+            reads from / writes to ``"_" + name`` attribute. If not specified,
+            the variable name is used.
+        """
+        self._name = name
+        self._type = type
+        self._comp = comp
+
+    def __set_name__(self, owner, name):
+        if self._name:
+            name = self._name
+
+        # Signal
+        sigName = name + "Changed"
+        sig = QtCore.pyqtSignal()
+        setattr(owner, sigName, sig)
+
+        # Property getter and setter
+        privName = "_" + name
+
+        def getter(instance):
+            return getattr(instance, privName)
+
+        def setter(instance, value):
+            old = getattr(instance, privName)
+            if self._comp(old, value):
+                return
+            setattr(instance, privName, value)
+            getattr(instance, sigName).emit()
+
+        # Override this descriptor
+        prop = QtCore.pyqtProperty(self._type, getter, setter, notify=sig)
+        setattr(owner, name, prop)
 
 
 _msgHandlerMap = {
