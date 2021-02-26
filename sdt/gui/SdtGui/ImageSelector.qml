@@ -63,7 +63,7 @@ ImageSelectorImpl {
                         text: model[root.textRole]
                         anchors.left: parent.left
                         anchors.right: fileDeleteButton.left
-                        elide: Text.ElideRight
+                        elide: Text.ElideMiddle
                     }
                     ToolButton {
                         id: fileDeleteButton
