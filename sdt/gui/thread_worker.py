@@ -16,7 +16,7 @@ class _StopThread(Exception):
 
 
 class _InterruptThread(Exception):
-    """Raise this in worker thread to stop current function call it"""
+    """Raise this in worker thread to stop current function call"""
     pass
 
 
@@ -35,8 +35,9 @@ class ThreadWorker(QtCore.QObject):
         self._func = func
         self._args = ()
         self._kwargs = {}
-        self._callEvent = threading.Event()
+        self._callCondition = threading.Condition()
         self._workerThread = None
+        self._busy = False
         self.enabled = True
 
     def abort(self):
@@ -69,11 +70,13 @@ class ThreadWorker(QtCore.QObject):
         """
         if not self.enabled:
             raise RuntimeError("Worker is not enabled.")
-        self._args = args
-        self._kwargs = kwargs
-        if not self.busy:
-            self.busyChanged.emit()
-        self._callEvent.set()
+        with self._callCondition:
+            self._args = args
+            self._kwargs = kwargs
+            if not self._busy:
+                self._busy = True
+                self.busyChanged.emit()
+            self._callCondition.notify()
 
     finished = QtCore.pyqtSignal(object)
     """Function call finished. Signal argument is the return value."""
@@ -87,7 +90,7 @@ class ThreadWorker(QtCore.QObject):
     @QtCore.pyqtProperty(bool, notify=busyChanged)
     def busy(self) -> bool:
         """True if a function call is currently executed."""
-        return self._callEvent.is_set()
+        return self._busy
 
     enabledChanged = QtCore.pyqtSignal(bool)
     """Enabled status changed"""
@@ -106,13 +109,15 @@ class ThreadWorker(QtCore.QObject):
             return
         if e:
             self._workerThread = threading.Thread(target=self._workerFunc)
-            self._callEvent.clear()
             self._workerThread.start()
         else:
-            helper.raise_in_thread(self._workerThread.ident, _StopThread)
-            # There will be no _StopThread exception while thread is waiting
-            # for _callEvent, thus set
-            self._callEvent.set()
+            with self._callCondition:
+                self._args = None
+                self._kwargs = None
+                helper.raise_in_thread(self._workerThread.ident, _StopThread)
+                # There will be no _StopThread exception while thread is
+                # waiting for _callCondition, thus notify
+                self._callCondition.notify()
             self._workerThread = None
         self.enabledChanged.emit(e)
 
@@ -130,12 +135,17 @@ class ThreadWorker(QtCore.QObject):
         """
         while True:
             try:
-                self._callEvent.wait()
-                args = self._args
-                kwargs = self._kwargs
-                self._args = None
-                self._kwargs = None
+                with self._callCondition:
+                    if self._args is None or self._kwargs is None:
+                        self._callCondition.wait()
+                    args = self._args
+                    kwargs = self._kwargs
+                    self._args = None
+                    self._kwargs = None
                 result = self._func(*args, **kwargs)
+                # FIXME: Make sure that _StopThread and _InterruptThread
+                # are not raised while executing code below. Otherwise there
+                # will be an "exception during handling exception" error.
             except _StopThread:
                 return
             except _InterruptThread:
@@ -145,6 +155,7 @@ class ThreadWorker(QtCore.QObject):
             else:
                 self.finished.emit(result)
             finally:
-                if self._args is None or self._kwargs is None:
-                    self._callEvent.clear()
-                    self.busyChanged.emit()
+                with self._callCondition:
+                    if self._args is None or self._kwargs is None:
+                        self._busy = False
+                        self.busyChanged.emit()
