@@ -40,13 +40,17 @@ T.DatasetSelector {
                 datasets.setProperty(currentIndex - specialDatasets.count,
                                      "key", editText)
         }
+        onModelChanged: { sel.selectFirstIfUnset() }
+
+        function selectFirstIfUnset() {
+            if (currentIndex < 0 && model.rowCount() > 0)
+                currentIndex = 0
+        }
 
         Connections {
-            target: sel
-            onModelChanged: {
-                if (sel.currentIndex < 0 && sel.model.rowCount() > 0)
-                    sel.currentIndex = 0
-            }
+            target: sel.model
+            onRowsInserted: { sel.selectFirstIfUnset() }
+            onModelReset: { sel.selectFirstIfUnset() }
         }
         // selectTextByMouse: true  // Qt >=5.15
         Component.onCompleted: { contentItem.selectByMouse = true }
