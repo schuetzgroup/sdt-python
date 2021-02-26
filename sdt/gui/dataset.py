@@ -208,6 +208,7 @@ class DatasetCollection(DictListModel):
         model.dataRoles = self.dataRoles
         return model
 
+    @QtCore.pyqtSlot(int, str)
     def insert(self, index: int, key: str):
         """Insert a new, empty dataset
 
@@ -222,6 +223,8 @@ class DatasetCollection(DictListModel):
         ds.fileListChanged.connect(self.fileListsChanged)
         super().insert(index, {"key": key, "dataset": ds})
 
+    @QtCore.pyqtSlot(int)
+    @QtCore.pyqtSlot(int, int)
     def remove(self, index: int, count: int = 1):
         """Removes a dataset
 
@@ -232,7 +235,7 @@ class DatasetCollection(DictListModel):
         count
             Number of datasets to remove
         """
-        for i in range(index, count):
+        for i in range(index, index + count):
             self.getProperty(i, "dataset").fileListChanged.disconnect(
                 self.fileListsChanged)
         super().remove(index, count)
