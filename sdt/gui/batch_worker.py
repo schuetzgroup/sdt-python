@@ -182,7 +182,6 @@ class BatchWorker(QtQuick.QQuickItem):
         if self._worker is None:
             return
         self._worker.enabled = False
-        self._worker.deleteLater()
         self._worker = None
 
     def _nextCall(self):
