@@ -39,79 +39,81 @@ T.Registrator {
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
 
-    ColumnLayout {
+    RowLayout {
         id: rootLayout
 
         anchors.fill: parent
 
+        Item {
+            // These need to be packed into an item, otherwise the
+            // Button's Layout.fillWidth will make the column as wide
+            // as the ImageDisplay
+            implicitWidth: optLayout.implicitWidth
+            implicitHeight: optLayout.implicitHeight
+            Layout.fillHeight: true
+
+            ColumnLayout {
+                id: optLayout
+                anchors.fill: parent
+
+                TabBar {
+                    id: chanSel
+                    Layout.fillWidth: true
+                    Repeater {
+                        model: root.channelRoles
+                        TabButton { text: modelData }
+                    }
+                }
+                StackLayout {
+                    id: optStack
+
+                    property var currentItem: optRep.model, optRep.itemAt(currentIndex)
+                    property string currentRole: optRep.model[currentIndex]
+                    currentIndex: chanSel.currentIndex
+
+                    Repeater {
+                        id: optRep
+                        model: root.channelRoles
+                        LocateOptions {
+                            id: loc
+                            input: imSel.output
+                            Layout.alignment: Qt.AlignTop
+                            Layout.fillHeight: true
+                            // FIXME: Currently preview is computed also for
+                            // hidden channel
+                        }
+                    }
+                }
+                Button {
+                    text: "Find transform…"
+                    Layout.fillWidth: true
+                    onClicked: {
+                        root.startCalculation()
+                        workerDialog.open()
+                    }
+                }
+            }
+        }
+        Item { width: 2 }
         ColumnLayout {
             RowLayout {
-                Label { text: "channel" }
-                ComboBox {
-                    id: chanSel
-                    model: root.channelRoles
-                    Layout.fillWidth: true
-                }
-                Item { width: 5 }
                 ImageSelector {
                     id: imSel
                     textRole: "key"
-                    imageRole: chanSel.currentText
+                    imageRole: optStack.currentRole
                     editable: false
                     Layout.fillWidth: true
                 }
             }
-            RowLayout {
-                Item {
-                    // These need to be packed into an item, otherwise the
-                    // Button's Layout.fillWidth will make the column as wide
-                    // as the ImageDisplay
-                    implicitWidth: optLayout.implicitWidth
-                    implicitHeight: optLayout.implicitHeight
-                    Layout.fillHeight: true
-
-                    ColumnLayout {
-                        id: optLayout
-                        anchors.fill: parent
-                        StackLayout {
-                            id: optStack
-
-                            property var currentItem: optRep.model, optRep.itemAt(currentIndex)
-                            currentIndex: chanSel.currentIndex
-
-                            Repeater {
-                                id: optRep
-                                model: root.channelRoles
-                                LocateOptions {
-                                    id: loc
-                                    input: imSel.output
-                                    Layout.alignment: Qt.AlignTop
-                                    Layout.fillHeight: true
-                                    // FIXME: Currently preview is computed also for
-                                    // hidden channel
-                                }
-                            }
-                        }
-                        Button {
-                            text: "Find transform…"
-                            Layout.fillWidth: true
-                            onClicked: {
-                                root.startCalculation()
-                                workerDialog.open()
-                            }
-                        }
-                    }
+            ImageDisplay {
+                id: imDisp
+                input: imSel.output
+                overlays: LocDisplay {
+                    locData: optStack.currentItem.locData
+                    visible: optStack.currentItem.previewEnabled
                 }
-                ImageDisplay {
-                    id: imDisp
-                    input: imSel.output
-                    overlays: LocDisplay {
-                        locData: optStack.currentItem.locData
-                        visible: optStack.currentItem.previewEnabled
-                    }
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
+                Layout.fillWidth: true
+                Layout.fillHeight: true
             }
         }
     }
