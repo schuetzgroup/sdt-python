@@ -28,8 +28,8 @@ class ThreadWorker(QtCore.QObject):
         """
         super().__init__(parent)
         self._func = func
-        self._args = ()
-        self._kwargs = {}
+        self._args = None
+        self._kwargs = None
         self._callCondition = threading.Condition()
         self._exceptionLock = threading.Lock()
         self._stopRequested = False
