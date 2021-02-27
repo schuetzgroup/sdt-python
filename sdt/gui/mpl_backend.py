@@ -223,7 +223,7 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
             step = pxDelta.y()
         else:
             step = event.angleDelta().y() / 120
-        if steps:
+        if step:
             self.scroll_event(*self.mapToFigure(event.pos()), step, event)
 
     def keyPressEvent(self, event: QtGui.QKeyEvent):
