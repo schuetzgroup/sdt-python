@@ -17,6 +17,6 @@ from .image_selector import ImageSelector
 from .loc_display import LocDisplay
 from .locate_options import LocateOptions
 from .locator import Locator
-from .mpl_backend import FigureCanvasAgg
+from .mpl_backend import FigureCanvasAgg, mpl_use_qt_font
 from .registrator import Registrator
 from .roi_selector import ROISelector

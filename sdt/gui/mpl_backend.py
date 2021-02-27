@@ -17,6 +17,20 @@ import matplotlib.backends.backend_agg as mpl_agg
 import matplotlib.backends.backend_qt5 as mpl_qt5
 
 
+def mpl_use_qt_font():
+    """Use the same font in matplotlib as in Qt
+
+    Since this calls ``QtGui.QGuiApplication.font()``, it may not work if
+    called to early on application startup.
+    """
+    font = QtGui.QGuiApplication.font()
+    # No way to find out whether font is serif or sans serif; just assume sans
+    mpl.rcParams["font.sans-serif"] = [font.family(), font.defaultFamily()]
+    mpl.rcParams["font.family"] = "sans-serif"
+    mpl.rcParams["font.size"] = font.pointSizeF()
+    mpl.rcParams["axes.titlesize"] = "medium"
+
+
 mouse_button_map: Dict[int, int] = mpl_qt5.FigureCanvasQT.buttond
 special_key_map: Dict[int, str] = mpl_qt5.SPECIAL_KEYS
 modifier_key_map: Dict[int, int] = dict(mpl_qt5._MODIFIER_KEYS)
