@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import math
-from typing import Optional, Union
+from typing import Optional
 
 from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import numpy as np
@@ -39,16 +39,17 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
     To display localization data, set the :py:attr:`locData` property with the
     according :py:class:`pandas.DataFrame`.
     """
-    def __init__(self, parent: Optional[QtCore.QObject] = None):
+
+    def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
         ----------
         parent
-            Parent QObject
+            Parent QQuickItem
         """
         super().__init__(parent)
         self._locData = None
-        self.locDataChanged.connect(self.update)
         self._scaleFactor = 1.0
+        self._circles = []
 
     locDataChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Localization data was changed"""
@@ -62,6 +63,7 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
     def locData(self, val):
         self._locData = val
         self.locDataChanged.emit(val)
+        self._makeCircles()
 
     scaleFactorChanged = QtCore.pyqtSignal(float)
     """Scale factor has changed"""
@@ -80,65 +82,37 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
         self._scaleFactor = fac
         self.scaleFactorChanged.emit(fac)
 
-    def _getSize(self, axis: str) -> np.ndarray:
-        """Calculate localization marker sizes
+    def _makeCircles(self):
+        """Create circles marking localizations
 
-        from localization algorithm size results.
-
-        Parameters
-        ----------
-        axis
-            Which axis to get sizes for. Typically "x" or "y". If
-            :py:attr:`_locData` has a "size_{axis}" column, use that. Otherwise
-            fall back to "size".
-
-        Returns
-        -------
-        Marker sizes in GUI coordinates
+        This calls also :py:meth:`update` to trigger paint.
         """
-        nd_size = f"size_{axis}"
-        s = self._locData[nd_size if nd_size in self._locData.columns
-                          else "size"]
-        return 2 * s * self.scaleFactor
-
-    def _getCoords(self, axis: str, size: Union[float, np.ndarray]
-                   ) -> np.ndarray:
-        """Calculate starting coordinates of the localization markers
-
-        in GUI coordinates.
-
-        Parameters
-        ----------
-        axis
-            Which axis to get coordinates for. Typically "x" or "y".
-        size
-            Size of the markers in GUI coordinates
-
-        Returns
-        -------
-        Starting (GUI) coordinates
-        """
-        c = self._locData[axis] + 0.5  # pixel center
-        c *= self.scaleFactor
-        c -= size / 2
-        return c.to_numpy()
+        if self._locData is None or not self._locData.size:
+            self._circles = []
+        else:
+            vals = np.empty((len(self._locData), 4))
+            for i, axis in enumerate(["x", "y"]):
+                sz_col = f"size_{axis}"
+                sizes = self._locData[sz_col if sz_col in self._locData.columns
+                                      else "size"]
+                sizes = sizes.to_numpy() * self.scaleFactor
+                coords = self._locData[axis] * self.scaleFactor - sizes
+                vals[:, i] = coords
+                vals[:, i+2] = 2 * sizes
+            self._circles = [QtCore.QRectF(*v) for v in vals]
+        self.update()
 
     def paint(self, painter: QtGui.QPainter):
-        if self._locData is None or not self._locData.size:
-            return
+        # Implement QQuickItem.paint
         pen = painter.pen()
-        pen.setColor(QtGui.QColor("green"))
-        pen.setWidth(2)
+        pen.setColor(QtGui.QColor("yellow"))
+        pen.setWidthF(2.5)
         pen.setCosmetic(True)
         painter.setPen(pen)
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
 
-        sz_xs = self._getSize("x")
-        sz_ys = self._getSize("y")
-        xs = self._getCoords("x", sz_xs)
-        ys = self._getCoords("y", sz_ys)
-        for x, y, sz_x, sz_y in zip(xs, ys, sz_xs, sz_ys):
-            painter.drawEllipse(x, y, sz_x, sz_y)
+        for c in self._circles:
+            painter.drawEllipse(c)
 
 
 QtQml.qmlRegisterType(LocDisplay, "SdtGui", 1, 0, "LocDisplay")

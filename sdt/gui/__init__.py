@@ -20,3 +20,4 @@ from .locator import Locator
 from .mpl_backend import FigureCanvasAgg, mpl_use_qt_font
 from .registrator import Registrator
 from .roi_selector import ROISelector
+from .track_display import TrackDisplay
