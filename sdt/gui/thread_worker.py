@@ -4,6 +4,7 @@
 
 import threading
 from typing import Any, Callable, Optional
+import warnings
 
 from PyQt5 import QtCore
 
@@ -18,6 +19,7 @@ class _InterruptThread(Exception):
 class ThreadWorker(QtCore.QObject):
     """Asynchroneously execute workload in separate thread"""
     def __init__(self, func: Callable, enabled: bool = False,
+                 disableOnQuit: bool = True,
                  parent: Optional[QtCore.QObject] = None):
         """Parameters
         ----------
@@ -25,6 +27,11 @@ class ThreadWorker(QtCore.QObject):
             To be called in separate thread
         enabled
             Whether to start the worker thread right away
+        disableOnQuit
+            Whether to disable the worker on
+            :py:method:`QCoreApplication.aboutToQuit`. If this is not done,
+            worker needs to be disabled manually before exiting application,
+            otherwise it will hang.
         parent
             Parent QObject
         """
@@ -38,6 +45,16 @@ class ThreadWorker(QtCore.QObject):
         self._allowException = False
         self._workerThread = None
         self._busy = False
+
+        if disableOnQuit:
+            app = QtCore.QCoreApplication.instance()
+            if app is None:
+                warnings.warn("QCoreApplication not initialized. Manually set "
+                              "ThreadWorker.enabled = False before quitting, "
+                              "otherwise app will hang.")
+            else:
+                app.aboutToQuit.connect(self._disable)
+
         self.enabled = enabled
 
     def abort(self):
@@ -188,3 +205,10 @@ class ThreadWorker(QtCore.QObject):
             else:
                 # No exception, also no `return` due to `_stopRequested`
                 self.finished.emit(result)
+
+    def _disable(self):
+        """Set ``enabled = False``
+
+        This is used as a slot.
+        """
+        self.enabled = False
