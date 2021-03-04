@@ -17,12 +17,14 @@ class _InterruptThread(Exception):
 
 class ThreadWorker(QtCore.QObject):
     """Asynchroneously execute workload in separate thread"""
-    def __init__(self, func: Callable,
+    def __init__(self, func: Callable, enabled: bool = False,
                  parent: Optional[QtCore.QObject] = None):
         """Parameters
         ----------
         func
             To be called in separate thread
+        enabled
+            Whether to start the worker thread right away
         parent
             Parent QObject
         """
@@ -36,7 +38,7 @@ class ThreadWorker(QtCore.QObject):
         self._allowException = False
         self._workerThread = None
         self._busy = False
-        self.enabled = True
+        self.enabled = enabled
 
     def abort(self):
         """Abort current execution
