@@ -148,7 +148,7 @@ T.LocateOptions {
                 SpinBox {
                     id: d3dFindFilterCgSizeSel
                     from: 0
-                    to: Common.intMax
+                    to: Sdt.intMax
                     value: 3
                     editable: true
                     Layout.alignment: Qt.AlignRight
@@ -245,7 +245,7 @@ T.LocateOptions {
                 SpinBox {
                     id: cgRadiusSel
                     from: 0
-                    to: Common.intMax
+                    to: Sdt.intMax
                     value: 2
                     editable: true
                     Layout.alignment: Qt.AlignRight

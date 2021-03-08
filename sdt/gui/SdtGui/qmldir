@@ -22,4 +22,4 @@ Registrator 1.0 Registrator.qml
 RealSpinBox 1.0 RealSpinBox.qml
 TrackOptions 1.0 TrackOptions.qml
 
-singleton Common 1.0 Common.qml
+singleton Sdt 1.0 Sdt.qml

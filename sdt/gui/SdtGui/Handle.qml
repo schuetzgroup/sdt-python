@@ -74,7 +74,7 @@ Rectangle {
                 var dx = mouseX - pressX
                 switch (root.horizontalPosition) {
                     case Handle.HorizontalPosition.Left:
-                        var newX = Common.clamp(
+                        var newX = Sdt.clamp(
                             root.resizeItem.x + dx, root.minX,
                             root.resizeItem.x + root.resizeItem.width
                         )
@@ -82,13 +82,13 @@ Rectangle {
                         root.resizeItem.x = newX
                         break
                     case Handle.HorizontalPosition.Center:
-                        root.resizeItem.x = Common.clamp(
+                        root.resizeItem.x = Sdt.clamp(
                             resizeItem.x + dx, 0,
                             root.maxX - root.resizeItem.width
                         )
                         break
                     case Handle.HorizontalPosition.Right:
-                        root.resizeItem.width = Common.clamp(
+                        root.resizeItem.width = Sdt.clamp(
                             root.resizeItem.width + dx,
                             0, root.maxX - root.resizeItem.x)
                         break
@@ -100,7 +100,7 @@ Rectangle {
                 var dy = mouseY - pressY
                 switch (root.verticalPosition) {
                     case Handle.VerticalPosition.Top:
-                        var newY = Common.clamp(
+                        var newY = Sdt.clamp(
                             root.resizeItem.y + dy, root.minY,
                             root.resizeItem.y + root.resizeItem.height
                         )
@@ -108,13 +108,13 @@ Rectangle {
                         root.resizeItem.y = newY
                         break
                     case Handle.VerticalPosition.Center:
-                        root.resizeItem.y = Common.clamp(
+                        root.resizeItem.y = Sdt.clamp(
                             resizeItem.y + dy, 0,
                             root.maxY - root.resizeItem.height
                         )
                         break
                     case Handle.VerticalPosition.Bottom:
-                        root.resizeItem.height = Common.clamp(
+                        root.resizeItem.height = Sdt.clamp(
                             root.resizeItem.height + dy, 0,
                             root.maxY - root.resizeItem.y
                         )

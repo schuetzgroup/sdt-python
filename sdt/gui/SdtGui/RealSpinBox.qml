@@ -25,8 +25,8 @@ Item {
 
         property real factor: Math.pow(10, decimals)
 
-        from: Common.clampInt(root.from * factor)
-        to: Common.clampInt(root.to * factor)
+        from: Sdt.clampInt(root.from * factor)
+        to: Sdt.clampInt(root.to * factor)
         value: root.value * factor
         stepSize: root.stepSize * factor
 

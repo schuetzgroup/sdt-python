@@ -4,9 +4,10 @@
 
 pragma Singleton
 import QtQuick 2.0
+import SdtGui.Templates 1.0 as T
 
 
-Item {
+T.Sdt {
     readonly property alias intMin: intVal.bottom
     readonly property alias intMax: intVal.top
 
@@ -17,5 +18,5 @@ Item {
         return clamp(x, intMin, intMax)
     }
 
-    IntValidator { id: intVal }
+    readonly property IntValidator _intVal: IntValidator { id: intVal }
 }
