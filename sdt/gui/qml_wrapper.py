@@ -401,7 +401,7 @@ class SimpleQtProperty:
     boiler-plate code.
     """
     def __init__(self, type: Union[type, str], readOnly: bool = False,
-                 comp: Callable[[Any, Any], bool] = operator.eq,
+                 comp: Optional[Callable[[Any, Any], bool]] = operator.eq,
                  name: Optional[str] = None):
         """Parameters
         ----------
@@ -412,7 +412,8 @@ class SimpleQtProperty:
             is created anyways, as the property may change implicitly.
         comp
             Used to compare old and new values when setting the property.
-            A change signal is emitted only if this returns `False`.
+            A change signal is emitted only if this returns `False`. If `None`,
+            always emit a signal.
         name
             Name of the property. Creates a ``name + "Changed"`` signal and
             reads from / writes to ``"_" + name`` attribute. If not specified,
@@ -440,7 +441,7 @@ class SimpleQtProperty:
 
         def setter(instance, value):
             old = getattr(instance, privName)
-            if self._comp(old, value):
+            if callable(self._comp) and self._comp(old, value):
                 return
             setattr(instance, privName, value)
             getattr(instance, sigName).emit()
