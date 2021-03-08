@@ -38,11 +38,14 @@ T.LocateOptions {
         property var algoPyNames: ["daostorm_3d", "cg"]
         property var algoDisplayNames: ["3D-DAOSTORM", "Crocker-Grier"]
 
-        ComboBox {
-            id: algoSel
-            model: rootLayout.algoDisplayNames
-            currentIndex: rootLayout.algoPyNames.indexOf(root.algorithm)
-            Layout.fillWidth: true
+        RowLayout {
+            Label { text: "algorithm" }
+            ComboBox {
+                id: algoSel
+                model: rootLayout.algoDisplayNames
+                currentIndex: rootLayout.algoPyNames.indexOf(root.algorithm)
+                Layout.fillWidth: true
+            }
         }
 
         StackLayout {
