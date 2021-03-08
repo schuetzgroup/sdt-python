@@ -8,7 +8,7 @@ import QtQuick.Layouts 1.7
 import SdtGui.Templates 1.0 as T
 
 
-T.LocateOptions {
+T.LocOptions {
     id: root
 
     Binding on options {

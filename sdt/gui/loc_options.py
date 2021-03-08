@@ -13,7 +13,7 @@ from .. import loc
 from .thread_worker import ThreadWorker
 
 
-class LocateOptions(QtQuick.QQuickItem):
+class LocOptions(QtQuick.QQuickItem):
     """Set localization options and find localizations in an image
 
     The typical use-case for this is to find the proper options for feature
@@ -199,4 +199,4 @@ class LocateOptions(QtQuick.QQuickItem):
         print(f"worker error: {exc}")
 
 
-QtQml.qmlRegisterType(LocateOptions, "SdtGui.Templates", 1, 0, "LocateOptions")
+QtQml.qmlRegisterType(LocOptions, "SdtGui.Templates", 1, 0, "LocOptions")

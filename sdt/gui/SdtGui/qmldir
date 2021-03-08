@@ -14,7 +14,7 @@ FrameSelector 1.0 FrameSelector.qml
 ImageDisplay 1.0 ImageDisplay.qml
 ImageSelector 1.0 ImageSelector.qml
 ImageViewer 1.0 ImageViewer.qml
-LocateOptions 1.0 LocateOptions.qml
+LocOptions 1.0 LocOptions.qml
 Locator 1.0 Locator.qml
 MultiDataCollector 1.0 MultiDataCollector.qml
 ROISelector 1.0 ROISelector.qml

@@ -74,13 +74,13 @@ T.Registrator {
                     Repeater {
                         id: optRep
                         model: root.channelRoles
-                        LocateOptions {
+                        LocOptions {
                             id: loc
                             input: imSel.output
                             Layout.alignment: Qt.AlignTop
                             Layout.fillHeight: true
                             // FIXME: Currently preview is computed also for
-                            // hidden channel
+                            // hidden channel, and when not visible
                         }
                     }
                 }

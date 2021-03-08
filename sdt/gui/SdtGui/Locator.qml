@@ -30,7 +30,7 @@ T.Locator {
         }
         RowLayout {
             ColumnLayout {
-                LocateOptions {
+                LocOptions {
                     id: loc
                     input: imSel.output
                     Layout.alignment: Qt.AlignTop
