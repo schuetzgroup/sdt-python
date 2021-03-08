@@ -113,7 +113,7 @@ class Registrator(QtQuick.QQuickItem):
 
         Work is performed in a background thread.
         """
-        self._worker = ThreadWorker(self._doCalculation)
+        self._worker = ThreadWorker(self._doCalculation, enabled=True)
         self._worker.finished.connect(self._workerFinished)
         self._worker.error.connect(self._workerError)
         self._worker()

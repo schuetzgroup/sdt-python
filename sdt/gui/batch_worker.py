@@ -166,7 +166,7 @@ class BatchWorker(QtQuick.QQuickItem):
             self._count = cnt
             self.countChanged.emit()
 
-        self._worker = ThreadWorker(self._func)
+        self._worker = ThreadWorker(self._func, enabled=True)
         self._worker.finished.connect(self._workerFinished)
         self._worker.error.connect(self._workerError)
 
