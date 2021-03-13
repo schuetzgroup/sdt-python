@@ -290,4 +290,6 @@ T.LocOptions {
             onCheckedChanged: { root.previewEnabled = checked }
         }
     }
+
+    Component.onCompleted: { completeInit() }
 }

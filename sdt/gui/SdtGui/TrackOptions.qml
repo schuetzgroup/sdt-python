@@ -11,17 +11,11 @@ import SdtGui.Templates 1.0 as T
 T.TrackOptions {
     id: root
 
+    property alias searchRange: searchRangeSel.value
+    property alias memory: memorySel.value
+
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
-
-    Binding on options {
-        id: optionsBinding
-        value: rootLayout.options
-    }
-    onOptionsChanged: {
-        searchRangeSel.value = options.search_range
-        memorySel.value = options.memory
-    }
 
     GridLayout {
         id: rootLayout
@@ -74,4 +68,6 @@ T.TrackOptions {
             Layout.alignment: Qt.AlignRight
         }
     }
+
+    Component.onCompleted: { completeInit() }
 }

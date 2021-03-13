@@ -76,7 +76,7 @@ T.Registrator {
                         model: root.channelRoles
                         LocOptions {
                             id: loc
-                            input: imSel.output
+                            image: imSel.output
                             Layout.alignment: Qt.AlignTop
                             Layout.fillHeight: true
                             // FIXME: Currently preview is computed also for

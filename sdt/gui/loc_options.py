@@ -3,17 +3,19 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import functools
-from typing import Any, Callable, Dict, Iterable, Mapping, Optional
+import operator
+from typing import Any, Callable, Iterable, Mapping, Optional
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PyQt5 import QtCore, QtQml
 import numpy as np
 import pandas as pd
 
 from .. import loc
-from .thread_worker import ThreadWorker
+from .option_chooser import OptionChooser
+from .qml_wrapper import SimpleQtProperty
 
 
-class LocOptions(QtQuick.QQuickItem):
+class LocOptions(OptionChooser):
     """Set localization options and find localizations in an image
 
     The typical use-case for this is to find the proper options for feature
@@ -29,102 +31,30 @@ class LocOptions(QtQuick.QQuickItem):
         parent
             Parent QObject
         """
-        super().__init__(parent)
-        self._input = None
-        self._algorithm = "daostorm_3d"
+        super().__init__(argProperties=["image", "algorithm", "options"],
+                         resultProperties="locData", parent=parent)
         self._options = {}
+        self._image = None
+        self._algorithm = "daostorm_3d"
         self._locData = None
 
-        self._inputTimer = QtCore.QTimer()
-        self._inputTimer.setInterval(100)
-        self._inputTimer.setSingleShot(True)
-        self._inputTimer.timeout.connect(self._triggerLocalize)
-
-        self.inputChanged.connect(self._inputsChanged)
-        self.optionsChanged.connect(self._inputsChanged)
-        self.previewEnabledChanged.connect(self._inputsChanged)
-
-        self._worker = ThreadWorker(self._localize, enabled=True)
-        self._worker.enabledChanged.connect(self.previewEnabledChanged)
-        self._worker.finished.connect(self._workerFinished)
-        self._worker.error.connect(self._workerError)
-
     # Properties
-    inputChanged = QtCore.pyqtSignal(QtCore.QVariant)
-    """Input image was changed"""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=inputChanged)
-    def input(self) -> np.ndarray:
-        """Image data to find preview localizations, which are exposed via
-        the :py:attr:`locData` property.
-        """
-        return self._input
-
-    @input.setter
-    def input(self, input):
-        if self._input is input:
-            return
-        self._input = input
-        self.inputChanged.emit(self._input)
-
-    algorithmChanged = QtCore.pyqtSignal(str)
-    """Selected algorithm was changed"""
-
-    @QtCore.pyqtProperty(str, notify=algorithmChanged)
-    def algorithm(self) -> str:
-        """Localization algorithm to use. Currently ``"daostorm_3d"`` and
-        ``"cg"`` are supported. See also :py:mod:`sdt.loc`.
-        """
-        return self._algorithm
-
-    @algorithm.setter
-    def algorithm(self, algorithm):
-        if self._algorithm == algorithm:
-            return
-        self._algorithm = algorithm
-        self.algorithmChanged.emit(self._algorithm)
-
-    optionsChanged = QtCore.pyqtSignal("QVariantMap")
-    """Localization options were changed"""
-
-    @QtCore.pyqtProperty("QVariantMap", notify=optionsChanged)
-    def options(self) -> Dict:
-        """Options to the localization algorithm. See
-        :py:func:`sdt.loc.daostorm_3d.locate` and :py:func:`sdt.loc.cg.locate`.
-        """
-        return self._options
-
-    @options.setter
-    def options(self, options):
-        if self._options == options:
-            return
-        self._options = options
-        self.optionsChanged.emit(self.options)
-
-    previewEnabledChanged = QtCore.pyqtSignal(bool)
-    """Preview status was changed"""
-
-    @QtCore.pyqtProperty(bool, notify=previewEnabledChanged)
-    def previewEnabled(self) -> bool:
-        """If True, run the localization algorithm on the :py:attr:`input`
-        image with :py:attr:`options` and present the results via
-        :py:attr:`locData`.
-        """
-        return self._worker.enabled
-
-    @previewEnabled.setter
-    def previewEnabled(self, e):
-        self._worker.enabled = e
-
-    locDataChanged = QtCore.pyqtSignal(QtCore.QVariant)
-    """New output of the localization algorithm"""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=locDataChanged)
-    def locData(self) -> pd.DataFrame:
-        """Result of running the localization algorithm on the :py:attr:`input`
-        image with :py:attr:`options`.
-        """
-        return self._locData
+    image = SimpleQtProperty(QtCore.QVariant, comp=operator.is_)
+    """Image data (ndarray) to find preview localizations, which are exposed via
+    the :py:attr:`locData` property.
+    """
+    algorithm = SimpleQtProperty(str)
+    """Localization algorithm to use. Currently ``"daostorm_3d"`` and
+    ``"cg"`` are supported. See also :py:mod:`sdt.loc`.
+    """
+    options = SimpleQtProperty("QVariantMap")
+    """Options to the localization algorithm. See
+    :py:func:`sdt.loc.daostorm_3d.locate` and :py:func:`sdt.loc.cg.locate`.
+    """
+    locData = SimpleQtProperty(QtCore.QVariant, readOnly=True)
+    """Result of running the localization algorithm on the :py:attr:`input`
+    image with :py:attr:`options`.
+    """
 
     @QtCore.pyqtSlot(result=QtCore.QVariant)
     def getBatchFunc(self) -> Callable[[Iterable[np.ndarray]], pd.DataFrame]:
@@ -139,32 +69,9 @@ class LocOptions(QtQuick.QQuickItem):
         func = getattr(loc, self.algorithm).batch
         return functools.partial(func, **self.options)
 
-    # Slots
-    def _inputsChanged(self):
-        """Called if `input` or `options` was changed.
-
-        Calls :py:meth:`_triggerLocalize` after a short timeout to reduce the
-        update frequency in case of rapid changes in the UI and/or
-        programmatically setting the options.
-        """
-        if self.input is None or not self.previewEnabled:
-            if self._locData is not None:
-                self._locData = None
-                self.locDataChanged.emit(None)
-            return
-        if self._worker.busy:
-            self._worker.abort()
-        # Start short timer to call _triggerLocalize() so that rapid changes
-        # do not cause lots of aborts
-        self._inputTimer.start()
-
-    def _triggerLocalize(self):
-        """Call worker to run localization algorithm"""
-        self._worker(self.input, self.algorithm, self.options)
-
     @staticmethod
-    def _localize(image: np.ndarray, algorithm: str,
-                  loc_options: Mapping[str, Any]) -> pd.DataFrame:
+    def workerFunc(image: np.ndarray, algorithm: str,
+                   options: Mapping[str, Any]) -> pd.DataFrame:
         """Run localization algorithm
 
         This is executed in the worker process.
@@ -176,7 +83,7 @@ class LocOptions(QtQuick.QQuickItem):
         algorithm
             Name of the algorithm, i.e., name of the submodule in
             :py:mod:`sdt.loc`.
-        loc_options
+        options
             Arguments passed to the ``locate`` function of the submodule
             specified by `algorithm`
 
@@ -184,19 +91,11 @@ class LocOptions(QtQuick.QQuickItem):
         -------
         Localization data
         """
+        if image is None:
+            return None
         algo_mod = getattr(loc, algorithm)
-        result = algo_mod.locate(image, **loc_options)
+        result = algo_mod.locate(image, **options)
         return result
-
-    def _workerFinished(self, result):
-        """Callback for when worker finishes localizing"""
-        self._locData = result
-        self.locDataChanged.emit(result)
-
-    def _workerError(self, exc):
-        """Callback for when worker encounters an error while localizing"""
-        # TODO: Implement status widget or something
-        print(f"worker error: {exc}")
 
 
 QtQml.qmlRegisterType(LocOptions, "SdtGui.Templates", 1, 0, "LocOptions")
