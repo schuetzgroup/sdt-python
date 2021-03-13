@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import contextlib
-from typing import Any, Dict, Mapping, Optional
+from typing import Dict, Mapping, Optional
 
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np

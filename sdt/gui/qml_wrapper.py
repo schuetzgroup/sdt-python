@@ -6,7 +6,7 @@ import enum
 import logging
 import operator
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Union
+from typing import Any, Callable, Optional, Union
 
 from PyQt5 import QtCore, QtGui, QtQml
 
@@ -342,7 +342,6 @@ class QmlDefinedMethod:
     def __get__(self, obj, objtype=None):
         if obj is None:
             return self
-        mo = obj.metaObject()
 
         def call(*args):
             ret = QtCore.QMetaObject.invokeMethod(

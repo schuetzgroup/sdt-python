@@ -8,7 +8,6 @@ from PyQt5 import QtCore, QtQuick, QtQml
 
 from .dataset import DatasetCollection
 from .item_models import DictListModel
-from .qml_wrapper import QmlDefinedProperty
 from .thread_worker import ThreadWorker
 
 
