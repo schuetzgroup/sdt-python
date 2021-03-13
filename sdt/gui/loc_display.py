@@ -9,6 +9,8 @@ from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import numpy as np
 import pandas as pd
 
+from .qml_wrapper import SimpleQtProperty
+
 
 class LocDisplay(QtQuick.QQuickPaintedItem):
     """Display feature localizations
@@ -50,6 +52,9 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
         self._locData = None
         self._scaleFactor = 1.0
         self._circles = []
+        self._color = QtGui.QColor(QtCore.Qt.yellow)
+
+    color = SimpleQtProperty(QtGui.QColor)
 
     locDataChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Localization data was changed"""
@@ -105,7 +110,7 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
     def paint(self, painter: QtGui.QPainter):
         # Implement QQuickItem.paint
         pen = painter.pen()
-        pen.setColor(QtGui.QColor("yellow"))
+        pen.setColor(self.color)
         pen.setWidthF(2.5)
         pen.setCosmetic(True)
         painter.setPen(pen)
