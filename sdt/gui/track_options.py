@@ -59,7 +59,8 @@ class TrackOptions(OptionChooser):
 
     @QtCore.pyqtSlot(result=QtCore.QVariant)
     def getTrackFunc(self) -> Callable[[pd.DataFrame], pd.DataFrame]:
-        return functools.partial(self.workerFunc, options=self._options)
+        return functools.partial(self.workerFunc, searchRange=self.searchRange,
+                                 memory=self.memory)
 
 
 QtQml.qmlRegisterType(TrackOptions, "SdtGui.Templates", 1, 0, "TrackOptions")
