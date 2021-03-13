@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from .qml_wrapper import (Component, SimpleQtProperty, Window, messageHandler,
-                          qmlPath)
+from .qml_wrapper import (Component, QmlDefinedMethod, QmlDefinedProperty,
+                          SimpleQtProperty, Window, messageHandler, qmlPath)
 
 # QML types
 from .batch_worker import BatchWorker
