@@ -64,7 +64,7 @@ T.TrackOptions {
             onCheckedChanged: { root.previewEnabled = checked }
         }
         StatusDisplay {
-            status: root.previewEnabled ? 0 : 3
+            status: root.status
             Layout.alignment: Qt.AlignRight
         }
     }

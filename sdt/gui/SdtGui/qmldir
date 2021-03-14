@@ -20,6 +20,7 @@ MultiDataCollector 1.0 MultiDataCollector.qml
 ROISelector 1.0 ROISelector.qml
 Registrator 1.0 Registrator.qml
 RealSpinBox 1.0 RealSpinBox.qml
+StatusDisplay 1.0 StatusDisplay.qml
 TrackOptions 1.0 TrackOptions.qml
 
 singleton Sdt 1.0 Sdt.qml

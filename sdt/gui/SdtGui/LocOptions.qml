@@ -284,10 +284,14 @@ T.LocOptions {
             }
         }
         Item { Layout.fillHeight: true }
-        Switch {
-            text: "Show preview"
-            checked: root.previewEnabled
-            onCheckedChanged: { root.previewEnabled = checked }
+        RowLayout {
+            Switch {
+                text: "preview"
+                checked: root.previewEnabled
+                onCheckedChanged: { root.previewEnabled = checked }
+            }
+            Item { Layout.fillWidth: true }
+            StatusDisplay { status: root.status }
         }
     }
 
