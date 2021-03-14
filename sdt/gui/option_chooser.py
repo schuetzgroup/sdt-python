@@ -6,6 +6,8 @@ from typing import Any, Iterable, Optional, Union
 
 from PyQt5 import QtCore, QtQuick
 
+from .qml_wrapper import SimpleQtProperty
+from .sdt import Sdt
 from .thread_worker import ThreadWorker
 
 
@@ -52,6 +54,8 @@ class OptionChooser(QtQuick.QQuickItem):
             resultProperties = (resultProperties,)
         self._resultProperties = resultProperties
 
+        self._status = Sdt.WorkerStatus.Idle
+        self._error = None
         self._worker = ThreadWorker(self.workerFunc, enabled=True)
         self._worker.enabledChanged.connect(self.previewEnabledChanged)
         self._worker.finished.connect(self._workerFinished)
@@ -74,9 +78,14 @@ class OptionChooser(QtQuick.QQuickItem):
     def previewEnabled(self, e):
         self._worker.enabled = e
         self._inputsChanged()
+        self._setStatus(
+            Sdt.WorkerStatus.Idle if e else Sdt.WorkerStatus.Disabled)
+
+    status = SimpleQtProperty(int, readOnly=True)
+    error = SimpleQtProperty(QtCore.QVariant, readOnly=True)
 
     @staticmethod
-    def workerFunc(self, *args, **kwargs):
+    def workerFunc(*args, **kwargs):
         """Data processing function
 
         Implement in subclass.
@@ -147,6 +156,24 @@ class OptionChooser(QtQuick.QQuickItem):
                 setattr(self, pName, val)
                 self._getNotifySignal(prop).emit()
 
+    def _setStatus(self, s: Sdt.WorkerStatus, err: Optional[Exception] = None):
+        """Set :py:attr:`status` and :py:attr:`error` properties
+
+        Parameters
+        ----------
+        s
+            New status
+        err
+            Exception, usually used in conjunction with
+            ``Sdt.WorkerStatus.Error`.
+        """
+        if self._status != s:
+            self._status = s
+            self.statusChanged.emit()
+        if self._error is not err:
+            self._error = err
+            self.errorChanged.emit()
+
     # Slots
     def _inputsChanged(self):
         """Called if any of `argProperties` was changed.
@@ -159,7 +186,9 @@ class OptionChooser(QtQuick.QQuickItem):
             for p in self._resultProperties:
                 if getattr(self, p) is not None:
                     self._setProperty(p, None)
+            self._setStatus(Sdt.WorkerStatus.Idle)
             return
+        self._setStatus(Sdt.WorkerStatus.Working)
         if self._worker.busy:
             self._worker.abort()
         # Start short timer to call _triggerTracking() so that rapid changes
@@ -180,8 +209,8 @@ class OptionChooser(QtQuick.QQuickItem):
             result = (result,)
         for p, r in zip(self._resultProperties, result):
             self._setProperty(p, r)
+        self._setStatus(Sdt.WorkerStatus.Idle)
 
     def _workerError(self, exc):
         """Callback for when worker encounters an error while tracking"""
-        # TODO: Implement some status property
-        print(f"worker error: {exc}")
+        self._setStatus(Sdt.WorkerStatus.Error, exc)
