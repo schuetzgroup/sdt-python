@@ -677,6 +677,12 @@ class Registrator:
         ret.parameters2 = m["parameters2"]
         return ret
 
+    def __eq__(self, other):
+        if not isinstance(other, __class__):
+            return False
+        return (np.allclose(self.parameters1, other.parameters1) and
+                np.allclose(self.parameters2, other.parameters2))
+
 
 with suppress(ImportError):
     from ..io import yaml

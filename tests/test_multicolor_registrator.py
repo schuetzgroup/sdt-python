@@ -292,3 +292,17 @@ class TestRegistrator:
 
         np.testing.assert_allclose(cc_loaded.parameters1, trafo)
         np.testing.assert_allclose(cc_loaded.parameters2, np.linalg.inv(trafo))
+
+    def test_eq(self, trafo):
+        """multicolor.Registrator: Test equality operator"""
+        r1 = multicolor.Registrator()
+        r1.parameters1 = trafo
+        r1.parameters2 = trafo * 2
+
+        r2 = multicolor.Registrator()
+        r2.parameters1 = trafo
+        r2.parameters2 = trafo * 3
+
+        assert r1 == r1
+        assert r1 != r2
+        assert r1 != "bla"
