@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import contextlib
 import enum
 import logging
 import operator
@@ -468,3 +469,22 @@ def messageHandler(msg_type, context, msg):
     # full_msg = f"{context.file}:{context.function}:{context.line}: {msg}"
     full_msg = msg
     _msgHandlerMap[msg_type](full_msg)
+
+
+@contextlib.contextmanager
+def blockSignals(obj: QtCore.QObject):
+    """Context manager for temporarily blocking signal emission
+
+    Wraps :py:meth:`QtCore.QObject.blockSignals`. The previous blocking state
+    is restored upon exiting.
+
+    Parameters
+    ----------
+    obj
+        The object instance for which signals will be blocked
+    """
+    try:
+        wasBlocked = obj.blockSignals(True)
+        yield
+    finally:
+        obj.blockSignals(wasBlocked)
