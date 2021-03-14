@@ -488,3 +488,28 @@ def blockSignals(obj: QtCore.QObject):
         yield
     finally:
         obj.blockSignals(wasBlocked)
+
+
+def getNotifySignal(obj: QtCore.QObject, prop: str) -> QtCore.pyqtBoundSignal:
+    """Get the notify signal of an object's property
+
+    Parameters
+    ----------
+    obj
+        Object instance
+    prop
+        Property name
+
+    Returns
+    -------
+    Bound notify signal
+    """
+    mo = obj.metaObject()
+    idx = mo.indexOfProperty(prop)
+    if idx < 0:
+        raise ValueError(f"{obj} has no property `{prop}`")
+    sig = mo.property(idx).notifySignal()
+    if not sig.isValid():
+        raise ValueError(
+            f"{obj}'s property `{prop}` has no notify signal")
+    return getattr(obj, bytes(sig.name()).decode())

@@ -6,7 +6,7 @@ from typing import Any, Iterable, Optional, Union
 
 from PyQt5 import QtCore, QtQuick
 
-from .qml_wrapper import SimpleQtProperty
+from .qml_wrapper import SimpleQtProperty, getNotifySignal
 from .sdt import Sdt
 from .thread_worker import ThreadWorker
 
@@ -102,29 +102,8 @@ class OptionChooser(QtQuick.QQuickItem):
         ``Component.onCompleted`` slot!**
         """
         for p in self._argProperties:
-            self._getNotifySignal(p).connect(self._inputsChanged)
+            getNotifySignal(self, p).connect(self._inputsChanged)
         self._inputsChanged()
-
-    def _getNotifySignal(self, prop: str) -> QtCore.pyqtBoundSignal:
-        """Get the notify signal of a property
-
-        Parameters
-        ----------
-        prop
-            Property name
-
-        Returns
-        -------
-        Bound notify signal
-        """
-        mo = self.metaObject()
-        idx = mo.indexOfProperty(prop)
-        if idx < 0:
-            raise ValueError(f"property `{prop}` does not exist")
-        sig = mo.property(idx).notifySignal()
-        if not sig.isValid():
-            raise ValueError(f"property `{prop}` has no notify signal")
-        return getattr(self, bytes(sig.name()).decode())
 
     def _setProperty(self, prop: str, val: Any):
         """Set a property
@@ -154,7 +133,7 @@ class OptionChooser(QtQuick.QQuickItem):
             # Do nothing if old and new values are none (crude optimization)
             if val is not None or getattr(self, pName) is not None:
                 setattr(self, pName, val)
-                self._getNotifySignal(prop).emit()
+                getNotifySignal(self, prop).emit()
 
     def _setStatus(self, s: Sdt.WorkerStatus, err: Optional[Exception] = None):
         """Set :py:attr:`status` and :py:attr:`error` properties

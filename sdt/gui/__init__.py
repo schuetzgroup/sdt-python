@@ -4,7 +4,7 @@
 
 from .qml_wrapper import (Component, QmlDefinedMethod, QmlDefinedProperty,
                           SimpleQtProperty, Window, blockSignals,
-                          messageHandler, qmlPath)
+                          getNotifySignal, messageHandler, qmlPath)
 
 # QML types
 from .batch_worker import BatchWorker
