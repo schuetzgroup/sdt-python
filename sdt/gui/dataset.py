@@ -2,16 +2,15 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import contextlib
 import enum
 import itertools
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Union
+from typing import Dict, Iterable, List, Mapping, Union
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PyQt5 import QtCore, QtQml
 
-from .item_models import DictListModel, ListModel
-from .qml_wrapper import QmlDefinedProperty
+from .item_models import DictListModel
+from .qml_wrapper import SimpleQtProperty, getNotifySignal
 
 
 class Dataset(DictListModel):
@@ -184,9 +183,14 @@ class DatasetCollection(DictListModel):
         self._dataDir = ""
         self._fileRoles = []
         self._dataRoles = []
+        self._propagated = []
         self.countChanged.connect(self.fileListsChanged)
         self.countChanged.connect(self.keysChanged)
         self.elementsChanged.connect(self._onElementsChanged)
+
+        self.propagateProperty("dataDir")
+        self.propagateProperty("fileRoles")
+        self.propagateProperty("dataRoles")
 
     def makeDataset(self) -> Dataset:
         """Create a dateset model
@@ -203,9 +207,8 @@ class DatasetCollection(DictListModel):
         New dataset model instance
         """
         model = self.DatasetClass(self)
-        model.dataDir = self.dataDir
-        model.fileRoles = self.fileRoles
-        model.dataRoles = self.dataRoles
+        for p in self._propagated:
+            setattr(model, p, getattr(self, p))
         return model
 
     @QtCore.pyqtSlot(int, str)
@@ -257,61 +260,17 @@ class DatasetCollection(DictListModel):
             self.getProperty(i, "dataset").fileListChanged.connect(
                 self.fileListsChanged)
 
-    dataDirChanged = QtCore.pyqtSignal(str)
-    """:py:attr:`dataDir` changed"""
-
-    @QtCore.pyqtProperty(str, notify=dataDirChanged)
-    def dataDir(self) -> str:
-        """All relative file paths are considered relative to `dataDir`"""
-        return self._dataDir
-
-    @dataDir.setter
-    def dataDir(self, d: str):
-        if self._dataDir == d:
-            return
-        self._dataDir = d
-        for i in range(self.rowCount()):
-            self.getProperty(i, "dataset").dataDir = d
-        self.dataDirChanged.emit(d)
-
-    fileRolesChanged = QtCore.pyqtSignal(list)
-    """:py:attr:`fileRoles` property changed"""
-
-    @QtCore.pyqtProperty(list, notify=fileRolesChanged)
-    def fileRoles(self) -> List[str]:
-        """Model roles that represent file paths. These are used for
-        :py:attr:`fileLists`.
-        """
-        return self._fileRoles
-
-    @fileRoles.setter
-    def fileRoles(self, names: List[str]):
-        if names == self._fileRoles:
-            return
-        self._fileRoles = names
-        for i in range(self.rowCount()):
-            self.getProperty(i, "dataset").fileRoles = names
-        self.fileRolesChanged.emit(self._fileRoles)
-
-    dataRolesChanged = QtCore.pyqtSignal(list)
-    """:py:attr:`dataRoles` property changed"""
-
-    @QtCore.pyqtProperty(list, notify=dataRolesChanged)
-    def dataRoles(self) -> List[str]:
-        """Model roles that do not represent file paths. These could, for
-        instance, be data loaded from any of the :py:attr:`fileRoles` or
-        analysis results, etc.
-        """
-        return self._dataRoles
-
-    @dataRoles.setter
-    def dataRoles(self, names: List[str]):
-        if names == self._dataRoles:
-            return
-        self._dataRoles = names
-        for i in range(self.rowCount()):
-            self.getProperty(i, "dataset").dataRoles = names
-        self.dataRolesChanged.emit(self._dataRoles)
+    dataDir = SimpleQtProperty(str)
+    """All relative file paths are considered relative to `dataDir`"""
+    fileRoles = SimpleQtProperty(list)
+    """Model roles that represent file paths. These are used for
+    :py:attr:`fileLists`.
+    """
+    dataRoles = SimpleQtProperty(list)
+    """Model roles that do not represent file paths. These could, for instance,
+    be data loaded from any of the :py:attr:`fileRoles` or analysis results,
+    etc.
+    """
 
     fileListsChanged = QtCore.pyqtSignal()
     """:py:attr:`fileLists` property changed"""
@@ -347,6 +306,36 @@ class DatasetCollection(DictListModel):
         """Emit :py:attr:`keysChanged` if model data changed"""
         if roles is None or "key" in roles:
             self.keysChanged.emit()
+
+    def propagateProperty(self, prop: str):
+        """Enable passing of a property value to datasets
+
+        Whenever the property named `prop` is changed, each dataset's `prop`
+        property is set accordingly. Additionally, when adding a dataset, its
+        `prop` property is initialized with the current value.
+
+        Parameters
+        ----------
+        prop
+            Name of the property whose value should be passed on to datasets
+        """
+        self._propagated.append(prop)
+        sig = getNotifySignal(self, prop)
+        sig.connect(lambda: self._propagatedPropertyChanged(prop))
+
+    def _propagatedPropertyChanged(self, prop: str):
+        """Slot called when a property marked for propagation changes
+
+        This does the actual setting of the datasets' properties.
+
+        Parameters
+        ----------
+        prop
+            Property name
+        """
+        newVal = getattr(self, prop)
+        for i in range(self.rowCount()):
+            setattr(self.getProperty(i, "dataset"), prop, newVal)
 
 
 QtQml.qmlRegisterType(Dataset, "SdtGui", 1, 0, "Dataset")
