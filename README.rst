@@ -5,6 +5,9 @@
 The ``sdt-python`` package
 ==========================
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4604495.svg
+   :target: https://doi.org/10.5281/zenodo.4604495
+
 sdt-python is a collection of tools for analysis of fluorescence microscopy
 data.
 
@@ -25,6 +28,9 @@ A repository of tutorials is provided at
 https://github.com/schuetzgroup/sdt-python-tutorials.
 Extensive API documentation can be found at
 https://schuetzgroup.github.io/sdt-python.
+
+If you use ``sdt-python`` in a project resulting in a scientific publication,
+please `cite <https://zenodo.org/record/4604495>`_ the software.
 
 
 Installation
