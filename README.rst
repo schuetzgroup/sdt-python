@@ -35,7 +35,7 @@ Extensive API documentation can be found at
 https://schuetzgroup.github.io/sdt-python.
 
 If you use ``sdt-python`` in a project resulting in a scientific publication,
-please `cite <https://zenodo.org/record/4604495>`_ the software.
+please `cite <https://doi.org/10.5281/zenodo.4604495>`_ the software.
 
 
 Installation
