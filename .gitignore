@@ -13,3 +13,4 @@ __pycache__
 .vscode
 sdt-python.code-workspace
 .idea
+t-*.ipynb
