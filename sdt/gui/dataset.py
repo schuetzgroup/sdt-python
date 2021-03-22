@@ -9,11 +9,11 @@ from typing import Dict, Iterable, List, Mapping, Union
 
 from PyQt5 import QtCore, QtQml
 
-from .item_models import DictListModel
+from .item_models import ListModel
 from .qml_wrapper import SimpleQtProperty, getNotifySignal
 
 
-class Dataset(DictListModel):
+class Dataset(ListModel):
     """Model class representing a dataset
 
     Each entry has different roles. Roles in :py:attr:`fileRoles` represent
@@ -30,23 +30,11 @@ class Dataset(DictListModel):
         self._dataDir = ""
         self._fileRoles = []
         self._dataRoles = []
-        self.elementsChanged.connect(self._onElementsChanged)
+        self.itemsChanged.connect(self._onItemsChanged)
         self.countChanged.connect(self.fileListChanged)
 
-    dataDirChanged = QtCore.pyqtSignal(str)
-    """:py:attr:`dataDir` changed"""
-
-    @QtCore.pyqtProperty(str, notify=dataDirChanged)
-    def dataDir(self) -> str:
-        """All relative file paths are considered relative to `dataDir`"""
-        return self._dataDir
-
-    @dataDir.setter
-    def dataDir(self, d: str):
-        if self._dataDir == d:
-            return
-        self._dataDir = d
-        self.dataDirChanged.emit(d)
+    dataDir = SimpleQtProperty(str)
+    """All relative file paths are considered relative to `dataDir`"""
 
     fileRolesChanged = QtCore.pyqtSignal(list)
     """:py:attr:`fileRoles` property changed"""
@@ -140,7 +128,7 @@ class Dataset(DictListModel):
         """The list contains dicts mapping a file role -> file. See also
         :py:attr:`fileRoles`.
         """
-        return [{r: self.getProperty(i, r) for r in self.fileRoles}
+        return [{r: self.get(i, r) for r in self.fileRoles}
                 for i in range(self.count)]
 
     @fileList.setter
@@ -148,13 +136,13 @@ class Dataset(DictListModel):
         self.fileRoles = list(set(itertools.chain(*fl)))
         self.reset(fl)
 
-    def _onElementsChanged(self, index: int, count: int, roles: Iterable[str]):
+    def _onItemsChanged(self, index: int, count: int, roles: Iterable[str]):
         """Emit :py:attr:`fileListChanged` if model data changed"""
         if roles is None or set(roles) & set(self.fileRoles):
             self.fileListChanged.emit()
 
 
-class DatasetCollection(DictListModel):
+class DatasetCollection(ListModel):
     """Model class representing a set of datasets
 
     Each dataset is identified by a key ("key" role) and has per-file data
@@ -186,7 +174,7 @@ class DatasetCollection(DictListModel):
         self._propagated = []
         self.countChanged.connect(self.fileListsChanged)
         self.countChanged.connect(self.keysChanged)
-        self.elementsChanged.connect(self._onElementsChanged)
+        self.itemsChanged.connect(self._onItemsChanged)
 
         self.propagateProperty("dataDir")
         self.propagateProperty("fileRoles")
@@ -239,7 +227,7 @@ class DatasetCollection(DictListModel):
             Number of datasets to remove
         """
         for i in range(index, index + count):
-            self.getProperty(i, "dataset").fileListChanged.disconnect(
+            self.get(i, "dataset").fileListChanged.disconnect(
                 self.fileListsChanged)
         super().remove(index, count)
 
@@ -253,11 +241,11 @@ class DatasetCollection(DictListModel):
             "dataset" -> Dataset.
         """
         for i in range(self.count):
-            self.getProperty(i, "dataset").fileListChanged.disconnect(
+            self.get(i, "dataset").fileListChanged.disconnect(
                 self.fileListsChanged)
         super().reset(data)
         for i in range(self.count):
-            self.getProperty(i, "dataset").fileListChanged.connect(
+            self.get(i, "dataset").fileListChanged.connect(
                 self.fileListsChanged)
 
     dataDir = SimpleQtProperty(str)
@@ -281,7 +269,7 @@ class DatasetCollection(DictListModel):
         dicts mapping a file role -> file. See also :py:attr:`fileRoles`.
         """
         return {
-            self.getProperty(i, "key"): self.getProperty(i, "dataset").fileList
+            self.get(i, "key"): self.get(i, "dataset").fileList
             for i in range(self.count)}
 
     @fileLists.setter
@@ -299,10 +287,10 @@ class DatasetCollection(DictListModel):
     @QtCore.pyqtProperty(list, notify=keysChanged)
     def keys(self) -> List[str]:
         """List of all keys currently present in the model"""
-        return [self.getProperty(i, "key") for i in range(self.rowCount())]
+        return [self.get(i, "key") for i in range(self.rowCount())]
 
-    def _onElementsChanged(self, index: int, count: int,
-                           roles: Iterable[str] = []):
+    def _onItemsChanged(self, index: int, count: int,
+                        roles: Iterable[str] = []):
         """Emit :py:attr:`keysChanged` if model data changed"""
         if roles is None or "key" in roles:
             self.keysChanged.emit()
@@ -335,7 +323,7 @@ class DatasetCollection(DictListModel):
         """
         newVal = getattr(self, prop)
         for i in range(self.rowCount()):
-            setattr(self.getProperty(i, "dataset"), prop, newVal)
+            setattr(self.get(i, "dataset"), prop, newVal)
 
 
 QtQml.qmlRegisterType(Dataset, "SdtGui", 1, 0, "Dataset")

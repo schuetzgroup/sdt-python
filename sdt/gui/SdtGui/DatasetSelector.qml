@@ -19,9 +19,9 @@ T.DatasetSelector {
     )
     readonly property var currentDataset: (
         sel.currentIndex < 0 ? null :
-        sel.currentIndex >= specialDatasets.count ? datasets.getProperty(
+        sel.currentIndex >= specialDatasets.count ? datasets.get(
             sel.currentIndex - specialDatasets.count, "dataset") :
-        specialDatasets.getProperty(sel.currentIndex, "dataset")
+        specialDatasets.get(sel.currentIndex, "dataset")
     )
     function select(index) {
         sel.currentIndex = index + specialDatasets.count
@@ -37,8 +37,7 @@ T.DatasetSelector {
         editable: root.editable && currentIndex >= specialDatasets.count
         onEditTextChanged: {
             if (currentIndex >= specialDatasets.count && editText)
-                datasets.setProperty(currentIndex - specialDatasets.count,
-                                     "key", editText)
+                datasets.set(currentIndex - specialDatasets.count, "key", editText)
         }
         onModelChanged: { sel.selectFirstIfUnset() }
 

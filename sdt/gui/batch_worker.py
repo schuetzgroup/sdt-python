@@ -7,7 +7,7 @@ from typing import Any, Callable, List, Optional
 from PyQt5 import QtCore, QtQuick, QtQml
 
 from .dataset import DatasetCollection
-from .item_models import DictListModel
+from .item_models import ListModel
 from .thread_worker import ThreadWorker
 
 
@@ -24,7 +24,7 @@ class BatchWorker(QtQuick.QQuickItem):
             Parent QQuickItem
         """
         super().__init__(parent)
-        self._dataset = DictListModel()
+        self._dataset = ListModel()
         self._func = None
         self._worker = None
         self._argRoles = []
@@ -40,7 +40,7 @@ class BatchWorker(QtQuick.QQuickItem):
     """:py:attr:`dataset` was changed"""
 
     @QtCore.pyqtProperty(QtCore.QVariant, notify=datasetChanged)
-    def dataset(self) -> DictListModel:
+    def dataset(self) -> ListModel:
         """Apply :py:attr:`func` to each entry of this dataset. If this is
         a :py:class:`DatasetCollection` instance, :py:attr:`func` is applied
         to each entry of each element.
@@ -48,7 +48,7 @@ class BatchWorker(QtQuick.QQuickItem):
         return self._dataset
 
     @dataset.setter
-    def dataset(self, data: DictListModel):
+    def dataset(self, data: ListModel):
         if data is self._dataset:
             return
         self._dataset = data

@@ -10,15 +10,15 @@ from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .. import io, multicolor
-from .item_models import DictListModel
-from .qml_wrapper import QmlDefinedProperty
+from .item_models import ListModel
+from .qml_wrapper import QmlDefinedProperty, SimpleQtProperty
 
 
 ImageSequence = Union[str, Path, np.ndarray]
 """Types that can be interpreted as an image sequence"""
 
 
-class ImageList(DictListModel):
+class ImageList(ListModel):
     """List of image sequences
 
     Each sequence can be described by a tuple of (name, data), where data
@@ -39,7 +39,7 @@ class ImageList(DictListModel):
         """
         super().__init__(parent)
         self._frameSel = multicolor.FrameSelector("")
-        self._curType = ""
+        self._currentExcitationType = ""
         self.excitationSeqChanged.connect(self._onExcTypeChanged)
         self.currentExcitationTypeChanged.connect(self._onExcTypeChanged)
 
@@ -64,25 +64,14 @@ class ImageList(DictListModel):
         self._frameSel.excitation_seq = seq
         self.excitationSeqChanged.emit()
 
-    currentExcitationTypeChanged = QtCore.pyqtSignal()
-    """:py:attr:`currentExcitationType` changed"""
-
-    @QtCore.pyqtProperty(str, notify=currentExcitationTypeChanged)
-    def currentExcitationType(self) -> str:
+    currentExcitationType = SimpleQtProperty(str)
         """Excitation type to use in :py:attr:`output`"""
-        return self._curType
 
-    @currentExcitationType.setter
-    def currentExcitationType(self, t: str):
-        if t == self._curType:
-            return
-        self._curType = t
-        self.currentExcitationTypeChanged.emit()
-
-    def getProperty(self, index: int, role: str) -> Any:
+    @QtCore.pyqtSlot(int, str, result=QtCore.QVariant)
+    def get(self, index: int, role: str) -> Any:
         """Get data for an image sequence
 
-        This implements :py:meth:`DictListModel.getProperty`.
+        This implements :py:meth:`ListModel.get`.
 
         Parameters
         ----------
@@ -95,7 +84,7 @@ class ImageList(DictListModel):
         -------
         Requested data
         """
-        d = super().getProperty(index, role)
+        d = super().get(index, role)
         if role == "display" and not isinstance(d, str):
             return f"<{index:03}>"
         if role == "image":
@@ -134,7 +123,7 @@ class ImageList(DictListModel):
         if isinstance(obj, Path):
             obj = {"display": f"{obj.name} ({str(obj.parent)})", "key": obj,
                    "image": obj}
-        elif isinstance(obj, np.ndarray) and img.ndim == 2:
+        elif isinstance(obj, np.ndarray) and obj.ndim == 2:
             # Single image
             obj = {"display": None, "key": None, "image": obj[None, ...]}
         elif isinstance(obj, (tuple, list)):
@@ -196,13 +185,13 @@ class ImageSelector(QtQuick.QQuickItem):
         # _dataset needs self as parent, otherwise there will be a segfault
         # when setting dataset property
         self._dataset = ImageList(self)
-        self._dataset.dataChanged.connect(self._onDataChanged)
+        self._dataset.itemsChanged.connect(self._onItemsChanged)
 
     datasetChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """:py:attr:`dataset` was changed"""
 
     @QtCore.pyqtProperty(QtCore.QVariant, notify=datasetChanged)
-    def dataset(self) -> QtCore.QAbstractListModel:
+    def dataset(self) -> ListModel:
         """Model holding the image sequences to choose from
 
         This can either be a custom model (see also :py:attr:`textRole` and
@@ -227,7 +216,7 @@ class ImageSelector(QtQuick.QQuickItem):
             return
         if isinstance(d, QtQml.QJSValue):
             d = d.toVariant()
-        if not isinstance(d, QtCore.QAbstractItemModel):
+        if not isinstance(d, ListModel):
             m = ImageList(self)
             if d is not None:
                 m.reset(d)
@@ -237,19 +226,13 @@ class ImageSelector(QtQuick.QQuickItem):
         # If _dataset had not self as parent, the garbage collector would
         # destroy it here while QML or something is still trying to access it
         # -> segfault
-        self._dataset.dataChanged.disconnect(self._onDataChanged)
+        self._dataset.itemsChanged.disconnect(self._onItemsChanged)
         self._dataset = d
-        self._dataset.dataChanged.connect(self._onDataChanged)
+        self._dataset.itemsChanged.connect(self._onItemsChanged)
         self.datasetChanged.emit(d)
 
-    outputChanged = QtCore.pyqtSignal(QtCore.QVariant)
-    """:py:attr:`output` has changed."""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=outputChanged)
-    def output(self) -> np.ndarray:
+    output = SimpleQtProperty(QtCore.QVariant, readOnly=True)
         """Selected frame from selected image sequence"""
-        return self._output
-
     editable = QmlDefinedProperty()
     """If `True` show widgets to manipulate the image sequence list"""
     textRole = QmlDefinedProperty()
@@ -262,12 +245,11 @@ class ImageSelector(QtQuick.QQuickItem):
     arrays, a :py:class:`io.ImageSequence` instance or similar.
     """
 
-    def _onDataChanged(self, topLeft: QtCore.QModelIndex,
-                       bottomRight: QtCore.QModelIndex, roles: List[int]):
+    def _onItemsChanged(self, index: int, count: int, roles: List[str]):
         """Update output if model data changed"""
-        if not topLeft.row() <= self._curIndex <= bottomRight.row():
+        if not index <= self._curIndex < index + count:
             return
-        if roles and self.dataset.Roles[self.imageRole] not in roles:
+        if roles and self.imageRole not in roles:
             return
         self._fileChanged(self._curIndex)
 
@@ -285,10 +267,10 @@ class ImageSelector(QtQuick.QQuickItem):
             # No file selected
             self._curImage = None
             self._output = None
-            self.outputChanged.emit(None)
+            self.outputChanged.emit()
             return
 
-        self._curImage = self.dataset.getProperty(index, self.imageRole)
+        self._curImage = self.dataset.get(index, self.imageRole)
         self.currentFrameCountChanged.emit()
 
     currentFrameCountChanged = QtCore.pyqtSignal()
@@ -313,7 +295,7 @@ class ImageSelector(QtQuick.QQuickItem):
             self._output = None
         else:
             self._output = self._curImage[index]
-        self.outputChanged.emit(self._output)
+        self.outputChanged.emit()
 
     currentIndex = QmlDefinedProperty()
     """Index w.r.t :py:attr:`dataset` of currently selected image sequence"""
