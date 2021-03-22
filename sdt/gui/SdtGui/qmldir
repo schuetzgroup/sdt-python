@@ -7,6 +7,7 @@ module SdtGui
 BatchWorker 1.0 BatchWorker.qml
 ChannelConfig 1.0 ChannelConfig.qml
 DataCollector 1.0 DataCollector.qml
+ModelComboBox 1.0 ModelComboBox.qml
 DatasetSelector 1.0 DatasetSelector.qml
 DirSelector 1.0 DirSelector.qml
 EditableSpinBox 1.0 EditableSpinBox.qml
