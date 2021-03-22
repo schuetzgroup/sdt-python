@@ -356,3 +356,114 @@ class ListModel(QtCore.QAbstractListModel):
         self.dataChanged.emit(tl, br, [self.Roles[r] for r in roles])
     # End Qt API
 
+
+class ListProxyModel(QtCore.QIdentityProxyModel):
+    """Provide :py:class:`ListModel` API for Qt item models
+
+    This is especially useful for accessing item models in QML since roles
+    can be specified via their names, while Qt's API requires ints to be
+    used.
+    """
+    def __init__(self, parent: Optional[QtCore.QObject] = None):
+        """Parameters
+        ----------
+        parent
+            Parent QObject
+        """
+        super().__init__(parent)
+        self.dataChanged.connect(self._emitItemsChanged)
+        self.modelReset.connect(self.countChanged)
+        self.rowsInserted.connect(self.countChanged)
+        self.rowsRemoved.connect(self.countChanged)
+
+    @property
+    def _roleNameMap(self) -> Dict[str, int]:
+        """Map role name -> corresponding enum value"""
+        return {bytes(v).decode(): k for k, v in self.roleNames().items()}
+
+    @property
+    def _roleValueMap(self) -> Dict[int, str]:
+        """Map role enum value -> corresponding name"""
+        return {k: bytes(v).decode() for k, v in self.roleNames().items()}
+
+    def _emitItemsChanged(self, topLeft: QtCore.QModelIndex,
+                          bottomRight: QtCore.QModelIndex,
+                          roles: Iterable[int] = []):
+        """Emit :py:attr:`itemsChanged` signal
+
+        This is connected to :py:attr:`dataChanged`.
+        """
+        index = topLeft.row()
+        count = bottomRight.row() - index + 1
+        rvm = self._roleValueMap
+        strRoles = [rvm[r] for r in roles]
+        self.itemsChanged.emit(index, count, strRoles)
+
+    itemsChanged = QtCore.pyqtSignal(int, int, list,
+                                     arguments=["index", "count", "roles"])
+    """One or more list items were changed. `index` is the index of the
+    first changed element, `count` is the number of subsequent modified
+    elements, and `role` holds the affected roles. If the `role` is empty, all
+    roles are considered affected.
+    Emitting this signal also emits Qt's standard :py:meth:`dataChanged`
+    signal.
+    """
+
+    @QtCore.pyqtSlot(int, str, result=QtCore.QVariant)
+    def get(self, index: int, role: str):
+        """Get list element by index
+
+        Parameters
+        ----------
+        index
+            Index of the element to get
+        role
+            Role to get
+
+        Returns
+        -------
+        Selected list element
+        """
+        if self.sourceModel() is None:
+            return None
+        return self.data(self.index(index, 0), self._roleNameMap[role])
+
+    @QtCore.pyqtSlot(int, str, QtCore.QVariant, result=bool)
+    def set(self, index: int, role: str, obj: Any):
+        """Set list element
+
+        Parameters
+        ----------
+        index
+            Index of the element. If this is equal to ``rowCount()``, append
+            `obj` to the list.
+        role
+            Role to set
+        value
+            New value
+
+        Returns
+        -------
+        `True` if successful, `False` otherwise.
+        """
+        if self.sourceModel() is None:
+            return False
+        try:
+            return self.setData(self.index(index, 0), obj,
+                                self._roleNameMap[role])
+        except KeyError:
+            return False
+
+    countChanged = QtCore.pyqtSignal()
+    """:py:attr:`count` changed"""
+
+    @QtCore.pyqtProperty(int, notify=countChanged)
+    def count(self) -> int:
+        """Number of list entries
+
+        Same as :py:meth:`rowCount`.
+        """
+        return self.rowCount()
+
+
+QtQml.qmlRegisterType(ListProxyModel, "SdtGui", 1, 0, "ListProxyModel")
