@@ -342,7 +342,6 @@ class FrameSelector:
             n_repeats = math.ceil((max_frame + 1) / len(eval_seq))
         # Calculate the restoring map
         f_map_inv = np.nonzero(np.tile(good_frame_mask, n_repeats))[0]
-        print(n_repeats, f_map_inv)
         if restore:
             return f_map_inv[frame_nos]
         # Invert the restoring map
