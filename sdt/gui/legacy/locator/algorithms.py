@@ -39,11 +39,5 @@ with contextlib.suppress(ImportError):
         daostorm_3d.batch, daostorm_3d.batch_roi)
 
 with contextlib.suppress(ImportError):
-    from sdt.loc import fast_peakposition
-    desc["fast_peakposition"] = Descriptor(
-        fast_peakposition.locate, fast_peakposition.locate_roi,
-        fast_peakposition.batch, fast_peakposition.batch_roi)
-
-with contextlib.suppress(ImportError):
     from sdt.loc import cg
     desc["cg"] = Descriptor(cg.locate, cg.locate_roi, cg.batch, cg.batch_roi)

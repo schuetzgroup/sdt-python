@@ -145,17 +145,6 @@ def makeDaostorm3DOptions():
     return option_model.OptionModel(root)
 
 
-def makeFastPeakpositionOptions():
-    root = option_model.OptionElement("root")
-    e = option_model.NumberOption("Radius", "radius", 0., 100., 1., 2)
-    root.addChild(e)
-    e = option_model.NumberOption("Threshold", "threshold", 0, 1000000, 100)
-    root.addChild(e)
-    e = option_model.NumberOption("Feature size", "im_size", 0, 100, 3)
-    root.addChild(e)
-    return option_model.OptionModel(root)
-
-
 def makeCGOptions():
     root = option_model.OptionElement("root")
     e = option_model.NumberOption("Radius", "radius", 0, 100, 2)
@@ -170,5 +159,4 @@ def makeCGOptions():
 
 
 algo_widget_dict["daostorm_3d"] = makeDaostorm3DOptions
-algo_widget_dict["fast_peakposition"] = makeFastPeakpositionOptions
 algo_widget_dict["cg"] = makeCGOptions
