@@ -39,7 +39,7 @@ class FitterTest(unittest.TestCase):
 
     def test_calc_pixel_width(self):
         float_width = np.array([[1., 0.5], [11, 2.1], [3.5, 1.]])
-        expected = (4 * float_width).astype(np.int)
+        expected = (4 * float_width).astype(int)
         expected[expected > self.fitter._margin] = self.fitter._margin
         float_width = 1./(2*float_width**2)
         float_width[0, 0] = -1.
@@ -47,7 +47,7 @@ class FitterTest(unittest.TestCase):
 
         np.testing.assert_equal(
             self.fitter._calc_pixel_width(
-                float_width, np.full(float_width.shape, -10, dtype=np.int)),
+                float_width, np.full(float_width.shape, -10, dtype=int)),
             expected)
 
     def test_calc_pixel_width_hysteresis(self):
@@ -81,7 +81,7 @@ class FitterTest(unittest.TestCase):
         empty_fit = fit_numba.Fitter(self.fitter._image, self.peaks)
         empty_fit._fit_image = np.ones(self.fitter._image.shape)
         empty_fit._bg_image = np.zeros(self.fitter._image.shape)
-        empty_fit._bg_count = np.zeros(self.fitter._image.shape, dtype=np.int)
+        empty_fit._bg_count = np.zeros(self.fitter._image.shape, dtype=int)
 
         full_fit._remove_from_fit(0)
         empty_fit._add_to_fit(1)
@@ -133,7 +133,7 @@ class FitterTest(unittest.TestCase):
         idx = 0
         u = np.arange(-3, len(col_nums)-3)
         self.fitter._update_peak(idx, u)
-        e = np.ones(len(col_nums), dtype=np.int)
+        e = np.ones(len(col_nums), dtype=int)
         e[:4] = -1
         e[7:] = 0
         np.testing.assert_equal(self.fitter._sign[idx], e)
@@ -159,7 +159,7 @@ class FitterTest(unittest.TestCase):
         self.fitter._update_peak(0, np.zeros(len(col_nums)))
         self.fitter._update_peak(1, u)
         np.testing.assert_allclose(self.fitter._data[:, col_nums.stat],
-                                   np.full(2, feat_status.err, dtype=np.float))
+                                   np.full(2, feat_status.err, dtype=float))
 
     def test_iterate_2d_fixed(self):
         # result of a single iteration of the original C implementation
@@ -253,10 +253,10 @@ class TestEqnSolver(unittest.TestCase):
     def setUp(self):
         # example from the Wikipedia Cholesky decomposition article
         self.A = np.array([[4, 12, -16], [12, 37, -43], [-16, -43, 98]],
-                          dtype=np.float)
+                          dtype=float)
 
     def test_chol(self):
-        expected = np.array([[2, 0, 0], [6, 1, 0], [-8, 5, 3]], dtype=np.float)
+        expected = np.array([[2, 0, 0], [6, 1, 0], [-8, 5, 3]], dtype=float)
         res = np.empty(self.A.shape)
         fit_numba_impl._chol(self.A, res)
         np.testing.assert_allclose(res, expected)

@@ -43,7 +43,7 @@ class TestSmFRETTracker:
 
         don = pd.DataFrame(np.array(loc), columns=["x", "y"])
         don["frame"] = np.concatenate(
-                [np.arange(self.n_frames, dtype=np.int)]*2)
+                [np.arange(self.n_frames, dtype=int)]*2)
 
         acc = don.copy()
         acc["x"] += self.x_shift
@@ -63,13 +63,13 @@ class TestSmFRETTracker:
     def images(self, localizations, feat_mask):
         don_loc, acc_loc = localizations
 
-        img = np.full((self.img_size,)*2, self.bg, dtype=np.int)
+        img = np.full((self.img_size,)*2, self.bg, dtype=int)
         x = don_loc.loc[0, "x"]
         y = don_loc.loc[0, "y"]
         img[y-self.feat_radius:y+self.feat_radius+1,
             x-self.feat_radius:x+self.feat_radius+1][feat_mask] += self.signal
         don_img = [img] * self.n_frames
-        img = np.full((self.img_size, self.img_size), self.bg, dtype=np.int)
+        img = np.full((self.img_size, self.img_size), self.bg, dtype=int)
         x = acc_loc.loc[0, "x"]
         y = acc_loc.loc[0, "y"]
         img[y-self.feat_radius:y+self.feat_radius+1,

@@ -59,7 +59,7 @@ class Fitter(object):
         """
         min, max = params.z_range
         self._absc = np.linspace(min, max, round((max - min)/resolution + 1),
-                                 dtype=np.float)
+                                 dtype=float)
         self._curve_x, self._curve_y = params.sigma_from_z(self._absc)
 
     def fit(self, data):

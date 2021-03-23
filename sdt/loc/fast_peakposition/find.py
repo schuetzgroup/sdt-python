@@ -101,7 +101,7 @@ class Finder(object):
         """
 
         # needed for convolve, otherwise the result will be int for int images
-        image = image.astype(np.float)
+        image = image.astype(float)
 
         # radius around a local max for intensity guess
         mass_area = (2*self.mass_radius + 1)**2
@@ -138,7 +138,7 @@ class Finder(object):
         candidates = candidates[~in_margin]
 
         # Get rid of peaks too close togther, daostorm_3d-style
-        is_max = np.empty(len(candidates), dtype=np.bool)
+        is_max = np.empty(len(candidates), dtype=bool)
         # any pixel but those in the top left quarter of the mask is compared
         # using >= (greater or equal) below in the loop
         mask_ge = mask.copy()

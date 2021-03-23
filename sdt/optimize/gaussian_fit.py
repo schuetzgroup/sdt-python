@@ -58,7 +58,7 @@ def guess_gaussian_parameters(data, *indep_vars):
         # median of the edges as an estimate for the background
         # FIXME: This works only for sorted data
         interior_slice = slice(1, -1)
-        edge_mask = np.ones(data.shape, dtype=np.bool)
+        edge_mask = np.ones(data.shape, dtype=bool)
         edge_mask[(interior_slice,) * data.ndim] = False
         bg = np.median(data[edge_mask])
 
@@ -71,7 +71,7 @@ def guess_gaussian_parameters(data, *indep_vars):
 
     # calculate 1st moments as estimates for centers
     center = np.fromiter((np.sum(i * data_bg)/data_bg_sum for i in indep_vars),
-                         dtype=np.float)
+                         dtype=float)
 
     # Estimate the covariance matrix to determine sigma and the rotation
     m = np.empty((ndim, ndim))

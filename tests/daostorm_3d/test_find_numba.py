@@ -36,7 +36,7 @@ class TestFinder(unittest.TestCase):
         self.orig = orig["peaks"]
 
     def test_local_maxima(self):
-        fr = self.frame.astype(np.float)
+        fr = self.frame.astype(float)
         bg_est = bg_estimator.GaussianSmooth()
         bg = bg_est(fr)
         maxima = self.finder.local_maxima(fr-bg, self.threshold)

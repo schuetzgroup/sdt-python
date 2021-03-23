@@ -24,7 +24,7 @@ class Finder(find.Finder):
         # array
         while (self.max_num_peaks < self.absolute_max_num_peaks):
             # create arrays
-            idx_of_max = np.empty((self.max_num_peaks, 2), dtype=np.int)
+            idx_of_max = np.empty((self.max_num_peaks, 2), dtype=int)
             mass = np.empty(self.max_num_peaks)
             bg = np.empty(self.max_num_peaks)
 

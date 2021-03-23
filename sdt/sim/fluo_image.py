@@ -148,7 +148,7 @@ def gauss_psf(shape, centers, amplitudes, sigmas, cutoff):
         Simulated image.
     """
     x_size, y_size = shape
-    roi_sizes = np.round(cutoff*sigmas).astype(np.int)
+    roi_sizes = np.round(cutoff*sigmas).astype(int)
 
     result = np.zeros(shape[::-1])
     for (xc, yc), ampl, (sx, sy), (rx, ry) in zip(centers, amplitudes, sigmas,
