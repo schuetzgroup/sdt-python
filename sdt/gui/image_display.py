@@ -2,10 +2,9 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import math
 from typing import Optional, Union
 
-from PyQt5 import QtCore, QtGui, QtQml, QtQuick
+from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from . import py_image  # Register PyImage QML type
@@ -42,42 +41,42 @@ class ImageDisplay(QtQuick.QQuickItem):
             Parent item
         """
         super().__init__(parent)
-        self._input = None
-        self._inputMinVal = 0.0
-        self._inputMaxVal = 0.0
+        self._image = None
+        self._imageMinVal = 0.0
+        self._imageMaxVal = 0.0
 
-    inputChanged = QtCore.pyqtSignal(QtCore.QVariant)
+    imageChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Input image was changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=inputChanged)
-    def input(self) -> Union[np.ndarray, None]:
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=imageChanged)
+    def image(self) -> Union[np.ndarray, None]:
         """Image to display"""
-        return self._input
+        return self._image
 
-    @input.setter
-    def input(self, input: Union[np.ndarray, None]):
-        if self._input is input:
+    @image.setter
+    def image(self, image: Union[np.ndarray, None]):
+        if self._image is image:
             return
-        self._input = input
-        self._inputMinVal = input.min() if input is not None else 0.0
-        self._inputMaxVal = input.max() if input is not None else 0.0
-        self._inputMinChanged.emit(self._inputMin)
-        self._inputMaxChanged.emit(self._inputMax)
-        self.inputChanged.emit(input)
+        self._image = image
+        self._imageMinVal = image.min() if image is not None else 0.0
+        self._imageMaxVal = image.max() if image is not None else 0.0
+        self._imageMinChanged.emit(self._imageMin)
+        self._imageMaxChanged.emit(self._imageMax)
+        self.imageChanged.emit(image)
 
-    _inputMinChanged = QtCore.pyqtSignal(float)
+    _imageMinChanged = QtCore.pyqtSignal(float)
 
-    @QtCore.pyqtProperty(float, notify=_inputMinChanged)
-    def _inputMin(self) -> float:
+    @QtCore.pyqtProperty(float, notify=_imageMinChanged)
+    def _imageMin(self) -> float:
         """Minimum value in input image. Used for QML property binding."""
-        return self._inputMinVal
+        return self._imageMinVal
 
-    _inputMaxChanged = QtCore.pyqtSignal(float)
+    _imageMaxChanged = QtCore.pyqtSignal(float)
 
-    @QtCore.pyqtProperty(float, notify=_inputMaxChanged)
-    def _inputMax(self):
+    @QtCore.pyqtProperty(float, notify=_imageMaxChanged)
+    def _imageMax(self):
         """Maximum value in input image. Used for QML property binding."""
-        return self._inputMaxVal
+        return self._imageMaxVal
 
 
 QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Templates", 1, 0, "ImageDisplay")

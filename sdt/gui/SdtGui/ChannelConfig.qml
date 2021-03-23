@@ -239,7 +239,7 @@ ChannelConfigImpl {
                     enabled: imSel.dataset.count != 0
                     onClicked: {
                         root._splitHorizontally(rcLayout.ObjectModel.index,
-                                                imSel.output)
+                                                imSel.image)
                     }
                     hoverEnabled: true
                     ToolTip.visible: hovered
@@ -250,7 +250,7 @@ ChannelConfigImpl {
                     enabled: imSel.dataset.count != 0
                     onClicked: {
                         root._splitVertically(rcLayout.ObjectModel.index,
-                                              imSel.output)
+                                              imSel.image)
                     }
                     hoverEnabled: true
                     ToolTip.visible: hovered
@@ -267,9 +267,9 @@ ChannelConfigImpl {
                 Item { width: 3 }
                 ROISelector {
                     id: roiSel
-                    limits: imSel.output
+                    limits: imSel.image
                     drawingTools: ROISelector.DrawingTools.IntRectangleTool
-                    overlay.visible: imSel.output != null
+                    overlay.visible: imSel.image != null
                     onRoiChanged: {
                         if (root.sameSize) root._resizeROIs(name)
                         root.channelsChanged()
@@ -279,7 +279,7 @@ ChannelConfigImpl {
             }
             ImageDisplay {
                 id: imDisp
-                input: imSel.output
+                image: imSel.image
                 overlays: roiSel.overlay
                 Layout.fillWidth: true
                 Layout.fillHeight: true

@@ -181,7 +181,7 @@ class ImageSelector(QtQuick.QQuickItem):
         super().__init__(parent)
         self._curIndex = -1
         self._curImage = None
-        self._output = None
+        self._image = None
         # _dataset needs self as parent, otherwise there will be a segfault
         # when setting dataset property
         self._dataset = ImageList(self)
@@ -231,7 +231,7 @@ class ImageSelector(QtQuick.QQuickItem):
         self._dataset.itemsChanged.connect(self._onItemsChanged)
         self.datasetChanged.emit(d)
 
-    output = SimpleQtProperty(QtCore.QVariant, readOnly=True)
+    image = SimpleQtProperty(QtCore.QVariant, readOnly=True)
         """Selected frame from selected image sequence"""
     editable = QmlDefinedProperty()
     """If `True` show widgets to manipulate the image sequence list"""
@@ -246,7 +246,7 @@ class ImageSelector(QtQuick.QQuickItem):
     """
 
     def _onItemsChanged(self, index: int, count: int, roles: List[str]):
-        """Update output if model data changed"""
+        """Update image if model data changed"""
         if not index <= self._curIndex < index + count:
             return
         if roles and self.imageRole not in roles:
@@ -266,8 +266,8 @@ class ImageSelector(QtQuick.QQuickItem):
         if index < 0:
             # No file selected
             self._curImage = None
-            self._output = None
-            self.outputChanged.emit()
+            self._image = None
+            self.imageChanged.emit()
             return
 
         self._curImage = self.dataset.get(index, self.imageRole)
@@ -292,10 +292,10 @@ class ImageSelector(QtQuick.QQuickItem):
             Index of currently selected frame
         """
         if self._curImage is None:
-            self._output = None
+            self._image = None
         else:
-            self._output = self._curImage[index]
-        self.outputChanged.emit()
+            self._image = self._curImage[index]
+        self.imageChanged.emit()
 
     currentIndex = QmlDefinedProperty()
     """Index w.r.t :py:attr:`dataset` of currently selected image sequence"""

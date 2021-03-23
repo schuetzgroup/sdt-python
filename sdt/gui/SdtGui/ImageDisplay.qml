@@ -35,7 +35,7 @@ T.ImageDisplay {
                 a.scaleFactor = Qt.binding(function() { return scroll.scaleFactor })
         }
     }
-    onInputChanged: {
+    onImageChanged: {
         // First time an image is loaded automatically set contrast
         if (!rootLayout.imageLoaded) {
             contrastAutoButton.clicked()
@@ -121,7 +121,7 @@ T.ImageDisplay {
                 PyImage {
                     id: img
                     anchors.centerIn: parent
-                    source: root.input
+                    source: root.image
                     black: rootLayout.contrastMin
                     white: rootLayout.contrastMax
                     width: sourceWidth * scroll.scaleFactor
@@ -139,8 +139,8 @@ T.ImageDisplay {
                 id: contrastSlider
                 Layout.fillWidth: true
 
-                from: root._inputMin
-                to: root._inputMax
+                from: root._imageMin
+                to: root._imageMax
                 stepSize: (to - from) / 100
 
                 first.onMoved: { rootLayout.contrastMin = first.value }
@@ -150,10 +150,10 @@ T.ImageDisplay {
                 id: contrastAutoButton
                 text: "auto"
                 onClicked: {
-                    rootLayout.contrastMin = root._inputMin
-                    contrastSlider.first.value = root._inputMin
-                    rootLayout.contrastMax = root._inputMax
-                    contrastSlider.second.value = root._inputMax
+                    rootLayout.contrastMin = root._imageMin
+                    contrastSlider.first.value = root._imageMin
+                    rootLayout.contrastMax = root._imageMax
+                    contrastSlider.second.value = root._imageMax
                 }
             }
         }

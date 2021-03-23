@@ -33,7 +33,7 @@ Item {
         }
         ImageDisplay {
             id: imDisp
-            input: imSel.output
+            image: imSel.image
             Layout.fillWidth: true
             Layout.fillHeight: true
 

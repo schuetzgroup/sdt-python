@@ -32,7 +32,7 @@ T.Locator {
             ColumnLayout {
                 LocOptions {
                     id: loc
-                    input: imSel.output
+                    image: imSel.image
                     Layout.alignment: Qt.AlignTop
                     Layout.fillHeight: true
                 }

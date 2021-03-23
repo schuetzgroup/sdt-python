@@ -76,7 +76,7 @@ T.Registrator {
                         model: root.channelRoles
                         LocOptions {
                             id: loc
-                            image: imSel.output
+                            image: imSel.image
                             Layout.alignment: Qt.AlignTop
                             Layout.fillHeight: true
                             // FIXME: Currently preview is computed also for
@@ -107,7 +107,7 @@ T.Registrator {
             }
             ImageDisplay {
                 id: imDisp
-                input: imSel.output
+                image: imSel.image
                 overlays: LocDisplay {
                     locData: optStack.currentItem.locData
                     visible: optStack.currentItem.previewEnabled
