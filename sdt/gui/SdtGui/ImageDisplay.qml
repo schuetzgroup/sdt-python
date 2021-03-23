@@ -12,8 +12,8 @@ import SdtGui.Templates 1.0 as T
 T.ImageDisplay {
     id: root
 
-    implicitHeight: rootLayout.implicitHeight
-    implicitWidth: rootLayout.implicitWidth
+    implicitHeight: viewButtonLayout.implicitHeight + contrastLayout.implicitHeight
+    implicitWidth: contrastLayout.implicitWidth
 
     property list<Item> overlays
 
@@ -69,6 +69,8 @@ T.ImageDisplay {
 
         RowLayout{
             ColumnLayout {
+                id: viewButtonLayout
+
                 ToolButton {
                     id: zoomOutButton
                     icon.name: "zoom-out"
