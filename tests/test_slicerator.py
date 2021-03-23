@@ -131,6 +131,14 @@ def test_slice_of_slice_of_slice_of_slice():
     compare_slice_to_list(slice4a, list('igec'))
 
 
+def test_empty_slice():
+    # There was a bug in _index_generator with empty `new_indices`, thus test
+    assert list(v[:0]) == []
+    assert list(v[[]]) == []
+    assert list(v[:0][:]) == []
+    assert list(v[:0][:][:]) == []
+
+
 def test_slice_with_generator():
     slice1 = v[1:]
     compare_slice_to_list(slice1, list('bcdefghij'))
@@ -143,11 +151,13 @@ def test_no_len_raises():
     with pytest.raises(ValueError):
         Slicerator((i for i in range(5)), (i for i in range(5)))
 
+
 def test_from_func():
     v = Slicerator.from_func(lambda x: 'abcdefghij'[x], length=10)
     compare_slice_to_list(v, list('abcdefghij'))
     compare_slice_to_list(v[1:], list('bcdefghij'))
     compare_slice_to_list(v[1:][:4], list('bcde'))
+
 
 def _capitalize(letter):
     return letter.upper()
@@ -165,6 +175,7 @@ def _a_to_z(letter):
         return 'z'
     else:
         return letter
+
 
 @pipeline
 def append_zero_inplace(list_obj):
@@ -265,6 +276,7 @@ def test_getattr_subclass():
     @Slicerator.from_class
     class Dummy(object):
         propagate_attrs = ['attr1']
+
         def __init__(self):
             self.frame = list('abcdefghij')
 
@@ -287,7 +299,6 @@ def test_getattr_subclass():
             # does not propagate
             return 'only unsliced'
 
-
     class SubClass(Dummy):
         propagate_attrs = ['attr4']  # overwrites propagated attrs from Dummy
 
@@ -296,7 +307,7 @@ def test_getattr_subclass():
 
         @property
         def attr4(self):
-             # propagates through slices of SubClass
+            # propagates through slices of SubClass
             return 'only subclass'
 
     dummy = Dummy()
@@ -472,7 +483,7 @@ def test_lazy_hasattr():
         def forbidden_property(self):
             raise RuntimeError()
 
-    DummySli = Slicerator.from_class(Dummy)
+    DummySli = Slicerator.from_class(Dummy)  # noqa: F841
 
 
 def test_pipeline_multi_input():
