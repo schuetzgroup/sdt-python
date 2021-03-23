@@ -60,7 +60,7 @@ class TestMulticolor(unittest.TestCase):
     def test_merge_channels_mean_pos(self):
         """multicolor.merge_channels: mean_pos=True"""
         merged = multicolor.merge_channels(self.pos1, self.pos2, 2.,
-                                               mean_pos=True)
+                                           mean_pos=True)
         merged = merged.sort_values(["frame", "x", "y"])
 
         expected = pd.concat((self.pos1, self.pos2.drop([0, 3])))
@@ -96,7 +96,7 @@ class TestMulticolor(unittest.TestCase):
     def test_merge_channels_index(self):
         """multicolor.merge_channels: Return index"""
         merged = multicolor.merge_channels(self.pos1, self.pos2, 2.,
-                                               return_data="index")
+                                           return_data="index")
 
         np.testing.assert_allclose(merged, [1, 2, 4, 5])
 
@@ -182,7 +182,7 @@ class TestCalcPairDistance(unittest.TestCase):
     def test_channel_names(self):
         """multicolor.calc_pair_distance: channel_names arg"""
         d = multicolor.calc_pair_distance(self.data,
-                                              channel_names=["ch1", "ch3"])
+                                          channel_names=["ch1", "ch3"])
         np.testing.assert_array_equal(d.index, self.data.index)
         np.testing.assert_allclose(d.values, 0)
 
@@ -192,7 +192,6 @@ class TestCalcPairDistance(unittest.TestCase):
             self.data, columns={"coords": ["x", "y", "z"]})
         np.testing.assert_array_equal(d.index, self.data.index)
         np.testing.assert_allclose(d.values, [0, np.sqrt(3), 13])
-
 
 
 class TestFindCodiffusion(unittest.TestCase):
@@ -209,7 +208,7 @@ class TestFindCodiffusion(unittest.TestCase):
     def test_find_codiffusion_numbers(self):
         """multicolor.find_codiffusion: Test returning the particle numbers"""
         codiff = multicolor.find_codiffusion(self.track, self.track,
-                                                 return_data="numbers")
+                                             return_data="numbers")
         np.testing.assert_equal(codiff, [[1, 1, 0, len(self.track)-1]])
 
     def test_find_codiffusion_data(self):
@@ -341,7 +340,7 @@ class TestPlotCodiffusion(unittest.TestCase):
         """multicolor.plot_codiffusion: Basic test (two DataFrames)"""
         fig, ax = plt.subplots(1, 1)
         multicolor.plot_codiffusion([self.track1, self.track2], [0, 0],
-                                        ax=ax)
+                                    ax=ax)
 
         lc = ax.findobj(mpl.collections.LineCollection)
         for i, t in enumerate([self.track1, self.track2]):
@@ -407,21 +406,64 @@ class TestFrameSelector:
             np.fromiter("abcde", "U1"))
         assert multicolor.FrameSelector("").eval_seq().size == 0
 
+    def test_find_mask(self, selector, call_results):
+        """multicolor.FrameSelector._find_mask"""
+        fnos = np.arange(21)
+        es = np.fromiter(selector.excitation_seq, "U1")
+        for k, v in call_results.items():
+            m = selector._find_mask(es, fnos, k)
+            r = np.zeros(len(fnos), dtype=bool)
+            r[v] = True
+            np.testing.assert_array_equal(m, r)
+
+    def test_find_numbers(self, selector, call_results):
+        """multicolor.FrameSelector._find_numbers"""
+        fnos = np.arange(21)
+        es = np.fromiter(selector.excitation_seq, "U1")
+        for k, v in call_results.items():
+            m = selector._find_numbers(es, fnos, k)
+            np.testing.assert_array_equal(m, v)
+
+    def test_get_subseq(self, selector):
+        """multicolor.FrameSelector._get_subseq"""
+        d = np.array([1, 2, 4, 5])
+        i = np.array([0, 2, 3])
+        r1 = selector._get_subseq(d, i)
+        assert isinstance(r1, np.ndarray)
+        np.testing.assert_array_equal(r1, [1, 4, 5])
+        r2 = selector._get_subseq(d.tolist(), i)
+        assert isinstance(r2, helper.Slicerator)
+        np.testing.assert_array_equal(r2, [1, 4, 5])
+
     def test_renumber(self, selector, call_results):
-        """multicolor.FrameSelector._renumber"""
+        """multicolor.FrameSelector._renumber, renumber_frames"""
         drop_frame = 3
         seq = np.fromiter(selector.excitation_seq, "U1")
         for k, v in call_results.items():
             v = np.array(v)
             mask = v != drop_frame
             v = v[mask]
+            v2 = np.arange(len(mask))[mask]
 
             r = multicolor.FrameSelector._renumber(seq, v, k, restore=False)
-            np.testing.assert_equal(r, np.arange(len(mask))[mask])
+            rr = selector.renumber_frames(v, k, restore=False)
+            for cr in r, rr:
+                np.testing.assert_equal(cr, v2)
 
-            r2 = multicolor.FrameSelector._renumber(
-                seq, np.arange(len(mask))[mask], k, restore=True)
-            np.testing.assert_equal(r2, v)
+            r2 = multicolor.FrameSelector._renumber(seq, v2, k, restore=True)
+            rr2 = selector.renumber_frames(v2, k, restore=True)
+            for cr in r2, rr2:
+                np.testing.assert_equal(cr, v)
+
+        # Check behavior in case a frame number not belonging to excitation
+        # type given by `which` parameter is in the list
+        bad = np.array([0, 2, 3, 4])
+        r = multicolor.FrameSelector._renumber(
+            np.array(["d", "a"]), bad, "d", restore=False)
+        r2 = multicolor.FrameSelector("da").renumber_frames(
+            bad, "d", restore=False)
+        for cr in r, r2:
+            np.testing.assert_array_equal(cr, [0, 1, -1, 2])
 
         # There was a bug when the max frame number was divisible by the
         # length of the excitation sequence, resulting in f_map_inv being too
@@ -430,72 +472,124 @@ class TestFrameSelector:
         ar = np.arange(0, 11, 2)
         r = multicolor.FrameSelector._renumber(
             np.array(["d", "a"]), ar, "d", restore=False)
-        np.testing.assert_equal(r, np.arange(len(ar)))
+        r2 = multicolor.FrameSelector("da").renumber_frames(
+            ar, "d", restore=False)
+        for cr in r, r2:
+            np.testing.assert_equal(cr, np.arange(len(ar)))
 
         # Test empty sequence and empty `which`
         ar2 = np.arange(21)
         r = multicolor.FrameSelector._renumber(
             np.array([], dtype="U1"), ar2, "d", restore=False)
-        np.testing.assert_equal(r, ar2)
+        r2 = multicolor.FrameSelector("").renumber_frames(
+            ar2, "d", restore=False)
+        for cr in r, r2:
+            np.testing.assert_array_equal(cr, ar2)
+
         r = multicolor.FrameSelector._renumber(
             np.array(["d", "a"], dtype="U1"), ar2, "", restore=False)
+        r2 = multicolor.FrameSelector("da").renumber_frames(
+            ar2, "", restore=False)
+        for cr in r, r2:
+            np.testing.assert_array_equal(cr, np.full(ar2.size, -1, dtype=int))
+        with pytest.raises(ValueError):
+            multicolor.FrameSelector._renumber(
+                np.array(["d", "a"], dtype="U1"), ar2, "", restore=True)
+        with pytest.raises(ValueError):
+            multicolor.FrameSelector("da").renumber_frames(
+                ar2, "", restore=True)
 
-    def test_call(self, selector, flex_selector, call_results):
-        """multicolor.FrameSelector.__call__"""
+    def test_find_other_frames(self, selector):
+        """multicolor.FrameSelector.find_other_frames"""
+        # Test normal usage
+        r = selector.find_other_frames(21, "d", "a")
+        exp = np.array([5, 5, 5, 5, 6, 12, 12, 12, 13, 19, 19, 19])
+        np.testing.assert_array_equal(r, exp)
+        r2 = selector.find_other_frames(np.arange(1, 22), "d", "a")
+        np.testing.assert_array_equal(r2, exp + 1)
+        # Test case where only one frame matches `other`
+        r3 = selector.find_other_frames(7, "d", "c")
+        np.testing.assert_array_equal(r3, [0] * 4)
+        # Test case where no frame matches `other`
+        with pytest.raises(ValueError):
+            selector.find_other_frames(7, "d", "x")
+        with pytest.raises(ValueError):
+            selector.find_other_frames(7, "d", "")
+        # Test case where on frame matches `which`
+        r4 = selector.find_other_frames(7, "x", "a")
+        np.testing.assert_array_equal(r4, [])
+        r4a = selector.find_other_frames(7, "", "a")
+        np.testing.assert_array_equal(r4a, [])
+        # Test different interpolation types
+        r5 = selector.find_other_frames(21, "d", "a", "nearest")
+        np.testing.assert_array_equal(
+            r5, [5, 5, 5, 5, 6, 6, 12, 12, 13, 13, 19, 19])
+        r6 = selector.find_other_frames(21, "d", "a", "previous")
+        np.testing.assert_array_equal(
+            r6, [5, 5, 5, 5, 6, 6, 6, 6, 13, 13, 13, 13])
+        r7 = selector.find_other_frames(21, "d", "a", "next")
+        np.testing.assert_array_equal(
+            r7, [5, 5, 5, 5, 12, 12, 12, 12, 19, 19, 19, 19])
+
+    def test_select(self, selector, flex_selector, call_results):
+        """multicolor.FrameSelector.select"""
         ar = np.arange(21)
         n = len(selector.excitation_seq)
         for k, v in call_results.items():
-            r = selector(ar, k)
+            r = selector.select(ar, k)
             np.testing.assert_array_equal(r, v)
             assert isinstance(r, np.ndarray)
-            fr = flex_selector(ar, k, n_frames=n)
+            fr = flex_selector.select(ar, k, n_frames=n)
             np.testing.assert_array_equal(fr, v)
             assert isinstance(fr, np.ndarray)
 
         lst = list(ar)
         for k, v in call_results.items():
-            r = selector(lst, k)
+            r = selector.select(lst, k)
             np.testing.assert_array_equal(r, v)
             assert isinstance(r, helper.Slicerator)
-            fr = flex_selector(lst, k, n_frames=n)
+            fr = flex_selector.select(lst, k, n_frames=n)
             np.testing.assert_array_equal(fr, v)
             assert isinstance(fr, helper.Slicerator)
 
         df = pd.DataFrame(ar[:, None], columns=["frame"])
         for k, v in call_results.items():
-            r = selector(df, k)
+            r = selector.select(df, k)
             pd.testing.assert_frame_equal(r, df.loc[v])
-            fr = flex_selector(df, k, n_frames=n)
+            fr = flex_selector.select(df, k, n_frames=n)
             pd.testing.assert_frame_equal(fr, df.loc[v])
 
         # Selecting multiple frame types
-        np.testing.assert_equal(selector(ar, "da"), call_results["da"])
-        np.testing.assert_array_equal(selector(lst, "da"), call_results["da"])
-        pd.testing.assert_frame_equal(selector(df, "da"),
+        np.testing.assert_equal(selector.select(ar, "da"), call_results["da"])
+        np.testing.assert_array_equal(selector.select(lst, "da"),
+                                      call_results["da"])
+        pd.testing.assert_frame_equal(selector.select(df, "da"),
                                       df.loc[call_results["da"]])
 
         # Empty sequence
         null_selector = multicolor.FrameSelector("")
-        np.testing.assert_equal(null_selector(ar, "d"), ar)
-        np.testing.assert_array_equal(null_selector(lst, "d"), lst)
-        pd.testing.assert_frame_equal(null_selector(df, "d"), df)
+        np.testing.assert_equal(null_selector.select(ar, "d"), ar)
+        np.testing.assert_array_equal(null_selector.select(lst, "d"), lst)
+        pd.testing.assert_frame_equal(null_selector.select(df, "d"), df)
 
         # Empty `which`
-        np.testing.assert_equal(selector(ar, ""), ar)
-        np.testing.assert_array_equal(selector(lst, ""), lst)
-        pd.testing.assert_frame_equal(selector(df, ""), df)
-        np.testing.assert_equal(flex_selector(ar, ""), ar)
-        np.testing.assert_array_equal(flex_selector(lst, ""), lst)
-        pd.testing.assert_frame_equal(flex_selector(df, ""), df)
+        np.testing.assert_array_equal(selector.select(ar, ""), [])
+        np.testing.assert_array_equal(selector.select(lst, ""), [])
+        pd.testing.assert_frame_equal(selector.select(df, ""), df.iloc[:0])
+        np.testing.assert_array_equal(flex_selector.select(ar, ""), [])
+        np.testing.assert_array_equal(flex_selector.select(lst, ""), [])
+        pd.testing.assert_frame_equal(flex_selector.select(df, "", n_frames=n),
+                                      df.iloc[:0])
 
         # For non-DataFrames, n_frames is deduced from length
         ar2 = np.arange(10)
-        np.testing.assert_equal(flex_selector(ar2, "c"), [0])
-        np.testing.assert_equal(flex_selector(ar2, "d"), [1, 2, 3, 4, 5, 6, 7])
-        np.testing.assert_equal(flex_selector(ar2, "a"), [8, 9])
+        np.testing.assert_equal(flex_selector.select(ar2, "c"), [0])
+        np.testing.assert_equal(flex_selector.select(ar2, "d"),
+                                [1, 2, 3, 4, 5, 6, 7])
+        np.testing.assert_equal(flex_selector.select(ar2, "a"), [8, 9])
         # For DataFrames, there should be an error
         with pytest.raises(ValueError):
-            flex_selector(df, "d")
+            flex_selector.select(df, "d")
 
         # drop a frame which should leave a gap when renumbering
         drop_frame = 3
@@ -508,10 +602,10 @@ class TestFrameSelector:
             v = v[mask]
             data = data[mask]
 
-            r = selector(df2, k, renumber=True)
+            r = selector.select(df2, k, renumber=True)
             np.testing.assert_equal(r.index, v)
             np.testing.assert_equal(r.to_numpy(), data)
-            fr = flex_selector(df2, k, renumber=True, n_frames=n)
+            fr = flex_selector.select(df2, k, renumber=True, n_frames=n)
             np.testing.assert_equal(fr.index, v)
             np.testing.assert_equal(fr.to_numpy(), data)
 
@@ -531,12 +625,11 @@ class TestFrameSelector:
         np.testing.assert_array_equal(df3["frame"], exp)
 
         df4 = df.copy()
-        selector.restore_frame_numbers(df4, "")
-        pd.testing.assert_frame_equal(df4, df)
-        df5 = df.copy()
-        flex_selector.restore_frame_numbers(df5, "")
-        pd.testing.assert_frame_equal(df5, df)
+        with pytest.raises(ValueError):
+            selector.restore_frame_numbers(df4, "")
+        with pytest.raises(ValueError):
+            flex_selector.restore_frame_numbers(df4, "")
         null_selector = multicolor.FrameSelector("")
-        df6 = df.copy()
+        df5 = df.copy()
         null_selector.restore_frame_numbers(df5, "d")
         pd.testing.assert_frame_equal(df5, df)

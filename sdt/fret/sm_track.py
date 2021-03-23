@@ -271,8 +271,8 @@ class SmFRETTracker:
         self.link_options["t_column"] = self.columns["time"]
 
         # Track only "d" and "a" frames. Renumber frames for that.
-        merged = self.frame_selector(merged, "da", renumber=True,
-                                     columns=self.columns)
+        merged = self.frame_selector.select(
+            merged, "da", renumber=True, columns=self.columns)
         track_merged = trackpy.link_df(merged, **self.link_options)
 
         if self.interpolate:

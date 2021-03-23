@@ -5,10 +5,11 @@
 import math
 import re
 import string
-from typing import Iterable, Mapping, Optional, Union
+from typing import Iterable, Mapping, Optional, Sequence, Union
 
 import numpy as np
 import pandas as pd
+import scipy.interpolate
 
 from .. import config, helper
 
@@ -70,7 +71,7 @@ class FrameSelector:
     >>> # Sequence of 8 "images"
     >>> img_seq = numpy.array([numpy.full((3, 3), i) for i in range(8)])
     >>> sel = FrameSelector("odda")
-    >>> sel(img_seq, "o")
+    >>> sel.select(img_seq, "o")
     array([[[0, 0, 0],
             [0, 0, 0],
             [0, 0, 0]],
@@ -78,7 +79,7 @@ class FrameSelector:
            [[4, 4, 4],
             [4, 4, 4],
             [4, 4, 4]]])
-    >>> sel(img_seq, "d")
+    >>> sel.select(img_seq, "d")
     array([[[1, 1, 1],
             [1, 1, 1],
             [1, 1, 1]],
@@ -101,7 +102,7 @@ class FrameSelector:
     ``"da"`` is repeated three times.
 
     >>> sel = FrameSelector("o + da * ? + c")
-    >>> sel(img_seq, "d")
+    >>> sel.select(img_seq, "d")
     array([[[1, 1, 1],
             [1, 1, 1],
             [1, 1, 1]],
@@ -127,7 +128,11 @@ class FrameSelector:
     da * ? + c"``, ``"da"`` is repeated an appropriate number of times
     to generate a sequence of given length. This length is either derived
     from the image sequence the class instance is applied to or given
-    explicitly (see :py:meth:`__call__`).
+    explicitly (see :py:meth:`select`).
+
+    If the sequence is empty, the FrameSelector does nothing. E.g.,
+    :py:meth:`select` and :py:meth:`renumber_frames` just return their
+    argument unaltered.
     """
 
     _rm_whitespace_trans = str.maketrans("", "", string.whitespace)
@@ -207,12 +212,87 @@ class FrameSelector:
         return np.fromiter(eseq, "U1", len(eseq))
 
     @staticmethod
+    def _find_mask(eval_seq: np.ndarray, frame_nos: np.ndarray,
+                   which: Union[str, Iterable[str]]) -> np.ndarray:
+        """Find frames of certain type in list of frames, return boolean mask
+
+        Parameters
+        ----------
+        eval_seq
+            Evaluated excitation sequence (array of characters).
+            See :py:meth:`eval_seq`.
+        frame_nos
+            Array of frame numbers from which frames should be selected
+        which
+            Excitation type(s), one or multiple characters out of
+            :py:attr:`excitation_seq`.
+
+        Returns
+        -------
+        Boolean array indicating whether elements of `frame_nos` are of an
+        excitation type given by `which`.
+        """
+        good_frame_mask = np.isin(eval_seq, list(which))
+        good_frames = np.nonzero(good_frame_mask)[0]
+        mask = np.isin(frame_nos % len(eval_seq), good_frames)
+        return mask
+
+    @staticmethod
+    def _find_numbers(eval_seq: np.ndarray, frame_nos: np.ndarray,
+                      which: Union[str, Iterable[str]]) -> np.ndarray:
+        """Find frames of certain type in list of frames, return numbers
+
+        Parameters
+        ----------
+        eval_seq
+            Evaluated excitation sequence (array of characters).
+            See :py:meth:`eval_seq`.
+        frame_nos
+            Array of frame numbers from which frames should be selected
+        which
+            Excitation type(s), one or multiple characters out of
+            :py:attr:`excitation_seq`.
+
+        Returns
+        -------
+        Elements of `frame_nos` that are of an excitation type given by
+        `which`.
+        """
+        return frame_nos[__class__._find_mask(eval_seq, frame_nos, which)]
+
+    @staticmethod
+    def _get_subseq(data: Sequence, index: Sequence[int]) -> Sequence:
+        """Get a subsequence of `data`
+
+        Parameters
+        ----------
+        data
+            Sequence to get subsequence from
+        index
+            Indices of `data` present in subsequence
+
+        Returns
+        -------
+        If possible, directly index `data` with `index` (works e.g. for numpy
+        arrays). If not, create a :py:class:`helper.Slicerator` instance and
+        use `index` on that.
+        """
+        try:
+            return data[index]
+        except TypeError:
+            # This can happen if e.g. data is a list
+            s = helper.Slicerator(data)
+            return s[index]
+
+    @staticmethod
     def _renumber(eval_seq: np.ndarray, frame_nos: np.ndarray,
                   which: Union[str, Iterable[str]], restore: bool
                   ) -> np.ndarray:
         """Do the actual frame renumbering
 
-        for :py:meth:`__call__` and :py:meth:`restore_frame_numbers`.
+        for :py:meth:`select`, :py:meth:`renumber_frames`, and
+        :py:meth:`restore_frame_numbers`. If ``restore=False``, any frames that
+        don't belong to the excitation type given by `which` are mapped to -1.
 
         Parameters
         ----------
@@ -225,7 +305,7 @@ class FrameSelector:
             Excitation type(s), one or multiple characters out of
             :py:attr:`excitation_seq`.
         restore
-            If `False`, renumber the frames (as in :py:meth:`__call__`).
+            If `False`, renumber the frames (as in :py:meth:`select`).
             If `True`, restore original frame numbers (as in
             :py:meth:`restore_frame_numbers`).
 
@@ -233,20 +313,28 @@ class FrameSelector:
         -------
         New frame numbers
         """
-        if not (len(eval_seq) and len(which)):
+        if not len(eval_seq):
             return frame_nos
         frame_nos = np.asanyarray(frame_nos, dtype=int)
         good_frame_mask = np.isin(eval_seq, list(which))
+        n_good = np.sum(good_frame_mask)
         max_frame = np.max(frame_nos)
         if restore:
+            if not n_good:
+                # None of `which` are in excitation seq. There is nothing we
+                # can do.
+                raise ValueError(f"excitation sequence '{''.join(eval_seq)}' "
+                                 f"does not contain types '{''.join(which)}'")
             # f_map_inv needs at least max_frame + 1 entries (the domain of
             # the restoring map is {0, 1, …, max_frame}), meaning
-            # good_frame_mask has to be chained (max_frame + 1) / num_true
-            # times, where num_true is the number of True entries in
+            # good_frame_mask has to be chained (max_frame + 1) / n_good
+            # times, where n_good is the number of True entries in
             # good_frame_mask
-            num_true = np.sum(good_frame_mask)
-            n_repeats = math.ceil((max_frame + 1) / num_true)
+            n_repeats = math.ceil((max_frame + 1) / n_good)
         else:
+            if not n_good:
+                # All are invalid and thus mapped to -1
+                return np.full(frame_nos.size, -1, dtype=int)
             # f_map needs at least max_frame + 1 entries (the domain of
             # the frame number map is {0, 1, …, max_frame}). f_map_inv's values
             # (which form the codomain of the map) need to go up to at least
@@ -254,6 +342,7 @@ class FrameSelector:
             n_repeats = math.ceil((max_frame + 1) / len(eval_seq))
         # Calculate the restoring map
         f_map_inv = np.nonzero(np.tile(good_frame_mask, n_repeats))[0]
+        print(n_repeats, f_map_inv)
         if restore:
             return f_map_inv[frame_nos]
         # Invert the restoring map
@@ -261,11 +350,110 @@ class FrameSelector:
         f_map[f_map_inv] = np.arange(f_map_inv.size)
         return f_map[frame_nos]
 
+    def renumber_frames(self, frame_nos: np.ndarray,
+                        which: Union[str, Iterable[str]],
+                        restore: bool = False, n_frames: Optional[int] = None
+                        ) -> np.ndarray:
+        """Renumber a sequence of frame numbers
+
+        The numbers can be with respect to the original image sequence. In this
+        case, set ``restore=False`` and this function will return frame numbers
+        with respect to an image sequence which was returned by
+        :py:meth:`select`.  Any frames that don't belong to the excitation type
+        given by `which` are mapped to -1.
+        If ``restore=True`` is set, this works the opposite other way.
+
+        Parameters
+        ----------
+        frame_nos
+            Array of frame numbers to be mapped
+        which
+            Excitation type(s), one or multiple characters out of
+            :py:attr:`excitation_seq`.
+        restore
+            If `False`, renumber the frames (as in :py:meth:`select`).
+            If `True`, restore original frame numbers (as in
+            :py:meth:`restore_frame_numbers`).
+
+        Returns
+        -------
+        New frame numbers
+        """
+        eval_seq = self.eval_seq(n_frames)
+        return self._renumber(eval_seq, frame_nos, which, restore)
+
+    def find_other_frames(self, data: Union[int, Sequence],
+                          which: Union[str, Iterable[str]],
+                          other: Union[str, Iterable[str]],
+                          how: str = "nearest-up") -> Sequence:
+        """For given excitation type, find frames of other type
+
+        Typically, this is used to find the closest frame of a certain type,
+        e.g., find the next acceptor excitation frame for donor excitation
+        frames in FRET ALEX experiments.
+
+        Examples
+        --------
+        >>> fs = FrameSelector("dddda")
+        >>> d_img = fs.select(image_sequence, "d")
+        >>> a_img = fs.find_other_frames(image_sequence, "d", "a)
+        >>> for di, ai in zip(d_img, a_img):
+        ...    # `ai` is the frame of type "a" closest to `di`
+        ...    pass
+
+        Parameters
+        ----------
+        data
+            If this is a sequence, return a subsequence of the same length as
+            ``select(data, which)``. Each entry of the returned sequence is
+            the corresponding entry to what ``select(data, which)`` returns.
+            Passing an int is equivalent to using ``numpy.arange(data)``.
+        which
+            Excitation types for which to find other excitation type's frames
+        other
+            Other frames' excitation type(s)
+        how
+            How to do the interpolation. "nearest-up" will return the nearest
+            frame. In case of a tie, the “other” frame after the current one
+            is used. "nearest" will return the “other” frame before the current
+            one in case of a tie. "previous” and "next" return the “other”
+            frame before and after the current one, respectively.
+
+        Returns
+        -------
+        Subsequence of `data` with entries being the “other” entries to
+        ``select(data, which)``.
+        """
+        if isinstance(data, int):
+            n_frames = data
+            data = None
+        else:
+            n_frames = len(data)
+
+        eval_seq = self.eval_seq(n_frames)
+        idx = np.arange(n_frames)
+        source_idx = self._find_numbers(eval_seq, idx, which)
+        target_idx = self._find_numbers(eval_seq, idx, other)
+        if len(target_idx) == 0:
+            raise ValueError("excitation sequence does not contain types any "
+                             "of the types in `other`.")
+        if len(target_idx) == 1:
+            # scipy.interpolate.interp1d needs at least two points, so deal
+            # with this case here
+            return np.full(len(source_idx), target_idx[0], dtype=int)
+        interp_idx = scipy.interpolate.interp1d(
+            target_idx, target_idx, how, fill_value="extrapolate")(source_idx)
+        interp_idx = interp_idx.astype(int)
+
+        if data is not None:
+            return self._get_subseq(data, interp_idx)
+        return interp_idx
+
     @config.set_columns
-    def __call__(self, data: Union[pd.DataFrame, Iterable[np.ndarray]],
-                 which: Union[str, Iterable[str]], renumber: bool = False,
-                 n_frames: Optional[int] = None, columns: Mapping = {}
-                 ) -> Union[pd.DataFrame, np.ndarray, helper.Slicerator]:
+    def select(self, data: Union[pd.DataFrame, Iterable[np.ndarray]],
+               which: Union[str, Iterable[str]], renumber: bool = False,
+               n_frames: Optional[int] = None, columns: Mapping = {}
+               ) -> Union[pd.DataFrame, np.ndarray, helper.Slicerator]:
         """Get only data corresponding to a certain excitation type
 
         Parameters
@@ -290,7 +478,8 @@ class FrameSelector:
             Number of frames. This needs to be given if sequence is flexible,
             i.e., contains multiplication by ``?``. In this case, ``?``
             evaluates to a number such that the total sequence length is
-            `n_frames`.
+            `n_frames`. If `data` is an image sequence, `n_frames` can be
+            inferred from ``len(data)``.
 
         Returns
         -------
@@ -312,20 +501,17 @@ class FrameSelector:
             That means, if the DataFrame has frame number columns "frame2",
             set ``columns={"time": "frame2"}``.
         """
-        if not (self.excitation_seq and len(which)):
+        if not self.excitation_seq:
             return data
         if not isinstance(data, pd.DataFrame) and n_frames is None:
             # Use length of image sequence
             n_frames = len(data)
         eval_seq = self.eval_seq(n_frames)
 
-        good_frame_mask = np.isin(eval_seq, list(which))
-        good_frames = np.nonzero(good_frame_mask)[0]
-
         if isinstance(data, pd.DataFrame):
-            frames = data[columns["time"]] % len(eval_seq)
-            ret = data[frames.isin(good_frames)]
-
+            ret = data[
+                self._find_mask(
+                    eval_seq, data[columns["time"]].to_numpy(), which)]
             if renumber and not ret.empty:
                 ret = ret.copy()
                 ret[columns["time"]] = self._renumber(
@@ -333,22 +519,15 @@ class FrameSelector:
             return ret
 
         # Deal with image data
-        idx = np.arange(len(data))
-        sel_idx = idx[np.isin(idx % len(eval_seq), good_frames)]
-
-        try:
-            return data[sel_idx]
-        except TypeError:
-            # This can happen if e.g. data is a list
-            s = helper.Slicerator(data)
-            return s[sel_idx]
+        sel_idx = self._find_numbers(eval_seq, np.arange(len(data)), which)
+        return self._get_subseq(data, sel_idx)
 
     @config.set_columns
     def restore_frame_numbers(self, data: pd.DataFrame,
                               which: Union[str, Iterable[str]],
                               n_frames: Optional[int] = None,
                               columns: Mapping = {}):
-        """Undo frame renumbering from :py:meth:`__call__`
+        """Undo frame renumbering from :py:meth:`select`
 
         `data` is modified in place for this purpose.
 
@@ -373,8 +552,7 @@ class FrameSelector:
             That means, if the DataFrame has frame number columns "frame2",
             set ``columns={"time": "frame2"}``.
         """
-        if not (self.excitation_seq and len(which)) or data.empty:
+        if not self.excitation_seq or data.empty:
             return
-        eval_seq = self.eval_seq(n_frames)
-        data[columns["time"]] = self._renumber(
-            eval_seq, data[columns["time"]].to_numpy(), which, True)
+        data[columns["time"]] = self.renumber_frames(
+            data[columns["time"]].to_numpy(), which, True, n_frames)

@@ -73,7 +73,6 @@ Programming reference
 .. autofunction:: merge_channels
 .. autoclass:: FrameSelector
     :members:
-    :special-members: __call__
 
 
 Low level helper functions
