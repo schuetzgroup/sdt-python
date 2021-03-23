@@ -140,5 +140,5 @@ References
     microscopy for colloidal studies", Journal of colloid and interface
     science, Elsevier, 1996, 179, 298-310
 """
-from . import cg, daostorm_3d, fast_peakposition, z_fit  # noqa: F401
+from . import cg, daostorm_3d, z_fit  # noqa: F401
 from .raw_features import get_raw_features  # noqa: F401
