@@ -34,6 +34,7 @@ Item {
         ImageDisplay {
             id: imDisp
             image: imSel.image
+            error: imSel.error
             Layout.fillWidth: true
             Layout.fillHeight: true
 

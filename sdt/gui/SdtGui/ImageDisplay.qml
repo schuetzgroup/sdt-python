@@ -102,32 +102,48 @@ T.ImageDisplay {
                     Layout.fillHeight: true
                 }
             }
-            ScrollView {
-                id: scroll
-                clip: true
+            Item {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                property real scaleFactor: 1.0
-                Binding on scaleFactor {
-                    when: zoomFitButton.checked
-                    value: rootLayout.calcScaleFactor(
-                        img.sourceWidth, img.sourceHeight,
-                        scroll.width, scroll.height
-                    )
+                ScrollView {
+                    id: scroll
+
+                    property real scaleFactor: 1.0
+                    Binding on scaleFactor {
+                        when: zoomFitButton.checked
+                        value: rootLayout.calcScaleFactor(
+                            img.sourceWidth, img.sourceHeight,
+                            scroll.width, scroll.height
+                        )
+                    }
+
+                    contentWidth: Math.max(availableWidth, img.width)
+                    contentHeight: Math.max(availableHeight, img.height)
+                    clip: true
+                    anchors.fill: parent
+
+                    PyImage {
+                        id: img
+                        anchors.centerIn: parent
+                        source: root.image
+                        black: rootLayout.contrastMin
+                        white: rootLayout.contrastMax
+                        width: sourceWidth * scroll.scaleFactor
+                        height: sourceHeight * scroll.scaleFactor
+                    }
                 }
-
-                contentWidth: Math.max(availableWidth, img.width)
-                contentHeight: Math.max(availableHeight, img.height)
-
-                PyImage {
-                    id: img
-                    anchors.centerIn: parent
-                    source: root.image
-                    black: rootLayout.contrastMin
-                    white: rootLayout.contrastMax
-                    width: sourceWidth * scroll.scaleFactor
-                    height: sourceHeight * scroll.scaleFactor
+                Label {
+                    text: "Error: " + root.error
+                    visible: root.error
+                    background: Rectangle {
+                        color: "#50FF0000"
+                        radius: 5
+                    }
+                    anchors.left: scroll.left
+                    anchors.right: scroll.right
+                    anchors.top: scroll.top
+                    padding: 10
                 }
             }
         }

@@ -60,11 +60,12 @@ T.Locator {
             }
             ImageDisplay {
                 id: imDisp
-                input: imSel.output
                 overlays: LocDisplay {
                     locData: loc.locData
                     visible: loc.previewEnabled
                 }
+                image: imSel.image
+                error: imSel.error
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }

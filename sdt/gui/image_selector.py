@@ -45,7 +45,7 @@ class ImageList(ListModel):
 
     def _onExcTypeChanged(self):
         """Emit :py:meth:`dataChanged` if exc seq or current type change"""
-        self._notifyChange(0, self.rowCount(), ["image"])
+        self.itemsChanged.emit(0, self.rowCount(), ["image"])
 
     excitationSeqChanged = QtCore.pyqtSignal()
     """:py:attr:`excitationSeq` changed"""
@@ -65,7 +65,7 @@ class ImageList(ListModel):
         self.excitationSeqChanged.emit()
 
     currentExcitationType = SimpleQtProperty(str)
-        """Excitation type to use in :py:attr:`output`"""
+    """Excitation type to use in :py:attr:`output`"""
 
     @QtCore.pyqtSlot(int, str, result=QtCore.QVariant)
     def get(self, index: int, role: str) -> Any:
@@ -89,9 +89,8 @@ class ImageList(ListModel):
             return f"<{index:03}>"
         if role == "image":
             if isinstance(d, (str, Path)):
-                # TODO: Error handling
                 d = io.ImageSequence(d).open()
-            return self._frameSel(d, self.currentExcitationType)
+            return self._frameSel.select(d, self.currentExcitationType)
         return d
 
     @staticmethod
@@ -186,6 +185,7 @@ class ImageSelector(QtQuick.QQuickItem):
         # when setting dataset property
         self._dataset = ImageList(self)
         self._dataset.itemsChanged.connect(self._onItemsChanged)
+        self._error = ""
 
     datasetChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """:py:attr:`dataset` was changed"""
@@ -232,7 +232,7 @@ class ImageSelector(QtQuick.QQuickItem):
         self.datasetChanged.emit(d)
 
     image = SimpleQtProperty(QtCore.QVariant, readOnly=True)
-        """Selected frame from selected image sequence"""
+    """Selected frame from selected image sequence"""
     editable = QmlDefinedProperty()
     """If `True` show widgets to manipulate the image sequence list"""
     textRole = QmlDefinedProperty()
@@ -243,6 +243,10 @@ class ImageSelector(QtQuick.QQuickItem):
     """When using a custom model for :py:attr:`datasets`, use this role to
     retrieve image sequence. The returned sequence should be a list of 3D numpy
     arrays, a :py:class:`io.ImageSequence` instance or similar.
+    """
+    error = SimpleQtProperty(str, readOnly=True)
+    """Error message from current attempt to read an image. If empty, no error
+    occurred.
     """
 
     def _onItemsChanged(self, index: int, count: int, roles: List[str]):
@@ -268,9 +272,20 @@ class ImageSelector(QtQuick.QQuickItem):
             self._curImage = None
             self._image = None
             self.imageChanged.emit()
+            if self._error:
+                self._error = ""
+                self.errorChanged.emit()
             return
 
-        self._curImage = self.dataset.get(index, self.imageRole)
+        try:
+            self._curImage = self.dataset.get(index, self.imageRole)
+        except Exception as ex:
+            self._curImage = None
+            err = str(ex)
+            if self._error != err:
+                self._error = err
+                self.errorChanged.emit()
+
         self.currentFrameCountChanged.emit()
 
     currentFrameCountChanged = QtCore.pyqtSignal()
@@ -294,7 +309,19 @@ class ImageSelector(QtQuick.QQuickItem):
         if self._curImage is None:
             self._image = None
         else:
-            self._image = self._curImage[index]
+            try:
+                self._image = self._curImage[index]
+            except Exception as ex:
+                self._image = None
+                err = str(ex)
+                if self._error != err:
+                    self._error = err
+                    self.errorChanged.emit()
+                self._image = None
+            else:
+                if self._error:
+                    self._error = ""
+                    self.errorChanged.emit()
         self.imageChanged.emit()
 
     currentIndex = QmlDefinedProperty()

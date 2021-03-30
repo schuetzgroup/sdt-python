@@ -7,7 +7,8 @@ from typing import Optional, Union
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 
-from . import py_image  # Register PyImage QML type
+from . import py_image  # noqa: F401 Register PyImage QML type
+from .qml_wrapper import SimpleQtProperty
 
 
 class ImageDisplay(QtQuick.QQuickItem):
@@ -44,6 +45,7 @@ class ImageDisplay(QtQuick.QQuickItem):
         self._image = None
         self._imageMinVal = 0.0
         self._imageMaxVal = 0.0
+        self._error = ""
 
     imageChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Input image was changed"""
@@ -77,6 +79,9 @@ class ImageDisplay(QtQuick.QQuickItem):
     def _imageMax(self):
         """Maximum value in input image. Used for QML property binding."""
         return self._imageMaxVal
+
+    error = SimpleQtProperty(str)
+    """Error message to be displayed"""
 
 
 QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Templates", 1, 0, "ImageDisplay")

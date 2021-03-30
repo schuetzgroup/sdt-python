@@ -280,6 +280,7 @@ ChannelConfigImpl {
             ImageDisplay {
                 id: imDisp
                 image: imSel.image
+                error: imSel.error
                 overlays: roiSel.overlay
                 Layout.fillWidth: true
                 Layout.fillHeight: true

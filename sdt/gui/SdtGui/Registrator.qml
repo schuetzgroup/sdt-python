@@ -108,6 +108,7 @@ T.Registrator {
             ImageDisplay {
                 id: imDisp
                 image: imSel.image
+                error: imSel.error
                 overlays: LocDisplay {
                     locData: optStack.currentItem.locData
                     visible: optStack.currentItem.previewEnabled
