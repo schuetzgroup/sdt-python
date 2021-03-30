@@ -63,6 +63,22 @@ ComboBox {
             if (selectFirstOnReset && model.rowCount() > 0)
                 currentIndex = 0
         }
+        onRowsInserted: { _rowsInsertedOrRemoved(first) }
+        onRowsRemoved: { _rowsInsertedOrRemoved(first) }
+
+        function _rowsInsertedOrRemoved(first) {
+            if (first > root.currentIndex)
+                return
+            if (typeof root.modelDataRole === "string") {
+                root.currentModelData = root._qmlModel.get(
+                    root.currentIndex, root.modelDataRole)
+                return
+            }
+            var md = {}
+            for (var r of root.modelDataRole)
+                md[r] = root._qmlModel.get(root.currentIndex, r)
+            root.currentModelData = md
+        }
     }
 
     onModelDataRoleChanged: { _resetModelData() }
