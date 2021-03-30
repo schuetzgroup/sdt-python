@@ -23,6 +23,12 @@ T.DatasetSelector {
             sel.currentIndex - specialDatasets.count, "dataset") :
         specialDatasets.get(sel.currentIndex, "dataset")
     )
+    property int currentIndex
+    Binding on currentIndex {
+        value: (sel.currentIndex < specialDatasets.count ?
+                sel.currentIndex :
+                sel.currentIndex - specialDatasets.count)
+    }
     function select(index) {
         sel.currentIndex = index + specialDatasets.count
     }
