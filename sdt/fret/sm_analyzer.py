@@ -133,7 +133,8 @@ class SmFRETAnalyzer:
 
     def calc_fret_values(self, keep_d_mass: bool = False,
                          invalid_nan: bool = True,
-                         a_mass_interp: str = "nearest-up"):
+                         a_mass_interp: str = "nearest-up",
+                         skip_neighbors: bool = True):
         r"""Calculate FRET-related values
 
         This needs to be called before the filtering methods and before
@@ -189,6 +190,9 @@ class SmFRETAnalyzer:
             of a tie); "nearest-up", which is similar to "nearest" but takes
             the next frame in case of a tie; "next" and "previous" to use the
             next and previous frames, respectively.
+        skip_neighbors
+            If `True`, skip localizations where ``("fret", "has_neighbor")`` is
+            `True` when interpolating acceptor mass upon direct excitation.
         """
         self.tracks.sort_values(
             [("fret", "particle"), ("donor", self.columns["time"])],
@@ -200,7 +204,7 @@ class SmFRETAnalyzer:
                 ("acceptor", self.columns["mass"]),
                 ("donor", self.columns["time"]),
                 ("fret", "exc_type")]
-        if ("fret", "has_neighbor") in self.tracks.columns:
+        if skip_neighbors and ("fret", "has_neighbor") in self.tracks.columns:
             cols.append(("fret", "has_neighbor"))
             has_nn = True
         else:

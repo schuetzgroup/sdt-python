@@ -618,6 +618,33 @@ class TestSmFRETAnalyzer:
         assert ("fret", "d_mass") in ana2.tracks
         np.testing.assert_allclose(ana2.tracks["fret", "d_mass"], dm_orig)
 
+    def test_calc_fret_values_has_neighbor(self, ana2):
+        trc = ana2.tracks
+        trc["fret", "has_neighbor"] = 0
+        acc_idx = np.nonzero(
+            (trc["fret", "exc_type"] == "a").to_numpy())[0]
+        a_mass = trc.loc[acc_idx[0], ("acceptor", "mass")]
+        # Double 3rd acceptor excitation mass and set has_neighbor
+        trc.loc[acc_idx[2], ("acceptor", "mass")] *= 2
+        trc.loc[acc_idx[2], ("fret", "has_neighbor")] = 1
+
+        ana2.tracks = trc.copy()
+        # This will skip the double mass frame, resulting in constant a_mass
+        ana2.calc_fret_values(a_mass_interp="linear")
+        assert ("fret", "a_mass") in ana2.tracks.columns
+        np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], a_mass)
+
+        ana2.tracks = trc.copy()
+        ana2.calc_fret_values(a_mass_interp="linear", skip_neighbors=False)
+        am = np.full(len(trc), a_mass)
+        intp = np.linspace(a_mass, 2 * a_mass, acc_idx[2] - acc_idx[1],
+                           endpoint=False)
+        am[acc_idx[1]:acc_idx[2]] = intp
+        am[acc_idx[2]] = 2 * a_mass
+        am[acc_idx[2]+1:acc_idx[3]+1] = intp[::-1]
+        assert ("fret", "a_mass") in ana2.tracks.columns
+        np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], am)
+
     def test_eval(self, ana1):
         """fret.SmFRETAnalyzer.eval"""
         d = ana1.tracks.copy()
