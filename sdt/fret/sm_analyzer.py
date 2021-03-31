@@ -131,8 +131,9 @@ class SmFRETAnalyzer:
         """
         self.excitation_eff = 1.
 
-    def calc_fret_values(self, keep_d_mass=False, invalid_nan=True,
-                         a_mass_interp="linear"):
+    def calc_fret_values(self, keep_d_mass: bool = False,
+                         invalid_nan: bool = True,
+                         a_mass_interp: str = "linear"):
         r"""Calculate FRET-related values
 
         This needs to be called before the filtering methods and before
@@ -171,21 +172,22 @@ class SmFRETAnalyzer:
 
         Parameters
         ----------
-        tracks : pandas.DataFrame
-            smFRET tracking data as produced by the
-            :py:meth:`SmFRETTracker.track`
-        keep_d_mass : bool, optional
+        keep_d_mass
             If a ``("fret", "d_mass")`` column is already present in `tracks`,
             use that instead of overwriting it with the sum of
             ``("donor", "mass")`` and ``("acceptor", "mass")`` values. Useful
             if :py:meth:`track` was called with ``d_mass=True``.
-        invalid_nan : bool, optional
+        invalid_nan
             If True, all "d_mass", "eff_app", and "stoi_app" values for
             excitation types other than donor excitation are set to NaN, since
-            the values don't make sense. Defaults to True.
-        a_mass_interp : {"linear", "nearest"}, optional
+            the values don't make sense.
+        a_mass_interp
             How to interpolate the acceptor mass upon direct excitation in
-            donor excitation frames. Defaults to "linear".
+            donor excitation frames. Sensible values are "linear" for linear
+            interpolation, "nearest" to take the value of the closest
+            direct acceptor excitation frame (using the previous frame in case
+            of a tie), and "nearest-up", which is similar to "nearest" but
+            takes the next frame in case of a tie.
         """
         self.tracks.sort_values(
             [("fret", "particle"), ("donor", self.columns["time"])],

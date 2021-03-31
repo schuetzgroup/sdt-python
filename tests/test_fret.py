@@ -339,7 +339,7 @@ def ana_query_part(ana1):
     return ana1
 
 
-ana2_seq = np.array(["d", "d", "d", "d", "a"])
+ana2_seq = np.array(["d", "d", "d", "a"])
 
 
 @pytest.fixture
@@ -521,16 +521,21 @@ class TestSmFRETAnalyzer:
         first2 = first_fr + a_direct1[0] + seq_len
         near2 = (np.abs(trc["acceptor", "frame"] - last1) >
                  np.abs(trc["acceptor", "frame"] - first2))
-        stoi[near2] = (mass + mass) / (mass + mass + mass_acc2)
-        stoi[a_direct2] = np.NaN
-        near_mass[near2] = mass_acc2
+        near2up = (np.abs(trc["acceptor", "frame"] - last1) >=
+                   np.abs(trc["acceptor", "frame"] - first2))
+        for n, meth in [(near2, "nearest"), (near2up, "nearest-up")]:
+            s = stoi.copy()
+            s[n] = (mass + mass) / (mass + mass + mass_acc2)
+            s[a_direct2] = np.NaN
+            nm = near_mass.copy()
+            nm[n] = mass_acc2
 
-        ana2.tracks = trc
-        ana2.calc_fret_values(a_mass_interp="nearest")
+            ana2.tracks = trc.copy()
+            ana2.calc_fret_values(a_mass_interp=meth)
 
-        assert(("fret", "stoi_app") in ana2.tracks.columns)
-        np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], stoi)
-        np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], near_mass)
+            assert(("fret", "stoi_app") in ana2.tracks.columns)
+            np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], s)
+            np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], nm)
 
     def test_calc_fret_values_stoi_single(self, ana2):
         """fret.SmFRETAnalyzer.calc_fret_values: stoichiometry, single acc."""
