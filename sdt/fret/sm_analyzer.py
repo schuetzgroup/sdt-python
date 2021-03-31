@@ -133,7 +133,7 @@ class SmFRETAnalyzer:
 
     def calc_fret_values(self, keep_d_mass: bool = False,
                          invalid_nan: bool = True,
-                         a_mass_interp: str = "linear"):
+                         a_mass_interp: str = "nearest-up"):
         r"""Calculate FRET-related values
 
         This needs to be called before the filtering methods and before

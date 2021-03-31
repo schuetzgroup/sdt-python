@@ -491,7 +491,7 @@ class TestSmFRETAnalyzer:
         stoi = (mass + mass) / (mass + mass + linear_mass)
         stoi[direct_acc] = np.NaN
 
-        ana2.calc_fret_values()
+        ana2.calc_fret_values(a_mass_interp="linear")
 
         assert(("fret", "stoi_app") in ana2.tracks.columns)
         np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], stoi)
