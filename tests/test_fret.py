@@ -523,7 +523,10 @@ class TestSmFRETAnalyzer:
                  np.abs(trc["acceptor", "frame"] - first2))
         near2up = (np.abs(trc["acceptor", "frame"] - last1) >=
                    np.abs(trc["acceptor", "frame"] - first2))
-        for n, meth in [(near2, "nearest"), (near2up, "nearest-up")]:
+        prev2 = trc["acceptor", "frame"].to_numpy() >= first2
+        next2 = trc["acceptor", "frame"].to_numpy() > last1
+        for n, meth in [(near2, "nearest"), (near2up, "nearest-up"),
+                        (prev2, "previous"), (next2, "next")]:
             s = stoi.copy()
             s[n] = (mass + mass) / (mass + mass + mass_acc2)
             s[a_direct2] = np.NaN

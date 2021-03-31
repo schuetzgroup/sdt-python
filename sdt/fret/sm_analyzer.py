@@ -184,10 +184,11 @@ class SmFRETAnalyzer:
         a_mass_interp
             How to interpolate the acceptor mass upon direct excitation in
             donor excitation frames. Sensible values are "linear" for linear
-            interpolation, "nearest" to take the value of the closest
+            interpolation; "nearest" to take the value of the closest
             direct acceptor excitation frame (using the previous frame in case
-            of a tie), and "nearest-up", which is similar to "nearest" but
-            takes the next frame in case of a tie.
+            of a tie); "nearest-up", which is similar to "nearest" but takes
+            the next frame in case of a tie; "next" and "previous" to use the
+            next and previous frames, respectively.
         """
         self.tracks.sort_values(
             [("fret", "particle"), ("donor", self.columns["time"])],
