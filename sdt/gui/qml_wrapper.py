@@ -7,6 +7,7 @@ import enum
 import logging
 import operator
 from pathlib import Path
+import sys
 from typing import Any, Callable, Optional, Union
 
 from PyQt5 import QtCore, QtGui, QtQml
@@ -16,6 +17,28 @@ _logger = logging.getLogger("Qt")
 
 qmlPath: str = str(Path(__file__).absolute().parent)
 """Path to QML module. Add as import path to QML engines."""
+iconPath: str = str(Path(__file__).absolute().parent / "breeze-icons" /
+                    "icons")
+"""Path to bundled icon theme. Add to QIcon's themeSearchPaths, e.g. by calling
+:py:meth:`useBundledIconTheme`."""
+
+
+def useBundledIconTheme(onLinux: bool = False):
+    """Enable the bundled icon theme (KDE's Breeze)
+
+    Parameters
+    ----------
+    onLinux
+        If `True`, use bundled icons even on Linux. Normally, this is not
+        necessary since Linux comes with system-wide themes.
+    """
+    if sys.platform == "linux" and not onLinux:
+        return
+    tsp = QtGui.QIcon.themeSearchPaths()
+    if iconPath not in tsp:
+        tsp.append(iconPath)
+    QtGui.QIcon.setThemeSearchPaths(tsp)
+    QtGui.QIcon.setThemeName(iconPath)
 
 
 class Component(QtCore.QObject):
@@ -56,6 +79,7 @@ class Component(QtCore.QObject):
             qmlFile = QtCore.QUrl.fromLocalFile(str(qmlFile))
         self._engine = QtQml.QQmlApplicationEngine()
         self._engine.addImportPath(qmlPath)
+        useBundledIconTheme()
         self._engine.objectCreated.connect(self._instanceCreated)
         # TODO: A user can only connect to status_Changed after __init__
         # finishes and will therefore miss this signal and also the one

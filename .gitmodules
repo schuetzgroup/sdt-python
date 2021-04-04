@@ -1,0 +1,3 @@
+[submodule "sdt/gui/breeze-icons"]
+	path = sdt/gui/breeze-icons
+	url = https://github.com/KDE/breeze-icons.git

@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 from .. import io, loc
-from .qml_wrapper import Window, QmlDefinedProperty
+from .qml_wrapper import Window, QmlDefinedProperty, useBundledIconTheme
 
 
 class Locator(QtQuick.QQuickItem):
@@ -93,6 +93,7 @@ if __name__ == "__main__":
     if args.legacy:
         try:
             from .legacy.locator import MainWindow
+            useBundledIconTheme()
             w = MainWindow()
         except Exception as e:
             QtWidgets.QMessageBox.critical(

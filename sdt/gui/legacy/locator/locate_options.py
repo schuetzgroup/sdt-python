@@ -18,7 +18,6 @@ from . import algorithms
 
 
 path = os.path.dirname(os.path.abspath(__file__))
-iconpath = os.path.join(path, os.pardir, "icons")
 
 
 algo_widget_dict = {}  # populated at the end of the file
@@ -57,9 +56,9 @@ class Container(contBase):
             self._optionModels.append(o)
 
         self._ui.saveButton.setIcon(
-            QIcon(os.path.join(iconpath, "document-save-as.svg")))
+            QIcon.fromTheme("document-save-as"))
         self._ui.loadButton.setIcon(
-            QIcon(os.path.join(iconpath, "document-open.svg")))
+            QIcon.fromTheme("document-open"))
 
         self._ui.saveButton.pressed.connect(self.save)
         self._ui.loadButton.pressed.connect(self.load)

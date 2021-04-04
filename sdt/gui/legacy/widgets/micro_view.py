@@ -22,7 +22,6 @@ from .. import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
-iconpath = os.path.join(path, os.pardir, "icons")
 
 
 class ImageGraphicsItem(QGraphicsPixmapItem):
@@ -228,22 +227,20 @@ class MicroViewWidget(mvBase):
 
         # set button icons
         self._ui.locButton.setIcon(
-            QIcon(os.path.join(iconpath, "view-preview.svg")))
+            QIcon.fromTheme("view-preview"))
         self._ui.zoomOutButton.setIcon(
-            QIcon(os.path.join(iconpath, "zoom-out.svg")))
+            QIcon.fromTheme("zoom-out"))
         self._ui.zoomOriginalButton.setIcon(
-            QIcon(os.path.join(iconpath, "zoom-original.svg")))
+            QIcon.fromTheme("zoom-original"))
         self._ui.zoomFitButton.setIcon(
-            QIcon(os.path.join(iconpath, "zoom-fit-best.svg")))
+            QIcon.fromTheme("zoom-fit-best"))
         self._ui.zoomInButton.setIcon(
-            QIcon(os.path.join(iconpath, "zoom-in.svg")))
+            QIcon.fromTheme("zoom-in"))
         self._ui.roiButton.setIcon(
-            QIcon(os.path.join(iconpath, "draw-polygon.svg")))
+            QIcon.fromTheme("draw-polygon"))
 
-        self._playIcon = QIcon(
-            os.path.join(iconpath, "media-playback-start.svg"))
-        self._pauseIcon = QIcon(
-            os.path.join(iconpath, "media-playback-pause.svg"))
+        self._playIcon = QIcon.fromTheme("media-playback-start")
+        self._pauseIcon = QIcon.fromTheme("media-playback-pause")
         self._ui.playButton.setIcon(self._playIcon)
 
         # these are to be setEnable(False)'ed if there is no image sequence

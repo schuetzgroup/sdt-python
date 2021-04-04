@@ -64,8 +64,8 @@
         <string>Zoom in</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>icons/zoom-out.svg</normaloff>icons/zoom-out.svg</iconset>
+        <iconset theme="zoom-out">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>

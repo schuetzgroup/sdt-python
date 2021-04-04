@@ -14,7 +14,6 @@ from .. import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
-iconpath = os.path.join(path, os.pardir, "icons")
 
 
 class FileListModel(QAbstractListModel):
@@ -182,10 +181,10 @@ class FileChooser(fcBase):
         self._ui.fileListView.setModel(self._model)
 
         self._ui.addButton.setIcon(
-            QIcon(os.path.join(iconpath, "document-open.svg")))
+            QIcon.fromTheme("document-open"))
         self._ui.addButton.pressed.connect(self._addFilesSlot)
         self._ui.removeButton.setIcon(
-            QIcon(os.path.join(iconpath, "document-close.svg")))
+            QIcon.fromTheme("document-close"))
         self._ui.removeButton.pressed.connect(self.removeSelected)
         self._ui.fileListView.doubleClicked.connect(self.selected)
 

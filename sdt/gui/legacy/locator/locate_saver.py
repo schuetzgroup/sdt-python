@@ -10,7 +10,6 @@ from .. import uic
 
 
 path = os.path.dirname(os.path.abspath(__file__))
-iconpath = os.path.join(path, os.pardir, "icons")
 
 
 locSaveClass, locSaveBase = uic.loadUiType(
@@ -27,7 +26,7 @@ class SaveWidget(locSaveBase):
         self._ui.setupUi(self)
 
         self._ui.saveButton.setIcon(
-            QIcon(os.path.join(iconpath, "document-save.svg")))
+            QIcon.fromTheme("document-save"))
 
     locateAndSave = Signal(str)
 
