@@ -84,13 +84,14 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(
         prog="python -m sdt.gui.locator",
         description="Locate single molecules in fluorsecent microscopy images")
-    ap.add_argument("--legacy", help="start legacy app", action="store_true")
+    ap.add_argument("--qml", help="start new QML-based app",
+                    action="store_true")
     ap.add_argument("-p", "--no-preview", action="store_true",
                     help="Don't show preview on start-up")
     ap.add_argument("files", help="image sequences to open", nargs="*")
     args = ap.parse_args()
 
-    if args.legacy:
+    if not args.qml:
         try:
             from .legacy.locator import MainWindow
             useBundledIconTheme()
