@@ -318,4 +318,4 @@ class FigureCanvasAgg(mpl_agg.FigureCanvasAgg, FigureCanvas):
         self._draw_rect_callback(painter)
 
 
-QtQml.qmlRegisterType(FigureCanvasAgg, "SdtGui", 1, 0, "FigureCanvasAgg")
+QtQml.qmlRegisterType(FigureCanvasAgg, "SdtGui", 0, 1, "FigureCanvasAgg")

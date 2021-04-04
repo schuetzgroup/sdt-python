@@ -163,4 +163,4 @@ class Registrator(QtQuick.QQuickItem):
         self.abortCalculation()
 
 
-QtQml.qmlRegisterType(Registrator, "SdtGui.Templates", 1, 0, "Registrator")
+QtQml.qmlRegisterType(Registrator, "SdtGui.Templates", 0, 1, "Registrator")

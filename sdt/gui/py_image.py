@@ -132,4 +132,4 @@ class PyImage(QtQuick.QQuickPaintedItem):
         return self._source.shape[0] if self._source is not None else 0
 
 
-QtQml.qmlRegisterType(PyImage, "SdtGui", 1, 0, "PyImage")
+QtQml.qmlRegisterType(PyImage, "SdtGui", 0, 1, "PyImage")

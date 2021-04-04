@@ -63,4 +63,4 @@ class TrackOptions(OptionChooser):
                                  memory=self.memory)
 
 
-QtQml.qmlRegisterType(TrackOptions, "SdtGui.Templates", 1, 0, "TrackOptions")
+QtQml.qmlRegisterType(TrackOptions, "SdtGui.Templates", 0, 1, "TrackOptions")

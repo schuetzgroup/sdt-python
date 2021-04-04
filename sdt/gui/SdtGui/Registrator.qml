@@ -5,8 +5,8 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import SdtGui 1.0
-import SdtGui.Templates 1.0 as T
+import SdtGui 0.1
+import SdtGui.Templates 0.1 as T
 
 
 T.Registrator {

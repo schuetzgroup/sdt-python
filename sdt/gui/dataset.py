@@ -326,5 +326,5 @@ class DatasetCollection(ListModel):
             setattr(self.get(i, "dataset"), prop, newVal)
 
 
-QtQml.qmlRegisterType(Dataset, "SdtGui", 1, 0, "Dataset")
-QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 1, 0, "DatasetCollection")
+QtQml.qmlRegisterType(Dataset, "SdtGui", 0, 1, "Dataset")
+QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 0, 1, "DatasetCollection")

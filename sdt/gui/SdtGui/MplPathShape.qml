@@ -4,7 +4,7 @@
 
 import QtQuick 2.10
 import QtQuick.Shapes 1.0
-import SdtGui.Templates 1.0 as T
+import SdtGui.Templates 0.1 as T
 
 
 Shape {

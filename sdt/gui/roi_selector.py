@@ -328,5 +328,5 @@ class ShapeROIItem(QtQuick.QQuickItem):
             self.roiChanged.emit()
 
 
-QtQml.qmlRegisterType(ROISelector, "SdtGui.Templates", 1, 0, "ROISelector")
-QtQml.qmlRegisterType(ShapeROIItem, "SdtGui.Templates", 1, 0, "ShapeROIItem")
+QtQml.qmlRegisterType(ROISelector, "SdtGui.Templates", 0, 1, "ROISelector")
+QtQml.qmlRegisterType(ShapeROIItem, "SdtGui.Templates", 0, 1, "ShapeROIItem")

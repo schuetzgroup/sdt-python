@@ -5,7 +5,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.7
 import QtQuick.Layouts 1.7
-import SdtGui.Templates 1.0 as T
+import SdtGui.Templates 0.1 as T
 
 
 T.LocOptions {

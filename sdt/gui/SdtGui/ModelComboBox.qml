@@ -5,7 +5,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQml.Models 2.2
-import SdtGui 1.0
+import SdtGui 0.1
 
 
 ComboBox {

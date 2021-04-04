@@ -118,4 +118,4 @@ class TrackDisplay(LocDisplay):
             painter.drawPolyline(li)
 
 
-QtQml.qmlRegisterType(TrackDisplay, "SdtGui", 1, 0, "TrackDisplay")
+QtQml.qmlRegisterType(TrackDisplay, "SdtGui", 0, 1, "TrackDisplay")

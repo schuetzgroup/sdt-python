@@ -466,4 +466,4 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         return self.rowCount()
 
 
-QtQml.qmlRegisterType(ListProxyModel, "SdtGui", 1, 0, "ListProxyModel")
+QtQml.qmlRegisterType(ListProxyModel, "SdtGui", 0, 1, "ListProxyModel")

@@ -103,5 +103,5 @@ class MplPathElements(QtCore.QObject):
         return self._height
 
 
-QtQml.qmlRegisterType(MplPathElements, "SdtGui.Templates", 1, 0,
+QtQml.qmlRegisterType(MplPathElements, "SdtGui.Templates", 0, 1,
                       "MplPathElements")

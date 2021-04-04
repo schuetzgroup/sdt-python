@@ -176,5 +176,5 @@ class DatasetSelector(QtQuick.QQuickItem):
         self._keyList.remove(first, last - first + 1)
 
 
-QtQml.qmlRegisterType(DatasetSelector, "SdtGui.Templates", 1, 0,
+QtQml.qmlRegisterType(DatasetSelector, "SdtGui.Templates", 0, 1,
                       "DatasetSelector")

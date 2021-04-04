@@ -98,4 +98,4 @@ class LocOptions(OptionChooser):
         return result
 
 
-QtQml.qmlRegisterType(LocOptions, "SdtGui.Templates", 1, 0, "LocOptions")
+QtQml.qmlRegisterType(LocOptions, "SdtGui.Templates", 0, 1, "LocOptions")

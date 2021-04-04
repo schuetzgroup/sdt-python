@@ -225,4 +225,4 @@ class BatchWorker(QtQuick.QQuickItem):
         self.abort()
 
 
-QtQml.qmlRegisterType(BatchWorker, "SdtGui.Templates", 1, 0, "BatchWorker")
+QtQml.qmlRegisterType(BatchWorker, "SdtGui.Templates", 0, 1, "BatchWorker")

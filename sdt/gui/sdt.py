@@ -17,4 +17,4 @@ class Sdt(QtCore.QObject):
     QtCore.Q_ENUM(WorkerStatus)
 
 
-QtQml.qmlRegisterType(Sdt, "SdtGui.Templates", 1, 0, "Sdt")
+QtQml.qmlRegisterType(Sdt, "SdtGui.Templates", 0, 1, "Sdt")

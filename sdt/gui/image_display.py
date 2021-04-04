@@ -84,4 +84,4 @@ class ImageDisplay(QtQuick.QQuickItem):
     """Error message to be displayed"""
 
 
-QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Templates", 1, 0, "ImageDisplay")
+QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Templates", 0, 1, "ImageDisplay")

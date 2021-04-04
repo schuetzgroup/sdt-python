@@ -33,6 +33,6 @@ class MultiDataCollector(QtQuick.QQuickItem):
     """:py:class:`DatasetCollection` that is used by this item"""
 
 
-QtQml.qmlRegisterType(DataCollector, "SdtGui.Templates", 1, 0, "DataCollector")
-QtQml.qmlRegisterType(MultiDataCollector, "SdtGui.Templates", 1, 0,
+QtQml.qmlRegisterType(DataCollector, "SdtGui.Templates", 0, 1, "DataCollector")
+QtQml.qmlRegisterType(MultiDataCollector, "SdtGui.Templates", 0, 1,
                       "MultiDataCollector")

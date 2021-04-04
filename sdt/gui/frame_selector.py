@@ -85,4 +85,4 @@ class FrameSelector(QtQuick.QQuickItem):
     """Currently selected (via GUI) excitation type"""
 
 
-QtQml.qmlRegisterType(FrameSelector, "SdtGui.Templates", 1, 0, "FrameSelector")
+QtQml.qmlRegisterType(FrameSelector, "SdtGui.Templates", 0, 1, "FrameSelector")

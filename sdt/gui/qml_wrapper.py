@@ -181,7 +181,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
-import SdtGui 1.0
+import SdtGui 0.1
 
 Window {{
     id: root

@@ -120,4 +120,4 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
             painter.drawEllipse(c)
 
 
-QtQml.qmlRegisterType(LocDisplay, "SdtGui", 1, 0, "LocDisplay")
+QtQml.qmlRegisterType(LocDisplay, "SdtGui", 0, 1, "LocDisplay")
