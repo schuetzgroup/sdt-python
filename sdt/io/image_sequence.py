@@ -24,12 +24,12 @@ class ImageSequence:
 
     Load 3rd frame:
 
-    >>> with ImageSequence("some_file.tif"): as stack:
+    >>> with ImageSequence("some_file.tif") as stack:
     ...     img = stack[3]
 
     Use fancy indexing to create substacks:
 
-    >>> stack = ImageSequence("some_file.tif").open():
+    >>> stack = ImageSequence("some_file.tif").open()
     >>> len(stack)
     30
     >>> substack1 = stack[1::2]  # Slice, will not load any data
@@ -54,6 +54,11 @@ class ImageSequence:
     """
     _slicerator_flag = True  # Make it work with slicerator
 
+    @property
+    def is_slice(self) -> bool:
+        """Whether this instance is the result of slicing another instance"""
+        return self._is_slice
+
     def __init__(self, uri: Union[str, Path, bytes, IO],
                  format: Optional[str] = None, mode: str = "?", **kwargs):
         """Parameters
@@ -76,6 +81,7 @@ class ImageSequence:
         self.reader_args = kwargs
         self._reader = None
         self._indices = None
+        self._is_slice = False
 
     def open(self) -> "ImageSequence":
         """Open the file
@@ -84,6 +90,10 @@ class ImageSequence:
         -------
         self
         """
+        if self._is_slice:
+            raise RuntimeError("Cannot open sliced sequence.")
+        if not self.closed:
+            raise IOError(f"{self.uri} already open.")
         import imageio
         self._reader = imageio.get_reader(self.uri, self._format, self.mode,
                                           **self.reader_args)
@@ -91,6 +101,8 @@ class ImageSequence:
 
     def close(self):
         """Close the file"""
+        if self._is_slice:
+            raise RuntimeError("Cannot close sliced sequence.")
         self._reader.close()
 
     @overload
@@ -200,6 +212,7 @@ class ImageSequence:
         if isinstance(t, np.ndarray):
             ret = copy.copy(self)
             ret._indices = t
+            ret._is_slice = True
             return ret
         # Assume t is a number
         return self._reader.get_data(t)

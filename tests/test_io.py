@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import collections
 from datetime import datetime
 import io
 from pathlib import Path
@@ -426,10 +425,26 @@ class TestImageSequence:
         assert seq.closed
         assert len(seq) == 0
 
+        try:
+            seq.open()
+            assert not seq.is_slice
+            s = seq[:]
+            assert s.is_slice
+            seq.close()
+            with pytest.raises(RuntimeError):
+                s.open()
+        finally:
+            if not seq.closed:
+                seq.close()
+
         with sdt.io.ImageSequence(seq.uri) as seq2:
             assert not seq2.closed
             assert len(seq2) == 10
             assert seq2.format == "TIFF"
+
+            with pytest.raises(RuntimeError):
+                # cannot close sliced object
+                seq2[:].close()
 
     def test_resolve_index(self, seq):
         with seq:
@@ -503,7 +518,7 @@ class TestImageSequence:
             np.testing.assert_array_equal(subseq.get_data(i), s)
             desc = f"testtesttest {fr}"
             # fails due to a bug in imageio (tested with v2.9.0)
-            # assert (s.meta["description"] ==  desc)
+            # assert (s.meta["description"] == desc)
             assert subseq.get_meta_data(i)["description"] == desc
         return subseq
 
