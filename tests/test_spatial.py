@@ -54,7 +54,7 @@ class TestHasNearNeighbor(unittest.TestCase):
 
 class TestInterpolateCoords(unittest.TestCase):
     def setUp(self):
-        x = np.arange(10, dtype=np.float)
+        x = np.arange(10, dtype=float)
         xy = np.column_stack([x, x + 10])
         self.trc = pd.DataFrame(xy, columns=["x", "y"])
         # Windows uses int32 by default, so explicitly set dtype

@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: 2020 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+module SdtGui
+
+BatchWorker 1.0 BatchWorker.qml
+ChannelConfig 1.0 ChannelConfig.qml
+DataCollector 1.0 DataCollector.qml
+ModelComboBox 1.0 ModelComboBox.qml
+DatasetSelector 1.0 DatasetSelector.qml
+DirSelector 1.0 DirSelector.qml
+EditableSpinBox 1.0 EditableSpinBox.qml
+FrameSelector 1.0 FrameSelector.qml
+ImageDisplay 1.0 ImageDisplay.qml
+ImageSelector 1.0 ImageSelector.qml
+ImageViewer 1.0 ImageViewer.qml
+LocOptions 1.0 LocOptions.qml
+Locator 1.0 Locator.qml
+MultiDataCollector 1.0 MultiDataCollector.qml
+ROISelector 1.0 ROISelector.qml
+Registrator 1.0 Registrator.qml
+RealSpinBox 1.0 RealSpinBox.qml
+StatusDisplay 1.0 StatusDisplay.qml
+TrackOptions 1.0 TrackOptions.qml
+
+singleton Sdt 1.0 Sdt.qml

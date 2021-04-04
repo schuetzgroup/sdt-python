@@ -13,8 +13,6 @@ molecule FRET data. This includes
 - analyzing and filtering of the data with help of :py:class:`SmFRETAnalyzer`.
 - functions for plotting results, such as :py:func:`smfret_scatter`,
   :py:func:`smfret_hist`, and :py:func:`draw_track`.
-- selection of images in a FRET sequence according to excitation type using
-  :py:class:`FrameSelector`.
 
 
 Examples
@@ -88,12 +86,6 @@ Plotting
 .. autofunction:: smfret_scatter
 .. autofunction:: smfret_hist
 .. autofunction:: draw_track
-
-Image selection
----------------
-.. autoclass:: FrameSelector
-    :members:
-    :special-members: __call__
 
 Helpers
 -------

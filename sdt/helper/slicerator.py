@@ -345,7 +345,11 @@ def _index_generator(new_indices, old_indices):
     a generator without actually looping through the inputs."""
     # Use iter() to be safe. On a generator, this returns an identical ref.
     new_indices = iter(new_indices)
-    n = next(new_indices)
+    try:
+        n = next(new_indices)
+    except StopIteration:
+        # new_indices is empty
+        return
     last_n = None
     done = False
     while True:

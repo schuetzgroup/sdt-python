@@ -194,10 +194,10 @@ def interpolate_coords(tracks, columns={}):
     for p in particles:
         a = arr[arr[:, -2] == p]  # get particle p
         a = a[np.argsort(a[:, -1])]  # sort according to frame number
-        frames = a[:, -1].astype(np.int)  # frame numbers
+        frames = a[:, -1].astype(int)  # frame numbers
         # get missing frame numbers
         miss = list(set(range(frames[0], frames[-1]+1)) - set(frames))
-        miss = np.array(miss, dtype=np.int)
+        miss = np.array(miss, dtype=int)
 
         coords = []
         for c in a[:, :-2].T:
@@ -205,7 +205,7 @@ def interpolate_coords(tracks, columns={}):
             x = np.interp(miss, frames, c)
             coords.append(x)
         missing_coords.append(np.column_stack(coords))
-        missing_pno.append(np.full(len(miss), p, dtype=np.int))
+        missing_pno.append(np.full(len(miss), p, dtype=int))
         missing_fno.append(miss)
 
     if not missing_coords:

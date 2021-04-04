@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from sdt import changepoint, channel_reg, flatfield, fret, helper, image, io
+from sdt import changepoint, flatfield, fret, image, io, multicolor
 
 try:
     import trackpy  # NoQA
@@ -43,7 +43,7 @@ class TestSmFRETTracker:
 
         don = pd.DataFrame(np.array(loc), columns=["x", "y"])
         don["frame"] = np.concatenate(
-                [np.arange(self.n_frames, dtype=np.int)]*2)
+                [np.arange(self.n_frames, dtype=int)]*2)
 
         acc = don.copy()
         acc["x"] += self.x_shift
@@ -63,13 +63,13 @@ class TestSmFRETTracker:
     def images(self, localizations, feat_mask):
         don_loc, acc_loc = localizations
 
-        img = np.full((self.img_size,)*2, self.bg, dtype=np.int)
+        img = np.full((self.img_size,)*2, self.bg, dtype=int)
         x = don_loc.loc[0, "x"]
         y = don_loc.loc[0, "y"]
         img[y-self.feat_radius:y+self.feat_radius+1,
             x-self.feat_radius:x+self.feat_radius+1][feat_mask] += self.signal
         don_img = [img] * self.n_frames
-        img = np.full((self.img_size, self.img_size), self.bg, dtype=np.int)
+        img = np.full((self.img_size, self.img_size), self.bg, dtype=int)
         x = acc_loc.loc[0, "x"]
         y = acc_loc.loc[0, "y"]
         img[y-self.feat_radius:y+self.feat_radius+1,
@@ -92,7 +92,7 @@ class TestSmFRETTracker:
 
     @pytest.fixture
     def tracker_params(self):
-        corr = channel_reg.Registrator()
+        corr = multicolor.Registrator()
         corr.parameters1[0, -1] = self.x_shift
         corr.parameters2[0, -1] = -self.x_shift
 
@@ -339,7 +339,7 @@ def ana_query_part(ana1):
     return ana1
 
 
-ana2_seq = np.array(["d", "d", "d", "d", "a"])
+ana2_seq = np.array(["d", "d", "d", "a"])
 
 
 @pytest.fixture
@@ -491,7 +491,7 @@ class TestSmFRETAnalyzer:
         stoi = (mass + mass) / (mass + mass + linear_mass)
         stoi[direct_acc] = np.NaN
 
-        ana2.calc_fret_values()
+        ana2.calc_fret_values(a_mass_interp="linear")
 
         assert(("fret", "stoi_app") in ana2.tracks.columns)
         np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], stoi)
@@ -521,16 +521,24 @@ class TestSmFRETAnalyzer:
         first2 = first_fr + a_direct1[0] + seq_len
         near2 = (np.abs(trc["acceptor", "frame"] - last1) >
                  np.abs(trc["acceptor", "frame"] - first2))
-        stoi[near2] = (mass + mass) / (mass + mass + mass_acc2)
-        stoi[a_direct2] = np.NaN
-        near_mass[near2] = mass_acc2
+        near2up = (np.abs(trc["acceptor", "frame"] - last1) >=
+                   np.abs(trc["acceptor", "frame"] - first2))
+        prev2 = trc["acceptor", "frame"].to_numpy() >= first2
+        next2 = trc["acceptor", "frame"].to_numpy() > last1
+        for n, meth in [(near2, "nearest"), (near2up, "nearest-up"),
+                        (prev2, "previous"), (next2, "next")]:
+            s = stoi.copy()
+            s[n] = (mass + mass) / (mass + mass + mass_acc2)
+            s[a_direct2] = np.NaN
+            nm = near_mass.copy()
+            nm[n] = mass_acc2
 
-        ana2.tracks = trc
-        ana2.calc_fret_values(a_mass_interp="nearest")
+            ana2.tracks = trc.copy()
+            ana2.calc_fret_values(a_mass_interp=meth)
 
-        assert(("fret", "stoi_app") in ana2.tracks.columns)
-        np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], stoi)
-        np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], near_mass)
+            assert(("fret", "stoi_app") in ana2.tracks.columns)
+            np.testing.assert_allclose(ana2.tracks["fret", "stoi_app"], s)
+            np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], nm)
 
     def test_calc_fret_values_stoi_single(self, ana2):
         """fret.SmFRETAnalyzer.calc_fret_values: stoichiometry, single acc."""
@@ -609,6 +617,33 @@ class TestSmFRETAnalyzer:
 
         assert ("fret", "d_mass") in ana2.tracks
         np.testing.assert_allclose(ana2.tracks["fret", "d_mass"], dm_orig)
+
+    def test_calc_fret_values_has_neighbor(self, ana2):
+        trc = ana2.tracks
+        trc["fret", "has_neighbor"] = 0
+        acc_idx = np.nonzero(
+            (trc["fret", "exc_type"] == "a").to_numpy())[0]
+        a_mass = trc.loc[acc_idx[0], ("acceptor", "mass")]
+        # Double 3rd acceptor excitation mass and set has_neighbor
+        trc.loc[acc_idx[2], ("acceptor", "mass")] *= 2
+        trc.loc[acc_idx[2], ("fret", "has_neighbor")] = 1
+
+        ana2.tracks = trc.copy()
+        # This will skip the double mass frame, resulting in constant a_mass
+        ana2.calc_fret_values(a_mass_interp="linear")
+        assert ("fret", "a_mass") in ana2.tracks.columns
+        np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], a_mass)
+
+        ana2.tracks = trc.copy()
+        ana2.calc_fret_values(a_mass_interp="linear", skip_neighbors=False)
+        am = np.full(len(trc), a_mass)
+        intp = np.linspace(a_mass, 2 * a_mass, acc_idx[2] - acc_idx[1],
+                           endpoint=False)
+        am[acc_idx[1]:acc_idx[2]] = intp
+        am[acc_idx[2]] = 2 * a_mass
+        am[acc_idx[2]+1:acc_idx[3]+1] = intp[::-1]
+        assert ("fret", "a_mass") in ana2.tracks.columns
+        np.testing.assert_allclose(ana2.tracks["fret", "a_mass"], am)
 
     def test_eval(self, ana1):
         """fret.SmFRETAnalyzer.eval"""
@@ -967,119 +1002,3 @@ def test_gaussian_mixture_split():
     assert len(split) == 2
     assert split[0] == [1]
     assert split[1] == [0]
-
-
-class TestFrameSelector:
-    @pytest.fixture
-    def selector(self):
-        return fret.FrameSelector("cddddaa")
-
-    @pytest.fixture
-    def call_results(self):
-        res = {"d": [1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18],
-               "a": [5, 6, 12, 13, 19, 20]}
-        res["da"] = sorted(res["d"] + res["a"])
-        return res
-
-    def test_init(self, selector):
-        """fret.FrameSelector.__init__"""
-        np.testing.assert_equal(selector.excitation_frames["c"], [0])
-        np.testing.assert_equal(selector.excitation_frames["d"], [1, 2, 3, 4])
-        np.testing.assert_equal(selector.excitation_frames["a"], [5, 6])
-
-    def test_call_array(self, selector, call_results):
-        """fret.FrameSelector.__call__: array arg
-
-        Arrays support advanced indexing. Therefore, the return type should be
-        an array again.
-        """
-        ar = np.arange(21)
-        for k, v in call_results.items():
-            r = selector(ar, k)
-            np.testing.assert_equal(r, v)
-            assert isinstance(r, type(ar))
-
-    def test_call_list(self, selector, call_results):
-        """fret.FrameSelector.__call__: list arg
-
-        Lists do not support advanced indexing. Therefore, the return type
-        should be a Slicerator.
-        """
-        ar = list(range(21))
-        for k, v in call_results.items():
-            r = selector(ar, k)
-            np.testing.assert_equal(list(r), v)
-            assert isinstance(r, helper.Slicerator)
-
-    def test_call_dataframe(self, selector, call_results):
-        """fret.FrameSelector.__call__: DataFrame arg"""
-        df = pd.DataFrame(np.arange(21)[:, None], columns=["frame"])
-        for k, v in call_results.items():
-            r = selector(df, k)
-            pd.testing.assert_frame_equal(r, df.loc[v])
-
-    def test_renumber(self, selector, call_results):
-        """fret.FrameSelector._renumber: restore=False"""
-        drop_frame = 3
-        for k, v in call_results.items():
-            v = np.array(v)
-            mask = v != drop_frame
-            v = v[mask]
-
-            r = selector._renumber(v, k, restore=False)
-            np.testing.assert_equal(r, np.arange(len(mask))[mask])
-
-    def test_renumber_plusone(self, selector):
-        """fret.FrameSelector._renumber: restore=False, check off-by-one
-
-        There was a bug when the max frame number was divisible by the
-        length of the excitation sequence, resulting in f_map_inv being too
-        short. Ensure that this is fixed by using an array with max == 10
-        and the sequence "da".
-        """
-        selector = fret.FrameSelector("da")
-        ar = np.arange(0, 11, 2)
-        r = selector._renumber(ar, "d", restore=False)
-        np.testing.assert_equal(r, np.arange(len(ar)))
-
-    def test_renumber_restore(self, selector, call_results):
-        """fret.FrameSelector._renumber: restore=True"""
-        drop_frame = 3
-        for k, v in call_results.items():
-            v = np.array(v)
-            mask = v != drop_frame
-            v = v[mask]
-
-            r = selector._renumber(np.arange(len(mask))[mask], k, restore=True)
-            np.testing.assert_equal(r, v)
-
-    def test_call_dataframe_renumber(self, selector, call_results):
-        """fret.FrameSelector.__call__: DataFrame arg, renumber=True"""
-        df = pd.DataFrame(np.arange(21)[:, None], columns=["frame"])
-
-        # drop a frame which should leave a gap when renumbering
-        drop_frame = 3
-        df = df.drop(drop_frame)
-
-        for k, v in call_results.items():
-            r = selector(df, k, renumber=True)
-            data = np.arange(len(v))[:, None]
-
-            # deal with dropped frame
-            v = np.array(v)
-            mask = v != drop_frame
-            v = v[mask]
-            data = data[mask]
-
-            np.testing.assert_equal(r.index, v)
-            np.testing.assert_equal(r.to_numpy(), data)
-
-    def test_restore_frame_numbers(self, selector):
-        """fret.FrameSelector.restore_frame_numbers"""
-        ar = np.arange(14)
-        ar = ar[ar != 7]
-        df = pd.DataFrame(ar[:, None], columns=["frame"])
-        df2 = df.copy()
-        selector.restore_frame_numbers(df2, "da")
-        np.testing.assert_allclose(
-                df2["frame"], [1, 2, 3, 4, 5, 6, 8, 10, 11, 12, 13, 15, 16])

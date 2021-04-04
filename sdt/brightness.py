@@ -570,7 +570,7 @@ def _norm_pdf_python(x, m, s):
 
 
 def _calc_dist_python(x, mean, sigma, gauss_width):
-    y = np.zeros_like(x, dtype=np.float)
+    y = np.zeros_like(x, dtype=float)
 
     for m, s in zip(mean, sigma):
         x_mask = (x >= m - s * gauss_width) & (x <= m + s * gauss_width)

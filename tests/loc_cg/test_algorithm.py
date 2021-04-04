@@ -26,7 +26,7 @@ class TestFinder(unittest.TestCase):
                          [0, 0, 1, 1, 0, 0],
                          [0, 0, 0, 0, 0, 0],
                          [0, 0, 0, 0, 0, 0]])
-        img = np.ones((2, 2), dtype=np.int)
+        img = np.ones((2, 2), dtype=int)
         np.testing.assert_equal(algorithm.make_margin(img, 2), orig)
 
     def test_shift_image(self):

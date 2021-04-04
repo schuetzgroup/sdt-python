@@ -56,7 +56,7 @@ def shift_image(image, shift):
     """
     shift = np.array(shift)
     # split into integer and fractional part s. t. 0. <= fractional part < 1.
-    int_shift = np.floor(shift).astype(np.int)
+    int_shift = np.floor(shift).astype(int)
     frac_shift = shift - int_shift
 
     # 2D linear interpolation
@@ -144,7 +144,7 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
     ret = np.empty((len(peaks_found), len(col_nums)))
     # boolean array that will tell us whether the estimated mass is greater
     # than mass_thresh
-    bright_enough = np.ones(len(peaks_found), dtype=np.bool)
+    bright_enough = np.ones(len(peaks_found), dtype=bool)
     for i, (x, y) in enumerate(peaks_found):
         # region of interest for this peak
         roi = image[y-radius:y+radius+1, x-radius:x+radius+1]

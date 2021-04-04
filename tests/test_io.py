@@ -243,15 +243,14 @@ class TestYaml:
         a = yaml.load(text_buffer, sdt.io.yaml.Loader)
         np.testing.assert_equal(a, self.array)
 
-    def test_load_odict(self, text_buffer):
-        """io.yaml: Load mappings as ordered dicts"""
-        yaml.dump(dict(a=1, b=2), text_buffer, sdt.io.yaml.ArrayDumper)
-        text_buffer.seek(0)
-        d = yaml.load(text_buffer, sdt.io.yaml.Loader)
-        assert isinstance(d, collections.OrderedDict)
-        text_buffer.seek(0)
-        d = yaml.load(text_buffer, sdt.io.yaml.SafeLoader)
-        assert isinstance(d, collections.OrderedDict)
+    def test_dict_order(self, text_buffer):
+        """io.yaml: Check that dict order is preserved"""
+        kv_list = [("b", 1), ("a", 2), ("c", 3)]
+        yaml.dump(dict(kv_list), text_buffer, sdt.io.yaml.Dumper)
+        for ldr in sdt.io.yaml.Loader, sdt.io.yaml.SafeLoader:
+            text_buffer.seek(0)
+            d = yaml.load(text_buffer, ldr)
+            assert kv_list == list(d.items())
 
 
 class TestTiff:

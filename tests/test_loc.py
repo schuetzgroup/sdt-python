@@ -140,11 +140,11 @@ class TestGetRawFeatures(unittest.TestCase):
                [[29, 30]] * (self.num_frames // 2))
         self.loc = pd.DataFrame(np.array(loc), columns=["x", "y"])
         self.loc["frame"] = np.concatenate(
-                [np.arange(self.num_frames, dtype=np.int)]*2)
+                [np.arange(self.num_frames, dtype=int)]*2)
         self.loc["particle"] = [0] * self.num_frames + [1] * self.num_frames
 
         cmask = image.CircleMask(self.feat_radius, 0.5)
-        img = np.full((self.img_size, self.img_size), self.bg, dtype=np.int)
+        img = np.full((self.img_size, self.img_size), self.bg, dtype=int)
         x, y, _, _ = self.loc.iloc[0]
         img[y-self.feat_radius:y+self.feat_radius+1,
             x-self.feat_radius:x+self.feat_radius+1][cmask] += self.signal

@@ -53,7 +53,7 @@ class Fitter(object):
         self._max_iterations = max_iterations
 
         # pixel where the peak center is located
-        self._pixel_center = peaks[:, [col_nums.x, col_nums.y]].astype(np.int)
+        self._pixel_center = peaks[:, [col_nums.x, col_nums.y]].astype(int)
 
         run_mask = (self._data[:, col_nums.stat] == feat_status.run)
         self._data[run_mask, col_nums.err] = 0.
@@ -63,13 +63,13 @@ class Fitter(object):
         # number of pixels to consider for the fit
         self._pixel_width = self._calc_pixel_width(
             self._data[:, [col_nums.wx, col_nums.wy]],
-            np.full((len(self._data), 2), -10, dtype=np.int))
+            np.full((len(self._data), 2), -10, dtype=int))
 
         # clamp values for each peak
         self._clamp = np.repeat(self.default_clamp[np.newaxis, :],
                                 len(self._data), axis=0)
         # record the sign to catch oscillations
-        self._sign = np.zeros((len(self._data), len(col_nums)), dtype=np.int)
+        self._sign = np.zeros((len(self._data), len(col_nums)), dtype=int)
         # abscissae of the gaussians
         self._dx = np.zeros((len(self._data), 2, 2*self._margin+1))
         # ordinates of the gaussians
@@ -131,7 +131,7 @@ class Fitter(object):
 
         ret[ret > self._margin] = self._margin
 
-        return ret.astype(np.int)
+        return ret.astype(int)
 
     def _calc_fit(self):
         """Calculate the image from fitted peaks
@@ -140,7 +140,7 @@ class Fitter(object):
         """
         self._fit_image = np.ones(self._image.shape)
         self._bg_image = np.zeros(self._image.shape)
-        self._bg_count = np.zeros(self._image.shape, dtype=np.int)
+        self._bg_count = np.zeros(self._image.shape, dtype=int)
 
         for i in np.where(self._data[:, col_nums.stat] != feat_status.err)[0]:
             self._calc_peak(i)
@@ -284,7 +284,7 @@ class Fitter(object):
         hyst_mask = (np.abs(cur_data[[col_nums.x, col_nums.y]] - cur_px -
                             0.5) > self.hysteresis)
         cur_px[hyst_mask] = \
-            cur_data[[col_nums.x, col_nums.y]][hyst_mask].astype(np.int)
+            cur_data[[col_nums.x, col_nums.y]][hyst_mask].astype(int)
 
         # check for invalid fit results
         img_shape = np.array(self._image.shape)

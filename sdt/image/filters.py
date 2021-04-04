@@ -236,7 +236,7 @@ def cg(image, feature_radius, noise_radius=1, nonneg=True):
     filtered_img = scipy.signal.fftconvolve(image, K, "valid")
 
     # pad to the same size as the original image
-    ret = np.zeros_like(image, dtype=np.float)
+    ret = np.zeros_like(image, dtype=float)
     if nonneg:
         ret[w:-w, w:-w] = np.clip(filtered_img, 0, np.inf)
     else:

@@ -46,11 +46,11 @@ class Finder(object):
             smoothing filter.
         """
         # cast to float to avoid integer overflow on background subtraction
-        self.image = image.astype(np.float, copy=False)
+        self.image = image.astype(float, copy=False)
         self.margin = margin
         self.search_radius = search_radius
         self.radius = peak_radius
-        self.peak_count = np.zeros(image.shape, dtype=np.int)
+        self.peak_count = np.zeros(image.shape, dtype=int)
         self.pre_filter = pre_filter
         self.bg_estimator = bg_estimator
 
@@ -76,7 +76,7 @@ class Finder(object):
             Data structure containing initial guesses for fitting.
         """
         # cast to float to avoid integer overflow on background subtraction
-        image = image.astype(np.float, copy=False)
+        image = image.astype(float, copy=False)
         bg = self.bg_estimator(image)
         image_wo_bg = image - bg
         coords = self.local_maxima(self.pre_filter(image_wo_bg), threshold)
@@ -147,7 +147,7 @@ class Finder(object):
 
         # Get rid of peaks too close togther, compatible with the original
         # implementation
-        is_max = np.empty(len(candidates), dtype=np.bool)
+        is_max = np.empty(len(candidates), dtype=bool)
         # any pixel but those in the top left quarter of the mask is compared
         # using >= (greater or equal) below in the loop
         mask_ge = mask.copy()
