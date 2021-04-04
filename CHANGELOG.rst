@@ -13,6 +13,29 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+16.0
+----
+
+- Introduce :py:class:`io.ImageSequence`, a PIMS-like interface to the 
+  `imageio` librario.
+- Turn the :py:mod:`gui` module into a collection of QtQuick components for
+  easy building of GUIs for data analysis. This is still bug-ridden, little
+  tested and may change without notice.
+- :py:mod:`multicolor` is now a sub-package and contains the image
+  :py:class:`Registrator` class (which formerly had its own top-level module)
+  as well as the :py:class:`FrameSelector` class (formerly part of the
+  :py:mod:`fret` sub-package).
+- :py:class:`multicolor.FrameSelector` can do easy arithmethics on the image
+  sequence string, e.g. ``"c + da * 300 + c"`` or ``"c + da * ? + c"``, where
+  ``"?"`` is automatically calculated from the image sequence length. Also,
+  empty sequences are supported, meaning “do nothing”.
+- Add ``__eq__`` to ROI classes
+- Remove ``fast_peakposition`` algorithm from :py:mod:`loc` as it was quite
+  useless compared to 3D-DAOSTORM.
+- Add ``skip_neighbors`` options to
+  :py:meth:`fret.SmFretAnalyzer.calc_fret_values`.
+
+
 15.2
 ----
 
@@ -106,8 +129,11 @@ so watch out for those!
   slicerator.
 
 
+Older versions
+--------------
+
 13.4
-----
+~~~~
 
 - Add a function to simulate Brownian motion to :py:mod:`sim`
 - Fix frame numbers (off by 1) and column names when loading ThunderSTORM
@@ -123,7 +149,7 @@ so watch out for those!
 
 
 13.3
-----
+~~~~
 
 - Fix numpy 1.15 warnings
 - Add support for loading ThunderSTORM CSV files
@@ -131,7 +157,7 @@ so watch out for those!
 
 
 13.2
-----
+~~~~
 
 - Add :py:class:`roi.MaskROI` supporting ROIs from boolean image arrays
 - Improvements to plotting functions in the :py:mod:`fret` module
@@ -146,7 +172,7 @@ so watch out for those!
 
 
 13.1
-----
+~~~~
 
 Bugfix release
 
@@ -155,7 +181,7 @@ Bugfix release
 
 
 13.0
-----
+~~~~
 
 - Add changepoint detection algorithms (PELT, offline and online Bayesian
   changepoint detection)
@@ -188,9 +214,6 @@ Bugfix release
 - Add support for :py:mod:`pathlib`
 - Many fixes and improvements
 
-
-Older versions
---------------
 
 12.0
 ~~~~
