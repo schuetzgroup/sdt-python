@@ -18,5 +18,6 @@ setup(
                       "pywavelets>=0.3.0", ],
     packages=find_packages(include=["sdt*"]),
     package_data={"": ["*.ui"],
-                  "sdt.gui": ["breeze-icons/icons/*/22/*.svg"]},
+                  "sdt.gui": ["breeze-icons/icons/*/22/*.svg",
+                              "breeze-icons/COPYING-ICONS"]},
 )
