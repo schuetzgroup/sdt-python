@@ -330,4 +330,4 @@ class ImageSelector(QtQuick.QQuickItem):
     """Currently selected frame number"""
 
 
-QtQml.qmlRegisterType(ImageSelector, "SdtGui.Impl", 1, 0, "ImageSelectorImpl")
+QtQml.qmlRegisterType(ImageSelector, "SdtGui.Templates", 1, 0, "ImageSelector")

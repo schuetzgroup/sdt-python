@@ -6,10 +6,10 @@ import QtQuick 2.12
 import QtQuick.Controls 2.7
 import QtQuick.Layouts 1.7
 import QtQuick.Shapes 1.0
-import SdtGui.Impl 1.0
+import SdtGui.Templates 1.0 as T
 
 
-ROISelectorImpl {
+T.ROISelector {
     id: root
     property int drawingTools: ROISelector.DrawingTools.PathROITools
     property bool showNameSelector: true
@@ -181,10 +181,10 @@ ROISelectorImpl {
     Component {
         id: rectRoiComponent
 
-        ShapeROIItem {
+        T.ShapeROIItem {
             scaleFactor: overlay.scaleFactor
             property alias name: label.text
-            shape: ShapeROIItem.Shape.RectangleShape
+            shape: T.ShapeROIItem.Shape.RectangleShape
             Rectangle {
                 id: rect
                 color: "#60FF0000"
@@ -197,10 +197,10 @@ ROISelectorImpl {
     Component {
         id: intRectRoiComponent
 
-        ShapeROIItem {
+        T.ShapeROIItem {
             scaleFactor: overlay.scaleFactor
             property alias name: label.text
-            shape: ShapeROIItem.Shape.IntRectangleShape
+            shape: T.ShapeROIItem.Shape.IntRectangleShape
             limits: root.limits
             Rectangle {
                 id: rect
@@ -220,10 +220,10 @@ ROISelectorImpl {
     Component {
         id: ellipseRoiComponent
 
-        ShapeROIItem {
+        T.ShapeROIItem {
             id: ellipseRoiItem
             scaleFactor: overlay.scaleFactor
-            shape: ShapeROIItem.Shape.EllipseShape
+            shape: T.ShapeROIItem.Shape.EllipseShape
             property alias color: shapePath.fillColor
             property alias name: label.text
 

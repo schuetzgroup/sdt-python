@@ -266,4 +266,4 @@ class ChannelConfig(QtQuick.QQuickItem):
                          sdt_roi.ROI(r.top_left, size=modelRoi.size))
 
 
-QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Impl", 1, 0, "ChannelConfigImpl")
+QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Templates", 1, 0, "ChannelConfig")

@@ -6,10 +6,10 @@ import QtQml.Models 2.12
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import SdtGui.Impl 1.0
+import SdtGui.Templates 1.0 as T
 
 
-ChannelConfigImpl {
+T.ChannelConfig {
     id: root
 
     readonly property alias sourceCount: roiConfigList.count

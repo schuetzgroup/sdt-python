@@ -4,7 +4,7 @@
 
 import QtQuick 2.10
 import QtQuick.Shapes 1.0
-import SdtGui.Impl 1.0
+import SdtGui.Templates 1.0 as T
 
 
 Shape {
@@ -19,7 +19,7 @@ Shape {
     width: pathElements.width
     height: pathElements.height
 
-    MplPathElements {
+    T.MplPathElements {
         id: pathElements
 
         onElementsChanged: {
