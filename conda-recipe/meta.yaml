@@ -40,6 +40,7 @@ test:
         - trackpy
         - lmfit
         - scikit-learn
+        - imageio
     commands:
         - pytest -v tests
     source_files:
