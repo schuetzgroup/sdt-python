@@ -6,11 +6,10 @@ import enum
 import math
 from typing import Callable, Dict, Iterable, List, Union
 
-from PyQt5 import QtCore, QtGui, QtQml, QtQuick
-import matplotlib as mpl
+from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 
-from . import _mpl_path_elements  #  Register QML type
+from . import _mpl_path_elements  # noqa: F401 Register QML type
 from .qml_wrapper import QmlDefinedMethod, QmlDefinedProperty
 from .. import roi as sdt_roi
 

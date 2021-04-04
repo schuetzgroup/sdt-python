@@ -2,8 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import itertools
-from typing import Dict, Iterable, List, Mapping, Union
+from typing import Iterable, List, Mapping
 
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np

@@ -2,10 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from pathlib import Path
-from typing import Any, Dict, Iterable, List, Union
-
-from PyQt5 import QtCore, QtQml, QtQuick
+from PyQt5 import QtQml, QtQuick
 
 from .qml_wrapper import QmlDefinedProperty
 

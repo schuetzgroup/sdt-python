@@ -8,6 +8,7 @@
 # implements QQuickItem-based figure canvas classes.
 
 import traceback
+import sys
 from typing import Dict, Optional, Tuple
 
 from PyQt5 import QtCore, QtGui, QtQml, QtQuick
@@ -186,14 +187,14 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
         b = mouse_button_map.get(event.button())
         if b is not None:
             self.button_press_event(*self.mapToFigure(event.pos()), b,
-                                    dblclick=False, guiEvent= event)
+                                    dblclick=False, guiEvent=event)
 
     def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent):
         """Translate Qt mouseDoubleClickEvent to MPL button_press_event"""
         b = mouse_button_map.get(event.button())
         if b is not None:
             self.button_press_event(*self.mapToFigure(event.pos()), b,
-                                    dblclick=True, guiEvent= event)
+                                    dblclick=True, guiEvent=event)
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent):
         """Translate Qt mouseReleaseEvent to MPL button_release_event"""

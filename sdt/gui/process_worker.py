@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import multiprocessing, multiprocessing.connection
+import multiprocessing
+import multiprocessing.connection
 import threading
 from typing import Any, Callable, Optional
 
