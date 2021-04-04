@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: CC0-1.0
+
 [submodule "sdt/gui/breeze-icons"]
 	path = sdt/gui/breeze-icons
 	url = https://github.com/KDE/breeze-icons.git
