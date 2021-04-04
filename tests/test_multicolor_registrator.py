@@ -252,7 +252,7 @@ class TestRegistrator:
     def save_fmt(self, request):
         return request.param
 
-    def test_save_load(self, save_fmt, trafo):
+    def test_save_load(self, save_fmt, trafo, tmp_path):
         """multicolor.Registrator: save to/load from binary file"""
         cc = multicolor.Registrator()
         cc.parameters1 = trafo
@@ -260,7 +260,7 @@ class TestRegistrator:
         data_keys = ("c1", "c2")
 
         # Test with file object
-        with tempfile.TemporaryFile() as f:
+        with open(tmp_path / f"save.{save_fmt}", "w+b") as f:
             cc.save(f, fmt=save_fmt, key=data_keys)
             f.seek(0)
             cc_loaded_file = multicolor.Registrator.load(
@@ -270,11 +270,10 @@ class TestRegistrator:
                                    np.linalg.inv(trafo))
 
         # Test with file name
-        with tempfile.TemporaryDirectory() as td:
-            fname = Path(td, "bla." + save_fmt)
-            cc.save(fname, fmt=save_fmt, key=data_keys)
-            cc_loaded_fname = multicolor.Registrator.load(
-                fname, fmt=save_fmt, key=data_keys)
+        fname = tmp_path / f"bla.{save_fmt}"
+        cc.save(fname, fmt=save_fmt, key=data_keys)
+        cc_loaded_fname = multicolor.Registrator.load(
+            fname, fmt=save_fmt, key=data_keys)
         np.testing.assert_allclose(cc_loaded_fname.parameters1, trafo)
         np.testing.assert_allclose(cc_loaded_fname.parameters2,
                                    np.linalg.inv(trafo))
