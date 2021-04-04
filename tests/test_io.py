@@ -432,6 +432,7 @@ class TestImageSequence:
             assert s.is_slice
             seq.close()
             with pytest.raises(RuntimeError):
+                # Cannot open sliced object
                 s.open()
         finally:
             if not seq.closed:
@@ -513,13 +514,18 @@ class TestImageSequence:
 
         assert len(subseq) == len(frames)
         for i, fr in enumerate(frames):
-            s = subseq[i]
-            np.testing.assert_array_equal(s, np.full((10, 20), fr))
-            np.testing.assert_array_equal(subseq.get_data(i), s)
-            desc = f"testtesttest {fr}"
-            # fails due to a bug in imageio (tested with v2.9.0)
-            # assert (s.meta["description"] == desc)
-            assert subseq.get_meta_data(i)["description"] == desc
+            for s in subseq[i], subseq.get_data(i):
+                s = subseq[i]
+                np.testing.assert_array_equal(s, np.full((10, 20), fr))
+                np.testing.assert_array_equal(subseq.get_data(i), s)
+                desc = f"testtesttest {fr}"
+                assert s.meta["frame_no"] == fr
+                # fails due to a bug in imageio (tested with v2.9.0)
+                # should be fixed in next release of imageio
+                # assert s.meta["description"] == desc
+            md = subseq.get_meta_data(i)
+            assert md["frame_no"] == fr
+            assert md["description"] == desc
         return subseq
 
     def test_slicing(self, seq):

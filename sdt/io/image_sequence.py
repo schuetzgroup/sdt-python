@@ -156,6 +156,26 @@ class ImageSequence:
             return t
         return self._indices[t]
 
+    def _get_single_frame(self, real_t: int, **kwargs) -> np.ndarray:
+        """Get a single frame and set extra metadata
+
+        Parameters
+        ----------
+        real_t
+            Real frame index (i.e., w.r.t original file)
+        **kwargs
+            Additional keyword arguments to pass to imageio's
+            ``Reader.get_data()`` method.
+
+        Returns
+        -------
+        Image data. The array has a ``meta`` attribute containing associated
+        metadata.
+        """
+        ret = self._reader.get_data(real_t, **kwargs)
+        ret.meta["frame_no"] = real_t
+        return ret
+
     def get_data(self, t: int, **kwargs) -> np.ndarray:
         """Get a single frame
 
@@ -172,7 +192,7 @@ class ImageSequence:
         Image data. The array has a ``meta`` attribute containing associated
         metadata.
         """
-        return self._reader.get_data(self._resolve_index(t), **kwargs)
+        return self._get_single_frame(self._resolve_index(t), **kwargs)
 
     def get_meta_data(self, t: Optional[int] = None) -> Dict:
         """Get metadata for a frame
@@ -188,8 +208,11 @@ class ImageSequence:
         -------
         Metadata dictionary.
         """
-        return self._reader.get_meta_data(
-            None if t is None else self._resolve_index(t))
+        real_t = None if t is None else self._resolve_index(t)
+        ret = self._reader.get_meta_data(real_t)
+        if real_t is not None:
+            ret["frame_no"] = real_t
+        return ret
 
     @overload
     def __getitem__(self, t: int) -> np.ndarray: ...
@@ -215,7 +238,7 @@ class ImageSequence:
             ret._is_slice = True
             return ret
         # Assume t is a number
-        return self._reader.get_data(t)
+        return self._get_single_frame(t)
 
     def __enter__(self):
         self.open()
