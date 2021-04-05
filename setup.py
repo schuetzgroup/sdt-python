@@ -19,6 +19,8 @@ setup(
     packages=find_packages(include=["sdt*"]),
     package_data={"": ["*.ui"],
                   "sdt.gui": ["SdtGui/*",
-                              "breeze-icons/icons/*/22/*.svg",
-                              "breeze-icons/COPYING-ICONS"]},
+                              "breeze-icons/COPYING-ICONS",
+                              "breeze-icons/icons/AUTHORS",
+                              "breeze-icons/icons/index.theme",
+                              "breeze-icons/icons/*/22/*.svg"]},
 )
