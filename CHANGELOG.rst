@@ -13,6 +13,12 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+16.0.2
+------
+
+- Include Breeze icon theme's `index.theme` in build
+
+
 16.0.1
 ------
 
