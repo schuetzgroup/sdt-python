@@ -71,7 +71,7 @@ class SmFRETTracker:
     """
 
     @config.set_columns
-    def __init__(self, excitation_seq: Union[str, Sequence[str]] = "da",
+    def __init__(self, excitation_seq: str = "da",
                  registrator: Optional[multicolor.Registrator] = None,
                  link_radius: float = 5, link_mem: int = 1,
                  min_length: int = 1, feat_radius: int = 4,
@@ -166,7 +166,7 @@ class SmFRETTracker:
             trackpy.quiet()
 
     @property
-    def excitation_seq(self) -> np.ndarray:
+    def excitation_seq(self) -> str:
         """Excitation sequence. "d" stands for donor, "a" for acceptor,
         anything else describes other kinds of frames which are irrelevant for
         tracking.
@@ -177,7 +177,7 @@ class SmFRETTracker:
         return self.frame_selector.excitation_seq
 
     @excitation_seq.setter
-    def excitation_seq(self, seq: Union[str, Sequence[str]]):
+    def excitation_seq(self, seq: str):
         self.frame_selector.excitation_seq = seq
 
     def track(self, donor_img: Sequence[np.ndarray],
@@ -400,7 +400,6 @@ class SmFRETTracker:
         :py:meth:`yaml.Dumper.add_representer`
         """
         m = {k: getattr(data, k) for k in cls._yaml_keys}
-        m["excitation_seq"] = "".join(m["excitation_seq"])
         return dumper.represent_mapping(cls.yaml_tag, m)
 
     @classmethod
