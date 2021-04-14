@@ -165,8 +165,10 @@ class ListModel(QtCore.QAbstractListModel):
         try:
             if len(self.Roles) < 2:
                 self._data[index] = valueOrRole
+                self.itemsChanged.emit(index, 1, [])
             else:
                 self._data[index][valueOrRole] = value
+                self.itemsChanged.emit(index, 1, [valueOrRole])
             return True
         except (IndexError, KeyError):
             return False
