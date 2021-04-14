@@ -292,7 +292,7 @@ class DatasetCollection(ListModel):
     def _onItemsChanged(self, index: int, count: int,
                         roles: Iterable[str] = []):
         """Emit :py:attr:`keysChanged` if model data changed"""
-        if roles is None or "key" in roles:
+        if not roles or "key" in roles:
             self.keysChanged.emit()
 
     def propagateProperty(self, prop: str):
