@@ -109,6 +109,7 @@ in an Anaconda prompt.
 If a separate environment is used, type
 
 ::
+
     conda activate sdt_env
     conda update -c conda-forge --strict-channel-priority sdt-python
 
