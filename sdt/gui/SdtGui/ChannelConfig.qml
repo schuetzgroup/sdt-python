@@ -292,7 +292,7 @@ T.ChannelConfig {
         keys: "text/uri-list"
         onDropped: {
             for (var u of drop.urls)
-                roiSelRep.itemAt(roiSelRep.currentIndex).dataset.append(u)
+                roiSelRep.itemAt(roiSelStack.currentIndex).dataset.append(u)
         }
     }
 }
