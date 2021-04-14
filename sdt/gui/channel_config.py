@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from typing import Iterable, List, Mapping
+from typing import Iterable, List, Mapping, Optional
 
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
@@ -244,8 +244,8 @@ class ChannelConfig(QtQuick.QQuickItem):
             ret[new[0]] = orig[1]
         self._setROIs(sourceId, ret)
 
-    @QtCore.pyqtSlot(str)
-    def _resizeROIs(self, model: str):
+    @QtCore.pyqtSlot(str, QtCore.QVariant)
+    def _resizeROIs(self, model: str, image: Optional[np.ndarray]):
         """Resize all ROIs to `model`'s size
 
         This is a callback invoked when a ROI (whose name is given by the
@@ -255,15 +255,24 @@ class ChannelConfig(QtQuick.QQuickItem):
         ----------
         model
             Name of the channel to get the ROI size from
+        image
+            Image defining the ROI boundaries
         """
         allRois = self.channels
         modelRoi = allRois[model]["roi"]
+        sz = modelRoi.size
         for n, v in allRois.items():
             r = v.get("roi", None)
             if n == model or r is None:
                 continue
-            self._setROI(v.get("source_id", 0), n,
-                         sdt_roi.ROI(r.top_left, size=modelRoi.size))
+            if image is not None:
+                # Resize to right/bottom only as long as image boundaries are
+                # not exceeded
+                tl = (min(r.top_left[0], image.shape[1] - sz[0]),
+                      min(r.top_left[1], image.shape[0] - sz[1]))
+            else:
+                tl = r.top_left
+            self._setROI(v.get("source_id", 0), n, sdt_roi.ROI(tl, size=sz))
 
 
 QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Templates", 0, 1, "ChannelConfig")

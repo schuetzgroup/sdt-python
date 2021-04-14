@@ -271,7 +271,7 @@ T.ChannelConfig {
                     drawingTools: ROISelector.DrawingTools.IntRectangleTool
                     overlay.visible: imSel.image != null
                     onRoiChanged: {
-                        if (root.sameSize) root._resizeROIs(name)
+                        if (root.sameSize) root._resizeROIs(name, imSel.image)
                         root.channelsChanged()
                         root.channelsModified()
                     }
@@ -296,7 +296,3 @@ T.ChannelConfig {
         }
     }
 }
-
-// FIXME:
-// * Resizing does not work for channels in different files
-// * Resizing can make ROIs exceed image boundaries
