@@ -120,7 +120,7 @@ adapt accordingly.
 Requirements
 ------------
 
-- Python >= 3.6
+- Python >= 3.7
 - matplotlib
 - numpy >= 1.10
 - pandas
@@ -133,7 +133,7 @@ Requirements
 Recommended packages
 --------------------
 
-- qtpy >= 1.1
+- PyQt5 >= 5.12
 - opencv
 - trackpy
 - lmfit

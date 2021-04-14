@@ -20,7 +20,7 @@ requirements:
         - pip
 
     run:
-        - python >=3.6
+        - python >=3.7
         - numpy >=1.10
         - pandas
         - pytables
@@ -49,7 +49,6 @@ test:
         - sdt
         - sdt.brightness
         - sdt.changepoint
-        - sdt.channel_reg
         - sdt.flatfield
         - sdt.fret
         - sdt.helper
