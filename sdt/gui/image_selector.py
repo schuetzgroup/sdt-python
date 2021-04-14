@@ -113,10 +113,10 @@ class ImageList(ListModel):
         the element in the QML item, while the latter describes the image
         sequence.
         """
+        if isinstance(obj, str) and obj.startswith("file://"):
+            obj = QtCore.QUrl(obj)
         if isinstance(obj, QtCore.QUrl):
             obj = Path(obj.toLocalFile())
-        if isinstance(obj, str) and obj.startswith("file://"):
-            obj = obj[7:]
         if isinstance(obj, str):
             obj = Path(obj)
         if isinstance(obj, Path):

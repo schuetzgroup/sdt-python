@@ -6,6 +6,7 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.12
+import SdtGui 0.1
 
 
 Item {
@@ -34,10 +35,10 @@ Item {
     }
     FileDialog {
         id: dataDirDialog
-        title: "Choose data folder…"
+        title: "Choose folder…"
         selectFolder: true
         onAccepted: {
-            dataDirEdit.text = fileUrl.toString().substring(7)  // remove file://
+            dataDirEdit.text = Sdt.urlToLocalFile(fileUrl)
         }
     }
 }

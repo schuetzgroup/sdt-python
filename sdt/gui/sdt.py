@@ -16,5 +16,20 @@ class Sdt(QtCore.QObject):
 
     QtCore.Q_ENUM(WorkerStatus)
 
+    @QtCore.pyqtSlot(QtCore.QUrl, result=str)
+    def urlToLocalFile(self, u: QtCore.QUrl) -> str:
+        """Convert QUrl to local file name string
+
+        Parameters
+        ----------
+        u
+            URL to convert
+
+        Returns
+        -------
+        File name
+        """
+        return u.toLocalFile()
+
 
 QtQml.qmlRegisterType(Sdt, "SdtGui.Templates", 0, 1, "Sdt")
