@@ -199,7 +199,7 @@ class MaskROI:
         return np.count_nonzero(self.mask) * self.pixel_size**self.mask.ndim
 
     def __eq__(self, other):
-        if not self.__class__ is other.__class__:
+        if self.__class__ is not other.__class__:
             return False
         return (np.allclose(self.mask, other.mask) and
                 np.allclose(self.mask_origin, other.mask_origin) and
