@@ -54,6 +54,10 @@ class TrackOptions(OptionChooser):
         """
         if locData is None:
             return None
+        if not locData.size:
+            ret = locData.copy()
+            ret["particle"] = []
+            return ret
         trackpy.quiet()
         return trackpy.link(locData, search_range=searchRange, memory=memory)
 
