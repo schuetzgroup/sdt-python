@@ -44,7 +44,7 @@ class Dataset(ListModel):
         """Model roles that represent file paths. These are used for
         :py:attr:`fileLists`.
         """
-        return self._fileRoles
+        return self._fileRoles.copy()
 
     @fileRoles.setter
     def fileRoles(self, names: List[str]):
@@ -64,7 +64,7 @@ class Dataset(ListModel):
         instance, be data loaded from any of the :py:attr:`fileRoles` or
         analysis results, etc.
         """
-        return self._dataRoles
+        return self._dataRoles.copy()
 
     @dataRoles.setter
     def dataRoles(self, names: List[str]):
@@ -91,33 +91,24 @@ class Dataset(ListModel):
         """
         if isinstance(files, QtQml.QJSValue):
             files = files.toVariant()
-        i = -1
-        remove = []
-        for i, f in enumerate(files):
+        otherFileRoles = self.fileRoles
+        otherFileRoles.remove(fileRole)
+        removeLater = []
+        missing = itertools.repeat(None, max(0, self.rowCount() - len(files)))
+        for i, f in enumerate(itertools.chain(files, missing)):
             if isinstance(f, QtCore.QUrl):
                 f = f.toLocalFile()
             if self._dataDir and f is not None:
                 f = str(Path(f).relative_to(self._dataDir))
             if i < self.rowCount():
-                new = self.get(i).copy()
-                if f is None:
-                    new.pop(fileRole, None)
+                if (f is None and
+                        all(self.get(i, r) is None for r in otherFileRoles)):
+                    removeLater.append(i)
                 else:
-                    new[fileRole] = f
-                if not new:
-                    remove.append(i)
-                else:
-                    self.set(i, new)
+                    self.set(i, fileRole, f)
             else:
                 self.append({fileRole: f})
-        for j in range(i + 1, self.rowCount()):
-            new = self.get(j).copy()
-            new.pop(fileRole, None)
-            if not new:
-                remove.append(j)
-            else:
-                self.set(j, new)
-        for i in remove[::-1]:
+        for i in removeLater[::-1]:
             self.remove(i)
 
     fileListChanged = QtCore.pyqtSignal()
