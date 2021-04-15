@@ -51,7 +51,7 @@ T.MultiDataCollector {
                 icon.name: "list-remove"
                 enabled: (datasetSel.currentIndex >= 0 &&
                           datasetSel.model != undefined &&
-                          datasetSel.model.getProperty(
+                          datasetSel.model.get(
                               datasetSel.currentIndex, "category") == undefined)
                 onClicked: { datasetSel.model.remove(datasetSel.currentIndex) }
             }

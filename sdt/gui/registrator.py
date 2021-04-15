@@ -126,7 +126,7 @@ class Registrator(QtQuick.QQuickItem):
         self._locCount = 0
         for i in range(self.dataset.rowCount()):
             for curCh, curLoc, batch in zip(ch, loc, batchFuncs):
-                curLoc.append(batch(self.dataset.getProperty(i, curCh)))
+                curLoc.append(batch(self.dataset.get(i, curCh)))
             self._locCount += 1
         reg = multicolor.Registrator(*loc, channel_names=ch)
         reg.determine_parameters()

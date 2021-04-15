@@ -62,8 +62,8 @@ class Locator(QtQuick.QQuickItem):
         :py:attr:`algorithm` an :py:attr:`options`.
         """
         for i in range(self.dataset.rowCount()):
-            file = self.dataset.getProperty(i, "key")
-            ld = self.dataset.getProperty(i, "locData")
+            file = self.dataset.get(i, "key")
+            ld = self.dataset.get(i, "locData")
             io.save(file.with_suffix(".h5"), ld)
             with file.with_suffix(".yaml").open("w") as yf:
                 io.yaml.safe_dump(

@@ -151,10 +151,10 @@ class BatchWorker(QtQuick.QQuickItem):
         processing has finished.
         """
         if isinstance(self._dataset, DatasetCollection):
-            cnt = sum(self._dataset.getProperty(i, "dataset").count
+            cnt = sum(self._dataset.get(i, "dataset").count
                       for i in range(self._dataset.count))
             # TODO: Handle empty
-            self._curDset = self._dataset.getProperty(0, "dataset")
+            self._curDset = self._dataset.get(0, "dataset")
         else:
             cnt = self._dataset.count
             self._curDset = self._dataset
@@ -188,12 +188,10 @@ class BatchWorker(QtQuick.QQuickItem):
         while self._curIndex >= self._curDset.rowCount():
             self._curDsetIndex += 1
             self._curIndex = 0
-            self._curDset = self._dataset.getProperty(self._curDsetIndex,
-                                                      "dataset")
+            self._curDset = self._dataset.get(self._curDsetIndex, "dataset")
 
-        args = [self._curDset.getProperty(self._curIndex, r)
-                for r in self._argRoles]
-        kwargs = {r: self._curDset.getProperty(self._curIndex, r)
+        args = [self._curDset.get(self._curIndex, r) for r in self._argRoles]
+        kwargs = {r: self._curDset.get(self._curIndex, r)
                   for r in self._kwargRoles}
         self._worker(*args, **kwargs)
 
@@ -210,7 +208,7 @@ class BatchWorker(QtQuick.QQuickItem):
         if self._resultRole:
             if self._resultRole not in self._curDset.roles:
                 self._curDset.roles = self._curDset.roles + [self._resultRole]
-            self._curDset.setProperty(self._curIndex, self._resultRole, retval)
+            self._curDset.set(self._curIndex, self._resultRole, retval)
         self._progress += 1
         self._curIndex += 1
         self.progressChanged.emit()

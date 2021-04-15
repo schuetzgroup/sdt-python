@@ -26,7 +26,7 @@ class TrackDisplay(LocDisplay):
             overlays: [
                 TrackDisplay {
                     // `model` could be a ListModel holding localization data
-                    trackData: model.getProperty(0, "locData")
+                    trackData: model.get(0, "locData")
                     // get current frame from some item
                     currentFrame: someItem.currentFrame
                 }
