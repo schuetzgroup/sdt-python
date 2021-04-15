@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import traceback
 from typing import Any, Callable, List, Optional
 
 from PyQt5 import QtCore, QtQuick, QtQml
@@ -219,7 +220,8 @@ class BatchWorker(QtQuick.QQuickItem):
 
     def _workerError(self, exc):
         # TODO: error handling
-        print("worker exc", exc)
+        tb = traceback.TracebackException.from_exception(exc)
+        print("".join(tb.format()))
         self.abort()
 
 
