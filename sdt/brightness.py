@@ -352,7 +352,6 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator,
 
     feat_idx = np.empty_like(pos, dtype=np.int64)
     np.around(pos[:, ::-1], 0, feat_idx)
-    #feat_idx = np.around(pos[:, ::-1]).astype(int)
 
     feat_bd = _get_mask_boundaries_numba(feat_idx, feat_mask.shape,
                                          frame.shape)
@@ -488,6 +487,10 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
         functions. Defaults to "numba".
     """
     if not len(positions):
+        positions[columns["signal"]] = []
+        positions[columns["mass"]] = []
+        positions[columns["bg"]] = []
+        positions[columns["bg_dev"]] = []
         return
 
     if isinstance(bg_estimator, str):
