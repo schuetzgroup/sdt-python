@@ -13,6 +13,14 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+16.1
+----
+
+- Many fixes for the still-experimental :py:mod:`gui` sub-package
+- Deal consitently with empty input in :py:func:`brightness.from_raw_image`
+- Require Python >= 3.7 for dict order 
+
+
 16.0.2
 ------
 
