@@ -14,12 +14,14 @@ T.ImageSelector {
 
     property bool editable: true
     property string textRole: "display"
-    property string imageRole: "image"
     property alias currentIndex: fileSel.currentIndex
     property alias currentFrame: frameSel.value
 
     implicitHeight: layout.Layout.minimumHeight
     implicitWidth: layout.Layout.minimumWidth
+
+    onCurrentIndexChanged: { _fileChanged() }
+    onCurrentFrameChanged: { _frameChanged() }
 
     RowLayout {
         id: layout
@@ -33,9 +35,6 @@ T.ImageSelector {
             textRole: root.textRole
 
             onCountChanged: { if (count > 0) currentIndex = 0 }
-            onCurrentIndexChanged: {
-                root._fileChanged(currentIndex)
-            }
 
             popup: Popup {
                 y: fileSel.height - 1
@@ -82,10 +81,6 @@ T.ImageSelector {
             id: frameSel
             from: 0
             to: Math.max(0, root.currentFrameCount - 1)
-            // Only act on interactive changes as to not trigger multiple
-            // updates when e.g. the current file is changed and as a result
-            // the `to` property which could in turn change the value
-            onValueModified: { root._frameChanged(value) }
         }
     }
 
@@ -116,6 +111,5 @@ T.ImageSelector {
         }
     }
 
-    onCurrentFrameCountChanged: { _frameChanged(frameSel.value) }
-    onImageRoleChanged: { _fileChanged(fileSel.currentIndex) }
+    onImageRoleChanged: { _fileChanged() }
 }

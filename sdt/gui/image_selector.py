@@ -178,14 +178,16 @@ class ImageSelector(QtQuick.QQuickItem):
             Parent item
         """
         super().__init__(parent)
-        self._curIndex = -1
         self._curImage = None
         self._image = None
+        self._imageRole = "image"
         # _dataset needs self as parent, otherwise there will be a segfault
         # when setting dataset property
         self._dataset = ImageList(self)
         self._dataset.itemsChanged.connect(self._onItemsChanged)
         self._error = ""
+
+        self.imageRoleChanged.connect(self._fileChanged)
 
     datasetChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """:py:attr:`dataset` was changed"""
@@ -239,7 +241,7 @@ class ImageSelector(QtQuick.QQuickItem):
     """When using a custom model for :py:attr:`datasets`, use this role to
     retrieve the text displayed in the GUI item to choose among sequences.
     """
-    imageRole = QmlDefinedProperty()
+    imageRole = SimpleQtProperty(str)
     """When using a custom model for :py:attr:`datasets`, use this role to
     retrieve image sequence. The returned sequence should be a list of 3D numpy
     arrays, a :py:class:`io.ImageSequence` instance or similar.
@@ -248,45 +250,53 @@ class ImageSelector(QtQuick.QQuickItem):
     """Error message from current attempt to read an image. If empty, no error
     occurred.
     """
+    currentIndex = QmlDefinedProperty()
+    """Index w.r.t :py:attr:`dataset` of currently selected image sequence"""
+    currentFrame = QmlDefinedProperty()
+    """Currently selected frame number"""
 
     def _onItemsChanged(self, index: int, count: int, roles: List[str]):
         """Update image if model data changed"""
-        if not index <= self._curIndex < index + count:
+        if not index <= self.currentIndex < index + count:
             return
         if roles and self.imageRole not in roles:
             return
-        self._fileChanged(self._curIndex)
+        self._fileChanged()
 
-    @QtCore.pyqtSlot(int)
-    def _fileChanged(self, index: int):
-        """Callback upon change of currently selected file
+    @QtCore.pyqtSlot()
+    def _fileChanged(self):
+        """Callback upon change of currently selected file """
+        oldFrame = self.currentFrame
+        oldFrameCount = self.currentFrameCount
 
-        Parameters
-        ----------
-        index
-            Index of currently selected file w.r.t. to :py:attr:`dataset`
-        """
-        self._curIndex = index
-        if index < 0:
+        if self.currentIndex < 0:
             # No file selected
             self._curImage = None
-            self._image = None
-            self.imageChanged.emit()
+            if self._image is not None:
+                self._image = None
             if self._error:
                 self._error = ""
                 self.errorChanged.emit()
-            return
+        else:
+            try:
+                self._curImage = self.dataset.get(self.currentIndex,
+                                                  self.imageRole)
+                if self._error:
+                    self._error = ""
+                    self.errorChanged.emit()
+            except Exception as ex:
+                self._curImage = None
+                err = str(ex)
+                if self._error != err:
+                    self._error = err
+                    self.errorChanged.emit()
 
-        try:
-            self._curImage = self.dataset.get(index, self.imageRole)
-        except Exception as ex:
-            self._curImage = None
-            err = str(ex)
-            if self._error != err:
-                self._error = err
-                self.errorChanged.emit()
-
-        self.currentFrameCountChanged.emit()
+        if oldFrameCount != self.currentFrameCount:
+            self.currentFrameCountChanged.emit()
+        if oldFrame < self.currentFrameCount:
+            # New frame count > old frame number ==> no change of frame number
+            # ==> need to trigger update here
+            self._frameChanged()
 
     currentFrameCountChanged = QtCore.pyqtSignal()
 
@@ -297,20 +307,14 @@ class ImageSelector(QtQuick.QQuickItem):
             return 0
         return len(self._curImage)
 
-    @QtCore.pyqtSlot(int)
-    def _frameChanged(self, index: int):
-        """Callback upon change of currently selected frame
-
-        Parameters
-        ----------
-        index
-            Index of currently selected frame
-        """
+    @QtCore.pyqtSlot()
+    def _frameChanged(self):
+        """Callback upon change of currently selected frame"""
         if self._curImage is None:
             self._image = None
         else:
             try:
-                self._image = self._curImage[index]
+                self._image = self._curImage[self.currentFrame]
             except Exception as ex:
                 self._image = None
                 err = str(ex)
@@ -323,11 +327,6 @@ class ImageSelector(QtQuick.QQuickItem):
                     self._error = ""
                     self.errorChanged.emit()
         self.imageChanged.emit()
-
-    currentIndex = QmlDefinedProperty()
-    """Index w.r.t :py:attr:`dataset` of currently selected image sequence"""
-    currentFrame = QmlDefinedProperty()
-    """Currently selected frame number"""
 
 
 QtQml.qmlRegisterType(ImageSelector, "SdtGui.Templates", 0, 1, "ImageSelector")
