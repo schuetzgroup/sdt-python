@@ -75,6 +75,13 @@ except ImportError:
         # Create namespace so that @numba.experimental.jitclass also works
         jitclass = jitclass
 
+    class extending:
+        @staticmethod
+        def register_jitable(*args, **kwargs):
+            if args and callable(args[0]):
+                return args[0]
+            return lambda x: x
+
     numba_available = False
 
     class _FakeType:
