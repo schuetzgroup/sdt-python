@@ -10,6 +10,7 @@ import numpy as np
 
 try:
     from numba import *  # noqa: F401, F403
+    from numba import extending
 
     numba_available = True
 
@@ -19,6 +20,12 @@ try:
         from numba.experimental import jitclass
     except ImportError:
         pass
+
+    @extending.overload(math.isclose)
+    def _math_isclose(a, b, rel_tol=1e-9, abs_tol=0.0):
+        def impl(a, b, rel_tol=rel_tol, abs_tol=abs_tol):
+            return abs(a - b) <= abs_tol + abs(b) * rel_tol
+        return impl
 
 except ImportError:
     def jit(*args, **kwargs):
