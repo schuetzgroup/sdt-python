@@ -13,6 +13,8 @@ aspects of single molecule data:
 - In tracking data, interpolate features that have been missed by the
   localization algorithm with help of :py:func:`interpolate_coords`
 - Calculate the area of a polygon using :py:func:`polygon_area`
+- Find the smallest enclosing circle of a set of points via
+  :py:func:`smallest_enclosing_circle`.
 
 
 Examples
@@ -63,12 +65,52 @@ Programming reference
 .. autofunction:: has_near_neighbor
 .. autofunction:: interpolate_coords
 .. autofunction:: polygon_area
+.. autofunction:: smallest_enclosing_circle
+
+
+Smallest enclosing circle algorithm
+-----------------------------------
+
+The smallest enclosing circle :math:`C_n` for points :math:`p_1, p_2, …,
+p_n` in randomized order is found iteratively. Let's assume that
+:math:`C_{i-1}` has already been found. If :math:`p_i` lies within
+:math:`C_{i-1}`, then :math:`C_i = C_{i-1}`. Else, :math:`C_i` needs to be the
+smallest enclosing circle for :math:`p_1, p_2, …, p_i`; :math:`p_i` has to lie
+on the circle.
+
+This new problem is again solved iteratively. Assume :math:`C'_{j-1}` is the
+smallest enclosing circle for :math:`p_1, p_2, …, p_{j-1}`, :math:`j < i` with
+:math:`p_i` on the circle. Then :math:`C'_j = C'_{j-1}` if :math:`p_j` lies
+within :math:`C'_{j-1}`. Else the smallest enclosing circle for :math:`p_1,
+p_2, …, p_j` with :math:`p_j` and :math:`p_i` on the circle needs to be
+found.
+
+If all :math:`p_1, p_2, …, p_j` lie within the circle whose diameter is
+the line :math:`l` connecting :math:`p_j` and :math:`p_i`, this circle is
+:math:`C'_j`. Otherwise, two possible candidates for :math:`C'_j` are given by
+those circles through :math:`p_k` on either side of the line :math:`l` such
+that the circle centers are farthest away from :math:`l`. Of those two,
+the circle with the smaller radius is chosen.
+
+.. image:: /enclosing_circles.svg
+    :width: 300
+    :align: center
+    :alt: How to find smallest enclosing circle with two given points
+
+Source: `Project Nayuki
+<https://www.nayuki.io/res/smallest-enclosing-circle/smallestenclosingcircle.py>`_,
+in particular `this presentation
+<https://www.nayuki.io/res/smallest-enclosing-circle/computational-geometry-lecture-6.pdf>`_.
 """
+import math
+from typing import List, Sequence, Tuple, Union
+
 import numpy as np
 import pandas as pd
 from scipy.spatial import cKDTree
 
 from . import config
+from .helper import numba
 
 
 def _has_near_neighbor_impl(data, r):
@@ -229,7 +271,8 @@ def interpolate_coords(tracks, columns={}):
     return ret.reset_index(drop=True)
 
 
-def polygon_area(vertices):
+@numba.extending.register_jitable
+def polygon_area(vertices: Sequence[Sequence[float]]) -> float:
     """Calculate the (signed) area of a simple polygon
 
     The polygon may not self-intersect.
@@ -253,16 +296,303 @@ def polygon_area(vertices):
             return area/2;
         }
 
+    For triangles, a faster, specialized code path based on the cross product
+    is used.
+
     Parameters
     ----------
-    vertices : list of 2-tuples or numpy.ndarray, shape=(n, 2)
+    vertices
         Coordinates of the poligon vertices.
 
     Returns
     -------
-    float
-        Signed area of the polygon. Area is > 0 if vertices are given
-        counterclockwise.
+    Signed area of the polygon. Area is > 0 if vertices are given
+    counterclockwise.
     """
+    if len(vertices) == 3:
+        # Specialized, fast implementation for triangles, since this is heavily
+        # used in `smallest_enclosing_circle`
+        dx1 = vertices[1][0] - vertices[0][0]
+        dy1 = vertices[1][1] - vertices[0][1]
+        dx2 = vertices[2][0] - vertices[1][0]
+        dy2 = vertices[2][1] - vertices[1][1]
+        return (dx1 * dy2 - dy1 * dx2) / 2
+
     x, y = np.vstack((vertices[-1], vertices)).T
-    return np.sum((x[1:] + x[:-1]) * (y[1:] - y[:-1]))/2
+    return np.sum((x[1:] + x[:-1]) * (y[1:] - y[:-1])) / 2
+
+
+def smallest_enclosing_circle(coords: Sequence[Sequence[float]],
+                              shuffle: Union[bool,
+                                             np.random.RandomState] = True
+                              ) -> Tuple[Tuple[float, float], float]:
+    """Find the smallest circle enclosing a set of points
+
+    Parameters
+    ----------
+    coords
+        2D coordinates of points
+    shuffle
+        If `True`, shuffle coordinate list before calculating circle. If a
+        `RandomState` instance is passed, use it for shuffling. Note that
+        coordinates should be in a random order for performance reasons.
+
+    Returns
+    -------
+    Center coordinates and radius
+
+    Note
+    ----
+    If you want to calculate the smallest enclosing circle in a `numba.jit`-ed
+    function, have a look at :py:func:`smallest_enclosing_circle_impl`.
+    """
+    if numba.numba_available:
+        coords = np.array(coords, copy=True)
+    else:
+        # Best performance with a list of tuples/lists
+        coords = [(float(x), float(y)) for x, y in coords]
+
+    if shuffle:
+        if callable(getattr(shuffle, "shuffle", None)):
+            # `shuffle` behaves like a np.random.RandomState instance
+            shuffle.shuffle(coords)
+        else:
+            np.random.shuffle(coords)
+
+    return smallest_enclosing_circle_impl(coords)
+
+
+@numba.try_njit(cache=True)
+def smallest_enclosing_circle_impl(coords: Union[np.ndarray, List]):
+    """Find the smallest circle enclosing a set of points (implementation)
+
+    If numba is available, this function is jitted and `coords` needs to be
+    provided as a :py:class:`numpy.ndarray`. If numba is unavailable, use
+    a list of tuples or lists for maximum performance.
+
+    :py:func:`smallest_enclosing_circle` provides a convenient wrapper around
+    this function which ensures the right format of `coords` and allows for
+    shuffling.
+
+    Parameters
+    ----------
+    coords
+        2D coordinates of points in random order for O(N) expected runtime.
+
+    Returns
+    -------
+    Center coordinates and radius
+    """
+    center = (np.NaN, np.NaN)
+    radius = np.NaN
+    for i, p in enumerate(coords):
+        if math.isnan(radius) or not _in_circle(center, radius, p):
+            center, radius = _enclosing_circle_1(coords[:i+1], p)
+    return center, radius
+
+
+@numba.try_njit(cache=True)
+def _in_circle(center: Sequence[float], radius: float, point: Sequence[float],
+               eps: float = 1e-14) -> bool:
+    """Check whether a point lies within a circle
+
+    Parameters
+    ----------
+    center
+        Coordinates of circle center
+    radius
+        Circle radius
+    point
+        Coordinates of the point
+    eps
+        For numerical reasons, increase radius by ``radius * eps``
+
+    Returns
+    -------
+    `True` if the point lies within the circle, `False` otherwise.
+    """
+    return (math.hypot(center[0] - point[0], center[1] - point[1]) <=
+            radius * (1 + eps))
+
+
+@numba.try_njit(cache=True)
+def _enclosing_circle_1(coords: Sequence[Sequence[float]],
+                        point: Sequence[float]
+                        ) -> Tuple[Tuple[float, float], float]:
+    """Find the smallest enclosing circle with one point on boundary given
+
+    Calculate center and radius of the smallest circle enclosing all points
+    specified by `coords` such that `point` lies on the circle.
+
+    Parameters
+    ----------
+    coords
+        Sequence of x and y coordinates of points that are enclosed by the
+        circle
+    point
+        x and y coordinates of the point on the boundary
+
+    Returns
+    -------
+    Center coordinates and radius.
+    """
+    # Ensure this is a tuple, otherwise assigning a tuple to `center` in the
+    # loop will fail with numba
+    center = (point[0], point[1])
+    radius = 0.0
+    for i, p in enumerate(coords):
+        if _in_circle(center, radius, p):
+            continue
+        if radius == 0.0:
+            center, radius = _circumscribe_2(point, p)
+        else:
+            center, radius = _enclosing_circle_2(coords[:i+1], point, p)
+    return center, radius
+
+
+@numba.try_njit(cache=True)
+def _enclosing_circle_2(coords: Sequence[Sequence[float]],
+                        point1: Sequence[float], point2: Sequence[float]
+                        ) -> Tuple[Tuple[float, float], float]:
+    """Find the smallest enclosing circle with two points on boundary given
+
+    Calculate center and radius of the smallest circle enclosing all points
+    specified by `coords` such that `point1` and `point2` lie on the
+    circle.
+
+    Parameters
+    ----------
+    coords
+        Sequence of x and y coordinates of points that are enclosed by the
+        circle
+    point1, point2
+        x and y coordinates of the two points on the boundary
+
+    Returns
+    -------
+    Center coordinates and radius.
+    """
+    center_2, radius_2 = _circumscribe_2(point1, point2)
+    area_left = -np.inf
+    area_right = np.inf
+    center_left = center_right = (np.NaN, np.NaN)
+    radius_left = radius_right = np.inf
+
+    for p in coords:
+        if _in_circle(center_2, radius_2, p):
+            continue
+        area_p = polygon_area((point1, point2, p))
+        c, r = _circumscribe_3(point1, point2, p)
+        if math.isnan(r):
+            continue
+        area_c = polygon_area((point1, point2, c))
+        if area_p > 0 and area_c > area_left:
+            # Larger area means that the center is farther left from the line
+            # connecting point1 and point2 than the previous farthest point
+            center_left = c
+            radius_left = r
+            area_left = area_c
+        elif area_p < 0 and area_c < area_right:
+            # Larger negative area means that the center is farther right from
+            # the line # connecting point1 and point2 than the previous
+            # farthest point
+            center_right = c
+            radius_right = r
+            area_right = area_c
+
+    if not math.isfinite(radius_left) and not math.isfinite(radius_right):
+        # Both have not been set
+        return center_2, radius_2
+    if radius_left < radius_right:
+        return center_left, radius_left
+    return center_right, radius_right
+
+
+@numba.try_njit(cache=True)
+def _circumscribe_2(point1: Sequence[float], point2: Sequence[float]
+                    ) -> Tuple[Tuple[float, float], float]:
+    """Find circumscribed circle for three points
+
+    The circle's center is the midpoint between the points. The radius is
+    half the distance between the points.
+
+    Parameters
+    ----------
+    point1, point2
+        x and y coordinates of the two points
+
+    Returns
+    -------
+    Center coordinates and radius.
+    """
+    xc = (point1[0] + point2[0]) / 2
+    yc = (point1[1] + point2[1]) / 2
+    # For numerical stability, compute the radius as follows and not by
+    # calculating the half length of point1 - point2; see
+    # https://stackoverflow.com/a/41776277
+    r1 = math.hypot(point1[0] - xc, point1[1] - yc)
+    r2 = math.hypot(point2[0] - xc, point2[1] - yc)
+    radius = max(r1, r2)
+    return (xc, yc), radius
+
+
+@numba.try_njit(cache=True)
+def _circumscribe_3(point1: Sequence[float], point2: Sequence[float],
+                    point3: Sequence[float]
+                    ) -> Tuple[Tuple[float, float], float]:
+    """Find circumscribed circle for three points
+
+    Implements the algorithm found at `Wikipedia
+    <https://en.wikipedia.org/wiki/Circumscribed_circle#Cartesian_coordinates_2>`_
+
+    Parameters
+    ----------
+    point1, point2, point3
+        x and y coordinates of the three points
+
+    Returns
+    -------
+    Center coordinates and radius. In case the points lie on a line, all values
+    are NaN.
+    """
+    # Improve numerical stability in case coordinates of points are large, but
+    # differ verly little by translating to center origin
+    #
+    # Using numpy functions and/or loops is much slower here
+    x0 = (min(point1[0], point2[0], point3[0]) +
+          max(point1[0], point2[0], point3[0])) / 2
+    y0 = (min(point1[1], point2[1], point3[1]) +
+          max(point1[1], point2[1], point3[1])) / 2
+    x1 = point1[0] - x0
+    y1 = point1[1] - y0
+    x2 = point2[0] - x0
+    y2 = point2[1] - y0
+    x3 = point3[0] - x0
+    y3 = point3[1] - y0
+
+    # Circumscribed circle formula, see
+    # https://en.wikipedia.org/wiki/Circumscribed_circle#Cartesian_coordinates_2
+    dx1 = x2 - x3
+    dy1 = y2 - y3
+    dx2 = x3 - x1
+    dy2 = y3 - y1
+    dx3 = x1 - x2
+    dy3 = y1 - y2
+    c = 2 * (x1 * dy1 + x2 * dy2 + x3 * dy3)
+    if math.isclose(c, 0):
+        # This happens e.g. when points lie on a line
+        return (np.NaN, np.NaN), np.NaN
+    n1 = x1 * x1 + y1 * y1
+    n2 = x2 * x2 + y2 * y2
+    n3 = x3 * x3 + y3 * y3
+    xc = x0 + (n1 * dy1 + n2 * dy2 + n3 * dy3) / c
+    yc = y0 - (n1 * dx1 + n2 * dx2 + n3 * dx3) / c
+
+    # For numerical stability, compute the radius as follows and not by
+    # using a forumla such as abc / (4A); see
+    # https://stackoverflow.com/a/41776277
+    r1 = math.hypot(point1[0] - xc, point1[1] - yc)
+    r2 = math.hypot(point2[0] - xc, point2[1] - yc)
+    r3 = math.hypot(point3[0] - xc, point3[1] - yc)
+    radius = max(r1, r2, r3)
+    return (xc, yc), radius

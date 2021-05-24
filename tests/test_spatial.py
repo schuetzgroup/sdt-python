@@ -2,12 +2,15 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import math
 import unittest
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 import sdt.spatial
+from sdt import spatial
 
 
 class TestHasNearNeighbor(unittest.TestCase):
@@ -107,7 +110,107 @@ class TestInterpolateCoords(unittest.TestCase):
         assert(v.dtype == np.dtype(np.float64))
 
 
-class TestPolygonArea(unittest.TestCase):
+class TestPolygonArea:
+    def test_triangle_area(self):
+        """spatial.polygon_area (triangle)"""
+        vert = [[0, 0], [1, 0], [0, 1]]
+        assert spatial.polygon_area(vert) == pytest.approx(0.5)
+        assert spatial.polygon_area(vert[::-1]) == pytest.approx(-0.5)
+
     def test_polygon_area(self):
+        """spatial.polygon_area (general polygon)"""
         vert = [[0, 0], [1, 2], [2, 0]]
-        self.assertEqual(sdt.spatial.polygon_area(vert), -2)
+        assert spatial.polygon_area(vert) == pytest.approx(-2.0)
+        assert spatial.polygon_area(vert[::-1]) == pytest.approx(2.0)
+
+
+class TestSmallestEnclosingCircle:
+    def test_in_circle(self):
+        """spatial._in_circle"""
+        c = (1.0, 0.0)
+        r = 2.0
+        assert spatial._in_circle(c, r, (0.0, 0.0))
+        assert not spatial._in_circle(c, r, (3.0, 1.0))
+
+    def test_circumscribe_2(self):
+        """spatial._circumscribe_2"""
+        c = (1.0, 2.0)
+        r = 3.5
+        angles = (0.1, 0.1 + math.pi)
+        points = [(c[0] + r * math.cos(a), c[1] + r * math.sin(a))
+                  for a in angles]
+        rc, rr = spatial._circumscribe_2(*points)
+        assert rc[0] == pytest.approx(c[0])
+        assert rc[1] == pytest.approx(c[1])
+        assert rr == pytest.approx(r)
+
+    def test_circumscribe_3(self):
+        """spatial._circumscribe_3"""
+        c = (1.0, 2.0)
+        r = 3.5
+        angles = (0.1, 1.3, 2.5)
+        points = [(c[0] + r * math.cos(a), c[1] + r * math.sin(a))
+                  for a in angles]
+        rc, rr = spatial._circumscribe_3(*points)
+        assert rc[0] == pytest.approx(c[0])
+        assert rc[1] == pytest.approx(c[1])
+        assert rr == pytest.approx(r)
+
+        line_points = [(-1, -2), (0, -1), (1, 0)]
+        lc, lr = spatial._circumscribe_3(*line_points)
+        assert math.isnan(lc[0])
+        assert math.isnan(lc[1])
+        assert math.isnan(lr)
+
+    def test_enclosing_circle_2(self):
+        """spatial._enclosing_circle_2"""
+        p1 = (1.0, 1.5)
+        p2 = (1.0, -1.5)
+
+        # left-sided
+        coords = np.array([(-0.5, 1.5), (-2.0, -1.2)])
+        ce, re = spatial._circumscribe_3(coords[-1], p1, p2)
+        cr, rr = spatial._enclosing_circle_2(coords, p1, p2)
+        assert cr[0] == pytest.approx(ce[0])
+        assert cr[1] == pytest.approx(ce[1])
+        assert rr == pytest.approx(re)
+
+        # right-sided
+        coords = np.array([(4.0, 1.2), (2.5, -1.5)])
+        ce, re = spatial._circumscribe_3(coords[0], p1, p2)
+        cr, rr = spatial._enclosing_circle_2(coords, p1, p2)
+        assert cr[0] == pytest.approx(ce[0])
+        assert cr[1] == pytest.approx(ce[1])
+        assert rr == pytest.approx(re)
+
+    def test_enclosing_circle_1(self):
+        """spatial._enclosing_circle_1"""
+        p1 = (1.0, 1.5)
+        coords = np.array([(1.0, -1.5), (-0.5, 1.5), (-2.0, -1.2)])
+        ce, re = spatial._circumscribe_3(coords[0], coords[-1], p1)
+        cr, rr = spatial._enclosing_circle_1(coords, p1)
+        assert cr[0] == pytest.approx(ce[0])
+        assert cr[1] == pytest.approx(ce[1])
+        assert rr == pytest.approx(re)
+
+    def test_smallest_enclosing_circle(self):
+        """spatial.smallest_enclosing_circle"""
+        c = (1.0, 2.0)
+        r = 3.5
+
+        rstate = np.random.RandomState(123)
+        # Polar coordinates of points
+        polar = rstate.uniform([0, 0], [r, 2*np.pi], size=(1000, 2))
+        # Last three define the boundary forming an equilateral triangle
+        polar[-3:, 0] = r
+        polar[-3, 1] = 0
+        polar[-2, 1] = 2 * np.pi / 3
+        polar[-1, 1] = 4 * np.pi / 3
+        cartesian = np.empty_like(polar)
+        cartesian[:, 0] = polar[:, 0] * np.cos(polar[:, 1]) + c[0]
+        cartesian[:, 1] = polar[:, 0] * np.sin(polar[:, 1]) + c[1]
+
+        cr, rr = spatial.smallest_enclosing_circle(cartesian, shuffle=rstate)
+        assert cr[0] == pytest.approx(c[0])
+        assert cr[1] == pytest.approx(c[1])
+        assert rr == pytest.approx(r)
