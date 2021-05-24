@@ -78,6 +78,19 @@ except ImportError:
     int32 = int64 = float32 = float64 = _FakeType()
 
 
+def try_njit(*args, **kwargs):
+    """`numba.njit` a function if numba is available, do nothing otherwise
+
+    Can be used instead of `numba.njit` on functions run decently also in the
+    absence of `numba`.
+    """
+    if numba_available:
+        return njit(*args, **kwargs)  # noqa: F405
+    if args and callable(args[0]):
+        return args[0]
+    return lambda x: x
+
+
 @jit(nopython=True, nogil=True, cache=True)
 def logsumexp(a):
     """Numba implementation of :py:func:`scipy.special.logsumexp`"""
