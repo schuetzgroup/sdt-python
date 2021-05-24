@@ -2,44 +2,80 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import functools
 import math
 
 import numpy as np
 
 
 try:
-    from numba import *
+    from numba import *  # noqa: F401, F403
+
     numba_available = True
+
     try:
         # numba 0.49 moved jitclass to experimental
+        # Import for backwards compatibility.
         from numba.experimental import jitclass
     except ImportError:
         pass
+
 except ImportError:
     def jit(*args, **kwargs):
+        """Stub for `numba.jit`
+
+        This allows for importing modules with decorated functions. If such a
+        function is called, a :py:class:`RuntimeError` is raised.
+        """
         def stub(*sargs, **skwargs):
-            def stub2(*s2args, **s2kwargs):
-                raise RuntimeError("Could not import numba.")
-            return stub2
-        return stub
+            raise RuntimeError("Could not import numba.")
+
+        if args and callable(args[0]):
+            # Decorator was used without a call (just @numba.jit)
+            return functools.update_wrapper(stub, args[0])
+        # Decorator was used with a call (@numba.jit())
+        return lambda x: functools.update_wrapper(stub, x)
 
     vectorize = jit
+    njit = jit
 
     def jitclass(*args, **kwargs):
-        def stub(*sargs, **skwargs):
-            class Stub2:
-                def __init__(self, *args, **kwargs):
-                    raise RuntimeError("Could not import numba.")
-            return Stub2
-        return stub
+        """Stub for `numba.jitclass`
+
+        This allows for importing modules with decorated classes. If such a
+        class is instantiated, a :py:class:`RuntimeError` is raised.
+        """
+        def wrap_class(wrapped):
+            def raise_error(self, *args, **kwargs):
+                raise RuntimeError("Could not import numba.")
+
+            # Make a copy of the class and change its __init__ to raise a
+            # RuntimeError.
+            Wrp = type(wrapped.__name__, wrapped.__bases__,
+                       dict(wrapped.__dict__))
+            Wrp.__init__ = functools.update_wrapper(raise_error,
+                                                    wrapped.__init__)
+            return Wrp
+
+        wrapped_class = args[0] if args else kwargs.get("cls_or_spec")
+        if isinstance(wrapped_class, type):
+            # Decorator was used without a call (just @numba.jitclass)
+            return wrap_class(wrapped_class)
+        # Decorator was used with a call (@numba.jitclass())
+        return lambda x: wrap_class(x)
+
+    class experimental:
+        # Create namespace so that @numba.experimental.jitclass also works
+        jitclass = jitclass
 
     numba_available = False
 
-    class FakeType:
+    class _FakeType:
+        """Stub for numba types such as `numba.float64`"""
         def __getitem__(self, key):
             pass
 
-    int32 = int64 = float32 = float64 = FakeType()
+    int32 = int64 = float32 = float64 = _FakeType()
 
 
 @jit(nopython=True, nogil=True, cache=True)
@@ -60,4 +96,3 @@ def multigammaln(a, d):
     for j in range(1, d+1):
         res += math.lgamma(a - (j - 1.)/2)
     return res
-
