@@ -5,8 +5,8 @@
 The ``sdt-python`` package
 ==========================
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4604495.svg
-   :target: https://doi.org/10.5281/zenodo.4604495
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4604494.svg
+   :target: https://doi.org/10.5281/zenodo.4604494
    :alt: Zenodo
 
 .. image:: https://img.shields.io/conda/vn/conda-forge/sdt-python.svg
