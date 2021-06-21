@@ -57,7 +57,6 @@ type
 
     conda config --add channels conda-forge
     conda config --set channel_priority strict
-    conda uninstall anaconda
     conda update --all
     conda install sdt-python
     conda install opencv trackpy lmfit ipympl scikit-learn pyqt
