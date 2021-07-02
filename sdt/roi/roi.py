@@ -5,7 +5,6 @@
 """Classes for dealing with regions of interest in microscopy data"""
 from contextlib import suppress
 import math
-import warnings
 from typing import Dict, Optional, Union
 
 import numpy as np
@@ -106,8 +105,7 @@ class ROI(object):
         return mask
 
     @config.set_columns
-    def __call__(self, data, rel_origin=True, invert=False, columns={},
-                 **kwargs):
+    def __call__(self, data, rel_origin=True, invert=False, columns={}):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -147,16 +145,6 @@ class ROI(object):
                 roi_data = data[~mask].copy()
             else:
                 roi_data = data[mask].copy()
-
-            if "reset_origin" in kwargs:
-                warnings.warn(
-                    "The `reset_origin` parameter is deprecated and will be "
-                    "removed in the future. Use `rel_origin` instead.",
-                    np.VisibleDeprecationWarning)
-                rel_origin = kwargs["reset_origin"]
-            elif kwargs:
-                raise TypeError("Unexpected keyword argument '{}'".format(
-                    tuple(kwargs)[0]))
 
             if rel_origin and not invert:
                 roi_data[columns["coords"]] -= self.top_left
@@ -364,7 +352,7 @@ class PathROI(object):
 
     @config.set_columns
     def __call__(self, data, rel_origin=True, fill_value=0, invert=False,
-                 crop=True, columns={}, **kwargs):
+                 crop=True, columns={}):
         """Restrict data to the region of interest.
 
         If the input is localization data, it is filtered depending on whether
@@ -420,16 +408,6 @@ class PathROI(object):
                 roi_data = data[~roi_mask].copy()
             else:
                 roi_data = data[roi_mask].copy()
-
-            if "reset_origin" in kwargs:
-                warnings.warn(
-                    "The `reset_origin` parameter is deprecated and will be "
-                    "removed in the future. Use `rel_origin` instead.",
-                    np.VisibleDeprecationWarning)
-                rel_origin = kwargs["reset_origin"]
-            elif kwargs:
-                raise TypeError("Unexpected keyword argument '{}'".format(
-                    tuple(kwargs)[0]))
 
             if rel_origin and not invert:
                 roi_data.loc[:, columns["coords"]] -= \
