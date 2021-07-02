@@ -6,6 +6,7 @@
 from contextlib import suppress
 import math
 import warnings
+from typing import Dict
 
 import numpy as np
 import pandas as pd
@@ -74,6 +75,37 @@ class ROI(object):
         return np.prod(self.size)
 
     @config.set_columns
+    def dataframe_mask(self, data: pd.DataFrame, columns: Dict = {}
+                       ) -> np.ndarray:
+        """Get boolean array describing whether localizations lie within ROI
+
+        Parameters
+        ----------
+        data
+            Localization data
+
+        Returns
+        -------
+        Boolean array, one entry per line in `data`, which is `True` if the
+        localization lies within the ROI, `False` otherwise.
+
+        Other parameters
+        ----------------
+        columns
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `coords`. This
+            means, if your DataFrame has coordinate columns "x" and "z", set
+            ``columns={"coords": ["x", "z"]}``.
+        """
+        mask = np.ones(len(data), dtype=bool)
+        for p, t, b in zip(columns["coords"],
+                           self.top_left, self.bottom_right):
+            d = data[p].to_numpy()
+            mask &= d > t
+            mask &= d < b
+        return mask
+
+    @config.set_columns
     def __call__(self, data, rel_origin=True, invert=False, columns={},
                  **kwargs):
         """Restrict data to the region of interest.
@@ -110,13 +142,7 @@ class ROI(object):
             ``columns={"coords": ["x", "z"]}``.
         """
         if isinstance(data, pd.DataFrame):
-            mask = np.ones(len(data), dtype=bool)
-            for p, t, b in zip(columns["coords"],
-                               self.top_left, self.bottom_right):
-                d = data[p]
-                mask &= d > t
-                mask &= d < b
-
+            mask = self.dataframe_mask(data, columns)
             if invert:
                 roi_data = data[~mask].copy()
             else:
@@ -298,6 +324,45 @@ class PathROI(object):
         self.image_mask = self.image_mask.reshape(mask_shape)
 
     @config.set_columns
+    def dataframe_mask(self, data: pd.DataFrame, columns: Dict = {}
+                       ) -> np.ndarray:
+        """Get boolean array describing whether localizations lie within ROI
+
+        Parameters
+        ----------
+        data
+            Localization data
+
+        Returns
+        -------
+        Boolean array, one entry per line in `data`, which is `True` if the
+        localization lies within the ROI, `False` otherwise.
+
+        Other parameters
+        ----------------
+        columns
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `coords`. This
+            means, if your DataFrame has coordinate columns "x" and "z", set
+            ``columns={"coords": ["x", "z"]}``.
+        """
+        if not len(data):
+            return np.zeros(0, dtype=bool)
+
+        pos = data[columns["coords"]].to_numpy()
+        # Using 2 * buffer seems to give the expected result (enlarge the
+        # path by about `buffer` units)
+        roi_mask = self.path.contains_points(
+            pos, radius=2*self.buffer_sign*self.buffer)
+        # If buffer > 0, the path + buffer can be larger than the
+        # bounding rect. Restrict localizations to bounding rect so that
+        # results are consistent with image data.
+        roi_mask &= np.all(pos >= self.bounding_box_int[0], axis=1)
+        roi_mask &= np.all(pos < self.bounding_box_int[1], axis=1)
+
+        return roi_mask
+
+    @config.set_columns
     def __call__(self, data, rel_origin=True, fill_value=0, invert=False,
                  crop=True, columns={}, **kwargs):
         """Restrict data to the region of interest.
@@ -350,21 +415,7 @@ class PathROI(object):
             ``columns={"coords": ["x", "z"]}``.
         """
         if isinstance(data, pd.DataFrame):
-            if not len(data):
-                # if empty, return the empty data frame to avoid errors
-                # below
-                return data
-
-            pos = data[columns["coords"]]
-            # Using 2 * buffer seems to give the expected result (enlarge the
-            # path by about `buffer` units)
-            roi_mask = self.path.contains_points(
-                pos, radius=2*self.buffer_sign*self.buffer)
-            # If buffer > 0, the path + buffer can be larger than the
-            # bounding rect. Restrict localizations to bounding rect so that
-            # results are consistent with image data.
-            roi_mask &= np.all(pos >= self.bounding_box_int[0], axis=1)
-            roi_mask &= np.all(pos < self.bounding_box_int[1], axis=1)
+            roi_mask = self.dataframe_mask(data, columns)
             if invert:
                 roi_data = data[~roi_mask].copy()
             else:

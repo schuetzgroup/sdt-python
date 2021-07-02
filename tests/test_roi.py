@@ -78,10 +78,20 @@ class TestRoi(TestCaseBase):
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.cropped_img]*2)
 
+    def test_dataframe_mask(self):
+        """.dataframe_mask"""
+        mask = self.roi.dataframe_mask(self.loc)
+        np.testing.assert_array_equal(
+            mask, self.loc.index.isin(self.loc_roi.index))
+
     def test_dataframe(self):
         """.__call__: localization data"""
         np.testing.assert_equal(self.roi(self.loc, rel_origin=False).values,
                                 self.loc_roi)
+        # Try empty DataFrame
+        np.testing.assert_equal(
+            self.roi(self.loc[:0], rel_origin=False).values,
+            self.loc_roi[:0])
 
     def test_dataframe_inv(self):
         """.__call__: localization data, inverted ROI"""

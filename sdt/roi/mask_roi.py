@@ -4,6 +4,7 @@
 
 from contextlib import suppress
 import math
+from typing import Dict
 
 import numpy as np
 import pandas as pd
@@ -45,7 +46,50 @@ class MaskROI:
         (whose order would be inverted and scaled by :py:attr:`pixel_size`).
         """
         self.pixel_size = pixel_size
-        """Size of a pixel. Used to scale the in DataFrames correctly."""
+        """Size of a pixel. Used to scale the coordinates in DataFrames
+        correctly.
+        """
+
+    @config.set_columns
+    def dataframe_mask(self, data: pd.DataFrame, columns: Dict = {}
+                       ) -> np.ndarray:
+        """Get boolean array describing whether localizations lie within mask
+
+        Parameters
+        ----------
+        data
+            Localization data
+
+        Returns
+        -------
+        Boolean array, one entry per line in `data`, which is `True` if the
+        localization lies within the image mask, `False` otherwise.
+
+        Other parameters
+        ----------------
+        columns
+            Override default column names as defined in
+            :py:attr:`config.columns`. The only relevant name is `coords`. This
+            means, if your DataFrame has coordinate columns "x" and "z", set
+            ``columns={"coords": ["x", "z"]}``.
+        """
+        pos = data.loc[:, columns["coords"]].values
+        pos = pos - self.mask_origin
+        if not math.isclose(self.pixel_size, 1.0):
+            pos /= self.pixel_size
+        pos = np.round(pos).astype(int)
+
+        data_mask = np.ones(len(pos), dtype=bool)
+        for p, bd in zip(pos.T, self.mask.shape[::-1]):
+            # Find localizations that are with the bounds of the mask
+            data_mask &= p >= 0
+            data_mask &= p < bd
+
+        # Of the localizations that are in bounds, select only those where
+        # the mask is `True`
+        pos_in_bounds = tuple(p for p in pos[data_mask, ::-1].T)
+        data_mask[data_mask] = self.mask[pos_in_bounds]
+        return data_mask
 
     @config.set_columns
     def __call__(self, data, rel_origin=True, fill_value=0, invert=False,
@@ -91,22 +135,7 @@ class MaskROI:
             ``columns={"coords": ["x", "z"]}``.
         """
         if isinstance(data, pd.DataFrame):
-            pos = data.loc[:, columns["coords"]].values
-            pos = pos - self.mask_origin
-            if self.pixel_size != 1.:
-                pos /= self.pixel_size
-            pos = np.round(pos).astype(int)
-
-            data_mask = np.ones(len(pos), dtype=bool)
-            for p, bd in zip(pos.T, self.mask.shape[::-1]):
-                # Find localizations that are with the bounds of the mask
-                data_mask &= p >= 0
-                data_mask &= p < bd
-
-            # Of the localizations that are in bounds, select only those where
-            # the mask is `True`
-            pos_in_bounds = tuple(p for p in pos[data_mask, ::-1].T)
-            data_mask[data_mask] = self.mask[pos_in_bounds]
+            data_mask = self.dataframe_mask(data, columns)
             if invert:
                 data_mask = ~data_mask
             good = data[data_mask].copy()
