@@ -6,7 +6,7 @@
 from contextlib import suppress
 import math
 import warnings
-from typing import Dict
+from typing import Dict, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -222,7 +222,7 @@ class ROI(object):
             self.top_left, self.bottom_right, self.size)
 
     def __eq__(self, other):
-        if not self.__class__ is other.__class__:
+        if self.__class__ is not other.__class__:
             return False
         return (self.top_left == other.top_left and
                 self.bottom_right == other.bottom_right)
@@ -475,13 +475,17 @@ class PathROI(object):
         """
         data[columns["coords"]] += np.maximum(self.bounding_box_int[0], 0)
 
-    def transform(self, trafo=None, linear=None, trans=None):
+    def transform(self,
+                  trafo: Union[mpl.transforms.Transform, np.ndarray,
+                               None] = None,
+                  linear: Optional[np.ndarray] = None,
+                  trans: Optional[np.ndarray] = None) -> "PathROI":
         """Create a new PathROI instance with a transformed path
 
         Parameters
         ----------
-        trafo : matplotlib.transforms.Transform or numpy.ndarray, shape(3, 3), optional
-            Full transform. If given as a matrix, it has to have the form
+        trafo
+            Full transform. If given as a an array, it has to have the form
 
             .. code-block:: text
 
@@ -492,17 +496,17 @@ class PathROI(object):
             where a, b, c, d give the linear part of the transform (see
             `linear` below) and e, f give the translation part (see `trans`
             below).
-        linear : numpy.ndarray, shape(2, 2), optional
-            Linear part (rotation, scaling, shear) of the transform. Only used
-            if `trafo` is not given.
-        trans : numpy.ndarray, shape(2), optional
-            Translation. Only used if `trafo` is not given.
+        linear
+            Linear part (rotation, scaling, shear) of the transform, a 2x2
+            matrix. Only used if `trafo` is not given.
+        trans
+            Translation, 1D array of length 2. Only used if `trafo` is not
+            given.
 
         Returns
         -------
-        PathROI
-            ROI with transformed path and same :py:attr:`buffer`. The image
-            mask is only created if this instance has an image mask.
+        ROI with transformed path and same :py:attr:`buffer`. The image mask is
+        only created if this instance has an image mask.
         """
         if trafo is not None:
             if isinstance(trafo, np.ndarray):
@@ -553,7 +557,7 @@ class PathROI(object):
         return "PathROI(<{} vertices>)".format(len(self.path.vertices))
 
     def __eq__(self, other):
-        if not self.__class__ is other.__class__:
+        if self.__class__ is not other.__class__:
             return False
         return (np.allclose(self.path.vertices, other.path.vertices) and
                 np.array_equal(self.path.codes, other.path.codes) and
