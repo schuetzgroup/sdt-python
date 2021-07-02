@@ -3,20 +3,16 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import unittest
-import tempfile
 import io
 from pathlib import Path
 import zipfile
 
 import numpy as np
 import pandas as pd
-import yaml
 import pims
 import matplotlib as mpl
 
-from sdt import roi
-from sdt.io import yaml
-from sdt.helper import Pipeline, Slicerator
+from sdt import helper, io as sdt_io, roi
 
 
 data_path = Path(__file__).resolve().parents[0] / "data_roi"
@@ -57,7 +53,6 @@ class TestRoi(TestCaseBase):
         self.loc_roi = self.loc.iloc[[2]].copy()
         self.loc_roi_inv = self.loc.drop(2).copy()
 
-
     def test_init(self):
         """.__init__"""
         np.testing.assert_equal(self.roi.top_left, self.top_left)
@@ -79,8 +74,7 @@ class TestRoi(TestCaseBase):
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
-        l = [self.img]*2
-        s = Slicerator(l)
+        s = helper.Slicerator([self.img]*2)
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.cropped_img]*2)
 
@@ -107,9 +101,9 @@ class TestRoi(TestCaseBase):
     def test_yaml(self):
         """: YAML saving/loading"""
         buf = io.StringIO()
-        yaml.safe_dump(self.roi, buf)
+        sdt_io.yaml.safe_dump(self.roi, buf)
         buf.seek(0)
-        roi2 = yaml.safe_load(buf)
+        roi2 = sdt_io.yaml.safe_load(buf)
         self.assert_roi_equal(roi2, self.roi)
 
     def test_size(self):
@@ -138,6 +132,7 @@ class TestRoi(TestCaseBase):
         r3 = roi.ROI(r1.top_left, (150, 160))
         assert r1 != r3
         r4 = roi.ROI((100, 110), r1.bottom_right)
+        assert r1 != r4
 
 
 class TestPathRoi(TestRoi):
@@ -216,7 +211,7 @@ class TestPathRoi(TestRoi):
         img = self.mask.astype(float)
         img[~self.mask] = 3
         rimg = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2)
-        np.testing.assert_equal(img, img)
+        np.testing.assert_equal(img, rimg)
 
     def test_image_callable_fill_invert(self):
         """.__call__: image data, callable fill_value + invert"""
@@ -244,8 +239,7 @@ class TestPathRoi(TestRoi):
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
-        l = [self.img]*2
-        s = Slicerator(l)
+        s = helper.Slicerator([self.img]*2)
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float)]*2)
 
@@ -318,7 +312,7 @@ class TestPathRoiTransform(unittest.TestCase):
 
     def test_linear(self):
         """roi.PathROI.transform: linear arg"""
-        t = np.array([[2, 0,], [0, 3]])
+        t = np.array([[2, 0], [0, 3]])
         roi2 = self.roi.transform(linear=t)
 
         v = self.roi.path.vertices.copy()
@@ -346,10 +340,10 @@ class TestPathRoiTransform(unittest.TestCase):
 
     def test_lin_trans(self):
         """roi.PathROI.transform: array arg"""
-        l = np.array([[2, 0], [0, 3]])
-        t = np.array([1, 2])
+        lin = np.array([[2, 0], [0, 3]])
+        tr = np.array([1, 2])
         # linear and trans args should be ignored
-        roi2 = self.roi.transform(linear=l, trans=t)
+        roi2 = self.roi.transform(linear=lin, trans=tr)
 
         v = self.roi.path.vertices.copy()
         v[:, 0] *= 2
@@ -414,8 +408,7 @@ class TestNoImagePathRoi(TestPathRoi):
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
-        l = [self.img]*2
-        s = Slicerator(l)
+        s = helper.Slicerator([self.img]*2)
         with self.assertRaises(ValueError):
             self.roi(s)
 
@@ -484,6 +477,14 @@ class TestNonOverlappingPathRoi(TestPathRoi):
         np.testing.assert_equal(self.roi(self.img, fill_value=10, invert=True),
                                 img[:20, :20])
 
+    def test_image_callable_fill(self):
+        """.__call__: image data, callable fill_value"""
+        img = self.mask.astype(float)
+        img[self.mask] = 1
+        img[~self.mask] = 3
+        rimg = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2)
+        np.testing.assert_equal(rimg, img[:20, :20])
+
     def test_image_callable_fill_invert(self):
         """.__call__: image data, callable fill_value + invert"""
         img = self.mask.astype(float)
@@ -502,8 +503,7 @@ class TestNonOverlappingPathRoi(TestPathRoi):
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
-        l = [self.img]*2
-        s = Slicerator(l)
+        s = helper.Slicerator([self.img]*2)
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float).T[:20, :20]]*2)
 
@@ -579,6 +579,14 @@ class TestEllipseRoi(TestPathRoi):
         np.testing.assert_equal(self.roi(self.img, fill_value=10, invert=True),
                                 img[:70, :])
 
+    def test_image_callable_fill(self):
+        """.__call__: image data, callable fill_value"""
+        img = self.mask.astype(float)
+        img[self.mask] = 1
+        img[~self.mask] = 3
+        rimg = self.roi(self.img, fill_value=lambda x: np.mean(x) + 2)
+        np.testing.assert_equal(rimg, img[:70, :])
+
     def test_image_callable_fill_invert(self):
         """.__call__: image data, callable fill_value + invert"""
         img = self.mask.astype(float)
@@ -601,8 +609,7 @@ class TestEllipseRoi(TestPathRoi):
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
-        l = [self.img]*2
-        s = Slicerator(l)
+        s = helper.Slicerator([self.img]*2)
         # bottom ten rows get chopped off due to small self.img size
         np.testing.assert_equal(list(self.roi(s)),
                                 [self.mask.astype(float)[:70, :]]*2)
@@ -610,6 +617,7 @@ class TestEllipseRoi(TestPathRoi):
 
 class TestMaskRoi(TestRoi):
     msg_prefix = "roi.MaskROI"
+
     def setUp(self):
         super().setUp()
         self.mask = self.img.astype(bool)
@@ -621,7 +629,7 @@ class TestMaskRoi(TestRoi):
             lo[["x", "y"]] *= self.pixel_size
             lo[["x", "y"]] += self.origin
 
-        int_origin = np.round(self.origin).astype(int)
+        self.int_origin = np.round(self.origin).astype(int)
 
     def test_init(self):
         """.__init__"""
@@ -670,11 +678,10 @@ class TestMaskRoi(TestRoi):
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
         self.roi.mask_origin = (0, 0)
-        l = [self.img.copy()]*2
-        s = Slicerator(l)
+        s = helper.Slicerator([self.img.copy()]*2)
         rimg = self.roi(s, fill_value=10)
         self.img[self.img == 0] = 10
-        self.assertIsInstance(rimg, Pipeline)
+        self.assertIsInstance(rimg, helper.Pipeline)
         np.testing.assert_equal(list(rimg), [self.img]*2)
 
     def test_dataframe_rel_origin(self):
@@ -682,19 +689,15 @@ class TestMaskRoi(TestRoi):
         np.testing.assert_equal(self.roi(self.loc, rel_origin=True).values,
                                 self.loc_roi - self.origin)
 
-    def assert_roi_equal(self, actual, desired):
-        np.testing.assert_equal([actual.top_left, actual.bottom_right],
-                                [desired.top_left, desired.bottom_right])
-
     def test_yaml(self):
         """: YAML saving/loading"""
         buf = io.StringIO()
         mask = np.zeros((3, 3), dtype=bool)
         mask[1, 1] = True
         self.roi.mask = mask
-        yaml.safe_dump(self.roi, buf)
+        sdt_io.yaml.safe_dump(self.roi, buf)
         buf.seek(0)
-        roi2 = yaml.safe_load(buf)
+        roi2 = sdt_io.yaml.safe_load(buf)
         self.assert_roi_equal(roi2, self.roi)
 
     def test_size(self):
