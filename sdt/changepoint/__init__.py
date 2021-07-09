@@ -17,6 +17,10 @@ There are several algorithms available:
 - Online Bayesian changepoint detection [Adam2007]_. Details can be found
   :ref:`below <bayes_online>`.
 
+The :py:func:`segment_stats` allows for calculating statistics for segments
+identified via changepoint detection. For instance, the mean value, median,
+etc. can be computed per segment.
+
 Further, there is :py:func:`plot_changepoints` for plotting time series
 together with the detected changepoints.
 
@@ -168,6 +172,11 @@ There exists also a numba-``jitclass``-ed version of the class named
 :py:class:`StudentTNumba`.
 
 
+Calculation of statistics for data segments
+-------------------------------------------
+.. autofunction:: segment_stats
+
+
 Plotting of changepoints
 ------------------------
 .. autofunction:: plot_changepoints
@@ -194,4 +203,4 @@ from .bayes_offline import (BayesOffline, ConstPrior, ConstPriorNumba,
                             FullCovObsLikelihoodNumba)
 from .bayes_online import (BayesOnline, ConstHazard, ConstHazardNumba,
                            StudentT, StudentTNumba)
-from .utils import plot_changepoints
+from .utils import plot_changepoints, segment_stats

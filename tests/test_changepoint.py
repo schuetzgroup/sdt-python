@@ -7,9 +7,11 @@ import os
 import types
 
 import numpy as np
+import pytest
 import scipy
 import scipy.stats
 
+from sdt import changepoint
 from sdt.helper import numba
 from sdt.changepoint import bayes_offline as offline
 from sdt.changepoint import bayes_online as online
@@ -582,5 +584,130 @@ class TestPeltNumba(TestPelt):
         super().test_find_changepoints()
 
 
-if __name__ == "__main__":
-    unittest.main()
+@pytest.fixture(params=["simple", "masking", "stat_margin",
+                        "masking+stat_margin", "no changepoint",
+                        "NaN+array", "NaN+func", "masking+NaN",
+                        "multivariate", "masking+multivariate"])
+def segment_params(request):
+    data = np.array([20.0, 22.0, 18.0, 10.0, 11.5, 8.0, 10.5, 1.0, -1.0, 0.0,
+                     2.0])
+    cps = np.array([3, 7])
+    repeats = [3, 4, 4]
+
+    ret = dict(data=data, cp_arr=cps, cp_func=lambda x: cps, reps=repeats,
+               mask=None, stat_margin=0, seg=[0, 1, 2])
+
+    if request.param == "simple":
+        ret["means"] = [20.0, 10.0, 0.5]
+        ret["medians"] = [20.0, 10.25, 0.5]
+    elif request.param == "masking":
+        mask = np.ones_like(data, dtype=bool)
+        mask[[1, 3, 6]] = False
+        ret["mask"] = mask
+        ret["cp_func"] = lambda x: np.array([2, 4])
+        ret["means"] = [19.0, 9.75, 0.5]
+        ret["medians"] = [19.0, 9.75, 0.5]
+        ret["reps"] = [4, 3, 4]
+    elif request.param == "stat_margin":
+        ret["stat_margin"] = 1
+        ret["means"] = [21.0, 9.75, 1.0/3.0]
+        ret["medians"] = [21.0, 9.75, 0.0]
+    elif request.param == "masking+stat_margin":
+        ret["stat_margin"] = 1
+        mask = np.ones_like(data, dtype=bool)
+        mask[[1, 4, 5, -1]] = False
+        ret["mask"] = mask
+        ret["cp_func"] = lambda x: np.array([2, 4])
+        ret["means"] = [20.0, np.NaN, -0.5]
+        ret["medians"] = [20.0, np.NaN, -0.5]
+    elif request.param == "no changepoint":
+        ret["cp_arr"] = np.array([], dtype=int)
+        ret["cp_func"] = lambda x: ret["cp_arr"]
+        ret["means"] = [np.mean(data)]
+        ret["medians"] = [np.median(data)]
+        ret["seg"] = [0]
+        ret["reps"] = len(data)
+    elif request.param == "NaN+array":
+        ret["data"][3] = np.NaN
+        ret["means"] = [20.0, np.NaN, 0.5]
+        ret["medians"] = [20.0, np.NaN, 0.5]
+        ret["cp_func"] = None
+    elif request.param == "NaN+func":
+        ret["data"][3] = np.NaN
+        ret["means"] = [np.NaN]
+        ret["medians"] = [np.NaN]
+        ret["cp_arr"] = None
+        ret["seg"] = [-1]
+        ret["reps"] = len(data)
+    elif request.param == "masking+NaN":
+        ret["data"][3] = np.NaN
+        mask = np.ones_like(data, dtype=bool)
+        mask[3] = False
+        ret["mask"] = mask
+        ret["cp_func"] = lambda x: np.array([3, 6])
+        ret["means"] = [20.0, 10.0, 0.5]
+        ret["medians"] = [20.0, 10.5, 0.5]
+        ret["reps"] = [4, 3, 4]
+    elif request.param == "multivariate":
+        ret["data"] = np.column_stack([data, data+1])
+        mn = np.array([20.0, 10.0, 0.5])
+        ret["means"] = np.column_stack([mn, mn+1])
+        md = np.array([20.0, 10.25, 0.5])
+        ret["medians"] = np.column_stack([md, md+1])
+    elif request.param == "masking+multivariate":
+        ret["data"] = np.column_stack([data, data+1])
+        mask = np.ones_like(data, dtype=bool)
+        mask[[1, 3, 6]] = False
+        ret["mask"] = mask
+        ret["cp_func"] = lambda x: np.array([2, 4])
+        mn = np.array([19.0, 9.75, 0.5])
+        ret["means"] = np.column_stack([mn, mn+1])
+        md = np.array([19.0, 9.75, 0.5])
+        ret["medians"] = np.column_stack([md, md+1])
+        ret["reps"] = [4, 3, 4]
+
+    return ret
+
+
+def test_segment_stats(segment_params):
+    """changepoint.segment_stats"""
+    for cps in (segment_params["cp_arr"], segment_params["cp_func"]):
+        if cps is None:
+            continue
+        seg, stat = changepoint.segment_stats(
+            segment_params["data"], cps, np.mean, segment_params["mask"],
+            segment_params["stat_margin"])
+        np.testing.assert_array_equal(seg, segment_params["seg"])
+        np.testing.assert_allclose(stat, segment_params["means"])
+
+        # multiple statistics
+        seg, stat = changepoint.segment_stats(
+            segment_params["data"], cps, (np.mean, np.median),
+            segment_params["mask"], segment_params["stat_margin"])
+        np.testing.assert_array_equal(seg, segment_params["seg"])
+
+        np.testing.assert_allclose(
+            stat, np.stack([segment_params["means"],
+                            segment_params["medians"]], axis=1))
+
+        # long return arrays
+        seg, stat = changepoint.segment_stats(
+            segment_params["data"], cps, np.mean, segment_params["mask"],
+            segment_params["stat_margin"], return_len="data")
+        np.testing.assert_array_equal(seg, np.repeat(segment_params["seg"],
+                                                     segment_params["reps"]))
+        np.testing.assert_allclose(
+            stat,
+            np.repeat(segment_params["means"], segment_params["reps"], axis=0))
+
+        # long return arrays, multiple statistics
+        seg, stat = changepoint.segment_stats(
+            segment_params["data"], cps, (np.mean, np.median),
+            segment_params["mask"], segment_params["stat_margin"],
+            return_len="data")
+        np.testing.assert_array_equal(seg, np.repeat(segment_params["seg"],
+                                                     segment_params["reps"]))
+        np.testing.assert_allclose(
+            stat, np.repeat(np.stack([segment_params["means"],
+                                      segment_params["medians"]], axis=1),
+                            segment_params["reps"], axis=0))
