@@ -194,4 +194,4 @@ from .bayes_offline import (BayesOffline, ConstPrior, ConstPriorNumba,
                             FullCovObsLikelihoodNumba)
 from .bayes_online import (BayesOnline, ConstHazard, ConstHazardNumba,
                            StudentT, StudentTNumba)
-from .plot import plot_changepoints
+from .utils import plot_changepoints
