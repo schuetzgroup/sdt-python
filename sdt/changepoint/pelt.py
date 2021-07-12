@@ -232,7 +232,7 @@ class Pelt:
     """
     cost_map = dict(l1=(CostL1, CostL1Numba), l2=(CostL2, CostL2Numba))
 
-    def __init__(self, cost="l2", min_size=2, jump=5, cost_params={},
+    def __init__(self, cost="l2", min_size=2, jump=1, cost_params={},
                  engine="numba"):
         """Parameters
         ----------
