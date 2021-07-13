@@ -584,7 +584,7 @@ class TestPeltNumba(TestPelt):
         super().test_find_changepoints()
 
 
-@pytest.fixture(params=["simple", "masking", "stat_margin",
+@pytest.fixture(params=["simple", "masking", "masking all", "stat_margin",
                         "masking+stat_margin", "no changepoint",
                         "NaN+array", "NaN+func", "masking+NaN",
                         "multivariate", "masking+multivariate"])
@@ -608,6 +608,14 @@ def segment_params(request):
         ret["means"] = [19.0, 9.75, 0.5]
         ret["medians"] = [19.0, 9.75, 0.5]
         ret["reps"] = [4, 3, 4]
+    elif request.param == "masking all":
+        ret["mask"] = np.zeros_like(data, dtype=bool)
+        ret["cp_arr"] = np.array([], dtype=int)
+        ret["cp_func"] = lambda x: np.array([], dtype=int)
+        ret["seg"] = [-1]
+        ret["means"] = [np.NaN]
+        ret["medians"] = [np.NaN]
+        ret["reps"] = len(data)
     elif request.param == "stat_margin":
         ret["stat_margin"] = 1
         ret["means"] = [21.0, 9.75, 1.0/3.0]

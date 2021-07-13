@@ -125,8 +125,9 @@ def segment_stats(data: np.ndarray,
         stat_funcs = tuple(stat_funcs)
         stat_axis = True
 
-    # Cannot find changepoints if there are NaNs
-    if callable(changepoints) and np.any(~np.isfinite(m_data)):
+    # Cannot find changepoints if there are NaNs or if there is no data
+    if ((callable(changepoints) and np.any(~np.isfinite(m_data))) or
+            len(m_data) < 1):
         shape = [len(data) if return_len == "data" else 1]
         if stat_axis:
             shape.append(len(stat_funcs))
