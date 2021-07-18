@@ -56,6 +56,51 @@ def gaussian_mixture_split(data: pd.DataFrame, n_components: int,
     return labels
 
 
+def apply_track_filters(tracks: pd.DataFrame, include_negative: bool = False,
+                        ignore: Union[str, Sequence[str]] = [],
+                        ret_type: str = "data"
+                        ) -> Union[pd.DataFrame, np.array]:
+    """Apply filters to `tracks`
+
+    This removes all entries from `tracks` that have been marked
+    as filtered via a ``"filter"`` column.
+
+    Parameters
+    ----------
+    include_negative
+        If `False`, include only entries for which all ``"filter"`` column
+        values are zero. If `True`, include also entries with negative
+        ``"filter"`` column values.
+    ignore
+        ``"filter"`` column(s) to ignore when deciding whether to include an
+        entry or not. For instance, setting ``ignore="bleach_step"`` will not
+        consider the ``("filter", "bleach_step")`` column values.
+    ret_type
+        If ``"data"``, return a copy of `tracks` excluding all entries that
+        have been marked as filtered, i.e., that have a positive (or nonzero,
+        see the `include_negative` parameter) entry in any ``"filter"`` column.
+        If ``"mask"``, return a boolean array indicating whether an entry is to
+        be removed or not
+
+    Returns
+    -------
+    Copy of `tracks` with all filtered rows removed or corresponding boolean
+    mask.
+    """
+    if "filter" in tracks.columns:
+        flt = tracks["filter"].drop(ignore, axis=1)
+        if include_negative:
+            mask = flt > 0
+        else:
+            mask = flt != 0
+        mask = ~np.any(mask, axis=1)
+    else:
+        mask = np.ones(len(tracks), dtype=bool)
+    if ret_type == "data":
+        return tracks[mask].copy()
+    return mask
+
+
 class SmFRETAnalyzer:
     """Class for analyzing and filtering of smFRET data
 
@@ -326,18 +371,8 @@ class SmFRETAnalyzer:
         Copy of :py:attr:`tracks` with all filtered rows removed or
         corresponding boolean mask.
         """
-        if "filter" in self.tracks.columns:
-            flt = self.tracks["filter"].drop(ignore, axis=1)
-            if include_negative:
-                mask = flt > 0
-            else:
-                mask = flt != 0
-            mask = ~np.any(mask, axis=1)
-        else:
-            mask = np.ones(len(self.tracks), dtype=bool)
-        if ret_type == "data":
-            return self.tracks[mask].copy()
-        return mask
+        return apply_track_filters(self.tracks, include_negative, ignore,
+                                   ret_type)
 
     def mass_changepoints(self, channel: str,
                           stats: Union[Callable, str,

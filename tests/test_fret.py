@@ -390,6 +390,7 @@ class TestSmFRETAnalyzer:
         return fret.SmFRETAnalyzer(df)
 
     def test_update_filter(self, ana2):
+        """fret.SmFRETAnalyzer._update_filter"""
         n = len(ana2.tracks)
 
         # First filtering
@@ -419,6 +420,7 @@ class TestSmFRETAnalyzer:
                                       flt3)
 
     def test_apply_filters(self, ana1):
+        """fret.apply_track_filters, fret.SmFRETAnalyzer.apply_filters"""
         t = ana1.tracks
         f1 = np.zeros(len(t), dtype=bool)
         f1[::3] = True
@@ -433,27 +435,30 @@ class TestSmFRETAnalyzer:
         t["filter", "f2"] = 0
         t.loc[f2, ("filter", "f2")] = 1
 
-        r = ana1.apply_filters()
-        pd.testing.assert_frame_equal(r, t[~(f1 | f1_neg | f2)])
-        r = ana1.apply_filters(ret_type="mask")
-        np.testing.assert_array_equal(r, ~(f1 | f1_neg | f2))
-        r = ana1.apply_filters(include_negative=True)
-        pd.testing.assert_frame_equal(r, t[~(f1 | f2)])
-        r = ana1.apply_filters(include_negative=True, ret_type="mask")
-        np.testing.assert_array_equal(r, ~(f1 | f2))
-        r = ana1.apply_filters(ignore="f1")
-        pd.testing.assert_frame_equal(r, t[~f2])
-        r = ana1.apply_filters(ignore="f1", ret_type="mask")
-        np.testing.assert_array_equal(r, ~f2)
-        r = ana1.apply_filters(ignore="f2")
-        pd.testing.assert_frame_equal(r, t[~(f1 | f1_neg)])
-        r = ana1.apply_filters(ignore="f2", ret_type="mask")
-        np.testing.assert_array_equal(r, ~(f1 | f1_neg))
-        r = ana1.apply_filters(include_negative=True, ignore="f2")
-        pd.testing.assert_frame_equal(r, t[~f1])
-        r = ana1.apply_filters(include_negative=True, ignore="f2",
-                               ret_type="mask")
-        np.testing.assert_array_equal(r, ~f1)
+        def atf(*args, **kwargs):
+            return fret.apply_track_filters(ana1.tracks, *args, **kwargs)
+
+        for func in ana1.apply_filters, atf:
+            r = func()
+            pd.testing.assert_frame_equal(r, t[~(f1 | f1_neg | f2)])
+            r = func(ret_type="mask")
+            np.testing.assert_array_equal(r, ~(f1 | f1_neg | f2))
+            r = func(include_negative=True)
+            pd.testing.assert_frame_equal(r, t[~(f1 | f2)])
+            r = func(include_negative=True, ret_type="mask")
+            np.testing.assert_array_equal(r, ~(f1 | f2))
+            r = func(ignore="f1")
+            pd.testing.assert_frame_equal(r, t[~f2])
+            r = func(ignore="f1", ret_type="mask")
+            np.testing.assert_array_equal(r, ~f2)
+            r = func(ignore="f2")
+            pd.testing.assert_frame_equal(r, t[~(f1 | f1_neg)])
+            r = func(ignore="f2", ret_type="mask")
+            np.testing.assert_array_equal(r, ~(f1 | f1_neg))
+            r = func(include_negative=True, ignore="f2")
+            pd.testing.assert_frame_equal(r, t[~f1])
+            r = func(include_negative=True, ignore="f2", ret_type="mask")
+            np.testing.assert_array_equal(r, ~f1)
 
     def test_mass_changepoints(self):
         """fret.SmFRETAnalyzer.mass_changepoints"""

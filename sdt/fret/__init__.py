@@ -91,6 +91,7 @@ Helpers
 -------
 .. autofunction:: numeric_exc_type
 .. autofunction:: gaussian_mixture_split
+.. autofunction:: apply_track_filters
 
 References
 ----------
