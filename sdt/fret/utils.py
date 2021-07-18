@@ -4,12 +4,6 @@
 
 """Module containing tools related to images from FRET experiments"""
 from contextlib import contextmanager
-import math
-
-import numpy as np
-import pandas as pd
-
-from .. import config
 
 
 @contextmanager
