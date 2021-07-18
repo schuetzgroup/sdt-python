@@ -20,11 +20,11 @@ Examples
 
 Load data for tracking:
 
->>> chromatic_corr = sdt.chromatic.Corrector.load("cc.npz")
->>> donor_loc = sdt.io.load("donor.h5")
->>> acceptor_loc = sdt.io.load("acceptor.h5")
->>> donor_img = pims.open("donor.tif")
->>> acceptor_img = pims.open("acceptor.tif")
+>>> chromatic_corr = multicolor.Registrator.load("cc.npz")
+>>> donor_loc = io.load("donor.h5")
+>>> acceptor_loc = io.load("acceptor.h5")
+>>> donor_img = io.ImageSequence("donor.tif").open()
+>>> acceptor_img = io.ImageSequence("acceptor.tif").open()
 
 Tracking of single molecule FRET signals. This involves merging features
 from donor and acceptor channels, the actual tracking, getting the
@@ -38,14 +38,11 @@ Now these data can be analyzed and filtered. Calculate FRET-related quantities
 such as FRET efficiency, stoichiometry, etc.:
 
 >>> ana = SmFRETAnalyzer(trc)
->>> ana.analyze(trc)
+>>> ana.calc_fret_values()
 
-Let us reject any tracks where the
-acceptor does not bleach in a single step and additionally remove all
-features after the bleaching step:
+Let us reject any tracks where the acceptor does not bleach in a single step:
 
->>> ana.acceptor_bleach_step(brightness_thresh=100, penalty=1e6,
-...                          truncate=True)
+>>> ana.acceptor_bleach_step("acceptor")
 
 Remove any tracks where the mass upon acceptor excitation does not exceed
 500 counts at least once
@@ -63,12 +60,6 @@ attribute.
 Draw a scatter plot of FRET efficiency vs. stoichiometry:
 
 >>> smfret_scatter({"data1": filt.tracks}, ("fret", "eff), ("fret", "stoi"))
-
-To get only the direct acceptor excitation images from ``acceptor_img``,
-use :py:class:`FrameSelector`:
-
->>> sel = FrameSelector("dddda")
->>> acc_direct = sel(acceptor_img, "a")
 
 
 Tracking
