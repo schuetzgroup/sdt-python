@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+from .sm_analyzer import apply_track_filters
 from .. import loc, config, plot
 
 
@@ -68,6 +69,7 @@ def smfret_scatter(track_data, xdata=("fret", "eff"), ydata=("fret", "stoi"),
         fig = ax.flatten()[0].figure
 
     for (k, f), a in zip(track_data.items(), ax.flatten()):
+        f = apply_track_filters(f)
         if frame is not None:
             f = f[f["donor", "frame"] == frame]
         x = f[xdata].values.astype(float)
@@ -176,6 +178,7 @@ def smfret_hist(track_data, data=("fret", "eff"), frame=None, columns=2,
     for (g_key, items), a in zip(grouped.items(), ax.flatten()):
         show_legend = False
         for label, f in items:
+            f = apply_track_filters(f)
             if frame is not None:
                 f = f[f["donor", "frame"] == frame]
             x = f[data].values.astype(float)
@@ -243,6 +246,7 @@ def draw_track(tracks, track_no, donor_img, acceptor_img, size, n_cols=8,
         This means, if your DataFrame has coordinate columns "x" and "z", set
         ``columns={"coords": ["x", "z"]}``.
     """
+    tracks = apply_track_filters(tracks, include_negative=False)
     if figure is None:
         figure = plt.gcf()
 
