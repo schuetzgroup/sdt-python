@@ -838,9 +838,9 @@ class SmFRETAnalyzer:
                 if stop is not None:
                     t_mask[cur[t_col] >= stop] = False
 
-                fk = filtered[k].to_numpy()
+                fk = filtered[k].to_numpy(copy=True)
                 fk[t_mask] = np.maximum(filt[t_mask], fk[t_mask])
-                filtered[k] = fk
+                filtered.loc[k] = fk
             filtered = filtered.to_numpy()
         self._update_filter(filtered, reason)
 
