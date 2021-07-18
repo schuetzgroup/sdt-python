@@ -35,9 +35,9 @@ class AdaptiveOptions(ipywidgets.GridBox):
         self._block_size_sel = ipywidgets.IntText(
             value=65, description="block size")
         self._c_sel = ipywidgets.FloatText(
-            value=-5, description="const offset")
+            value=-2, description="const offset")
         self._smoothing_sel = ipywidgets.FloatText(
-            value=1.5, description="smooth", step=0.1)
+            value=3.0, description="smooth", step=0.1)
         self._method_sel = ipywidgets.Dropdown(
             options=["mean", "gaussian"], description="adaptive method")
 
