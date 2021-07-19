@@ -1138,7 +1138,6 @@ class SmFRETAnalyzer:
         """
         trc = self.apply_filters()
         trc = trc[(trc["fret", "exc_type"] == "d") &
-                  (trc["fret", "has_neighbor"] == 0) &
                   (trc["fret", "a_seg"] == 0) &
                   (trc["fret", "d_seg"] == 0)]
 
@@ -1147,20 +1146,63 @@ class SmFRETAnalyzer:
                                            random_seed=random_seed)[0]
             trc = trc[split == component]
 
-        i_da = trc["acceptor", self.columns["mass"]]
-        i_dd = trc["donor", self.columns["mass"]]
-        i_aa = trc["fret", "a_mass"]
-        f_da = i_da - self.leakage * i_dd - self.direct_excitation * i_aa
+        tmp_ana = SmFRETAnalyzer(trc)
+        tmp_ana.leakage = self.leakage
+        tmp_ana.direct_excitation = self.direct_excitation
+        tmp_ana.detection_eff = self.detection_eff
+        tmp_ana.fret_correction()
 
-        if isinstance(self.detection_eff, pd.Series):
-            gamma = self.detection_eff.reindex(trc["fret", "particle"]).values
-        else:
-            gamma = self.detection_eff
-
-        f_dd = gamma * i_dd
-
-        s_gamma = np.nanmean((f_dd + f_da) / (f_dd + f_da + i_aa))
+        s_gamma = trc["fret", "stoi"].mean()
         self.excitation_eff = (1 - s_gamma) / s_gamma
+
+    def calc_detection_excitation_effs(
+            self, n_components: int,
+            components: Optional[Sequence[int]] = None, random_seed: int = 0):
+        r"""Get detection and excitation efficiency from multi-state sample
+
+        States are found in efficiency-vs.-stoichiometry space using a
+        Gaussian mixture fit. Detection efficiency factor :math:`\gamma` and
+        excitation efficiency factor :math:`\delta` are found performing a
+        linear fit to the equation
+
+        .. math:: S^{-1} = 1 + \beta\gamma + (1 - \gamma}\beta E
+
+        to the Gaussian mixture fit results, where :math:`S` are the
+        components' mean stoichiometries (corrected for leakage and direct
+        excitation) and :math:`E` are the corresponding FRET efficiencies
+        (also corrected for leakage and direct excitation) [Hell2018]_.
+
+        Parameters
+        ----------
+        n_components
+            Number of components for Gaussian mixture model
+        components
+            List of indices of components to use for the linear fit. If `None`,
+            use all.
+        random_seed
+            Seed for the random number generator used to initialize the
+            Gaussian mixture model fit.
+        """
+        trc = self.apply_filters()
+
+        tmp_ana = SmFRETAnalyzer(trc)
+        tmp_ana.leakage = self.leakage
+        tmp_ana.direct_excitation = self.direct_excitation
+        tmp_ana.fret_correction()
+
+        trc = trc[(trc["fret", "exc_type"] == "d") &
+                  (trc["fret", "a_seg"] == 0) &
+                  (trc["fret", "d_seg"] == 0)]
+
+        split = gaussian_mixture_split(
+            trc, n_components, columns=[("fret", "eff"), ("fret", "stoi")],
+            random_seed=random_seed)[1]
+        if components is None:
+            components = slice(None)
+        b, a = np.polyfit(split[components, 0], 1 / split[components, 1],
+                          deg=1)
+        self.detection_eff = (a - 1) / (a + b - 1)
+        self.excitation_eff = a + b - 1
 
     def fret_correction(self, invalid_nan: bool = True):
         r"""Apply corrections to calculate real FRET-related values

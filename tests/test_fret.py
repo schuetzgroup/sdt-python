@@ -1103,13 +1103,11 @@ class TestSmFRETAnalyzer:
         i_dd = np.array([300.] * sz1 + [1000.] * sz2)
         i_aa = np.array([1000.] * sz1 + [0.] * sz2)
         et = pd.Series(["d"] * (sz1 + sz2), dtype="category")
-        hn = np.zeros(sz1 + sz2, dtype=int)
         a = np.array([0] * sz1 + [1] * sz2)
         data = pd.DataFrame({("donor", "mass"): i_dd,
                              ("acceptor", "mass"): i_da,
                              ("fret", "a_mass"): i_aa,
                              ("fret", "exc_type"): et,
-                             ("fret", "has_neighbor"): hn,
                              ("fret", "a_seg"): a,
                              ("fret", "d_seg"): 0,
                              ("fret", "particle"): 0,
@@ -1141,13 +1139,11 @@ class TestSmFRETAnalyzer:
         i_dd = np.array([300.] * sz1 + [1000.] * sz2)
         i_aa = np.array([1000.] * sz1 + [0.] * sz2)
         et = pd.Series(["d"] * (sz1 + sz2), dtype="category")
-        hn = np.zeros(sz1 + sz2, dtype=int)
         a = np.array([0] * sz1 + [1] * sz2)
         data = pd.DataFrame({("donor", "mass"): i_dd,
                              ("acceptor", "mass"): i_da,
                              ("fret", "a_mass"): i_aa,
                              ("fret", "exc_type"): et,
-                             ("fret", "has_neighbor"): hn,
                              ("fret", "a_seg"): a,
                              ("fret", "d_seg"): 0,
                              ("fret", "particle"): 0})
@@ -1178,6 +1174,63 @@ class TestSmFRETAnalyzer:
         f_dd = 300 * 0.5
         i_aa = 1000
         assert ana.excitation_eff == pytest.approx(i_aa / (f_dd + f_da))
+
+    @pytest.mark.skipif(not sklearn_available, reason="sklearn not available")
+    def test_calc_detection_excitation_effs(self):
+        """fret.SmFRETAnalyzer.calc_detection_excitation_effs"""
+        rs = np.random.RandomState(0)
+        dd1 = rs.normal(2000, 30, 10000)  # 0.3 FRET eff
+        da1 = rs.normal(1000, 30, 10000)
+        aa1 = rs.normal(3000, 30, 10000)  # 0.5 stoi
+
+        # First component
+        d1 = pd.DataFrame({("donor", "frame"): np.arange(len(dd1)),
+                           ("donor", "mass"): dd1,
+                           ("acceptor", "mass"): da1,
+                           ("fret", "a_mass"): aa1,
+                           ("fret", "particle"): 0,
+                           ("fret", "exc_type"): pd.Series(["d"] * len(dd1),
+                                                           dtype="category"),
+                           ("fret", "d_seg"): 0,
+                           ("fret", "a_seg"): 0})
+        # Second component
+        d2 = d1.copy()
+        d2["fret", "particle"] = 1
+        d2["donor", "mass"] = da1
+        d2["acceptor", "mass"] = dd1
+        # Bogus component
+        d3 = d1.copy()
+        d3["fret", "particle"] = 2
+        d3["donor", "mass"] /= 2
+
+        trc = pd.concat([d1, d2, d3], ignore_index=True)
+
+        leak = 0.05
+        direct = 0.1
+        det = 0.95
+        exc = 1.2
+
+        trc["donor", "mass"] /= det
+        trc["fret", "a_mass"] *= exc
+        trc["acceptor", "mass"] += (leak * trc["donor", "mass"] +
+                                    direct * trc["fret", "a_mass"])
+
+        # Test using the two "good" components
+        ana = fret.SmFRETAnalyzer(trc[trc["fret", "particle"] != 2],
+                                  copy=True, reset_filters=False)
+        ana.leakage = leak
+        ana.direct_excitation = direct
+        ana.calc_detection_excitation_effs(2)
+        assert ana.detection_eff == pytest.approx(det, abs=0.001)
+        assert ana.excitation_eff == pytest.approx(exc, abs=0.001)
+
+        # Test using with all three "good" components, excluding the bad one
+        ana = fret.SmFRETAnalyzer(trc, copy=True, reset_filters=False)
+        ana.leakage = leak
+        ana.direct_excitation = direct
+        ana.calc_detection_excitation_effs(3, [0, 2])
+        assert ana.detection_eff == pytest.approx(det, abs=0.001)
+        assert ana.excitation_eff == pytest.approx(exc, abs=0.001)
 
     def test_fret_correction(self):
         """fret.SmFRETAnalyzer.fret_correction"""
