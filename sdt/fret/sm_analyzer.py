@@ -19,7 +19,8 @@ from .. import flatfield, helper, changepoint, config, roi
 def gaussian_mixture_split(data: pd.DataFrame, n_components: int,
                            columns: Sequence[Tuple[str, str]] = [
                                ("fret", "eff_app"), ("fret", "stoi_app")],
-                           random_seed: int = 0) -> np.ndarray:
+                           random_seed: int = 0
+                           ) -> Tuple[np.ndarray, np.ndarray]:
     """Fit Gaussian mixture model and predict component for each particle
 
     First, all datapoints are used to fit a Gaussian mixture model. Then each
@@ -41,7 +42,8 @@ def gaussian_mixture_split(data: pd.DataFrame, n_components: int,
 
     Returns
     -------
-    Component label for each entry in `data`.
+    Component label for each entry in `data` and mean values for each
+    component, one line per component.
     """
     from sklearn.mixture import GaussianMixture
 
@@ -51,9 +53,10 @@ def gaussian_mixture_split(data: pd.DataFrame, n_components: int,
     d = d[valid]
     gmm = GaussianMixture(n_components=n_components, random_state=rs).fit(d)
     labels = gmm.predict(d)
-    sorter = np.argsort(np.argsort(gmm.means_[:, 0])[::-1])
+    mean_sort_idx = np.argsort(gmm.means_[:, 0])[::-1]
+    sorter = np.argsort(mean_sort_idx)
     labels = sorter[labels]  # sort according to descending mean
-    return labels
+    return labels, gmm.means_[mean_sort_idx]
 
 
 def apply_track_filters(tracks: pd.DataFrame, include_negative: bool = False,
@@ -1141,7 +1144,7 @@ class SmFRETAnalyzer:
 
         if n_components > 1:
             split = gaussian_mixture_split(trc, n_components,
-                                           random_seed=random_seed)
+                                           random_seed=random_seed)[0]
             trc = trc[split == component]
 
         i_da = trc["acceptor", self.columns["mass"]]

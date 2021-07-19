@@ -1220,13 +1220,14 @@ class TestSmFRETAnalyzer:
 def test_gaussian_mixture_split():
     """fret.gaussian_mixture_split"""
     rnd = np.random.RandomState(0)
-    c1 = rnd.normal((0.1, 0.8), 0.1, (20, 2))
-    c2 = rnd.normal((0.9, 0.5), 0.1, (20, 2))
-    d = np.concatenate([c1[:15], c2[:5], c1[15:], c2[5:]])
-    d = pd.DataFrame({("fret", "particle"): [0] * 20 + [1] * 20,
+    c1 = rnd.normal((0.1, 0.8), 0.1, (2000, 2))
+    c2 = rnd.normal((0.9, 0.5), 0.1, (2000, 2))
+    d = np.concatenate([c1[:1500], c2[:500], c1[1500:], c2[500:]])
+    d = pd.DataFrame({("fret", "particle"): [0] * len(c1) + [1] * len(c2),
                       ("fret", "eff_app"): d[:, 0],
                       ("fret", "stoi_app"): d[:, 1]})
 
-    split = fret.gaussian_mixture_split(d, 2)
+    labels, means = fret.gaussian_mixture_split(d, 2)
     np.testing.assert_array_equal(
-        split, [1] * 15 + [0] * 5 + [1] * 5 + [0] * 15)
+        labels, [1] * 1500 + [0] * 500 + [1] * 500 + [0] * 1500)
+    np.testing.assert_allclose(means, [[0.9, 0.5], [0.1, 0.8]], atol=0.005)
