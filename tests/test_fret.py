@@ -460,6 +460,37 @@ class TestSmFRETAnalyzer:
             r = func(include_negative=True, ignore="f2", ret_type="mask")
             np.testing.assert_array_equal(r, ~f1)
 
+    def test_reset_filters(self, ana1):
+        """fret.SmFRETAnalyzer.reset_filters"""
+        t = ana1.tracks.copy()
+
+        # Reset without "filter columns"
+        ana1.tracks = t.copy()
+        ana1.reset_filters()
+        pd.testing.assert_frame_equal(ana1.tracks, t)
+
+        # Reset all
+        t["filter", "f1"] = 0
+        t["filter", "f2"] = -1
+        t["filter", "f3"] = 1
+
+        ana1.tracks = t.copy()
+        ana1.reset_filters()
+        pd.testing.assert_frame_equal(ana1.tracks, t.drop(columns="filter"))
+
+        # Keep single
+        for k in "f2", ["f2"]:
+            ana1.tracks = t.copy()
+            ana1.reset_filters(keep=k)
+        pd.testing.assert_frame_equal(
+            ana1.tracks, t.drop(columns=[("filter", "f1"), ("filter", "f3")]))
+
+        # Keep multiple
+        ana1.tracks = t.copy()
+        ana1.reset_filters(keep=["f1", "f3"])
+        pd.testing.assert_frame_equal(
+            ana1.tracks, t.drop(columns=("filter", "f2")))
+
     def test_mass_changepoints(self):
         """fret.SmFRETAnalyzer.mass_changepoints"""
         # NaNs cause bogus changepoints using Pelt; if segment_a_mass
@@ -509,7 +540,8 @@ class TestSmFRETAnalyzer:
                     tracks["fret", f"a_seg_{s}"],
                     r.tolist() + [np.NaN] * len(fd) * 2)
 
-        ana = fret.SmFRETAnalyzer(fret_data, cp_detector=cp_det)
+        ana = fret.SmFRETAnalyzer(fret_data, cp_detector=cp_det,
+                                  reset_filters=False)
 
         # Test stats
         mean1_data = np.repeat([6001.923076923077, 2.2, 5003.625],
@@ -992,7 +1024,7 @@ class TestSmFRETAnalyzer:
              ("fret", "particle"): [0, 0, 0, 0, 0, 0],
              ("filter", "test"): [0, 0, 0, 0, 0, 1]}
         d = pd.DataFrame(d)
-        ana = fret.SmFRETAnalyzer(d, "d")
+        ana = fret.SmFRETAnalyzer(d, "d", reset_filters=False)
         ana.calc_fret_values()
         ana.calc_leakage()
         assert ana.leakage == pytest.approx(0.1)
@@ -1008,7 +1040,7 @@ class TestSmFRETAnalyzer:
              ("fret", "particle"): [0, 0, 0, 0, 0, 0, 0],
              ("filter", "test"): [0, 0, 0, 0, 0, 0, 1]}
         d = pd.DataFrame(d)
-        ana = fret.SmFRETAnalyzer(d, "da")
+        ana = fret.SmFRETAnalyzer(d, "da", reset_filters=False)
         ana.calc_fret_values(a_mass_interp="nearest-up")
         ana.calc_direct_excitation()
         assert ana.direct_excitation == pytest.approx(0.03)
@@ -1050,7 +1082,8 @@ class TestSmFRETAnalyzer:
         d6["filter", "test"] = 1
 
         ana = fret.SmFRETAnalyzer(
-            pd.concat([d1, d2, d3, d4, d5, d6], ignore_index=True), "d")
+            pd.concat([d1, d2, d3, d4, d5, d6], ignore_index=True), "d",
+            reset_filters=False)
 
         ana.calc_detection_eff(3, "individual")
         pd.testing.assert_series_equal(
@@ -1086,7 +1119,8 @@ class TestSmFRETAnalyzer:
         data2["donor", "mass"] = 10 * i_dd
         data2["filter", "test"] = 1
         ana = fret.SmFRETAnalyzer(
-            pd.concat([data, data2], ignore_index=True), "d")
+            pd.concat([data, data2], ignore_index=True), "d",
+            reset_filters=False)
         ana.leakage = 0.2
         ana.direct_excitation = 0.1
         ana.detection_eff = 0.5
@@ -1133,7 +1167,7 @@ class TestSmFRETAnalyzer:
         data_all["fret", "eff_app"] = d[:, 0]
         data_all["fret", "stoi_app"] = d[:, 1]
 
-        ana = fret.SmFRETAnalyzer(data_all, "d")
+        ana = fret.SmFRETAnalyzer(data_all, "d", reset_filters=False)
         ana.leakage = 0.2
         ana.direct_excitation = 0.1
         ana.detection_eff = 0.5

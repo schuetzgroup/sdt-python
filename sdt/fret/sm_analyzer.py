@@ -152,7 +152,9 @@ class SmFRETAnalyzer:
 
     @config.set_columns
     def __init__(self, tracks: pd.DataFrame, cp_detector: Optional[Any] = None,
-                 copy: bool = False, columns: Dict = {}):
+                 copy: bool = False, reset_filters: bool = True,
+                 keep_filters: Union[str, Iterable[str]] = [],
+                 columns: Dict = {}):
         """Parameters
         ----------
         tracks
@@ -162,10 +164,18 @@ class SmFRETAnalyzer:
             Changepoint detetctor. If `None`, create a
             :py:class:`changepoint.Pelt` instance with ``model="l2"``,
             ``min_size=1``, and ``jump=1``.
+        copy
+            If `True`, copy `tracks` to the :py:attr:`tracks` attribute.
+        reset_filters
+            If `True`, reset filters in :py:attr:`tracks`. See also
+            :py:meth:`reset_filters`.
+        keep_filters
+            Filter columns to keep upon resetting. See also
+            :py:meth:`reset_filters`.
 
         Other parameters
         ----------------
-        columns : dict, optional
+        columns
             Override default column names as defined in
             :py:attr:`config.columns`. Relevant names are `coords` and `time`.
             This means, if your DataFrame has
@@ -174,6 +184,8 @@ class SmFRETAnalyzer:
             parameters sets the :py:attr:`columns` attribute.
         """
         self.tracks = tracks.copy() if copy else tracks
+        if reset_filters:
+            self.reset_filters(keep=keep_filters)
         if cp_detector is None:
             cp_detector = changepoint.Pelt("l2", min_size=1, jump=1)
         self.cp_detector = cp_detector
@@ -186,6 +198,25 @@ class SmFRETAnalyzer:
         self.excitation_eff = 1.
 
         self._reason_counter = defaultdict(lambda: 0)
+
+    def reset_filters(self, keep: Union[str, Iterable[str]] = []):
+        """Reset filters
+
+        This drops filter columns from :py:attr:`tracks`.
+
+        Parameters
+        ----------
+        keep
+            Filter column name(s) to keep
+        """
+        if "filter" not in self.tracks:
+            return
+        if isinstance(keep, str):
+            keep = [keep]
+        cols = self.tracks.columns.get_loc_level("filter")[1]
+        rm_cols = np.setdiff1d(cols, keep)
+        self.tracks.drop(columns=[("filter", c) for c in rm_cols],
+                         inplace=True)
 
     def calc_fret_values(self, keep_d_mass: bool = False,
                          invalid_nan: bool = True,
