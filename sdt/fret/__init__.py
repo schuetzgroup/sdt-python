@@ -47,7 +47,7 @@ Let us reject any tracks where the acceptor does not bleach in a single step:
 Remove any tracks where the mass upon acceptor excitation does not exceed
 500 counts at least once
 
->>> ana.filter_particles("fret_a_mass > 500", 1)
+>>> ana.query_particles("fret_a_mass > 500", 1)
 
 Accept only localizations that lie in pixels where the boolean mask is `True`:
 

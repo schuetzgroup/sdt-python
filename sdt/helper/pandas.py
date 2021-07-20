@@ -69,7 +69,7 @@ def split_dataframe(df: pd.DataFrame, split_column: Any,
         (fast). If ``"array_list"``, return split data as a list of arrays.
         Each list entry corresponds to one column (also fast, preserves
         columns' dtype).
-        If ``"DataFrame"``, return :py:class:`pandas.DataFrame`s (slow).
+        If ``"DataFrame"``, return :py:class:`pandas.DataFrame` (slow).
     keep_index
         If `True`, the index of the DataFrame `df` will is prependend to the
         columns of the split array. Only applicable if ``type="array"`` or

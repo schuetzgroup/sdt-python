@@ -149,7 +149,7 @@ class SmFRETAnalyzer:
     beteen donor and acceptor fluorophore; :math:`\beta` in [Hell2018].
     """
     columns: Dict
-    """Column names to use in DataFrames. See :py:func:`config.set_columns
+    """Column names to use in DataFrames. See :py:func:`config.set_columns`
     for details.
     """
 
@@ -453,8 +453,8 @@ class SmFRETAnalyzer:
         Pass ``penalty=1e6`` to the changepoint detector's
         ``find_changepoints`` method, perform detection both channels:
 
-        >>> ana.segment_mass("donor", penalty=1e6)
-        >>> ana.segment_mass("acceptor", penalty=1e6)
+        >>> ana.mass_changepoints("donor", penalty=1e6)
+        >>> ana.mass_changepoints("acceptor", penalty=1e6)
         """
         time_col = ("donor", self.columns["time"])
         tmp_mask_col = ("__tmp__", "__sdt_mask__")
@@ -784,17 +784,17 @@ class SmFRETAnalyzer:
         Remove any particles where not ("fret", "a_mass") > 500 at least twice
         from :py:attr:`tracks`.
 
-        >>> filt.filter_particles("fret_a_mass > 500", 2)
+        >>> filt.query_particles("fret_a_mass > 500", 2)
 
         Remove any particles where ("fret", "a_mass") <= 500 in more than one
         frame:
 
-        >>> filt.filter_particles("fret_a_mass > 500", -1)
+        >>> filt.query_particles("fret_a_mass > 500", -1)
 
         Remove any particle where not ("fret", "a_mass") > 500 for at least
         75 % of the particle's data points, with a minimum of two data points:
 
-        >>> filt.filter_particles("fret_a_mass > 500", 2, min_rel=0.75)
+        >>> filt.query_particles("fret_a_mass > 500", 2, min_rel=0.75)
         """
         pre_filtered = self.apply_filters()
         e = self._eval(pre_filtered, expr, mi_sep).to_numpy()
@@ -945,7 +945,7 @@ class SmFRETAnalyzer:
         molecules. In this case, the leakage :math:`alpha` can be
         computed using the formula [Hell2018]_
 
-        .. math:: \alpha = \frac{\lange E_\text{app}\rangle}{1 -
+        .. math:: \alpha = \frac{\langle E_\text{app}\rangle}{1 -
             \langle E_\text{app}\rangle},
 
         where :math:`\langle E_\text{app}\rangle` is the mean apparent FRET
@@ -975,7 +975,7 @@ class SmFRETAnalyzer:
         molecules. In this case, the direct acceptor excitation :math:`delta`
         can be computed using the formula [Hell2018]_
 
-        .. math:: \alpha = \frac{\lange S_\text{app}\rangle}{1 -
+        .. math:: \alpha = \frac{\langle S_\text{app}\rangle}{1 -
             \langle S_\text{app}\rangle},
 
         where :math:`\langle ES\text{app}\rangle` is the mean apparent FRET
@@ -1165,7 +1165,7 @@ class SmFRETAnalyzer:
         excitation efficiency factor :math:`\delta` are found performing a
         linear fit to the equation
 
-        .. math:: S^{-1} = 1 + \beta\gamma + (1 - \gamma}\beta E
+        .. math:: S^{-1} = 1 + \beta\gamma + (1 - \gamma)\beta E
 
         to the Gaussian mixture fit results, where :math:`S` are the
         components' mean stoichiometries (corrected for leakage and direct
@@ -1215,21 +1215,22 @@ class SmFRETAnalyzer:
         :math:`\gamma`, and excitation efficiencies :math:`\beta`
         using [Hell2018]_
 
-        .. math:: F_\text{DA} = I_\text{DA} - \alpha I_\text{DD} - \delta
+        .. math:: F_\text{DA} &= I_\text{DA} - \alpha I_\text{DD} - \delta
             I_\text{AA} \\
-            F_\text{DD} = \gamma I_\text{DD} \\
-            F_\text{AA} = I_\text{AA} / \beta
+            F_\text{DD} &= \gamma I_\text{DD} \\
+            F_\text{AA} &= I_\text{AA} / \beta
 
         the real FRET efficiency and stoichiometry values can be calculated:
 
-        .. math:: E = \frac{F_\text{DA}}{F_\text{DA} + F_\text{DD} \\
-            S =  \frac{F_\text{DA} + F_\text{DD}{F_\text{DA} + F_\text{DD +
+        .. math:: E &= \frac{F_\text{DA}}{F_\text{DA} + F_\text{DD}} \\
+            S &=  \frac{F_\text{DA} + F_\text{DD}}{F_\text{DA} + F_\text{DD} +
             F_\text{AA}}
 
         :math:`F_\text{DA}` will be appended to :py:attr:`tracks` as the
-        ("fret", "f_da") column; :math:`F_\text{DD}` as ("fret", "f_dd");
-        :math:`F_\text{DA}` as ("fret", "f_aa"); :math:`E` as ("fret", "eff");
-        and :math:`S` as ("fret", "stoi").
+        ``("fret", "f_da")`` column; :math:`F_\text{DD}` as
+        ``("fret", "f_dd")``; :math:`F_\text{DA}` as ``("fret", "f_aa")``;
+        :math:`E` as ``("fret", "eff")``; and :math:`S` as ``("fret",
+        "stoi")``.
 
         Parameters
         ----------
