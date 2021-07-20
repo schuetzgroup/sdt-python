@@ -13,6 +13,24 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+17.0
+----
+
+- Improvements to :py:mod:`helper.numba`
+- Add function for computing smallest enclosing circle
+- :py:mod:`gui` fixes
+- Add :py:class:`PanelLabel` class for labeling subpanels in plots
+- Add `dataframe_mask` method to ROI classes
+- Add :py:func:`changepoint.segment_stats` for calculation of segments'
+  statistics in time traces
+- :py:class:`changepoint.Pelt`: Set `jump=1` as default (API break)
+- :py:func:`helper.split_dataframe`: Support list of columns as output
+- :py:class:`fret.SmFRETAnalyzer`: Instead of removing filtered data, just mark
+  as filtered (API break)
+- Add method to calculate detection and excitation efficiency corrections
+  from a multi-state sample to :py:class:`fret.SmFRETAnalyzer`
+
+
 16.1
 ----
 
