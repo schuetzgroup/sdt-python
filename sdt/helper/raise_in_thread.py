@@ -4,7 +4,6 @@
 
 import ctypes
 import sys
-import threading
 
 
 def raise_in_thread(thread_id: int, exception_type: type):
