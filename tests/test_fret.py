@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 from io import StringIO
+import itertools
 
 import pandas as pd
 import numpy as np
@@ -1002,17 +1003,27 @@ class TestSmFRETAnalyzer:
         d["acceptor", "signal"] = d["acceptor", "mass"] / 5
         d["fret", "exc_type"] = pd.Series(list("dada"), dtype="category")
 
-        ana = fret.SmFRETAnalyzer(d, "da")
-        ana.flatfield_correction(corr1, corr2)
+        ana = fret.SmFRETAnalyzer(d.copy(), "da")
 
-        np.testing.assert_allclose(ana.tracks["donor", "mass"],
-                                   [20, 20, 30, 120])
-        np.testing.assert_allclose(ana.tracks["donor", "signal"],
-                                   ana.tracks["donor", "mass"] / 10)
-        np.testing.assert_allclose(ana.tracks["acceptor", "mass"],
-                                   [40, 30, 40, 150])
-        np.testing.assert_allclose(ana.tracks["acceptor", "signal"],
-                                   ana.tracks["acceptor", "mass"] / 5)
+        for _ in range(2):
+            # Run twice to ensure that flatfield corrections are not applied
+            # on top of each other
+            ana.flatfield_correction(corr1, corr2)
+
+            for chan, col in itertools.product(["donor", "acceptor"],
+                                               ["signal", "mass"]):
+                src = f"{col}_pre_flat"
+                assert (chan, src) in ana.tracks
+                np.testing.assert_allclose(ana.tracks[chan, src], d[chan, col])
+
+            np.testing.assert_allclose(ana.tracks["donor", "mass"],
+                                       [20, 20, 30, 120])
+            np.testing.assert_allclose(ana.tracks["donor", "signal"],
+                                       ana.tracks["donor", "mass"] / 10)
+            np.testing.assert_allclose(ana.tracks["acceptor", "mass"],
+                                       [40, 30, 40, 150])
+            np.testing.assert_allclose(ana.tracks["acceptor", "signal"],
+                                       ana.tracks["acceptor", "mass"] / 5)
 
     def test_calc_leakage(self):
         """fret.SmFRETAnalyzer.calc_leakage"""

@@ -917,26 +917,42 @@ class SmFRETAnalyzer:
                              acceptor_corr: flatfield.Corrector):
         """Apply flatfield correction to donor and acceptor localization data
 
-        This affects only the donor and acceptor "mass" and "signal" columns.
-        Any values derived from those need to be recalculated manually.
+        If present, donor and acceptor ``f"{self.columns['mass']}_pre_flat"``
+        and ``f"{self.columns['signal']}_pre_flat"`` columns are used as inputs
+        for flatfield correction, results are written to
+        ``self.columns["mass"]`` and `self.columns["signal"]``.
+        Otherwise, ``self.columns["mass"]`` and `self.columns["signal"]`` are
+        copied to ``f"{self.columns['mass']}_pre_flat"``
+        and ``f"{self.columns['signal']}_pre_flat"`` first.
+
+        Any values derived from those (e.g., apparent FRET efficiencies) need
+        to be recalculated manually.
 
         Parameters
         ----------
         donor_corr, acceptor_corr
             Corrector instances for donor and acceptor channel, respectivey.
         """
-        corr_cols = list(itertools.product(
+        dest_cols = list(itertools.product(
             ("donor", "acceptor"),
             (self.columns["mass"], self.columns["signal"])))
+        src_cols = [(c[0], f"{c[1]}_pre_flat") for c in dest_cols]
+
+        for src, dest in zip(src_cols, dest_cols):
+            # If source columns (i.e., "{col}_pre_flat") do not exist, create
+            # them
+            if src not in self.tracks:
+                self.tracks[src] = self.tracks[dest]
 
         for chan, corr in (("donor", donor_corr), ("acceptor", acceptor_corr)):
             typ = chan[0]
             coord_cols = [(chan, col) for col in self.columns["coords"]]
 
             sel = self.tracks["fret", "exc_type"] == typ
-            c = corr(self.tracks[sel], columns={"coords": coord_cols,
-                                                "corr": corr_cols})
-            self.tracks.loc[sel, corr_cols] = c[corr_cols]
+            c = corr(self.tracks[sel],
+                     columns={"coords": coord_cols, "corr": src_cols})
+            for src, dest in zip(src_cols, dest_cols):
+                self.tracks.loc[sel, dest] = c[src]
 
     def calc_leakage(self):
         r"""Calculate donor leakage (bleed-through) into the acceptor channel
