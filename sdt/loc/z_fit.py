@@ -10,6 +10,7 @@ being circular, it becomes elliptic. This can used to deteremine the z
 position of the emitter.
 """
 import collections
+from pathlib import Path
 
 import numpy as np
 import yaml
@@ -240,7 +241,7 @@ class Parameters(object):
 
         s["z range"] = self.z_range
 
-        if isinstance(file, str):
+        if isinstance(file, (str, Path)):
             with open(file, "w") as f:
                 f.write(self._file_header)
                 f.write(yaml.dump(s, Dumper=_ParameterDumper))
@@ -262,7 +263,7 @@ class Parameters(object):
         Parameters
             Class instance with parameters loaded from file
         """
-        if isinstance(file, str):
+        if isinstance(file, (str, Path)):
             with open(file, "r") as f:
                 s = yaml.safe_load(f)
         else:

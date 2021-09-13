@@ -6,8 +6,10 @@
 
 Provides the standard :py:func:`locate` and :py:func:`batch` functions.
 """
-import warnings
+import contextlib
 import multiprocessing
+from pathlib import Path
+import warnings
 
 import numpy as np
 import pandas as pd
@@ -110,7 +112,7 @@ def locate(raw_image, radius, model, threshold, z_params=None,
     if model == "z":
         if z_params is None:
             raise ValueError("Need to specify `z_params`")
-        if isinstance(z_params, str):
+        if isinstance(z_params, (str, Path)):
             z_params = z_fit.Parameters.load(z_params)
         elif isinstance(z_params, pd.DataFrame):
             z_params = z_fit.Parameters.calibrate(z_params)
@@ -182,6 +184,10 @@ def locate(raw_image, radius, model, threshold, z_params=None,
 
     if hasattr(raw_image, "frame_no") and raw_image.frame_no is not None:
         df["frame"] = raw_image.frame_no
+    else:
+        with contextlib.suppress(AttributeError, KeyError):
+            # for frames from io.ImageSequence
+            df["frame"] = raw_image.meta["frame_no"]
 
     return df
 
