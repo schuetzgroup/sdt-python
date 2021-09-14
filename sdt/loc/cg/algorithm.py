@@ -22,8 +22,7 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
     """Locate bright, Gaussian-like features in an image
 
     This implements an algorithm proposed by Crocker & Grier [Croc1996]_ and is
-    based on the implementation by the Kilfoil group, see
-    http://people.umass.edu/kilfoil/tools.php
+    based on the implementation by the Kilfoil group [Gao2009]_.
 
     This is the actual implementation. Usually, one would not call this
     directly but the wrapper functions :py:func:`api.locate` and
