@@ -6,6 +6,7 @@
 import collections
 
 import numpy as np
+import scipy
 
 from ...image import filters
 from .find import find
@@ -14,62 +15,6 @@ from .find import find
 peak_params = ["x", "y", "mass", "size", "ecc"]
 ColumnNums = collections.namedtuple("ColumnNums", peak_params)
 col_nums = ColumnNums(**{k: v for v, k in enumerate(peak_params)})
-
-
-def make_margin(image, margin):
-    """Draw a margin of zeros around an image
-
-    Parameters
-    ----------
-    image : numpy.ndarray
-        image data
-    margin : int
-        margin size
-
-    Returns
-    -------
-    numpy.ndarray
-        image with margin
-    """
-    img_with_margin = np.zeros(np.array(image.shape) + 2*margin)
-    img_with_margin[margin:-margin, margin:-margin] = image
-    return img_with_margin
-
-
-def shift_image(image, shift):
-    """Shift an image
-
-    Work similarly to ``scipy.ndimage.shift`` with ``order=1`` but behaves
-    somewhat differently at the edges.
-
-    Parameters
-    ----------
-    image : np.ndarray
-        image data
-    shift : tuple of float
-        Shift amount for each axis
-
-    Returns
-    -------
-    np.ndarray
-        Shifted image
-    """
-    shift = np.array(shift)
-    # split into integer and fractional part s. t. 0. <= fractional part < 1.
-    int_shift = np.floor(shift).astype(int)
-    frac_shift = shift - int_shift
-
-    # 2D linear interpolation
-    img = np.roll(np.roll(image, int_shift[0], 0), int_shift[1], 1)
-    img_0 = np.roll(img, 1, 0)
-    img_1 = np.roll(img, 1, 1)
-    img_01 = np.roll(img_0, 1, 1)
-
-    ret = (1-frac_shift[0]) * (1-frac_shift[1]) * img
-    ret += frac_shift[0] * (1-frac_shift[1]) * img_0
-    ret += (1-frac_shift[0]) * frac_shift[1] * img_1
-    ret += frac_shift[0] * frac_shift[1] * img_01
-    return ret
 
 
 def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
@@ -118,10 +63,6 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
 
     peaks_found = find(image, radius, signal_thresh)
 
-    # draw margin to make sure we can always apply the masks created below
-    image = make_margin(image, radius)
-    peaks_found += radius
-
     # create masks
     range_c = np.arange(-radius, radius + 1)
     range_sq = range_c**2
@@ -135,17 +76,25 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
     cos_mask[radius, radius] = 0.
     sin_mask = np.sin(2*theta_mask) * feat_mask
     sin_mask[radius, radius] = 0.
-    # x coordinate of every point, starting at 1
-    x_mask = np.arange(1, 2*radius + 2)[np.newaxis, :] * feat_mask
-    # y coordinate of every point, starting at 1
+    # x coordinate of every point
+    x_mask = np.arange(2*radius + 1)[np.newaxis, :] * feat_mask
+    # y coordinate of every point
     y_mask = x_mask.T
 
     # create output structure
     ret = np.empty((len(peaks_found), len(col_nums)))
     # boolean array that will tell us whether the estimated mass is greater
     # than mass_thresh
-    bright_enough = np.ones(len(peaks_found), dtype=bool)
+    valid = np.ones(len(peaks_found), dtype=bool)
     for i, (x, y) in enumerate(peaks_found):
+        if not (radius + 1 <= x < raw_image.shape[1] - radius - 1 and
+                radius + 1 <= y < raw_image.shape[0] - radius - 1):
+            # Too close to the edge. For shifting (below), a region with a
+            # radius of ``radius + 1`` around the peak has to be within the
+            # image.
+            valid[i] = False
+            continue
+
         # region of interest for this peak
         roi = image[y-radius:y+radius+1, x-radius:x+radius+1]
 
@@ -154,22 +103,23 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
 
         if m <= mass_thresh:
             # not bright enough, no further treatment
-            bright_enough[i] = False
+            valid[i] = False
             continue
 
         # estimate subpixel position by calculating center of mass
-        # \sum_{i, j=1}^{2*radius+1} (i, j) * image(x+i, y+j)
-        # then subtract the coordinate of the center (i. e. radius + 1 since
-        # coordinates start at 1) — this is the way the original implementation
-        # does it
-        dx = np.sum(roi * x_mask)/m - (radius + 1)
-        dy = np.sum(roi * y_mask)/m - (radius + 1)
+        # \sum_{i, j=0}^{2*radius} (i, j) * image(x+i, y+j)  then subtract the
+        # coordinate of the center (i. e. radius)
+        dx = np.sum(roi * x_mask) / m - radius
+        dy = np.sum(roi * y_mask) / m - radius
 
         xc = x + dx
         yc = y + dy
 
-        # shift the image
-        shifted_img = shift_image(roi, (-dy, -dx))
+        # Shift the image. This needs a larger ROI.
+        shifted_img = scipy.ndimage.shift(
+            image[y-radius-1:y+radius+2, x-radius-1:x+radius+2].astype(float),
+            (-dy, -dx), order=1, cval=np.NaN)
+        shifted_img = shifted_img[1:-1, 1:-1]  # crop to `roi` dimensions
 
         # calculate peak properties
         # mass
@@ -187,13 +137,11 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
         ret[i, col_nums.ecc] = ecc
 
         # peak center, like above
-        dx = np.sum(shifted_img * x_mask)/m - (radius + 1)
-        dy = np.sum(shifted_img * y_mask)/m - (radius + 1)
+        dx = np.sum(shifted_img * x_mask) / m - radius
+        dy = np.sum(shifted_img * y_mask) / m - radius
         ret[i, col_nums.x] = xc + dx
         ret[i, col_nums.y] = yc + dy
 
-    # remove peaks that are not brighter than mass_thresh
-    ret = ret[bright_enough]
-    # correct for margin
-    ret[:, [col_nums.x, col_nums.y]] -= radius
+    # remove peaks that are not brighter than mass_thresh or close to edges
+    ret = ret[valid]
     return ret
