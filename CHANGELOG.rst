@@ -13,6 +13,18 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+17.1
+----
+
+- Prevent performing flatfield correction multiple times in
+  :py:class:`fret.SmFRETAnalyzer`
+- Localization algorithms now use frame numbers provided by
+  :py:class:`io.ImageSequence`.
+- Fix edge handling and improve subpixel shift in py:mod:`loc.cg`. In
+  particular, peaks close to image edges are ignored instead of (badly)
+  guessing the missing data.
+
+
 17.0
 ----
 
