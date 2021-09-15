@@ -3,8 +3,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """Function to restrict peak localization to a ROI"""
-import warnings
-
 import numpy as np
 
 from ...helper import Slicerator
@@ -93,16 +91,9 @@ def restrict_roi(locate_func, buffer=10):
         img_roi = PathROI(roi, buffer)
         feat_roi = PathROI(roi, no_image=True)
 
-        if "reset_origin" in kwargs:
-            warnings.warn(
-                "The `reset_origin` parameter is deprecated and will be "
-                "removed in the future. Use `rel_origin` instead.",
-                np.VisibleDeprecationWarning)
-            rel_origin = kwargs.pop("reset_origin")
-        else:
-            rel_origin = kwargs.pop("rel_origin", True)
+        rel_origin = kwargs.pop("rel_origin", True)
 
-        loc = locate_func(img_roi(data, fill_value=np.mean), *args[:-2],
+        loc = locate_func(img_roi(data, fill_value=np.mean), *args[:3],
                           bandpass=False, **kwargs)
 
         # since we cropped the image, we have to add to the coordinates
