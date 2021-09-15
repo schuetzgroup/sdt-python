@@ -58,11 +58,8 @@ def make_batch(locate_func):
         all_features = []
         for i, img in enumerate(frames):
             features = locate_func(img, *args, **kwargs)
-
-            if not hasattr(img, "frame_no") or img.frame_no is None:
+            if "frame" not in features:
                 features["frame"] = i
-                # otherwise it has been set in locate()
-
             all_features.append(features)
 
         if all_features:

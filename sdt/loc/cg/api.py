@@ -6,12 +6,13 @@
 
 Provides the standard :py:func:`locate` and :py:func:`batch` functions.
 """
+import contextlib
+
 import pandas as pd
 
-from . import algorithm
-from .algorithm import col_nums
+from . import algorithm, restrict_roi
 from .. import make_batch
-from . import restrict_roi
+from .algorithm import col_nums
 
 
 def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
@@ -65,11 +66,15 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
 
     if hasattr(raw_image, "frame_no") and raw_image.frame_no is not None:
         df["frame"] = raw_image.frame_no
+    else:
+        with contextlib.suppress(AttributeError, KeyError):
+            # for frames from io.ImageSequence
+            df["frame"] = raw_image.meta["frame_no"]
 
     return df
 
 
-# Multihreaded version makes it slower, use the single threaded one
+# Multihreaded version is slower, use the single threaded one
 batch = make_batch.make_batch(locate)
 locate_roi = restrict_roi.restrict_roi(locate)
 batch_roi = restrict_roi.restrict_roi(batch)

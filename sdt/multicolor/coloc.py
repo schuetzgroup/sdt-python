@@ -281,7 +281,7 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
         Minimum number of matched localizations per track pair. Defaults to 3
     rel_threshold : float, optional
         Minimum fraction of matched localizations that have to belong to the
-        same pair of tracks. E. g., if localizations of  aparticle in the
+        same pair of tracks. E. g., if localizations of a particle in the
         first channel match five localizations of a particle in the second
         channel, and there are eight frames between the first and the last
         match, that fraction would be 5/8. Defaults to 0.75.
