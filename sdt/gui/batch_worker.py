@@ -2,8 +2,9 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import enum
 import traceback
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, List, Optional, Union
 
 from PyQt5 import QtCore, QtQuick, QtQml
 
@@ -18,6 +19,13 @@ class BatchWorker(QtQuick.QQuickItem):
     This is useful when some calculation should be done with each entry of
     a dataset.
     """
+    class ErrorPolicy(enum.IntEnum):
+        """What to do if an error occurs while processing a dataset entry."""
+        Abort = 0
+        Continue = enum.auto()
+
+    QtCore.Q_ENUM(ErrorPolicy)
+
     def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
         ----------
@@ -37,6 +45,8 @@ class BatchWorker(QtQuick.QQuickItem):
         self._curIndex = -1
         self._curDsetIndex = -1
         self._curDset = None
+        self._errorPolicy = self.ErrorPolicy.Abort
+        self._errLst = []
 
     datasetChanged = QtCore.pyqtSignal()
     """:py:attr:`dataset` was changed"""
@@ -159,7 +169,41 @@ class BatchWorker(QtQuick.QQuickItem):
         """Number of processed dataset entries"""
         return self._progress
 
+    errorPolicyChanged = QtCore.pyqtSignal()
+    """:py:attr:`errorPolicy` was changed"""
+
+    @QtCore.pyqtProperty(ErrorPolicy, notify=errorPolicyChanged)
+    def errorPolicy(self) -> ErrorPolicy:
+        return self._errorPolicy
+
+    @errorPolicy.setter
+    def errorPolicy(self, ep: ErrorPolicy):
+        if self._errorPolicy == ep:
+            return
+        self._errorPolicy = ep
+        self.errorPolicyChanged.emit()
+
+    _errorListChanged = QtCore.pyqtSignal()
+    """:py:attr:`_errorList` was changed"""
+
+    @QtCore.pyqtProperty(list, notify=_errorListChanged)
+    def _errorList(self) -> Union[List[str], List[int]]:
+        """Data items for which errors were encountered.
+
+        If :py:attr:`displayRole` was set, this contains the corresponding
+        entries, otherwise indices are used.
+        """
+        return self._errLst
+
+    isRunningChanged = QtCore.pyqtSignal()
+    """:py:attr:`isRunning` was changed"""
+
+    @QtCore.pyqtProperty(bool, notify=isRunningChanged)
+    def isRunning(self):
+        return self._worker is not None and self._worker.enabled
+
     _currentItemChanged = QtCore.pyqtSignal()
+    """:py:attr:`_currentItem` was changed"""
 
     @QtCore.pyqtProperty(str, notify=_currentItemChanged)
     def _currentItem(self) -> str:
@@ -188,6 +232,9 @@ class BatchWorker(QtQuick.QQuickItem):
         self._curIndex = 0
         self._curDsetIndex = 0
 
+        self._errLst = []
+        self._errorListChanged.emit()
+
         if cnt != self._count:
             self._count = cnt
             self.countChanged.emit()
@@ -195,6 +242,7 @@ class BatchWorker(QtQuick.QQuickItem):
         self._worker = ThreadWorker(self._func, enabled=True)
         self._worker.finished.connect(self._workerFinished)
         self._worker.error.connect(self._workerError)
+        self.isRunningChanged.emit()
 
         if self._progress > 0:
             self._progress = 0
@@ -212,6 +260,7 @@ class BatchWorker(QtQuick.QQuickItem):
             return
         self._worker.enabled = False
         self._worker = None
+        self.isRunningChanged.emit()
 
     def _nextCall(self):
         """Process next dataset entry"""
@@ -249,10 +298,22 @@ class BatchWorker(QtQuick.QQuickItem):
             self.abort()
 
     def _workerError(self, exc):
-        # TODO: error handling
         tb = traceback.TracebackException.from_exception(exc)
         print("".join(tb.format()))
-        self.abort()
+
+        self._errLst.append(self._currentItem or self._progress + 1)
+        self._errorListChanged.emit()
+
+        if self._errorPolicy == self.ErrorPolicy.Continue:
+            self._progress += 1
+            self._curIndex += 1
+            self.progressChanged.emit()
+            if self.progress < self._count:
+                self._nextCall()
+            else:
+                self.abort()
+        else:
+            self.abort()
 
 
 QtQml.qmlRegisterType(BatchWorker, "SdtGui.Templates", 0, 1, "BatchWorker")
