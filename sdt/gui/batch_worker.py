@@ -31,10 +31,11 @@ class BatchWorker(QtQuick.QQuickItem):
         self._argRoles = []
         self._kwargRoles = []
         self._resultRole = ""
+        self._displayRole = ""
         self._count = -1
         self._progress = 0
-        self._curIndex = 0
-        self._curDsetIndex = 0
+        self._curIndex = -1
+        self._curDsetIndex = -1
         self._curDset = None
 
     datasetChanged = QtCore.pyqtSignal()
@@ -125,6 +126,21 @@ class BatchWorker(QtQuick.QQuickItem):
         self._resultRole = r
         self.resultRoleChanged.emit()
 
+    displayRoleChanged = QtCore.pyqtSignal()
+    """:py:attr:`displayRole` was changed"""
+
+    @QtCore.pyqtProperty(str, notify=displayRoleChanged)
+    def displayRole(self) -> str:
+        """Role to use for displaying currently processed item"""
+        return self._displayRole
+
+    @displayRole.setter
+    def displayRole(self, r: str):
+        if self._displayRole == r:
+            return
+        self._displayRole = r
+        self.displayRoleChanged.emit()
+
     countChanged = QtCore.pyqtSignal()
     """:py:attr:`count` was changed"""
 
@@ -142,6 +158,16 @@ class BatchWorker(QtQuick.QQuickItem):
     def progress(self) -> int:
         """Number of processed dataset entries"""
         return self._progress
+
+    _currentItemChanged = QtCore.pyqtSignal()
+
+    @QtCore.pyqtProperty(str, notify=_currentItemChanged)
+    def _currentItem(self) -> str:
+        """Currently processed item to be displayed beneath progress bar"""
+        if (not self._displayRole or self._curDset is None or
+                self._curIndex < 0):
+            return ""
+        return self._curDset.get(self._curIndex, self._displayRole)
 
     @QtCore.pyqtSlot()
     def start(self):
@@ -179,6 +205,9 @@ class BatchWorker(QtQuick.QQuickItem):
     @QtCore.pyqtSlot()
     def abort(self):
         """Abort processing"""
+        self._curIndex = -1
+        self._curDsetIndex = -1
+        self._curDset = None
         if self._worker is None:
             return
         self._worker.enabled = False
@@ -190,6 +219,7 @@ class BatchWorker(QtQuick.QQuickItem):
             self._curDsetIndex += 1
             self._curIndex = 0
             self._curDset = self._dataset.get(self._curDsetIndex, "dataset")
+        self._currentItemChanged.emit()
 
         args = [self._curDset.get(self._curIndex, r) for r in self._argRoles]
         kwargs = {r: self._curDset.get(self._curIndex, r)

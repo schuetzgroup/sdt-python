@@ -25,9 +25,14 @@ T.BatchWorker {
             Layout.fillWidth: true
         }
         Label {
-            text: (root.count != root.progress ?
-                   "Processing " + (root.progress + 1) + " of " + root.count + "…" :
-                   "Finished.")
+            text: {
+                if (root.count != root.progress) {
+                    var ret = "Processing " + (root.progress + 1) + " of " + root.count + "…"
+                    var ci = root._currentItem
+                    return ci ? ret + "\n(" + ci + ")" : ret
+                }
+                return "Finished."
+            }
         }
     }
 }
