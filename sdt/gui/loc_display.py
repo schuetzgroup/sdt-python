@@ -86,6 +86,7 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
             return
         self._scaleFactor = fac
         self.scaleFactorChanged.emit(fac)
+        self._makeCircles()
 
     def _makeCircles(self):
         """Create circles marking localizations
