@@ -53,8 +53,14 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
         self._scaleFactor = 1.0
         self._circles = []
         self._color = QtGui.QColor(QtCore.Qt.yellow)
+        self._markerSize = 0.0
 
     color = SimpleQtProperty(QtGui.QColor)
+    """Color of the markers"""
+    markerSize = SimpleQtProperty(float)
+    """Size (radius) of the markers. If less than or equal to 0.0, use the
+    sizes from :py:attr:`locData`.
+    """
 
     locDataChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Localization data was changed"""
@@ -99,9 +105,13 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
             vals = np.empty((len(self._locData), 4))
             for i, axis in enumerate(["x", "y"]):
                 sz_col = f"size_{axis}"
-                sizes = self._locData[sz_col if sz_col in self._locData.columns
-                                      else "size"]
-                sizes = sizes.to_numpy() * self.scaleFactor
+                if self._markerSize > 1e-2:
+                    sizes = np.full(len(self._locData), self._markerSize)
+                else:
+                    sizes = self._locData[
+                        sz_col if sz_col in self._locData.columns else "size"
+                        ].to_numpy(copy=True)
+                sizes *= self.scaleFactor
                 coords = self._locData[axis] * self.scaleFactor - sizes
                 vals[:, i] = coords
                 vals[:, i+2] = 2 * sizes
