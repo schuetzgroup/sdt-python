@@ -15,7 +15,10 @@ from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import matplotlib as mpl
 import matplotlib.backend_bases as mpl_bases
 import matplotlib.backends.backend_agg as mpl_agg
-import matplotlib.backends.backend_qt5 as mpl_qt5
+try:
+    import matplotlib.backends.backend_qt as mpl_qt  # mpl >= 3.5
+except ImportError:
+    import matplotlib.backends.backend_qt5 as mpl_qt
 
 
 def mpl_use_qt_font():
@@ -32,9 +35,9 @@ def mpl_use_qt_font():
     mpl.rcParams["axes.titlesize"] = "medium"
 
 
-mouse_button_map: Dict[int, int] = mpl_qt5.FigureCanvasQT.buttond
-special_key_map: Dict[int, str] = mpl_qt5.SPECIAL_KEYS
-modifier_key_map: Dict[int, int] = dict(mpl_qt5._MODIFIER_KEYS)
+mouse_button_map: Dict[int, int] = mpl_qt.FigureCanvasQT.buttond
+special_key_map: Dict[int, str] = mpl_qt.SPECIAL_KEYS
+modifier_key_map: Dict[int, int] = dict(mpl_qt._MODIFIER_KEYS)
 
 
 def keyEventToMpl(event: QtGui.QKeyEvent) -> str:
