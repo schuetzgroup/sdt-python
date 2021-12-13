@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import collections
+from typing import Mapping, Sequence
 
 import pandas as pd
 import numpy as np
@@ -64,9 +65,10 @@ def find_closest_pairs(coords1, coords2, max_dist):
 
 
 @config.set_columns
-def find_colocalizations(features1, features2, max_dist=2.,
-                         keep_non_coloc=False, channel_names=_channel_names,
-                         columns={}):
+def find_colocalizations(features1: pd.DataFrame, features2: pd.DataFrame,
+                         max_dist: float = 2.0, keep_unmatched: bool = False,
+                         channel_names: Sequence[str] =_channel_names,
+                         columns: Mapping = {}, **kwargs):
     """Match localizations in one channel to localizations in another
 
     For every localization in `features1` find localizations in
@@ -75,16 +77,15 @@ def find_colocalizations(features1, features2, max_dist=2.,
 
     Parameters
     ----------
-    features1, features2 : pandas.DataFrame
+    features1, features2
         Localization data
-    max_dist : float, optional
+    max_dist
         Maximum distance between features to still be considered colocalizing.
-        Defaults to 2.
-    keep_non_coloc : bool, optional
+    keep_unmatched
         If True, also keep non-colocalized features in the result DataFrame.
         Non-colocalized features have NaNs in the columns of the channel they
-        don't appear in. Defaults to False.
-    channel_names : list of str, optional
+        don't appear in.
+    channel_names
         Names of the two channels.
 
     Returns
@@ -96,13 +97,19 @@ def find_colocalizations(features1, features2, max_dist=2.,
 
     Other parameters
     ----------------
-    columns : dict, optional
+    columns
         Override default column names as defined in :py:attr:`config.columns`.
         Relevant names are `coords` and `time`. This means,
         if your DataFrame has coordinate columns "x" and "z" and the time
         column "alt_frame", set ``columns={"coords": ["x", "z"],
         "time": "alt_frame"}``.
+    keep_non_coloc
+        Deprecated alias for `keep_unmatched`
     """
+    keep_unmatched = kwargs.pop("keep_non_coloc", keep_unmatched)
+    if kwargs:
+        raise TypeError("gut an unexpected keyword argument.")
+
     cols = columns["coords"] + [columns["time"]]
     p1_mat = features1[cols].values
     p2_mat = features2[cols].values
@@ -132,7 +139,7 @@ def find_colocalizations(features1, features2, max_dist=2.,
     pairs1 = features1.iloc[pairs1_idx].reset_index(drop=True)
     pairs2 = features2.iloc[pairs2_idx].reset_index(drop=True)
 
-    if keep_non_coloc:
+    if keep_unmatched:
         start_idx = pairs1.index.max() + 1 if len(pairs1) else 0
         if len(pairs1) != len(features1):
             non_coloc_mask1 = np.ones(len(features1), dtype=bool)

@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-# -*- coding: utf-8 -*-
 import unittest
 import os
 
@@ -101,64 +100,63 @@ class TestMulticolor(unittest.TestCase):
         np.testing.assert_allclose(merged, [1, 2, 4, 5])
 
 
-class TestFindColocalizations(unittest.TestCase):
-    def setUp(self):
+class TestFindColocalizations:
+    @pytest.fixture
+    def pos(self):
         a = np.array([[10, 20, 10, 2],
                       [10, 20, 10, 0],
                       [15, 15, 10, 0],
                       [10, 20, 10, 1]], dtype=float)
-        self.pos1 = pd.DataFrame(a, columns=["x", "y", "z", "frame"])
+        pos1 = pd.DataFrame(a, columns=["x", "y", "z", "frame"])
         b = np.array([[10, 21, 10, 0],
                       [40, 50, 10, 0],
                       [18, 20, 10, 0],
                       [10, 20, 30, 1],
                       [17, 30, 10, 1],
                       [20, 30, 40, 3]], dtype=float)
-        self.pos2 = pd.DataFrame(b, columns=["x", "y", "z", "frame"])
+        pos2 = pd.DataFrame(b, columns=["x", "y", "z", "frame"])
+        return pos1, pos2
 
-    def test_channel_names(self):
+    def test_channel_names(self, pos):
         """multicolor.find_colocalizations: Channel names"""
         ch_names = ["ch1", "ch2"]
-        pairs = multicolor.find_colocalizations(
-            self.pos1, self.pos2, channel_names=ch_names)
+        pairs = multicolor.find_colocalizations(*pos, channel_names=ch_names)
         np.testing.assert_equal(pairs.columns.levels[0].tolist(), ch_names)
 
-    def test_pairs(self):
+    def test_pairs(self, pos):
         """multicolor.find_colocalizations: 2D data"""
-        pairs = multicolor.find_colocalizations(
-            self.pos1, self.pos2, 2)
+        pairs = multicolor.find_colocalizations(*pos, 2)
 
-        exp = pd.concat([self.pos1.iloc[[1, 3]].reset_index(drop=True),
-                         self.pos2.iloc[[0, 3]].reset_index(drop=True)],
+        exp = pd.concat([pos[0].iloc[[1, 3]].reset_index(drop=True),
+                         pos[1].iloc[[0, 3]].reset_index(drop=True)],
                         keys=["channel1", "channel2"], axis=1)
-        np.testing.assert_allclose(pairs, exp)
+        pd.testing.assert_frame_equal(pairs, exp)
 
-    def test_pairs_3d(self):
+    def test_pairs_3d(self, pos):
         """multicolor.find_colocalizations: 3D data"""
         pairs = multicolor.find_colocalizations(
-            self.pos1, self.pos2, 2, columns={"coords": ["x", "y", "z"]})
+            *pos, 2, columns={"coords": ["x", "y", "z"]})
 
-        exp = pd.concat([self.pos1.iloc[[1]].reset_index(drop=True),
-                         self.pos2.iloc[[0]].reset_index(drop=True)],
+        exp = pd.concat([pos[0].iloc[[1]].reset_index(drop=True),
+                         pos[1].iloc[[0]].reset_index(drop=True)],
                         keys=["channel1", "channel2"], axis=1)
-        np.testing.assert_allclose(pairs, exp)
+        pd.testing.assert_frame_equal(pairs, exp)
 
-    def test_keep_noncoloc(self):
+    def test_keep_unmatched(self, pos):
         """multicolor.find_colocalizations: Keep non-colocalized"""
-        pairs = multicolor.find_colocalizations(
-            self.pos1, self.pos2, keep_non_coloc=True)
+        pairs = multicolor.find_colocalizations(*pos, keep_unmatched=True)
 
-        exp = pd.concat([self.pos1.iloc[[1, 3]].reset_index(drop=True),
-                         self.pos2.iloc[[0, 3]].reset_index(drop=True)],
+        exp = pd.concat([pos[0].iloc[[1, 3]].reset_index(drop=True),
+                         pos[1].iloc[[0, 3]].reset_index(drop=True)],
                         keys=["channel1", "channel2"], axis=1)
 
-        nc1 = self.pos1.drop([1, 3])
+        nc1 = pos[0].drop([1, 3])
         nc1.index = [2, 3]
-        ch1 = self.pos1.iloc[[1, 3]].reset_index(drop=True).append(nc1)
+        ch1 = pos[0].iloc[[1, 3]].reset_index(drop=True).append(nc1)
 
-        nc2 = self.pos2.drop([0, 3])
+        nc2 = pos[1].drop([0, 3])
         nc2.index = np.arange(5, 9)
-        ch2 = self.pos2.iloc[[0, 3]].reset_index(drop=True).append(nc2)
+        ch2 = pos[1].iloc[[0, 3]].reset_index(drop=True).append(nc2)
 
         exp = pd.concat([ch1, ch2], keys=["channel1", "channel2"], axis=1)
         pd.testing.assert_frame_equal(pairs, exp)
