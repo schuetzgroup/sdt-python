@@ -4,6 +4,7 @@
 
 import collections
 from typing import Mapping, Sequence
+import warnings
 
 import pandas as pd
 import numpy as np
@@ -106,9 +107,12 @@ def find_colocalizations(features1: pd.DataFrame, features2: pd.DataFrame,
     keep_non_coloc
         Deprecated alias for `keep_unmatched`
     """
-    keep_unmatched = kwargs.pop("keep_non_coloc", keep_unmatched)
+    if "keep_non_coloc" in kwargs:
+        warnings.warn("`keep_non_coloc` keyword argument is deprecated. Use "
+                      "`keep_unmatched` instead.", DeprecationWarning)
+        keep_unmatched = kwargs.pop("keep_non_coloc")
     if kwargs:
-        raise TypeError("gut an unexpected keyword argument.")
+        raise TypeError("got an unexpected keyword argument.")
 
     cols = columns["coords"] + [columns["time"]]
     p1_mat = features1[cols].values

@@ -144,10 +144,8 @@ class TestFindColocalizations:
                         keys=["channel1", "channel2"], axis=1)
         pd.testing.assert_frame_equal(pairs, exp)
 
-    def test_keep_unmatched(self, pos):
-        """multicolor.find_colocalizations: Keep non-colocalized"""
-        pairs = multicolor.find_colocalizations(*pos, keep_unmatched=True)
-
+    def _get_unmatched_result(self, pos):
+        """Generate expected result for ``keep_unmatched=True``"""
         nc1 = pos[0].drop([1, 3])
         nc1.index = [2, 3]
         nc2 = pos[1].drop([0, 3])
@@ -163,9 +161,19 @@ class TestFindColocalizations:
         ch2 = pos[1].iloc[[0, 3]].reset_index(drop=True).append(
             [nc2_unmatched, nc2])
 
-        exp = pd.concat([ch1, ch2], keys=["channel1", "channel2"], axis=1
-                        ).reset_index(drop=True)
-        pd.testing.assert_frame_equal(pairs, exp)
+        return pd.concat([ch1, ch2], keys=["channel1", "channel2"], axis=1
+                         ).reset_index(drop=True)
+
+    def test_keep_unmatched(self, pos):
+        """multicolor.find_colocalizations: keep_unmatched=True"""
+        pairs = multicolor.find_colocalizations(*pos, keep_unmatched=True)
+        pd.testing.assert_frame_equal(pairs, self._get_unmatched_result(pos))
+
+    def test_keep_non_coloc(self, pos):
+        """multicolor.find_colocalizations: keep_non_coloc=True"""
+        with pytest.warns(DeprecationWarning):
+            pairs = multicolor.find_colocalizations(*pos, keep_non_coloc=True)
+        pd.testing.assert_frame_equal(pairs, self._get_unmatched_result(pos))
 
 
 class TestCalcPairDistance(unittest.TestCase):
