@@ -69,7 +69,7 @@ def find_closest_pairs(coords1, coords2, max_dist):
 def find_colocalizations(features1: pd.DataFrame, features2: pd.DataFrame,
                          max_dist: float = 2.0, keep_unmatched: bool = False,
                          channel_names: Sequence[str] =_channel_names,
-                         columns: Mapping = {}, **kwargs):
+                         columns: Mapping = {}, **kwargs) -> pd.DataFrame:
     """Match localizations in one channel to localizations in another
 
     For every localization in `features1` find localizations in
@@ -91,10 +91,9 @@ def find_colocalizations(features1: pd.DataFrame, features2: pd.DataFrame,
 
     Returns
     -------
-    pandas.DataFrame
-        The DataFrame has a multi-index for columns with the top level
-        given by the `channel_names` parameter. Each line of DataFrame
-        corresponds to one pair of colocalizing particles.
+    The DataFrame has a multi-index for columns with the top level
+    given by the `channel_names` parameter. Each line of DataFrame
+    corresponds to one pair of colocalizing particles.
 
     Other parameters
     ----------------
