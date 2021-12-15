@@ -136,28 +136,31 @@ def find_colocalizations(features1: pd.DataFrame, features2: pd.DataFrame,
                   np.empty(0, dtype=int))
     pairs2_idx = (np.concatenate(pairs2_idx) if pairs2_idx else
                   np.empty(0, dtype=int))
-    pairs1 = features1.iloc[pairs1_idx].reset_index(drop=True)
-    pairs2 = features2.iloc[pairs2_idx].reset_index(drop=True)
+    pairs = [pd.concat([features1.iloc[pairs1_idx].reset_index(drop=True),
+                        features2.iloc[pairs2_idx].reset_index(drop=True)],
+                       keys=channel_names, axis=1)]
 
     if keep_unmatched:
-        start_idx = pairs1.index.max() + 1 if len(pairs1) else 0
-        if len(pairs1) != len(features1):
+        if len(pairs) != len(features1):
             non_coloc_mask1 = np.ones(len(features1), dtype=bool)
             non_coloc_mask1[pairs1_idx] = False
-            non_coloc1 = features1[non_coloc_mask1].copy()
-            non_coloc1.index = pd.RangeIndex(start_idx,
-                                             start_idx+len(non_coloc1))
-            pairs1 = pd.concat([pairs1, non_coloc1])
-            start_idx += len(non_coloc1) + 1
-        if len(pairs2) != len(features2):
+            non_coloc1 = pd.concat([features1[non_coloc_mask1],
+                                    features2.iloc[:0]],
+                                   keys=channel_names, axis=1)
+            non_coloc1[channel_names[1], columns["time"]] = \
+                non_coloc1[channel_names[0], columns["time"]]
+            pairs.append(non_coloc1)
+        if len(pairs) != len(features2):
             non_coloc_mask2 = np.ones(len(features2), dtype=bool)
             non_coloc_mask2[pairs2_idx] = False
-            non_coloc2 = features2[non_coloc_mask2].copy()
-            non_coloc2.index = pd.RangeIndex(start_idx,
-                                             start_idx+len(non_coloc2))
-            pairs2 = pd.concat([pairs2, non_coloc2])
+            non_coloc2 = pd.concat([features1.iloc[:0],
+                                    features2[non_coloc_mask2]],
+                                   keys=channel_names, axis=1)
+            non_coloc2[channel_names[0], columns["time"]] = \
+                non_coloc2[channel_names[1], columns["time"]]
+            pairs.append(non_coloc2)
 
-    return pd.concat([pairs1, pairs2], keys=channel_names, axis=1)
+    return pd.concat(pairs, ignore_index=True, copy=False)
 
 
 @config.set_columns

@@ -103,18 +103,20 @@ class TestMulticolor(unittest.TestCase):
 class TestFindColocalizations:
     @pytest.fixture
     def pos(self):
-        a = np.array([[10, 20, 10, 2],
-                      [10, 20, 10, 0],
-                      [15, 15, 10, 0],
-                      [10, 20, 10, 1]], dtype=float)
-        pos1 = pd.DataFrame(a, columns=["x", "y", "z", "frame"])
-        b = np.array([[10, 21, 10, 0],
-                      [40, 50, 10, 0],
-                      [18, 20, 10, 0],
-                      [10, 20, 30, 1],
-                      [17, 30, 10, 1],
-                      [20, 30, 40, 3]], dtype=float)
-        pos2 = pd.DataFrame(b, columns=["x", "y", "z", "frame"])
+        a = np.array([[10, 20, 10],
+                      [10, 20, 10],
+                      [15, 15, 10],
+                      [10, 20, 10]], dtype=float)
+        pos1 = pd.DataFrame(a, columns=["x", "y", "z"])
+        pos1["frame"] = [2, 0, 0, 1]
+        b = np.array([[10, 21, 10],
+                      [40, 50, 10],
+                      [18, 20, 10],
+                      [10, 20, 30],
+                      [17, 30, 10],
+                      [20, 30, 40]], dtype=float)
+        pos2 = pd.DataFrame(b, columns=["x", "y", "z"])
+        pos2["frame"] = [0, 0, 0, 1, 1, 3]
         return pos1, pos2
 
     def test_channel_names(self, pos):
@@ -146,19 +148,23 @@ class TestFindColocalizations:
         """multicolor.find_colocalizations: Keep non-colocalized"""
         pairs = multicolor.find_colocalizations(*pos, keep_unmatched=True)
 
-        exp = pd.concat([pos[0].iloc[[1, 3]].reset_index(drop=True),
-                         pos[1].iloc[[0, 3]].reset_index(drop=True)],
-                        keys=["channel1", "channel2"], axis=1)
-
         nc1 = pos[0].drop([1, 3])
         nc1.index = [2, 3]
-        ch1 = pos[0].iloc[[1, 3]].reset_index(drop=True).append(nc1)
-
         nc2 = pos[1].drop([0, 3])
         nc2.index = np.arange(5, 9)
-        ch2 = pos[1].iloc[[0, 3]].reset_index(drop=True).append(nc2)
 
-        exp = pd.concat([ch1, ch2], keys=["channel1", "channel2"], axis=1)
+        nc1_unmatched = nc2.copy()
+        nc1_unmatched[["x", "y", "z"]] = np.NaN
+        nc2_unmatched = nc1.copy()
+        nc2_unmatched[["x", "y", "z"]] = np.NaN
+
+        ch1 = pos[0].iloc[[1, 3]].reset_index(drop=True).append(
+            [nc1, nc1_unmatched])
+        ch2 = pos[1].iloc[[0, 3]].reset_index(drop=True).append(
+            [nc2_unmatched, nc2])
+
+        exp = pd.concat([ch1, ch2], keys=["channel1", "channel2"], axis=1
+                        ).reset_index(drop=True)
         pd.testing.assert_frame_equal(pairs, exp)
 
 
