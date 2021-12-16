@@ -682,6 +682,13 @@ def test_segment_stats(segment_params):
     for cps in (segment_params["cp_arr"], segment_params["cp_func"]):
         if cps is None:
             continue
+        # no statistics
+        seg, _ = changepoint.segment_stats(
+            segment_params["data"], cps, [], segment_params["mask"],
+            segment_params["stat_margin"])
+        np.testing.assert_array_equal(seg, segment_params["seg"])
+
+        # single statistic
         seg, stat = changepoint.segment_stats(
             segment_params["data"], cps, np.mean, segment_params["mask"],
             segment_params["stat_margin"])
