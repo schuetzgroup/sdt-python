@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import collections
-from typing import Mapping, Sequence
+from typing import Mapping, Optional, Sequence, Tuple, Union
 import warnings
 
 import pandas as pd
@@ -277,9 +277,15 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
 
 
 @config.set_columns
-def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
-                     return_data="data", feature_pairs=None, max_dist=2,
-                     channel_names=_channel_names, columns={}):
+def find_codiffusion(tracks1: pd.DataFrame, tracks2: pd.DataFrame(),
+                     abs_threshold: int = 3, rel_threshold: float = 0.75,
+                     return_data: str = "data",
+                     feature_pairs: Optional[pd.DataFrame] = None,
+                     max_dist: float = 2.0, keep_unmatched: str = "gaps",
+                     channel_names: Sequence[str] = _channel_names,
+                     columns: Mapping = {}) -> Union[
+                         pd.DataFrame, np.ndarray,
+                         Tuple[pd.DataFrame, np.ndarray]]:
     """Find codiffusion in tracking data
 
     First, find pairs of localizations, the look up to which tracks they
@@ -287,67 +293,80 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
 
     Parameters
     ----------
-    tracks1, tracks2 : pandas.DataFrame
+    tracks1, tracks2
         Tracking data. In addition to what is required by
         :py:func:`find_colocalizations`, a "particle" column has to be present.
-    abs_threshold : int, optional
-        Minimum number of matched localizations per track pair. Defaults to 3
+    abs_threshold
+        Minimum number of matched localizations per track pair.
     rel_threshold : float, optional
         Minimum fraction of matched localizations that have to belong to the
         same pair of tracks. E. g., if localizations of a particle in the
         first channel match five localizations of a particle in the second
         channel, and there are eight frames between the first and the last
-        match, that fraction would be 5/8. Defaults to 0.75.
-    return_data : {"data", "numbers", "both"}, optional
-        Whether to return the full data of the codiffusing particles, only
-        their particle numbers, or both. Defaults to "data".
-    feature_pairs : pandas.DataFrame or None, optional
+        match, that fraction would be 5/8.
+    return_data
+        Whether to return the full data of the codiffusing particles
+        (``"data"``), only their particle numbers (``"numbers"``), or both
+        (``"both"``).
+    feature_pairs
         If :py:func:`find_colocalizations` has already been called on the
         data, the result can be passed to save re-computation. If `None`,
-        :py:func:`find_colocalizations` is called in this function. Defaults
-        to None
-    max_dist : float, optional
+        :py:func:`find_colocalizations` is called in this function.
+    max_dist
         `max_dist` parameter for :py:func:`find_colocalizations` call.
-        Defaults to 2.
-    channel_names : list of str, optional
-        Names of the two channels. Defaults to ["channel1", "channel2"].
+    keep_unmatched
+        If ``"all"``, also keep all non-colocalized features in the result
+        DataFrame. Non-colocalized features have NaNs in the columns of the
+        channel they don't appear in.If ``"gaps"``, only keep non-colocalized
+        features within codiffusing parts tracks. If ``"none"``, remove all
+        non-colocalized entries.
+    channel_names
+        Names of the two channels.
 
     Returns
     -------
-    data : pandas.DataFrame
-        Full data (from `tracks1` and `tracks2`) of the codiffusing particles.
-        The DataFrame has a multi-index for columns with the top level
-        being the two channels.  Each line of DataFrame corresponds to one pair
-        of colocalizing particles. Returned if `return_data` is "data" or
-        "both".
-    match_numbers : numpy.ndarray, shape=(n, 4)
-        Each row's first entry is a particle number in the first channel and
-        its second entry is the matching particle number in the second channel.
-        Third and fourth columns are start and end frame, respectively.
-        Returned if `return_data` is "numbers" or "both".
+    If `return_data` is ``"data"`` or ``"both"``, a DataFrame with full
+    data (from `tracks1` and `tracks2`) of the codiffusing particles is
+    returned. The DataFrame has a multi-index for columns with the top level
+    being the two channels.  Each line of DataFrame corresponds to one pair of
+    colocalizing particles.
+
+    If `return_data` is ``"numbers"`` or ``"both"``, an array with four
+    columns is returned.
+    Each row's first entry is a particle number in the first channel. The
+    second entry is the matching particle number in the second channel.
+    Third and fourth columns are start and end frame, respectively.
 
     Other parameters
     ----------------
-    columns : dict, optional
+    columns
         Override default column names as defined in :py:attr:`config.columns`.
         Relevant names are `coords`, `particle`, and `time`. This means,
         if your DataFrame has coordinate columns "x" and "z" and the time
         column "alt_frame", set ``columns={"coords": ["x", "z"],
         "time": "alt_frame"}``.
     """
+    keep_unmatched = keep_unmatched.lower()
+    if keep_unmatched not in ("none", "gaps", "all"):
+        raise ValueError("`keep_unmatched` must be one of 'none', 'gaps', "
+                         "'all'")
+
     if feature_pairs is None:
         feature_pairs = find_colocalizations(
                 tracks1, tracks2, max_dist, channel_names=channel_names,
+                keep_unmatched=keep_unmatched != "none",
                 columns=columns)
+
+    p_col = columns["particle"]
+    t_col = columns["time"]
 
     ch1_pairs = feature_pairs[channel_names[0]]
     ch2_pairs = feature_pairs[channel_names[1]]
     matches = []
-    for pn, data1 in ch1_pairs.groupby(columns["particle"]):
+    for pn, data1 in ch1_pairs.groupby(p_col):
         # get channel 2 pair data corresponding to particle `pn` in channel 1
         # (only "particle" and "frame" columns)
-        data2 = ch2_pairs.loc[data1.index, [columns["particle"],
-                                            columns["time"]]].values
+        data2 = ch2_pairs.loc[data1.index, [p_col, t_col]].values
         # count how often which channel 2 particle appears
         count = collections.Counter(data2[:, 0])
         # turn into array where each row is (channel2_particle_number, count)
@@ -367,39 +386,32 @@ def find_codiffusion(tracks1, tracks2, abs_threshold=3, rel_threshold=0.75,
     if return_data == "numbers":
         return matches
 
-    data = []
-    # construct the DataFrame to be returned
+    feature_pairs["codiff", "particle"] = -1
+    pn1_list = ch1_pairs[p_col].to_numpy()
+    pn1_nan = np.isnan(pn1_list)
+    pn2_list = ch2_pairs[p_col].to_numpy()
+    pn2_nan = np.isnan(pn2_list)
+    fn_list = ch1_pairs[t_col].to_numpy()
     for new_pn, (pn1, pn2, start, end) in enumerate(matches):
-        # get tracks between start frame and end frame
-        t1 = tracks1[tracks1[columns["particle"]] == pn1]
-        t1 = t1[(int(start) <= t1[columns["time"]]) &
-                (t1[columns["time"]] <= int(end))]
-        t2 = tracks2[tracks2[columns["particle"]] == pn2]
-        t2 = t2[(int(start) <= t2[columns["time"]]) &
-                (t2[columns["time"]] <= int(end))]
-        # use frame as the index (=axis for merging when creating DataFrame)
-        t1 = t1.set_index(columns["time"], drop=False)  # Copy to save
-        t2 = t2.set_index(columns["time"], drop=False)  # the original
+        # particle numbers can be NaNs if unmatched
+        # FIXME: maybe this can be made faster by sorting
+        is_pn1 = (pn1_list == pn1) | pn1_nan
+        is_pn2 = (pn2_list == pn2) | pn2_nan
+        is_fn = (round(start) <= fn_list) & (fn_list <= round(end))
+        sel = is_pn1 & is_pn2 & is_fn
+        feature_pairs.loc[sel, ("codiff", "particle")] = new_pn
+        # overwrite NaNs in unmatched entries with particle numbers
+        feature_pairs.loc[sel, (channel_names[0], "particle")] = pn1
+        feature_pairs.loc[sel, (channel_names[1], "particle")] = pn2
 
-        p = pd.concat([t1, t2], keys=channel_names, axis=1)
-        # assign new particle number
-        p["codiff", "particle"] = new_pn
-        # assign frame number even to localizations that are missing in one
-        # channel (instead of a NaN). Thanks to set_index above, axes[0] is
-        # the list of frame numbers
-        p.loc[:, (channel_names, columns["time"])] = \
-            np.broadcast_to(p.axes[0].to_numpy()[:, np.newaxis], (len(p), 2))
-        # re-assign particle numbers to overwrite NaNs
-        p[channel_names[0], columns["particle"]] = pn1
-        p[channel_names[1], columns["particle"]] = pn2
-        data.append(p)
-
-    data = pd.concat(data, ignore_index=True)
+    if keep_unmatched == "gaps":
+        idx = feature_pairs.index[feature_pairs["codiff", "particle"] < 0]
+        feature_pairs.drop(index=idx, inplace=True)
 
     if return_data == "data":
-        return data
+        return feature_pairs
     elif return_data == "both":
-        return data, matches
+        return feature_pairs, matches
     else:
         raise ValueError("`return_data` has to be one of 'data', 'numbers', "
                          "or 'both'.")
