@@ -256,11 +256,10 @@ class TestFindCodiffusion:
             exp)
 
         codiff3 = multicolor.find_codiffusion(track, track2,
-                                             keep_unmatched="gaps")
+                                              keep_unmatched="gaps")
         pd.testing.assert_frame_equal(
             codiff3.sort_values(("channel1", "frame"), ignore_index=True),
             exp.drop(9).reset_index(drop=True))
-
 
     def test_find_codiffusion_short_long(self, track):
         """multicolor.find_codiffusion: Match one long to two short tracks"""

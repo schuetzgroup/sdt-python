@@ -68,7 +68,7 @@ def find_closest_pairs(coords1, coords2, max_dist):
 @config.set_columns
 def find_colocalizations(features1: pd.DataFrame, features2: pd.DataFrame,
                          max_dist: float = 2.0, keep_unmatched: bool = False,
-                         channel_names: Sequence[str] =_channel_names,
+                         channel_names: Sequence[str] = _channel_names,
                          columns: Mapping = {}, **kwargs) -> pd.DataFrame:
     """Match localizations in one channel to localizations in another
 
