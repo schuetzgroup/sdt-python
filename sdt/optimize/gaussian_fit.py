@@ -105,7 +105,7 @@ with suppress(ImportError):
         Parameters are `amplitude`, `center`, `sigma`, `offset`.
         """
         def __init__(self, *args, **kwargs):
-            """Constructor""" + lmfit.models.COMMON_DOC
+            """Constructor""" + lmfit.models.COMMON_INIT_DOC
             super().__init__(gaussian_1d, *args, **kwargs)
             self.set_param_hint("sigma", min=0.)
 
@@ -128,7 +128,7 @@ with suppress(ImportError):
         `offset`, `rotation`.
         """
         def __init__(self, *args, **kwargs):
-            """Constructor""" + lmfit.models.COMMON_DOC
+            """Constructor""" + lmfit.models.COMMON_INIT_DOC
             super().__init__(gaussian_2d_lmfit, independent_vars=["x", "y"],
                              *args, **kwargs)
             self.set_param_hint("sigma0", min=0.)
