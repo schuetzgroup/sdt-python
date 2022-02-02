@@ -42,7 +42,7 @@ Programming reference
 from .channel_splitter import ChannelSplitter  # noqa: 401
 from .locator import Locator  # noqa: 401
 from .roi_selector import ROISelector  # noqa: 401
-from .thresholder import Thresholder  # noqa: 401
+from .thresholder import Thresholder, ThresholderModule  # noqa: 401
 from .file_dialog import FileDialog  # noqa: 401
 from .image_display import ImageDisplay  # noqa: 401
 from .image_selector import ImageSelector  # noqa: 401
