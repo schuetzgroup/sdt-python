@@ -121,8 +121,10 @@ class ImageDisplay(ipywidgets.VBox):
             self._img_artist.remove()
         scale = self._img_scale_sel.value
         if self.input is not None:
-            self.ax.imshow(self.input, cmap=self.cmap, vmin=scale[0],
-                           vmax=scale[1])
+            self._img_artist = self.ax.imshow(
+                self.input, cmap=self.cmap, vmin=scale[0], vmax=scale[1])
+        else:
+            self._img_artist = None
         self.ax.figure.canvas.draw_idle()
 
     def auto_scale(self, b=None):
