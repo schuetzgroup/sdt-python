@@ -173,7 +173,7 @@ class ImageSequence:
         metadata.
         """
         ret = self._reader.get_data(real_t, **kwargs)
-        ret.meta["frame_no"] = real_t
+        ret.meta["frame_no"] = int(real_t)
         return ret
 
     def get_data(self, t: int, **kwargs) -> np.ndarray:
@@ -211,7 +211,7 @@ class ImageSequence:
         real_t = None if t is None else self._resolve_index(t)
         ret = self._reader.get_meta_data(real_t)
         if real_t is not None:
-            ret["frame_no"] = real_t
+            ret["frame_no"] = int(real_t)
         return ret
 
     @overload

@@ -674,7 +674,7 @@ class SmFRETAnalyzer:
                 good_p.append(p)
 
         filtered = self.tracks["fret", "particle"].isin(good_p)
-        self._update_filter(np.asarray(~filtered, dtype=int), reason)
+        self._update_filter(np.asarray(~filtered, dtype=np.intp), reason)
 
     @staticmethod
     def _eval(data: pd.DataFrame, expr: str, mi_sep: str = "_"):
@@ -747,7 +747,7 @@ class SmFRETAnalyzer:
         >>> filt.query("fret_a_mass > 500")
         """
         filtered = self._eval(self.tracks, expr, mi_sep)
-        filtered = np.asarray(~filtered, dtype=int)
+        filtered = np.asarray(~filtered, dtype=np.intp)
         self._update_filter(filtered, reason)
 
     def query_particles(self, expr: str, min_abs: int = 1,
@@ -819,7 +819,7 @@ class SmFRETAnalyzer:
 
         good = self.tracks["fret", "particle"].isin(good_p).to_numpy()
         bad = self.tracks["fret", "particle"].isin(bad_p).to_numpy()
-        flt = np.full(len(self.tracks), -1, dtype=int)
+        flt = np.full(len(self.tracks), -1, dtype=np.intp)
         flt[good] = 0
         flt[bad] = 1
         self._update_filter(flt, reason)
@@ -881,9 +881,9 @@ class SmFRETAnalyzer:
         if isinstance(mask, np.ndarray):
             r = roi.MaskROI(mask)
             filtered = r.dataframe_mask(self.tracks, columns=cols)
-            filtered = np.asarray(~filtered, dtype=int)
+            filtered = np.asarray(~filtered, dtype=np.intp)
         else:
-            filtered = pd.Series(np.full(len(self.tracks), -1, dtype=int),
+            filtered = pd.Series(np.full(len(self.tracks), -1, dtype=np.intp),
                                  index=self.tracks.index)
             for m in mask:
                 r = roi.MaskROI(m["mask"])

@@ -395,7 +395,7 @@ class TestSmFRETAnalyzer:
         n = len(ana2.tracks)
 
         # First filtering
-        flt = np.full(n, -1, dtype=int)
+        flt = np.full(n, -1, dtype=np.intp)
         flt[[2, 4, 6]] = 0
         flt[[5, 9, 13]] = 1
         ana2._update_filter(flt, "filt")
@@ -403,7 +403,7 @@ class TestSmFRETAnalyzer:
         np.testing.assert_array_equal(ana2.tracks["filter", "filt"], flt)
 
         # Second filtering, same reason
-        flt2 = np.full(n, -1, dtype=int)
+        flt2 = np.full(n, -1, dtype=np.intp)
         flt2[[1, 2, 5]] = 0
         flt2[[4, 5, 7]] = 1
         ana2._update_filter(flt2, "filt")
@@ -412,7 +412,7 @@ class TestSmFRETAnalyzer:
         np.testing.assert_array_equal(ana2.tracks["filter", "filt"], flt)
 
         # Third filtering, different reason
-        flt3 = np.full(n, -1, dtype=int)
+        flt3 = np.full(n, -1, dtype=np.intp)
         flt3[[11, 16]] = 1
         ana2._update_filter(flt3, "other_filt")
         assert ("filter", "other_filt") in ana2.tracks
@@ -835,7 +835,7 @@ class TestSmFRETAnalyzer:
                    "donor_frame > 3", reason="q1")
         m1 = (((d["fret", "particle"] == 1) | (d["acceptor", "x"] == 120)) &
               (d["donor", "frame"] > 3))
-        m1 = (~m1).astype(int)
+        m1 = (~m1).astype(np.intp)
         d["filter", "q1"] = m1
         pd.testing.assert_frame_equal(ana1.tracks, d)
 
@@ -843,7 +843,7 @@ class TestSmFRETAnalyzer:
         # Make sure that previously filtered entries don't get un-filtered
         ana1.query("donor_frame > 5", reason="q1")
         m2 = d["donor", "frame"] > 5
-        m2 = (~m2).astype(int) * 2
+        m2 = (~m2).astype(np.intp) * 2
         old_f = m1 > 0
         m2[old_f] = m1[old_f]
         d["filter", "q1"] = m2
@@ -853,7 +853,7 @@ class TestSmFRETAnalyzer:
         # Different reason, should be independent
         ana1.query("acceptor_frame > 7", reason="q3")
         m3 = d["acceptor", "frame"] > 7
-        m3 = (~m3).astype(int)
+        m3 = (~m3).astype(np.intp)
         d["filter", "q3"] = m3
         pd.testing.assert_frame_equal(ana1.tracks, d)
 
@@ -876,7 +876,7 @@ class TestSmFRETAnalyzer:
 
         # First query
         d["filter", "qry"] = (~d["fret", "particle"].isin([1, 4, 5])
-                              ).astype(int)
+                              ).astype(np.intp)
         ana_query_part.query_particles("fret_a_mass < 0", min_abs=2,
                                        reason="qry")
         pd.testing.assert_frame_equal(ana_query_part.tracks, d)
@@ -906,7 +906,8 @@ class TestSmFRETAnalyzer:
     def test_query_particles_neg_min_abs(self, ana_query_part):
         """fret.SmFRETAnalyzer.query_particles: Negative min_abs"""
         d = ana_query_part.tracks.copy()
-        d["filter", "qry"] = (~d["fret", "particle"].isin([0, 2])).astype(int)
+        d["filter", "qry"] = (~d["fret", "particle"].isin([0, 2])
+                              ).astype(np.intp)
         ana_query_part.query_particles("fret_a_mass > 0", min_abs=-1,
                                        reason="qry")
         pd.testing.assert_frame_equal(ana_query_part.tracks, d)
@@ -914,7 +915,7 @@ class TestSmFRETAnalyzer:
     def test_query_particles_zero_min_abs(self, ana_query_part):
         """fret.SmFRETAnalyzer.query_particles: 0 min_abs"""
         d = ana_query_part.tracks.copy()
-        d["filter", "qry"] = (d["fret", "particle"] != 2).astype(int)
+        d["filter", "qry"] = (d["fret", "particle"] != 2).astype(np.intp)
         ana_query_part.query_particles("fret_a_mass > 0", min_abs=0,
                                        reason="qry")
         pd.testing.assert_frame_equal(ana_query_part.tracks, d)
@@ -922,7 +923,7 @@ class TestSmFRETAnalyzer:
     def test_query_particles_min_rel(self, ana_query_part):
         """fret.SmFRETAnalyzer.query_particles: min_rel"""
         d = ana_query_part.tracks.copy()
-        d["filter", "qry"] = (d["fret", "particle"] != 2).astype(int)
+        d["filter", "qry"] = (d["fret", "particle"] != 2).astype(np.intp)
         ana_query_part.query_particles("fret_a_mass > 1500", min_rel=0.49,
                                        reason="qry")
         pd.testing.assert_frame_equal(ana_query_part.tracks, d)
@@ -934,7 +935,7 @@ class TestSmFRETAnalyzer:
         d = ana1.tracks.copy()
         ana1.image_mask(mask, "donor", reason="img_mask")
         d["filter", "img_mask"] = (~d["fret", "particle"].isin([0, 3])
-                                   ).astype(int)
+                                   ).astype(np.intp)
         pd.testing.assert_frame_equal(ana1.tracks, d)
 
         # Make sure data does not get un-filtered in second call
@@ -966,8 +967,8 @@ class TestSmFRETAnalyzer:
              (d["donor", "frame"] >= 1) & (d["donor", "frame"] < 7)) |
             (d["fret", "particle"].isin([0, 3]) &
              (d["donor", "frame"] >= 10))] = 1
-        flt = np.concatenate([flt, np.ones(len(d), dtype=int),
-                              np.zeros(len(d), dtype=int)])
+        flt = np.concatenate([flt, np.ones(len(d), dtype=np.intp),
+                              np.zeros(len(d), dtype=np.intp)])
         exp = d_conc.copy()
         exp["filter", "img_mask"] = flt
 
