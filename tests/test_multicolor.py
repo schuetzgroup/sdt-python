@@ -306,6 +306,7 @@ class TestFindCodiffusion:
             how="outer").sort_values("frame").reset_index(drop=True)
         exp2 = pd.concat([track_e.astype({"frame": int}), track2_e],
                          keys=["channel1", "channel2"], axis=1)
+        exp2 = exp2.sort_values(("channel1", "frame"), ignore_index=True)
         exp2["codiff", "particle"] = ([0] * 4 + [-1] * 3 + [1] * 3)
         pd.testing.assert_frame_equal(
             codiff2.sort_values(("channel1", "frame"), ignore_index=True),
