@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: 2021 Louisa Marie Kienesberger <e11775781@student.tuwien.ac.at>
+# SPDX-FileCopyrightText: 2022 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: sdt-python test suite
+
+on:  [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.9
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.9
+
+    - name: Conda info
+      shell: pwsh
+      run: conda info
+
+    - name: Install dependencies
+      shell: pwsh
+      run: |
+        conda update conda
+        conda update -c conda-forge --all
+        conda install -c conda-forge --yes flake8 pytest numpy pandas pytables opencv pyyaml pims numba matplotlib-base pywavelets scipy tifffile trackpy lmfit scikit-learn imageio
+
+    - name: Lint with flake8
+      shell: pwsh
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Test with pytest
+      shell: pwsh
+      run: |
+        pytest -v tests/
