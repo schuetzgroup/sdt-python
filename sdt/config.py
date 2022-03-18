@@ -52,7 +52,7 @@ import inspect
 import functools
 
 
-rc = dict(channel_names = ["channel1", "channel2"],)
+rc = dict(channel_names=["channel1", "channel2"],)
 """Global config dictionary"""
 
 
