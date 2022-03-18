@@ -9,13 +9,16 @@ import zipfile
 
 import numpy as np
 import pandas as pd
-import pims
 import matplotlib as mpl
 
 from sdt import helper, io as sdt_io, roi
 
 
 data_path = Path(__file__).resolve().parents[0] / "data_roi"
+
+
+class SpecialArray(np.ndarray):
+    pass
 
 
 class TestCaseBase(unittest.TestCase):
@@ -69,8 +72,8 @@ class TestRoi(TestCaseBase):
 
     def test_image_subtype(self):
         """.__call__: image data, check return subtype"""
-        img = self.img.view(pims.Frame)
-        assert(isinstance(self.roi(img), pims.Frame))
+        img = self.img.view(SpecialArray)
+        assert isinstance(self.roi(img), SpecialArray)
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""
@@ -244,8 +247,8 @@ class TestPathRoi(TestRoi):
 
     def test_image_subtype(self):
         """.__call__: image data, check return subtype"""
-        img = self.img.view(pims.Frame)
-        assert(isinstance(self.roi(img), pims.Frame))
+        img = self.img.view(SpecialArray)
+        assert isinstance(self.roi(img), SpecialArray)
 
     def test_pipeline(self):
         """.__call__: image data, test pipeline capabilities"""

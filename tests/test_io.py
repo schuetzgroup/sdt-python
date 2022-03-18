@@ -9,7 +9,6 @@ import sys
 
 import numpy as np
 import pandas as pd
-import pims
 import pytest
 import tifffile
 import yaml
@@ -20,6 +19,11 @@ try:
     import imageio
 except ImportError:
     imageio = None
+
+try:
+    import pims
+except ImportError:
+    pims = None
 
 
 data_path = Path(__file__).parent.absolute() / "data_io"
@@ -252,6 +256,7 @@ class TestYaml:
             assert kv_list == list(d.items())
 
 
+@pytest.mark.skipif(pims is None, reason="cannot import PIMS")
 class TestTiff:
     @pytest.fixture
     def images(self):
