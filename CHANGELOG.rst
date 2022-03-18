@@ -13,6 +13,19 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+17.2
+----
+
+- Improvements to :py:class:`gui.BatchWorker` and :py:class:`gui.LocDisplay`
+- Fix QtQuick matplotlib backend for matplotlib >= 3.5
+- :py:func:`multicolor.find_colocalizations`: Rename ``keep_non_coloc`` ->
+  ``keep_unmatched``
+- :py:func:`multicolor.find_colocalizations`: Frame numbers are `int`
+- :py:func:`multicolor.find_codiffusion`: Add ``keep_unmatched`` parameter
+- :py:mod:`optimize.gaussin_fit`: Fix for `lmfit` v1.0.3
+- :py:class:`nbui.ImageDisplay`: Fix memory leak
+
+
 17.1
 ----
 
@@ -48,7 +61,7 @@ so watch out for those!
 
 - Many fixes for the still-experimental :py:mod:`gui` sub-package
 - Deal consitently with empty input in :py:func:`brightness.from_raw_image`
-- Require Python >= 3.7 for dict order 
+- Require Python >= 3.7 for dict order
 
 
 16.0.2
@@ -66,7 +79,7 @@ so watch out for those!
 16.0
 ----
 
-- Introduce :py:class:`io.ImageSequence`, a PIMS-like interface to the 
+- Introduce :py:class:`io.ImageSequence`, a PIMS-like interface to the
   `imageio` librario.
 - Turn the :py:mod:`gui` module into a collection of QtQuick components for
   easy building of GUIs for data analysis. This is still bug-ridden, little
@@ -174,8 +187,8 @@ so watch out for those!
 - Add (adaptive) thresholding functions to :py:mod:`image`
 - Add :py:func:`image.fill_gamut`
 - Port :py:class:`nbui.Locator` to ipympl and improve and fix.
-- Fork https://github.com/soft-matter/slicerator into helper.slicerator as 
-  development seems to have stalled. Use it instead of the external 
+- Fork https://github.com/soft-matter/slicerator into helper.slicerator as
+  development seems to have stalled. Use it instead of the external
   slicerator.
 
 
