@@ -1,73 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Multi-color data analysis &mdash; sdt-python 15.0 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-color data analysis &mdash; sdt-python 17.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Diffusion analysis" href="motion.html" />
-    <link rel="prev" title="Overlay color channels" href="channel_reg.html" /> 
+    <link rel="prev" title="Regions of interest (ROIs)" href="roi.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
-          
-
-          
+            <a href="index.html" class="icon icon-home"> sdt-python
           </a>
-
-          
-            
-            
               <div class="version">
-                15.0
+                17.2
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,21 +39,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Multi-color data analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#programming-reference">Programming reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#low-level-helper-functions">Low level helper functions</a></li>
@@ -113,78 +65,45 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Multi-color data analysis</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-sdt.multicolor"></span><div class="section" id="multi-color-data-analysis">
-<h1>Multi-color data analysis<a class="headerlink" href="#multi-color-data-analysis" title="Permalink to this headline">¶</a></h1>
-<p>This module provides functions to analyze multi-color single molecule data.
+             
+  <span class="target" id="module-sdt.multicolor"></span><section id="multi-color-data-analysis">
+<h1>Multi-color data analysis<a class="headerlink" href="#multi-color-data-analysis" title="Permalink to this headline"></a></h1>
+<p>This module provides functions to analyze multi-color data.
 In particular, there is support for</p>
 <ul class="simple">
-<li><p>finding colocalizations</p></li>
-<li><p>detecting and plotting codiffusion</p></li>
-<li><p>merging data from different channels.</p></li>
+<li><p>registration of color channels, i.e., finding transforms for mapping
+coordinates between channels (<a class="reference internal" href="#sdt.multicolor.Registrator" title="sdt.multicolor.Registrator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Registrator</span></code></a>) as a prerequisite
+for finding colocalizations</p></li>
+<li><p>finding single-molecule colocalizations (<a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a>)</p></li>
+<li><p>detecting and plotting single-molecule codiffusion
+(<a class="reference internal" href="#sdt.multicolor.find_codiffusion" title="sdt.multicolor.find_codiffusion"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_codiffusion()</span></code></a>, <a class="reference internal" href="#sdt.multicolor.plot_codiffusion" title="sdt.multicolor.plot_codiffusion"><code class="xref py py-func docutils literal notranslate"><span class="pre">plot_codiffusion()</span></code></a>)</p></li>
+<li><p>merging single-molecule data from different channels
+(<a class="reference internal" href="#sdt.multicolor.merge_channels" title="sdt.multicolor.merge_channels"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_channels()</span></code></a>)</p></li>
+<li><p>selection of images and single-molecule data according to excitation type
+(<a class="reference internal" href="#sdt.multicolor.FrameSelector" title="sdt.multicolor.FrameSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameSelector</span></code></a>)</p></li>
 </ul>
-<p>Single molecule data have to be aligned first using e.g.
-<code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.chromatic.Corrector</span></code>.</p>
 <p class="rubric">Examples</p>
 <p>To demonstrate how to find colocalizations, create fake data first:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loc1</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
@@ -222,11 +141,328 @@ appear once using <a class="reference internal" href="#sdt.multicolor.merge_chan
 <span class="go">2  22  22      0</span>
 </pre></div>
 </div>
-<div class="section" id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline">¶</a></h2>
+<section id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.multicolor.</span></span><span class="sig-name descname"><span class="pre">Registrator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feat1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['channel1',</span> <span class="pre">'channel2']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator" title="Permalink to this definition"></a></dt>
+<dd><p>Registration of two fluorescence microscopy emission channels</p>
+<p>This class provides an easy-to-use interface to determine maps between
+the channels’ coordinates using localization data from fiducial markers. It
+is based on the algorithm published by Preibisch et al. <a class="reference internal" href="#preibisch2010" id="id1"><span>[Preibisch2010]</span></a>.</p>
+<p class="rubric">Examples</p>
+<p>Let’s assume that multiple images/sequences of fluorescent beads have been
+acquired, which are visible in both emission channels. First, the beads
+need to be localized (e.g. using the <code class="docutils literal notranslate"><span class="pre">sdt.gui.locator</span></code> application).
+These need to be loaded:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bead_loc</span> <span class="o">=</span> <span class="p">[</span><span class="n">sdt</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;beads*.h5&quot;</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>Next, we define ROIs for the two channels using <a class="reference internal" href="roi.html#sdt.roi.ROI" title="sdt.roi.ROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.roi.ROI</span></code></a> and
+choose the bead localizations with respect to the ROIs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">ROI</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r2</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">roi</span><span class="o">.</span><span class="n">ROI</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">beads_r1</span> <span class="o">=</span> <span class="p">[</span><span class="n">r1</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bead_loc</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">beads_r2</span> <span class="o">=</span> <span class="p">[</span><span class="n">r2</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bead_loc</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Now, calculate the transform that overlays the two channels using
+<a class="reference internal" href="#sdt.multicolor.Registrator" title="sdt.multicolor.Registrator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Registrator</span></code></a>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">corr</span> <span class="o">=</span> <span class="n">Registrator</span><span class="p">(</span><span class="n">beads_r1</span><span class="p">,</span> <span class="n">beads_r2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">corr</span><span class="o">.</span><span class="n">determine_parameters</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">corr</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>  <span class="c1"># Plot results</span>
+</pre></div>
+</div>
+<p>This can now be used to transform i.e. image data from channel 1 so that it
+can be overlaid with channel 1:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">pims</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;image.tif&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Load first frame (number 0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img_r1</span> <span class="o">=</span> <span class="n">r1</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>  <span class="c1"># Get channel 1 part of the image</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img_r2</span> <span class="o">=</span> <span class="n">r2</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>  <span class="c1"># Get channel 2 part of the image</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img_r1_corr</span> <span class="o">=</span> <span class="n">corr</span><span class="p">(</span><span class="n">img_r1</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Transform channel 1 image</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">overlay</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dstack</span><span class="p">([</span><span class="n">img_r1</span><span class="p">,</span> <span class="n">img_r2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">img_r1</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">overlay</span><span class="p">)</span>  <span class="c1"># Plot overlay</span>
+</pre></div>
+</div>
+<p>Similarly, coordinates of single molecule data can be transformed:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loc</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;loc.h5&quot;</span><span class="p">)</span>  <span class="c1"># Load data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc_r1</span> <span class="o">=</span> <span class="n">r1</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>  <span class="c1"># Get data from channel 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc_r2</span> <span class="o">=</span> <span class="n">r2</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>  <span class="c1"># Get data from channel 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loc_r1_corr</span> <span class="o">=</span> <span class="n">corr</span><span class="p">(</span><span class="n">loc_r1</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Transform channel 1 data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">loc_r1_corr</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">loc_r1_corr</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span>
+<span class="gp">... </span>                          <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">loc_r2</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">loc_r2</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There is also support for saving and loading a <a class="reference internal" href="#sdt.multicolor.Registrator" title="sdt.multicolor.Registrator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Registrator</span></code></a>
+instance to/from YAML:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;output.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">sdt</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;output.yaml&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="n">corr_loaded</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="preibisch2010"><span class="brackets"><a class="fn-backref" href="#id1">Preibisch2010</a></span></dt>
+<dd><p>Preibisch, S.; Saalfeld, S.; Schindelin, J. &amp; Tomancak,
+P.: “Software for bead-based registration of selective plane
+illumination microscopy data”, Nature Methods, Springer Science and
+Business Media LLC, 2010, 7, 418–419</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>feat1</strong> (<em>Sequence</em><em>[</em><em>pandas.core.frame.DataFrame</em><em>]</em>) – Set the <cite>feat1</cite> and <cite>feat2</cite> attribute (turning it into a list
+if it is a single DataFrame). Can also be <cite>None</cite>, but in this case
+<a class="reference internal" href="#sdt.multicolor.Registrator.find_pairs" title="sdt.multicolor.Registrator.find_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_pairs()</span></code></a> and <a class="reference internal" href="#sdt.multicolor.Registrator.determine_parameters" title="sdt.multicolor.Registrator.determine_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">determine_parameters()</span></code></a> will
+not work. Defaults to <cite>None</cite>.</p></li>
+<li><p><strong>feat2</strong> (<em>Sequence</em><em>[</em><em>pandas.core.frame.DataFrame</em><em>]</em>) – Set the <cite>feat1</cite> and <cite>feat2</cite> attribute (turning it into a list
+if it is a single DataFrame). Can also be <cite>None</cite>, but in this case
+<a class="reference internal" href="#sdt.multicolor.Registrator.find_pairs" title="sdt.multicolor.Registrator.find_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_pairs()</span></code></a> and <a class="reference internal" href="#sdt.multicolor.Registrator.determine_parameters" title="sdt.multicolor.Registrator.determine_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">determine_parameters()</span></code></a> will
+not work. Defaults to <cite>None</cite>.</p></li>
+<li><p><strong>columns</strong> (<em>Dict</em>) – Override default column names as defined in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. Relevant name are <cite>coords</cite> and <cite>time</cite>.
+That means, if the DataFrames have coordinate columns “x” and “z”,
+and a time column “alt_frame”, set
+<code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span> <span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>. This is
+used to set the <a class="reference internal" href="#sdt.multicolor.Registrator.columns" title="sdt.multicolor.Registrator.columns"><code class="xref py py-attr docutils literal notranslate"><span class="pre">columns</span></code></a> attribute.</p></li>
+<li><p><strong>channel_names</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – Set the <cite>channel_names</cite> attribute. Defaults to <code class="docutils literal notranslate"><span class="pre">[&quot;channel1&quot;,</span>
+<span class="pre">&quot;channel2&quot;]</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.feat1">
+<span class="sig-name descname"><span class="pre">feat1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.multicolor.Registrator.feat1" title="Permalink to this definition"></a></dt>
+<dd><p>Positions of beads (as found by a localization algorithm) in the first
+channel. Each DataFrame corresponds to one image (sequence), thus multiple
+bead images can be used to increase the accuracy.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.feat2">
+<span class="sig-name descname"><span class="pre">feat2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">pandas.core.frame.DataFrame</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.multicolor.Registrator.feat2" title="Permalink to this definition"></a></dt>
+<dd><p>Same as <a class="reference internal" href="#sdt.multicolor.Registrator.feat1" title="sdt.multicolor.Registrator.feat1"><code class="xref py py-attr docutils literal notranslate"><span class="pre">feat1</span></code></a>, but for the second channel</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.columns">
+<span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#sdt.multicolor.Registrator.columns" title="Permalink to this definition"></a></dt>
+<dd><p>Column names in <a class="reference internal" href="#sdt.multicolor.Registrator.feat1" title="sdt.multicolor.Registrator.feat1"><code class="xref py py-attr docutils literal notranslate"><span class="pre">feat1</span></code></a> and <a class="reference internal" href="#sdt.multicolor.Registrator.feat2" title="sdt.multicolor.Registrator.feat2"><code class="xref py py-attr docutils literal notranslate"><span class="pre">feat2</span></code></a>. Defaults are
+taken from <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.channel_names">
+<span class="sig-name descname"><span class="pre">channel_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.multicolor.Registrator.channel_names" title="Permalink to this definition"></a></dt>
+<dd><p>Channel names</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.pairs">
+<span class="sig-name descname"><span class="pre">pairs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#sdt.multicolor.Registrator.pairs" title="Permalink to this definition"></a></dt>
+<dd><p>Pairs found by <a class="reference internal" href="#sdt.multicolor.Registrator.determine_parameters" title="sdt.multicolor.Registrator.determine_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">determine_parameters()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.parameters1">
+<span class="sig-name descname"><span class="pre">parameters1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#sdt.multicolor.Registrator.parameters1" title="Permalink to this definition"></a></dt>
+<dd><p>Array describing the affine transformation of data from channel 1 to
+channel 2.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.parameters2">
+<span class="sig-name descname"><span class="pre">parameters2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#sdt.multicolor.Registrator.parameters2" title="Permalink to this definition"></a></dt>
+<dd><p>Array describing the affine transformation of data from channel 2 to
+channel 1.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.determine_parameters">
+<span class="sig-name descname"><span class="pre">determine_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ambiguity_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.determine_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.determine_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Determine the parameters for the affine transformation</p>
+<p>This takes the localizations of <a class="reference internal" href="#sdt.multicolor.Registrator.feat1" title="sdt.multicolor.Registrator.feat1"><code class="xref py py-attr docutils literal notranslate"><span class="pre">feat1</span></code></a> and tries to match
+them with those of <a class="reference internal" href="#sdt.multicolor.Registrator.feat2" title="sdt.multicolor.Registrator.feat2"><code class="xref py py-attr docutils literal notranslate"><span class="pre">feat2</span></code></a>. Then a fit is used to determine
+the affine transformation between the channels.</p>
+<p>This is a convenience function that calls <a class="reference internal" href="#sdt.multicolor.Registrator.find_pairs" title="sdt.multicolor.Registrator.find_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_pairs()</span></code></a> and
+<a class="reference internal" href="#sdt.multicolor.Registrator.fit_parameters" title="sdt.multicolor.Registrator.fit_parameters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_parameters()</span></code></a>; see the documentation of the methods for
+details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_neighbors</strong> (<em>int</em>) – Number of neighboring beads to consider to find matching features
+across channels.</p></li>
+<li><p><strong>ambiguity_factor</strong> (<em>float</em>) – A low value (around 1) will accept pairs even if there are similar
+possible matches. The higher this value, the less are ambigous
+results accepted.</p></li>
+<li><p><strong>max_error</strong> (<em>float</em>) – Maximum error (i.e., distance between transformed position from
+channel 1 and matched position in channel 2) to consider a feature
+pair not an outlier and thus remove it from the transformation fit.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'constant'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Correct for chromatic aberrations</p>
+<p>This can be done either on coordinates (e. g. resulting from feature
+localization) or directly on raw images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>pandas.core.frame.DataFrame</em><em>, </em><a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.roi.PathROI"><em>sdt.roi.roi.PathROI</em></a><em>, </em><a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.slicerator.Slicerator"><em>sdt.helper.slicerator.Slicerator</em></a><em>, </em><em>numpy.ndarray</em><em>]</em>) – Data to be processed. If a pandas.Dataframe, the feature
+coordinates will be corrected. Otherwise,
+<a class="reference internal" href="helper.html#sdt.helper.Pipeline" title="sdt.helper.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.helper.Pipeline</span></code></a> is used to correct image data using
+an affine transformation.</p></li>
+<li><p><strong>channel</strong> (<em>int</em>) – If <cite>features</cite> are in the first channel (corresponding to the
+<cite>feat1</cite> arg of the constructor), set to 1. If features are in the
+second channel, set to 2. Depending on this, a transformation will
+be applied to the coordinates of <cite>features</cite> to match the other
+channel (mathematically speaking depending on this parameter
+either the “original” transformation or its inverse are applied.)</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Only has an effect if <cite>data</cite> is a DataFrame. If True, the
+feature coordinates will be corrected in place.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – How to fill points outside of the uncorrected image boundaries.
+Possibilities are “constant”, “nearest”, “reflect” or “wrap”.</p></li>
+<li><p><strong>cval</strong> (<em>scalar</em><em> or </em><em>callable</em>) – What value to use for <cite>mode=”constant”</cite>. If this is callable, it
+should take a single argument (the uncorrected image) and return a
+scalar, which will be used as the fill value.</p></li>
+<li><p><strong>columns</strong> (<em>Dict</em>) – Override default column names in case <cite>data</cite> is a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. The only relevant name is <cite>coords</cite>.
+That means, if the DataFrame has coordinate columns “x” and “z”,
+set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.test">
+<span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.test" title="Permalink to this definition"></a></dt>
+<dd><p>Test validity of the correction parameters</p>
+<p>This plots the affine transformation functions and the coordinates of
+the pairs that were matched in the channels. If everything went well,
+the dots (i. e. pair coordinates) should lie on the line
+(transformation function).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ax</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>]</em>) – Two matplotib axes instances for plotting. If <cite>None</cite>, allocate new
+axes using <code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.subplots()</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('chromatic_param1',</span> <span class="pre">'chromatic_param2')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save transformation parameters to file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>Union</em><em>[</em><em>BinaryIO</em><em>, </em><em>str</em><em>, </em><em>pathlib.Path</em><em>]</em>) – File name or an open file-like object to save data to.</p></li>
+<li><p><strong>fmt</strong> (<em>str</em>) – Format to save data. Either numpy (“npz”) or MATLAB (“mat”).
+Defaults to “npz”.</p></li>
+<li><p><strong>key</strong> (<em>Tuple</em><em>[</em><em>str</em><em>]</em>) – Names of two transformations in the saved file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('chromatic_param1',</span> <span class="pre">'chromatic_param2')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.load" title="Permalink to this definition"></a></dt>
+<dd><p>Read paramaters from a file and construct a <cite>Registrator</cite></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>Union</em><em>[</em><em>BinaryIO</em><em>, </em><em>str</em><em>, </em><em>pathlib.Path</em><em>]</em>) – File name or an open file-like object to load data from.</p></li>
+<li><p><strong>fmt</strong> (<em>str</em>) – Format to save data. Either numpy (“npz”) or MATLAB (“mat”) or
+<cite>determine_shiftstretch</cite>’s wrp (“wrp”). Defaults to “npz”.</p></li>
+<li><p><strong>key</strong> (<em>Tuple</em><em>[</em><em>str</em><em>]</em>) – Name of the variables in the saved file (does not apply to “wrp”).
+Defaults to (“chromatic_param1”, “chromatic_param2”).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>A <a class="reference internal" href="#sdt.multicolor.Registrator" title="sdt.multicolor.Registrator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Registrator</span></code></a> instance with the parameters read from the</p></li>
+<li><p><em>file.</em></p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#sdt.multicolor.Registrator" title="sdt.multicolor.registrator.Registrator">sdt.multicolor.registrator.Registrator</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.find_pairs">
+<span class="sig-name descname"><span class="pre">find_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ambiguity_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.find_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.find_pairs" title="Permalink to this definition"></a></dt>
+<dd><p>Match features of <cite>feat1</cite> with features of <cite>feat2</cite></p>
+<p>Find the geomtric signature for each feature in each channel. Those
+with best matching signatures are taken to be the same feature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_neighbors</strong> (<em>int</em>) – Number of neighboring beads to consider for signature calculation.</p></li>
+<li><p><strong>ambiguity_factor</strong> (<em>float</em>) – Accept only matches where the distance (with respect to the
+geometric signature) between the beads of the second best match is
+at least <code class="docutils literal notranslate"><span class="pre">ambiguity_factor</span></code> times as large as the distance for
+the best match.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.fit_parameters">
+<span class="sig-name descname"><span class="pre">fit_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.fit_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.fit_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Determine parameters for the affine transformation</p>
+<p>An affine transformation is used to map x and y coordinates of <cite>feat1</cite>
+to to those of <cite>feat2</cite>. This requires <a class="reference internal" href="#sdt.multicolor.Registrator.pairs" title="sdt.multicolor.Registrator.pairs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pairs</span></code></a> to be set, e.g.
+by running <a class="reference internal" href="#sdt.multicolor.Registrator.find_pairs" title="sdt.multicolor.Registrator.find_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find_pairs()</span></code></a>.
+The result is saved as <a class="reference internal" href="#sdt.multicolor.Registrator.parameters1" title="sdt.multicolor.Registrator.parameters1"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters1</span></code></a> (transform of channel 1
+coordinates to channel 2) and <a class="reference internal" href="#sdt.multicolor.Registrator.parameters2" title="sdt.multicolor.Registrator.parameters2"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters2</span></code></a> (transform of
+channel 2 coordinates to channel 1) attributes.</p>
+<p><a class="reference internal" href="#sdt.multicolor.Registrator.parameters1" title="sdt.multicolor.Registrator.parameters1"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters1</span></code></a> is calculated by determining the affine
+transformation between the <a class="reference internal" href="#sdt.multicolor.Registrator.pairs" title="sdt.multicolor.Registrator.pairs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pairs</span></code></a> entries using a RANSAC
+algorithm. <a class="reference internal" href="#sdt.multicolor.Registrator.parameters2" title="sdt.multicolor.Registrator.parameters2"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parameters2</span></code></a> is its inverse. Therefore,
+results may be slightly different depending on what is channel1 and
+what is channel2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>max_error</strong> (<em>float</em>) – Maximum error (i.e., distance between transformed position from
+channel 1 and matched position in channel 2) to consider a feature
+pair not an outlier.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.to_yaml">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.to_yaml" title="Permalink to this definition"></a></dt>
+<dd><p>Dump as YAML</p>
+<p>Pass this as the <cite>representer</cite> parameter to your
+<code class="xref py py-class docutils literal notranslate"><span class="pre">yaml.Dumper</span></code> subclass’s <cite>add_representer</cite> method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.Registrator.from_yaml">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/registrator.html#Registrator.from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.Registrator.from_yaml" title="Permalink to this definition"></a></dt>
+<dd><p>Construct from YAML</p>
+<p>Pass this as the <cite>constructor</cite> parameter to your
+<code class="xref py py-class docutils literal notranslate"><span class="pre">yaml.Loader</span></code> subclass’s <cite>add_constructor</cite> method.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
-<dt id="sdt.multicolor.find_colocalizations">
-<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">find_colocalizations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">features1</span></em>, <em class="sig-param"><span class="n">features2</span></em>, <em class="sig-param"><span class="n">max_dist</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">keep_non_coloc</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">channel_names</span><span class="o">=</span><span class="default_value">['channel1', 'channel2']</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#find_colocalizations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.find_colocalizations" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.multicolor.find_colocalizations">
+<span class="sig-prename descclassname"><span class="pre">sdt.multicolor.</span></span><span class="sig-name descname"><span class="pre">find_colocalizations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_unmatched</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['channel1',</span> <span class="pre">'channel2']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/coloc.html#find_colocalizations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.find_colocalizations" title="Permalink to this definition"></a></dt>
 <dd><p>Match localizations in one channel to localizations in another</p>
 <p>For every localization in <cite>features1</cite> find localizations in
 <cite>features2</cite> (in the same frame) that are in a circle with radius <cite>max_dist</cite>
@@ -234,42 +470,51 @@ around it, then pick the closest one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>features1</strong> (<em>pandas.DataFrame</em>) – Localization data</p></li>
-<li><p><strong>features2</strong> (<em>pandas.DataFrame</em>) – Localization data</p></li>
-<li><p><strong>max_dist</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum distance between features to still be considered colocalizing.
-Defaults to 2.</p></li>
-<li><p><strong>keep_non_coloc</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, also keep non-colocalized features in the result DataFrame.
+<li><p><strong>features1</strong> (<em>pandas.core.frame.DataFrame</em>) – Localization data</p></li>
+<li><p><strong>features2</strong> (<em>pandas.core.frame.DataFrame</em>) – Localization data</p></li>
+<li><p><strong>max_dist</strong> (<em>float</em>) – Maximum distance between features to still be considered colocalizing.</p></li>
+<li><p><strong>keep_unmatched</strong> (<em>bool</em>) – If True, also keep non-colocalized features in the result DataFrame.
 Non-colocalized features have NaNs in the columns of the channel they
-don’t appear in. Defaults to False.</p></li>
-<li><p><strong>channel_names</strong> (<em>list of str</em><em>, </em><em>optional</em>) – Names of the two channels.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The DataFrame has a multi-index for columns with the top level
-given by the <cite>channel_names</cite> parameter. Each line of DataFrame
-corresponds to one pair of colocalizing particles.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pandas.DataFrame</p>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+don’t appear in.</p></li>
+<li><p><strong>channel_names</strong> (<em>Sequence</em><em>[</em><em>str</em><em>]</em>) – Names of the two channels.</p></li>
+<li><p><strong>columns</strong> (<em>Mapping</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
 Relevant names are <cite>coords</cite> and <cite>time</cite>. This means,
 if your DataFrame has coordinate columns “x” and “z” and the time
 column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
-<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p></li>
+<li><p><strong>keep_non_coloc</strong> – Deprecated alias for <cite>keep_unmatched</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>The DataFrame has a multi-index for columns with the top level</em></p></li>
+<li><p>given by the <cite>channel_names</cite> parameter. Each line of DataFrame</p></li>
+<li><p><em>corresponds to one pair of colocalizing particles.</em></p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.core.frame.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.multicolor.calc_pair_distance">
-<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">calc_pair_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">channel_names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#calc_pair_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.calc_pair_distance" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.multicolor.calc_pair_distance">
+<span class="sig-prename descclassname"><span class="pre">sdt.multicolor.</span></span><span class="sig-name descname"><span class="pre">calc_pair_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/coloc.html#calc_pair_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.calc_pair_distance" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate distances between colocalized features</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Colocalized feature data, e.g. output of
-<a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a>.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Colocalized feature data, e.g. output of
+<a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a>.</p></li>
+<li><p><strong>channel_names</strong> (<em>list of str</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Names of the channels. If None, use the first two entries of teh top
+level of <cite>data</cite>’s MultiIndex. Defaults to None.</p></li>
+<li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+The only relevant name is <cite>coords. This means,
+if your DataFrame has coordinate columns “x” and “z”, set
+``columns={“coords”: [“x”, “z”]}`</cite>.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Distances between colocalized features. The series’ index is the
@@ -278,76 +523,69 @@ same as in the input DataFrame.</p>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>pandas.Series</p>
 </dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>channel_names</strong> (<em>list of str or None, optional</em>) – Names of the channels. If None, use the first two entries of teh top
-level of <cite>data</cite>’s MultiIndex. Defaults to None.</p></li>
-<li><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
-The only relevant name is <cite>coords. This means,
-if your DataFrame has coordinate columns “x” and “z”, set
-``columns={“coords”: [“x”, “z”]}`</cite>.</p></li>
-</ul>
-</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.multicolor.find_codiffusion">
-<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">find_codiffusion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tracks1</span></em>, <em class="sig-param"><span class="n">tracks2</span></em>, <em class="sig-param"><span class="n">abs_threshold</span><span class="o">=</span><span class="default_value">3</span></em>, <em class="sig-param"><span class="n">rel_threshold</span><span class="o">=</span><span class="default_value">0.75</span></em>, <em class="sig-param"><span class="n">return_data</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">feature_pairs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_dist</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">channel_names</span><span class="o">=</span><span class="default_value">['channel1', 'channel2']</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#find_codiffusion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.find_codiffusion" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.multicolor.find_codiffusion">
+<span class="sig-prename descclassname"><span class="pre">sdt.multicolor.</span></span><span class="sig-name descname"><span class="pre">find_codiffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracks2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_pairs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_unmatched</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaps'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['channel1',</span> <span class="pre">'channel2']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/coloc.html#find_codiffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.find_codiffusion" title="Permalink to this definition"></a></dt>
 <dd><p>Find codiffusion in tracking data</p>
 <p>First, find pairs of localizations, the look up to which tracks they
 belong to and thus match tracks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tracks1</strong> (<em>pandas.DataFrame</em>) – Tracking data. In addition to what is required by
+<li><p><strong>tracks1</strong> (<em>pandas.core.frame.DataFrame</em>) – Tracking data. In addition to what is required by
 <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a>, a “particle” column has to be present.</p></li>
-<li><p><strong>tracks2</strong> (<em>pandas.DataFrame</em>) – Tracking data. In addition to what is required by
+<li><p><strong>tracks2</strong> – Tracking data. In addition to what is required by
 <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a>, a “particle” column has to be present.</p></li>
-<li><p><strong>abs_threshold</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum number of matched localizations per track pair. Defaults to 3</p></li>
+<li><p><strong>abs_threshold</strong> – Minimum number of matched localizations per track pair.</p></li>
 <li><p><strong>rel_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum fraction of matched localizations that have to belong to the
-same pair of tracks. E. g., if localizations of  aparticle in the
+same pair of tracks. E. g., if localizations of a particle in the
 first channel match five localizations of a particle in the second
 channel, and there are eight frames between the first and the last
-match, that fraction would be 5/8. Defaults to 0.75.</p></li>
-<li><p><strong>return_data</strong> (<em>{&quot;data&quot;</em><em>, </em><em>&quot;numbers&quot;</em><em>, </em><em>&quot;both&quot;}</em><em>, </em><em>optional</em>) – Whether to return the full data of the codiffusing particles, only
-their particle numbers, or both. Defaults to “data”.</p></li>
-<li><p><strong>feature_pairs</strong> (<em>pandas.DataFrame</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – If <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> has already been called on the
+match, that fraction would be 5/8.</p></li>
+<li><p><strong>return_data</strong> – Whether to return the full data of the codiffusing particles
+(<code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>), only their particle numbers (<code class="docutils literal notranslate"><span class="pre">&quot;numbers&quot;</span></code>), or both
+(<code class="docutils literal notranslate"><span class="pre">&quot;both&quot;</span></code>).</p></li>
+<li><p><strong>feature_pairs</strong> – If <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> has already been called on the
 data, the result can be passed to save re-computation. If <cite>None</cite>,
-<a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> is called in this function. Defaults
-to None</p></li>
-<li><p><strong>max_dist</strong> (<em>float</em><em>, </em><em>optional</em>) – <cite>max_dist</cite> parameter for <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> call.
-Defaults to 2.</p></li>
-<li><p><strong>channel_names</strong> (<em>list of str</em><em>, </em><em>optional</em>) – Names of the two channels. Defaults to [“channel1”, “channel2”].</p></li>
+<a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> is called in this function.</p></li>
+<li><p><strong>max_dist</strong> – <cite>max_dist</cite> parameter for <a class="reference internal" href="#sdt.multicolor.find_colocalizations" title="sdt.multicolor.find_colocalizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_colocalizations()</span></code></a> call.</p></li>
+<li><p><strong>keep_unmatched</strong> – If <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code>, also keep all non-colocalized features in the result
+DataFrame. Non-colocalized features have NaNs in the columns of the
+channel they don’t appear in.If <code class="docutils literal notranslate"><span class="pre">&quot;gaps&quot;</span></code>, only keep non-colocalized
+features within codiffusing parts tracks. If <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code>, remove all
+non-colocalized entries.</p></li>
+<li><p><strong>channel_names</strong> – Names of the two channels.</p></li>
+<li><p><strong>columns</strong> – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite>, <cite>particle</cite>, and <cite>time</cite>. This means,
+if your DataFrame has coordinate columns “x” and “z” and the time
+column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Full data (from <cite>tracks1</cite> and <cite>tracks2</cite>) of the codiffusing particles.
-The DataFrame has a multi-index for columns with the top level
-being the two channels.  Each line of DataFrame corresponds to one pair
-of colocalizing particles. Returned if <cite>return_data</cite> is “data” or
-“both”.</p></li>
-<li><p><strong>match_numbers</strong> (<em>numpy.ndarray, shape=(n, 4)</em>) – Each row’s first entry is a particle number in the first channel and
-its second entry is the matching particle number in the second channel.
-Third and fourth columns are start and end frame, respectively.
-Returned if <cite>return_data</cite> is “numbers” or “both”.</p></li>
+<li><p>If <cite>return_data</cite> is <code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;both&quot;</span></code>, a DataFrame with full</p></li>
+<li><p>data (from <cite>tracks1</cite> and <cite>tracks2</cite>) of the codiffusing particles is</p></li>
+<li><p><em>returned. The DataFrame has a multi-index for columns with the top level</em></p></li>
+<li><p><em>being the two channels.  Each line of DataFrame corresponds to one pair of</em></p></li>
+<li><p><em>colocalizing particles.</em></p></li>
+<li><p>If <cite>return_data</cite> is <code class="docutils literal notranslate"><span class="pre">&quot;numbers&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;both&quot;</span></code>, an array with four</p></li>
+<li><p><em>columns is returned.</em></p></li>
+<li><p><em>Each row’s first entry is a particle number in the first channel. The</em></p></li>
+<li><p><em>second entry is the matching particle number in the second channel.</em></p></li>
+<li><p><em>Third and fourth columns are start and end frame, respectively.</em></p></li>
 </ul>
 </p>
-</dd>
-<dt class="field-odd">Other Parameters</dt>
-<dd class="field-odd"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
-Relevant names are <cite>coords</cite>, <cite>particle</cite>, and <cite>time</cite>. This means,
-if your DataFrame has coordinate columns “x” and “z” and the time
-column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
-<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.multicolor.plot_codiffusion">
-<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">plot_codiffusion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">particle</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_legend</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">legend_loc</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">linestyles</span><span class="o">=</span><span class="default_value">['-', '--', ':', '-.']</span></em>, <em class="sig-param"><span class="n">channel_names</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#plot_codiffusion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.plot_codiffusion" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.multicolor.plot_codiffusion">
+<span class="sig-prename descclassname"><span class="pre">sdt.multicolor.</span></span><span class="sig-name descname"><span class="pre">plot_codiffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['-',</span> <span class="pre">'--',</span> <span class="pre">':',</span> <span class="pre">'-.']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/coloc.html#plot_codiffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.plot_codiffusion" title="Permalink to this definition"></a></dt>
 <dd><p>Plot trajectories of codiffusing particles</p>
 <p>Each step is colored differently so that by comparing colors one can
 figure out which steps in one channel correspond to which steps in the
@@ -373,21 +611,19 @@ Defaults to 0.</p></li>
 level of <cite>data</cite>’s MultiIndex if it has one (i. e. if it is a DataFrame
 as created by <a class="reference internal" href="#sdt.multicolor.find_codiffusion" title="sdt.multicolor.find_codiffusion"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_codiffusion()</span></code></a>), otherwise use
 [“channel1”, “channel2”]. Defaults to None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+<li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
 Relevant names are <cite>coords</cite>, <cite>particle</cite>, and <cite>time</cite>. This means,
 if your DataFrame has coordinate columns “x” and “z” and the time
 column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
-<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.multicolor.merge_channels">
-<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">merge_channels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">features1</span></em>, <em class="sig-param"><span class="n">features2</span></em>, <em class="sig-param"><span class="n">max_dist</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">mean_pos</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">return_data</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#merge_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.merge_channels" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.multicolor.merge_channels">
+<span class="sig-prename descclassname"><span class="pre">sdt.multicolor.</span></span><span class="sig-name descname"><span class="pre">merge_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/coloc.html#merge_channels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.merge_channels" title="Permalink to this definition"></a></dt>
 <dd><p>Merge features of <cite>features1</cite> and <cite>features2</cite></p>
 <p>Concatenate all of <cite>features1</cite> and those entries of <cite>features2</cite> that do
 not colocalize with any of <cite>features1</cite> (in the same frame).</p>
@@ -406,6 +642,11 @@ case. Defaults to <cite>False</cite>.</p></li>
 <li><p><strong>return_data</strong> (<em>{&quot;data&quot;</em><em>, </em><em>&quot;index&quot;</em><em>, </em><em>&quot;both&quot;}</em><em>, </em><em>optional</em>) – Whether to return the full data of merged features, only indices
 (that is, the DatatFrame’s indices) of features in <cite>features2</cite> that
 have no counterpart in <cite>features1</cite>, or both. Defaults to “data”.</p></li>
+<li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite> and <cite>time</cite>. This means,
+if your DataFrame has coordinate columns “x” and “z” and the time
+column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -421,22 +662,264 @@ is “index” or “both”.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Other Parameters</dt>
-<dd class="field-odd"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
-Relevant names are <cite>coords</cite> and <cite>time</cite>. This means,
-if your DataFrame has coordinate columns “x” and “z” and the time
-column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
-<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sdt.multicolor.FrameSelector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.multicolor.</span></span><span class="sig-name descname"><span class="pre">FrameSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excitation_seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/frame_selector.html#FrameSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.FrameSelector" title="Permalink to this definition"></a></dt>
+<dd><p>Select images and datapoints of a certain excitation type</p>
+<p>For instance, if employing alternating excitation for a FRET experiment,
+this can be used to select only the donor or only the acceptor frames.
+For details on how the excitation sequence is specified, see
+<a class="reference internal" href="#sdt.multicolor.FrameSelector.excitation_seq" title="sdt.multicolor.FrameSelector.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Sequence of 8 &quot;images&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img_seq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">FrameSelector</span><span class="p">(</span><span class="s2">&quot;odda&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">img_seq</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
+<span class="go">array([[[0, 0, 0],</span>
+<span class="go">        [0, 0, 0],</span>
+<span class="go">        [0, 0, 0]],</span>
+
+<span class="go">       [[4, 4, 4],</span>
+<span class="go">        [4, 4, 4],</span>
+<span class="go">        [4, 4, 4]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">img_seq</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">)</span>
+<span class="go">array([[[1, 1, 1],</span>
+<span class="go">        [1, 1, 1],</span>
+<span class="go">        [1, 1, 1]],</span>
+
+<span class="go">       [[2, 2, 2],</span>
+<span class="go">        [2, 2, 2],</span>
+<span class="go">        [2, 2, 2]],</span>
+
+<span class="go">       [[5, 5, 5],</span>
+<span class="go">        [5, 5, 5],</span>
+<span class="go">        [5, 5, 5]],</span>
+
+<span class="go">       [[6, 6, 6],</span>
+<span class="go">        [6, 6, 6],</span>
+<span class="go">        [6, 6, 6]]])</span>
+</pre></div>
+</div>
+<p>A flexible sequence specification uses <code class="docutils literal notranslate"><span class="pre">?</span></code> as a multiplicator. This
+causes repetition of a subsequence such that the excitation sequence
+length matches the image sequence length. In the following example,
+<code class="docutils literal notranslate"><span class="pre">&quot;da&quot;</span></code> is repeated three times.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">FrameSelector</span><span class="p">(</span><span class="s2">&quot;o + da * ? + c&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">img_seq</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">)</span>
+<span class="go">array([[[1, 1, 1],</span>
+<span class="go">        [1, 1, 1],</span>
+<span class="go">        [1, 1, 1]],</span>
+
+<span class="go">       [[3, 3, 3],</span>
+<span class="go">        [3, 3, 3],</span>
+<span class="go">        [3, 3, 3]],</span>
+
+<span class="go">       [[5, 5, 5],</span>
+<span class="go">        [5, 5, 5],</span>
+<span class="go">        [5, 5, 5]]])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>excitation_seq</strong> (<em>str</em>) – Set <a class="reference internal" href="#sdt.multicolor.FrameSelector.excitation_seq" title="sdt.multicolor.FrameSelector.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a></p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.multicolor.FrameSelector.excitation_seq">
+<span class="sig-name descname"><span class="pre">excitation_seq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#sdt.multicolor.FrameSelector.excitation_seq" title="Permalink to this definition"></a></dt>
+<dd><p>Excitation sequence. Use different letters to describe different
+excitation types, e.g., “d” for donor excitation, “a” for acceptor,
+etc.</p>
+<p>One needs only specify the shortest sequence that is repeated,
+i. e. <code class="docutils literal notranslate"><span class="pre">&quot;ddddaddddadddda&quot;</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">&quot;dddda&quot;</span></code>. It is
+possible to specifiy repetition via the multiplication operator.
+<code class="docutils literal notranslate"><span class="pre">&quot;c</span> <span class="pre">+</span> <span class="pre">da</span> <span class="pre">*</span> <span class="pre">3</span> <span class="pre">+</span> <span class="pre">c&quot;</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">&quot;cdadadac&quot;</span></code>. Also, flexible
+sequences can be specified using <code class="docutils literal notranslate"><span class="pre">?</span></code> as a multiplicator. In <code class="docutils literal notranslate"><span class="pre">&quot;c</span> <span class="pre">+</span>
+<span class="pre">da</span> <span class="pre">*</span> <span class="pre">?</span> <span class="pre">+</span> <span class="pre">c&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;da&quot;</span></code> is repeated an appropriate number of times
+to generate a sequence of given length. This length is either derived
+from the image sequence the class instance is applied to or given
+explicitly (see <a class="reference internal" href="#sdt.multicolor.FrameSelector.select" title="sdt.multicolor.FrameSelector.select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select()</span></code></a>).</p>
+<p>If the sequence is empty, the FrameSelector does nothing. E.g.,
+<a class="reference internal" href="#sdt.multicolor.FrameSelector.select" title="sdt.multicolor.FrameSelector.select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select()</span></code></a> and <a class="reference internal" href="#sdt.multicolor.FrameSelector.renumber_frames" title="sdt.multicolor.FrameSelector.renumber_frames"><code class="xref py py-meth docutils literal notranslate"><span class="pre">renumber_frames()</span></code></a> just return their
+argument unaltered.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.FrameSelector.eval_seq">
+<span class="sig-name descname"><span class="pre">eval_seq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/frame_selector.html#FrameSelector.eval_seq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.FrameSelector.eval_seq" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate excitation sequence</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n_frames</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Number of frames. This needs to be given if sequence is flexible,
+i.e., contains multiplication by <code class="docutils literal notranslate"><span class="pre">?</span></code>. In this case, <code class="docutils literal notranslate"><span class="pre">?</span></code>
+evaluates to a number such that the total sequence length is
+<cite>n_frames</cite>. If <cite>n_frames</cite> is equal to -1, <code class="docutils literal notranslate"><span class="pre">?</span></code> is replaced by
+1. This is useful for testing and finding e.g. the first occurence
+of a frame without depending on actual data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Array of characters representing evaluated sequence</p>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.FrameSelector.renumber_frames">
+<span class="sig-name descname"><span class="pre">renumber_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_nos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/frame_selector.html#FrameSelector.renumber_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.FrameSelector.renumber_frames" title="Permalink to this definition"></a></dt>
+<dd><p>Renumber a sequence of frame numbers</p>
+<p>The numbers can be with respect to the original image sequence. In this
+case, set <code class="docutils literal notranslate"><span class="pre">restore=False</span></code> and this function will return frame numbers
+with respect to an image sequence which was returned by
+<a class="reference internal" href="#sdt.multicolor.FrameSelector.select" title="sdt.multicolor.FrameSelector.select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select()</span></code></a>.  Any frames that don’t belong to the excitation type
+given by <cite>which</cite> are mapped to -1.
+If <code class="docutils literal notranslate"><span class="pre">restore=True</span></code> is set, this works the opposite other way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame_nos</strong> (<em>numpy.ndarray</em>) – Array of frame numbers to be mapped</p></li>
+<li><p><strong>which</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Iterable</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Excitation type(s), one or multiple characters out of
+<a class="reference internal" href="#sdt.multicolor.FrameSelector.excitation_seq" title="sdt.multicolor.FrameSelector.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a>.</p></li>
+<li><p><strong>restore</strong> (<em>bool</em>) – If <cite>False</cite>, renumber the frames (as in <a class="reference internal" href="#sdt.multicolor.FrameSelector.select" title="sdt.multicolor.FrameSelector.select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select()</span></code></a>).
+If <cite>True</cite>, restore original frame numbers (as in
+<a class="reference internal" href="#sdt.multicolor.FrameSelector.restore_frame_numbers" title="sdt.multicolor.FrameSelector.restore_frame_numbers"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restore_frame_numbers()</span></code></a>).</p></li>
+<li><p><strong>n_frames</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>New frame numbers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.FrameSelector.find_other_frames">
+<span class="sig-name descname"><span class="pre">find_other_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">how</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nearest-up'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/frame_selector.html#FrameSelector.find_other_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.FrameSelector.find_other_frames" title="Permalink to this definition"></a></dt>
+<dd><p>For given excitation type, find frames of other type</p>
+<p>Typically, this is used to find the closest frame of a certain type,
+e.g., find the next acceptor excitation frame for donor excitation
+frames in FRET ALEX experiments.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fs</span> <span class="o">=</span> <span class="n">FrameSelector</span><span class="p">(</span><span class="s2">&quot;dddda&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d_img</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">image_sequence</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_img</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">find_other_frames</span><span class="p">(</span><span class="n">image_sequence</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;a)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">di</span><span class="p">,</span> <span class="n">ai</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">d_img</span><span class="p">,</span> <span class="n">a_img</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="c1"># `ai` is the frame of type &quot;a&quot; closest to `di`</span>
+<span class="gp">... </span>   <span class="k">pass</span>
+</pre></div>
 </div>
-<div class="section" id="low-level-helper-functions">
-<h2>Low level helper functions<a class="headerlink" href="#low-level-helper-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>Sequence</em><em>]</em>) – If this is a sequence, return a subsequence of the same length as
+<code class="docutils literal notranslate"><span class="pre">select(data,</span> <span class="pre">which)</span></code>. Each entry of the returned sequence is
+the corresponding entry to what <code class="docutils literal notranslate"><span class="pre">select(data,</span> <span class="pre">which)</span></code> returns.
+Passing an int is equivalent to using <code class="docutils literal notranslate"><span class="pre">numpy.arange(data)</span></code>.</p></li>
+<li><p><strong>which</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Iterable</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Excitation types for which to find other excitation type’s frames</p></li>
+<li><p><strong>other</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Iterable</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Other frames’ excitation type(s)</p></li>
+<li><p><strong>how</strong> (<em>str</em>) – How to do the interpolation. “nearest-up” will return the nearest
+frame. In case of a tie, the “other” frame after the current one
+is used. “nearest” will return the “other” frame before the current
+one in case of a tie. “previous” and “next” return the “other”
+frame before and after the current one, respectively.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>Subsequence of <cite>data</cite> with entries being the “other” entries to</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">select(data,</span> <span class="pre">which)</span></code>.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>Sequence</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.FrameSelector.select">
+<span class="sig-name descname"><span class="pre">select</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/frame_selector.html#FrameSelector.select"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.FrameSelector.select" title="Permalink to this definition"></a></dt>
+<dd><p>Get only data corresponding to a certain excitation type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>pandas.core.frame.DataFrame</em><em>, </em><em>Iterable</em><em>[</em><em>numpy.ndarray</em><em>]</em><em>]</em>) – Localization data or sequence of images</p></li>
+<li><p><strong>which</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Iterable</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Excitation type(s), one or multiple characters out of
+<a class="reference internal" href="#sdt.multicolor.FrameSelector.excitation_seq" title="sdt.multicolor.FrameSelector.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a>.</p></li>
+<li><p><strong>renumber</strong> (<em>bool</em>) – <p>Renumber frames so that only frames for excitation types
+corresponding to <cite>which</cite> are counted.</p>
+<p>After selecting only data corresponding to an excitation type (e.g.
+“a”) in a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, all other types are
+missing and frame number are not consecutive any more. This can be
+a problem for tracking or diffusion analysis. Setting
+<code class="docutils literal notranslate"><span class="pre">renumber=True</span></code> will work around this.</p>
+<p>Only applicable if <cite>data</cite> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p>
+</p></li>
+<li><p><strong>n_frames</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Number of frames. This needs to be given if sequence is flexible,
+i.e., contains multiplication by <code class="docutils literal notranslate"><span class="pre">?</span></code>. In this case, <code class="docutils literal notranslate"><span class="pre">?</span></code>
+evaluates to a number such that the total sequence length is
+<cite>n_frames</cite>. If <cite>data</cite> is an image sequence, <cite>n_frames</cite> can be
+inferred from <code class="docutils literal notranslate"><span class="pre">len(data)</span></code>.</p></li>
+<li><p><strong>columns</strong> (<em>Mapping</em>) – Override default column names in case <cite>data</cite> is a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. The only relevant name is <cite>time</cite>.
+That means, if the DataFrame has frame number columns “frame2”,
+set <code class="docutils literal notranslate"><span class="pre">columns={&quot;time&quot;:</span> <span class="pre">&quot;frame2&quot;}</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>Selected frames. If <cite>data</cite> is a DataFrame, return only lines</p></li>
+<li><p>corresponding to excitation types given by <cite>which</cite>. If</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">renumber=True</span></code>, a modified copy of <cite>data</cite> is returned.</p></li>
+<li><p>If <cite>data</cite> is an image sequence, first an attempt is made at</p></li>
+<li><p>indexing the images  directly. If <cite>data</cite> supports this (e.g. if it</p></li>
+<li><p>is a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>), the indexed version is returned.</p></li>
+<li><p>Otherwise, <cite>img_seq</cite> is converted to</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">helper.Slicerator</span></code>, indexed, and returned.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>Union</em>[pandas.core.frame.DataFrame, numpy.ndarray, <a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.slicerator.Slicerator">sdt.helper.slicerator.Slicerator</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.multicolor.FrameSelector.restore_frame_numbers">
+<span class="sig-name descname"><span class="pre">restore_frame_numbers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/frame_selector.html#FrameSelector.restore_frame_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.FrameSelector.restore_frame_numbers" title="Permalink to this definition"></a></dt>
+<dd><p>Undo frame renumbering from <a class="reference internal" href="#sdt.multicolor.FrameSelector.select" title="sdt.multicolor.FrameSelector.select"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select()</span></code></a></p>
+<p><cite>data</cite> is modified in place for this purpose.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.core.frame.DataFrame</em>) – Localization data</p></li>
+<li><p><strong>which</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Iterable</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Excitation type(s), one or multiple characters out of
+<a class="reference internal" href="#sdt.multicolor.FrameSelector.excitation_seq" title="sdt.multicolor.FrameSelector.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a>.</p></li>
+<li><p><strong>n_frames</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Number of frames. This needs to be given if sequence is flexible,
+i.e., contains multiplication by <code class="docutils literal notranslate"><span class="pre">?</span></code>. In this case, <code class="docutils literal notranslate"><span class="pre">?</span></code>
+evaluates to a number such that the total sequence length is
+<cite>n_frames</cite>.</p></li>
+<li><p><strong>columns</strong> (<em>Mapping</em>) – Override default column names in case <cite>data</cite> is a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. The only relevant name is <cite>time</cite>.
+That means, if the DataFrame has frame number columns “frame2”,
+set <code class="docutils literal notranslate"><span class="pre">columns={&quot;time&quot;:</span> <span class="pre">&quot;frame2&quot;}</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="low-level-helper-functions">
+<h2>Low level helper functions<a class="headerlink" href="#low-level-helper-functions" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt id="sdt.multicolor.find_closest_pairs">
-<code class="sig-prename descclassname">sdt.multicolor.</code><code class="sig-name descname">find_closest_pairs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coords1</span></em>, <em class="sig-param"><span class="n">coords2</span></em>, <em class="sig-param"><span class="n">max_dist</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor.html#find_closest_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.multicolor.find_closest_pairs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.multicolor.find_closest_pairs">
+<span class="sig-prename descclassname"><span class="pre">sdt.multicolor.</span></span><span class="sig-name descname"><span class="pre">find_closest_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/multicolor/coloc.html#find_closest_pairs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.multicolor.find_closest_pairs" title="Permalink to this definition"></a></dt>
 <dd><p>Find best matches between coordinates</p>
 <p>Given two coordinate arrays (<cite>coords1</cite> and <cite>coords2</cite>), find pairs of points
 with the minimum distance between them. Each point will be in at most one
@@ -461,63 +944,38 @@ in <cite>coords1</cite>. The second entry is the index of its match in <cite>coo
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="motion.html" class="btn btn-neutral float-right" title="Diffusion analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="channel_reg.html" class="btn btn-neutral float-left" title="Overlay color channels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="roi.html" class="btn btn-neutral float-left" title="Regions of interest (ROIs)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="motion.html" class="btn btn-neutral float-right" title="Diffusion analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2015—2018, Lukas Schrangl
-
-    </p>
+    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

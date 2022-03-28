@@ -1,71 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>sdt.fret.sm_track &mdash; sdt-python 15.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sdt.fret.sm_track &mdash; sdt-python 17.2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
-          
-
-          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
           </a>
-
-          
-            
-            
               <div class="version">
-                15.0
+                17.2
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,21 +36,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
@@ -107,67 +58,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">sdt-python</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
       <li>sdt.fret.sm_track</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for sdt.fret.sm_track</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
@@ -181,8 +95,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">channel_reg</span><span class="p">,</span> <span class="n">multicolor</span><span class="p">,</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">FrameSelector</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">brightness</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">multicolor</span><span class="p">,</span> <span class="n">spatial</span>
+
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">trackpy</span>
@@ -202,12 +116,12 @@
                   <span class="s2">&quot;min_length&quot;</span><span class="p">,</span> <span class="s2">&quot;brightness_options&quot;</span><span class="p">,</span> <span class="s2">&quot;interpolate&quot;</span><span class="p">,</span>
                   <span class="s2">&quot;coloc_dist&quot;</span><span class="p">,</span> <span class="s2">&quot;acceptor_channel&quot;</span><span class="p">,</span> <span class="s2">&quot;neighbor_radius&quot;</span><span class="p">)</span>
 
-    <span class="n">frame_selector</span><span class="p">:</span> <span class="n">FrameSelector</span>
+    <span class="n">frame_selector</span><span class="p">:</span> <span class="n">multicolor</span><span class="o">.</span><span class="n">FrameSelector</span>
     <span class="sd">&quot;&quot;&quot;A :py:class:`FrameSelector` instance with the matching</span>
 <span class="sd">    :py:attr:`excitation_seq`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">registrator</span><span class="p">:</span> <span class="n">channel_reg</span><span class="o">.</span><span class="n">Registrator</span>
-    <span class="sd">&quot;&quot;&quot;channel_reg.Registrator used to overlay channels&quot;&quot;&quot;</span>
+    <span class="n">registrator</span><span class="p">:</span> <span class="n">multicolor</span><span class="o">.</span><span class="n">Registrator</span>
+    <span class="sd">&quot;&quot;&quot;multicolor.Registrator used to overlay channels&quot;&quot;&quot;</span>
     <span class="n">link_options</span><span class="p">:</span> <span class="n">Dict</span>
     <span class="sd">&quot;&quot;&quot;Options passed to :py:func:`trackpy.link_df`&quot;&quot;&quot;</span>
     <span class="n">min_length</span><span class="p">:</span> <span class="nb">int</span>
@@ -242,8 +156,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excitation_seq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;da&quot;</span><span class="p">,</span>
-                 <span class="n">registrator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">channel_reg</span><span class="o">.</span><span class="n">Registrator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excitation_seq</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;da&quot;</span><span class="p">,</span>
+                 <span class="n">registrator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">multicolor</span><span class="o">.</span><span class="n">Registrator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">link_radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">link_mem</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                  <span class="n">min_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">feat_radius</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
                  <span class="n">bg_frame</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
@@ -309,9 +223,9 @@
 <span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;], &quot;time&quot;: &quot;alt_frame&quot;}``. This</span>
 <span class="sd">            parameters sets the :py:attr:`columns` attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span> <span class="o">=</span> <span class="n">FrameSelector</span><span class="p">(</span><span class="n">excitation_seq</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span> <span class="o">=</span> <span class="n">multicolor</span><span class="o">.</span><span class="n">FrameSelector</span><span class="p">(</span><span class="n">excitation_seq</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">registrator</span> <span class="o">=</span> <span class="p">(</span><span class="n">registrator</span> <span class="k">if</span> <span class="n">registrator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                            <span class="k">else</span> <span class="n">channel_reg</span><span class="o">.</span><span class="n">Registrator</span><span class="p">())</span>
+                            <span class="k">else</span> <span class="n">multicolor</span><span class="o">.</span><span class="n">Registrator</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">link_options</span> <span class="o">=</span> <span class="n">link_options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">link_options</span><span class="p">[</span><span class="s2">&quot;search_range&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_radius</span>
@@ -337,7 +251,7 @@
             <span class="n">trackpy</span><span class="o">.</span><span class="n">quiet</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Excitation sequence. &quot;d&quot; stands for donor, &quot;a&quot; for acceptor,</span>
 <span class="sd">        anything else describes other kinds of frames which are irrelevant for</span>
 <span class="sd">        tracking.</span>
@@ -348,16 +262,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="o">.</span><span class="n">excitation_seq</span>
 
     <span class="nd">@excitation_seq</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]):</span>
+    <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="o">.</span><span class="n">excitation_seq</span> <span class="o">=</span> <span class="n">seq</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">excitation_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;dict mapping the excitation types in :py:attr:`excitation_seq` to</span>
-<span class="sd">        the corresponding frame numbers (modulo the length of</span>
-<span class="sd">        py:attr:`excitation_seq`).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="o">.</span><span class="n">excitation_frames</span>
 
 <div class="viewcode-block" id="SmFRETTracker.track"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.track">[docs]</a>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_img</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
               <span class="n">acceptor_img</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">donor_loc</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
@@ -450,8 +356,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">link_options</span><span class="p">[</span><span class="s2">&quot;t_column&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
 
         <span class="c1"># Track only &quot;d&quot; and &quot;a&quot; frames. Renumber frames for that.</span>
-        <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="s2">&quot;da&quot;</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                     <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">merged</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="n">merged</span><span class="p">,</span> <span class="s2">&quot;da&quot;</span><span class="p">,</span> <span class="n">renumber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
         <span class="n">track_merged</span> <span class="o">=</span> <span class="n">trackpy</span><span class="o">.</span><span class="n">link_df</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">link_options</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate</span><span class="p">:</span>
@@ -563,9 +469,9 @@
         <span class="c1"># FIXME: Don&#39;t force convert to int, but raise an error (?)</span>
         <span class="c1"># First, the track method needs to preserve the data type of the time</span>
         <span class="c1"># column</span>
+        <span class="n">eseq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_selector</span><span class="o">.</span><span class="n">eval_seq</span><span class="p">()</span>
         <span class="n">frames</span> <span class="o">=</span> <span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-        <span class="n">et</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">[</span><span class="n">frames</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span><span class="p">)],</span>
-                       <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;category&quot;</span><span class="p">)</span>
+        <span class="n">et</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">eseq</span><span class="p">[</span><span class="n">frames</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">eseq</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;category&quot;</span><span class="p">)</span>
         <span class="c1"># Assignment to dataframe is done by matching indices, not line-wise</span>
         <span class="c1"># Thus copy index</span>
         <span class="n">et</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">tracks</span><span class="o">.</span><span class="n">index</span>
@@ -579,7 +485,6 @@
 <span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">m</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_yaml_keys</span><span class="p">}</span>
-        <span class="n">m</span><span class="p">[</span><span class="s2">&quot;excitation_seq&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;excitation_seq&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SmFRETTracker.from_yaml"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
@@ -602,49 +507,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2015—2018, Lukas Schrangl
-
-    </p>
+    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

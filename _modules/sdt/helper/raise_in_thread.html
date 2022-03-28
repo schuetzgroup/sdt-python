@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.fret.utils &mdash; sdt-python 17.2 documentation</title>
+  <title>sdt.helper.raise_in_thread &mdash; sdt-python 17.2 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -73,7 +73,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.fret.utils</li>
+      <li>sdt.helper.raise_in_thread</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -82,61 +82,65 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for sdt.fret.utils</h1><div class="highlight"><pre>
-<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+  <h1>Source code for sdt.helper.raise_in_thread</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2021 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
-<span class="sd">&quot;&quot;&quot;Module containing tools related to images from FRET experiments&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 
-<div class="viewcode-block" id="numeric_exc_type"><a class="viewcode-back" href="../../../fret.html#sdt.fret.numeric_exc_type">[docs]</a><span class="nd">@contextmanager</span>
-<span class="k">def</span> <span class="nf">numeric_exc_type</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Context manager temporarily turning (&quot;fret&quot;, &quot;exc_type&quot;) column to int</span>
+<div class="viewcode-block" id="raise_in_thread"><a class="viewcode-back" href="../../../helper.html#sdt.helper.raise_in_thread">[docs]</a><span class="k">def</span> <span class="nf">raise_in_thread</span><span class="p">(</span><span class="n">thread_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">exception_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raises an exception an a thread</span>
 
-<span class="sd">    This is useful e.g. in :py:func:`helper.split_dataframe` so that the</span>
-<span class="sd">    resulting split array does not have `object` dtype due to</span>
-<span class="sd">    (&quot;fret&quot;, &quot;exc_type&quot;) being categorical.</span>
+<span class="sd">    This can be used e.g. to stop a thread</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; tracks[&quot;fret&quot;, &quot;exc_type&quot;].dtype</span>
-<span class="sd">    CategoricalDtype(categories=[&#39;a&#39;, &#39;d&#39;], ordered=False)</span>
-<span class="sd">    &gt;&gt;&gt; with numeric_exc_type(tracks) as exc_cats:</span>
-<span class="sd">    &gt;&gt;&gt;     tracks[&quot;fret&quot;, &quot;exc_type&quot;].dtype</span>
-<span class="sd">    dtype(&#39;int64&#39;)</span>
-<span class="sd">    &gt;&gt;&gt;     exc_cats[0]</span>
-<span class="sd">    &quot;a&quot;</span>
+<span class="sd">    .. code-block:: python</span>
 
-<span class="sd">    ``exc_cats`` is an array that holds old categories. It can be used to find</span>
-<span class="sd">    out which (new) integer corresponds to which category</span>
+<span class="sd">        class StopThread(Exception):</span>
+<span class="sd">            pass</span>
 
-<span class="sd">    When leaving the ``with`` block, the old categorical column is restored.</span>
-<span class="sd">    This works only for the original DataFrame, but not for any copies made</span>
-<span class="sd">    within the block!</span>
+<span class="sd">        def worker():</span>
+<span class="sd">            try:</span>
+<span class="sd">                # do stuff</span>
+<span class="sd">            except StopThread:</span>
+<span class="sd">                pass</span>
+
+<span class="sd">        th = threading.Thread(target=worker)</span>
+<span class="sd">        th.start()</span>
+<span class="sd">        # a little later…</span>
+<span class="sd">        raise_in_thread(th.ident, StopThread)</span>
+
+<span class="sd">    Note that the exception is not raised while ``worker()`` is running C code,</span>
+<span class="sd">    but only when it returns to Python.</span>
+
+<span class="sd">    Adapted from http://tomerfiliba.com/recipes/Thread2/.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    df : pandas.DataFrame</span>
-<span class="sd">        Dataframe for which to temporarily use an integer (&quot;fret&quot;, &quot;exc_type&quot;)</span>
-<span class="sd">        column.</span>
-
-<span class="sd">    Yields</span>
-<span class="sd">    ------</span>
-<span class="sd">    pandas.Index</span>
-<span class="sd">        Maps integers to categories</span>
+<span class="sd">    thread_id</span>
+<span class="sd">        ID of the thread. See :py:func:`threading.get_ident() and</span>
+<span class="sd">        :py:attr:`threading.Thread.ident`.</span>
+<span class="sd">    exception_type</span>
+<span class="sd">        Type of the exception to raise. Note that this should be a type, not</span>
+<span class="sd">        an instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">exc_types</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">exc_cats</span> <span class="o">=</span> <span class="n">exc_types</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">exc_types</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exc_cats</span><span class="p">)))</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exc_types</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">major</span> <span class="o">&gt;=</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">.</span><span class="n">minor</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="n">c_id</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_ulong</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">c_id</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_long</span><span class="p">(</span><span class="n">thread_id</span><span class="p">)</span>
+    <span class="n">c_exc</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">py_object</span><span class="p">(</span><span class="n">exception_type</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">yield</span> <span class="n">exc_cats</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="n">exc_types</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="n">exc_cats</span>
-        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exc_types</span></div>
+    <span class="n">n_threads</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyThreadState_SetAsyncExc</span><span class="p">(</span><span class="n">c_id</span><span class="p">,</span> <span class="n">c_exc</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_threads</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`thread_id` invalid&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># This should not happen. Try to undo previous call by using None as</span>
+        <span class="c1"># `exc` argument</span>
+        <span class="n">ctypes</span><span class="o">.</span><span class="n">pythonapi</span><span class="o">.</span><span class="n">PyThreadState_SetAsyncExc</span><span class="p">(</span><span class="n">c_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">SystemError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to raise </span><span class="si">{</span><span class="n">exception_type</span><span class="si">}</span><span class="s2"> in thread &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">thread_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

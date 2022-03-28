@@ -1,259 +1,92 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>sdt.channel_reg &mdash; sdt-python 15.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sdt.multicolor.registrator &mdash; sdt-python 17.2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
-          
-
-          
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
           </a>
-
-          
-            
-            
               <div class="version">
-                15.0
+                17.2
               </div>
-            
-          
-
-          
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../channel_reg.html">Overlay color channels</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../multicolor.html">Multi-color data analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../motion.html">Diffusion analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../brightness.html">Brightness analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../io.html">Data input/output</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changepoint.html">Changepoint detection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../spatial.html">Analyze spatial aspects of data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../fret.html">Single molecule FRET analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image filtering and processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../flatfield.html">Flat-field correction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../loc.html">Fluorescent feature localization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../nbui.html">GUIs for the Jupyter notebook</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../sim.html">Simulation of microscopy-related data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../funcs.html">Special functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../plot.html">Plotting utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../optimize.html">Optimization and fitting algorithms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../helper.html">Helpers for writing new code</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat-field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">sdt-python</a>
-        
+          <a href="../../../index.html">sdt-python</a>
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>sdt.channel_reg</li>
-    
-    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sdt.multicolor.registrator</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <h1>Source code for sdt.channel_reg</h1><div class="highlight"><pre>
+             
+  <h1>Source code for sdt.multicolor.registrator</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
-<span class="sd">&quot;&quot;&quot;Overlay color channels</span>
-<span class="sd">======================</span>
-
-<span class="sd">Multi-color microscopy images are typically created by directing the light of</span>
-<span class="sd">different wavelengths onto different regions of the camera chip or onto</span>
-<span class="sd">different cameras.</span>
-
-<span class="sd">In order to overlay the different channels, one can record images of</span>
-<span class="sd">multi-color beads and identify each bead&#39;s position in each channel to</span>
-<span class="sd">determine a transformation that transforms data from one channel to match the</span>
-<span class="sd">other channel. The :py:class:`Registrator` class offers an easy way to do this.</span>
-
-
-<span class="sd">Examples</span>
-<span class="sd">--------</span>
-
-<span class="sd">Let&#39;s assume that multiple images/sequences of flourescent beads have been</span>
-<span class="sd">acquired with two color channels on in the same image. First, the beads</span>
-<span class="sd">need to be localized (e.g. using the ``sdt.gui.locator`` application).</span>
-<span class="sd">These need to be loaded:</span>
-
-<span class="sd">&gt;&gt;&gt; bead_loc = [sdt.io.load(b) for b in glob.glob(&quot;beads*.h5&quot;)]</span>
-
-<span class="sd">Next, we define ROIs for the two channels using :py:class:`sdt.roi.ROI` and</span>
-<span class="sd">choose the bead localizations with respect to the ROIs:</span>
-
-<span class="sd">&gt;&gt;&gt; r1 = sdt.roi.ROI((0, 0), size=(200, 100))</span>
-<span class="sd">&gt;&gt;&gt; r2 = sdt.roi.ROI((0, 200), size=(200, 100))</span>
-<span class="sd">&gt;&gt;&gt; beads_r1 = [r1(b) for b in bead_loc]</span>
-<span class="sd">&gt;&gt;&gt; beads_r2 = [r2(b) for b in bead_loc]</span>
-
-<span class="sd">Now, calculate the transform that overlays the two channels using</span>
-<span class="sd">:py:class:`Registrator`:</span>
-
-<span class="sd">&gt;&gt;&gt; corr = Registrator(beads_r1, beads_r2)</span>
-<span class="sd">&gt;&gt;&gt; corr.determine_parameters()</span>
-<span class="sd">&gt;&gt;&gt; corr.test()  # Plot results</span>
-
-<span class="sd">This can now be used to transform i.e. image data from channel 1 so that it</span>
-<span class="sd">can be overlaid with channel 1:</span>
-
-<span class="sd">&gt;&gt;&gt; img = pims.open(&quot;image.tif&quot;)[0]  # Load first frame (number 0)</span>
-<span class="sd">&gt;&gt;&gt; img_r1 = r1(img)  # Get channel 1 part of the image</span>
-<span class="sd">&gt;&gt;&gt; img_r2 = r2(img)  # Get channel 2 part of the image</span>
-<span class="sd">&gt;&gt;&gt; img_r1_corr = corr(img_r1, channel=1)  # Transform channel 1 image</span>
-<span class="sd">&gt;&gt;&gt; overlay = numpy.dstack([img_r1, img_r2, np.zeros_like(img_r1)])</span>
-<span class="sd">&gt;&gt;&gt; matplotlib.pyplot.imshow(overlay)  # Plot overlay</span>
-
-<span class="sd">Similarly, coordinates of single molecule data can be transformed:</span>
-
-<span class="sd">&gt;&gt;&gt; loc = sdt.io.load(&quot;loc.h5&quot;)  # Load data</span>
-<span class="sd">&gt;&gt;&gt; loc_r1 = r1(loc)  # Get data from channel 1</span>
-<span class="sd">&gt;&gt;&gt; loc_r2 = r2(loc)  # Get data from channel 2</span>
-<span class="sd">&gt;&gt;&gt; loc_r1_corr = corr(loc_r1, channel=1)  # Transform channel 1 data</span>
-<span class="sd">&gt;&gt;&gt; matplotlib.pyplot.scatter(loc_r1_corr[&quot;x&quot;], loc_r1_corr[&quot;y&quot;], marker=&quot;+&quot;)</span>
-<span class="sd">&gt;&gt;&gt; matplotlib.pyplot.scatter(loc_r2[&quot;x&quot;], loc_r2[&quot;y&quot;], marker=&quot;x&quot;)</span>
-
-<span class="sd">There is also support for saving and loading a :py:class:`Registrator` instance</span>
-<span class="sd">to/from YAML:</span>
-
-<span class="sd">&gt;&gt;&gt; with open(&quot;output.yaml&quot;, &quot;w&quot;) as f:</span>
-<span class="sd">&gt;&gt;&gt;     sdt.io.yaml.safe_dump(corr, f)</span>
-<span class="sd">&gt;&gt;&gt; with opon(&quot;output.yaml&quot;, &quot;r&quot;) as f:</span>
-<span class="sd">&gt;&gt;&gt;     corr_loaded = sdt.io.yaml.safe_load(f)</span>
-
-
-<span class="sd">Programming reference</span>
-<span class="sd">---------------------</span>
-
-<span class="sd">.. autoclass:: Registrator</span>
-<span class="sd">    :members:</span>
-<span class="sd">    :special-members: __call__</span>
-
-<span class="sd">References</span>
-<span class="sd">----------</span>
-
-<span class="sd">.. [Preibisch2010] Preibisch, S.; Saalfeld, S.; Schindelin, J. &amp; Tomancak, P.:</span>
-<span class="sd">    &quot;Software for bead-based registration of selective plane illumination</span>
-<span class="sd">    microscopy data&quot;, Nature Methods, Springer Science and Business Media LLC,</span>
-<span class="sd">    2010, 7, 418–419</span>
-<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
@@ -266,10 +99,9 @@
 <span class="kn">import</span> <span class="nn">scipy.io</span>
 <span class="kn">import</span> <span class="nn">scipy.ndimage</span>
 <span class="kn">import</span> <span class="nn">scipy.spatial</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">roi</span><span class="p">,</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">Slicerator</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">roi</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">Slicerator</span>
 
 
 <span class="k">def</span> <span class="nf">_affine_trafo</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -292,12 +124,71 @@
     <span class="k">return</span> <span class="n">loc</span> <span class="o">@</span> <span class="n">params</span><span class="p">[:</span><span class="n">ndim</span><span class="p">,</span> <span class="p">:</span><span class="n">ndim</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">+</span> <span class="n">params</span><span class="p">[:</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ndim</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="Registrator"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator">[docs]</a><span class="k">class</span> <span class="nc">Registrator</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Class for easy overlay of two fluorescence microscopy channels</span>
+<div class="viewcode-block" id="Registrator"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator">[docs]</a><span class="k">class</span> <span class="nc">Registrator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Registration of two fluorescence microscopy emission channels</span>
 
-<span class="sd">    This class provides an easy-to-use interface to the registration</span>
-<span class="sd">    process. It is based on the algorithm published by Preibisch et al.</span>
-<span class="sd">    [Preibisch2010]_.</span>
+<span class="sd">    This class provides an easy-to-use interface to determine maps between</span>
+<span class="sd">    the channels&#39; coordinates using localization data from fiducial markers. It</span>
+<span class="sd">    is based on the algorithm published by Preibisch et al. [Preibisch2010]_.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Let&#39;s assume that multiple images/sequences of fluorescent beads have been</span>
+<span class="sd">    acquired, which are visible in both emission channels. First, the beads</span>
+<span class="sd">    need to be localized (e.g. using the ``sdt.gui.locator`` application).</span>
+<span class="sd">    These need to be loaded:</span>
+
+<span class="sd">    &gt;&gt;&gt; bead_loc = [sdt.io.load(b) for b in glob.glob(&quot;beads*.h5&quot;)]</span>
+
+<span class="sd">    Next, we define ROIs for the two channels using :py:class:`sdt.roi.ROI` and</span>
+<span class="sd">    choose the bead localizations with respect to the ROIs:</span>
+
+<span class="sd">    &gt;&gt;&gt; r1 = sdt.roi.ROI((0, 0), size=(200, 100))</span>
+<span class="sd">    &gt;&gt;&gt; r2 = sdt.roi.ROI((0, 200), size=(200, 100))</span>
+<span class="sd">    &gt;&gt;&gt; beads_r1 = [r1(b) for b in bead_loc]</span>
+<span class="sd">    &gt;&gt;&gt; beads_r2 = [r2(b) for b in bead_loc]</span>
+
+<span class="sd">    Now, calculate the transform that overlays the two channels using</span>
+<span class="sd">    :py:class:`Registrator`:</span>
+
+<span class="sd">    &gt;&gt;&gt; corr = Registrator(beads_r1, beads_r2)</span>
+<span class="sd">    &gt;&gt;&gt; corr.determine_parameters()</span>
+<span class="sd">    &gt;&gt;&gt; corr.test()  # Plot results</span>
+
+<span class="sd">    This can now be used to transform i.e. image data from channel 1 so that it</span>
+<span class="sd">    can be overlaid with channel 1:</span>
+
+<span class="sd">    &gt;&gt;&gt; img = pims.open(&quot;image.tif&quot;)[0]  # Load first frame (number 0)</span>
+<span class="sd">    &gt;&gt;&gt; img_r1 = r1(img)  # Get channel 1 part of the image</span>
+<span class="sd">    &gt;&gt;&gt; img_r2 = r2(img)  # Get channel 2 part of the image</span>
+<span class="sd">    &gt;&gt;&gt; img_r1_corr = corr(img_r1, channel=1)  # Transform channel 1 image</span>
+<span class="sd">    &gt;&gt;&gt; overlay = numpy.dstack([img_r1, img_r2, np.zeros_like(img_r1)])</span>
+<span class="sd">    &gt;&gt;&gt; matplotlib.pyplot.imshow(overlay)  # Plot overlay</span>
+
+<span class="sd">    Similarly, coordinates of single molecule data can be transformed:</span>
+
+<span class="sd">    &gt;&gt;&gt; loc = sdt.io.load(&quot;loc.h5&quot;)  # Load data</span>
+<span class="sd">    &gt;&gt;&gt; loc_r1 = r1(loc)  # Get data from channel 1</span>
+<span class="sd">    &gt;&gt;&gt; loc_r2 = r2(loc)  # Get data from channel 2</span>
+<span class="sd">    &gt;&gt;&gt; loc_r1_corr = corr(loc_r1, channel=1)  # Transform channel 1 data</span>
+<span class="sd">    &gt;&gt;&gt; matplotlib.pyplot.scatter(loc_r1_corr[&quot;x&quot;], loc_r1_corr[&quot;y&quot;],</span>
+<span class="sd">    ...                           marker=&quot;+&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; matplotlib.pyplot.scatter(loc_r2[&quot;x&quot;], loc_r2[&quot;y&quot;], marker=&quot;x&quot;)</span>
+
+<span class="sd">    There is also support for saving and loading a :py:class:`Registrator`</span>
+<span class="sd">    instance to/from YAML:</span>
+
+<span class="sd">    &gt;&gt;&gt; with open(&quot;output.yaml&quot;, &quot;w&quot;) as f:</span>
+<span class="sd">    &gt;&gt;&gt;     sdt.io.yaml.safe_dump(corr, f)</span>
+<span class="sd">    &gt;&gt;&gt; with open(&quot;output.yaml&quot;, &quot;r&quot;) as f:</span>
+<span class="sd">    &gt;&gt;&gt;     corr_loaded = sdt.io.yaml.safe_load(f)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [Preibisch2010] Preibisch, S.; Saalfeld, S.; Schindelin, J. &amp; Tomancak,</span>
+<span class="sd">        P.: &quot;Software for bead-based registration of selective plane</span>
+<span class="sd">        illumination microscopy data&quot;, Nature Methods, Springer Science and</span>
+<span class="sd">        Business Media LLC, 2010, 7, 418–419</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!Registrator&quot;</span>
 
@@ -362,7 +253,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Registrator.determine_parameters"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.determine_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">determine_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+<div class="viewcode-block" id="Registrator.determine_parameters"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.determine_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">determine_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
                              <span class="n">ambiguity_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
                              <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determine the parameters for the affine transformation</span>
@@ -392,7 +283,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">find_pairs</span><span class="p">(</span><span class="n">n_neighbors</span><span class="p">,</span> <span class="n">ambiguity_factor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_parameters</span><span class="p">(</span><span class="n">max_error</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Registrator.__call__"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
+<div class="viewcode-block" id="Registrator.__call__"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">,</span> <span class="n">Slicerator</span><span class="p">,</span>
                              <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -483,7 +374,7 @@
                 <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># transpose back</span>
             <span class="k">return</span> <span class="n">corr</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Registrator.test"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Registrator.test"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Test validity of the correction parameters</span>
 
 <span class="sd">        This plots the affine transformation functions and the coordinates of</span>
@@ -530,7 +421,7 @@
             <span class="c1"># Figure was created here, so it is safe to do this</span>
             <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Registrator.save"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;npz&quot;</span><span class="p">,</span>
+<div class="viewcode-block" id="Registrator.save"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;npz&quot;</span><span class="p">,</span>
              <span class="n">key</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;chromatic_param1&quot;</span><span class="p">,</span> <span class="s2">&quot;chromatic_param2&quot;</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;Save transformation parameters to file</span>
 
@@ -555,7 +446,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown format: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Registrator.load"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.load">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Registrator.load"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.load">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;npz&quot;</span><span class="p">,</span>
              <span class="n">key</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;chromatic_param1&quot;</span><span class="p">,</span> <span class="s2">&quot;chromatic_param2&quot;</span><span class="p">)</span>
              <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Registrator&quot;</span><span class="p">:</span>
@@ -750,7 +641,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">unamb_twoway</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
                 <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">unamb_twoway</span><span class="p">])</span>
 
-<div class="viewcode-block" id="Registrator.find_pairs"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.find_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">find_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">ambiguity_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+<div class="viewcode-block" id="Registrator.find_pairs"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.find_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">find_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">ambiguity_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Match features of `feat1` with features of `feat2`</span>
 
 <span class="sd">        Find the geomtric signature for each feature in each channel. Those</span>
@@ -808,7 +699,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">(</span><span class="n">pair_cols</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Registrator.fit_parameters"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.fit_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">fit_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="Registrator.fit_parameters"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.fit_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">fit_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determine parameters for the affine transformation</span>
 
 <span class="sd">        An affine transformation is used to map x and y coordinates of `feat1`</span>
@@ -847,7 +738,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pairs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">good_pairs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">))]</span></div>
 
-<div class="viewcode-block" id="Registrator.to_yaml"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Registrator.to_yaml"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
 
@@ -858,7 +749,7 @@
              <span class="p">(</span><span class="s2">&quot;parameters2&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">parameters2</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Registrator.from_yaml"><a class="viewcode-back" href="../../channel_reg.html#sdt.channel_reg.Registrator.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Registrator.from_yaml"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
 
@@ -869,58 +760,45 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">parameters1</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;parameters1&quot;</span><span class="p">]</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">parameters2</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;parameters2&quot;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">ret</span></div></div>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters1</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">parameters1</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters2</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">parameters2</span><span class="p">))</span></div>
 
 
 <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">.io</span> <span class="kn">import</span> <span class="n">yaml</span>
+    <span class="kn">from</span> <span class="nn">..io</span> <span class="kn">import</span> <span class="n">yaml</span>
     <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">Registrator</span><span class="p">)</span>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2015—2018, Lukas Schrangl
-
-    </p>
+    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

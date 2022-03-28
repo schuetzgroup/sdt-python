@@ -1,73 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Single molecule FRET analysis &mdash; sdt-python 15.0 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Single molecule FRET analysis &mdash; sdt-python 17.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Image filtering and processing" href="image.html" />
     <link rel="prev" title="Analyze spatial aspects of data" href="spatial.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
-          
-
-          
+            <a href="index.html" class="icon icon-home"> sdt-python
           </a>
-
-          
-            
-            
               <div class="version">
-                15.0
+                17.2
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,21 +40,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -100,7 +53,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#tracking">Tracking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#analysis-and-filtering">Analysis and Filtering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plotting">Plotting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#image-selection">Image selection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#helpers">Helpers</a></li>
 </ul>
 </li>
@@ -116,69 +68,31 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Single molecule FRET analysis</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-sdt.fret"></span><div class="section" id="single-molecule-fret-analysis">
-<h1>Single molecule FRET analysis<a class="headerlink" href="#single-molecule-fret-analysis" title="Permalink to this headline">¶</a></h1>
+             
+  <span class="target" id="module-sdt.fret"></span><section id="single-molecule-fret-analysis">
+<h1>Single molecule FRET analysis<a class="headerlink" href="#single-molecule-fret-analysis" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="#module-sdt.fret" title="sdt.fret"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.fret</span></code></a> module provides functionality to analyze single
 molecule FRET data. This includes</p>
 <ul class="simple">
@@ -187,16 +101,14 @@ molecule FRET data. This includes</p>
 <li><p>analyzing and filtering of the data with help of <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer" title="sdt.fret.SmFRETAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SmFRETAnalyzer</span></code></a>.</p></li>
 <li><p>functions for plotting results, such as <a class="reference internal" href="#sdt.fret.smfret_scatter" title="sdt.fret.smfret_scatter"><code class="xref py py-func docutils literal notranslate"><span class="pre">smfret_scatter()</span></code></a>,
 <a class="reference internal" href="#sdt.fret.smfret_hist" title="sdt.fret.smfret_hist"><code class="xref py py-func docutils literal notranslate"><span class="pre">smfret_hist()</span></code></a>, and <a class="reference internal" href="#sdt.fret.draw_track" title="sdt.fret.draw_track"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_track()</span></code></a>.</p></li>
-<li><p>selection of images in a FRET sequence according to excitation type using
-<a class="reference internal" href="#sdt.fret.FrameSelector" title="sdt.fret.FrameSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameSelector</span></code></a>.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <p>Load data for tracking:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chromatic_corr</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">chromatic</span><span class="o">.</span><span class="n">Corrector</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;cc.npz&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">donor_loc</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;donor.h5&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">acceptor_loc</span> <span class="o">=</span> <span class="n">sdt</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;acceptor.h5&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">donor_img</span> <span class="o">=</span> <span class="n">pims</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;donor.tif&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">acceptor_img</span> <span class="o">=</span> <span class="n">pims</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;acceptor.tif&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">chromatic_corr</span> <span class="o">=</span> <span class="n">multicolor</span><span class="o">.</span><span class="n">Registrator</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;cc.npz&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">donor_loc</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;donor.h5&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acceptor_loc</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;acceptor.h5&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">donor_img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">ImageSequence</span><span class="p">(</span><span class="s2">&quot;donor.tif&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acceptor_img</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">ImageSequence</span><span class="p">(</span><span class="s2">&quot;acceptor.tif&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Tracking of single molecule FRET signals. This involves merging features
@@ -210,19 +122,16 @@ raw images and much more.</p>
 <p>Now these data can be analyzed and filtered. Calculate FRET-related quantities
 such as FRET efficiency, stoichiometry, etc.:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span> <span class="o">=</span> <span class="n">SmFRETAnalyzer</span><span class="p">(</span><span class="n">trc</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">trc</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">calc_fret_values</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Let us reject any tracks where the
-acceptor does not bleach in a single step and additionally remove all
-features after the bleaching step:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">acceptor_bleach_step</span><span class="p">(</span><span class="n">brightness_thresh</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="mf">1e6</span><span class="p">,</span>
-<span class="gp">... </span>                         <span class="n">truncate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>Let us reject any tracks where the acceptor does not bleach in a single step:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">acceptor_bleach_step</span><span class="p">(</span><span class="s2">&quot;acceptor&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Remove any tracks where the mass upon acceptor excitation does not exceed
 500 counts at least once</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">filter_particles</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">query_particles</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Accept only localizations that lie in pixels where the boolean mask is <cite>True</cite>:</p>
@@ -236,25 +145,19 @@ attribute.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">smfret_scatter</span><span class="p">({</span><span class="s2">&quot;data1&quot;</span><span class="p">:</span> <span class="n">filt</span><span class="o">.</span><span class="n">tracks</span><span class="p">},</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;eff), (&quot;</span><span class="n">fret</span><span class="s2">&quot;, &quot;</span><span class="n">stoi</span><span class="s2">&quot;))</span>
 </pre></div>
 </div>
-<p>To get only the direct acceptor excitation images from <code class="docutils literal notranslate"><span class="pre">acceptor_img</span></code>,
-use <a class="reference internal" href="#sdt.fret.FrameSelector" title="sdt.fret.FrameSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameSelector</span></code></a>:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">FrameSelector</span><span class="p">(</span><span class="s2">&quot;dddda&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">acc_direct</span> <span class="o">=</span> <span class="n">sel</span><span class="p">(</span><span class="n">acceptor_img</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="section" id="tracking">
-<h2>Tracking<a class="headerlink" href="#tracking" title="Permalink to this headline">¶</a></h2>
+<section id="tracking">
+<h2>Tracking<a class="headerlink" href="#tracking" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt id="sdt.fret.SmFRETTracker">
-<em class="property">class </em><code class="sig-prename descclassname">sdt.fret.</code><code class="sig-name descname">SmFRETTracker</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">excitation_seq</span><span class="o">=</span><span class="default_value">'da'</span></em>, <em class="sig-param"><span class="n">registrator</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">link_radius</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">link_mem</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">min_length</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">feat_radius</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">bg_frame</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">bg_estimator</span><span class="o">=</span><span class="default_value">'mean'</span></em>, <em class="sig-param"><span class="n">neighbor_radius</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">interpolate</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">coloc_dist</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">acceptor_channel</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">link_quiet</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">link_options</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.fret.</span></span><span class="sig-name descname"><span class="pre">SmFRETTracker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excitation_seq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'da'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">registrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_mem</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coloc_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptor_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker" title="Permalink to this definition"></a></dt>
 <dd><p>Class for tracking of smFRET data</p>
 <p>There is support for dumping and loading to/from YAML using
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.io.yaml</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>excitation_seq</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Sequence</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Set the <a class="reference internal" href="#sdt.fret.SmFRETTracker.excitation_seq" title="sdt.fret.SmFRETTracker.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a> attribute.</p></li>
-<li><p><strong>registrator</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="channel_reg.html#sdt.channel_reg.Registrator" title="sdt.channel_reg.Registrator"><em>sdt.channel_reg.Registrator</em></a><em>]</em>) – Registrator used to overlay channels. If <cite>None</cite>, use the identity
+<li><p><strong>excitation_seq</strong> (<em>str</em>) – Set the <a class="reference internal" href="#sdt.fret.SmFRETTracker.excitation_seq" title="sdt.fret.SmFRETTracker.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a> attribute.</p></li>
+<li><p><strong>registrator</strong> (<a class="reference internal" href="multicolor.html#sdt.multicolor.Registrator" title="sdt.multicolor.registrator.Registrator"><em>sdt.multicolor.registrator.Registrator</em></a>) – Registrator used to overlay channels. If <cite>None</cite>, use the identity
 transform.</p></li>
 <li><p><strong>link_radius</strong> (<em>float</em>) – Maximum movement of features between frames. See <cite>search_range</cite>
 option of <code class="xref py py-func docutils literal notranslate"><span class="pre">trackpy.link_df()</span></code>.</p></li>
@@ -267,7 +170,7 @@ See <cite>memory</cite> option of <code class="xref py py-func docutils literal 
 <cite>bg_frame</cite> option of <code class="xref py py-func docutils literal notranslate"><span class="pre">brightness.from_raw_image()</span></code>.</p></li>
 <li><p><strong>bg_estimator</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Callable</em><em>[</em><em>[</em><em>numpy.ndarray</em><em>]</em><em>, </em><em>float</em><em>]</em><em>]</em>) – Statistic to estimate background. See <cite>bg_estimator</cite> option of
 <code class="xref py py-func docutils literal notranslate"><span class="pre">brightness.from_raw_image()</span></code>.</p></li>
-<li><p><strong>neighbor_radius</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>str</em><em>]</em>) – How far two features may be apart while still being considered
+<li><p><strong>neighbor_radius</strong> (<em>float</em>) – How far two features may be apart while still being considered
 close enough so that one influences the brightness measurement of
 the other. This is related to the <cite>radius</cite> option of
 <code class="xref py py-func docutils literal notranslate"><span class="pre">brightness.from_raw_image()</span></code>. If “auto”, use the smallest
@@ -282,92 +185,89 @@ considered to come from the same molecule.</p></li>
 “search_range” and “memory” will be overwritten by the
 <cite>link_radius</cite> and <cite>link_mem</cite> parameters.</p></li>
 <li><p><strong>link_quiet</strong> (<em>bool</em>) – If <cite>True</cite>, call <code class="xref py py-func docutils literal notranslate"><span class="pre">trackpy.quiet()</span></code>.</p></li>
-<li><p><strong>columns</strong> (<em>Dict</em>) – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> – Override default column names as defined in
+<li><p><strong>columns</strong> (<em>Dict</em>) – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. Relevant names are <cite>coords</cite>, <cite>time</cite>,
 <cite>mass</cite>, <cite>signal</cite>, <cite>bg</cite>, <cite>bg_dev</cite>. This means, if your DataFrame has
 coordinate columns “x” and “z” and the time column “alt_frame”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span> <span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>. This
-parameters sets the <a class="reference internal" href="#sdt.fret.SmFRETTracker.columns" title="sdt.fret.SmFRETTracker.columns"><code class="xref py py-attr docutils literal notranslate"><span class="pre">columns</span></code></a> attribute.</p>
+parameters sets the <a class="reference internal" href="#sdt.fret.SmFRETTracker.columns" title="sdt.fret.SmFRETTracker.columns"><code class="xref py py-attr docutils literal notranslate"><span class="pre">columns</span></code></a> attribute.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.frame_selector">
-<code class="sig-name descname">frame_selector</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.frame_selector" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference internal" href="#sdt.fret.FrameSelector" title="sdt.fret.FrameSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameSelector</span></code></a> instance with the matching
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.frame_selector">
+<span class="sig-name descname"><span class="pre">frame_selector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="multicolor.html#sdt.multicolor.FrameSelector" title="sdt.multicolor.frame_selector.FrameSelector"><span class="pre">sdt.multicolor.frame_selector.FrameSelector</span></a></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.frame_selector" title="Permalink to this definition"></a></dt>
+<dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">FrameSelector</span></code> instance with the matching
 <a class="reference internal" href="#sdt.fret.SmFRETTracker.excitation_seq" title="sdt.fret.SmFRETTracker.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.registrator">
-<code class="sig-name descname">registrator</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.registrator" title="Permalink to this definition">¶</a></dt>
-<dd><p>channel_reg.Registrator used to overlay channels</p>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.registrator">
+<span class="sig-name descname"><span class="pre">registrator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="multicolor.html#sdt.multicolor.Registrator" title="sdt.multicolor.registrator.Registrator"><span class="pre">sdt.multicolor.registrator.Registrator</span></a></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.registrator" title="Permalink to this definition"></a></dt>
+<dd><p>multicolor.Registrator used to overlay channels</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.link_options">
-<code class="sig-name descname">link_options</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.link_options" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.link_options">
+<span class="sig-name descname"><span class="pre">link_options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.link_options" title="Permalink to this definition"></a></dt>
 <dd><p>Options passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">trackpy.link_df()</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.min_length">
-<code class="sig-name descname">min_length</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.min_length" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.min_length">
+<span class="sig-name descname"><span class="pre">min_length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.min_length" title="Permalink to this definition"></a></dt>
 <dd><p>Minimum length of tracks</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.brightness_options">
-<code class="sig-name descname">brightness_options</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.brightness_options" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.brightness_options">
+<span class="sig-name descname"><span class="pre">brightness_options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.brightness_options" title="Permalink to this definition"></a></dt>
 <dd><p>Options passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">brightness.from_raw_image()</span></code>. Make sure to
 adjust <a class="reference internal" href="#sdt.fret.SmFRETTracker.neighbor_radius" title="sdt.fret.SmFRETTracker.neighbor_radius"><code class="xref py py-attr docutils literal notranslate"><span class="pre">neighbor_radius</span></code></a> if you change either the <cite>mask</cite> or the
 <cite>radius</cite> option!</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.interpolate">
-<code class="sig-name descname">interpolate</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.interpolate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.interpolate">
+<span class="sig-name descname"><span class="pre">interpolate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.interpolate" title="Permalink to this definition"></a></dt>
 <dd><p>Whether to interpolate coordinates of features that have been missed
 by the localization algorithm.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.coloc_dist">
-<code class="sig-name descname">coloc_dist</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.coloc_dist" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.coloc_dist">
+<span class="sig-name descname"><span class="pre">coloc_dist</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.coloc_dist" title="Permalink to this definition"></a></dt>
 <dd><p>After overlaying donor and acceptor channel features, this gives the
 maximum distance up to which donor and acceptor signal are considered
 to come from the same molecule.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.acceptor_channel">
-<code class="sig-name descname">acceptor_channel</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.acceptor_channel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.acceptor_channel">
+<span class="sig-name descname"><span class="pre">acceptor_channel</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.acceptor_channel" title="Permalink to this definition"></a></dt>
 <dd><p>Can be either 1 or 2, depending the acceptor is the first or the
 second channel in <a class="reference internal" href="#sdt.fret.SmFRETTracker.registrator" title="sdt.fret.SmFRETTracker.registrator"><code class="xref py py-attr docutils literal notranslate"><span class="pre">registrator</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.columns">
-<code class="sig-name descname">columns</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.columns" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.columns">
+<span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.columns" title="Permalink to this definition"></a></dt>
 <dd><p>Column names in DataFrames. Defaults are taken from
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETTracker.neighbor_radius">
-<code class="sig-name descname">neighbor_radius</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.neighbor_radius" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.neighbor_radius">
+<span class="sig-name descname"><span class="pre">neighbor_radius</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.neighbor_radius" title="Permalink to this definition"></a></dt>
 <dd><p>How far two features may be apart while still being considered close
 enough so that one influences the brightness measurement of the other.
 This is related to the <cite>radius</cite> option of
 <code class="xref py py-func docutils literal notranslate"><span class="pre">brightness.from_raw_image()</span></code>.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="sdt.fret.SmFRETTracker.excitation_seq">
-<em class="property">property </em><code class="sig-name descname">excitation_seq</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.excitation_seq" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.excitation_seq">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">excitation_seq</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#sdt.fret.SmFRETTracker.excitation_seq" title="Permalink to this definition"></a></dt>
 <dd><p>Excitation sequence. “d” stands for donor, “a” for acceptor,
 anything else describes other kinds of frames which are irrelevant for
 tracking.</p>
@@ -376,16 +276,8 @@ i. e. “ddddaddddadddda” is the same as “dddda”.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETTracker.excitation_frames">
-<em class="property">property </em><code class="sig-name descname">excitation_frames</code><a class="headerlink" href="#sdt.fret.SmFRETTracker.excitation_frames" title="Permalink to this definition">¶</a></dt>
-<dd><p>dict mapping the excitation types in <a class="reference internal" href="#sdt.fret.SmFRETTracker.excitation_seq" title="sdt.fret.SmFRETTracker.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a> to
-the corresponding frame numbers (modulo the length of
-py:attr:<cite>excitation_seq</cite>).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="sdt.fret.SmFRETTracker.track">
-<code class="sig-name descname">track</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">donor_img</span></em>, <em class="sig-param"><span class="n">acceptor_img</span></em>, <em class="sig-param"><span class="n">donor_loc</span></em>, <em class="sig-param"><span class="n">acceptor_loc</span></em>, <em class="sig-param"><span class="n">d_mass</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker.track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker.track" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.track">
+<span class="sig-name descname"><span class="pre">track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">donor_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptor_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">donor_loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptor_loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker.track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker.track" title="Permalink to this definition"></a></dt>
 <dd><p>Track smFRET data</p>
 <p>Localization data for both the donor and the acceptor channel is
 merged (since a FRET construct has to be visible in at least one
@@ -443,8 +335,8 @@ all of <cite>donor_img</cite> and <cite>acceptor_img</cite> into memory, even if
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETTracker.flag_excitation_type">
-<code class="sig-name descname">flag_excitation_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tracks</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker.flag_excitation_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker.flag_excitation_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.flag_excitation_type">
+<span class="sig-name descname"><span class="pre">flag_excitation_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker.flag_excitation_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker.flag_excitation_type" title="Permalink to this definition"></a></dt>
 <dd><p>Add a column indicating excitation type (donor/acceptor/…)</p>
 <p>Add  (“fret”, “exc_type”) column in place. It is of “category” type.</p>
 <dl class="field-list simple">
@@ -455,16 +347,16 @@ all of <cite>donor_img</cite> and <cite>acceptor_img</cite> into memory, even if
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETTracker.to_yaml">
-<em class="property">classmethod </em><code class="sig-name descname">to_yaml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dumper</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker.to_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker.to_yaml" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.to_yaml">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker.to_yaml" title="Permalink to this definition"></a></dt>
 <dd><p>Dump as YAML</p>
 <p>Pass this as the <cite>representer</cite> parameter to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">yaml.Dumper.add_representer()</span></code></p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETTracker.from_yaml">
-<em class="property">classmethod </em><code class="sig-name descname">from_yaml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">loader</span></em>, <em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker.from_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker.from_yaml" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETTracker.from_yaml">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_track.html#SmFRETTracker.from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETTracker.from_yaml" title="Permalink to this definition"></a></dt>
 <dd><p>Construct from YAML</p>
 <p>Pass this as the <cite>constructor</cite> parameter to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">yaml.Loader.add_constructor()</span></code></p>
@@ -472,12 +364,12 @@ all of <cite>donor_img</cite> and <cite>acceptor_img</cite> into memory, even if
 
 </dd></dl>
 
-</div>
-<div class="section" id="analysis-and-filtering">
-<h2>Analysis and Filtering<a class="headerlink" href="#analysis-and-filtering" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="analysis-and-filtering">
+<h2>Analysis and Filtering<a class="headerlink" href="#analysis-and-filtering" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt id="sdt.fret.SmFRETAnalyzer">
-<em class="property">class </em><code class="sig-prename descclassname">sdt.fret.</code><code class="sig-name descname">SmFRETAnalyzer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tracks</span></em>, <em class="sig-param"><span class="n">cp_detector</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.fret.</span></span><span class="sig-name descname"><span class="pre">SmFRETAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cp_detector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer" title="Permalink to this definition"></a></dt>
 <dd><p>Class for analyzing and filtering of smFRET data</p>
 <p>This provides various analysis and filtering methods which act on the
 <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> attribute.</p>
@@ -489,64 +381,70 @@ the different excitation efficiencies according to <a class="reference internal"
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tracks</strong> (<em>pandas.DataFrame</em>) – smFRET tracking data as produced by <a class="reference internal" href="#sdt.fret.SmFRETTracker" title="sdt.fret.SmFRETTracker"><code class="xref py py-class docutils literal notranslate"><span class="pre">SmFRETTracker</span></code></a> by
+<li><p><strong>tracks</strong> (<em>pandas.core.frame.DataFrame</em>) – smFRET tracking data as produced by <a class="reference internal" href="#sdt.fret.SmFRETTracker" title="sdt.fret.SmFRETTracker"><code class="xref py py-class docutils literal notranslate"><span class="pre">SmFRETTracker</span></code></a> by
 running its <a class="reference internal" href="#sdt.fret.SmFRETTracker.track" title="sdt.fret.SmFRETTracker.track"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SmFRETTracker.track()</span></code></a> method.</p></li>
-<li><p><strong>cp_detector</strong> (<em>changepoint detector</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – If <cite>None</cite>, create a <code class="xref py py-class docutils literal notranslate"><span class="pre">changepoint.Pelt</span></code> instance with
-<code class="docutils literal notranslate"><span class="pre">model=&quot;l2&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">min_size=1</span></code>, and <code class="docutils literal notranslate"><span class="pre">jump=1</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in
+<li><p><strong>cp_detector</strong> (<em>Any</em>) – Changepoint detetctor. If <cite>None</cite>, create a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">changepoint.Pelt</span></code> instance with <code class="docutils literal notranslate"><span class="pre">model=&quot;l2&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">min_size=1</span></code>, and <code class="docutils literal notranslate"><span class="pre">jump=1</span></code>.</p></li>
+<li><p><strong>copy</strong> (<em>bool</em>) – If <cite>True</cite>, copy <cite>tracks</cite> to the <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> attribute.</p></li>
+<li><p><strong>reset_filters</strong> (<em>bool</em>) – If <cite>True</cite>, reset filters in <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a>. See also
+<a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.reset_filters" title="sdt.fret.SmFRETAnalyzer.reset_filters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset_filters()</span></code></a>.</p></li>
+<li><p><strong>keep_filters</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Iterable</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Filter columns to keep upon resetting. See also
+<a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.reset_filters" title="sdt.fret.SmFRETAnalyzer.reset_filters"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset_filters()</span></code></a>.</p></li>
+<li><p><strong>columns</strong> (<em>Dict</em>) – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. Relevant names are <cite>coords</cite> and <cite>time</cite>.
 This means, if your DataFrame has
 coordinate columns “x” and “z” and the time column “alt_frame”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span> <span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>. This
-parameters sets the <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.columns" title="sdt.fret.SmFRETAnalyzer.columns"><code class="xref py py-attr docutils literal notranslate"><span class="pre">columns</span></code></a> attribute.</p>
+parameters sets the <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.columns" title="sdt.fret.SmFRETAnalyzer.columns"><code class="xref py py-attr docutils literal notranslate"><span class="pre">columns</span></code></a> attribute.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETAnalyzer.tracks">
-<code class="sig-name descname">tracks</code><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.tracks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filtered smFRET tracking data</p>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.bleach_thresh">
+<span class="sig-name descname"><span class="pre">bleach_thresh</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(500.0,</span> <span class="pre">500.0)</span></em><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.bleach_thresh" title="Permalink to this definition"></a></dt>
+<dd><p>Intensity (mass) thresholds upon donor and acceptor excitation,
+respecitively, below which a signal is considered bleached. Used for
+bleaching step analysis.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETAnalyzer.tracks_orig">
-<code class="sig-name descname">tracks_orig</code><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.tracks_orig" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unfiltered (original) smFRET tracking data</p>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.tracks">
+<span class="sig-name descname"><span class="pre">tracks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pandas.core.frame.DataFrame</span></em><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.tracks" title="Permalink to this definition"></a></dt>
+<dd><p>smFRET tracking data</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETAnalyzer.cp_detector">
-<code class="sig-name descname">cp_detector</code><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.cp_detector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Changepoint detector class instance used to perform acceptor
-bleaching detection.</p>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.cp_detector">
+<span class="sig-name descname"><span class="pre">cp_detector</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.cp_detector" title="Permalink to this definition"></a></dt>
+<dd><p>Changepoint detector class instance used to perform bleching step
+detection.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETAnalyzer.columns">
-<code class="sig-name descname">columns</code><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.columns" title="Permalink to this definition">¶</a></dt>
-<dd><p>dict of column names in DataFrames. Defaults are taken from
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.</p>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.columns">
+<span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.columns" title="Permalink to this definition"></a></dt>
+<dd><p>Column names to use in DataFrames. See <code class="xref py py-func docutils literal notranslate"><span class="pre">config.set_columns()</span></code>
+for details.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETAnalyzer.leakage">
-<code class="sig-name descname">leakage</code><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.leakage" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.leakage">
+<span class="sig-name descname"><span class="pre">leakage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.leakage" title="Permalink to this definition"></a></dt>
 <dd><p>Correction factor for donor leakage into the acceptor channel;
 <span class="math notranslate nohighlight">\(\alpha\)</span> in <a class="reference internal" href="#hell2018" id="id4"><span>[Hell2018]</span></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETAnalyzer.direct_excitation">
-<code class="sig-name descname">direct_excitation</code><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.direct_excitation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.direct_excitation">
+<span class="sig-name descname"><span class="pre">direct_excitation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.direct_excitation" title="Permalink to this definition"></a></dt>
 <dd><p>Correction factor for direct acceptor excitation by the donor
 laser; <span class="math notranslate nohighlight">\(\delta\)</span> in <a class="reference internal" href="#hell2018" id="id5"><span>[Hell2018]</span></a></p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.fret.SmFRETAnalyzer.detection_eff">
-<code class="sig-name descname">detection_eff</code><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.detection_eff" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.detection_eff">
+<span class="sig-name descname"><span class="pre">detection_eff</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.detection_eff" title="Permalink to this definition"></a></dt>
 <dd><p>Correction factor(s) for the detection efficiency difference
 beteen donor and acceptor fluorophore; <span class="math notranslate nohighlight">\(\gamma\)</span> in [Hell2018].</p>
 <p>Can be a scalar for global correction or a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>
@@ -554,9 +452,28 @@ for individual correction. In the latter case, the index is the
 particle number and the value is the correction factor.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.excitation_eff">
+<span class="sig-name descname"><span class="pre">excitation_eff</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.excitation_eff" title="Permalink to this definition"></a></dt>
+<dd><p>Correction factor(s) for the excitation efficiency difference
+beteen donor and acceptor fluorophore; <span class="math notranslate nohighlight">\(\beta\)</span> in [Hell2018].</p>
+</dd></dl>
+
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.calc_fret_values">
-<code class="sig-name descname">calc_fret_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">keep_d_mass</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">invalid_nan</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">a_mass_interp</span><span class="o">=</span><span class="default_value">'linear'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_fret_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_fret_values" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.reset_filters">
+<span class="sig-name descname"><span class="pre">reset_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.reset_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.reset_filters" title="Permalink to this definition"></a></dt>
+<dd><p>Reset filters</p>
+<p>This drops filter columns from <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keep</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Iterable</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Filter column name(s) to keep</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.calc_fret_values">
+<span class="sig-name descname"><span class="pre">calc_fret_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_d_mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invalid_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_mass_interp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nearest-up'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_fret_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_fret_values" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate FRET-related values</p>
 <p>This needs to be called before the filtering methods and before
 calculating the true FRET efficiencies and stoichiometries. However,
@@ -589,82 +506,138 @@ column.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tracks</strong> (<em>pandas.DataFrame</em>) – smFRET tracking data as produced by the
-<a class="reference internal" href="#sdt.fret.SmFRETTracker.track" title="sdt.fret.SmFRETTracker.track"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SmFRETTracker.track()</span></code></a></p></li>
-<li><p><strong>keep_d_mass</strong> (<em>bool</em><em>, </em><em>optional</em>) – If a <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;d_mass&quot;)</span></code> column is already present in <cite>tracks</cite>,
+<li><p><strong>keep_d_mass</strong> (<em>bool</em>) – If a <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;d_mass&quot;)</span></code> column is already present in <cite>tracks</cite>,
 use that instead of overwriting it with the sum of
 <code class="docutils literal notranslate"><span class="pre">(&quot;donor&quot;,</span> <span class="pre">&quot;mass&quot;)</span></code> and <code class="docutils literal notranslate"><span class="pre">(&quot;acceptor&quot;,</span> <span class="pre">&quot;mass&quot;)</span></code> values. Useful
 if <code class="xref py py-meth docutils literal notranslate"><span class="pre">track()</span></code> was called with <code class="docutils literal notranslate"><span class="pre">d_mass=True</span></code>.</p></li>
-<li><p><strong>invalid_nan</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, all “d_mass”, “eff_app”, and “stoi_app” values for
+<li><p><strong>invalid_nan</strong> (<em>bool</em>) – If True, all “d_mass”, “eff_app”, and “stoi_app” values for
 excitation types other than donor excitation are set to NaN, since
-the values don’t make sense. Defaults to True.</p></li>
-<li><p><strong>a_mass_interp</strong> (<em>{&quot;linear&quot;</em><em>, </em><em>&quot;nearest&quot;}</em><em>, </em><em>optional</em>) – How to interpolate the acceptor mass upon direct excitation in
-donor excitation frames. Defaults to “linear”.</p></li>
+the values don’t make sense.</p></li>
+<li><p><strong>a_mass_interp</strong> (<em>str</em>) – How to interpolate the acceptor mass upon direct excitation in
+donor excitation frames. Sensible values are “linear” for linear
+interpolation; “nearest” to take the value of the closest
+direct acceptor excitation frame (using the previous frame in case
+of a tie); “nearest-up”, which is similar to “nearest” but takes
+the next frame in case of a tie; “next” and “previous” to use the
+next and previous frames, respectively.</p></li>
+<li><p><strong>skip_neighbors</strong> (<em>bool</em>) – If <cite>True</cite>, skip localizations where <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;has_neighbor&quot;)</span></code> is
+<cite>True</cite> when interpolating acceptor mass upon direct excitation.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.segment_mass">
-<code class="sig-name descname">segment_mass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">channel</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.segment_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.segment_mass" title="Permalink to this definition">¶</a></dt>
-<dd><p>Segment tracks by changepoint detection in brightness</p>
-<p>Changepoint detection is run on the donor or acceptor brightness time
-trace, depending on the <cite>channels</cite> argument.
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.apply_filters">
+<span class="sig-name descname"><span class="pre">apply_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_negative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.apply_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.apply_filters" title="Permalink to this definition"></a></dt>
+<dd><p>Apply filters to <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a></p>
+<p>This removes all entries from <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> that have been marked
+as filtered using e.g. <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.query" title="sdt.fret.SmFRETAnalyzer.query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">query()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">query_particle()</span></code>,
+<a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.bleach_step" title="sdt.fret.SmFRETAnalyzer.bleach_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bleach_step()</span></code></a>, and <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.image_mask" title="sdt.fret.SmFRETAnalyzer.image_mask"><code class="xref py py-meth docutils literal notranslate"><span class="pre">image_mask()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>include_negative</strong> (<em>bool</em>) – If <cite>False</cite>, include only entries for which all <code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column
+values are zero. If <cite>True</cite>, include also entries with negative
+<code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column values.</p></li>
+<li><p><strong>ignore</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Sequence</em><em>[</em><em>str</em><em>]</em><em>]</em>) – <code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column(s) to ignore when deciding whether to include
+an entry or not. For instance, setting <code class="docutils literal notranslate"><span class="pre">ignore=&quot;bleach_step&quot;</span></code>
+will not consider the <code class="docutils literal notranslate"><span class="pre">(&quot;filter&quot;,</span> <span class="pre">&quot;bleach_step&quot;)</span></code> column values.</p></li>
+<li><p><strong>ret_type</strong> (<em>str</em>) – If <code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>, return a copy of <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> excluding all
+entries that have been marked as filtered, i.e., that have a
+positive (or nonzero, see the <cite>include_negative</cite> parameter) entry
+in any <code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column.
+If <code class="docutils literal notranslate"><span class="pre">&quot;mask&quot;</span></code>, return a boolean array indicating whether an entry
+is to be removed or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>Copy of <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> with all filtered rows removed or</p></li>
+<li><p><em>corresponding boolean mask.</em></p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>Union</em>[pandas.core.frame.DataFrame, numpy.array]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.mass_changepoints">
+<span class="sig-name descname"><span class="pre">mass_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'median'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.mass_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.mass_changepoints" title="Permalink to this definition"></a></dt>
+<dd><p>Segment tracks by changepoint detection in brightness time trace</p>
+<p>Changepoint detection is run on the donor or acceptor brightness
+(<code class="docutils literal notranslate"><span class="pre">mass</span></code>) time trace, depending on the <cite>channels</cite> argument.
 This appends py:attr:<cite>tracks</cite> with a <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;d_seg&quot;)</span></code> or
 <cite>(“fret”, “a_seg”)`</cite> column for donor or acceptor, resp. For
-each localization, this holds the number of the segment it belongs to.</p>
+each localization, this holds the number of the segment it belongs to.
+Furthermore, statistics (such as median brightness) can/should be
+calculated, which can later be used to analyze stepwise bleaching
+(see <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.bleach_step" title="sdt.fret.SmFRETAnalyzer.bleach_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bleach_step()</span></code></a>).</p>
 <p><strong>:py:attr:`tracks` will be sorted according to
 ``(“fret”, “particle”)`` and ``(“donor”, self.columns[“time”])`` in the
 process.</strong></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>channel</strong> (<em>{&quot;donor&quot;</em><em>, </em><em>&quot;acceptor&quot;}</em>) – In which channel to perform changepoint detection</p></li>
+<li><p><strong>channel</strong> (<em>str</em>) – In which channel (<code class="docutils literal notranslate"><span class="pre">&quot;donor&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;acceptor&quot;</span></code>) to perform
+changepoint detection.</p></li>
+<li><p><strong>stats</strong> (<em>Union</em><em>[</em><em>Callable</em><em>, </em><em>str</em><em>, </em><em>Iterable</em><em>[</em><em>Union</em><em>[</em><em>Callable</em><em>, </em><em>str</em><em>]</em><em>]</em><em>]</em>) – Statistics to calculate for each track segment. For each entry
+<code class="docutils literal notranslate"><span class="pre">s</span></code>, a column named <code class="docutils literal notranslate"><span class="pre">&quot;{channel}_seg_{s}&quot;</span></code> is appendend, where
+<code class="docutils literal notranslate"><span class="pre">channel</span></code> is <code class="docutils literal notranslate"><span class="pre">d</span></code> for donor and <code class="docutils literal notranslate"><span class="pre">a</span></code> for acceptor.
+<code class="docutils literal notranslate"><span class="pre">s</span></code> can be the name of a numpy function or a callable returning
+a statistic, such as <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.mean()</span></code>.</p></li>
+<li><p><strong>stat_margin</strong> (<em>int</em>) – Number of data points around a changepoint to exclude from
+statistics calculation. This can prevent bias in the statistics due
+to recording a bleaching event in progress.</p></li>
 <li><p><strong>**kwargs</strong> – Keyword arguments to pass to <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.cp_detector" title="sdt.fret.SmFRETAnalyzer.cp_detector"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cp_detector</span></code></a>
-<cite>find_changepoints</cite> method.</p></li>
+<cite>find_changepoints()</cite> method.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <p>Pass <code class="docutils literal notranslate"><span class="pre">penalty=1e6</span></code> to the changepoint detector’s
 <code class="docutils literal notranslate"><span class="pre">find_changepoints</span></code> method, perform detection both channels:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">segment_mass</span><span class="p">(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="mf">1e6</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">segment_mass</span><span class="p">(</span><span class="s2">&quot;acceptor&quot;</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="mf">1e6</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">mass_changepoints</span><span class="p">(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="mf">1e6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">mass_changepoints</span><span class="p">(</span><span class="s2">&quot;acceptor&quot;</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="mf">1e6</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.bleach_step">
-<code class="sig-name descname">bleach_step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">donor_thresh</span></em>, <em class="sig-param"><span class="n">acceptor_thresh</span></em>, <em class="sig-param"><span class="n">truncate</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">special</span><span class="o">=</span><span class="default_value">'none'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.bleach_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.bleach_step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find tracks wwith acceptable fluorophore bleaching behavior</p>
-<p>“Acceptable” means that the acceptor bleaches to a value less than
-<cite>acceptor_thresh</cite> in a single step and the donor shows either no
-bleach step or bleaches to a value less than <cite>donor_thresh</cite> in
-a single step.</p>
-<p>This works under the premise that the acceptor is susceptible to
-bleaching and will bleach during recording the movie, while the
-donor is more stable and may or may not bleach.</p>
-<p>Both the <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;d_seg&quot;)</span></code> and the <cite>(“fret”, “a_seg”)`</cite> need to
-be present for this to work, which can be achieved by performing
-changepoint detection has to be performed in both channels using
-<a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.segment_mass" title="sdt.fret.SmFRETAnalyzer.segment_mass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">segment_mass()</span></code></a>.</p>
-<p>Only if the median brightness for each but the first step is below
-<cite>brightness_thresh</cite>, accept the track.</p>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.bleach_step">
+<span class="sig-name descname"><span class="pre">bleach_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'donor</span> <span class="pre">or</span> <span class="pre">acceptor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'median'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bleach_step'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.bleach_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.bleach_step" title="Permalink to this definition"></a></dt>
+<dd><p>Find tracks with acceptable fluorophore bleaching behavior</p>
+<p>What “acceptable” means is specified by the <cite>condition</cite> parameter.</p>
+<p><code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;d_seg&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">f&quot;d_seg_{stat}&quot;)</span></code>, <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span>
+<span class="pre">&quot;a_seg&quot;)</span></code>, and <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">f&quot;a_seg_{stat}&quot;)</span></code> (where <code class="docutils literal notranslate"><span class="pre">{stat}</span></code> is
+replaced by the value of the <cite>stat</cite> parameter) columns need to be
+present in <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> for this to work, which can be achieved by
+performing changepoint in both channels using <code class="xref py py-meth docutils literal notranslate"><span class="pre">segment_mass()</span></code>.</p>
+<p>The donor considered bleached if its <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">f&quot;d_seg_{stat}&quot;)</span></code>
+is below <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.bleach_thresh" title="sdt.fret.SmFRETAnalyzer.bleach_thresh"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bleach_thresh</span></code></a> <code class="docutils literal notranslate"><span class="pre">[0]</span></code>. The acceptor considered
+bleached if its <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">f&quot;a_seg_{stat}&quot;)</span></code> is below
+<a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.bleach_thresh" title="sdt.fret.SmFRETAnalyzer.bleach_thresh"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bleach_thresh</span></code></a> <code class="docutils literal notranslate"><span class="pre">[0]</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>donor_thresh</strong> (<em>float</em>) – Consider fluorophore bleached if its brightness
-(<code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;d_mass&quot;)</span></code> or <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;a_mass&quot;)</span></code>, respectively)
-median is below this value.</p></li>
-<li><p><strong>acceptor_thresh</strong> (<em>float</em>) – Consider fluorophore bleached if its brightness
-(<code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;d_mass&quot;)</span></code> or <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;a_mass&quot;)</span></code>, respectively)
-median is below this value.</p></li>
-<li><p><strong>truncate</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite>, remove data after the bleach step. Defaults to <cite>True</cite>.</p></li>
-<li><p><strong>special</strong> (<em>{&quot;none&quot;</em><em>, </em><em>&quot;don-only&quot;</em><em>, </em><em>&quot;acc-only&quot;}</em><em>, </em><em>optional</em>) – Donor-only (“don-only”) and acceptor-only (“acc-only”) datasets
-require special treatment to ignore the missing fluorophore.
-Defaults to “none”, nothing special.</p></li>
+<li><p><strong>condition</strong> (<em>str</em>) – If <code class="docutils literal notranslate"><span class="pre">&quot;donor&quot;</span></code>, accept only tracks where the donor bleaches in a
+single step and the acceptor shows either no bleach step or
+completely bleaches in a single step.
+Likewise, <code class="docutils literal notranslate"><span class="pre">&quot;acceptor&quot;</span></code> will accept only tracks where the acceptor
+bleaches fully in one step and the donor shows no partial
+bleaching.
+<code class="docutils literal notranslate"><span class="pre">donor</span> <span class="pre">or</span> <span class="pre">acceptor</span></code> requires that one channel bleaches in a
+single step while the other either also bleaches in one step or not
+at all (no partial bleaching).
+If <code class="docutils literal notranslate"><span class="pre">&quot;no</span> <span class="pre">partial&quot;</span></code>, there may be no partial bleaching, but
+bleaching is not required.</p></li>
+<li><p><strong>stat</strong> (<em>str</em>) – Statistic to use to determine bleaching steps. Has to be one that
+was passed to via <code class="docutils literal notranslate"><span class="pre">stats</span></code> parameter to
+<a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.mass_changepoints" title="sdt.fret.SmFRETAnalyzer.mass_changepoints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mass_changepoints()</span></code></a>.</p></li>
+<li><p><strong>reason</strong> (<em>str</em>) – Filtering reason / column name to use.</p></li>
 </ul>
 </dd>
 </dl>
@@ -672,59 +645,27 @@ Defaults to “none”, nothing special.</p></li>
 <p>Consider acceptors with a brightness <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;a_mass&quot;)</span></code> of less
 than 500 counts and donors with a brightness <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;d_mass&quot;)</span></code> of
 less than 800 counts bleached. Remove all tracks that don’t show
-acceptable bleaching behavior. Of the other tracks, only keep data from
-before any bleaching.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">bleach_step</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+acceptable bleaching behavior.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">bleach_thresh</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ana</span><span class="o">.</span><span class="n">bleach_step</span><span class="p">(</span><span class="s2">&quot;donor or acceptor&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.eval">
-<code class="sig-name descname">eval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">expr</span></em>, <em class="sig-param"><span class="n">mi_sep</span><span class="o">=</span><span class="default_value">'_'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.eval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.eval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call <code class="docutils literal notranslate"><span class="pre">eval(expr)</span></code> for <cite>tracks</cite></p>
-<p>Flatten the column MultiIndex and call the resulting DataFrame’s
-<cite>eval</cite> method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>expr</strong> (<em>str</em>) – Argument for eval. See <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.DataFrame.eval()</span></code> for
-details.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean Series indicating whether an entry fulfills <cite>expr</cite> or not.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>pandas.Series, dtype(bool)</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>Get a boolean array indicating lines where (“fret”, “a_mass”) &lt;= 500
-in <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filt</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">)</span>
-<span class="go">0     True</span>
-<span class="go">1     True</span>
-<span class="go">2    False</span>
-<span class="go">dtype: bool</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Other Parameters</dt>
-<dd class="field-odd"><p><strong>mi_sep</strong> (<em>str, optional</em>) – Use this to separate levels when flattening the column
-MultiIndex. Defaults to “_”.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.query">
-<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">expr</span></em>, <em class="sig-param"><span class="n">mi_sep</span><span class="o">=</span><span class="default_value">'_'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.query" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mi_sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'query'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.query" title="Permalink to this definition"></a></dt>
 <dd><p>Filter features according to column values</p>
 <p>Flatten the column MultiIndex and filter the resulting DataFrame’s
 <cite>eval</cite> method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>expr</strong> (<em>str</em>) – Filter expression. See <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.DataFrame.eval()</span></code> for
-details.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expr</strong> (<em>str</em>) – Filter expression. See <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.DataFrame.eval()</span></code> for
+details.</p></li>
+<li><p><strong>mi_sep</strong> (<em>str</em>) – Separate multi-index levels by this character / string.</p></li>
+<li><p><strong>reason</strong> (<em>str</em>) – Filtering reason / column name to use.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -732,17 +673,11 @@ details.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filt</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Other Parameters</dt>
-<dd class="field-odd"><p><strong>mi_sep</strong> (<em>str, optional</em>) – Use this to separate levels when flattening the column
-MultiIndex. Defaults to “_”.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.query_particles">
-<code class="sig-name descname">query_particles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">expr</span></em>, <em class="sig-param"><span class="n">min_abs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">min_rel</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">mi_sep</span><span class="o">=</span><span class="default_value">'_'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.query_particles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.query_particles" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.query_particles">
+<span class="sig-name descname"><span class="pre">query_particles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_abs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_rel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mi_sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'query_p'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.query_particles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.query_particles" title="Permalink to this definition"></a></dt>
 <dd><p>Remove particles that don’t fulfill <cite>expr</cite> enough times</p>
 <p>Any particle that does not fulfill <cite>expr</cite> at least <cite>min_abs</cite> times AND
 during at least a fraction of <cite>min_rel</cite> of its length is removed from
@@ -753,48 +688,45 @@ during at least a fraction of <cite>min_rel</cite> of its length is removed from
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>expr</strong> (<em>str</em>) – Filter expression. See <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.DataFrame.eval()</span></code> for
 details.</p></li>
-<li><p><strong>min_abs</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum number of times a particle has to fulfill <cite>expr</cite>. If
-negative, this means “all but <code class="docutils literal notranslate"><span class="pre">abs(min_count)</span></code>”. If 0, it has
+<li><p><strong>min_abs</strong> (<em>int</em>) – Minimum number of times a particle has to fulfill <cite>expr</cite>. If
+negative, this means “all but <code class="docutils literal notranslate"><span class="pre">abs(min_abs)</span></code>”. If 0, it has
 to be fulfilled in all frames.</p></li>
-<li><p><strong>min_rel</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum fraction of data points that have to fulfill <cite>expr</cite> for a
+<li><p><strong>min_rel</strong> (<em>float</em>) – Minimum fraction of data points that have to fulfill <cite>expr</cite> for a
 particle not to be removed.</p></li>
+<li><p><strong>mi_sep</strong> (<em>str</em>) – Use this to separate levels when flattening the column
+MultiIndex. Defaults to “_”.</p></li>
+<li><p><strong>reason</strong> (<em>str</em>) – Filtering reason / column name to use.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <p>Remove any particles where not (“fret”, “a_mass”) &gt; 500 at least twice
 from <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filt</span><span class="o">.</span><span class="n">filter_particles</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filt</span><span class="o">.</span><span class="n">query_particles</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Remove any particles where (“fret”, “a_mass”) &lt;= 500 in more than one
 frame:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filt</span><span class="o">.</span><span class="n">filter_particles</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filt</span><span class="o">.</span><span class="n">query_particles</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Remove any particle where not (“fret”, “a_mass”) &gt; 500 for at least
 75 % of the particle’s data points, with a minimum of two data points:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filt</span><span class="o">.</span><span class="n">filter_particles</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">min_rel</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filt</span><span class="o">.</span><span class="n">query_particles</span><span class="p">(</span><span class="s2">&quot;fret_a_mass &gt; 500&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">min_rel</span><span class="o">=</span><span class="mf">0.75</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Other Parameters</dt>
-<dd class="field-odd"><p><strong>mi_sep</strong> (<em>str, optional</em>) – Use this to separate levels when flattening the column
-MultiIndex. Defaults to “_”.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.image_mask">
-<code class="sig-name descname">image_mask</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">channel</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.image_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.image_mask" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.image_mask">
+<span class="sig-name descname"><span class="pre">image_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'image_mask'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.image_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.image_mask" title="Permalink to this definition"></a></dt>
 <dd><p>Filter using a boolean mask image</p>
 <p>Remove all lines where coordinates lie in a region where <cite>mask</cite> is
 <cite>False</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mask</strong> (<em>numpy.ndarray</em><em>, </em><em>dtype</em><em>(</em><em>bool</em><em>) or </em><em>list of dict</em>) – <p>Mask image(s). If this is a single array, apply it to the whole
+<li><p><strong>mask</strong> (<em>Union</em><em>[</em><em>numpy.ndarray</em><em>, </em><em>List</em><em>[</em><em>Dict</em><em>]</em><em>]</em>) – <p>Mask image(s). If this is a single array, apply it to the whole
 <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> DataFrame.</p>
 <p>This can also be a list of dicts, where each dict <code class="docutils literal notranslate"><span class="pre">d</span></code> has to have
 a “key” and a “mask” (ndarray) entry. Then each <code class="docutils literal notranslate"><span class="pre">d[&quot;mask&quot;]</span></code> is
@@ -806,7 +738,8 @@ less than <cite>stop</cite>; all others will be discarded. With this it is
 possible to apply multiple masks to the same key depending on the
 frame number.</p>
 </p></li>
-<li><p><strong>channel</strong> (<em>{&quot;donor&quot;</em><em>, </em><em>&quot;acceptor&quot;}</em>) – Channel to use for the filtering</p></li>
+<li><p><strong>channel</strong> (<em>str</em>) – Channel to use for the filtering</p></li>
+<li><p><strong>reason</strong> (<em>str</em>) – Filtering reason / column name to use.</p></li>
 </ul>
 </dd>
 </dl>
@@ -837,37 +770,37 @@ another to the rest:</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.reset">
-<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.reset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undo any filtering</p>
-<p>Reset <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> to the initial state.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.flatfield_correction">
-<code class="sig-name descname">flatfield_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">donor_corr</span></em>, <em class="sig-param"><span class="n">acceptor_corr</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.flatfield_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.flatfield_correction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.flatfield_correction">
+<span class="sig-name descname"><span class="pre">flatfield_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">donor_corr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptor_corr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.flatfield_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.flatfield_correction" title="Permalink to this definition"></a></dt>
 <dd><p>Apply flatfield correction to donor and acceptor localization data</p>
-<p>This affects only the donor and acceptor “mass” and “signal” columns.
-Any values derived from those need to be recalculated manually.</p>
+<p>If present, donor and acceptor <code class="docutils literal notranslate"><span class="pre">f&quot;{self.columns['mass']}_pre_flat&quot;</span></code>
+and <code class="docutils literal notranslate"><span class="pre">f&quot;{self.columns['signal']}_pre_flat&quot;</span></code> columns are used as inputs
+for flatfield correction, results are written to
+<code class="docutils literal notranslate"><span class="pre">self.columns[&quot;mass&quot;]</span></code> and <cite>self.columns[“signal”]`</cite>.
+Otherwise, <code class="docutils literal notranslate"><span class="pre">self.columns[&quot;mass&quot;]</span></code> and <cite>self.columns[“signal”]`</cite> are
+copied to <code class="docutils literal notranslate"><span class="pre">f&quot;{self.columns['mass']}_pre_flat&quot;</span></code>
+and <code class="docutils literal notranslate"><span class="pre">f&quot;{self.columns['signal']}_pre_flat&quot;</span></code> first.</p>
+<p>Any values derived from those (e.g., apparent FRET efficiencies) need
+to be recalculated manually.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>donor_corr</strong> (<a class="reference internal" href="flatfield.html#sdt.flatfield.Corrector" title="sdt.flatfield.Corrector"><em>flatfield.Corrector</em></a>) – Corrector instances for donor and acceptor channel, respectivey.</p></li>
-<li><p><strong>acceptor_corr</strong> (<a class="reference internal" href="flatfield.html#sdt.flatfield.Corrector" title="sdt.flatfield.Corrector"><em>flatfield.Corrector</em></a>) – Corrector instances for donor and acceptor channel, respectivey.</p></li>
+<li><p><strong>donor_corr</strong> (<a class="reference internal" href="flatfield.html#sdt.flatfield.Corrector" title="sdt.flatfield.Corrector"><em>sdt.flatfield.Corrector</em></a>) – Corrector instances for donor and acceptor channel, respectivey.</p></li>
+<li><p><strong>acceptor_corr</strong> (<a class="reference internal" href="flatfield.html#sdt.flatfield.Corrector" title="sdt.flatfield.Corrector"><em>sdt.flatfield.Corrector</em></a>) – Corrector instances for donor and acceptor channel, respectivey.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.calc_leakage">
-<code class="sig-name descname">calc_leakage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_leakage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_leakage" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.calc_leakage">
+<span class="sig-name descname"><span class="pre">calc_leakage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_leakage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_leakage" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate donor leakage (bleed-through) into the acceptor channel</p>
 <p>For this to work, <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> must be a dataset of donor-only
 molecules. In this case, the leakage <span class="math notranslate nohighlight">\(alpha\)</span> can be
 computed using the formula <a class="reference internal" href="#hell2018" id="id7"><span>[Hell2018]</span></a></p>
 <div class="math notranslate nohighlight">
-\[\alpha = \frac{\lange E_\text{app}\rangle}{1 -
+\[\alpha = \frac{\langle E_\text{app}\rangle}{1 -
 \langle E_\text{app}\rangle},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\langle E_\text{app}\rangle\)</span> is the mean apparent FRET
 efficiency of a donor-only population.</p>
@@ -883,14 +816,14 @@ FRET values.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.calc_direct_excitation">
-<code class="sig-name descname">calc_direct_excitation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_direct_excitation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_direct_excitation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.calc_direct_excitation">
+<span class="sig-name descname"><span class="pre">calc_direct_excitation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_direct_excitation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_direct_excitation" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate direct acceptor excitation by the donor laser</p>
 <p>For this to work, <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> must be a dataset of acceptor-only
 molecules. In this case, the direct acceptor excitation <span class="math notranslate nohighlight">\(delta\)</span>
 can be computed using the formula <a class="reference internal" href="#hell2018" id="id8"><span>[Hell2018]</span></a></p>
 <div class="math notranslate nohighlight">
-\[\alpha = \frac{\lange S_\text{app}\rangle}{1 -
+\[\alpha = \frac{\langle S_\text{app}\rangle}{1 -
 \langle S_\text{app}\rangle},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\langle ES\text{app}\rangle\)</span> is the mean apparent FRET
 stoichiometry of an acceptor-only population.</p>
@@ -906,8 +839,8 @@ FRET values.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.calc_detection_eff">
-<code class="sig-name descname">calc_detection_eff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_part_len</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">how</span><span class="o">=</span><span class="default_value">'individual'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_detection_eff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_detection_eff" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.calc_detection_eff">
+<span class="sig-name descname"><span class="pre">calc_detection_eff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_seg_len=5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">how=&lt;function</span> <span class="pre">nanmedian&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat=&lt;function</span> <span class="pre">median&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_detection_eff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_detection_eff" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate detection efficiency ratio of dyes</p>
 <p>The detection efficiency ratio is the ratio of decrease in acceptor
 brightness to the increase in donor brightness upon acceptor
@@ -933,25 +866,27 @@ FRET values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>min_part_len</strong> (<em>int</em><em>, </em><em>optional</em>) – How many data points need to be present before and after the
+<li><p><strong>min_seg_len</strong> (<em>int</em>) – How many data points need to be present before and after the
 bleach step to ensure a reliable calculation of the mean
 intensities. If there are fewer data points, a value of NaN will be
-assigned. Defaults to 5.</p></li>
-<li><p><strong>how</strong> (<em>&quot;individual&quot;</em><em> or </em><em>callable</em><em>, </em><em>optional</em>) – If “individual”, the <span class="math notranslate nohighlight">\(\gamma\)</span> value for each track will be
+assigned.</p></li>
+<li><p><strong>how</strong> (<em>Union</em><em>[</em><em>Callable</em><em>, </em><em>str</em><em>]</em>) – If “individual”, the <span class="math notranslate nohighlight">\(\gamma\)</span> value for each track will be
 stored and used to correct the values individually when calling
 <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.fret_correction" title="sdt.fret.SmFRETAnalyzer.fret_correction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fret_correction()</span></code></a>. If a function, apply this function
 to the <span class="math notranslate nohighlight">\(\gamma\)</span> array and its return value as a global
 correction factor. A sensible example for such a function would be
 <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.nanmean()</span></code>. Beware that some <span class="math notranslate nohighlight">\(\gamma\)</span> may be
-NaN. Defaults to “individual”.</p></li>
+NaN.</p></li>
+<li><p><strong>stat</strong> (<em>Union</em><em>[</em><em>Callable</em><em>, </em><em>str</em><em>]</em>) – Statistic to use to determine bleaching steps. If a string, it has
+to be the name of a function from <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.calc_excitation_eff">
-<code class="sig-name descname">calc_excitation_eff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_components</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">component</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_excitation_eff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_excitation_eff" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.calc_excitation_eff">
+<span class="sig-name descname"><span class="pre">calc_excitation_eff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_excitation_eff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_excitation_eff" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate excitation efficiency ratio of dyes</p>
 <p>This is a measure of how efficient the direct acceptor excitation is
 compared to the donor excitation. It depends on the fluorophores and
@@ -973,27 +908,56 @@ need to be set correctly.</p>
 acceptor fluorescence upon acceptor excitation,</p>
 <div class="math notranslate nohighlight">
 \[F_\text{AA} = I_\text{AA} / \beta.\]</div>
-<p>This sets the <code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_eff</span></code> attribute.
+<p>This sets the <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.excitation_eff" title="sdt.fret.SmFRETAnalyzer.excitation_eff"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_eff</span></code></a> attribute.
 See <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.fret_correction" title="sdt.fret.SmFRETAnalyzer.fret_correction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fret_correction()</span></code></a> for how use this to calculate corrected
 FRET values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_components</strong> (<em>int</em><em>, </em><em>optional</em>) – If &gt; 1, perform a Gaussian mixture fit on the 2D apparent
+<li><p><strong>n_components</strong> (<em>int</em>) – If &gt; 1, perform a Gaussian mixture fit on the 2D apparent
 efficiency-vs.-stoichiomtry dataset. This helps to choose only the
 correct component with one donor and one acceptor. Defaults to 1.</p></li>
-<li><p><strong>component</strong> (<em>int</em><em>, </em><em>optional</em>) – If n_components &gt; 1, use this to choos the component number.
+<li><p><strong>component</strong> (<em>int</em>) – If n_components &gt; 1, use this to choos the component number.
 Components are ordered according to decreasing mean apparent FRET
 efficiency. <a class="reference internal" href="#sdt.fret.gaussian_mixture_split" title="sdt.fret.gaussian_mixture_split"><code class="xref py py-func docutils literal notranslate"><span class="pre">gaussian_mixture_split()</span></code></a> can be used to
 check which component is the desired one. Defaults to 0.</p></li>
+<li><p><strong>random_seed</strong> (<em>int</em>) – Seed for the random number generator used to initialize the
+Gaussian mixture model fit.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.fret.SmFRETAnalyzer.fret_correction">
-<code class="sig-name descname">fret_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">invalid_nan</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.fret_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.fret_correction" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.calc_detection_excitation_effs">
+<span class="sig-name descname"><span class="pre">calc_detection_excitation_effs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_components</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.calc_detection_excitation_effs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.calc_detection_excitation_effs" title="Permalink to this definition"></a></dt>
+<dd><p>Get detection and excitation efficiency from multi-state sample</p>
+<p>States are found in efficiency-vs.-stoichiometry space using a
+Gaussian mixture fit. Detection efficiency factor <span class="math notranslate nohighlight">\(\gamma\)</span> and
+excitation efficiency factor <span class="math notranslate nohighlight">\(\delta\)</span> are found performing a
+linear fit to the equation</p>
+<div class="math notranslate nohighlight">
+\[S^{-1} = 1 + \beta\gamma + (1 - \gamma)\beta E\]</div>
+<p>to the Gaussian mixture fit results, where <span class="math notranslate nohighlight">\(S\)</span> are the
+components’ mean stoichiometries (corrected for leakage and direct
+excitation) and <span class="math notranslate nohighlight">\(E\)</span> are the corresponding FRET efficiencies
+(also corrected for leakage and direct excitation) <a class="reference internal" href="#hell2018" id="id11"><span>[Hell2018]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_components</strong> (<em>int</em>) – Number of components for Gaussian mixture model</p></li>
+<li><p><strong>components</strong> (<em>Optional</em><em>[</em><em>Sequence</em><em>[</em><em>int</em><em>]</em><em>]</em>) – List of indices of components to use for the linear fit. If <cite>None</cite>,
+use all.</p></li>
+<li><p><strong>random_seed</strong> (<em>int</em>) – Seed for the random number generator used to initialize the
+Gaussian mixture model fit.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sdt.fret.SmFRETAnalyzer.fret_correction">
+<span class="sig-name descname"><span class="pre">fret_correction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">invalid_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#SmFRETAnalyzer.fret_correction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.SmFRETAnalyzer.fret_correction" title="Permalink to this definition"></a></dt>
 <dd><p>Apply corrections to calculate real FRET-related values</p>
 <p>By correcting the measured acceptor and donor intensities upon
 donor excitation (<span class="math notranslate nohighlight">\(I_\text{DA}\)</span> and <span class="math notranslate nohighlight">\(I_\text{DD}\)</span>) and
@@ -1001,24 +965,25 @@ acceptor intensity upon acceptor excitation (<span class="math notranslate nohig
 donor leakage into the acceptor channel <span class="math notranslate nohighlight">\(\alpha\)</span>, acceptor
 excitation by the donor laser <span class="math notranslate nohighlight">\(\delta\)</span>, detection efficiencies
 <span class="math notranslate nohighlight">\(\gamma\)</span>, and excitation efficiencies <span class="math notranslate nohighlight">\(\beta\)</span>
-using <a class="reference internal" href="#hell2018" id="id11"><span>[Hell2018]</span></a></p>
+using <a class="reference internal" href="#hell2018" id="id12"><span>[Hell2018]</span></a></p>
 <div class="math notranslate nohighlight">
-\[\begin{split}F_\text{DA} = I_\text{DA} - \alpha I_\text{DD} - \delta
+\[\begin{split}F_\text{DA} &amp;= I_\text{DA} - \alpha I_\text{DD} - \delta
 I_\text{AA} \\
-F_\text{DD} = \gamma I_\text{DD} \\
-F_\text{AA} = I_\text{AA} / \beta\end{split}\]</div>
+F_\text{DD} &amp;= \gamma I_\text{DD} \\
+F_\text{AA} &amp;= I_\text{AA} / \beta\end{split}\]</div>
 <p>the real FRET efficiency and stoichiometry values can be calculated:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}E = \frac{F_\text{DA}}{F_\text{DA} + F_\text{DD} \\
-S =  \frac{F_\text{DA} + F_\text{DD}{F_\text{DA} + F_\text{DD +
+\[\begin{split}E &amp;= \frac{F_\text{DA}}{F_\text{DA} + F_\text{DD}} \\
+S &amp;=  \frac{F_\text{DA} + F_\text{DD}}{F_\text{DA} + F_\text{DD} +
 F_\text{AA}}\end{split}\]</div>
 <p><span class="math notranslate nohighlight">\(F_\text{DA}\)</span> will be appended to <a class="reference internal" href="#sdt.fret.SmFRETAnalyzer.tracks" title="sdt.fret.SmFRETAnalyzer.tracks"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tracks</span></code></a> as the
-(“fret”, “f_da”) column; <span class="math notranslate nohighlight">\(F_\text{DD}\)</span> as (“fret”, “f_dd”);
-<span class="math notranslate nohighlight">\(F_\text{DA}\)</span> as (“fret”, “f_aa”); <span class="math notranslate nohighlight">\(E\)</span> as (“fret”, “eff”);
-and <span class="math notranslate nohighlight">\(S\)</span> as (“fret”, “stoi”).</p>
+<code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;f_da&quot;)</span></code> column; <span class="math notranslate nohighlight">\(F_\text{DD}\)</span> as
+<code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;f_dd&quot;)</span></code>; <span class="math notranslate nohighlight">\(F_\text{DA}\)</span> as <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;f_aa&quot;)</span></code>;
+<span class="math notranslate nohighlight">\(E\)</span> as <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;eff&quot;)</span></code>; and <span class="math notranslate nohighlight">\(S\)</span> as <code class="docutils literal notranslate"><span class="pre">(&quot;fret&quot;,</span>
+<span class="pre">&quot;stoi&quot;)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>invalid_nan</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, all “eff”, and “stoi” values for excitation
+<dd class="field-odd"><p><strong>invalid_nan</strong> (<em>bool</em>) – If True, all “eff”, and “stoi” values for excitation
 types other than donor excitation are set to NaN, since the values
 don’t make sense. Defaults to True.</p>
 </dd>
@@ -1027,12 +992,12 @@ don’t make sense. Defaults to True.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="plotting">
-<h2>Plotting<a class="headerlink" href="#plotting" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="plotting">
+<h2>Plotting<a class="headerlink" href="#plotting" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt id="sdt.fret.smfret_scatter">
-<code class="sig-prename descclassname">sdt.fret.</code><code class="sig-name descname">smfret_scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">track_data</span></em>, <em class="sig-param"><span class="n">xdata</span><span class="o">=</span><span class="default_value">'fret', 'eff'</span></em>, <em class="sig-param"><span class="n">ydata</span><span class="o">=</span><span class="default_value">'fret', 'stoi'</span></em>, <em class="sig-param"><span class="n">frame</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">xlim</span><span class="o">=</span><span class="default_value">None, None</span></em>, <em class="sig-param"><span class="n">ylim</span><span class="o">=</span><span class="default_value">None, None</span></em>, <em class="sig-param"><span class="n">xlabel</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ylabel</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scatter_args</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">grid</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_plot.html#smfret_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.smfret_scatter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.smfret_scatter">
+<span class="sig-prename descclassname"><span class="pre">sdt.fret.</span></span><span class="sig-name descname"><span class="pre">smfret_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('fret',</span> <span class="pre">'eff')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('fret',</span> <span class="pre">'stoi')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scatter_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_plot.html#smfret_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.smfret_scatter" title="Permalink to this definition"></a></dt>
 <dd><p>Make scatter plots of multiple smFRET datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1075,8 +1040,8 @@ created. Defaults to <cite>None</cite>.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.fret.smfret_hist">
-<code class="sig-prename descclassname">sdt.fret.</code><code class="sig-name descname">smfret_hist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">track_data</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">'fret', 'eff'</span></em>, <em class="sig-param"><span class="n">frame</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">xlim</span><span class="o">=</span><span class="default_value">None, None</span></em>, <em class="sig-param"><span class="n">xlabel</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ylabel</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">group_re</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">hist_args</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_plot.html#smfret_hist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.smfret_hist" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.smfret_hist">
+<span class="sig-prename descclassname"><span class="pre">sdt.fret.</span></span><span class="sig-name descname"><span class="pre">smfret_hist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('fret',</span> <span class="pre">'eff')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(None,</span> <span class="pre">None)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_re</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_plot.html#smfret_hist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.smfret_hist" title="Permalink to this definition"></a></dt>
 <dd><p>Make histogram plots of multiple smFRET datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1117,8 +1082,8 @@ created. Defaults to <cite>None</cite>.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.fret.draw_track">
-<code class="sig-prename descclassname">sdt.fret.</code><code class="sig-name descname">draw_track</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tracks</span></em>, <em class="sig-param"><span class="n">track_no</span></em>, <em class="sig-param"><span class="n">donor_img</span></em>, <em class="sig-param"><span class="n">acceptor_img</span></em>, <em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">n_cols</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">figure</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_plot.html#draw_track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.draw_track" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.draw_track">
+<span class="sig-prename descclassname"><span class="pre">sdt.fret.</span></span><span class="sig-name descname"><span class="pre">draw_track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_no</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">donor_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptor_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_plot.html#draw_track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.draw_track" title="Permalink to this definition"></a></dt>
 <dd><p>Draw donor and acceptor images for a track</p>
 <p>For each frame in a track, draw the raw image in the proximity of the
 feature localization.</p>
@@ -1134,6 +1099,10 @@ feature localization.</p>
 <li><p><strong>n_cols</strong> (<em>int</em><em>, </em><em>optional</em>) – Arrange images in that many columns. Defaults to 8.</p></li>
 <li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Use this figure to draw. If <cite>None</cite>, use
 <code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.gcf()</span></code>. Defaults to <cite>None</cite>.</p></li>
+<li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. The only relevant name is <cite>coords</cite>.
+This means, if your DataFrame has coordinate columns “x” and “z”, set
+<code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1142,156 +1111,15 @@ feature localization.</p>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>matplotlib.figure.Figure</p>
 </dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. The only relevant name is <cite>coords</cite>.
-This means, if your DataFrame has coordinate columns “x” and “z”, set
-<code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p>
-</dd>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="image-selection">
-<h2>Image selection<a class="headerlink" href="#image-selection" title="Permalink to this headline">¶</a></h2>
-<dl class="py class">
-<dt id="sdt.fret.FrameSelector">
-<em class="property">class </em><code class="sig-prename descclassname">sdt.fret.</code><code class="sig-name descname">FrameSelector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">excitation_seq</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/utils.html#FrameSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.FrameSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select images of a certain excitation type from an image series</p>
-<p>E.g. if employing alternating excitation, this can be used to select only
-the donor or only the acceptor frames.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Sequence of 6 &quot;images&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">img_seq</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numpy</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">FrameSelector</span><span class="p">(</span><span class="s2">&quot;odda&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="p">(</span><span class="n">img_seq</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">)</span>
-<span class="go">array([[[0, 0, 0],</span>
-<span class="go">        [0, 0, 0],</span>
-<span class="go">        [0, 0, 0]],</span>
-
-<span class="go">       [[4, 4, 4],</span>
-<span class="go">        [4, 4, 4],</span>
-<span class="go">        [4, 4, 4]]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="p">(</span><span class="n">img_seq</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">)</span>
-<span class="go">array([[[1, 1, 1],</span>
-<span class="go">        [1, 1, 1],</span>
-<span class="go">        [1, 1, 1]],</span>
-
-<span class="go">       [[2, 2, 2],</span>
-<span class="go">        [2, 2, 2],</span>
-<span class="go">        [2, 2, 2]],</span>
-
-<span class="go">       [[5, 5, 5],</span>
-<span class="go">        [5, 5, 5],</span>
-<span class="go">        [5, 5, 5]],</span>
-
-<span class="go">       [[6, 6, 6],</span>
-<span class="go">        [6, 6, 6],</span>
-<span class="go">        [6, 6, 6]]])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>excitation_seq</strong> (<em>str</em><em> or </em><em>list-like of characters</em>) – <p>Excitation sequence. Typically, “d” would stand for donor, “a” for
-acceptor.</p>
-<p>One needs only specify the shortest sequence that is repeated,
-i. e. “ddddaddddadddda” is the same as “dddda”.</p>
-</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt id="sdt.fret.FrameSelector.excitation_frames">
-<em class="property">property </em><code class="sig-name descname">excitation_frames</code><a class="headerlink" href="#sdt.fret.FrameSelector.excitation_frames" title="Permalink to this definition">¶</a></dt>
-<dd><p>dict mapping the excitation types in <a class="reference internal" href="#sdt.fret.FrameSelector.excitation_seq" title="sdt.fret.FrameSelector.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a> to
-the corresponding frame numbers (modulo the length of
-py:attr:<cite>excitation_seq</cite>).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="sdt.fret.FrameSelector.excitation_seq">
-<em class="property">property </em><code class="sig-name descname">excitation_seq</code><a class="headerlink" href="#sdt.fret.FrameSelector.excitation_seq" title="Permalink to this definition">¶</a></dt>
-<dd><p>numpy.ndarray of dtype(“&lt;U1”) describing the excitation sequence.
-Typically, “d” would stand for donor, “a” for
-acceptor.</p>
-<p>One needs only specify the shortest sequence that is repeated,
-i. e. “ddddaddddadddda” is the same as “dddda”.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="sdt.fret.FrameSelector.__call__">
-<code class="sig-name descname">__call__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">which</span><span class="o">=</span><span class="default_value">'d'</span></em>, <em class="sig-param"><span class="n">renumber</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/utils.html#FrameSelector.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.FrameSelector.__call__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get only data corresponding to a certain excitation type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>list-like of numpy.ndarrays</em>) – Localization data or sequence of images</p></li>
-<li><p><strong>which</strong> (<em>str</em><em> or </em><em>iterable of str</em><em>, </em><em>optional</em>) – Excitation type(s). This should match something in
-<a class="reference internal" href="#sdt.fret.FrameSelector.excitation_seq" title="sdt.fret.FrameSelector.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a>. Defaults to “d”.</p></li>
-<li><p><strong>renumber</strong> (<em>bool</em><em>, </em><em>optional</em>) – <p>Renumber frames so that only frames for excitation types
-corresponding to <cite>which</cite> are counted.</p>
-<p>After selecting only data corresponding to an excitation type (e.g.
-“a”) in a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, all other types are
-missing and frame number are not consecutive any more. This can be
-a problem for tracking or diffusion analysis. Setting
-<code class="docutils literal notranslate"><span class="pre">renumber=True</span></code> will work around this.</p>
-<p>Only applicable if <cite>data</cite> is a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.
-Defaults to <cite>False</cite>.</p>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>Selected frames. If <cite>data</cite> is a DataFrame, return only lines
-corresponding to excitation types given by <cite>which</cite>. If
-<code class="docutils literal notranslate"><span class="pre">renumber=True</span></code>, a modified copy of <cite>data</cite> is returned.</p>
-<p>If <cite>data</cite> is an image sequence, first an attempt is made at
-indexing the images  directly. If <cite>data</cite> supports this (e.g. if it
-is a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>), the indexed version is returned.
-Otherwise, <cite>img_seq</cite> is converted to
-<a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.Slicerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.helper.Slicerator</span></code></a>, indexed, and returned.</p>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>type(data) or slicerator.Slicerator</p>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names in case <cite>data</cite> is a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. The only relevant name is <cite>time</cite>.
-That means, if the DataFrame has frame number columns “frame2”,
-set <code class="docutils literal notranslate"><span class="pre">columns={&quot;time&quot;:</span> <span class="pre">&quot;frame2&quot;}</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="sdt.fret.FrameSelector.restore_frame_numbers">
-<code class="sig-name descname">restore_frame_numbers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">which</span><span class="o">=</span><span class="default_value">'d'</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/utils.html#FrameSelector.restore_frame_numbers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.FrameSelector.restore_frame_numbers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undo frame renumbering from <a class="reference internal" href="#sdt.fret.FrameSelector.__call__" title="sdt.fret.FrameSelector.__call__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__call__()</span></code></a></p>
-<p><cite>data</cite> is modified in place for this purpose.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Localization data</p></li>
-<li><p><strong>which</strong> (<em>str</em><em> or </em><em>iterable of str</em><em>, </em><em>optional</em>) – Excitation type(s). This should match something in
-<a class="reference internal" href="#sdt.fret.FrameSelector.excitation_seq" title="sdt.fret.FrameSelector.excitation_seq"><code class="xref py py-attr docutils literal notranslate"><span class="pre">excitation_seq</span></code></a>. Defaults to “d”.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names in case <cite>data</cite> is a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. The only relevant name is <cite>time</cite>.
-That means, if the DataFrame has frame number columns “frame2”,
-set <code class="docutils literal notranslate"><span class="pre">columns={&quot;time&quot;:</span> <span class="pre">&quot;frame2&quot;}</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="helpers">
-<h2>Helpers<a class="headerlink" href="#helpers" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="helpers">
+<h2>Helpers<a class="headerlink" href="#helpers" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt id="sdt.fret.numeric_exc_type">
-<code class="sig-prename descclassname">sdt.fret.</code><code class="sig-name descname">numeric_exc_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/utils.html#numeric_exc_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.numeric_exc_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.numeric_exc_type">
+<span class="sig-prename descclassname"><span class="pre">sdt.fret.</span></span><span class="sig-name descname"><span class="pre">numeric_exc_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/utils.html#numeric_exc_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.numeric_exc_type" title="Permalink to this definition"></a></dt>
 <dd><p>Context manager temporarily turning (“fret”, “exc_type”) column to int</p>
 <p>This is useful e.g. in <code class="xref py py-func docutils literal notranslate"><span class="pre">helper.split_dataframe()</span></code> so that the
 resulting split array does not have <cite>object</cite> dtype due to
@@ -1323,8 +1151,8 @@ column.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.fret.gaussian_mixture_split">
-<code class="sig-prename descclassname">sdt.fret.</code><code class="sig-name descname">gaussian_mixture_split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">n_components</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">['fret', 'eff_app', 'fret', 'stoi_app']</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#gaussian_mixture_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.fret.gaussian_mixture_split" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.fret.gaussian_mixture_split">
+<span class="sig-prename descclassname"><span class="pre">sdt.fret.</span></span><span class="sig-name descname"><span class="pre">gaussian_mixture_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[('fret',</span> <span class="pre">'eff_app'),</span> <span class="pre">('fret',</span> <span class="pre">'stoi_app')]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#gaussian_mixture_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.gaussian_mixture_split" title="Permalink to this definition"></a></dt>
 <dd><p>Fit Gaussian mixture model and predict component for each particle</p>
 <p>First, all datapoints are used to fit a Gaussian mixture model. Then each
 particle is assigned the component in which most of its datapoints lie.</p>
@@ -1332,26 +1160,65 @@ particle is assigned the component in which most of its datapoints lie.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Single molecule FRET data</p></li>
+<li><p><strong>data</strong> (<em>pandas.core.frame.DataFrame</em>) – Single-molecule FRET data</p></li>
 <li><p><strong>n_components</strong> (<em>int</em>) – Number of components in the mixture</p></li>
-<li><p><strong>columns</strong> (<em>list of column names</em><em>, </em><em>optional</em>) – Which columns to fit. Defaults to <code class="docutils literal notranslate"><span class="pre">[(&quot;fret&quot;,</span> <span class="pre">&quot;eff_app&quot;),</span>
-<span class="pre">(&quot;fret&quot;,</span> <span class="pre">&quot;stoi_app&quot;)]</span></code>.</p></li>
+<li><p><strong>columns</strong> (<em>Sequence</em><em>[</em><em>Tuple</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>]</em>) – Which columns to fit.</p></li>
+<li><p><strong>random_seed</strong> (<em>int</em>) – Seed for the random number generator used to initialize the Gaussian
+mixture model fit.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Each entry is a list of particle number belonging to the same
-mixture component. The components are in descending order w.r.t. their
-mean <code class="docutils literal notranslate"><span class="pre">columns[0]</span></code> value.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p>Component label for each entry in <cite>data</cite> and mean values for each</p></li>
+<li><p><em>component, one line per component.</em></p></li>
+</ul>
+</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of lists</p>
+<dd class="field-odd"><p><em>Tuple</em>[numpy.ndarray, numpy.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sdt.fret.apply_track_filters">
+<span class="sig-prename descclassname"><span class="pre">sdt.fret.</span></span><span class="sig-name descname"><span class="pre">apply_track_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_negative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/fret/sm_analyzer.html#apply_track_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.fret.apply_track_filters" title="Permalink to this definition"></a></dt>
+<dd><p>Apply filters to <cite>tracks</cite></p>
+<p>This removes all entries from <cite>tracks</cite> that have been marked
+as filtered via a <code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>include_negative</strong> (<em>bool</em>) – If <cite>False</cite>, include only entries for which all <code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column
+values are zero. If <cite>True</cite>, include also entries with negative
+<code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column values.</p></li>
+<li><p><strong>ignore</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Sequence</em><em>[</em><em>str</em><em>]</em><em>]</em>) – <code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column(s) to ignore when deciding whether to include an
+entry or not. For instance, setting <code class="docutils literal notranslate"><span class="pre">ignore=&quot;bleach_step&quot;</span></code> will not
+consider the <code class="docutils literal notranslate"><span class="pre">(&quot;filter&quot;,</span> <span class="pre">&quot;bleach_step&quot;)</span></code> column values.</p></li>
+<li><p><strong>ret_type</strong> (<em>str</em>) – If <code class="docutils literal notranslate"><span class="pre">&quot;data&quot;</span></code>, return a copy of <cite>tracks</cite> excluding all entries that
+have been marked as filtered, i.e., that have a positive (or nonzero,
+see the <cite>include_negative</cite> parameter) entry in any <code class="docutils literal notranslate"><span class="pre">&quot;filter&quot;</span></code> column.
+If <code class="docutils literal notranslate"><span class="pre">&quot;mask&quot;</span></code>, return a boolean array indicating whether an entry is to
+be removed or not</p></li>
+<li><p><strong>tracks</strong> (<em>pandas.core.frame.DataFrame</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>Copy of <cite>tracks</cite> with all filtered rows removed or corresponding boolean</p></li>
+<li><p><em>mask.</em></p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><em>Union</em>[pandas.core.frame.DataFrame, numpy.array]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <p class="rubric">References</p>
 <dl class="citation">
-<dt class="label" id="hell2018"><span class="brackets">Hell2018</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id4">2</a>,<a href="#id5">3</a>,<a href="#id6">4</a>,<a href="#id7">5</a>,<a href="#id8">6</a>,<a href="#id11">7</a>)</span></dt>
+<dt class="label" id="hell2018"><span class="brackets">Hell2018</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id4">2</a>,<a href="#id5">3</a>,<a href="#id6">4</a>,<a href="#id7">5</a>,<a href="#id8">6</a>,<a href="#id11">7</a>,<a href="#id12">8</a>)</span></dt>
 <dd><p>Hellenkamp, B. et al.: “Precision and accuracy of
 single-molecule FRET measurements—a multi-laboratory benchmark study”,
 Nature methods, Nature Publishing Group, 2018, 15, 669</p>
@@ -1367,63 +1234,38 @@ Diffusing Biomolecules Using Alternating-Laser Excitation”, Biophysical
 Journal, Elsevier BV, 2005, 88, 2939–2953</p>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="image.html" class="btn btn-neutral float-right" title="Image filtering and processing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="spatial.html" class="btn btn-neutral float-left" title="Analyze spatial aspects of data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spatial.html" class="btn btn-neutral float-left" title="Analyze spatial aspects of data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="image.html" class="btn btn-neutral float-right" title="Image filtering and processing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2015—2018, Lukas Schrangl
-
-    </p>
+    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

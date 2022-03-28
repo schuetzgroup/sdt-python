@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sdt.changepoint.utils &mdash; sdt-python 17.2 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sdt-python
+          </a>
+              <div class="version">
+                17.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../brightness.html">Brightness analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">Data input/output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changepoint.html">Changepoint detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../spatial.html">Analyze spatial aspects of data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fret.html">Single molecule FRET analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../image.html">Image filtering and processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../flatfield.html">Flat-field correction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../loc.html">Fluorescent feature localization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nbui.html">GUIs for the Jupyter notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sim.html">Simulation of microscopy-related data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sdt-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sdt.changepoint.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sdt.changepoint.utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<div class="viewcode-block" id="plot_changepoints"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.plot_changepoints">[docs]</a><span class="k">def</span> <span class="nf">plot_changepoints</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">changepoints</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;shade&quot;</span><span class="p">,</span>
+                      <span class="n">segment_alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">segment_colors</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;#4286f4&quot;</span><span class="p">,</span> <span class="s2">&quot;#f44174&quot;</span><span class="p">],</span>
+                      <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot time series with changepoints</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : numpy.ndarray</span>
+<span class="sd">        Data points in time series</span>
+<span class="sd">    changepoints : list-like of int</span>
+<span class="sd">        Indices of changepoints</span>
+<span class="sd">    time : numpy.ndarray or None</span>
+<span class="sd">        x axis values. If `None` (the default), use 1, 2, 3…</span>
+<span class="sd">    style : {&quot;shade&quot;, &quot;line&quot;}, optional</span>
+<span class="sd">        How to indicate changepoints. If &quot;shade&quot; (default), draw the</span>
+<span class="sd">        background of the segments separated by changepoints in different</span>
+<span class="sd">        colors. If &quot;lines&quot;, draw vertical lines at the positions of th</span>
+<span class="sd">        changepoints.</span>
+<span class="sd">    segment_alpha : float, optional</span>
+<span class="sd">        Alpha value of the background color in case of ``style=&quot;shade&quot;``.</span>
+<span class="sd">        Defaults to 0.2.</span>
+<span class="sd">    segment_colors : list of str</span>
+<span class="sd">        Sequence of background colors for use with ``style=&quot;shade&quot;``. Defaults</span>
+<span class="sd">        to ``[&quot;#4286f4&quot;, &quot;#f44174&quot;]``, which are purple and pink.</span>
+<span class="sd">    ax : matplotlib.axes.Axes or None</span>
+<span class="sd">        Axes object to plot on. If `None` (the default), get it by calling</span>
+<span class="sd">        pyplot&#39;s ``gca()``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    matplotlib.axes.Axes</span>
+<span class="sd">        Axes object used for plotting.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">style</span> <span class="o">==</span> <span class="s2">&quot;shade&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">changepoints</span><span class="p">),</span>
+                           <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">changepoints</span><span class="p">,</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+                           <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">segment_colors</span><span class="p">)):</span>
+            <span class="n">t_s</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+            <span class="n">t_e</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span><span class="n">t_s</span><span class="p">,</span> <span class="n">t_e</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">segment_alpha</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">changepoints</span><span class="p">:</span>
+            <span class="n">t_c</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">t_c</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="segment_stats"><a class="viewcode-back" href="../../../changepoint.html#sdt.changepoint.segment_stats">[docs]</a><span class="k">def</span> <span class="nf">segment_stats</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                  <span class="n">changepoints</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                      <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+                  <span class="n">stat_funcs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Callable</span><span class="p">]],</span>
+                  <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stat_margin</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="n">return_len</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;segments&quot;</span><span class="p">,</span>
+                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Calculate statistics for each segment found via changepoint detection</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data</span>
+<span class="sd">        Data for which changepoints are calculated. Either a 1D array or a</span>
+<span class="sd">        2D array of column-wise data.</span>
+<span class="sd">    changepoints</span>
+<span class="sd">        Sequence of changepoints or function that calculates changepoints from</span>
+<span class="sd">        `data`</span>
+<span class="sd">    stat_funcs</span>
+<span class="sd">        Apply these functions to `data` segments identified via changepoint</span>
+<span class="sd">        detection. :py:func:`numpy.mean` and :py:func:`numpy.median` are</span>
+<span class="sd">        prime candidates for this. The functions should accept an `axis`</span>
+<span class="sd">        keyword argument like many numpy functions do.</span>
+<span class="sd">    mask</span>
+<span class="sd">        Boolean array of the same length as `data`. Changepoint detection is</span>
+<span class="sd">        only performed using `data` entries that have a corresponding `True`</span>
+<span class="sd">        entry in the mask. `None` is equivalent to a mask whose entries are all</span>
+<span class="sd">        `True`.</span>
+<span class="sd">    stat_margin</span>
+<span class="sd">        Data at the changepoint may be influenced by the change. This parameter</span>
+<span class="sd">        specifies the number of datapoints before and after a changepoint to</span>
+<span class="sd">        ignore in the calculation of the statistics.</span>
+<span class="sd">    return_len</span>
+<span class="sd">        If ``&quot;segments&quot;``, return arrays of length</span>
+<span class="sd">        ``len(changepoints) + 1``. If ``&quot;data&quot;``, return arrays of the same</span>
+<span class="sd">        length as the `data` parameter.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Array of segment numbers, starting at zero and increasing by one after</span>
+<span class="sd">    each detected changepoint. -1 if changepoint detection failed, e.g. due</span>
+<span class="sd">    to NaNs in `data`. Also returns the corresponding 2D array in which</span>
+<span class="sd">    each column holds the result of one of `stat_funcs` applied to each</span>
+<span class="sd">    segment.</span>
+<span class="sd">    If ``return_len == &quot;segments&quot;``, the arrays contain a single entry for</span>
+<span class="sd">    each segment in the trace. If ``return_len == &quot;data&quot;``, each entry in the</span>
+<span class="sd">    returned arrays corresponds to one entry in `data`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">return_len</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;segments&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`return_len` has to be &quot;segments&quot; or &quot;data&quot;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">m_data</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">m_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">stat_funcs</span><span class="p">):</span>
+        <span class="n">stat_funcs</span> <span class="o">=</span> <span class="p">(</span><span class="n">stat_funcs</span><span class="p">,)</span>
+        <span class="n">stat_axis</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Turn into tuple to be sure we can iterate multiple times</span>
+        <span class="n">stat_funcs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">stat_funcs</span><span class="p">)</span>
+        <span class="n">stat_axis</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Cannot find changepoints if there are NaNs or if there is no data</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">callable</span><span class="p">(</span><span class="n">changepoints</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">m_data</span><span class="p">)))</span> <span class="ow">or</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">m_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">return_len</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span> <span class="k">else</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">stat_axis</span><span class="p">:</span>
+            <span class="n">shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stat_funcs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+
+    <span class="c1"># `cp` are changepoint indices with respect to masked data</span>
+    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">changepoints</span><span class="p">):</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">changepoints</span><span class="p">(</span><span class="n">m_data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cp</span> <span class="o">=</span> <span class="n">changepoints</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cp</span> <span class="o">=</span> <span class="n">changepoints</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="o">~</span><span class="n">mask</span><span class="p">)[</span><span class="n">changepoints</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Skip `stat_margin` frame(s) after changepoint since</span>
+    <span class="c1"># fluorophore could be half bleached</span>
+    <span class="n">md_start</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">cp</span> <span class="o">+</span> <span class="n">stat_margin</span><span class="p">)</span>
+    <span class="c1"># Skip `stat_margin` frame(s) before changepoint since</span>
+    <span class="c1"># fluorophore could be half bleached</span>
+    <span class="n">md_end</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">cp</span> <span class="o">-</span> <span class="n">stat_margin</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">m_data</span><span class="p">)])</span>
+
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stat_funcs</span><span class="p">)))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Support multivariate, columnwise data</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stat_funcs</span><span class="p">),</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m_s</span><span class="p">,</span> <span class="n">m_e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="n">md_start</span><span class="p">,</span> <span class="n">md_end</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stat_funcs</span><span class="p">):</span>
+            <span class="n">stat</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">m_data</span><span class="p">[</span><span class="n">m_s</span><span class="p">:</span><span class="n">m_e</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">m_s</span> <span class="o">&lt;</span> <span class="n">m_e</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+    <span class="n">seg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_len</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cp_pos</span> <span class="o">=</span> <span class="n">cp</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">m_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">cp_pos</span> <span class="o">=</span> <span class="n">m_pos</span><span class="p">[</span><span class="n">cp</span><span class="p">]</span>
+        <span class="n">reps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">cp_pos</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">seg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">stat</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">stat_axis</span><span class="p">:</span>
+        <span class="n">stat</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">seg</span><span class="p">,</span> <span class="n">stat</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

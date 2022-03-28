@@ -1,73 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Brightness analysis &mdash; sdt-python 15.0 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brightness analysis &mdash; sdt-python 17.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Data input/output" href="io.html" />
     <link rel="prev" title="Diffusion analysis" href="motion.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
-          
-
-          
+            <a href="index.html" class="icon icon-home"> sdt-python
           </a>
-
-          
-            
-            
               <div class="version">
-                15.0
+                17.2
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,21 +39,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Brightness analysis</a><ul>
@@ -112,69 +64,31 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Brightness analysis</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-sdt.brightness"></span><div class="section" id="brightness-analysis">
-<h1>Brightness analysis<a class="headerlink" href="#brightness-analysis" title="Permalink to this headline">¶</a></h1>
+             
+  <span class="target" id="module-sdt.brightness"></span><section id="brightness-analysis">
+<h1>Brightness analysis<a class="headerlink" href="#brightness-analysis" title="Permalink to this headline"></a></h1>
 <p>This is a collection of tools to analyze the brightness of fluorophores. It
 offers</p>
 <ul class="simple">
@@ -208,11 +122,11 @@ by means of the <a class="reference internal" href="#sdt.brightness.Distribution
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bdist</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="section" id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline">¶</a></h2>
+<section id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt id="sdt.brightness.from_raw_image">
-<code class="sig-prename descclassname">sdt.brightness.</code><code class="sig-name descname">from_raw_image</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">positions</span></em>, <em class="sig-param"><span class="n">frames</span></em>, <em class="sig-param"><span class="n">radius</span></em>, <em class="sig-param"><span class="n">bg_frame</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">bg_estimator</span><span class="o">=</span><span class="default_value">'mean'</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">engine</span><span class="o">=</span><span class="default_value">'numba'</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">'square'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#from_raw_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.brightness.from_raw_image" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.from_raw_image">
+<span class="sig-prename descclassname"><span class="pre">sdt.brightness.</span></span><span class="sig-name descname"><span class="pre">from_raw_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_estimator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'square'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#from_raw_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.brightness.from_raw_image" title="Permalink to this definition"></a></dt>
 <dd><p>Determine particle brightness by counting pixel values</p>
 <p>Around each localization, pixel values are summed up (see the <cite>mask</cite>
 parameter) to determine the brightness (mass). Additionally, local
@@ -250,16 +164,12 @@ background globally (per frame) from all pixels that are not
 part of any feature. In all cases, all pixels belonging
 to any signal are automatically excluded from the background detection.
 Defaults to “square”.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+<li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
 Relevant names are <cite>coords</cite>, <cite>time</cite>, <cite>mass</cite>, <cite>signal</cite>, <cite>bg</cite>, <cite>bg_dev</cite>.
 This means, if your DataFrame has coordinate columns “x” and “z” and
 the time column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
 <span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p></li>
-<li><p><strong>engine</strong> (<em>{“numba”, “python”}, optional</em>) – Numba is faster, but only supports 2D data and mean or median
+<li><p><strong>engine</strong> (<em>{&quot;numba&quot;</em><em>, </em><em>&quot;python&quot;}</em><em>, </em><em>optional</em>) – Numba is faster, but only supports 2D data and mean or median
 bg_estimator. If numba cannot be used, automatically fall back to
 pure python, which support arbitray dimensions and bg_estimator
 functions. Defaults to “numba”.</p></li>
@@ -269,8 +179,8 @@ functions. Defaults to “numba”.</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt id="sdt.brightness.Distribution">
-<em class="property">class </em><code class="sig-prename descclassname">sdt.brightness.</code><code class="sig-name descname">Distribution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">abscissa</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bw</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">cam_eff</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">kern_width</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">engine</span><span class="o">=</span><span class="default_value">'numba'</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.brightness.Distribution" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.Distribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.brightness.</span></span><span class="sig-name descname"><span class="pre">Distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abscissa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cam_eff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kern_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.brightness.Distribution" title="Permalink to this definition"></a></dt>
 <dd><p>Brightness distribution of fluorescent signals</p>
 <p>Given a list of peak masses (integrated intensities), calculate the
 masses’ probability density function.</p>
@@ -293,35 +203,31 @@ photon. The brightness data will be divided by this number.
 Defaults to 1.</p></li>
 <li><p><strong>kern_width</strong> (<em>float</em><em>, </em><em>optional</em>) – Calculate kernels only in the range of +/- <cite>kern_width</cite> times the
 bandwidth to save computation time. Defaults to 5.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>engine</strong> (<em>{“numba”, “python”}, optional</em>) – Whether to use the faster numba-based implementation or the slower
+<li><p><strong>engine</strong> (<em>{&quot;numba&quot;</em><em>, </em><em>&quot;python&quot;}</em><em>, </em><em>optional</em>) – Whether to use the faster numba-based implementation or the slower
 pure python one. Defaults to “numba”.</p></li>
-<li><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in
+<li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. The only relevant name is <cite>mass</cite>.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="sdt.brightness.Distribution.graph">
-<code class="sig-name descname">graph</code><a class="headerlink" href="#sdt.brightness.Distribution.graph" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.Distribution.graph">
+<span class="sig-name descname"><span class="pre">graph</span></span><a class="headerlink" href="#sdt.brightness.Distribution.graph" title="Permalink to this definition"></a></dt>
 <dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of shape (2, n); First row is the
 abscissa, second row is the ordinate of the normalized distribution
 function.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="sdt.brightness.Distribution.num_data">
-<code class="sig-name descname">num_data</code><a class="headerlink" href="#sdt.brightness.Distribution.num_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.Distribution.num_data">
+<span class="sig-name descname"><span class="pre">num_data</span></span><a class="headerlink" href="#sdt.brightness.Distribution.num_data" title="Permalink to this definition"></a></dt>
 <dd><p>Number of data points (single molecules) used to create the
 distribution.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.brightness.Distribution.mean">
-<code class="sig-name descname">mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution.mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.brightness.Distribution.mean" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.Distribution.mean">
+<span class="sig-name descname"><span class="pre">mean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution.mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.brightness.Distribution.mean" title="Permalink to this definition"></a></dt>
 <dd><p>Mean</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -334,8 +240,8 @@ distribution.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.brightness.Distribution.std">
-<code class="sig-name descname">std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution.std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.brightness.Distribution.std" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.Distribution.std">
+<span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution.std"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.brightness.Distribution.std" title="Permalink to this definition"></a></dt>
 <dd><p>Standard deviation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -349,8 +255,8 @@ distribution</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.brightness.Distribution.most_probable">
-<code class="sig-name descname">most_probable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution.most_probable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.brightness.Distribution.most_probable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.Distribution.most_probable">
+<span class="sig-name descname"><span class="pre">most_probable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution.most_probable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.brightness.Distribution.most_probable" title="Permalink to this definition"></a></dt>
 <dd><p>Most probable value (mode)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -364,8 +270,8 @@ function has its maximum)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.brightness.Distribution.mode">
-<code class="sig-name descname">mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sdt.brightness.Distribution.mode" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.Distribution.mode">
+<span class="sig-name descname"><span class="pre">mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sdt.brightness.Distribution.mode" title="Permalink to this definition"></a></dt>
 <dd><p>Most probable value (mode)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -379,8 +285,8 @@ function has its maximum)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="sdt.brightness.Distribution.plot">
-<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">label</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.brightness.Distribution.plot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.brightness.Distribution.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/brightness.html#Distribution.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.brightness.Distribution.plot" title="Permalink to this definition"></a></dt>
 <dd><p>Plot the distribution function graph</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -395,63 +301,38 @@ Defaults to <cite>None</cite>.</p></li>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="io.html" class="btn btn-neutral float-right" title="Data input/output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="motion.html" class="btn btn-neutral float-left" title="Diffusion analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="motion.html" class="btn btn-neutral float-left" title="Diffusion analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="io.html" class="btn btn-neutral float-right" title="Data input/output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2015—2018, Lukas Schrangl
-
-    </p>
+    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

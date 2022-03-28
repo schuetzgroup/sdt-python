@@ -1,73 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Analyze spatial aspects of data &mdash; sdt-python 15.0 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analyze spatial aspects of data &mdash; sdt-python 17.2 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Single molecule FRET analysis" href="fret.html" />
     <link rel="prev" title="Changepoint detection" href="changepoint.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> sdt-python
-          
-
-          
+            <a href="index.html" class="icon icon-home"> sdt-python
           </a>
-
-          
-            
-            
               <div class="version">
-                15.0
+                17.2
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,21 +40,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="channel_reg.html">Overlay color channels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="brightness.html">Brightness analysis</a></li>
@@ -97,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="changepoint.html">Changepoint detection</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Analyze spatial aspects of data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#programming-reference">Programming reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#smallest-enclosing-circle-algorithm">Smallest enclosing circle algorithm</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="fret.html">Single molecule FRET analysis</a></li>
@@ -112,69 +66,31 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Analyze spatial aspects of data</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-sdt.spatial"></span><div class="section" id="analyze-spatial-aspects-of-data">
-<h1>Analyze spatial aspects of data<a class="headerlink" href="#analyze-spatial-aspects-of-data" title="Permalink to this headline">¶</a></h1>
+             
+  <span class="target" id="module-sdt.spatial"></span><section id="analyze-spatial-aspects-of-data">
+<h1>Analyze spatial aspects of data<a class="headerlink" href="#analyze-spatial-aspects-of-data" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="#module-sdt.spatial" title="sdt.spatial"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.spatial</span></code></a> module provides methods for analyzing spatial
 aspects of single molecule data:</p>
 <ul class="simple">
@@ -183,6 +99,8 @@ aspects of single molecule data:</p>
 <li><p>In tracking data, interpolate features that have been missed by the
 localization algorithm with help of <a class="reference internal" href="#sdt.spatial.interpolate_coords" title="sdt.spatial.interpolate_coords"><code class="xref py py-func docutils literal notranslate"><span class="pre">interpolate_coords()</span></code></a></p></li>
 <li><p>Calculate the area of a polygon using <a class="reference internal" href="#sdt.spatial.polygon_area" title="sdt.spatial.polygon_area"><code class="xref py py-func docutils literal notranslate"><span class="pre">polygon_area()</span></code></a></p></li>
+<li><p>Find the smallest enclosing circle of a set of points via
+<a class="reference internal" href="#sdt.spatial.smallest_enclosing_circle" title="sdt.spatial.smallest_enclosing_circle"><code class="xref py py-func docutils literal notranslate"><span class="pre">smallest_enclosing_circle()</span></code></a>.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <p>To find out whether single molecule features have other features nearby,
@@ -223,11 +141,11 @@ by <a class="reference internal" href="#sdt.spatial.interpolate_coords" title="s
 <span class="go">100.0</span>
 </pre></div>
 </div>
-<div class="section" id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline">¶</a></h2>
+<section id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline"></a></h2>
 <dl class="py function">
-<dt id="sdt.spatial.has_near_neighbor">
-<code class="sig-prename descclassname">sdt.spatial.</code><code class="sig-name descname">has_near_neighbor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#has_near_neighbor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.spatial.has_near_neighbor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.spatial.has_near_neighbor">
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">has_near_neighbor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#has_near_neighbor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.has_near_neighbor" title="Permalink to this definition"></a></dt>
 <dd><p>Check whether localized features have near neighbors</p>
 <p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> <cite>data</cite> with localization data, each
 data point is checked whether other points (in the same frame) are closer
@@ -240,27 +158,32 @@ DataFrame.</p>
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Localization data. The “has_neighbor” column will be
 appended/overwritten with the results.</p></li>
 <li><p><strong>r</strong> (<em>float</em>) – Maximum distance for data points to be considered near neighbors.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+<li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
 Relevant names are <cite>coords</cite> and <cite>time</cite>.
 This means, if your DataFrame has coordinate columns “x” and “z” and
 the time column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
-<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.spatial.interpolate_coords">
-<code class="sig-prename descclassname">sdt.spatial.</code><code class="sig-name descname">interpolate_coords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tracks</span></em>, <em class="sig-param"><span class="n">columns</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#interpolate_coords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.spatial.interpolate_coords" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.spatial.interpolate_coords">
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">interpolate_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#interpolate_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.interpolate_coords" title="Permalink to this definition"></a></dt>
 <dd><p>Interpolate coordinates for missing localizations</p>
 <p>For each particle in <cite>tracks</cite>, interpolate coordinates for frames
 where no localization was detected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tracks</strong> (<em>pandas.DataFrame</em>) – Tracking data</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tracks</strong> (<em>pandas.DataFrame</em>) – Tracking data</p></li>
+<li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
+Relevant names are <cite>coords</cite>, <cite>time</cite>, and <cite>particle</cite>.
+This means, if your DataFrame has coordinate columns “x” and “z” and
+the time column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
+<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Tracking data with missing frames interpolated. An “interp” column
@@ -270,19 +193,12 @@ True, it was added via interpolation by this method.</p>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
-<dt class="field-even">Other Parameters</dt>
-<dd class="field-even"><p><strong>columns</strong> (<em>dict, optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
-Relevant names are <cite>coords</cite>, <cite>time</cite>, and <cite>particle</cite>.
-This means, if your DataFrame has coordinate columns “x” and “z” and
-the time column “alt_frame”, set <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;],</span>
-<span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p>
-</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="sdt.spatial.polygon_area">
-<code class="sig-prename descclassname">sdt.spatial.</code><code class="sig-name descname">polygon_area</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertices</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#polygon_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#sdt.spatial.polygon_area" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sdt.spatial.polygon_area">
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">polygon_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#polygon_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.polygon_area" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the (signed) area of a simple polygon</p>
 <p>The polygon may not self-intersect.</p>
 <p>This is based on JavaScript code from
@@ -302,13 +218,18 @@ the time column “alt_frame”, set <code class="docutils literal notranslate">
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>For triangles, a faster, specialized code path based on the cross product
+is used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>vertices</strong> (<em>list of 2-tuples</em><em> or </em><em>numpy.ndarray</em><em>, </em><em>shape=</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – Coordinates of the poligon vertices.</p>
+<dd class="field-odd"><p><strong>vertices</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>float</em><em>]</em><em>]</em>) – Coordinates of the poligon vertices.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Signed area of the polygon. Area is &gt; 0 if vertices are given
-counterclockwise.</p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Signed area of the polygon. Area is &gt; 0 if vertices are given</em></p></li>
+<li><p><em>counterclockwise.</em></p></li>
+</ul>
+</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -316,63 +237,86 @@ counterclockwise.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="sdt.spatial.smallest_enclosing_circle">
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">smallest_enclosing_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#smallest_enclosing_circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.smallest_enclosing_circle" title="Permalink to this definition"></a></dt>
+<dd><p>Find the smallest circle enclosing a set of points</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coords</strong> (<em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>float</em><em>]</em><em>]</em>) – 2D coordinates of points</p></li>
+<li><p><strong>shuffle</strong> (<em>Union</em><em>[</em><em>bool</em><em>, </em><em>numpy.random.mtrand.RandomState</em><em>]</em>) – If <cite>True</cite>, shuffle coordinate list before calculating circle. If a
+<cite>RandomState</cite> instance is passed, use it for shuffling. Note that
+coordinates should be in a random order for performance reasons.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Center coordinates and radius</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want to calculate the smallest enclosing circle in a <cite>numba.jit</cite>-ed
+function, have a look at <code class="xref py py-func docutils literal notranslate"><span class="pre">smallest_enclosing_circle_impl()</span></code>.</p>
 </div>
-</div>
+</dd></dl>
+
+</section>
+<section id="smallest-enclosing-circle-algorithm">
+<h2>Smallest enclosing circle algorithm<a class="headerlink" href="#smallest-enclosing-circle-algorithm" title="Permalink to this headline"></a></h2>
+<p>The smallest enclosing circle <span class="math notranslate nohighlight">\(C_n\)</span> for points <span class="math notranslate nohighlight">\(p_1, p_2, …,
+p_n\)</span> in randomized order is found iteratively. Let’s assume that
+<span class="math notranslate nohighlight">\(C_{i-1}\)</span> has already been found. If <span class="math notranslate nohighlight">\(p_i\)</span> lies within
+<span class="math notranslate nohighlight">\(C_{i-1}\)</span>, then <span class="math notranslate nohighlight">\(C_i = C_{i-1}\)</span>. Else, <span class="math notranslate nohighlight">\(C_i\)</span> needs to be the
+smallest enclosing circle for <span class="math notranslate nohighlight">\(p_1, p_2, …, p_i\)</span>; <span class="math notranslate nohighlight">\(p_i\)</span> has to lie
+on the circle.</p>
+<p>This new problem is again solved iteratively. Assume <span class="math notranslate nohighlight">\(C'_{j-1}\)</span> is the
+smallest enclosing circle for <span class="math notranslate nohighlight">\(p_1, p_2, …, p_{j-1}\)</span>, <span class="math notranslate nohighlight">\(j &lt; i\)</span> with
+<span class="math notranslate nohighlight">\(p_i\)</span> on the circle. Then <span class="math notranslate nohighlight">\(C'_j = C'_{j-1}\)</span> if <span class="math notranslate nohighlight">\(p_j\)</span> lies
+within <span class="math notranslate nohighlight">\(C'_{j-1}\)</span>. Else the smallest enclosing circle for <span class="math notranslate nohighlight">\(p_1,
+p_2, …, p_j\)</span> with <span class="math notranslate nohighlight">\(p_j\)</span> and <span class="math notranslate nohighlight">\(p_i\)</span> on the circle needs to be
+found.</p>
+<p>If all <span class="math notranslate nohighlight">\(p_1, p_2, …, p_j\)</span> lie within the circle whose diameter is
+the line <span class="math notranslate nohighlight">\(l\)</span> connecting <span class="math notranslate nohighlight">\(p_j\)</span> and <span class="math notranslate nohighlight">\(p_i\)</span>, this circle is
+<span class="math notranslate nohighlight">\(C'_j\)</span>. Otherwise, two possible candidates for <span class="math notranslate nohighlight">\(C'_j\)</span> are given by
+those circles through <span class="math notranslate nohighlight">\(p_k\)</span> on either side of the line <span class="math notranslate nohighlight">\(l\)</span> such
+that the circle centers are farthest away from <span class="math notranslate nohighlight">\(l\)</span>. Of those two,
+the circle with the smaller radius is chosen.</p>
+<a class="reference internal image-reference" href="_images/enclosing_circles.svg"><img alt="How to find smallest enclosing circle with two given points" class="align-center" src="_images/enclosing_circles.svg" width="300" /></a>
+<p>Source: <a class="reference external" href="https://www.nayuki.io/res/smallest-enclosing-circle/smallestenclosingcircle.py">Project Nayuki</a>,
+in particular <a class="reference external" href="https://www.nayuki.io/res/smallest-enclosing-circle/computational-geometry-lecture-6.pdf">this presentation</a>.</p>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="fret.html" class="btn btn-neutral float-right" title="Single molecule FRET analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="changepoint.html" class="btn btn-neutral float-left" title="Changepoint detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="changepoint.html" class="btn btn-neutral float-left" title="Changepoint detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fret.html" class="btn btn-neutral float-right" title="Single molecule FRET analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2015—2018, Lukas Schrangl
-
-    </p>
+    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
