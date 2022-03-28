@@ -27,8 +27,8 @@ homogenous fluorescence label.
 
 >>> baseline = 200.  # camera baseline
 >>> # Load homogenous sample image sequences
->>> img1 = pims.open("flat1.tif")
->>> img2 = pims.open("flat2.tif")
+>>> img1 = io.ImageSequence("flat1.tif").open()
+>>> img2 = io.ImageSequence("flat2.tif").open()
 
 These can now be used to create the :py:class:`Corrector` object:
 
@@ -37,12 +37,12 @@ These can now be used to create the :py:class:`Corrector` object:
 With help of ``corr``, other images or even whole image sequences (when using
 :py:mod:`pims` to load them) can now be corrected.
 
->>> img3 = pims.open("experiment_data.tif")
+>>> img3 = io.ImageSequence("experiment_data.tif").open()
 >>> img3_flat = corr(img3)
 
 The brightness values of single molecule data may be corrected as well:
 
->>> sm_data = sdt.io.load("data.h5")
+>>> sm_data = io.load("data.h5")
 >>> sm_data_flat = corr(sm_data)
 
 

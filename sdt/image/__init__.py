@@ -31,7 +31,7 @@ Examples
 
 Subtract the background (as estimated by a bandpass filter) from images:
 
->>> img = pims.open("images.tif")  # load data
+>>> img = io.ImageSequence("images.tif").open()  # load data
 >>> img_nobg = cg(img, 3)  # only creates the pipeline, no calculation yet
 >>> first_frame = img_nobg[0]  # now (only) first image is loaded and filtered
 

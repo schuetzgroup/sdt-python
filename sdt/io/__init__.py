@@ -27,17 +27,26 @@ r"""Data input/output
 Examples
 --------
 
+Open an image sequence. Make subststacks without actually loading any data.
+Only load data when accessing single frames.
+
+>>> seq = ImageSequence("images.SPE").open()
+>>> len(seq)
+100
+>>> seq2 = seq[::2]  # No data is loaded here
+>>> len(seq2)
+50
+>>> frame = seq2[1]  # Load frame 1 (i.e., frame 2 in the original `seq`)
+>>> frame.shape
+(100, 150)
+>>> seq.close()
+
 Save an image sequence to a TIFF file using :py:func:`save_as_tiff`:
 
->>> seq = pims.open("images.SPE")
->>> save_as_tiff(seq, "images.tif")
-
-To load it again, including the metadata, just import :py:mod:`sdt.io` and
-use :py:func:`pims.open`, which will automatically use
-:py:class:`SdtTiffStack`:
-
->>> import sdt.io
->>> seq2 = pims.open("images.tif")
+>>> with ImageSequence("images.SPE") as seq:
+...     save_as_tiff(seq, "images.tif")
+>>> seq = [frame1, frame2, frame2]  # list of arrays representing images
+>>> save_as_tiff(seq, "images2.tif")
 
 :py:func:`load` supports many types of single molecule data into
 :py:class:`pandas.DataFrame`
@@ -101,11 +110,12 @@ in place of it:
  [5, 6, 7, 8, 9]]
 
 
-TIFF files
-----------
+Image files
+-----------
 
+.. autoclass:: ImageSequence
+    :members:
 .. autofunction:: save_as_tiff
-.. autoclass:: SdtTiffStack
 
 
 Single molecule data
