@@ -32,7 +32,7 @@ Examples
 Create some data:
 
 >>> img = numpy.zeros((150, 80))
->>> img_seq = pims.open("images.tif")
+>>> img_seq = io.ImageSequence("images.tif").open()
 >>> data = pandas.DataFrame([[10, 10], [30, 30]], columns=["x", "y"])
 
 Create simple recangular integer-pixel ROIs:

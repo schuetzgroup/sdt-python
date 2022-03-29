@@ -15,7 +15,7 @@ The :py:mod:`sdt.image` module contains filters for image data:
 
 All filters make use of the :py:func:`sdt.helper.pipeline` mechanism, meaning
 that they will only by applied to image data (if it is of the right type,
-e.g. a :py:class:`pims.FramesSequence`) as needed.
+e.g. a :py:class:`io.ImageSequence`) as needed.
 
 If `OpenCV` is available, the functions :py:func:`adaptive_thresh`,
 :py:func:`otsu_thresh`, and :py:func:`percentile_thresh` provide ways

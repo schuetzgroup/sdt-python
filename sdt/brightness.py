@@ -23,9 +23,9 @@ needs the raw image data and localization data of molecules (which can be
 determined from the image date e.g. using functionality from the
 :py:mod:`sdt.loc` module):
 
->>> img_seq = pims.open("images.tif")  # Load image sequence
 >>> loc = sdt.io.load("localizations.h5")  # Load single molecule localizations
->>> from_raw_image(loc, img_seq, radius=4)
+>>> with io.ImageSequence("images.tif") as img_seq:
+...     from_raw_image(loc, img_seq, radius=4)
 
 The last line updates the ``loc`` DataFrame with the brightness data extracted
 from the raw image.

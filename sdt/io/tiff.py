@@ -3,10 +3,13 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """High level TIFF I/O"""
-import logging
 from contextlib import suppress
 from datetime import datetime
+import logging
+from pathlib import Path
+from typing import Iterable, Union
 
+import numpy as np
 import tifffile
 
 from . import yaml
@@ -15,7 +18,7 @@ from . import yaml
 _logger = logging.getLogger(__name__)
 
 
-def save_as_tiff(frames, filename):
+def save_as_tiff(frames: Iterable[np.ndarray], filename: Union[str, Path]):
     """Write a sequence of images to a TIFF stack
 
     If the items in `frames` contain a dict named `metadata`, an attempt to
@@ -24,10 +27,9 @@ def save_as_tiff(frames, filename):
 
     Parameters
     ----------
-    frames : iterable of numpy.arrays
-        Frames to be written to TIFF file. This can e.g. be any subclass of
-        `pims.FramesSequence` like `pims.ImageSequence`.
-    filename : str
+    frames
+        Frames to be written to TIFF file.
+    filename
         Name of the output file
     """
     with tifffile.TiffWriter(filename) as tw:

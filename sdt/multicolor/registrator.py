@@ -73,7 +73,8 @@ class Registrator:
     This can now be used to transform i.e. image data from channel 1 so that it
     can be overlaid with channel 1:
 
-    >>> img = pims.open("image.tif")[0]  # Load first frame (number 0)
+    >>> with io.ImageSequence("image.tif") as s:
+    ...     img = s[0]  # Load first frame (number 0)
     >>> img_r1 = r1(img)  # Get channel 1 part of the image
     >>> img_r2 = r2(img)  # Get channel 2 part of the image
     >>> img_r1_corr = corr(img_r1, channel=1)  # Transform channel 1 image

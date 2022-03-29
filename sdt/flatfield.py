@@ -35,7 +35,7 @@ These can now be used to create the :py:class:`Corrector` object:
 >>> corr = Corrector([img1, img2], bg=baseline)
 
 With help of ``corr``, other images or even whole image sequences (when using
-:py:mod:`pims` to load them) can now be corrected.
+:py:class:`io.ImageSequence` to load them) can now be corrected.
 
 >>> img3 = io.ImageSequence("experiment_data.tif").open()
 >>> img3_flat = corr(img3)
@@ -303,9 +303,9 @@ class Corrector(object):
                  smooth_sigma: float) -> Union[float, np.ndarray]:
         """Calculate the background from input scalar, array, or array sequence
 
-        If a sequence or sequence of sequences (e.g., multiple PIMS image
-        sequences) are passed, calculate the mean. If desired, apply a Gaussian
-        filter.
+        If a sequence or sequence of sequences (e.g., multiple
+        :py:class:`io.ImageSequence`) are passed, calculate the mean.
+        If desired, apply a Gaussian filter.
 
         Parameters
         ----------
