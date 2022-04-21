@@ -235,3 +235,10 @@ class TestSplitDataframe:
             assert len(d1) == d2.shape[1]
             for c1, (_, c2) in zip(d1, d2.items()):
                 np.testing.assert_array_equal(c1, c2.values)
+
+    def test_empty_data(self, data):
+        """helper.split_dataframe: empty input DataFrame"""
+        data = data.iloc[:0]
+        assert helper.split_dataframe(data, "split", type="array") == []
+        assert helper.split_dataframe(data, "split", type="array_list") == []
+        assert helper.split_dataframe(data, "split", type="DataFrame") == []

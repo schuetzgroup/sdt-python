@@ -82,6 +82,9 @@ def split_dataframe(df: pd.DataFrame, split_column: Any,
         `split_column` entry, the second is the data, whose type depends on
         the `type` parameter.
     """
+    if len(df) < 1:
+        return []
+
     if type.startswith("array"):
         if sort:
             df = df.sort_values(split_column)
