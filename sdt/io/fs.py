@@ -3,10 +3,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """Some functions related to files and the file system"""
+import contextlib
+from pathlib import Path
 import os
 import re
-import contextlib
-import sys
+from typing import List, Tuple, Union
 
 
 @contextlib.contextmanager
@@ -33,29 +34,27 @@ def chdir(path):
         os.chdir(old_wd)
 
 
-def get_files(pattern, subdir=os.curdir):
+def get_files(pattern: str, subdir: Union[str, Path] = Path()
+              ) -> Tuple[List[str], List[Tuple]]:
     r"""Get all files matching a regular expression
 
     Parameters
     ----------
-    pattern : str
+    pattern
         Regular expression to search in the file name. Search is performed
         on the path relative to `subdir`. One can also define groups (using
         parenthesis), which will be returned in addition to the matching
         file names. **A note to Windows users: Use a forward slash (/) for
         subdirectories.**
-    subdir : str or pathlib.Path, optional
+    subdir
         Any regular expression matching will be performed relative to `subdir`.
-        Defaults to ``os.curdir``.
 
     Returns
     -------
-    files : list of str
-        Sorted list of file where `pattern` could be matched.
-    groups : list of tuple
-        Values of the groups defined in the `pattern`. Values are converted
-        to int if possible, otherwise try converting to float. If that fails
-        as well, use the string.
+    Sorted list of file where `pattern` could be matched. as well as values of
+    the groups defined in the `pattern`. Values are converted to int if
+    possible, otherwise conversion to float is attempted. If that fails as
+    well, the string is used.
 
     Examples
     --------
@@ -65,32 +64,29 @@ def get_files(pattern, subdir=os.curdir):
     >>> ids
     [('xxx', 1), ('xxx', 2), ('yyy', 3)]
     """
-    r = re.compile(str(pattern))
+    r = re.compile(pattern)
     flist = []
     idlist = []
-    sd = str(subdir)
-    for dp, dn, fn in os.walk(sd):
-        reldir = os.path.relpath(dp, sd)
-        if reldir == os.curdir:
-            # Do not prefix "./"
-            reldir = ""
+    for dp, dn, fn in os.walk(subdir):
+        reldir = Path(dp).relative_to(subdir)
         for f in fn:
-            relp = os.path.join(reldir, f)
-            if sys.platform == "win32":
-                relp = relp.replace("\\", "/")
+            relp = (reldir / f).as_posix()
             m = r.search(relp)
             if m is None:
                 continue
+            # For compatibility, append path as string.
+            # However, one could simply append reldir / f
             flist.append(relp)
             ids = []
             for i in m.groups():
-                try:
-                    ids.append(int(i))
-                except ValueError:
+                for conv in int, float:
                     try:
-                        ids.append(float(i))
+                        i = conv(i)
                     except ValueError:
-                        ids.append(i)
+                        continue
+                    else:
+                        break
+                ids.append(i)
             idlist.append(ids)
     slist = sorted(zip(flist, idlist), key=lambda x: x[0])
     return [s[0] for s in slist], [tuple(s[1]) for s in slist]
