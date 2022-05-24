@@ -380,6 +380,8 @@ class TestFiles:
         f, i = sdt.io.get_files(r"bla_(\d+)\.(\w+)", file_structure / sub)
         assert f == expected_f
         assert i == keys[2]
+        for j in i:
+            assert isinstance(j[0], int)
 
     def test_get_files_float_groups(self, keys, files, file_structure):
         """io.get_files: float groups"""
@@ -387,6 +389,15 @@ class TestFiles:
                                 file_structure)
         assert f == [str(files[0])]
         assert i == keys[0]
+        for j in i:
+            assert isinstance(j[0], float)
+
+    def test_get_files_id_dict(self,  keys, files, file_structure):
+        f, i = sdt.io.get_files(
+            r"^(?P<first>00)_another_(?P<second>\d+\.\d+)_(?P<last>bla)\.ext$",
+            file_structure, id_dict=True)
+        assert f == [str(files[0])]
+        assert i == [{"first": 0, "second": keys[0][0][0], "last": "bla"}]
 
 
 @pytest.mark.skipif(imageio is None, reason="imageio not available")

@@ -34,7 +34,33 @@ def chdir(path):
         os.chdir(old_wd)
 
 
-def get_files(pattern: str, subdir: Union[str, Path] = Path()
+def _conv_value(v: str) -> Union[int, float, str]:
+    """Trey converting value to int, then float, otherwise return unchanged
+
+    Helper function for :py:func:`get_files`
+
+    Parameters
+    ----------
+    v
+        Value for attempted type conversion
+
+    Returns
+    -------
+    Value as int, if possible, otherwise as float, if possible, otherwise
+    unchanged as string.
+    """
+    for conv in int, float:
+        try:
+            v = conv(v)
+        except ValueError:
+            continue
+        else:
+            break
+    return v
+
+
+def get_files(pattern: str, subdir: Union[str, Path] = Path(),
+              id_dict: bool = False
               ) -> Tuple[List[str], List[Tuple]]:
     r"""Get all files matching a regular expression
 
@@ -48,6 +74,9 @@ def get_files(pattern: str, subdir: Union[str, Path] = Path()
         subdirectories.**
     subdir
         Any regular expression matching will be performed relative to `subdir`.
+    id_dict
+        If `True`, return IDs as a dict. Only works for named groups in
+        `pattern`.
 
     Returns
     -------
@@ -77,16 +106,10 @@ def get_files(pattern: str, subdir: Union[str, Path] = Path()
             # For compatibility, append path as string.
             # However, one could simply append reldir / f
             flist.append(relp)
-            ids = []
-            for i in m.groups():
-                for conv in int, float:
-                    try:
-                        i = conv(i)
-                    except ValueError:
-                        continue
-                    else:
-                        break
-                ids.append(i)
+            if id_dict:
+                ids = {k: _conv_value(v) for k, v in m.groupdict().items()}
+            else:
+                ids = tuple(_conv_value(v) for v in m.groups())
             idlist.append(ids)
     slist = sorted(zip(flist, idlist), key=lambda x: x[0])
-    return [s[0] for s in slist], [tuple(s[1]) for s in slist]
+    return [s[0] for s in slist], [s[1] for s in slist]
