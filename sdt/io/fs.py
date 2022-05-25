@@ -7,7 +7,7 @@ import contextlib
 from pathlib import Path
 import os
 import re
-from typing import List, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 
 @contextlib.contextmanager
@@ -61,7 +61,7 @@ def _conv_value(v: str) -> Union[int, float, str]:
 
 def get_files(pattern: str, subdir: Union[str, Path] = Path(),
               id_dict: bool = False
-              ) -> Tuple[List[str], List[Tuple]]:
+              ) -> Tuple[List[str], Union[List[Tuple], List[Dict]]]:
     r"""Get all files matching a regular expression
 
     Parameters
