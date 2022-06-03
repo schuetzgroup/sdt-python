@@ -175,6 +175,7 @@ def _all_square_displacements(data, n_lag, ensemble, e_name="ensemble",
 
 class MsdData:
     """Collection of data related to MSD analysis"""
+
     def __init__(self, frame_rate, data, means=None, errors=None):
         """Parameters
         ----------
