@@ -211,7 +211,7 @@ class Msd:
 class AnomalousDiffusion:
     r"""Fit anomalous diffusion parameters to MSD values
 
-    Fit a function :math:`msd(t_\text{lag}) = 4 D t_text{lag}^\alpha +
+    Fit a function :math:`msd(t_\text{lag}) = 4 D t_\text{lag}^\alpha +
     4 \epsilon^2`
     to the tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient,
     :math:`\epsilon` is the positional accuracy (uncertainty), and
@@ -583,10 +583,9 @@ class BrownianMotion(AnomalousDiffusion):
     def theoretical(t, d, eps, exposure_time=0):
         r"""Calculate theoretical MSDs for different lag times
 
-        Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4
+        Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app} + 4
         \epsilon^2`, where :math:`t_\text{app}` is the apparent time lag
-        which takes into
-        account particle motion during exposure; see
+        which takes into account particle motion during exposure; see
         :py:meth:`exposure_time_corr`.
 
         Parameters
