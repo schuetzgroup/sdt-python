@@ -5,23 +5,20 @@
 """Plotting utilities
 ==================
 
-The :py:mod:`sdt.plot` module contains the :py:func:`density_scatter` function,
-which is a wrapper around `matplotlib`'s as well as `bokeh`'s ``scatter()``
-function that additionally colors data points according to data point
-density.
+The :py:mod:`sdt.plot` module contains
 
-
-Examples
---------
-
->>> x, y = numpy.random.normal(size=(2, 1000))  # create data
->>> density_scatter(x, y)
+- the :py:func:`density_scatter` function, which creates a scatter plot where
+  data points are colored according to data point density.
+- :py:class:`PanelLabel` for creating sub-panel labels for paper figures as
+  well as :py:func:`align_panellabels` for aligning them.
 
 
 Programming reference
 ---------------------
 
 .. autofunction:: density_scatter
+.. autoclass:: PanelLabel
+.. autofunction:: align_panellabels
 """
 from numbers import Number
 from typing import Iterable, Union
@@ -45,6 +42,11 @@ def density_scatter(x, y, ax=None, cmap="viridis", **kwargs):
 
     Use a Gaussian kernel density estimate to calculate the density of
     data points and color them accordingly.
+
+    Examples
+    --------
+    >>> x, y = numpy.random.normal(size=(2, 1000))  # create data
+    >>> density_scatter(x, y)
 
     Parameters
     ----------
@@ -97,10 +99,19 @@ class PanelLabel(mpl.text.Annotation):
 
     Examples
     --------
-    >>> for let, ax in zip("abc", axes):
-    ...     pl = PanelLabel(let)
-    ...     ax.add_artist(pl)
+    >>> fig, ax = matplotlib.pyplot.subplots(2, 2, constrained_layout=True)
+    >>> pls = []
+    >>> for x, a in zip("abcd", ax.flatten()):
+    ...     pl = plot.PanelLabel(x)
+    ...     a.add_artist(pl)
+    ...     pls.append(pl)
+    >>> align_panellabels(pls)
+
+    See also
+    --------
+    align_panellabels
     """
+
     def __init__(self, label: str, horizontalposition: str = "axislabel",
                  verticalposition: str = "top",
                  pad: Union[float, Iterable[float]] = 0., **kwargs):
@@ -191,10 +202,28 @@ def align_panellabels(pls: Iterable[PanelLabel]):
     horizontally. For this, all axes to which the panels have been added need
     to share the same GridSpec.
 
+    Examples
+    --------
+
+    >>> x, y = numpy.random.normal(size=(2, 1000))  # create data
+    >>> density_scatter(x, y)
+
+    >>> fig, ax = matplotlib.pyplot.subplots(2, 2, constrained_layout=True)
+    >>> pls = []
+    >>> for x, a in zip("abcd", ax.flatten()):
+    ...     pl = plot.PanelLabel(x)
+    ...     a.add_artist(pl)
+    ...     pls.append(pl)
+    >>> align_panellabels(pls)
+
     Parameters
     ----------
     pls
         Panel labels to align
+
+    See also
+    --------
+    PanelLabel
     """
     for pl in pls:
         pl._align_x_grp = set()
