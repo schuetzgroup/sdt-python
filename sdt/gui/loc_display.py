@@ -109,8 +109,8 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
                     sizes = np.full(len(self._locData), self._markerSize)
                 else:
                     sizes = self._locData[
-                        sz_col if sz_col in self._locData.columns else "size"
-                        ].to_numpy(copy=True)
+                        sz_col if sz_col in self._locData else "size"
+                        ].to_numpy(copy=True, dtype=float)
                 sizes *= self.scaleFactor
                 coords = self._locData[axis] * self.scaleFactor - sizes
                 vals[:, i] = coords
