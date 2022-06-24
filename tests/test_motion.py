@@ -74,6 +74,7 @@ def trc_sd_list(trc_disp_list):
 
 class TestDisplacements:
     """motion.msd_base._displacements"""
+
     def test_call(self, trc, trc_disp_list):
         """Update list"""
         prev_arr = np.arange(6).reshape((-1, 2))
@@ -134,6 +135,7 @@ class TestDisplacements:
 
 class TestSquareDisplacements:
     """motion.msd_base._square_displacements"""
+
     def test_call(self):
         """2D data"""
         m = 10
@@ -171,6 +173,7 @@ class TestSquareDisplacements:
 
 class TestMsdData:
     """motion.msd_base.MsdData"""
+
     def _assert_dict_allclose(self, d1, d2):
         """Assert equal keys and numpy array values in a dict"""
         assert sorted(d1) == sorted(d2)
@@ -273,6 +276,7 @@ class TestMsdData:
 
 class NotReallyRandom:
     """Used in place of numpy.random.RandomState to test bootstrapping"""
+
     def choice(self, a, size, replace=True):
         a = np.asarray(a)
         assert len(size) == 2 and a.ndim == 1 and size[0] == len(a)
@@ -831,6 +835,7 @@ class NoReplaceRS(np.random.RandomState):
 
     That way, always the same dataset  is generated.
     """
+
     def choice(self, a, size=None, replace=True, p=None):
         return super().choice(a, size, False, p)
 
