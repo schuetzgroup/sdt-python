@@ -60,7 +60,7 @@ class ImageSequence:
         return self._is_slice
 
     def __init__(self, uri: Union[str, Path, bytes, IO],
-                 format: Optional[str] = None, mode: str = "?", **kwargs):
+                 format: Optional[str] = None, mode: str = "I", **kwargs):
         """Parameters
         ----------
         uri
