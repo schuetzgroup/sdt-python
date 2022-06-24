@@ -257,7 +257,7 @@ class SmFRETTracker:
         # back and forth.
         coloc = multicolor.find_colocalizations(
                 donor_loc_corr, acceptor_loc, max_dist=self.coloc_dist,
-                channel_names=["donor", "acceptor"], keep_non_coloc=True)
+                channel_names=["donor", "acceptor"], keep_unmatched=True)
         coloc_pos_f = coloc.loc[:, (slice(None), posf_cols)]
         coloc_pos_f = coloc_pos_f.values.reshape(
             (len(coloc), 2, len(self.columns["coords"]) + 1))
