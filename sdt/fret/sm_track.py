@@ -309,7 +309,7 @@ class SmFRETTracker:
         interp.columns = pd.MultiIndex.from_product([["acceptor"], posf_cols])
         interp["fret", "particle"] = \
             track_merged.loc[interp_mask, "particle"].values
-        ret = ret.append(interp)
+        ret = pd.concat([ret, interp])
 
         # Add interp and has_neighbor column
         cols = ["interp"]
