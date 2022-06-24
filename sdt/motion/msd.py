@@ -243,14 +243,17 @@ class AnomalousDiffusion:
         self._results = OrderedDict()
         self._err = OrderedDict()
         for particle, all_m in msd_data.data.items():
-            nl = min(n_lag, all_m.shape[0])
-            lagt = np.arange(1, nl + 1) / msd_data.frame_rate
+            lagt = msd_data.get_lagtimes(all_m.shape[0])
             r = []
-            for target in all_m[:nl, :].T:
+            for target in all_m.T:
+                fin = np.isfinite(target)
+                tgt = target[fin]
+                lt = lagt[fin]
+                nl = min(n_lag, len(tgt))
                 f = scipy.optimize.least_squares(
                     residual, initial,
                     bounds=([0, -np.inf, 0], [np.inf, np.inf, np.inf]),
-                    kwargs={"lagt": lagt, "target": target})
+                    kwargs={"lagt": lt[:nl], "target": tgt[:nl]})
                 r.append(f.x)
             r = np.array(r)
             self._results[particle] = np.mean(r, axis=0)
@@ -556,15 +559,26 @@ class BrownianMotion(AnomalousDiffusion):
         self._results = OrderedDict()
         self._err = OrderedDict()
         for particle, m in msd_data.data.items():
-            # TODO: Handle NaNs that can appear if a particle/ensemble is
+            lagt = msd_data.get_lagtimes(m.shape[0])
+
+            # Handle NaNs that can appear if a particle/ensemble is
             # present only e.g. in every other frame
+            fin = np.any(np.isfinite(m), axis=1)
+            m = m[fin, ...]
+            lagt = lagt[fin]
             nl = min(n_lag, m.shape[0])
+            if nl < 2:
+                # Too few datapoints
+                self._results[particle] = [np.NaN, np.NaN]
+                if m.shape[1] > 1:
+                    self._err[particle] = [np.NaN, np.NaN]
+                continue
             if nl == 2:
-                s = (m[1, :] - m[0, :]) * msd_data.frame_rate
-                i = m[0, :] - s * (1 / msd_data.frame_rate - exposure_time / 3)
+                dt = lagt[1] - lagt[0]
+                s = (m[1, :] - m[0, :]) / dt
+                i = m[0, :] - s * (dt - exposure_time / 3)
             else:
-                lagt = msd_data.get_lagtimes(nl)
-                s, i = np.polyfit(lagt - exposure_time / 3, m[:nl, :], 1)
+                s, i = np.polyfit(lagt[:nl] - exposure_time / 3, m[:nl, :], 1)
 
             d = s / 4
             eps = np.sqrt(i.astype(complex)) / 2

@@ -618,19 +618,29 @@ class TestAnomalousDiffusionStaticMethods:
 
 class TestAnomalousDiffusion:
     """motion.AnomalousDiffusion"""
-    @pytest.fixture
-    def msd_set(self):
+    @pytest.fixture(params=["without_nan", "with_nan"])
+    def msd_set(self, request):
         ar1 = np.arange(1, 11)
         # D = [0.25, 1, 7.5] @ 100 fps, PA = [0.01, 0.04, 0.1],
         # alpha = [1, 2, 0.5]
         p1 = np.array([0.01 * ar1 + 4e-4, 0.0004 * ar1**2 + 0.0064,
-                       3 * ar1**0.5 + 0.04])
+                       3 * ar1**0.5 + 0.04]).T
         ar2 = np.arange(1, 21)
         # D = [0.05, 2, 15] @ 100 fps, PA = [0.02, 0.08, 0.2],
         # alpha = [2, 0.5, 1]
         p2 = np.array([2e-5 * ar2**2 + 1.6e-3, 0.8 * ar2**0.5 + 0.0256,
-                       0.6 * ar2 + 0.16])
-        return collections.OrderedDict([(0, p1.T), (2, p2.T)])
+                       0.6 * ar2 + 0.16]).T
+        if request.param == "with_nan":
+            r1 = np.full((2 * p1.shape[0], p1.shape[1]), np.NaN)
+            r1[1::2, ...] = p1
+            r2 = np.full((2 * p2.shape[0], p2.shape[1]), np.NaN)
+            r2[1::2, ...] = p2
+            frate = 200
+        else:
+            r1 = p1
+            r2 = p2
+            frate = 100
+        return frate, collections.OrderedDict([(0, r1), (2, r2)])
 
     @pytest.fixture
     def fit_results(self):
@@ -641,17 +651,18 @@ class TestAnomalousDiffusion:
     results_columns = ["D", "eps", "alpha"]
     n_lag = (5, 20)
 
-    def make_fitter(self, msd_set, n_lag):
-        m = MsdData(100, msd_set)
+    def make_fitter(self, frame_rate, msd_set, n_lag):
+        m = MsdData(frame_rate, msd_set)
         return motion.AnomalousDiffusion(m, n_lag=n_lag)
 
     def test_single_fit(self, msd_set, fit_results):
         """Test with a single set per particle (i.e. no bootstrapping)"""
+        frate, msd_set = msd_set
         for k, v in msd_set.items():
             msd_set[k] = v[:, [1]]
 
         for n_lag in self.n_lag:
-            f = self.make_fitter(msd_set, n_lag)
+            f = self.make_fitter(frate, msd_set, n_lag)
             assert list(f._results.keys()) == [0, 2]
             np.testing.assert_allclose(f._results[0], fit_results[0, :, 1],
                                        rtol=1e-5)
@@ -661,8 +672,9 @@ class TestAnomalousDiffusion:
 
     def test_multiple_fit(self, msd_set, fit_results):
         """Test with multiple sets per particle (i.e. with bootstrapping)"""
+        frate, msd_set = msd_set
         for n_lag in self.n_lag:
-            f = self.make_fitter(msd_set, n_lag)
+            f = self.make_fitter(frate, msd_set, n_lag)
 
             assert list(f._results.keys()) == [0, 2]
             assert list(f._err.keys()) == [0, 2]
@@ -679,10 +691,11 @@ class TestAnomalousDiffusion:
 
     def test_get_results(self, msd_set, fit_results):
         """get_results"""
+        frate, msd_set = msd_set
         msd_set_single = collections.OrderedDict(
             [(k, v[:, [1]]) for k, v in msd_set.items()])
 
-        f = self.make_fitter(msd_set_single, 20)
+        f = self.make_fitter(frate, msd_set_single, 20)
         res, err = f.get_results()
         assert list(res.columns) == list(err.columns) == self.results_columns
         assert list(res.index) == [0, 2]
@@ -693,7 +706,7 @@ class TestAnomalousDiffusion:
         k, v = next(iter(msd_set_single.items()))
         msd_set_single_first = {k: v}
 
-        f2 = self.make_fitter(msd_set_single_first, 20)
+        f2 = self.make_fitter(frate, msd_set_single_first, 20)
         res, err = f2.get_results()
         assert list(res.index) == list(err.index) == self.results_columns
         assert res.name == 0
@@ -702,7 +715,7 @@ class TestAnomalousDiffusion:
                                    rtol=1.e-4)
 
         # pd.Series
-        f = self.make_fitter(msd_set, 20)
+        f = self.make_fitter(frate, msd_set, 20)
         res, err = f.get_results()
         assert list(res.columns) == list(err.columns) == self.results_columns
         assert list(res.index) == list(err.index) == [0, 2]
@@ -716,7 +729,7 @@ class TestAnomalousDiffusion:
         msd_set_first = {k: v}
 
         # pd.Series
-        f = self.make_fitter(msd_set_first, 20)
+        f = self.make_fitter(frate, msd_set_first, 20)
         res, err = f.get_results()
         assert list(res.index) == list(err.index) == self.results_columns
         assert res.name == 0
@@ -730,15 +743,25 @@ class TestAnomalousDiffusion:
 
 
 class TestBrownianMotion(TestAnomalousDiffusion):
-    @pytest.fixture
-    def msd_set(self):
+    @pytest.fixture(params=["without_nan", "with_nan"])
+    def msd_set(self, request):
         ar1 = np.arange(1, 11)
         # D = [2.5, 5, 7.5] @ 10 fps, PA = [1, 2, 3]
-        p1 = np.array([1 * ar1 + 4, 2 * ar1 + 16, 3 * ar1 + 36])
+        p1 = np.array([1 * ar1 + 4, 2 * ar1 + 16, 3 * ar1 + 36]).T
         ar2 = np.arange(1, 21)
         # D = [10, 15, 20] @ 10 fps, PA = [2, 4, 6]
-        p2 = np.array([4 * ar2 + 16, 6 * ar2 + 64, 8 * ar2 + 144])
-        return collections.OrderedDict([(0, p1.T), (2, p2.T)])
+        p2 = np.array([4 * ar2 + 16, 6 * ar2 + 64, 8 * ar2 + 144]).T
+        if request.param == "with_nan":
+            r1 = np.full((2 * p1.shape[0], p1.shape[1]), np.NaN)
+            r1[1::2, ...] = p1
+            r2 = np.full((2 * p2.shape[0], p2.shape[1]), np.NaN)
+            r2[1::2, ...] = p2
+            frate = 20
+        else:
+            r1 = p1
+            r2 = p2
+            frate = 10
+        return frate, collections.OrderedDict([(0, r1), (2, r2)])
 
     @pytest.fixture
     def fit_results(self):
@@ -749,26 +772,27 @@ class TestBrownianMotion(TestAnomalousDiffusion):
     results_columns = ["D", "eps"]
     n_lag = (2, 20)
 
-    def make_fitter(self, msd_set, n_lag, exposure_time=0):
-        m = MsdData(10, msd_set)
+    def make_fitter(self, frate, msd_set, n_lag, exposure_time=0):
+        m = MsdData(frate, msd_set)
         return motion.BrownianMotion(m, n_lag=n_lag,
                                      exposure_time=exposure_time)
 
     def test_single_fit(self, msd_set):
         """Test with a single set per particle (i.e. no bootstrapping)"""
+        frate, msd_set = msd_set
         for k, v in msd_set.items():
             msd_set[k] = v[:, [1]]
 
         for n_lag in (2, 20):
             # no exposure time correction
-            f = self.make_fitter(msd_set, n_lag=n_lag)
+            f = self.make_fitter(frate, msd_set, n_lag=n_lag)
             assert list(f._results.keys()) == [0, 2]
             np.testing.assert_allclose(f._results[0], [5, 2])
             np.testing.assert_allclose(f._results[2], [15, 4])
             assert len(f._err) == 0
 
             # exposure time correction
-            f = self.make_fitter(msd_set, n_lag=n_lag, exposure_time=3)
+            f = self.make_fitter(frate, msd_set, n_lag=n_lag, exposure_time=3)
             assert list(f._results.keys()) == [0, 2]
             np.testing.assert_allclose(f._results[0], [5, 3])
             np.testing.assert_allclose(f._results[2], [15, np.sqrt(124 / 4)])
@@ -776,9 +800,10 @@ class TestBrownianMotion(TestAnomalousDiffusion):
 
     def test_multiple_fit(self, msd_set):
         """Test with multiple sets per particle (i.e. with bootstrapping)"""
+        frate, msd_set = msd_set
         for n_lag in (2, 10):
             # no exposure time correction
-            f = self.make_fitter(msd_set, n_lag=n_lag)
+            f = self.make_fitter(frate, msd_set, n_lag=n_lag)
             assert list(f._results.keys()) == list(f._err) == [0, 2]
             np.testing.assert_allclose(f._results[0], [5, 2])
             np.testing.assert_allclose(f._err[0], [2.5, 1])
@@ -786,7 +811,7 @@ class TestBrownianMotion(TestAnomalousDiffusion):
             np.testing.assert_allclose(f._err[2], [5, 2])
 
             # exposure time correction
-            f = self.make_fitter(msd_set, n_lag=n_lag, exposure_time=3)
+            f = self.make_fitter(frate, msd_set, n_lag=n_lag, exposure_time=3)
             assert list(f._results.keys()) == list(f._err) == [0, 2]
             pa0 = [np.sqrt(14 / 4), np.sqrt(36 / 4), np.sqrt(66 / 4)]
             np.testing.assert_allclose(f._results[0], [5, np.mean(pa0)])
