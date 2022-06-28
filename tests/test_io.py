@@ -2,10 +2,8 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from datetime import datetime
 import io
 from pathlib import Path
-import sys
 
 import numpy as np
 import pandas as pd
@@ -19,11 +17,6 @@ try:
     import imageio
 except ImportError:
     imageio = None
-
-try:
-    import pims
-except ImportError:
-    pims = None
 
 
 data_path = Path(__file__).parent.absolute() / "data_io"
@@ -256,62 +249,32 @@ class TestYaml:
             assert kv_list == list(d.items())
 
 
-@pytest.mark.skipif(pims is None, reason="cannot import PIMS")
-class TestTiff:
-    @pytest.fixture
-    def images(self):
-        img1 = np.zeros((5, 5)).view(pims.Frame)
-        img1[2, 2] = 1
-        img1.metadata = dict(entry="test", entry2=3)
-        img2 = img1.copy()
-        img2[2, 2] = 3
-        return [img1, img2]
+@pytest.mark.skipif(imageio is None, reason="cannot import imageio")
+def test_save_as_tiff(tmp_path):
+    img1 = np.zeros((5, 5)).view(imageio.core.Array)
+    img1[2, 2] = 1
+    meta = {"entry": "test", "entry2": 3}
+    img1.meta.update(meta)
+    img2 = img1.copy()
+    img2[2, 2] = 3
+    images = [img1, img2]
 
-    def test_save_as_tiff(self, images, tmp_path):
-        """io.save_as_tiff"""
-        fn = tmp_path / "test.tiff"
-        sdt.io.save_as_tiff(images, fn)
+    fn = tmp_path / "test.tiff"
 
-        with tifffile.TiffFile(fn) as res:
-            np.testing.assert_allclose(res.asarray(), images)
-            md = res.pages[0].tags["ImageDescription"].value
-            assert yaml.safe_load(md) == images[0].metadata
+    sdt.io.save_as_tiff(images, fn, contiguous=True)
+    with tifffile.TiffFile(fn) as res:
+        np.testing.assert_allclose(res.asarray(), images)
+        md = res.pages[0].tags["ImageDescription"].value
+        assert yaml.safe_load(md) == meta
 
-    # Cannot run on Windows since close method is not implemented in PIMS.
-    # TIFF is not closed and thus Windows raises an error when trying to
-    # delete temporary directory.
-    @pytest.mark.xfail(sys.platform == "win32",
-                       reason="PIMS does not close files.")
-    def test_sdt_tiff_stack(self, images, tmp_path):
-        """io.SdtTiffStack"""
-        fn = tmp_path / "test.tiff"
-        dt = datetime(2000, 1, 1, 17, 0, 9)
-        images[0].metadata["DateTime"] = dt
-        sdt.io.save_as_tiff(images, fn)
-
-        with sdt.io.SdtTiffStack(fn) as res:
-            np.testing.assert_allclose(res, images)
-            md = res.metadata
-            md.pop("Software")
-            np.testing.assert_equal(md, images[0].metadata)
-            md = res[0].metadata
-            md.pop("Software")
-            np.testing.assert_equal(md, images[0].metadata)
-
-    def test_sdt_tiff_stack_imagej(self):
-        """io.SdtTiffStack: ImageJ metadata"""
-        exp = {'ImageJ': '1.50d',
-               'images': 2,
-               'slices': 2,
-               'unit': '',
-               'loop': False,
-               'bla': 1,
-               'bla2': 2,
-               'shape': [2, 8, 8],
-               'Software': 'sdt.io',
-               'DateTime': datetime(2018, 6, 27, 13, 52, 58)}
-        with sdt.io.SdtTiffStack(data_path / "ij.tif") as t:
-            assert t.metadata == exp
+    sdt.io.save_as_tiff(images, fn, contiguous=False)
+    with tifffile.TiffFile(fn) as res:
+        assert len(res.series) == len(images)
+        np.testing.assert_allclose(
+            [res.asarray(series=i) for i in range(len(images))],
+            images)
+        md = res.pages[0].tags["ImageDescription"].value
+        assert yaml.safe_load(md) == meta
 
 
 class TestFiles:
@@ -612,3 +575,27 @@ class TestImageSequence:
             subseq_pipe = pipe(seq[::3])
             check_pipe(subseq_pipe, list(range(0, len(seq), 3)))
             check_pipe(subseq_pipe[::2], list(range(0, len(seq), 6)))
+
+    def test_yaml_metadata(self, seq, tmp_path):
+        seq2 = []
+        with seq:
+            for i in seq:
+                i.meta["bla"] = np.array([0, 1])
+                seq2.append(i)
+        sdt.io.save_as_tiff(seq2, tmp_path / "md_seq.tif", contiguous=False)
+        with sdt.io.ImageSequence(tmp_path / "md_seq.tif") as ims:
+            assert len(ims) == len(seq2)
+            for n in range(len(ims)):
+                for md in ims[n].meta, ims.get_meta_data(n):
+                    assert "bla" in md
+                    assert isinstance(md["bla"], np.ndarray)
+                    np.testing.assert_array_equal(md["bla"], [0, 1])
+
+        # contiguous=True only puts metadata with the first frame
+        sdt.io.save_as_tiff(seq2, tmp_path / "md_seq2.tif", contiguous=True)
+        with sdt.io.ImageSequence(tmp_path / "md_seq2.tif") as ims:
+            assert len(ims) == len(seq2)
+            for md in ims[0].meta, ims.get_meta_data(0):
+                assert "bla" in md
+                assert isinstance(md["bla"], np.ndarray)
+                np.testing.assert_array_equal(md["bla"], [0, 1])

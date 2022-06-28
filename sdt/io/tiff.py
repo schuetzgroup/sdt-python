@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """High level TIFF I/O"""
-from contextlib import suppress
+import contextlib
 from datetime import datetime
 import logging
 from pathlib import Path
@@ -18,7 +18,8 @@ from . import yaml
 _logger = logging.getLogger(__name__)
 
 
-def save_as_tiff(frames: Iterable[np.ndarray], filename: Union[str, Path]):
+def save_as_tiff(frames: Iterable[np.ndarray], filename: Union[str, Path],
+                 contiguous: bool = True):
     """Write a sequence of images to a TIFF stack
 
     If the items in `frames` contain a dict named `metadata`, an attempt to
@@ -31,38 +32,57 @@ def save_as_tiff(frames: Iterable[np.ndarray], filename: Union[str, Path]):
         Frames to be written to TIFF file.
     filename
         Name of the output file
+    contiguous
+        Whether to write to the TIFF file contiguously or not. This has
+        implications when reading the data. If using `PIMS`, set to `True`.
+        If using `imageio`, use ``"I"`` mode for reading if `True`.
+        Setting to `False` allows for per-image metadata.
     """
     with tifffile.TiffWriter(filename) as tw:
         for f in frames:
             desc = None
             dt = None
-            if hasattr(f, "metadata") and isinstance(f.metadata, dict):
-                md = f.metadata.copy()
-                dt = md.pop("DateTime", None)
+            md = None
+
+            for k in "meta", "metadata":
+                with contextlib.suppress(AttributeError,  # no metadata
+                                         TypeError, ValueError,  # dict() fail
+                                         ):
+                    md = dict(getattr(f, k))
+                    break
+            if md:
+                for k in "datetime", "DateTime":
+                    with contextlib.suppress(KeyError):
+                        dt = md.pop(k)
+                        break
+                # Remove redundant metadata
+                for k in ("compression", "frame_no", "is_fluoview",
+                          "is_imagej", "is_micromanager", "is_mdgel",
+                          "is_mediacy", "is_nih", "is_ome", "is_reduced",
+                          "is_shaped", "is_stk", "is_tiled", "predictor",
+                          "resolution", "resolution_unit"):
+                    md.pop(k, None)
                 try:
                     desc = yaml.safe_dump(md)
                 except Exception:
                     _logger.error(
-                        "{}: Failed to serialize metadata to YAML".format(
-                            filename))
+                        f"{filename}: Failed to serialize metadata to YAML")
 
-            # tifffile >=2020.9.3 has contiguous=False as default. PIMS
-            # only reads the first series, so set contiguous=True.
-            # Additionally, this makes TiffFile.asarray() return the whole
-            # stack.
             save_args = {"description": desc, "datetime": dt,
-                         "contiguous": True}
+                         "contiguous": contiguous}
             try:
-                tw.save(f, software="sdt.io", **save_args)
+                tw.write(f, software="sdt.io", **save_args)
             except TypeError:
-                tw.save(f, **save_args)
+                tw.write(f, **save_args)
 
 
-with suppress(ImportError):
+with contextlib.suppress(ImportError):
     import pims
 
     class SdtTiffStack(pims.TiffStack_tifffile):
         """Version of :py:class:`pims.TiffStack` extended for SDT needs
+
+        **Deperecated. Use :py:class:`ImageSequence` instead.**
 
         This tries to read metadata that has been serialized as YAML using
         :py:func:`save_as_tiff`.
@@ -88,7 +108,7 @@ with suppress(ImportError):
             tags = tiff.keyframe.tags
             for k in ("ImageDescription", "DateTime", "Software",
                       "DocumentName"):
-                with suppress(KeyError):
+                with contextlib.suppress(KeyError):
                     md[k] = tags[k].value
 
             # Deal with special metadata
@@ -96,7 +116,7 @@ with suppress(ImportError):
                 # ImageJ
                 md.pop("ImageDescription", None)
                 ij_md = tiff.parent.imagej_metadata
-                with suppress(Exception):
+                with contextlib.suppress(Exception):
                     # "Info" may contain more metadata
                     ij_info = ij_md.get("Info", "").replace("\n\n", "\n---\n")
                     new_ij_md = {}
@@ -108,7 +128,7 @@ with suppress(ImportError):
                 md.update(ij_md)
             else:
                 # Try YAML
-                with suppress(Exception):
+                with contextlib.suppress(Exception):
                     yaml_md = yaml.safe_load(md["ImageDescription"])
                     # YAML could be anything: plain string, list, …
                     if isinstance(yaml_md, dict):

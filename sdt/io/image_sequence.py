@@ -3,12 +3,15 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import collections
+import contextlib
 import copy
 import math
 from pathlib import Path
 from typing import Dict, IO, Mapping, Optional, Sequence, Union, overload
 
 import numpy as np
+
+from . import yaml
 
 
 class ImageSequence:
@@ -156,6 +159,22 @@ class ImageSequence:
             return t
         return self._indices[t]
 
+    def _parse_yaml_description(self, meta: Mapping):
+        """Try to parse `description` metadata entry with YAML parser
+
+        Parameters
+        ----------
+        meta
+            Metadata dictionary. If parsing is successful, "description" entry
+            is removed and parsing result is added.
+        """
+        with contextlib.suppress(Exception):
+            yaml_md = yaml.safe_load(meta["description"])
+            # YAML could be anything: plain string, list, …
+            if isinstance(yaml_md, dict):
+                meta.pop("description")
+                meta.update(yaml_md)
+
     def _get_single_frame(self, real_t: int, **kwargs) -> np.ndarray:
         """Get a single frame and set extra metadata
 
@@ -174,6 +193,7 @@ class ImageSequence:
         """
         ret = self._reader.get_data(real_t, **kwargs)
         ret.meta["frame_no"] = int(real_t)
+        self._parse_yaml_description(ret.meta)
         return ret
 
     def get_data(self, t: int, **kwargs) -> np.ndarray:
@@ -212,6 +232,7 @@ class ImageSequence:
         ret = self._reader.get_meta_data(real_t)
         if real_t is not None:
             ret["frame_no"] = int(real_t)
+        self._parse_yaml_description(ret)
         return ret
 
     @overload
