@@ -2,8 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import unittest
-import os
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -13,12 +12,18 @@ from sdt.image import filters, masks
 import sdt.sim
 from sdt import image
 
+try:
+    import pywt  # noqa
+    pywavelets_available = True
+except ImportError:
+    pywavelets_available = False
 
-path, f = os.path.split(os.path.abspath(__file__))
-data_path = os.path.join(path, "data_image")
+
+data_path = Path(__file__).resolve().parent / "data_image"
 
 
-def mkimg():
+@pytest.fixture
+def filter_image():
     pos = np.array([[10, 10], [20, 20], [30, 30], [40, 40]])
     amp = 200
     sigma = 1
@@ -35,101 +40,111 @@ def mkimg():
     return img, bg
 
 
-class TestWavelet(unittest.TestCase):
-    def setUp(self):
-        self.img, self.bg = mkimg()
-        initial = dict(wtype="db3", wlevel=3)
-        self.wavelet_options = dict(feat_thresh=100, feat_mask=1, wtype="db4",
-                                    wlevel=2, ext_mode="smooth",
-                                    max_iterations=20, detail=0,
-                                    conv_threshold=5e-3, initial=initial)
-
+@pytest.mark.skipif(not pywavelets_available,
+                    reason="`pywavelets` not available")
+class TestWavelet:
+    @pytest.fixture
+    def orig(self):
         # created from a test run
-        self.orig = np.load(os.path.join(data_path, "wavelet_bg.npz"))
-        self.orig = self.orig["bg_est"]
+        with np.load(data_path / "wavelet_bg.npz") as ld:
+            return ld["bg_est"]
 
-    def test_estimate_bg(self):
+    @pytest.fixture
+    def wavelet_options(self):
+        initial = dict(wtype="db3", wlevel=3)
+        return dict(feat_thresh=100, feat_mask=1, wtype="db4", wlevel=2,
+                    ext_mode="smooth", max_iterations=20, detail=0,
+                    conv_threshold=5e-3, initial=initial)
+
+    def test_estimate_bg(self, filter_image, wavelet_options, orig):
         """image.wavelet_bg: single image
 
         Regression test
         """
+        img, bg = filter_image
         bg_est = filters.wavelet_bg(
-            self.bg+self.img, **self.wavelet_options)
-        np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
+            bg + img, **wavelet_options)
+        np.testing.assert_allclose(bg_est, orig, atol=1e-3)
 
-    def test_estimate_bg_pipeline(self):
+    def test_estimate_bg_pipeline(self, filter_image, wavelet_options, orig):
         """image.wavelet_bg: slicerator
 
         Regression test
         """
-        img = Slicerator([self.bg+self.img])
-        bg_est = filters.wavelet_bg(img, **self.wavelet_options)[0]
-        np.testing.assert_allclose(bg_est, self.orig, atol=1e-3)
+        img, bg = filter_image
+        slc = Slicerator([bg + img])
+        bg_est = filters.wavelet_bg(slc, **wavelet_options)[0]
+        np.testing.assert_allclose(bg_est, orig, atol=1e-3)
 
-    def test_remove_bg(self):
+    def test_remove_bg(self, filter_image, wavelet_options, orig):
         """image.wavelet: single image
 
         Regression test
         """
+        img, bg = filter_image
         img_est = filters.wavelet(
-            self.bg+self.img, **self.wavelet_options)
-        np.testing.assert_allclose(img_est, self.img+self.bg-self.orig,
-                                   rtol=1e-6)
+            bg + img, **wavelet_options)
+        np.testing.assert_allclose(img_est, img + bg - orig, rtol=1e-6)
 
-    def test_remove_bg_pipeline(self):
+    def test_remove_bg_pipeline(self, filter_image, wavelet_options, orig):
         """image.wavelet: slicerator
 
         Regression test
         """
-        img = Slicerator([self.bg+self.img])
-        img_est = filters.wavelet(img, **self.wavelet_options)[0]
-        np.testing.assert_allclose(img_est, self.img+self.bg-self.orig,
-                                   rtol=1e-6)
+        img, bg = filter_image
+        slc = Slicerator([bg + img])
+        img_est = filters.wavelet(slc, **wavelet_options)[0]
+        np.testing.assert_allclose(img_est, img + bg - orig, rtol=1e-6)
 
 
-class TestCG(unittest.TestCase):
-    def setUp(self):
-        self.img, self.bg = mkimg()
-        self.options = dict(feature_radius=3, noise_radius=1, nonneg=False)
-
+class TestCG:
+    @pytest.fixture
+    def orig(self):
         # created from a test run
-        self.orig = np.load(os.path.join(data_path, "cg.npz"))["bp_img"]
+        with np.load(data_path / "cg.npz") as ld:
+            return ld["bp_img"]
 
-    def test_remove_bg(self):
+    @pytest.fixture
+    def options(self):
+        return dict(feature_radius=3, noise_radius=1, nonneg=False)
+
+    def test_remove_bg(self, filter_image, options, orig):
         """image.cg: single image
 
         Regression test
         """
-        bp_img = filters.cg(
-            self.img+self.bg, **self.options)
-        np.testing.assert_allclose(bp_img, self.orig)
+        img, bg = filter_image
+        bp_img = filters.cg(img + bg, **options)
+        np.testing.assert_allclose(bp_img, orig)
 
-    def test_remove_bg_pipeline(self):
+    def test_remove_bg_pipeline(self, filter_image, options, orig):
         """image.cg: slicerator
 
         Regression test
         """
-        img = Slicerator([self.bg+self.img])
-        bp_img = filters.cg(img, **self.options)[0]
-        np.testing.assert_allclose(bp_img, self.orig)
+        img, bg = filter_image
+        slc = Slicerator([bg + img])
+        bp_img = filters.cg(slc, **options)[0]
+        np.testing.assert_allclose(bp_img, orig)
 
-    def test_estimate_bg(self):
+    def test_estimate_bg(self, filter_image, options, orig):
         """image.cg_bg: single image
 
         Regression test
         """
-        bp_img = filters.cg_bg(
-            self.img+self.bg, **self.options)
-        np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
+        img, bg = filter_image
+        bp_img = filters.cg_bg(img + bg, **options)
+        np.testing.assert_allclose(bp_img, img + bg - orig)
 
-    def test_estimate_bg_pipeline(self):
+    def test_estimate_bg_pipeline(self, filter_image, options, orig):
         """image.cg_bg: slicerator
 
         Regression test
         """
-        img = Slicerator([self.bg+self.img])
-        bp_img = filters.cg_bg(img, **self.options)[0]
-        np.testing.assert_allclose(bp_img, self.img+self.bg-self.orig)
+        img, bg = filter_image
+        slc = Slicerator([bg + img])
+        bp_img = filters.cg_bg(slc, **options)[0]
+        np.testing.assert_allclose(bp_img, img + bg - orig)
 
 
 class TestMasks:

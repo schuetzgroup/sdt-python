@@ -8,7 +8,6 @@ import numbers
 import numpy as np
 import scipy.signal
 import scipy.ndimage
-import pywt
 
 from .masks import CircleMask
 from ..exceptions import NoConvergence
@@ -150,6 +149,8 @@ def _wavelet_bg_single(img, wtype, ext_mode, wlevel, detail):
 
     For parameter documentation, see :py:func:`wavelet_bg`.
     """
+    import pywt
+
     d = pywt.wavedec2(img, wtype, ext_mode, wlevel)
 
     # zero out detail coefficients

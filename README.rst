@@ -126,7 +126,6 @@ Requirements
 - pims >= 0.3.0
 - tifffile >= 0.7.0
 - pyyaml
-- pywavelets >= 0.3.0
 
 
 Recommended packages
@@ -138,3 +137,4 @@ Recommended packages
 - lmfit
 - ipympl
 - scikit-learn
+- pywavelets >= 0.3.0
