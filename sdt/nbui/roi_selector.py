@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from typing import Dict, Sequence, Union
+from typing import Dict, List, Sequence, Union
 import warnings
 
 import ipywidgets
@@ -14,7 +14,7 @@ import traitlets
 
 from .image_selector import ImageSelector
 from .image_display import ImageDisplay
-from .. import roi
+from .. import roi, spatial
 
 
 class ROISelectorModule(ipywidgets.VBox):
@@ -26,19 +26,30 @@ class ROISelectorModule(ipywidgets.VBox):
     This is meant to be integrated into a custom widget. For a fully usable
     widget, see :py:class:`ROISelector`.
     """
-    categories = traitlets.List()
+    categories: List[str] = traitlets.List(traitlets.Unicode())
     """ROI categories. If empty, there is just one (unnamed) category. """
-    rois = traitlets.Union([traitlets.Instance(roi.PathROI), traitlets.Dict()],
-                           allow_none=True)
+    rois: Union[roi.PathROI, Dict, List] = traitlets.Union(
+        [traitlets.Instance(roi.PathROI), traitlets.Dict(),
+         traitlets.List()],
+        allow_none=True)
     """Currently selected ROI(s). If no :py:attr:`categories` have been
     defined, this is a :py:class:`roi.PathROI` instance (or `None` if no ROI
-    was drawn). In case :py:attr:`categories` have been defined, this is a
-    dict mapping category names to :py:class:`roi.PathROI` instances (or
-    `None`).
+    was drawn) or a list thereof if :py:attr:`multi` is `True`. In case
+    :py:attr:`categories` have been defined, this is a dict mapping category
+    names to :py:class:`roi.PathROI` instances (or `None`) or a list thereof
+    if :py:attr:`multi` is `True`.
     """
-    auto_category = traitlets.Bool()
+    auto_category: bool = traitlets.Bool(False)
     """Whether to automatically select the next category once a ROI has
     been drawn.
+    """
+    multi: bool = traitlets.Bool(False)
+    """Whether to enable selection of mulitple ROIs per image und category"""
+    _normalized_rois: Dict[Union[None, str], List[Union[None, roi.PathROI]]
+                           ] = traitlets.Dict()
+    """Similar to :py:attr:`rois`, but always a map of category (which can be
+    `None` if no categories have been set) -> list of ROIs. The list has only
+    one entry if :py:attr:`multi` is `False`.
     """
 
     def __init__(self, ax: mpl.axes.Axes, **kwargs):
@@ -54,8 +65,10 @@ class ROISelectorModule(ipywidgets.VBox):
                           "is not compatible with this.")
             plt.ioff()
 
+        self.debug_output = ipywidgets.Output()
+
         self.ax = ax
-        self._path_artists = {None: None}
+        self._path_artists = []
         self._roi_selectors = {
             "rectangle": lambda: RectangleSelector(
                 self.ax, self._rect_roi_selected, interactive=True),
@@ -68,11 +81,19 @@ class ROISelectorModule(ipywidgets.VBox):
         self._cur_roi_sel = None
 
         self._roi_cat_sel = ipywidgets.Dropdown(description="category")
-        self._roi_cat_sel.observe(self._new_roi_selector, "value")
-        self._auto_cat_check = ipywidgets.Checkbox(value=False,
-                                                   description="auto")
+        self._roi_cat_sel.observe(self._cat_sel_changed, "value")
+        self._auto_cat_check = ipywidgets.Checkbox(
+            value=False, description="auto-select next")
         self._cat_box = ipywidgets.HBox([self._roi_cat_sel,
                                          self._auto_cat_check])
+
+        self._roi_multi_sel = ipywidgets.Dropdown(description="ROIs")
+        self._roi_multi_add = ipywidgets.Button(icon="plus")
+        self._roi_multi_add.on_click(lambda x: self._add_roi())
+        self._roi_multi_del = ipywidgets.Button(icon="remove")
+        self._roi_multi_del.on_click(lambda x: self._remove_roi())
+        self._roi_multi_box = ipywidgets.HBox(
+            [self._roi_multi_sel, self._roi_multi_add, self._roi_multi_del])
 
         self._roi_shape_sel = ipywidgets.ToggleButtons(
             options=list(self._roi_selectors), description="shape")
@@ -80,71 +101,174 @@ class ROISelectorModule(ipywidgets.VBox):
         self._cat_trait_changed()
         self._new_roi_selector()
 
-        super().__init__([self._roi_shape_sel, self._cat_box], **kwargs)
+        super().__init__(
+            [self._roi_shape_sel, self._cat_box, self._roi_multi_box],
+            **kwargs)
 
         traitlets.link((self._auto_cat_check, "value"),
                        (self, "auto_category"))
 
-    @traitlets.observe("categories")
-    def _cat_trait_changed(self, change=None):
-        """:py:attr:`categories` traitlet changed"""
-        for pa in self._path_artists.values():
-            if pa is not None:
-                pa.remove()
-
-        if self.categories:
-            self._cat_box.layout.display = None
-            self._path_artists = {c: None for c in self.categories}
-            self.rois = self._path_artists.copy()
-        else:
-            self._cat_box.layout.display = "none"
-            self._path_artists = {None: None}
-            self.rois = None
-
-        self._roi_cat_sel.options = self.categories
-
-    @traitlets.observe("rois")
-    def redraw(self, change=None):
-        """Redraw all ROIs"""
-        self._update_all_roi_patches()
-        self.ax.figure.canvas.draw_idle()
-
-    def _update_roi_patch(self, cat: str):
-        """Update single ROI patch
+    def _normalize_rois(self, rois: Union[roi.PathROI, List, Dict]) -> Dict:
+        """Create normalized ROI collection from the convenient representation
 
         Parameters
         ----------
-        cat
-            Category name of the ROI to redraw
+        rois
+            If no categories are defined, this is a single ROI (if
+            :py:attr:`multi` is `False`) or a list of ROIs (if :py:attr:`multi`
+            is `True`). If categories are defined, this is a dict mapping the
+            category names to ROIs or lists of ROIs.
+
+        Returns
+        -------
+        dict mapping category names (`None` if no categories are defined) to
+        lists of ROIs (which may contain only a single entry if
+        :py:attr:`multi` is `False`.
+
+        See also
+        --------
+        _unnormalize_rois
         """
-        pa = self._path_artists[cat]
-        if pa is not None:
+        nr = {}
+        if self.categories:
+            if self.multi:
+                return rois.copy()
+            else:
+                return {k: [v] for k, v in nr.items()}
+        if self.multi:
+            return {None: rois}
+        return {None: [rois]}
+
+    def _unnormalize_rois(self, normalized_rois: Dict
+                          ) -> Union[roi.PathROI, List, Dict]:
+        """Create convenient ROI collection from normalized ROI dict
+
+        Parameters
+        ----------
+        normalized_rois
+            dict mapping category names (`None` if no categories are defined)
+            to lists of ROIs (which may contain only a single entry if
+            :py:attr:`multi` is `False`.
+
+        Returns
+        -------
+        If no categories are defined, return a single ROI (if :py:attr:`multi`
+        is `False`) or a list of ROIs (if :py:attr:`multi` is `True`). If
+        categories are defined, return a dict mapping the category names to
+        ROIs or lists of ROIs.
+
+        See also
+        --------
+        _normalize_rois
+        """
+        if self.categories:
+            if self.multi:
+                return normalized_rois.copy()
+            return {c: (r[0] if r else None)
+                    for c, r in normalized_rois.items()}
+        if self.multi:
+            return normalized_rois[None]
+        return normalized_rois[None][0] if normalized_rois[None] else None
+
+    def _copy_normalized_rois(self) -> Dict[Union[None, str],
+                                            List[Union[None, roi.PathROI]]]:
+        """Create a copy of :py:attr:`_normalized_rois`
+
+        Make copies of the dict values, but not of the ROIs for efficiency
+
+        Returns
+        -------
+        Semi-deep copy of :py:attr:`_normalized_rois`
+        """
+        return {k: v.copy() for k, v in self._normalized_rois.items()}
+
+    @traitlets.observe("categories")
+    def _cat_trait_changed(self, change=None):
+        """:py:attr:`categories` traitlet changed"""
+        with self.debug_output:
+            self._cat_box.layout.display = None if self.categories else "none"
+            self._roi_cat_sel.options = self.categories
+            self.rois = self.get_undefined_rois()
+
+    def _cat_sel_changed(self, change=None):
+        with self.debug_output:
+            self._new_roi_selector()
+            self._update_roi_list()
+
+    @traitlets.observe("multi")
+    def _multi_trait_changed(self, change=None):
+        with self.debug_output:
+            self._roi_multi_box.layout.display = None if self.multi else "none"
+            self.rois = self._unnormalize_rois(self._normalized_rois)
+
+    @traitlets.observe("rois")
+    def _update_normalized_rois(self, change=None):
+        self._normalized_rois = self._normalize_rois(self.rois)
+
+    @traitlets.observe("_normalized_rois")
+    def _normalized_rois_changed(self, change=None):
+        with self.debug_output:
+            self._update_roi_list()
+            self.redraw()
+
+    def redraw(self):
+        """Redraw all ROIs"""
+        for pa in self._path_artists:
             pa.remove()
+        self._path_artists = []
 
-        r = self.rois[cat] if self.categories else self.rois
-        if r is None:
-            self._path_artists[cat] = None
-        else:
-            color = self.categories.index(cat) if cat is not None else 0
-            pp = mpl.patches.PathPatch(r.path, edgecolor="none",
-                                       facecolor=f"C{color%10}", alpha=0.5)
-            self._path_artists[cat] = self.ax.add_patch(pp)
+        for n, (cat, lst) in enumerate(self._normalized_rois.items()):
+            color = f"C{n%10}"
+            for m, r in enumerate(lst):
+                if r is None:
+                    continue
+                pp = mpl.patches.PathPatch(r.path, edgecolor="none",
+                                           facecolor=color, alpha=0.5)
+                self._path_artists.append(self.ax.add_patch(pp))
+                if self.multi:
+                    center = spatial.polygon_center(r.path.vertices)
+                    if cat is None:
+                        label = str(m+1)
+                    else:
+                        label = f"{cat}\n{m+1}"
+                    ta = self.ax.text(*center, label, ha="center",
+                                      va="center", color=color, size="large",
+                                      weight="bold")
+                    self._path_artists.append(ta)
 
-    def _update_all_roi_patches(self):
-        """Update all ROI patches"""
-        cats = self.categories or [None]
-        for c in cats:
-            self._update_roi_patch(c)
+            self.ax.figure.canvas.draw_idle()
+
+    def _update_roi_list(self, keep_index=True):
+        """Update ROI selection widget list"""
+        cat = self._roi_cat_sel.value
+        old_idx = self._roi_multi_sel.index
+        try:
+            opts = list(range(1, len(self._normalized_rois[cat]) + 1))
+        except KeyError:
+            # When updating the `categories` trait, the category selection
+            # widget's options are updated before ROIs are updated, in which
+            # case ``self._normalized_rois[cat]`` fails. Ignore since
+            # subesquent updating of the `rois` trait will call this method
+            # again
+            return
+        self._roi_multi_sel.options = opts
+        # Setting options will reset index to 0, therefore preserve previous
+        # selection (if possible)
+        if keep_index and old_idx is not None and opts:
+            self._roi_multi_sel.index = min(old_idx, len(opts) - 1)
 
     def _new_roi_selector(self, change=None):
         """Create a new ROI selector and delete the old one
 
         Depending on the currenly selected shape, the new one will be
         a rectangle, ellipse, polygon or lasso.
+        If no categories are defined, return a single ROI (if :py:attr:`multi`
+        is `False`) or a list of ROIs (if :py:attr:`multi` is `True`). If
+        categories are defined, return a dict mapping the category names to
+        ROIs or lists of ROIs.
         """
         if self._cur_roi_sel is not None:
             self._cur_roi_sel.set_visible(False)
-            del self._cur_roi_sel
         self._cur_roi_sel = self._roi_selectors[self._roi_shape_sel.value]()
 
     def _next_category(self):
@@ -162,46 +286,65 @@ class ROISelectorModule(ipywidgets.VBox):
         r
             ROI
         """
-        if self.categories:
-            cat = self._roi_cat_sel.value
-            r_dict = self.rois.copy()
-            r_dict[cat] = r
-            self.rois = r_dict
-        else:
-            cat = None
-            self.rois = r
-        self._update_roi_patch(cat)
+        cat = self._roi_cat_sel.value
+        roi_num = self._roi_multi_sel.index
+        r_dict = self._copy_normalized_rois()
+        r_dict[cat][roi_num] = r
+        self.rois = self._unnormalize_rois(r_dict)
         self._next_category()
-        self.ax.figure.canvas.draw_idle()
 
     def _rect_roi_selected(self, click, release):
         """Callback for rectangular ROI"""
-        e = self._cur_roi_sel.extents
-        self._roi_selected(roi.RectangleROI((e[0], e[2]), (e[1], e[3])))
+        with self.debug_output:
+            ex = self._cur_roi_sel.extents
+            self._roi_selected(
+                roi.RectangleROI((ex[0], ex[2]), (ex[1], ex[3])))
 
     def _ellipse_roi_selected(self, click, release):
         """Callback for ellipse ROI"""
-        e = self._cur_roi_sel
-        ex = e.extents
-        r = roi.EllipseROI(e.center,
-                           ((ex[1] - ex[0]) / 2, (ex[3] - ex[2]) / 2))
+        with self.debug_output:
+            e = self._cur_roi_sel
+            ex = e.extents
+            r = roi.EllipseROI(e.center,
+                               ((ex[1] - ex[0]) / 2, (ex[3] - ex[2]) / 2))
         self._roi_selected(r)
 
     def _poly_roi_selected(self, vertices):
         """Callback for polygon ROI"""
-        self._roi_selected(roi.PathROI(vertices))
+        with self.debug_output:
+            self._roi_selected(roi.PathROI(vertices))
 
     def _lasso_roi_selected(self, vertices):
         """Callback for lasso ROI"""
-        self._roi_selected(roi.PathROI(vertices))
+        with self.debug_output:
+            self._roi_selected(roi.PathROI(vertices))
 
-    def get_undefined_rois(self) -> Union[None, Dict[str, None]]:
+    def get_undefined_rois(self) -> Union[None, List, Dict]:
         """Get an entry for :py:attr:`rois` specifying undefined ROIs
 
         If no categories have been defined, this is simply `None`. Else this is
         a dict mapping category names to `None`.
         """
-        return {c: None for c in self.categories} or None
+        return self._unnormalize_rois(
+            {c: [None] for c in (self.categories or [None])})
+
+    def _add_roi(self):
+        """Add an undefined ROI (`None`) to current category"""
+        with self.debug_output:
+            cat = self._roi_cat_sel.value
+            r_dict = self._copy_normalized_rois()
+            r_dict[cat].append(None)
+            self.rois = self._unnormalize_rois(r_dict)
+            self._roi_multi_sel.index = len(self._roi_multi_sel.options) - 1
+
+    def _remove_roi(self):
+        """Remove current ROI from current category"""
+        with self.debug_output:
+            cat = self._roi_cat_sel.value
+            index = self._roi_multi_sel.index
+            r_dict = self._copy_normalized_rois()
+            r_dict[cat].pop(index)
+            self.rois = self._unnormalize_rois(r_dict)
 
 
 class ROISelector(ipywidgets.VBox):
@@ -219,7 +362,8 @@ class ROISelector(ipywidgets.VBox):
     In a notebook cell, create the UI:
 
     >>> names = sorted(glob("*.tif"))
-    >>> imgs = {n: pims.open(n)[0]}  # get first frame from each sequence
+    >>> imgs = {n: io.ImageSequence(n).open()[0]
+    ...         for n in names}  # 1st frame from each sequence
     >>> rs = ROISelector(imgs)
     >>> rs
 
@@ -234,6 +378,11 @@ class ROISelector(ipywidgets.VBox):
 
     >>> rs.auto_category = True
 
+    Via :py:attr:`multi`, selection of multiple ROIs per image and category can
+    be enabled and disabled.
+
+    >>> rs.multi = True
+
     Once finished, the ROIs can be accessed via the :py:attr:`rois` attribute,
     which is a list of dicts mapping category -> ROI (or simply a list of
     ROIs if no categories were defined).
@@ -247,12 +396,15 @@ class ROISelector(ipywidgets.VBox):
     """Images or sequences to select from. See :py:class:`ImageSelector`
     documentation for details.
     """
-    rois = traitlets.List()
-    """List of ROIs or list of dict mapping category names to ROIs (one per
-    entry in :py:attr:`images`).
+    rois: List = traitlets.List()
+    """Each list entry corresponds to one entry in :py:attr:`images`. An entry
+    can be either a single ROI, a list of ROIs (if :py:attr:`multi` is `True`,
+    or a dict mapping a category name to a ROI or list of ROIs.
     """
-    categories = traitlets.List()
+    categories: List[str] = traitlets.List(traitlets.Unicode())
     """ROI categories. If empty, there is just one (unnamed) category. """
+    multi: bool = traitlets.Bool(False)
+    """Whether to enable selection of mulitple ROIs per image und category"""
 
     def __init__(self, images: Union[Sequence, Dict] = [], **kwargs):
         """Parameters
@@ -268,20 +420,22 @@ class ROISelector(ipywidgets.VBox):
         self.image_selector.show_file_buttons = True
         self.roi_selector_module = ROISelectorModule(ax)
         self.image_display = ImageDisplay(ax)
-
         super().__init__([self.image_selector, self.roi_selector_module,
-                          self.image_display])
+                          ipywidgets.HBox([self.image_display])])
 
-        self.image_selector.observe(self._cur_image_changed, "index")
+        self.image_selector.observe(self._cur_image_changed, "output")
         traitlets.link((self.image_selector, "images"), (self, "images"))
         self.roi_selector_module.observe(self._roi_drawn, "rois")
         traitlets.directional_link((self.roi_selector_module, "categories"),
                                    (self, "categories"))
+        traitlets.link((self.roi_selector_module, "multi"), (self, "multi"))
+
+        self.image_selector.images = images
 
     def _cur_image_changed(self, change=None):
-        """Currently selected image was changed via self.image_selector"""
+        """Selected image was changed via :py:attr:`image_selector`"""
         self.image_display.input = self.image_selector.output
-        idx = self.image_selector.index
+        idx = self.image_selector._file_sel.index
         if idx is not None:
             self.roi_selector_module.rois = self.rois[idx]
         else:
@@ -312,8 +466,16 @@ class ROISelector(ipywidgets.VBox):
         self.rois = ([self.roi_selector_module.get_undefined_rois()] *
                      len(self.images))
 
+    @traitlets.observe("rois")
+    def _rois_trait_changed(self, change=None):
+        idx = self.image_selector.index
+        if idx is None:
+            return
+        self.roi_selector_module.rois = self.rois[idx]
+
     def set_rois(self, index: int,
-                 r: Union[roi.PathROI, Dict[str, roi.PathROI]]):
+                 r: Union[roi.PathROI, Dict[str, roi.PathROI],
+                          Dict[str, List[roi.PathROI]]]):
         """Set ROIs for a file
 
         This makes sure that the :py:attr:`rois` traitlet is properly updated
