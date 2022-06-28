@@ -12,7 +12,8 @@ aspects of single molecule data:
   :py:func:`has_near_neighbor` function
 - In tracking data, interpolate features that have been missed by the
   localization algorithm with help of :py:func:`interpolate_coords`
-- Calculate the area of a polygon using :py:func:`polygon_area`
+- Calculate the area and center of mass of a polygon using
+  :py:func:`polygon_area` and :py:func:`polygon_center`
 - Find the smallest enclosing circle of a set of points via
   :py:func:`smallest_enclosing_circle`.
 
@@ -65,6 +66,7 @@ Programming reference
 .. autofunction:: has_near_neighbor
 .. autofunction:: interpolate_coords
 .. autofunction:: polygon_area
+.. autofunction:: polygon_center
 .. autofunction:: smallest_enclosing_circle
 
 
@@ -103,7 +105,7 @@ in particular `this presentation
 <https://www.nayuki.io/res/smallest-enclosing-circle/computational-geometry-lecture-6.pdf>`_.
 """
 import math
-from typing import List, Sequence, Tuple, Union
+from typing import List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -320,6 +322,45 @@ def polygon_area(vertices: Sequence[Sequence[float]]) -> float:
 
     x, y = np.vstack((vertices[-1], vertices)).T
     return np.sum((x[1:] + x[:-1]) * (y[1:] - y[:-1])) / 2
+
+
+def polygon_center(vertices: Sequence[Sequence[float]],
+                   area: Optional[float] = None) -> Tuple[float, float]:
+    r"""Compute center of mass of a polygon
+
+    according to the formula
+
+    .. math::
+         C_\mathrm{x} = \frac{1}{6A} \sum_{i=0}^{n-1} (x_{i} + x_{i+1})
+             (x_{i}y_{i+1} - x_{i+1}y_{i})
+
+         C_\mathrm{y} = \frac{1}{6A} \sum_{i=0}^{n-1} (y_{i} + y_{i+1})
+             (x_{i}y_{i+1} - x_{i+1}y_{i})
+
+    where :math:`A` is the signed polygon area as computed by
+    :py:func:`polygon_area`. Note that the formula is valid for a closed
+    polygon. This function also works for open polygons.
+
+    Parameters
+    ----------
+    vertices
+        Sequence of :math:`(x, y)` coordinate pairs.
+    area
+        If already computed, pass area of the polygon for efficiency
+
+    Returns
+    -------
+    Coordinates of the center of mass
+    """
+    if area is None:
+        area = polygon_area(vertices)
+
+    x, y = np.vstack((vertices[-1], vertices)).T
+    fact = x[:-1] * y[1:] - x[1:] * y[:-1]
+    x_c = np.sum((x[:-1] + x[1:]) * fact) / (6 * area)
+    y_c = np.sum((y[:-1] + y[1:]) * fact) / (6 * area)
+
+    return x_c, y_c
 
 
 def smallest_enclosing_circle(coords: Sequence[Sequence[float]],

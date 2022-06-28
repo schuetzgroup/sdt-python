@@ -124,6 +124,13 @@ class TestPolygonArea:
         assert spatial.polygon_area(vert[::-1]) == pytest.approx(2.0)
 
 
+def test_polygon_center():
+    vert = [(0, 0), (2, 0), (2, 2), (0, 2)]
+    np.testing.assert_allclose(spatial.polygon_center(vert), (1.0, 1.0))
+    np.testing.assert_allclose(spatial.polygon_center(vert, area=4.0),
+                               (1.0, 1.0))
+
+
 class TestSmallestEnclosingCircle:
     def test_in_circle(self):
         """spatial._in_circle"""
