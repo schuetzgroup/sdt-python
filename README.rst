@@ -123,7 +123,7 @@ Requirements
 - matplotlib
 - numpy >= 1.10
 - pandas
-- pims >= 0.3.0
+- imageio
 - tifffile >= 0.7.0
 - pyyaml
 
