@@ -1,79 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Simulation of microscopy-related data &mdash; sdt-python 17.3 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Special functions" href="funcs.html" />
     <link rel="prev" title="GUIs for the Jupyter notebook" href="nbui.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> sdt-python
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 17.3
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,18 +39,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
@@ -120,73 +67,33 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Simulation of microscopy-related data</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-sdt.sim"></span><section id="simulation-of-microscopy-related-data">
-<h1>Simulation of microscopy-related data<a class="headerlink" href="#simulation-of-microscopy-related-data" title="Permalink to this heading">¶</a></h1>
-<section id="fluoresence-microscopy-images">
-<h2>Fluoresence microscopy images<a class="headerlink" href="#fluoresence-microscopy-images" title="Permalink to this heading">¶</a></h2>
+             
+  <span class="target" id="module-sdt.sim"></span><div class="section" id="simulation-of-microscopy-related-data">
+<h1>Simulation of microscopy-related data<a class="headerlink" href="#simulation-of-microscopy-related-data" title="Permalink to this heading"></a></h1>
+<div class="section" id="fluoresence-microscopy-images">
+<h2>Fluoresence microscopy images<a class="headerlink" href="#fluoresence-microscopy-images" title="Permalink to this heading"></a></h2>
 <p>Each fluorophore appears in the microscope as a diffraction limited spot. The
 whole image is made up by the superposition of such spots. The
 <a class="reference internal" href="#sdt.sim.simulate_gauss" title="sdt.sim.simulate_gauss"><code class="xref py py-func docutils literal notranslate"><span class="pre">simulate_gauss()</span></code></a> function provides functions to simulate images like
@@ -209,9 +116,9 @@ that.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img_noisy</span> <span class="o">+=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">img_noisy</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># camera noise</span>
 </pre></div>
 </div>
-</section>
-<section id="single-molecule-tracking-data">
-<h2>Single molecule tracking data<a class="headerlink" href="#single-molecule-tracking-data" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="single-molecule-tracking-data">
+<h2>Single molecule tracking data<a class="headerlink" href="#single-molecule-tracking-data" title="Permalink to this heading"></a></h2>
 <p>Simulate trajectories of particles undergoing Brownian motion using the
 <a class="reference internal" href="#sdt.sim.simulate_brownian" title="sdt.sim.simulate_brownian"><code class="xref py py-func docutils literal notranslate"><span class="pre">simulate_brownian()</span></code></a> function.</p>
 <p class="rubric">Examples</p>
@@ -229,19 +136,19 @@ initially randomly in a 30 μm x 30 μm square:</p>
 <span class="go">4  16.590677  20.002406      4         0</span>
 </pre></div>
 </div>
-</section>
-<section id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.sim.simulate_gauss">
-<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">simulate_gauss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/fluo_image.html#simulate_gauss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.simulate_gauss" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">simulate_gauss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/fluo_image.html#simulate_gauss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.simulate_gauss" title="Permalink to this definition"></a></dt>
 <dd><p>Simulate an image from multiple Gaussian PSFs</p>
 <p>Given a list of coordinates, amplitudes and sigmas, simulate a fluorescent
 image. This is a frontend to the lower level functions
 <a class="reference internal" href="#sdt.sim.gauss_psf_numba" title="sdt.sim.gauss_psf_numba"><code class="xref py py-func docutils literal notranslate"><span class="pre">gauss_psf_numba()</span></code></a>, <a class="reference internal" href="#sdt.sim.gauss_psf" title="sdt.sim.gauss_psf"><code class="xref py py-func docutils literal notranslate"><span class="pre">gauss_psf()</span></code></a>, and
 <a class="reference internal" href="#sdt.sim.gauss_psf_full" title="sdt.sim.gauss_psf_full"><code class="xref py py-func docutils literal notranslate"><span class="pre">gauss_psf_full()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> (<em>tuple of int</em><em>, </em><em>len=2</em>) – Shape of the output image. First entry is the width, second is the
 height.</p></li>
@@ -266,10 +173,10 @@ pure python and calculates each Gaussian for the whole image
 which makes it the slowest. Defaults to “numba”.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Simulated image.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -277,10 +184,10 @@ which makes it the slowest. Defaults to “numba”.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.sim.simulate_brownian">
-<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">simulate_brownian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lagt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_len_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'const'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/sm_tracks.html#simulate_brownian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.simulate_brownian" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">simulate_brownian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lagt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track_len_dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'const'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/sm_tracks.html#simulate_brownian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.simulate_brownian" title="Permalink to this definition"></a></dt>
 <dd><p>Simulate particles undergoing Brownian motion</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n_tracks</strong> (<em>int</em>) – Number of tracks to simulate</p></li>
 <li><p><strong>track_len</strong> (<em>int</em>) – Average track length (see also <cite>track_len_dist</cite> parameter )</p></li>
@@ -305,29 +212,29 @@ column “alt_frame”, set <code class="docutils literal notranslate"><span cla
 <span class="pre">&quot;time&quot;:</span> <span class="pre">&quot;alt_frame&quot;}</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Simulated tracking data. Columns are coordinates, time, and particle
 columns as specified in the <cite>columns</cite> arg.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
 
-</section>
-<section id="low-level-simulation-functions">
-<h2>Low level simulation functions<a class="headerlink" href="#low-level-simulation-functions" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="low-level-simulation-functions">
+<h2>Low level simulation functions<a class="headerlink" href="#low-level-simulation-functions" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.sim.gauss_psf_full">
-<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">gauss_psf_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/fluo_image.html#gauss_psf_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.gauss_psf_full" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">gauss_psf_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/fluo_image.html#gauss_psf_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.gauss_psf_full" title="Permalink to this definition"></a></dt>
 <dd><p>Simulate an image from multiple Gaussian PSFs</p>
 <p>Given a list of coordinates, amplitudes and sigmas, simulate a fluorescent
 image. For each emitter, the Gaussian is calculated over the whole image
 area, which makes this very slow (since calculating exponentials is quite
 time consuming.)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> (<em>tuple of int</em><em>, </em><em>len=2</em>) – Shape of the output image. First entry is the width, second is the
 height.</p></li>
@@ -336,10 +243,10 @@ height.</p></li>
 <li><p><strong>sigmas</strong> (<em>numpy.ndarray</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>2</em><em>)</em>) – x and y sigmas of the Gaussians</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Simulated image.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -347,14 +254,14 @@ height.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.sim.gauss_psf">
-<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">gauss_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/fluo_image.html#gauss_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.gauss_psf" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">gauss_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/fluo_image.html#gauss_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.gauss_psf" title="Permalink to this definition"></a></dt>
 <dd><p>Simulate an image from multiple Gaussian PSFs</p>
 <p>Given a list of coordinates, amplitudes and sigmas, simulate a fluorescent
 image. For each emitter, the Gaussian is calculated only in a square of
 2*`roi_size`+1 pixels width, which can make it considerably faster than
 <a class="reference internal" href="#sdt.sim.gauss_psf_full" title="sdt.sim.gauss_psf_full"><code class="xref py py-func docutils literal notranslate"><span class="pre">gauss_psf_full()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> (<em>tuple of int</em><em>, </em><em>len=2</em>) – Shape of the output image. First entry is the width, second is the
 height.</p></li>
@@ -365,10 +272,10 @@ height.</p></li>
 around the center.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Simulated image.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -376,7 +283,7 @@ around the center.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.sim.gauss_psf_numba">
-<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">gauss_psf_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/fluo_image.html#gauss_psf_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.gauss_psf_numba" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">gauss_psf_numba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitudes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigmas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/fluo_image.html#gauss_psf_numba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.gauss_psf_numba" title="Permalink to this definition"></a></dt>
 <dd><p>Simulate an image from multiple Gaussian PSFs</p>
 <p>Given a list of coordinates, amplitudes and sigmas, simulate a fluorescent
 image. For each emitter, the Gaussian is calculated only in a square of
@@ -384,7 +291,7 @@ image. For each emitter, the Gaussian is calculated only in a square of
 which can make it considerably faster than <a class="reference internal" href="#sdt.sim.gauss_psf_full" title="sdt.sim.gauss_psf_full"><code class="xref py py-func docutils literal notranslate"><span class="pre">gauss_psf_full()</span></code></a> and
 <a class="reference internal" href="#sdt.sim.gauss_psf" title="sdt.sim.gauss_psf"><code class="xref py py-func docutils literal notranslate"><span class="pre">gauss_psf()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> (<em>tuple of int</em><em>, </em><em>len=2</em>) – Shape of the output image. First entry is the width, second is the
 height.</p></li>
@@ -395,10 +302,10 @@ height.</p></li>
 around the center.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Simulated image.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -406,10 +313,10 @@ around the center.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.sim.brownian_track">
-<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">brownian_track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lagt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/sm_tracks.html#brownian_track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.brownian_track" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.sim.</span></span><span class="sig-name descname"><span class="pre">brownian_track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lagt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/sim/sm_tracks.html#brownian_track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.sim.brownian_track" title="Permalink to this definition"></a></dt>
 <dd><p>Simulate a single particle undergoing Brownian motion</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>track_len</strong> (<em>int</em>) – Average track length (see also <cite>track_len_dist</cite> parameter )</p></li>
 <li><p><strong>d</strong> (<em>float</em>) – Diffusion coefficient</p></li>
@@ -423,65 +330,48 @@ placed randomly; in that case, <cite>size</cite> needs to be given.</p></li>
 <code class="xref py py-class docutils literal notranslate"><span class="pre">RandomState</span></code> object will be created and used.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Simulated coordinates of the particle, one set of coordinates per
 row.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray, shape(track_len, ndim)</p>
 </dd>
 </dl>
 </dd></dl>
 
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="funcs.html" class="btn btn-neutral float-right" title="Special functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="nbui.html" class="btn btn-neutral float-left" title="GUIs for the Jupyter notebook" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="funcs.html" class="btn btn-neutral float-right" title="Special functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2015—2022, Lukas Schrangl.
-
-    </p>
+    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

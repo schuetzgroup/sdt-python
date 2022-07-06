@@ -1,80 +1,38 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Image filtering and processing &mdash; sdt-python 17.3 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Flat-field correction" href="flatfield.html" />
     <link rel="prev" title="Single molecule FRET analysis" href="fret.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> sdt-python
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 17.3
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -82,18 +40,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
@@ -121,71 +68,31 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Image filtering and processing</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-sdt.image"></span><section id="image-filtering-and-processing">
-<h1>Image filtering and processing<a class="headerlink" href="#image-filtering-and-processing" title="Permalink to this heading">¶</a></h1>
+             
+  <span class="target" id="module-sdt.image"></span><div class="section" id="image-filtering-and-processing">
+<h1>Image filtering and processing<a class="headerlink" href="#image-filtering-and-processing" title="Permalink to this heading"></a></h1>
 <p>The <a class="reference internal" href="#module-sdt.image" title="sdt.image"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.image</span></code></a> module contains filters for image data:</p>
 <ul class="simple">
 <li><p>wavelet filters for background estimation and subtraction:
@@ -223,11 +130,11 @@ are classes for producing rectangular (<a class="reference internal" href="#sdt.
 <span class="go">       [False, False, False, False, False]], dtype=bool)</span>
 </pre></div>
 </div>
-<section id="filters">
-<h2>Filters<a class="headerlink" href="#filters" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="filters">
+<h2>Filters<a class="headerlink" href="#filters" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.cg">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">cg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonneg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#cg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.cg" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">cg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nonneg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#cg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.cg" title="Permalink to this definition"></a></dt>
 <dd><p>Remove background using a bandpass filter according to Crocker &amp; Grier</p>
 <p>Convolve with kernel</p>
 <div class="math notranslate nohighlight">
@@ -250,7 +157,7 @@ second one is a boxcar filter to get rid of long-range fluctuations.</p>
 to single images or image sequences (as long as they are of type
 <code class="xref py py-class docutils literal notranslate"><span class="pre">slicerator.Slicerator</span></code>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>image</strong> (<em>numpy.ndarray</em>) – image data</p></li>
 <li><p><strong>feature_radius</strong> (<em>int</em>) – This should be a number a little greater than the radius of the
@@ -260,10 +167,10 @@ peaks.</p></li>
 to True.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Bandpass filtered image (sequence)</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.Slicerator">Slicerator</a> or numpy.ndarray</p>
 </dd>
 </dl>
@@ -271,7 +178,7 @@ to True.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.cg_bg">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">cg_bg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#cg_bg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.cg_bg" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">cg_bg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#cg_bg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.cg_bg" title="Permalink to this definition"></a></dt>
 <dd><p>Estimate background using bandpass filter according to Crocker &amp; Grier</p>
 <p>This returns <code class="docutils literal notranslate"><span class="pre">image</span> <span class="pre">-</span> <span class="pre">cg(image,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>. See
 the <a class="reference internal" href="#sdt.image.cg" title="sdt.image.cg"><code class="xref py py-func docutils literal notranslate"><span class="pre">cg()</span></code></a> documentation for details.</p>
@@ -282,7 +189,7 @@ to single images or image sequences (as long as they are of type
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.wavelet">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">wavelet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#wavelet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.wavelet" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">wavelet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#wavelet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.wavelet" title="Permalink to this definition"></a></dt>
 <dd><p>Remove the background using wavelets</p>
 <p>This returns <code class="docutils literal notranslate"><span class="pre">image</span> <span class="pre">-</span> <span class="pre">wavelet_bg(image,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code>. See
 the <a class="reference internal" href="#sdt.image.wavelet_bg" title="sdt.image.wavelet_bg"><code class="xref py py-func docutils literal notranslate"><span class="pre">wavelet_bg()</span></code></a> documentation for details.</p>
@@ -293,7 +200,7 @@ to single images or image sequences (as long as they are of type
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.wavelet_bg">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">wavelet_bg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_thresh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'db4'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'smooth'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_conv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#wavelet_bg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.wavelet_bg" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">wavelet_bg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_thresh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'db4'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wlevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'smooth'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_conv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#wavelet_bg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.wavelet_bg" title="Permalink to this definition"></a></dt>
 <dd><p>Estimate the background using wavelets</p>
 <p>This is an implementation of the algorithm described in <a class="reference internal" href="#galloway2009" id="id3"><span>[Galloway2009]</span></a>
 for 2D image data. It works by iteratively estimating the background using
@@ -304,16 +211,15 @@ converge within <cite>max_iterations</cite>.</p>
 <p>This is a <a class="reference internal" href="helper.html#sdt.helper.pipeline" title="sdt.helper.pipeline"><code class="xref py py-func docutils literal notranslate"><span class="pre">sdt.helper.pipeline()</span></code></a>, meaning that it can be applied
 to single images or image sequences (as long as they are of type
 <a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.Slicerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.helper.Slicerator</span></code></a>).</p>
-<div role="list" class="citation-list">
-<div class="citation" id="galloway2009" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">Galloway2009</a><span class="fn-bracket">]</span></span>
-<p>Galloway, C. M. et al.: “An iterative algorithm for
+<dl class="citation">
+<dt class="label" id="galloway2009"><span class="brackets"><a class="fn-backref" href="#id3">Galloway2009</a></span></dt>
+<dd><p>Galloway, C. M. et al.: “An iterative algorithm for
 background removal in spectroscopy by wavelet transforms”. Appl
 Spectrosc, 2009, 63, 1370-1376</p>
-</div>
-</div>
+</dd>
+</dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>image</strong> (<a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.Slicerator"><em>Slicerator</em></a><em> or </em><em>numpy.ndarray</em>) – Image data. Either a sequence (Slicerator) or a single image.</p></li>
 <li><p><strong>feat_thresh</strong> (<em>float</em>) – Consider everything that is brighter than the estimated background by
@@ -352,7 +258,7 @@ construct an array of the same type and shape as the input that is
 filled with the scalar.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>Slicerator or numpy.ndarray</em> – Estimate for the background</p></li>
 <li><p><em>img = np.copy(image)</em></p></li>
@@ -360,7 +266,7 @@ filled with the scalar.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><strong>NoConvergence</strong> – when the estimate did not converge within <cite>max_iterations</cite> and
     <code class="docutils literal notranslate"><span class="pre">no_conv=&quot;raise&quot;</span></code> was passed.</p>
 </dd>
@@ -369,23 +275,23 @@ filled with the scalar.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.gaussian_filter">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">gaussian_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#gaussian_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.gaussian_filter" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">gaussian_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/filters.html#gaussian_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.gaussian_filter" title="Permalink to this definition"></a></dt>
 <dd><p><cite>pipeline</cite>’ed version of <code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.gaussian_filter()</span></code></p>
 <p>See <code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.gaussian_filter()</span></code> documentation for details.</p>
 </dd></dl>
 
-</section>
-<section id="thresholding">
-<h2>Thresholding<a class="headerlink" href="#thresholding" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="thresholding">
+<h2>Thresholding<a class="headerlink" href="#thresholding" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.adaptive_thresh">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">adaptive_thresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/threshold.html#adaptive_thresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.adaptive_thresh" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">adaptive_thresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/threshold.html#adaptive_thresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.adaptive_thresh" title="Permalink to this definition"></a></dt>
 <dd><p>Generate binary mask from image using adaptive thresholding</p>
 <p>The image will be smoothed using a Gaussian blur. The mask is then
 calculated using <code class="xref py py-func docutils literal notranslate"><span class="pre">cv2.adaptiveThreshold()</span></code> from the <cite>OpenCV</cite>
 package.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>img</strong> (<em>array-like</em>) – Image data</p></li>
 <li><p><strong>block_size</strong> (<em>int</em>) – <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">block_size</span> <span class="pre">+</span> <span class="pre">1</span></code> is passed as the the <cite>block_size</cite> parameter
@@ -396,10 +302,10 @@ to <code class="xref py py-func docutils literal notranslate"><span class="pre">
 <code class="docutils literal notranslate"><span class="pre">cv2.ADAPTIVE_THRESH_MEAN_C</span></code>).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean mask image</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray, dtype(bool)</p>
 </dd>
 </dl>
@@ -407,12 +313,12 @@ to <code class="xref py py-func docutils literal notranslate"><span class="pre">
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.otsu_thresh">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">otsu_thresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/threshold.html#otsu_thresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.otsu_thresh" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">otsu_thresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/threshold.html#otsu_thresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.otsu_thresh" title="Permalink to this definition"></a></dt>
 <dd><p>Generate binary mask from image using Otsu’s binarization</p>
 <p>The image will be smoothed using a Gaussian blur. Otsu’s method is used to
 calculate a global threshold, which is then applied to the image data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>img</strong> (<em>array-like</em>) – Image data</p></li>
 <li><p><strong>factor</strong> (<em>float</em>) – Multiply the result of Otsu’s method with this factor to adjust the
@@ -420,10 +326,10 @@ threshold.</p></li>
 <li><p><strong>smooth</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian smoothing radius. Set to 0 to disable. Defaults to 5.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean mask image</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray, dtype(bool)</p>
 </dd>
 </dl>
@@ -431,37 +337,37 @@ threshold.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.percentile_thresh">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">percentile_thresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/threshold.html#percentile_thresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.percentile_thresh" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">percentile_thresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">percentile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/threshold.html#percentile_thresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.percentile_thresh" title="Permalink to this definition"></a></dt>
 <dd><p>Generate binary mask with a threshold based on a percentile</p>
 <p>The image will be smoothed using a Gaussian blur. Calculate the
 desired percentile as a global threshold, which is then applied to the
 image data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>img</strong> (<em>array-like</em>) – Image data</p></li>
 <li><p><strong>percentile</strong> (<em>float</em>) – Percentile to be used as a threshold.</p></li>
 <li><p><strong>smooth</strong> (<em>float</em><em>, </em><em>optional</em>) – Gaussian smoothing radius. Set to 0 to disable. Defaults to 5.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean mask image</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray, dtype(bool)</p>
 </dd>
 </dl>
 </dd></dl>
 
-</section>
-<section id="masks">
-<h2>Masks<a class="headerlink" href="#masks" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="masks">
+<h2>Masks<a class="headerlink" href="#masks" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.image.RectMask">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">RectMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#RectMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.RectMask" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">RectMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#RectMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.RectMask" title="Permalink to this definition"></a></dt>
 <dd><p>Boolean array representing a rectangular mask</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ext</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em>) – Extension (shape) of the masked rectangle</p></li>
 <li><p><strong>shape</strong> (<em>Optional</em><em>[</em><em>Tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em><em>]</em>) – Shape of the resulting array. If this is larger than <cite>ext</cite>, the
@@ -469,7 +375,7 @@ mask will be centered in the array. By default, the smallest
 possible size is chosen.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><em>ndarray</em></p>
 </dd>
 </dl>
@@ -477,7 +383,7 @@ possible size is chosen.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.image.CircleMask">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">CircleMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#CircleMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.CircleMask" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">CircleMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#CircleMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.CircleMask" title="Permalink to this definition"></a></dt>
 <dd><p>Boolean array representing a circular mask</p>
 <p>True for all coordinates <span class="math notranslate nohighlight">\(x, y\)</span> where <span class="math notranslate nohighlight">\(x^2 + y^2 &lt;= (r+e)^2\)</span>,
 where <span class="math notranslate nohighlight">\(r\)</span> is the <cite>radius</cite> argument to the constructor and <span class="math notranslate nohighlight">\(e\)</span>
@@ -499,7 +405,7 @@ center of the image.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>radius</strong> (<em>int</em>) – Circle radius and mask size. The shape of the created array is
 <code class="docutils literal notranslate"><span class="pre">(2*radius+1,</span> <span class="pre">2*radius+1)</span></code>.</p></li>
@@ -510,7 +416,7 @@ will be centered in the array. By default, the smallest possible
 size is chosen.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><em>ndarray</em></p>
 </dd>
 </dl>
@@ -518,7 +424,7 @@ size is chosen.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.image.DiamondMask">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">DiamondMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#DiamondMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.DiamondMask" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">DiamondMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/masks.html#DiamondMask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.DiamondMask" title="Permalink to this definition"></a></dt>
 <dd><p>Boolean array representing a diamond-shaped (rotated square) mask</p>
 <p>True for all coordinates <span class="math notranslate nohighlight">\(x, y\)</span> where <span class="math notranslate nohighlight">\(|x + y| &lt;= r + e\)</span>,
 where <span class="math notranslate nohighlight">\(r\)</span> is the <cite>radius</cite> argument to the constructor and <span class="math notranslate nohighlight">\(e\)</span>
@@ -534,7 +440,7 @@ center of the image.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>radius</strong> (<em>int</em>) – Diamond radius and mask size. The shape of the created array is
 <code class="docutils literal notranslate"><span class="pre">(2</span> <span class="pre">*</span> <span class="pre">radius</span> <span class="pre">+</span> <span class="pre">1,</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">radius</span> <span class="pre">+</span> <span class="pre">1)</span></code>.</p></li>
@@ -545,23 +451,23 @@ will be centered in the array. By default, the smallest possible
 size is chosen.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p><em>ndarray</em></p>
 </dd>
 </dl>
 </dd></dl>
 
-</section>
-<section id="utilities">
-<h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.fill_gamut">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">fill_gamut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/utils.html#fill_gamut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.fill_gamut" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">fill_gamut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/utils.html#fill_gamut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.fill_gamut" title="Permalink to this definition"></a></dt>
 <dd><p>Scale image values to fill datatype range</p>
 <p>Sets the lowest value to 0 and the highest to whatever is the highest that
 <cite>dtype</cite> allows, or 1. if dtype is a floating point type.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>img</strong> (<em>array-like</em>) – Image data</p></li>
 <li><p><strong>dtype</strong> (<em>numpy.dtype</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – dtype of the output array. Image will be scaled to fill the value range
@@ -570,10 +476,10 @@ take values between 0 and 255. If <cite>None</cite>, use <code class="docutils l
 to <cite>None</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Scaled image with <cite>dtype</cite> as data type.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -581,83 +487,64 @@ to <cite>None</cite>.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.image.center">
-<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/utils.html#center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.center" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.image.</span></span><span class="sig-name descname"><span class="pre">center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/image/utils.html#center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.image.center" title="Permalink to this definition"></a></dt>
 <dd><p>Center an image in an array of different size</p>
 <p>If the new shape is larger, the image will be padded, otherwise it will be
 cropped.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obj</strong> (<em>ndarray</em>) – Image array</p></li>
 <li><p><strong>shape</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em>) – Output shape</p></li>
 <li><p><strong>fill_value</strong> (<em>Any</em>) – Value to use for padding</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dt class="field-even">Return type</dt>
 <dd class="field-even"><p>New array with <cite>obj</cite> centered.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <p class="rubric">References</p>
-<div role="list" class="citation-list">
-<div class="citation" id="croc1996" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>Croc1996<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
-<p>Crocker, J. C. &amp; Grier, D. G.: “Methods of digital video
+<dl class="citation">
+<dt class="label" id="croc1996"><span class="brackets">Croc1996</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dd><p>Crocker, J. C. &amp; Grier, D. G.: “Methods of digital video
 microscopy for colloidal studies”, Journal of colloid and interface
 science, Elsevier, 1996, 179, 298-310</p>
+</dd>
+</dl>
 </div>
 </div>
-</section>
-</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="flatfield.html" class="btn btn-neutral float-right" title="Flat-field correction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="fret.html" class="btn btn-neutral float-left" title="Single molecule FRET analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="flatfield.html" class="btn btn-neutral float-right" title="Flat-field correction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2015—2022, Lukas Schrangl.
-
-    </p>
+    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
