@@ -9,8 +9,9 @@ from typing import Dict, Sequence, Union
 
 import ipywidgets
 import numpy as np
-import pims
 import traitlets
+
+from .. import io
 
 
 class ImageSelector(ipywidgets.HBox):
@@ -23,8 +24,8 @@ class ImageSelector(ipywidgets.HBox):
     images = traitlets.Union([traitlets.Dict(), traitlets.List()])
     """Images or sequences to select from. Image sequences can be passed as
     3D :py:class:`numpy.ndarray`, as lists of 2D arrays, or as paths to image
-    files, which will be opened using :py:mod:`pims`. Single images are
-    represented as 2D arrays.
+    files, which will be opened using :py:class:`io.ImageSequence`. Single
+    images are represented as 2D arrays.
 
     This attribute can be a list of ``(key, img)`` tuples where ``key`` is the
     name to display and value an image (sequence), a dict mapping ``key`` to
@@ -128,7 +129,6 @@ class ImageSelector(ipywidgets.HBox):
 
         img = self.images[self._file_sel.index]
         if isinstance(img, tuple):
-            # TODO: What if there is a tuple of images instead of (key, value)?
             img = img[1]
 
         if isinstance(img, np.ndarray) and img.ndim == 2:
@@ -136,7 +136,7 @@ class ImageSelector(ipywidgets.HBox):
             img = img[None, ...]
         elif isinstance(img, (str, Path)):
             # Open…
-            img = pims.open(str(img))
+            img = io.ImageSequence(img).open()
             self._cur_image_opened = True
 
         self._cur_image = img
