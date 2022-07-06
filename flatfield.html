@@ -1,37 +1,79 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Flat-field correction &mdash; sdt-python 17.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+  <title>Flat-field correction &mdash; sdt-python 17.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Fluorescent feature localization" href="loc.html" />
     <link rel="prev" title="Image filtering and processing" href="image.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
-                17.2
+                17.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -39,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
@@ -64,31 +117,71 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
       <li>Flat-field correction</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <span class="target" id="module-sdt.flatfield"></span><section id="flat-field-correction">
-<h1>Flat-field correction<a class="headerlink" href="#flat-field-correction" title="Permalink to this headline"></a></h1>
+<h1>Flat-field correction<a class="headerlink" href="#flat-field-correction" title="Permalink to this heading">¶</a></h1>
 <p>The intensity cross section of a laser beam is usually not flat, but of
 Gaussian shape or worse. That means that fluorophores closer to the edges of
 the image will appear dimmer simply because they do not receive so much
@@ -113,7 +206,7 @@ homogenous fluorescence label.</p>
 </pre></div>
 </div>
 <p>With help of <code class="docutils literal notranslate"><span class="pre">corr</span></code>, other images or even whole image sequences (when using
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">pims</span></code> to load them) can now be corrected.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">io.ImageSequence</span></code> to load them) can now be corrected.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">img3</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">ImageSequence</span><span class="p">(</span><span class="s2">&quot;experiment_data.tif&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">img3_flat</span> <span class="o">=</span> <span class="n">corr</span><span class="p">(</span><span class="n">img3</span><span class="p">)</span>
 </pre></div>
@@ -124,10 +217,10 @@ homogenous fluorescence label.</p>
 </pre></div>
 </div>
 <section id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline"></a></h2>
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.flatfield.</span></span><span class="sig-name descname"><span class="pre">Corrector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.flatfield.</span></span><span class="sig-name descname"><span class="pre">Corrector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flat field correction</p>
 <p>This works by multiplying features’ integrated intensities (“mass”) by
 a position-dependent correction factor. The factor can be calculated from
@@ -151,9 +244,9 @@ corrected) need to have their background subtracted for this to work
 properly.</strong> This can be done by telling the <cite>Corrector</cite> object what the
 background is (or of course, before passing the data to the <cite>Corrector</cite>.)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>numpy.ndarray</em><em>, </em><em>Sequence</em><em>[</em><em>numpy.ndarray</em><em>]</em><em>, </em><em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>numpy.ndarray</em><em>]</em><em>]</em><em>, </em><em>pandas.core.frame.DataFrame</em><em>, </em><em>Sequence</em><em>[</em><em>pandas.core.frame.DataFrame</em><em>]</em><em>]</em>) – Collections of images fluorescent surfaces or single molecule
+<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>ndarray</em><em>, </em><em>Sequence</em><em>[</em><em>ndarray</em><em>]</em><em>, </em><em>Sequence</em><em>[</em><em>Sequence</em><em>[</em><em>ndarray</em><em>]</em><em>]</em><em>, </em><em>DataFrame</em><em>, </em><em>Sequence</em><em>[</em><em>DataFrame</em><em>]</em><em>]</em>) – Collections of images fluorescent surfaces or single molecule
 data to use for determining the correction function.</p></li>
 <li><p><strong>bg</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>numpy.ndarray</em><em>]</em>) – Background that is subtracted from each image. It is not used on
 single molecule data. Also sets the :py:attr`bg` attribute.</p></li>
@@ -178,43 +271,43 @@ and a mass column “alt_mass”, set
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector.bg">
-<span class="sig-name descname"><span class="pre">bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.flatfield.Corrector.bg" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.flatfield.Corrector.bg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Background to be subtracted from image data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector.avg_img">
-<span class="sig-name descname"><span class="pre">avg_img</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#sdt.flatfield.Corrector.avg_img" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">avg_img</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#sdt.flatfield.Corrector.avg_img" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pixel-wise average image from <cite>data</cite> argument to <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code>.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector.fit_result">
-<span class="sig-name descname"><span class="pre">fit_result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.flatfield.Corrector.fit_result" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit_result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.flatfield.Corrector.fit_result" title="Permalink to this definition">¶</a></dt>
 <dd><p>If a Gaussian fit was done, this holds the result. Otherwise, it is
 <cite>None</cite>.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector.corr_img">
-<span class="sig-name descname"><span class="pre">corr_img</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span></em><a class="headerlink" href="#sdt.flatfield.Corrector.corr_img" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">corr_img</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#sdt.flatfield.Corrector.corr_img" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pixel data used for correction of images. Any image to be corrected
 is divided pixel-wise by <cite>corr_img</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector.__call__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do brightness correction on <cite>features</cite> intensities</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>pandas.core.frame.DataFrame</em><em>, </em><a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.slicerator.Slicerator"><em>sdt.helper.slicerator.Slicerator</em></a><em>, </em><em>numpy.ndarray</em><em>]</em>) – data to be processed. If a pandas.Dataframe, correct the “mass”
+<li><p><strong>data</strong> (<em>Union</em><em>[</em><em>DataFrame</em><em>, </em><a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.slicerator.Slicerator"><em>Slicerator</em></a><em>, </em><em>ndarray</em><em>]</em>) – data to be processed. If a pandas.Dataframe, correct the “mass”
 column according to the particle position in the laser beam.
 Otherwise, <code class="xref py py-class docutils literal notranslate"><span class="pre">pipeline</span></code> is used to correct raw image data.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em>) – Only has an effect if <cite>data</cite> is a DataFrame. If True, the
 feature intensities will be corrected in place.</p></li>
-<li><p><strong>bg</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>numpy.ndarray</em><em>]</em><em>]</em>) – Background to be subtracted from image data. If <cite>None</cite>, use the
+<li><p><strong>bg</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>float</em><em>, </em><em>ndarray</em><em>]</em><em>]</em>) – Background to be subtracted from image data. If <cite>None</cite>, use the
 <a class="reference internal" href="#sdt.flatfield.Corrector.bg" title="sdt.flatfield.Corrector.bg"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bg</span></code></a> attribute. Ignored for single molecule data.</p></li>
 <li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. Only applicable of <cite>data</cite> are single
@@ -226,7 +319,7 @@ It is also possible to give a list of columns to correct by adding
 the “corr” key, e.g. <code class="docutils literal notranslate"><span class="pre">columns={&quot;corr&quot;:</span> <span class="pre">[&quot;mass&quot;,</span> <span class="pre">&quot;alt_mass&quot;]}</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>If <cite>data</cite> is a DataFrame and <cite>inplace</cite> is False, return the</p></li>
 <li><p>corrected frame. If <cite>data</cite> is raw image data, return corrected</p></li>
@@ -234,31 +327,31 @@ the “corr” key, e.g. <code class="docutils literal notranslate"><span class=
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><em>Union</em>[pandas.core.frame.DataFrame, <a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.slicerator.Slicerator">sdt.helper.slicerator.Slicerator</a>, numpy.ndarray]</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Union</em>[<em>DataFrame</em>, <a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.slicerator.Slicerator"><em>Slicerator</em></a>, <em>ndarray</em>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector.get_factors">
-<span class="sig-name descname"><span class="pre">get_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector.get_factors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector.get_factors" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector.get_factors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector.get_factors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get correction factors at positions x, y</p>
 <p>Depending on whether gaussian_fit was set to True or False in the
 constructor, the correction factors for each feature that described by
 an x and a y coordinate is calculated either from the Gaussian fit
 or the average image itself.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>numpy.ndarray</em>) – x and y coordinates of features</p></li>
-<li><p><strong>y</strong> (<em>numpy.ndarray</em>) – x and y coordinates of features</p></li>
+<li><p><strong>x</strong> (<em>ndarray</em>) – x and y coordinates of features</p></li>
+<li><p><strong>y</strong> (<em>ndarray</em>) – x and y coordinates of features</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>1D array of correction factors corresponding to the features</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -266,11 +359,11 @@ or the average image itself.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector.save" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save instance to disk</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>pathlib.Path</em><em>, </em><em>BinaryIO</em><em>]</em>) – Where to save. If <cite>str</cite>, the extension “.npz” will be appended if
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>BinaryIO</em><em>]</em>) – Where to save. If <cite>str</cite>, the extension “.npz” will be appended if
 it is not present.</p>
 </dd>
 </dl>
@@ -278,16 +371,16 @@ it is not present.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.flatfield.Corrector.load">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector.load" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/flatfield.html#Corrector.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.flatfield.Corrector.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load from disk</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>pathlib.Path</em><em>, </em><em>BinaryIO</em><em>]</em>) – Where to load from</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>BinaryIO</em><em>]</em>) – Where to load from</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Loaded instance</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#sdt.flatfield.Corrector" title="sdt.flatfield.Corrector">sdt.flatfield.Corrector</a></p>
 </dd>
 </dl>
@@ -300,33 +393,50 @@ it is not present.</p>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="image.html" class="btn btn-neutral float-left" title="Image filtering and processing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="loc.html" class="btn btn-neutral float-right" title="Fluorescent feature localization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="image.html" class="btn btn-neutral float-left" title="Image filtering and processing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
-  </div>
+    <p>
+        &#169; Copyright 2015—2022, Lukas Schrangl.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

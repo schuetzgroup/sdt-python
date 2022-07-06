@@ -1,38 +1,80 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diffusion analysis &mdash; sdt-python 17.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+  <title>Diffusion analysis &mdash; sdt-python 17.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Brightness analysis" href="brightness.html" />
     <link rel="prev" title="Multi-color data analysis" href="multicolor.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
-                17.2
+                17.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -40,7 +82,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
@@ -67,31 +120,71 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
       <li>Diffusion analysis</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <span class="target" id="module-sdt.motion"></span><section id="diffusion-analysis">
-<h1>Diffusion analysis<a class="headerlink" href="#diffusion-analysis" title="Permalink to this headline"></a></h1>
+<h1>Diffusion analysis<a class="headerlink" href="#diffusion-analysis" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-sdt.motion" title="sdt.motion"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.motion</span></code></a> module provides tools for analyzing single molecule
 tracking data.</p>
 <ul class="simple">
@@ -220,14 +313,14 @@ DataFrame that identify mobile and immobile parts of trajectories. Where
 </pre></div>
 </div>
 <section id="msd-calculation">
-<h2>MSD calculation<a class="headerlink" href="#msd-calculation" title="Permalink to this headline"></a></h2>
+<h2>MSD calculation<a class="headerlink" href="#msd-calculation" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.motion.Msd">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">Msd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ensemble'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#Msd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.Msd" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">Msd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ensemble'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#Msd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.Msd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and analyze mean square displacements (MSDs)</p>
 <p>from single moleclue tracking data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>iterable of pandas.DataFrame</em>) – Tracking data. Either a single DataFrame or a collection of
 DataFrames.</p></li>
@@ -257,17 +350,17 @@ and <cite>time</cite>. This means, if your DataFrame has coordinate columns
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.motion.Msd.Result">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_err</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.Msd.Result" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_err</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.Msd.Result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of Result(msd, msd_err)</p>
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.motion.Msd.Result.msd">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msd</span></span><a class="headerlink" href="#sdt.motion.Msd.Result.msd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">msd</span></span><a class="headerlink" href="#sdt.motion.Msd.Result.msd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.motion.Msd.Result.msd_err">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msd_err</span></span><a class="headerlink" href="#sdt.motion.Msd.Result.msd_err" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">msd_err</span></span><a class="headerlink" href="#sdt.motion.Msd.Result.msd_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
@@ -275,7 +368,7 @@ and <cite>time</cite>. This means, if your DataFrame has coordinate columns
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.Msd.get_msd">
-<span class="sig-name descname"><span class="pre">get_msd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#Msd.get_msd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.Msd.get_msd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_msd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#Msd.get_msd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.Msd.get_msd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get MSD and error DataFrames</p>
 <p>The columns contain data for different lag times. Each row corresponds
 to one trajectory. The row index is either the particle number if a
@@ -287,13 +380,13 @@ be one row with index <cite>e_name</cite>.</p>
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> or a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code> if there is
 only one row.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>series</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
 <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code> in the constructor), <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>
 objects will be returned. Otherwise, return
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. Defaults to <cite>True</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>msd</strong> (<em>pandas.DataFrame or pandas.Series</em>) – Mean square displacements</p></li>
 <li><p><strong>msd_err</strong> (<em>pandas.DataFrame or pandas.Series</em>) – Standard errors of the mean square displacements. If
@@ -309,10 +402,10 @@ number of samples.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.Msd.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'brownian'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#Msd.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.Msd.fit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'brownian'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#Msd.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.Msd.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a model function to the MSD data</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<em>{&quot;anomalous&quot;</em><em>, </em><em>&quot;brownian&quot;}</em><em>, </em><em>optional</em>) – Type of model to fit. Defaults to “brownian”.</p></li>
 <li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Number of lag times to use for fitting. Defaults to 2 for the
@@ -329,7 +422,7 @@ are diffusion coefficient, positional accuracy, and alpha.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.motion.MsdDist">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">MsdDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lsq'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ensemble'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'msd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd_dist.html#MsdDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.MsdDist" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">MsdDist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lsq'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ensemble'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assign_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'msd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd_dist.html#MsdDist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.MsdDist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and analyze mean square displacement (MSD) distribution</p>
 <p>from single moleclue tracking data. This differs from
 <a class="reference internal" href="#sdt.motion.Msd" title="sdt.motion.Msd"><code class="xref py py-class docutils literal notranslate"><span class="pre">sdt.motion.Msd</span></code></a> by the fact that the distributions
@@ -337,7 +430,7 @@ are analyzed, which allows for detection of multiple
 components with different diffusion coefficients <a class="reference internal" href="#schu1997" id="id1"><span>[Schu1997]</span></a>.</p>
 <p>Only valid for 2D data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>iterable of pandas.DataFrame</em>) – Tracking data. Either a single DataFrame or a collection of
 DataFrames.</p></li>
@@ -377,29 +470,29 @@ and <cite>time</cite>. This means, if your DataFrame has coordinate columns
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.motion.MsdDist.Result">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_err</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_err</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.MsdDist.Result" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_err</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_err</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.MsdDist.Result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of Result(msd, msd_err, weight, weight_err)</p>
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.motion.MsdDist.Result.msd">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msd</span></span><a class="headerlink" href="#sdt.motion.MsdDist.Result.msd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">msd</span></span><a class="headerlink" href="#sdt.motion.MsdDist.Result.msd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.motion.MsdDist.Result.msd_err">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msd_err</span></span><a class="headerlink" href="#sdt.motion.MsdDist.Result.msd_err" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">msd_err</span></span><a class="headerlink" href="#sdt.motion.MsdDist.Result.msd_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.motion.MsdDist.Result.weight">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#sdt.motion.MsdDist.Result.weight" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#sdt.motion.MsdDist.Result.weight" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 2</p>
 </dd></dl>
 
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.motion.MsdDist.Result.weight_err">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight_err</span></span><a class="headerlink" href="#sdt.motion.MsdDist.Result.weight_err" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">weight_err</span></span><a class="headerlink" href="#sdt.motion.MsdDist.Result.weight_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 3</p>
 </dd></dl>
 
@@ -407,7 +500,7 @@ and <cite>time</cite>. This means, if your DataFrame has coordinate columns
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.MsdDist.get_msd">
-<span class="sig-name descname"><span class="pre">get_msd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd_dist.html#MsdDist.get_msd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.MsdDist.get_msd" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_msd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd_dist.html#MsdDist.get_msd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.MsdDist.get_msd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get MSD and error DataFrames</p>
 <p>The columns contain data for different lag times. Each row corresponds
 to one trajectory. The row index is either the particle number if a
@@ -418,13 +511,13 @@ be one row with index <cite>e_name</cite>.</p>
 <p>If there is only one row, the <cite>series</cite> parameter controls whether to
 return a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> or a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>series</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
 <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code> in the constructor), <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>
 objects will be returned. Otherwise, return
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. Defaults to <cite>True</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Each tuple describes one component. The tuple members are
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>
 (depending on the <cite>series</cite> parameter), where <cite>msd</cite> holds the mean
@@ -434,7 +527,7 @@ for the different lag times, and <cite>weight_err</cite> contains standard
 errors of the weights. If no bootstrapping was performed, all
 errors are <cite>NaN</cite>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of namedTuple([“msd”, “msd_err”, “weight”, “weight_err”])</p>
 </dd>
 </dl>
@@ -442,10 +535,10 @@ errors are <cite>NaN</cite>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.MsdDist.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'brownian'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd_dist.html#MsdDist.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.MsdDist.fit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'brownian'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd_dist.html#MsdDist.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.MsdDist.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a model function to the MSD data</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>model</strong> (<em>{&quot;anomalous&quot;</em><em>, </em><em>&quot;brownian&quot;}</em>) – Type of model to fit</p></li>
 <li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Number of lag times to use for fitting. Defaults to 2 for the
@@ -462,18 +555,18 @@ are diffusion coefficient, positional accuracy, and alpha.</p></li>
 
 </section>
 <section id="diffusion-models-for-fitting">
-<h2>Diffusion models for fitting<a class="headerlink" href="#diffusion-models-for-fitting" title="Permalink to this headline"></a></h2>
+<h2>Diffusion models for fitting<a class="headerlink" href="#diffusion-models-for-fitting" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.motion.AnomalousDiffusion">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">AnomalousDiffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msd_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.05,</span> <span class="pre">1.0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">AnomalousDiffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msd_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.05,</span> <span class="pre">1.0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit anomalous diffusion parameters to MSD values</p>
-<p>Fit a function <span class="math notranslate nohighlight">\(msd(t_\text{lag}) = 4 D t_text{lag}^\alpha +
+<p>Fit a function <span class="math notranslate nohighlight">\(msd(t_\text{lag}) = 4 D t_\text{lag}^\alpha +
 4 \epsilon^2\)</span>
 to the tlag-vs.-MSD graph, where <span class="math notranslate nohighlight">\(D\)</span> is the diffusion coefficient,
 <span class="math notranslate nohighlight">\(\epsilon\)</span> is the positional accuracy (uncertainty), and
 <span class="math notranslate nohighlight">\(\alpha\)</span> the anomalous diffusion exponent.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msd_data</strong> (<em>msd_base.MsdData</em>) – MSD data</p></li>
 <li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Maximum number of lag times to use for fitting. Defaults to
@@ -486,7 +579,7 @@ and <span class="math notranslate nohighlight">\(\alpha\)</span>. Defaults to <c
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.AnomalousDiffusion.exposure_time_corr">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exposure_time_corr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_numeric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion.exposure_time_corr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.exposure_time_corr" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exposure_time_corr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_numeric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion.exposure_time_corr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.exposure_time_corr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correct lag times for the movement of particles during exposure</p>
 <p>When particles move during exposure, it appears as if the lag times
 change according to</p>
@@ -501,7 +594,7 @@ change according to</p>
 computed numerically using a sufficiently large <cite>n</cite> (100 by default).</p>
 <p>See <a class="reference internal" href="#goul2000" id="id2"><span>[Goul2000]</span></a> for details.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>numpy.ndarray</em>) – Lag times</p></li>
 <li><p><strong>alpha</strong> (<em>float</em>) – Anomalous diffusion exponent</p></li>
@@ -513,10 +606,10 @@ of the algorithm is O(n²). Defaults to 100.</p></li>
 calculate numerically. Useful for testing.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Apparent lag times that account for diffusion during exposure</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
@@ -524,14 +617,14 @@ calculate numerically. Useful for testing.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.AnomalousDiffusion.theoretical">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">theoretical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squeeze_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion.theoretical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.theoretical" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">theoretical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squeeze_result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion.theoretical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.theoretical" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate theoretical MSDs for different lag times</p>
 <p>Calculate <span class="math notranslate nohighlight">\(msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4
 \epsilon^2\)</span>, where <span class="math notranslate nohighlight">\(t_\text{app}\)</span> is the apparent time lag which
 takes into account particle motion during exposure; see
 <a class="reference internal" href="#sdt.motion.AnomalousDiffusion.exposure_time_corr" title="sdt.motion.AnomalousDiffusion.exposure_time_corr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">exposure_time_corr()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array-like</em><em> or </em><em>scalar</em>) – Lag times</p></li>
 <li><p><strong>d</strong> (<em>float</em>) – Diffusion coefficient</p></li>
@@ -542,10 +635,10 @@ takes into account particle motion during exposure; see
 possible. Otherwise, always return a 2D array. Defaults to <cite>True</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Calculated theoretical MSDs</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray or scalar</p>
 </dd>
 </dl>
@@ -553,17 +646,17 @@ possible. Otherwise, always return a 2D array. Defaults to <cite>True</cite>.</p
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.motion.AnomalousDiffusion.Result">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_err</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit_err</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create new instance of Result(fit, fit_err)</p>
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.motion.AnomalousDiffusion.Result.fit">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fit</span></span><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result.fit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
 </dd></dl>
 
-<dl class="py property">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.motion.AnomalousDiffusion.Result.fit_err">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fit_err</span></span><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result.fit_err" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit_err</span></span><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.Result.fit_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
 </dd></dl>
 
@@ -571,7 +664,7 @@ possible. Otherwise, always return a 2D array. Defaults to <cite>True</cite>.</p
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.AnomalousDiffusion.get_results">
-<span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion.get_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.get_results" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion.get_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.get_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get fit results</p>
 <p>The columns contain fitted parameters. Each row corresponds
 to one trajectory. The row index is either the particle number or a
@@ -580,13 +673,13 @@ tuple identifying both the DataFrame and the particle; c.f.
 <p>If there is only one row, the <cite>series</cite> parameter controls whether to
 return a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> or a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>series</strong> (<em>bool</em><em>, </em><em>optional</em>) – If <cite>True</cite> and and there is only one entry (e.g., due to
 <code class="docutils literal notranslate"><span class="pre">ensemble=True</span></code> in the <a class="reference internal" href="#sdt.motion.Msd" title="sdt.motion.Msd"><code class="xref py py-class docutils literal notranslate"><span class="pre">Msd</span></code></a> constructor),
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.Series</span></code> objects will be returned. Otherwise,
 return <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>. Defaults to <cite>True</cite>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>fit</strong> (<em>pandas.DataFrame or pandas.Series</em>) – Fit results. Columns are the fit paramaters. Each row represents
 one particle.</p></li>
@@ -600,20 +693,20 @@ for calculation of MSDs, this is all NaNs.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.AnomalousDiffusion.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.plot" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#AnomalousDiffusion.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.AnomalousDiffusion.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot lag time vs. MSD with fitted theoretical curve</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>show_legend</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to add a legend to the plot. Defaults to <cite>True</cite>.</p></li>
 <li><p><strong>ax</strong> (<em>matplotlib.axes.Axes</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Axes to use for plotting. If <cite>None</cite>, use <code class="docutils literal notranslate"><span class="pre">pyplot.gca()</span></code>.
 Defaults to <cite>None</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Axes used for plotting</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>matplotlib.axes.Axes</p>
 </dd>
 </dl>
@@ -623,14 +716,14 @@ Defaults to <cite>None</cite>.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.motion.BrownianMotion">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">BrownianMotion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msd_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#BrownianMotion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.BrownianMotion" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">BrownianMotion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msd_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_lag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#BrownianMotion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.BrownianMotion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit Brownian motion parameters to MSD values</p>
 <p>Fit a function <span class="math notranslate nohighlight">\(\mathit{msd}(t_\text{lag}) = 4 D t_\text{lag} +
 4 \epsilon^2\)</span> to
 the tlag-vs.-MSD graph, where <span class="math notranslate nohighlight">\(D\)</span> is the diffusion coefficient and
 <span class="math notranslate nohighlight">\(\epsilon\)</span> is the positional accuracy (uncertainty).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msd_data</strong> (<em>msd_base.MsdData</em>) – MSD data</p></li>
 <li><p><strong>n_lag</strong> (<em>int</em><em> or </em><em>inf</em><em>, </em><em>optional</em>) – Maximum number of lag times to use for fitting. Defaults to 2.</p></li>
@@ -640,15 +733,14 @@ the tlag-vs.-MSD graph, where <span class="math notranslate nohighlight">\(D\)</
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.motion.BrownianMotion.theoretical">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">theoretical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#BrownianMotion.theoretical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.BrownianMotion.theoretical" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">theoretical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/msd.html#BrownianMotion.theoretical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.BrownianMotion.theoretical" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate theoretical MSDs for different lag times</p>
-<p>Calculate <span class="math notranslate nohighlight">\(msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4
+<p>Calculate <span class="math notranslate nohighlight">\(msd(t_\text{lag}) = 4 D t_\text{app} + 4
 \epsilon^2\)</span>, where <span class="math notranslate nohighlight">\(t_\text{app}\)</span> is the apparent time lag
-which takes into
-account particle motion during exposure; see
+which takes into account particle motion during exposure; see
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">exposure_time_corr()</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>array-like</em><em> or </em><em>scalar</em>) – Lag times</p></li>
 <li><p><strong>d</strong> (<em>float</em>) – Diffusion coefficient</p></li>
@@ -659,10 +751,10 @@ account particle motion during exposure; see
 possible. Otherwise, always return a 2D array. Defaults to <cite>True</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Calculated theoretical MSDs</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray or scalar</p>
 </dd>
 </dl>
@@ -672,10 +764,10 @@ possible. Otherwise, always return a 2D array. Defaults to <cite>True</cite>.</p
 
 </section>
 <section id="immobilization-detection">
-<h2>Immobilization detection<a class="headerlink" href="#immobilization-detection" title="Permalink to this headline"></a></h2>
+<h2>Immobilization detection<a class="headerlink" href="#immobilization-detection" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.motion.find_immobilizations">
-<span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">find_immobilizations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_mobile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longest_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/immobilization.html#find_immobilizations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.find_immobilizations" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">find_immobilizations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_mobile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longest_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/immobilization.html#find_immobilizations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.find_immobilizations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find immobilizations in particle trajectories</p>
 <p>Analyze trajectories and mark parts where all localizations of a particle
 stay within a circle of radius <cite>max_dist</cite> from their center of mass for at
@@ -688,7 +780,7 @@ per mobile section starting at -2 (if label_mobile is <cite>True</cite>).</p>
 <p><a class="reference internal" href="#sdt.motion.find_immobilizations_int" title="sdt.motion.find_immobilizations_int"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_immobilizations_int()</span></code></a> uses a slightly different criterion
 for finding immobilizations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tracks</strong> (<em>pandas.DataFrame</em>) – Tracking data</p></li>
 <li><p><strong>max_dist</strong> (<em>float</em>) – Maximum radius within a particle may move while still being considered
@@ -713,11 +805,11 @@ using this since a sub-track will not be considered immobile if either
 <cite>r_tol</cite> or <cite>a_tol</cite> are exceeded. Defaults to 0.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Although the <cite>tracks</cite> DataFrame is modified in place, it is also
 returned for convenience.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -729,7 +821,7 @@ returned for convenience.</p>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>engine</strong> (<em>{&quot;numba&quot;</em><em>, </em><em>&quot;python&quot;}</em><em>, </em><em>optional</em>) – If <cite>engine</cite> is “numba” and the <cite>numba</cite> package is installed, use the
 much faster numba-accelerated alogrithm. Otherwise, fall back to a
@@ -746,7 +838,7 @@ the time column “alt_frame”, set <code class="docutils literal notranslate">
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.motion.label_mobile">
-<span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">label_mobile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/immobilization.html#label_mobile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.label_mobile" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">label_mobile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/immobilization.html#label_mobile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.label_mobile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Give each mobile section of a track a label (unique number)</p>
 <p>When calling <a class="reference internal" href="#sdt.motion.find_immobilizations" title="sdt.motion.find_immobilizations"><code class="xref py py-func docutils literal notranslate"><span class="pre">find_immobilizations()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">label_mobile=False</span></code>,
 all mobile sections of tracks will have <cite>-1</cite> in their <cite>immob</cite> column.
@@ -755,7 +847,7 @@ starting at <cite>-2</cite>.</p>
 <p>The <cite>data</cite> DataFrame will be modified in place. It has to be sorted
 according to frame number before calling this function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Tracking data with an <cite>immob</cite> column where all mobile sections of
 tracks are assigned <cite>-1</cite>.</p></li>
@@ -771,7 +863,7 @@ pure python one. Defaults to “numba”</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.motion.find_immobilizations_int">
-<span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">find_immobilizations_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_mobile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longest_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/immobilization.html#find_immobilizations_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.find_immobilizations_int" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.motion.</span></span><span class="sig-name descname"><span class="pre">find_immobilizations_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_mobile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longest_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/motion/immobilization.html#find_immobilizations_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.motion.find_immobilizations_int" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find immobilizations in particle trajectories</p>
 <p>Analyze trajectories and mark parts where all localizations of a particle
 stay within a circle of radius <cite>max_dist</cite> for at least a certain number
@@ -786,7 +878,7 @@ greater or equal than 0. Parts of trajectories that are not immobilized
 are assigned -1 (if <cite>label_mobile</cite> is <cite>False</cite>) or one negative number
 per mobile section starting at -2 (if label_mobile is <cite>True</cite>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>tracks</strong> (<em>pandas.DataFrame</em>) – Tracking data</p></li>
 <li><p><strong>max_dist</strong> (<em>float</em>) – Maximum radius within a particle may move while still being considered
@@ -801,11 +893,11 @@ number starting at -2). Defaults to True.</p></li>
 speed up the process. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Although the <cite>tracks</cite> DataFrame is modified in place, it is also
 returned for convenience.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -817,7 +909,7 @@ returned for convenience.</p>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>.
 Relevant names are <cite>coords</cite>, <cite>time</cite>, and <cite>particle</cite>.
 This means, if your DataFrame has coordinate columns “x” and “z” and
@@ -828,49 +920,68 @@ the time column “alt_frame”, set <code class="docutils literal notranslate">
 </dd></dl>
 
 <p class="rubric">References</p>
-<dl class="citation">
-<dt class="label" id="goul2000"><span class="brackets"><a class="fn-backref" href="#id2">Goul2000</a></span></dt>
-<dd><p>Goulian, M. &amp; Simon, S. M.: “Tracking Single Proteins within
+<div role="list" class="citation-list">
+<div class="citation" id="goul2000" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Goul2000</a><span class="fn-bracket">]</span></span>
+<p>Goulian, M. &amp; Simon, S. M.: “Tracking Single Proteins within
 Cells”, Biophysical Journal, Elsevier BV, 2000, 79, 2188–2198</p>
-</dd>
-<dt class="label" id="schu1997"><span class="brackets"><a class="fn-backref" href="#id1">Schu1997</a></span></dt>
-<dd><p>Schütz, G.; Schindler, H. &amp; Schmidt, T.: “Single-molecule
+</div>
+<div class="citation" id="schu1997" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">Schu1997</a><span class="fn-bracket">]</span></span>
+<p>Schütz, G.; Schindler, H. &amp; Schmidt, T.: “Single-molecule
 microscopy on model membranes reveals anomalous diffusion”, Biophysical
 Journal, Elsevier BV, 1997, 73, 1073–1080</p>
-</dd>
-</dl>
+</div>
+</div>
 </section>
 </section>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="multicolor.html" class="btn btn-neutral float-left" title="Multi-color data analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="brightness.html" class="btn btn-neutral float-right" title="Brightness analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="multicolor.html" class="btn btn-neutral float-left" title="Multi-color data analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
-  </div>
+    <p>
+        &#169; Copyright 2015—2022, Lukas Schrangl.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

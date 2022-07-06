@@ -1,37 +1,79 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting utilities &mdash; sdt-python 17.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+  <title>Plotting utilities &mdash; sdt-python 17.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Optimization and fitting algorithms" href="optimize.html" />
     <link rel="prev" title="Special functions" href="funcs.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
-                17.2
+                17.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -39,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
@@ -64,50 +117,93 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
       <li>Plotting utilities</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <span class="target" id="module-sdt.plot"></span><section id="plotting-utilities">
-<h1>Plotting utilities<a class="headerlink" href="#plotting-utilities" title="Permalink to this headline"></a></h1>
-<p>The <a class="reference internal" href="#module-sdt.plot" title="sdt.plot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.plot</span></code></a> module contains the <a class="reference internal" href="#sdt.plot.density_scatter" title="sdt.plot.density_scatter"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_scatter()</span></code></a> function,
-which is a wrapper around <cite>matplotlib</cite>’s as well as <cite>bokeh</cite>’s <code class="docutils literal notranslate"><span class="pre">scatter()</span></code>
-function that additionally colors data points according to data point
-density.</p>
+<h1>Plotting utilities<a class="headerlink" href="#plotting-utilities" title="Permalink to this heading">¶</a></h1>
+<p>The <a class="reference internal" href="#module-sdt.plot" title="sdt.plot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.plot</span></code></a> module contains</p>
+<ul class="simple">
+<li><p>the <a class="reference internal" href="#sdt.plot.density_scatter" title="sdt.plot.density_scatter"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_scatter()</span></code></a> function, which creates a scatter plot where
+data points are colored according to data point density.</p></li>
+<li><p><a class="reference internal" href="#sdt.plot.PanelLabel" title="sdt.plot.PanelLabel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PanelLabel</span></code></a> for creating sub-panel labels for paper figures as
+well as <a class="reference internal" href="#sdt.plot.align_panellabels" title="sdt.plot.align_panellabels"><code class="xref py py-func docutils literal notranslate"><span class="pre">align_panellabels()</span></code></a> for aligning them.</p></li>
+</ul>
+<section id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="sdt.plot.density_scatter">
+<span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">density_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#density_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.density_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a scatter plot with points colored according to density</p>
+<p>Use a Gaussian kernel density estimate to calculate the density of
+data points and color them accordingly.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>  <span class="c1"># create data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">density_scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<section id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this headline"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="sdt.plot.density_scatter">
-<span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">density_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#density_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.density_scatter" title="Permalink to this definition"></a></dt>
-<dd><p>Make a scatter plot with points colored according to density</p>
-<p>Use a Gaussian kernel density estimate to calculate the density of
-data points and color them accordingly.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>)</em>) – Input data</p></li>
 <li><p><strong>y</strong> (<em>array_like</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>)</em>) – Input data</p></li>
@@ -121,38 +217,127 @@ densities to colors. Defaults to “viridis”.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="sdt.plot.PanelLabel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">PanelLabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'axislabel'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verticalposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'top'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#PanelLabel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.PanelLabel" title="Permalink to this definition">¶</a></dt>
+<dd><p>(Sub-) panel label for figures</p>
+<p>Scientific figures often consist of more than one panel. This allows for
+adding labels (such as a, b, c, …) to the panels.</p>
+<p>This has been tested with figures using <cite>constrained layout</cite>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pls</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="s2">&quot;abcd&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">flatten</span><span class="p">()):</span>
+<span class="gp">... </span>    <span class="n">pl</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">PanelLabel</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">a</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">pls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">align_panellabels</span><span class="p">(</span><span class="n">pls</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#sdt.plot.align_panellabels" title="sdt.plot.align_panellabels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_panellabels</span></code></a></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<em>str</em>) – Label text</p></li>
+<li><p><strong>horizontalposition</strong> (<em>str</em>) – Where to position horizontally. Can be “axislabel” (align with the
+y axis label) or “frame” (align with the frame of the plot).</p></li>
+<li><p><strong>verticalposition</strong> (<em>str</em>) – Where to position vertically. Can be “top” (align with the top of
+the panel), “axislabel” (align with the top x axis label) or
+“frame” (align with the frame of the plot).</p></li>
+<li><p><strong>pad</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>Iterable</em><em>[</em><em>float</em><em>]</em><em>]</em>) – Extra space between label and panel</p></li>
+<li><p><strong>**kwargs</strong> – Additional settings. See <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.text.Annotation</span></code>
+for details. Note that <code class="docutils literal notranslate"><span class="pre">horizontalalignment</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;right&quot;</span></code> by
+default. If there is too much horizontal space, try setting
+<code class="docutils literal notranslate"><span class="pre">horizontalalignment=&quot;left&quot;</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sdt.plot.align_panellabels">
+<span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">align_panellabels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#align_panellabels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.align_panellabels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align panel labels row-wise and column-wise</p>
+<p>Labels in the same row will be aligned vertically, those in the same column
+horizontally. For this, all axes to which the panels have been added need
+to share the same GridSpec.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>  <span class="c1"># create data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">density_scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">pyplot</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">constrained_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pls</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="s2">&quot;abcd&quot;</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">flatten</span><span class="p">()):</span>
+<span class="gp">... </span>    <span class="n">pl</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">PanelLabel</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">a</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">pls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pl</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">align_panellabels</span><span class="p">(</span><span class="n">pls</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pls</strong> (<em>Iterable</em><em>[</em><a class="reference internal" href="#sdt.plot.PanelLabel" title="sdt.plot.PanelLabel"><em>PanelLabel</em></a><em>]</em>) – Panel labels to align</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#sdt.plot.PanelLabel" title="sdt.plot.PanelLabel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PanelLabel</span></code></a></p>
+</div>
+</dd></dl>
+
 </section>
 </section>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="funcs.html" class="btn btn-neutral float-left" title="Special functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="optimize.html" class="btn btn-neutral float-right" title="Optimization and fitting algorithms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="funcs.html" class="btn btn-neutral float-left" title="Special functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
-  </div>
+    <p>
+        &#169; Copyright 2015—2022, Lukas Schrangl.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -1,37 +1,79 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Regions of interest (ROIs) &mdash; sdt-python 17.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+  <title>Regions of interest (ROIs) &mdash; sdt-python 17.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Multi-color data analysis" href="multicolor.html" />
     <link rel="prev" title="Documentation of the sdt python package" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
-                17.2
+                17.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -39,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Regions of interest (ROIs)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#integer-pixel-based-rectangular-rois">Integer pixel-based rectangular ROIs</a></li>
@@ -67,31 +120,71 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
       <li>Regions of interest (ROIs)</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <span class="target" id="module-sdt.roi"></span><section id="regions-of-interest-rois">
-<h1>Regions of interest (ROIs)<a class="headerlink" href="#regions-of-interest-rois" title="Permalink to this headline"></a></h1>
+<h1>Regions of interest (ROIs)<a class="headerlink" href="#regions-of-interest-rois" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="#module-sdt.roi" title="sdt.roi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.roi</span></code></a> module provides classes for restricting data (both single
 molecule and image data) to a region of interest (ROI). One can specify</p>
 <ul class="simple">
@@ -114,7 +207,7 @@ and <a class="reference internal" href="#sdt.roi.load_imagej_zip" title="sdt.roi
 <p class="rubric">Examples</p>
 <p>Create some data:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">img</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">150</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">img_seq</span> <span class="o">=</span> <span class="n">pims</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;images.tif&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">img_seq</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">ImageSequence</span><span class="p">(</span><span class="s2">&quot;images.tif&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -159,10 +252,10 @@ and <a class="reference internal" href="#sdt.roi.load_imagej_zip" title="sdt.roi
 </pre></div>
 </div>
 <section id="integer-pixel-based-rectangular-rois">
-<h2>Integer pixel-based rectangular ROIs<a class="headerlink" href="#integer-pixel-based-rectangular-rois" title="Permalink to this headline"></a></h2>
+<h2>Integer pixel-based rectangular ROIs<a class="headerlink" href="#integer-pixel-based-rectangular-rois" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.roi.ROI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">ROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">ROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rectangular region of interest in a picture</p>
 <p>This class represents a rectangular region of interest. It can crop images
 or restrict data (such as feature localization data) to a specified region.</p>
@@ -178,7 +271,7 @@ or restrict data (such as feature localization data) to a specified region.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>top_left</strong> (<em>tuple of int</em>) – Coordinates of the top-left corner. Pixels with coordinates
 greater or equal than these are excluded from the ROI.</p></li>
@@ -193,54 +286,54 @@ Either this or <cite>bottom_right</cite> need to specified.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.ROI.top_left">
-<span class="sig-name descname"><span class="pre">top_left</span></span><a class="headerlink" href="#sdt.roi.ROI.top_left" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">top_left</span></span><a class="headerlink" href="#sdt.roi.ROI.top_left" title="Permalink to this definition">¶</a></dt>
 <dd><p>x and y coordinates of the top-left corner. Data with coordinates
 greater or equal than these are excluded from the ROI.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.ROI.bottom_right">
-<span class="sig-name descname"><span class="pre">bottom_right</span></span><a class="headerlink" href="#sdt.roi.ROI.bottom_right" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bottom_right</span></span><a class="headerlink" href="#sdt.roi.ROI.bottom_right" title="Permalink to this definition">¶</a></dt>
 <dd><p>x and y coordinates of the bottom-right corner. Data with
 coordinates greater or equal than these are excluded from the ROI.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.ROI.dataframe_mask">
-<span class="sig-name descname"><span class="pre">dataframe_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.dataframe_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.dataframe_mask" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dataframe_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.dataframe_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.dataframe_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get boolean array describing whether localizations lie within ROI</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.core.frame.DataFrame</em>) – Localization data</p></li>
+<li><p><strong>data</strong> (<em>DataFrame</em>) – Localization data</p></li>
 <li><p><strong>columns</strong> (<em>Dict</em>) – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. The only relevant name is <cite>coords</cite>. This
 means, if your DataFrame has coordinate columns “x” and “z”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>Boolean array, one entry per line in <cite>data</cite>, which is <cite>True</cite> if the</p></li>
 <li><p>localization lies within the ROI, <cite>False</cite> otherwise.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ndarray</em></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.ROI.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.__call__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restrict data to the region of interest.</p>
 <p>If the input is localization data, it is filtered depending on whether
 the coordinates are within the rectangle. If it is image data, it is
 cropped to the rectangle.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>pims.FramesSequence</em><em> or </em><em>array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
 lines with coordinate values within the ROI. Crop the image.</p></li>
@@ -256,10 +349,10 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Data restricted to the ROI represented by this class.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame or <a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.slicerator.Slicerator">slicerator.Slicerator</a> or numpy.array</p>
 </dd>
 </dl>
@@ -267,13 +360,13 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.ROI.reset_origin">
-<span class="sig-name descname"><span class="pre">reset_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.reset_origin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.reset_origin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.reset_origin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.reset_origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset coordinates to the original coordinate system</p>
 <p>This undoes the effect of the <cite>reset_origin</cite> parameter to
 <a class="reference internal" href="#sdt.roi.ROI.__call__" title="sdt.roi.ROI.__call__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__call__()</span></code></a>. The coordinates of the top-left ROI corner are
 added to the feature coordinates in <cite>data</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Localization data, modified in place.</p></li>
 <li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in
@@ -287,7 +380,7 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.ROI.to_yaml">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.to_yaml" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.to_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump as YAML</p>
 <p>Pass this as the <cite>representer</cite> parameter to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">yaml.Dumper.add_representer()</span></code></p>
@@ -295,7 +388,7 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.ROI.from_yaml">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.from_yaml" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#ROI.from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.ROI.from_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct from YAML</p>
 <p>Pass this as the <cite>constructor</cite> parameter to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">yaml.Loader.add_constructor()</span></code></p>
@@ -305,10 +398,10 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 </section>
 <section id="arbitrary-rois-with-subpixel-accuracy">
-<h2>Arbitrary ROIs with subpixel accuracy<a class="headerlink" href="#arbitrary-rois-with-subpixel-accuracy" title="Permalink to this headline"></a></h2>
+<h2>Arbitrary ROIs with subpixel accuracy<a class="headerlink" href="#arbitrary-rois-with-subpixel-accuracy" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.roi.PathROI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">PathROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">PathROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Region of interest in a picture determined by a path</p>
 <p>This class represents a region of interest that is described by a path.
 It uses <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.path.Path</span></code> to this end. It can crop images
@@ -316,7 +409,7 @@ or restrict data (such as feature localization data) to a specified region.</p>
 <p>This works only for paths that do not intersect themselves and for single
 channel (i. e. grayscale) images.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<em>list of vertices</em><em> or </em><em>matplotlib.path.Path</em>) – Description of the path. Either a list of vertices that will
 be used to construct a <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.path.Path</span></code> or a
@@ -333,14 +426,14 @@ DataFrames. Defaults to False.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.path">
-<span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#sdt.roi.PathROI.path" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">path</span></span><a class="headerlink" href="#sdt.roi.PathROI.path" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.path.Path</span></code> outlining the region of interest.
 Do not modifiy.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.buffer">
-<span class="sig-name descname"><span class="pre">buffer</span></span><a class="headerlink" href="#sdt.roi.PathROI.buffer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">buffer</span></span><a class="headerlink" href="#sdt.roi.PathROI.buffer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Float giving the width of extra space around the path. Does not
 affect the size of the image, which is just the size of the bounding
 box of the <a class="reference internal" href="#sdt.roi.PathROI.path" title="sdt.roi.PathROI.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">path</span></code></a>, without <a class="reference internal" href="#sdt.roi.PathROI.buffer" title="sdt.roi.PathROI.buffer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">buffer</span></code></a>.
@@ -349,67 +442,67 @@ Do not modify.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.bounding_box">
-<span class="sig-name descname"><span class="pre">bounding_box</span></span><a class="headerlink" href="#sdt.roi.PathROI.bounding_box" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bounding_box</span></span><a class="headerlink" href="#sdt.roi.PathROI.bounding_box" title="Permalink to this definition">¶</a></dt>
 <dd><p>numpy.ndarray, shape(2, 2), dtype(float) describing the bounding box
 of the path, enlarged by <a class="reference internal" href="#sdt.roi.PathROI.buffer" title="sdt.roi.PathROI.buffer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">buffer</span></code></a> on each side.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.bounding_box_int">
-<span class="sig-name descname"><span class="pre">bounding_box_int</span></span><a class="headerlink" href="#sdt.roi.PathROI.bounding_box_int" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bounding_box_int</span></span><a class="headerlink" href="#sdt.roi.PathROI.bounding_box_int" title="Permalink to this definition">¶</a></dt>
 <dd><p>Smallest integer bounding box containing <a class="reference internal" href="#sdt.roi.PathROI.bounding_box" title="sdt.roi.PathROI.bounding_box"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bounding_box</span></code></a></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.area">
-<span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#sdt.roi.PathROI.area" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#sdt.roi.PathROI.area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Area of the ROI (without <a class="reference internal" href="#sdt.roi.PathROI.buffer" title="sdt.roi.PathROI.buffer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">buffer</span></code></a>)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.image_mask">
-<span class="sig-name descname"><span class="pre">image_mask</span></span><a class="headerlink" href="#sdt.roi.PathROI.image_mask" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">image_mask</span></span><a class="headerlink" href="#sdt.roi.PathROI.image_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boolean pixel array; rasterized <a class="reference internal" href="#sdt.roi.PathROI.path" title="sdt.roi.PathROI.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">path</span></code></a> or None if
 <code class="docutils literal notranslate"><span class="pre">no_image=True</span></code> was passed to the constructor.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.dataframe_mask">
-<span class="sig-name descname"><span class="pre">dataframe_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.dataframe_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.dataframe_mask" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dataframe_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.dataframe_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.dataframe_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get boolean array describing whether localizations lie within ROI</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.core.frame.DataFrame</em>) – Localization data</p></li>
+<li><p><strong>data</strong> (<em>DataFrame</em>) – Localization data</p></li>
 <li><p><strong>columns</strong> (<em>Dict</em>) – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. The only relevant name is <cite>coords</cite>. This
 means, if your DataFrame has coordinate columns “x” and “z”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>Boolean array, one entry per line in <cite>data</cite>, which is <cite>True</cite> if the</p></li>
 <li><p>localization lies within the ROI, <cite>False</cite> otherwise.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ndarray</em></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.__call__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">crop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restrict data to the region of interest.</p>
 <p>If the input is localization data, it is filtered depending on whether
 the coordinates are within the path. If it is image data, it is
 cropped to the bounding rectangle of the path and all pixels not
 contained in the path are set to <cite>fill_value</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>pims.FramesSequence</em><em> or </em><em>array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
 lines with coordinate values within the ROI path (+ buffer).
@@ -438,10 +531,10 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Data restricted to the ROI represented by this class.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame or <a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.slicerator.Slicerator">slicerator.Slicerator</a> or numpy.array</p>
 </dd>
 </dl>
@@ -449,13 +542,13 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.reset_origin">
-<span class="sig-name descname"><span class="pre">reset_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.reset_origin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.reset_origin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.reset_origin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.reset_origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset coordinates to the original coordinate system</p>
 <p>This undoes the effect of the <cite>reset_origin</cite> parameter to
 <a class="reference internal" href="#sdt.roi.PathROI.__call__" title="sdt.roi.PathROI.__call__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__call__()</span></code></a>. The coordinates of the top-left ROI corner are
 added to the feature coordinates in <cite>data</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Localization data, modified in place.</p></li>
 <li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in
@@ -469,12 +562,12 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trafo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trafo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new PathROI instance with a transformed path</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>trafo</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>matplotlib.transforms.Transform</em><em>, </em><em>numpy.ndarray</em><em>]</em><em>]</em>) – <p>Full transform. If given as a an array, it has to have the form</p>
+<li><p><strong>trafo</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>Transform</em><em>, </em><em>ndarray</em><em>]</em><em>]</em>) – <p>Full transform. If given as a an array, it has to have the form</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>a c e
 b d f
 0 0 1,
@@ -484,28 +577,28 @@ b d f
 <cite>linear</cite> below) and e, f give the translation part (see <cite>trans</cite>
 below).</p>
 </p></li>
-<li><p><strong>linear</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – Linear part (rotation, scaling, shear) of the transform, a 2x2
+<li><p><strong>linear</strong> (<em>Optional</em><em>[</em><em>ndarray</em><em>]</em>) – Linear part (rotation, scaling, shear) of the transform, a 2x2
 matrix. Only used if <cite>trafo</cite> is not given.</p></li>
-<li><p><strong>trans</strong> (<em>Optional</em><em>[</em><em>numpy.ndarray</em><em>]</em>) – Translation, 1D array of length 2. Only used if <cite>trafo</cite> is not
+<li><p><strong>trans</strong> (<em>Optional</em><em>[</em><em>ndarray</em><em>]</em>) – Translation, 1D array of length 2. Only used if <cite>trafo</cite> is not
 given.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>ROI with transformed path and same <a class="reference internal" href="#sdt.roi.PathROI.buffer" title="sdt.roi.PathROI.buffer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">buffer</span></code></a>. The image mask is</p></li>
 <li><p><em>only created if this instance has an image mask.</em></p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.roi.PathROI">sdt.roi.roi.PathROI</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.roi.PathROI"><em>PathROI</em></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.to_yaml">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.to_yaml" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.to_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump as YAML</p>
 <p>Pass this as the <cite>representer</cite> parameter to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">yaml.Dumper.add_representer()</span></code></p>
@@ -513,7 +606,7 @@ given.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.PathROI.from_yaml">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.from_yaml" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#PathROI.from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.PathROI.from_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct from YAML</p>
 <p>Pass this as the <cite>constructor</cite> parameter to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">yaml.Loader.add_constructor()</span></code></p>
@@ -523,14 +616,14 @@ given.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.roi.RectangleROI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">RectangleROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#RectangleROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.RectangleROI" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">RectangleROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#RectangleROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.RectangleROI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rectangular region of interest in a picture</p>
 <p>This differs from <a class="reference internal" href="#sdt.roi.ROI" title="sdt.roi.ROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">ROI</span></code></a> in that it is derived from
 <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code></a> and thus allows for float coordinates. Also, the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">path</span></code> can easily be transformed using
 <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.transforms</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>top_left</strong> (<em>tuple of float</em>) – x and y coordinates of the top-left corner.</p></li>
 <li><p><strong>bottom_right</strong> (<em>tuple of float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – x and y coordinates of the bottom-right corner.
@@ -547,11 +640,11 @@ Either this or <cite>bottom_right</cite> need to specified.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.roi.EllipseROI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">EllipseROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#EllipseROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.EllipseROI" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">EllipseROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/roi.html#EllipseROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.EllipseROI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Elliptical region of interest in a picture</p>
 <p>Subclass of <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.PathROI"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathROI</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>center</strong> (<em>tuple of float</em>) – </p></li>
 <li><p><strong>axes</strong> (<em>tuple of float</em>) – Lengths of first and second axis.</p></li>
@@ -565,17 +658,17 @@ Either this or <cite>bottom_right</cite> need to specified.</p></li>
 
 </section>
 <section id="boolean-mask-rois">
-<h2>Boolean mask ROIs<a class="headerlink" href="#boolean-mask-rois" title="Permalink to this headline"></a></h2>
+<h2>Boolean mask ROIs<a class="headerlink" href="#boolean-mask-rois" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">MaskROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">MaskROI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Region of interest defined by a boolean mask array</p>
 <p>This class represents a region of interest that is described by an array
 of boolean values It can crop images or restrict data (such as feature
 localization data) to a specified region.</p>
 <p>This works only for single channel (i. e. grayscale) images.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mask</strong> (<em>numpy.ndarray</em><em>, </em><em>dtype</em><em>(</em><em>bool</em><em>)</em>) – Set the <a class="reference internal" href="#sdt.roi.MaskROI.mask" title="sdt.roi.MaskROI.mask"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask</span></code></a> attribute.</p></li>
 <li><p><strong>mask_origin</strong> (<em>tuple of float</em><em>, </em><em>optional</em>) – Set the <a class="reference internal" href="#sdt.roi.MaskROI.mask_origin" title="sdt.roi.MaskROI.mask_origin"><code class="xref py py-attr docutils literal notranslate"><span class="pre">mask_origin</span></code></a> attribute. Defaults to (0, 0).</p></li>
@@ -585,7 +678,7 @@ localization data) to a specified region.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.mask">
-<span class="sig-name descname"><span class="pre">mask</span></span><a class="headerlink" href="#sdt.roi.MaskROI.mask" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mask</span></span><a class="headerlink" href="#sdt.roi.MaskROI.mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boolean mask array where each <cite>True</cite> entry represents a pixel with
 data to be accepted and each <cite>False</cite> entry represents a pixel with
 data to be rejected.</p>
@@ -593,7 +686,7 @@ data to be rejected.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.mask_origin">
-<span class="sig-name descname"><span class="pre">mask_origin</span></span><a class="headerlink" href="#sdt.roi.MaskROI.mask_origin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mask_origin</span></span><a class="headerlink" href="#sdt.roi.MaskROI.mask_origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tuple of coordinates of the origin of the mask. This shifts the
 mask with respect to the data it is applied to using
 <a class="reference internal" href="#sdt.roi.MaskROI.__call__" title="sdt.roi.MaskROI.__call__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__call__()</span></code></a>. These are real coordinates, not array indices
@@ -602,47 +695,47 @@ mask with respect to the data it is applied to using
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.pixel_size">
-<span class="sig-name descname"><span class="pre">pixel_size</span></span><a class="headerlink" href="#sdt.roi.MaskROI.pixel_size" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pixel_size</span></span><a class="headerlink" href="#sdt.roi.MaskROI.pixel_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Size of a pixel. Used to scale the coordinates in DataFrames
 correctly.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.dataframe_mask">
-<span class="sig-name descname"><span class="pre">dataframe_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.dataframe_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.dataframe_mask" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dataframe_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.dataframe_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.dataframe_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get boolean array describing whether localizations lie within mask</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.core.frame.DataFrame</em>) – Localization data</p></li>
+<li><p><strong>data</strong> (<em>DataFrame</em>) – Localization data</p></li>
 <li><p><strong>columns</strong> (<em>Dict</em>) – Override default column names as defined in
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">config.columns</span></code>. The only relevant name is <cite>coords</cite>. This
 means, if your DataFrame has coordinate columns “x” and “z”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>Boolean array, one entry per line in <cite>data</cite>, which is <cite>True</cite> if the</p></li>
 <li><p>localization lies within the image mask, <cite>False</cite> otherwise.</p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ndarray</em></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.__call__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Restrict data to the region of interest.</p>
 <p>If the input is localization data, it is filtered depending on whether
 the coordinates are within the path. If it is image data, all pixels
 for which the mask evaluates to <cite>False</cite> are set to <cite>fill_value</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>pims.FramesSequence</em><em> or </em><em>array-like</em>) – Data to be processed. If a pandas.Dataframe, select only those
 lines with coordinate values within the ROI path (+ buffer).
@@ -664,10 +757,10 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 <code class="docutils literal notranslate"><span class="pre">columns={&quot;coords&quot;:</span> <span class="pre">[&quot;x&quot;,</span> <span class="pre">&quot;z&quot;]}</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Data restricted to the ROI represented by this class.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame or <a class="reference internal" href="helper.html#sdt.helper.Slicerator" title="sdt.helper.Slicerator">helper.Slicerator</a> or numpy.array</p>
 </dd>
 </dl>
@@ -675,13 +768,13 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.reset_origin">
-<span class="sig-name descname"><span class="pre">reset_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.reset_origin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.reset_origin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reset_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.reset_origin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.reset_origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset coordinates to the original coordinate system</p>
 <p>This undoes the effect of the <cite>reset_origin</cite> parameter to
 <a class="reference internal" href="#sdt.roi.MaskROI.__call__" title="sdt.roi.MaskROI.__call__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__call__()</span></code></a>. The coordinates of the top-left ROI corner are
 added to the feature coordinates in <cite>data</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Localization data, modified in place.</p></li>
 <li><p><strong>columns</strong> (<em>dict</em><em>, </em><em>optional</em>) – Override default column names as defined in
@@ -695,7 +788,7 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.to_yaml">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.to_yaml" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dumper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.to_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump as YAML</p>
 <p>Pass this as the <cite>representer</cite> parameter to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">yaml.Dumper.add_representer()</span></code></p>
@@ -703,7 +796,7 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.from_yaml">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.from_yaml" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/mask_roi.html#MaskROI.from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.MaskROI.from_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct from YAML</p>
 <p>Pass this as the <cite>constructor</cite> parameter to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">yaml.Loader.add_constructor()</span></code></p>
@@ -711,7 +804,7 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.roi.MaskROI.area">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#sdt.roi.MaskROI.area" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#sdt.roi.MaskROI.area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Area of <cite>True</cite> pixels in the mask</p>
 </dd></dl>
 
@@ -719,22 +812,22 @@ means, if your DataFrame has coordinate columns “x” and “z”, set
 
 </section>
 <section id="imagej-roi-file-loading">
-<h2>ImageJ ROI file loading<a class="headerlink" href="#imagej-roi-file-loading" title="Permalink to this headline"></a></h2>
+<h2>ImageJ ROI file loading<a class="headerlink" href="#imagej-roi-file-loading" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.roi.load_imagej">
-<span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">load_imagej</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_or_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/imagej.html#load_imagej"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.load_imagej" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">load_imagej</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_or_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/imagej.html#load_imagej"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.load_imagej" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load ROI from ImageJ ROI file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>file_or_data</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em> or </em><em>bytes</em><em> or </em><em>file</em>) – Source data. A <cite>str</cite> or <cite>pathlib.Path</cite> has to point to a file that
 can be opened for binary reading and is seekable. If <cite>bytes</cite>,
 this has to be the contents of a ROI file. A file has to be opened to
 allow mem-mapping (“r+b”).</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>ROI object representing the ROI described in the file</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#sdt.roi.ROI" title="sdt.roi.roi.ROI">roi.ROI</a> or <a class="reference internal" href="#sdt.roi.PathROI" title="sdt.roi.roi.PathROI">roi.PathROI</a> or <a class="reference internal" href="#sdt.roi.RectangleROI" title="sdt.roi.roi.RectangleROI">roi.RectangleROI</a> or <a class="reference internal" href="#sdt.roi.EllipseROI" title="sdt.roi.roi.EllipseROI">roi.EllipseROI</a></p>
 </dd>
 </dl>
@@ -742,17 +835,17 @@ allow mem-mapping (“r+b”).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.roi.load_imagej_zip">
-<span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">load_imagej_zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/imagej.html#load_imagej_zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.load_imagej_zip" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.roi.</span></span><span class="sig-name descname"><span class="pre">load_imagej_zip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/roi/imagej.html#load_imagej_zip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.roi.load_imagej_zip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load ROIs from ImageJ zip file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>file</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em> or </em><em>zipfile.ZipFile</em>) – Name/path of the zip file or ZipFile opened for reading</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Use the ROI names inside the zip as keys and the return values
 <a class="reference internal" href="#sdt.roi.load_imagej" title="sdt.roi.load_imagej"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_imagej()</span></code></a> calls as values.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict of ROI objects</p>
 </dd>
 </dl>
@@ -763,33 +856,50 @@ allow mem-mapping (“r+b”).</p>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Documentation of the sdt python package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="multicolor.html" class="btn btn-neutral float-right" title="Multi-color data analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Documentation of the sdt python package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
-  </div>
+    <p>
+        &#169; Copyright 2015—2022, Lukas Schrangl.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

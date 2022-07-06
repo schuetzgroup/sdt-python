@@ -1,37 +1,79 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data input/output &mdash; sdt-python 17.2 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+  <title>Data input/output &mdash; sdt-python 17.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Changepoint detection" href="changepoint.html" />
     <link rel="prev" title="Brightness analysis" href="brightness.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> sdt-python
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
-                17.2
+                17.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -39,7 +81,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
@@ -71,31 +124,71 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">sdt-python</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
       <li>Data input/output</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <span class="target" id="module-sdt.io"></span><section id="data-input-output">
-<h1>Data input/output<a class="headerlink" href="#data-input-output" title="Permalink to this headline"></a></h1>
+<h1>Data input/output<a class="headerlink" href="#data-input-output" title="Permalink to this heading">¶</a></h1>
 <p><a class="reference internal" href="#module-sdt.io" title="sdt.io"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.io</span></code></a> provides convenient ways to save and load all kinds of data.</p>
 <ul>
 <li><p>Image sequences can be saved as multi-page TIFF files with help of
@@ -198,10 +291,10 @@ in place of it:</p>
 </pre></div>
 </div>
 <section id="image-files">
-<h2>Image files<a class="headerlink" href="#image-files" title="Permalink to this headline"></a></h2>
+<h2>Image files<a class="headerlink" href="#image-files" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">ImageSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'?'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">ImageSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'I'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sliceable, lazy-loading interface to multi-image files</p>
 <p>Single images can be retrieved by index, while substacks can be created
 by slicing and fancy indexing using lists/arrays of indices or boolean
@@ -228,7 +321,7 @@ dealing with containing many images.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>uri</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>pathlib.Path</em><em>, </em><em>bytes</em><em>, </em><em>IO</em><em>]</em>) – File or file location or data to read from.</p></li>
 <li><p><strong>format</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – File format. Use <cite>None</cite> for automatic detection.</p></li>
@@ -242,19 +335,19 @@ opening file.</p></li>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.is_slice">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_slice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#sdt.io.ImageSequence.is_slice" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_slice</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#sdt.io.ImageSequence.is_slice" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether this instance is the result of slicing another instance</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.uri">
-<span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">IO</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.io.ImageSequence.uri" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Path</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bytes</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">IO</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.io.ImageSequence.uri" title="Permalink to this definition">¶</a></dt>
 <dd><p>File or file location or data to read from.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.mode">
-<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#sdt.io.ImageSequence.mode" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mode</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#sdt.io.ImageSequence.mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mode for opening file. Use “i” to retrieve a single image, “I” for
 multple images, “v” for single volume, “V” for multiple volumes and “?”
 for a sensible default.</p>
@@ -262,17 +355,17 @@ for a sensible default.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.reader_args">
-<span class="sig-name descname"><span class="pre">reader_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span></em><a class="headerlink" href="#sdt.io.ImageSequence.reader_args" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reader_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span></em><a class="headerlink" href="#sdt.io.ImageSequence.reader_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Keyword arguments passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">imageio.get_reader()</span></code> when opening
 file.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence.open" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence.open" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open the file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>self</p>
 </dd>
 </dl>
@@ -280,45 +373,45 @@ file.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence.close" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close the file</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.get_data">
-<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence.get_data" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a single frame</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>int</em>) – Frame number</p></li>
 <li><p><strong>**kwargs</strong> – Additional keyword arguments to pass to imageio’s
 <code class="docutils literal notranslate"><span class="pre">Reader.get_data()</span></code> method.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p>Image data. The array has a <code class="docutils literal notranslate"><span class="pre">meta</span></code> attribute containing associated</p></li>
 <li><p><em>metadata.</em></p></li>
 </ul>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>ndarray</em></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.get_meta_data">
-<span class="sig-name descname"><span class="pre">get_meta_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence.get_meta_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence.get_meta_data" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_meta_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/image_sequence.html#ImageSequence.get_meta_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.ImageSequence.get_meta_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get metadata for a frame</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">t</span></code> is not given, return the global metadata.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>t</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Frame number</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Metadata dictionary.</p>
 </dd>
 </dl>
@@ -326,13 +419,13 @@ file.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.closed">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#sdt.io.ImageSequence.closed" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#sdt.io.ImageSequence.closed" title="Permalink to this definition">¶</a></dt>
 <dd><p>True if the file is currently closed.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.io.ImageSequence.format">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.io.ImageSequence.format" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.io.ImageSequence.format" title="Permalink to this definition">¶</a></dt>
 <dd><p>File format. Use <cite>None</cite> for automatic detection.</p>
 </dd></dl>
 
@@ -340,17 +433,20 @@ file.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.save_as_tiff">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">save_as_tiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/tiff.html#save_as_tiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.save_as_tiff" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">save_as_tiff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contiguous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/tiff.html#save_as_tiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.save_as_tiff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a sequence of images to a TIFF stack</p>
 <p>If the items in <cite>frames</cite> contain a dict named <cite>metadata</cite>, an attempt to
 serialize it to YAML and save it as the TIFF file’s ImageDescription
 tags.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>frames</strong> (<em>iterable of numpy.arrays</em>) – Frames to be written to TIFF file. This can e.g. be any subclass of
-<cite>pims.FramesSequence</cite> like <cite>pims.ImageSequence</cite>.</p></li>
-<li><p><strong>filename</strong> (<em>str</em>) – Name of the output file</p></li>
+<li><p><strong>frames</strong> (<em>Iterable</em><em>[</em><em>ndarray</em><em>]</em>) – Frames to be written to TIFF file.</p></li>
+<li><p><strong>filename</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) – Name of the output file</p></li>
+<li><p><strong>contiguous</strong> (<em>bool</em>) – Whether to write to the TIFF file contiguously or not. This has
+implications when reading the data. If using <cite>PIMS</cite>, set to <cite>True</cite>.
+If using <cite>imageio</cite>, use <code class="docutils literal notranslate"><span class="pre">&quot;I&quot;</span></code> mode for reading if <cite>True</cite>.
+Setting to <cite>False</cite> allows for per-image metadata.</p></li>
 </ul>
 </dd>
 </dl>
@@ -358,12 +454,12 @@ tags.</p>
 
 </section>
 <section id="single-molecule-data">
-<h2>Single molecule data<a class="headerlink" href="#single-molecule-data" title="Permalink to this headline"></a></h2>
+<h2>Single molecule data<a class="headerlink" href="#single-molecule-data" title="Permalink to this heading">¶</a></h2>
 <section id="generic-functions">
-<h3>Generic functions<a class="headerlink" href="#generic-functions" title="Permalink to this headline"></a></h3>
+<h3>Generic functions<a class="headerlink" href="#generic-functions" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.load">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load localization or tracking data from file</p>
 <p>Use the <code class="xref py py-func docutils literal notranslate"><span class="pre">load_*()</span></code> function appropriate for the file type in order to
 load the data. The file type is determined by the file’s extension or
@@ -379,7 +475,7 @@ the <cite>fmt</cite> parameter.</p>
 <li><p>trc files (*.trc)</p></li>
 </ul>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file</p></li>
 <li><p><strong>typ</strong> (<em>str</em><em>, </em><em>optional</em>) – If the file is HDF5, load this key (usually either “features” or
@@ -393,10 +489,10 @@ write the given format.</p></li>
 channel.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Loaded data</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -404,11 +500,11 @@ channel.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.save">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.save" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save feature/tracking data</p>
 <p>This supports HDF5, trc, and particle_tracker formats.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to write to</p></li>
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Data to save</p></li>
@@ -424,13 +520,13 @@ write the given format.</p></li>
 
 </section>
 <section id="specific-functions">
-<h3>Specific functions<a class="headerlink" href="#specific-functions" title="Permalink to this headline"></a></h3>
+<h3>Specific functions<a class="headerlink" href="#specific-functions" title="Permalink to this heading">¶</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.load_msdplot">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_msdplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_msdplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_msdplot" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_msdplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_msdplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_msdplot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load msdplot data from .mat file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p></li>
 <li><p><strong>Returns</strong> – </p></li>
@@ -456,12 +552,12 @@ emsd a pandas.DataFrame containing the msd-vs.-tlag data.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.load_pt2d">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_pt2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_pt2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_pt2d" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_pt2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_pt2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_pt2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a _positions.mat file created by particle_tracking_2D</p>
 <p>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.io.loadmat()</span></code> to load the file and convert data to a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p></li>
 <li><p><strong>typ</strong> (<em>{&quot;features&quot;</em><em>, </em><em>&quot;tracks&quot;}</em>) – Specify whether to load feature data (positions.mat) or tracking data
@@ -473,10 +569,10 @@ reading the protocol fails, this behaves as if load_protocol=False.
 Defaults to True.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Loaded data.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -484,12 +580,12 @@ Defaults to True.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.load_pkmatrix">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_pkmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">green</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_pkmatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_pkmatrix" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_pkmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">green</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_pkmatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_pkmatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a pkmatrix from a .mat file</p>
 <p>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.io.loadmat()</span></code> to load the file and convert data to a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p></li>
 <li><p><strong>green</strong> (<em>bool</em>) – If True, load <cite>pkmatrix_green</cite>, which is the right half of the image
@@ -497,10 +593,10 @@ when using <code class="docutils literal notranslate"><span class="pre">prepare_
 load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Loaded data.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -508,18 +604,18 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.load_pks">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_pks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_pks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_pks" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_pks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_pks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_pks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a pks matrix from a MATLAB file</p>
 <p>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.io.loadmat()</span></code> to load the file and convert data to a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Loaded data.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -527,16 +623,16 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.load_trc">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_trc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_trc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_trc" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_trc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_trc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_trc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load tracking data from a .trc file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Loaded data.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -544,16 +640,16 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.load_csv">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_csv" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">load_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#load_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.load_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load localization data from a CSV file created by ThunderSTORM</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to load</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Single molecule data</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -561,10 +657,10 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.save_pt2d">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">save_pt2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tracks'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#save_pt2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.save_pt2d" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">save_pt2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tracks'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#save_pt2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.save_pt2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save feature/tracking data in particle_tracker format</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em><em> or </em><em>pathlib.Path</em>) – Name of the file to write to</p></li>
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Data to save</p></li>
@@ -576,10 +672,10 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.save_trc">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">save_trc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#save_trc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.save_trc" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">save_trc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/sm.html#save_trc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.save_trc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save tracking data in trc format</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<em>str</em>) – Name of the file to write to</p></li>
 <li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Data to save</p></li>
@@ -591,13 +687,13 @@ load <cite>pkmatrix</cite>. Defaults to False.</p></li>
 </section>
 </section>
 <section id="filesystem-related">
-<h2>Filesystem-related<a class="headerlink" href="#filesystem-related" title="Permalink to this headline"></a></h2>
+<h2>Filesystem-related<a class="headerlink" href="#filesystem-related" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.chdir">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">chdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/fs.html#chdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.chdir" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">chdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/fs.html#chdir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.chdir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Context manager to temporarily change the working directory</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path of the directory to change to. <code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expanduser()</span></code> is
 called on this.</p>
 </dd>
@@ -612,28 +708,32 @@ called on this.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.get_files">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">get_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/fs.html#get_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.get_files" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.</span></span><span class="sig-name descname"><span class="pre">get_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">PosixPath('.')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/fs.html#get_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.get_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all files matching a regular expression</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pattern</strong> (<em>str</em>) – Regular expression to search in the file name. Search is performed
 on the path relative to <cite>subdir</cite>. One can also define groups (using
 parenthesis), which will be returned in addition to the matching
 file names. <strong>A note to Windows users: Use a forward slash (/) for
 subdirectories.</strong></p></li>
-<li><p><strong>subdir</strong> (<em>str</em><em> or </em><em>pathlib.Path</em><em>, </em><em>optional</em>) – Any regular expression matching will be performed relative to <cite>subdir</cite>.
-Defaults to <code class="docutils literal notranslate"><span class="pre">os.curdir</span></code>.</p></li>
+<li><p><strong>subdir</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) – Any regular expression matching will be performed relative to <cite>subdir</cite>.</p></li>
+<li><p><strong>id_dict</strong> (<em>bool</em>) – If <cite>True</cite>, return IDs as a dict. Only works for named groups in
+<cite>pattern</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>files</strong> (<em>list of str</em>) – Sorted list of file where <cite>pattern</cite> could be matched.</p></li>
-<li><p><strong>groups</strong> (<em>list of tuple</em>) – Values of the groups defined in the <cite>pattern</cite>. Values are converted
-to int if possible, otherwise try converting to float. If that fails
-as well, use the string.</p></li>
+<li><p>Sorted list of file where <cite>pattern</cite> could be matched. as well as values of</p></li>
+<li><p>the groups defined in the <cite>pattern</cite>. Values are converted to int if</p></li>
+<li><p><em>possible, otherwise conversion to float is attempted. If that fails as</em></p></li>
+<li><p><em>well, the string is used.</em></p></li>
 </ul>
 </p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Tuple</em>[<em>List</em>[str], <em>Union</em>[<em>List</em>[<em>Tuple</em>], <em>List</em>[<em>Dict</em>]]]</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -648,58 +748,58 @@ as well, use the string.</p></li>
 
 </section>
 <section id="yaml">
-<h2>YAML<a class="headerlink" href="#yaml" title="Permalink to this headline"></a></h2>
+<h2>YAML<a class="headerlink" href="#yaml" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.load">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Loader=&lt;class</span> <span class="pre">'sdt.io.yaml.Loader'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.load" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Loader=&lt;class</span> <span class="pre">'sdt.io.yaml.Loader'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap PyYAML’s <code class="xref py py-func docutils literal notranslate"><span class="pre">yaml.load()</span></code> using <a class="reference internal" href="#sdt.io.yaml.Loader" title="sdt.io.yaml.Loader"><code class="xref py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.load_all">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">load_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Loader=&lt;class</span> <span class="pre">'sdt.io.yaml.Loader'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#load_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.load_all" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">load_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Loader=&lt;class</span> <span class="pre">'sdt.io.yaml.Loader'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#load_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.load_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap PyYAML’s <code class="xref py py-func docutils literal notranslate"><span class="pre">yaml.load_all()</span></code> using <a class="reference internal" href="#sdt.io.yaml.Loader" title="sdt.io.yaml.Loader"><code class="xref py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.safe_load">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">safe_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#safe_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.safe_load" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">safe_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#safe_load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.safe_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap PyYAML’s <code class="xref py py-func docutils literal notranslate"><span class="pre">yaml.load()</span></code> using <a class="reference internal" href="#sdt.io.yaml.SafeLoader" title="sdt.io.yaml.SafeLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">SafeLoader</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.safe_load_all">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">safe_load_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#safe_load_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.safe_load_all" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">safe_load_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#safe_load_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.safe_load_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap PyYAML’s <code class="xref py py-func docutils literal notranslate"><span class="pre">yaml.load_all()</span></code> using <a class="reference internal" href="#sdt.io.yaml.SafeLoader" title="sdt.io.yaml.SafeLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">SafeLoader</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.dump">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dumper=&lt;class</span> <span class="pre">'sdt.io.yaml.Dumper'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.dump" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dumper=&lt;class</span> <span class="pre">'sdt.io.yaml.Dumper'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper around <code class="xref py py-func docutils literal notranslate"><span class="pre">yaml.dump()</span></code> using <a class="reference internal" href="#sdt.io.yaml.Dumper" title="sdt.io.yaml.Dumper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dumper</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.dump_all">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">dump_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">documents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dumper=&lt;class</span> <span class="pre">'sdt.io.yaml.Dumper'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#dump_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.dump_all" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">dump_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">documents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Dumper=&lt;class</span> <span class="pre">'sdt.io.yaml.Dumper'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#dump_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.dump_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap PyYAML’s <code class="xref py py-func docutils literal notranslate"><span class="pre">yaml.dump_all()</span></code> using <a class="reference internal" href="#sdt.io.yaml.Dumper" title="sdt.io.yaml.Dumper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dumper</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.safe_dump">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">safe_dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#safe_dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.safe_dump" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">safe_dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#safe_dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.safe_dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap PyYAML’s <code class="xref py py-func docutils literal notranslate"><span class="pre">yaml.dump()</span></code> using <a class="reference internal" href="#sdt.io.yaml.SafeDumper" title="sdt.io.yaml.SafeDumper"><code class="xref py py-class docutils literal notranslate"><span class="pre">SafeDumper</span></code></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.safe_dump_all">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">safe_dump_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">documents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#safe_dump_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.safe_dump_all" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">safe_dump_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">documents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#safe_dump_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.safe_dump_all" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrap PyYAML’s <code class="xref py py-func docutils literal notranslate"><span class="pre">yaml.dump_all()</span></code> using <a class="reference internal" href="#sdt.io.yaml.SafeDumper" title="sdt.io.yaml.SafeDumper"><code class="xref py py-class docutils literal notranslate"><span class="pre">SafeDumper</span></code></a></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.io.yaml.Loader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">Loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#Loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.Loader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">Loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#Loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.Loader" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayLoader</span></code> with support for many more types</p>
 <p>of the <a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
 <p>Initialize the scanner.</p>
@@ -707,7 +807,7 @@ as well, use the string.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.io.yaml.SafeLoader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">SafeLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#SafeLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.SafeLoader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">SafeLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#SafeLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.SafeLoader" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">SafeArrayLoader</span></code> with support for many more types</p>
 <p>of the <a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
 <p>Initialize the scanner.</p>
@@ -715,21 +815,21 @@ as well, use the string.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.io.yaml.Dumper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">Dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_flow_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canonical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_unicode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_break</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#Dumper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.Dumper" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">Dumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_flow_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canonical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_unicode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_break</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#Dumper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.Dumper" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">ArrayDumper</span></code> with support for many more types</p>
 <p>of the <a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.io.yaml.SafeDumper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">SafeDumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_flow_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canonical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_unicode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_break</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#SafeDumper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.SafeDumper" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">SafeDumper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_flow_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canonical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_unicode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_break</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explicit_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#SafeDumper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.SafeDumper" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">SafeArrayDumper</span></code> with support for many more types</p>
 <p>of the <a class="reference internal" href="CHANGELOG.html#module-sdt" title="sdt"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt</span></code></a> package, e. g. <code class="xref py py-class docutils literal notranslate"><span class="pre">roi.ROI</span></code>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.io.yaml.register_yaml_class">
-<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">register_yaml_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#register_yaml_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.register_yaml_class" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.io.yaml.</span></span><span class="sig-name descname"><span class="pre">register_yaml_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/io/yaml.html#register_yaml_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.io.yaml.register_yaml_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add support for representing and loading a class</p>
 <p>A representer is be added to <a class="reference internal" href="#sdt.io.yaml.Dumper" title="sdt.io.yaml.Dumper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dumper</span></code></a> and
 <a class="reference internal" href="#sdt.io.yaml.SafeDumper" title="sdt.io.yaml.SafeDumper"><code class="xref py py-class docutils literal notranslate"><span class="pre">SafeDumper</span></code></a>. A loader is added to <a class="reference internal" href="#sdt.io.yaml.Loader" title="sdt.io.yaml.Loader"><code class="xref py py-class docutils literal notranslate"><span class="pre">Loader</span></code></a> and
@@ -743,7 +843,7 @@ representing or constructing class instances (see PyYAML’s
 <code class="xref py py-func docutils literal notranslate"><span class="pre">Dumper.represent_yaml_object()</span></code> and
 <code class="xref py py-func docutils literal notranslate"><span class="pre">Loader.construct_yaml_object()</span></code> are used.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cls</strong> (<em>type</em>) – Class to add support for</p>
 </dd>
 </dl>
@@ -754,33 +854,50 @@ representing or constructing class instances (see PyYAML’s
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="brightness.html" class="btn btn-neutral float-left" title="Brightness analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="changepoint.html" class="btn btn-neutral float-right" title="Changepoint detection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="brightness.html" class="btn btn-neutral float-left" title="Brightness analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
-  </div>
+    <p>
+        &#169; Copyright 2015—2022, Lukas Schrangl.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

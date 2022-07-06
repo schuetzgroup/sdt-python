@@ -1,34 +1,76 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.io.tiff &mdash; sdt-python 17.2 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+  <title>sdt.io.tiff &mdash; sdt-python 17.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../../index.html" class="icon icon-home"> sdt-python
+          
+
+          
           </a>
+
+          
+            
+            
               <div class="version">
-                17.2
+                17.3
               </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -36,7 +78,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
@@ -58,40 +111,82 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">sdt-python</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
+    
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
           <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
       <li>sdt.io.tiff</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <h1>Source code for sdt.io.tiff</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="sd">&quot;&quot;&quot;High level TIFF I/O&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tifffile</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">yaml</span>
@@ -100,7 +195,8 @@
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="save_as_tiff"><a class="viewcode-back" href="../../../io.html#sdt.io.save_as_tiff">[docs]</a><span class="k">def</span> <span class="nf">save_as_tiff</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="save_as_tiff"><a class="viewcode-back" href="../../../io.html#sdt.io.save_as_tiff">[docs]</a><span class="k">def</span> <span class="nf">save_as_tiff</span><span class="p">(</span><span class="n">frames</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+                 <span class="n">contiguous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write a sequence of images to a TIFF stack</span>
 
 <span class="sd">    If the items in `frames` contain a dict named `metadata`, an attempt to</span>
@@ -109,43 +205,61 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    frames : iterable of numpy.arrays</span>
-<span class="sd">        Frames to be written to TIFF file. This can e.g. be any subclass of</span>
-<span class="sd">        `pims.FramesSequence` like `pims.ImageSequence`.</span>
-<span class="sd">    filename : str</span>
+<span class="sd">    frames</span>
+<span class="sd">        Frames to be written to TIFF file.</span>
+<span class="sd">    filename</span>
 <span class="sd">        Name of the output file</span>
+<span class="sd">    contiguous</span>
+<span class="sd">        Whether to write to the TIFF file contiguously or not. This has</span>
+<span class="sd">        implications when reading the data. If using `PIMS`, set to `True`.</span>
+<span class="sd">        If using `imageio`, use ``&quot;I&quot;`` mode for reading if `True`.</span>
+<span class="sd">        Setting to `False` allows for per-image metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">TiffWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">tw</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">:</span>
             <span class="n">desc</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">md</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">dt</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;DateTime&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">md</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span>  <span class="c1"># no metadata</span>
+                                         <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span>  <span class="c1"># dict() fail</span>
+                                         <span class="p">):</span>
+                    <span class="n">md</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">md</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="s2">&quot;DateTime&quot;</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+                        <span class="n">dt</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                        <span class="k">break</span>
+                <span class="c1"># Remove redundant metadata</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;compression&quot;</span><span class="p">,</span> <span class="s2">&quot;frame_no&quot;</span><span class="p">,</span> <span class="s2">&quot;is_fluoview&quot;</span><span class="p">,</span>
+                          <span class="s2">&quot;is_imagej&quot;</span><span class="p">,</span> <span class="s2">&quot;is_micromanager&quot;</span><span class="p">,</span> <span class="s2">&quot;is_mdgel&quot;</span><span class="p">,</span>
+                          <span class="s2">&quot;is_mediacy&quot;</span><span class="p">,</span> <span class="s2">&quot;is_nih&quot;</span><span class="p">,</span> <span class="s2">&quot;is_ome&quot;</span><span class="p">,</span> <span class="s2">&quot;is_reduced&quot;</span><span class="p">,</span>
+                          <span class="s2">&quot;is_shaped&quot;</span><span class="p">,</span> <span class="s2">&quot;is_stk&quot;</span><span class="p">,</span> <span class="s2">&quot;is_tiled&quot;</span><span class="p">,</span> <span class="s2">&quot;predictor&quot;</span><span class="p">,</span>
+                          <span class="s2">&quot;resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;resolution_unit&quot;</span><span class="p">):</span>
+                    <span class="n">md</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">desc</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">md</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: Failed to serialize metadata to YAML&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="n">filename</span><span class="p">))</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: Failed to serialize metadata to YAML&quot;</span><span class="p">)</span>
 
-            <span class="c1"># tifffile &gt;=2020.9.3 has contiguous=False as default. PIMS</span>
-            <span class="c1"># only reads the first series, so set contiguous=True.</span>
-            <span class="c1"># Additionally, this makes TiffFile.asarray() return the whole</span>
-            <span class="c1"># stack.</span>
             <span class="n">save_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">desc</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">:</span> <span class="n">dt</span><span class="p">,</span>
-                         <span class="s2">&quot;contiguous&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+                         <span class="s2">&quot;contiguous&quot;</span><span class="p">:</span> <span class="n">contiguous</span><span class="p">}</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">tw</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">software</span><span class="o">=</span><span class="s2">&quot;sdt.io&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">save_args</span><span class="p">)</span>
+                <span class="n">tw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">software</span><span class="o">=</span><span class="s2">&quot;sdt.io&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">save_args</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                <span class="n">tw</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">save_args</span><span class="p">)</span></div>
+                <span class="n">tw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">save_args</span><span class="p">)</span></div>
 
 
-<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
+<span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">pims</span>
 
     <span class="k">class</span> <span class="nc">SdtTiffStack</span><span class="p">(</span><span class="n">pims</span><span class="o">.</span><span class="n">TiffStack_tifffile</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Version of :py:class:`pims.TiffStack` extended for SDT needs</span>
+
+<span class="sd">        **Deperecated. Use :py:class:`ImageSequence` instead.**</span>
 
 <span class="sd">        This tries to read metadata that has been serialized as YAML using</span>
 <span class="sd">        :py:func:`save_as_tiff`.</span>
@@ -171,7 +285,7 @@
             <span class="n">tags</span> <span class="o">=</span> <span class="n">tiff</span><span class="o">.</span><span class="n">keyframe</span><span class="o">.</span><span class="n">tags</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ImageDescription&quot;</span><span class="p">,</span> <span class="s2">&quot;DateTime&quot;</span><span class="p">,</span> <span class="s2">&quot;Software&quot;</span><span class="p">,</span>
                       <span class="s2">&quot;DocumentName&quot;</span><span class="p">):</span>
-                <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
                     <span class="n">md</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">tags</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
 
             <span class="c1"># Deal with special metadata</span>
@@ -179,7 +293,7 @@
                 <span class="c1"># ImageJ</span>
                 <span class="n">md</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ImageDescription&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="n">ij_md</span> <span class="o">=</span> <span class="n">tiff</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">imagej_metadata</span>
-                <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
                     <span class="c1"># &quot;Info&quot; may contain more metadata</span>
                     <span class="n">ij_info</span> <span class="o">=</span> <span class="n">ij_md</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Info&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">---</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">new_ij_md</span> <span class="o">=</span> <span class="p">{}</span>
@@ -191,7 +305,7 @@
                 <span class="n">md</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ij_md</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Try YAML</span>
-                <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
                     <span class="n">yaml_md</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s2">&quot;ImageDescription&quot;</span><span class="p">])</span>
                     <span class="c1"># YAML could be anything: plain string, list, …</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">yaml_md</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -212,30 +326,46 @@
 </pre></div>
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015—2018, Lukas Schrangl.</p>
-  </div>
+    <p>
+        &#169; Copyright 2015—2022, Lukas Schrangl.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
