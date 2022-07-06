@@ -26,12 +26,12 @@ requirements:
         - pytables
         - opencv
         - pyyaml
-        - pims >=0.3.0
         - numba
         - qtpy >=1.1
         - matplotlib-base
         - scipy >0.18
         - tifffile >=0.14.0
+        - imageio
 
 test:
     requires:
@@ -39,7 +39,7 @@ test:
         - trackpy
         - lmfit
         - scikit-learn
-        - imageio
+        - pims
         - pywavelets >=0.3.0
     commands:
         - pytest -v tests
