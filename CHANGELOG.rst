@@ -13,6 +13,19 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+17.3
+----
+
+- Depend on the `imageio` package for reading images instead of `PIMS`
+- Remove deprecated ``channel_reg`` module
+- :py:func:`io.get_files`: Allow for returning IDs as dict
+- :py:mod:`motion`: Deal with missing MSD data when fitting diffusion models
+- Make `pywavelet` dependency optional
+- :py:mod:`spatial`: Add :py:func:`polygon_center` function
+- :py:class:`nbui.ROISelector`: Support multiple ROIs per image/category
+- Lots of bug fixes
+
+
 17.2
 ----
 
