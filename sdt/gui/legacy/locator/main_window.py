@@ -13,12 +13,6 @@ import contextlib
 import yaml
 import numpy as np
 import pandas as pd
-import pims
-try:
-    # If possible, import extra classes
-    import micro_helpers.pims  # NoQA
-except ImportError:
-    pass
 
 import qtpy
 from qtpy.QtGui import QPolygonF, QCursor
@@ -35,7 +29,7 @@ from . import locate_filter
 from . import locate_saver
 from . import batch_progress
 from . import workers
-from ....io import save, load
+from ....io import ImageSequence, save, load
 
 
 def yaml_dict_representer(dumper, data):
@@ -222,7 +216,7 @@ class MainWindow(QMainWindow):
 
         filename = file.data(FileListModel.FileNameRole)
         try:
-            ims = pims.open(filename)
+            ims = ImageSequence(filename).open()
         except Exception as e:
             QMessageBox.critical(self, self.tr("Error opening image"),
                                  self.tr(str(e)))
@@ -293,7 +287,7 @@ class MainWindow(QMainWindow):
                 cur_opts["fmt"]))
             # TODO: Move to worker thread
             try:
-                data = load(fname)  # sdt.data.load
+                data = load(fname)  # sdt.io.load
             except Exception:
                 data = pd.DataFrame()
 
@@ -310,8 +304,8 @@ class MainWindow(QMainWindow):
             self._makePreviewWorkerWork()
             return
 
-        self._previewWorker.processImage(curFrame, cur_opts, cur_method,
-                                         self._roiPolygon)
+        self._previewWorker.processImage(curFrame, curFrameNo, cur_opts,
+                                         cur_method, self._roiPolygon)
 
     def closeEvent(self, event):
         """Window is closed, save state"""

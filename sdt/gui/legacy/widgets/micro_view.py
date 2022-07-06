@@ -311,8 +311,8 @@ class MicroViewWidget(mvBase):
                         max = ii.max
                         break
         else:
-            min = np.iinfo(ims.pixel_type).min
-            max = np.iinfo(ims.pixel_type).max
+            min = np.iinfo(self._imageData.dtype).min
+            max = np.iinfo(self._imageData.dtype).max
 
         if min == 0. and max == 1.:
             self._ui.minSlider.setRange(0, 1000)

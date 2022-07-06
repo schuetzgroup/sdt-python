@@ -15,19 +15,14 @@ import numpy as np
 import pandas as pd
 import logging
 import multiprocessing as mp
-
-import pims
-try:
-    # If possible, import extra classes
-    import micro_helpers.pims  # NoQA
-except ImportError:
-    pass
+from typing import Mapping, Optional
 
 from qtpy.QtCore import QObject, Signal, Slot, Property
 from qtpy.QtGui import QPolygonF
 
 from .file_chooser import FileListModel
 from . import algorithms
+from .... import io
 
 
 _logger = logging.getLogger(__name__)
@@ -42,6 +37,7 @@ class PreviewWorker(QObject):
 
     Locate peaks in one frame at a time in a background thread
     """
+
     def __init__(self, parent=None):
         """Parameters
         -------------
@@ -54,13 +50,15 @@ class PreviewWorker(QObject):
 
         self._newJob = False
         self._newFrame = np.array([[]])
+        self._newFrameNo = 0
         self._newOptions = {}
         self._newMethod = ""
         self._newRoi = QPolygonF()
 
         self.finished.connect(self._finishedSlot)
 
-    def processImage(self, frame, options, method, roi):
+    def processImage(self, frame: Optional[np.ndarray], frame_no: int,
+                     options: Mapping, method: str, roi: QPolygonF):
         """Start calculating a preview in the background
 
         When finished, the `finished` signal will be emitted with the
@@ -68,14 +66,16 @@ class PreviewWorker(QObject):
 
         Parameters
         ----------
-        frame : numpy.ndarray or None
+        frame
             Image data. If `None`, do nothing
-        options : dict
+        frame_no
+            Frame number for `frame` argument
+        options
             Options to the localization algorithm. Will be passed as keyword
             arguments
-        method : str
+        method
             Name of the localization method (as key to `algorithms.desc`)
-        roi : QPolygonF
+        roi
             Region of interest polygon
         """
         roi = _polygonToList(roi)
@@ -83,13 +83,15 @@ class PreviewWorker(QObject):
         if self.busy:
             self._newJob = True
             self._newFrame = frame
+            self._newFrameNo = frame_no
             self._newOptions = options
             self._newMethod = method
             self._newRoi = roi
         else:
             self._setBusy(True)
+
             self._pool.apply_async(
-                _previewWorkerFunc, (frame, options, method, roi),
+                _previewWorkerFunc, (frame, frame_no, options, method, roi),
                 callback=self._finishedCallback,
                 error_callback=self._errorCallback)
 
@@ -148,8 +150,8 @@ class PreviewWorker(QObject):
         if self._newJob:
             self._pool.apply_async(
                 _previewWorkerFunc,
-                (self._newFrame, self._newOptions, self._newMethod,
-                 self._newRoi),
+                (self._newFrame, self._newFrameNo, self._newOptions,
+                 self._newMethod, self._newRoi),
                 callback=self._finishedCallback)
             self._newJob = False
         else:
@@ -159,19 +161,22 @@ class PreviewWorker(QObject):
         self.error.emit(err)
 
 
-def _previewWorkerFunc(frame, options, method, roi_list):
+def _previewWorkerFunc(frame, frame_no, options, method, roi_list):
     """Does the heavy lifting in the worker process"""
     algoDesc = algorithms.desc[method]
 
     if len(roi_list) > 2:
-        return algoDesc.locate_roi(frame, roi_list, rel_origin=False,
-                                   **options)
+        ret = algoDesc.locate_roi(frame, roi_list, rel_origin=False,
+                                  **options)
     else:
-        return algoDesc.locate(frame, **options)
+        ret = algoDesc.locate(frame, **options)
+    ret["frame"] = frame_no
+    return ret
 
 
 class BatchWorker(QObject):
     """Locate peaks in image series"""
+
     def __init__(self, parent=None):
         """Parameters
         -------------
@@ -248,9 +253,9 @@ class BatchWorker(QObject):
 def _batchWorkerFunc(idx, fileName, frameRange, options, method, roi_list):
     """Does the heavy lifting in the worker process"""
     try:
+        frames = io.ImageSequence(fileName).open()
         algoDesc = algorithms.desc[method]
 
-        frames = pims.open(fileName)
         start = frameRange[0]
         end = frameRange[1]
         if end < 0:
@@ -263,5 +268,7 @@ def _batchWorkerFunc(idx, fileName, frameRange, options, method, roi_list):
             data = algoDesc.batch(frames[start:end], **options)
     except Exception as e:
         return idx, e
+    finally:
+        frames.close()
 
     return idx, data, options

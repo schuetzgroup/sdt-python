@@ -33,11 +33,11 @@ batch_roi : callable
 desc = collections.OrderedDict()
 
 with contextlib.suppress(ImportError):
-    from sdt.loc import daostorm_3d
+    from ....loc import daostorm_3d
     desc["daostorm_3d"] = Descriptor(
         daostorm_3d.locate, daostorm_3d.locate_roi,
         daostorm_3d.batch, daostorm_3d.batch_roi)
 
 with contextlib.suppress(ImportError):
-    from sdt.loc import cg
+    from ....loc import cg
     desc["cg"] = Descriptor(cg.locate, cg.locate_roi, cg.batch, cg.batch_roi)
