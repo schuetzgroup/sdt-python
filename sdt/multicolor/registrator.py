@@ -150,6 +150,8 @@ class Registrator:
 
         Other parameters
         ----------------
+        channel_names
+            Set the `channel_names` attribute.
         columns
             Override default column names as defined in
             :py:attr:`config.columns`. Relevant name are `coords` and `time`.
@@ -157,9 +159,6 @@ class Registrator:
             and a time column "alt_frame", set
             ``columns={"coords": ["x", "z"], "time": "alt_frame"}``. This is
             used to set the :py:attr:`columns` attribute.
-        channel_names
-            Set the `channel_names` attribute. Defaults to ``["channel1",
-            "channel2"]``.
         """
         self.feat1 = [feat1] if isinstance(feat1, pd.DataFrame) else feat1
         self.feat2 = [feat2] if isinstance(feat2, pd.DataFrame) else feat2
@@ -378,8 +377,7 @@ class Registrator:
 
         Returns
         -------
-        A :py:class:`Registrator` instance with the parameters read from the
-        file.
+        A class instance with the parameters read from the file.
 
         Other parameters
         ----------------
