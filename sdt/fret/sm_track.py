@@ -354,7 +354,7 @@ class SmFRETTracker:
         ret_d.columns = pd.MultiIndex.from_product((["donor"], ret_d.columns))
         ret_a.columns = pd.MultiIndex.from_product((["acceptor"],
                                                     ret_a.columns))
-        ret.drop(["donor", "acceptor"], axis=1, inplace=True)
+        ret.drop(["donor", "acceptor"], axis=1, level=0, inplace=True)
         ret = pd.concat([ret_d, ret_a, ret], axis=1)
         ret.sort_values(
             [("fret", "particle"), ("donor", self.columns["time"])],
