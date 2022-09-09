@@ -334,7 +334,8 @@ class Corrector(object):
                 for img in seq:
                     # Sequence of image sequences
                     if summed is None:
-                        summed = img.copy()
+                        # convert to float to avoid overflow
+                        summed = np.array(img, dtype=float)
                     else:
                         summed += img
                     cnt += 1
