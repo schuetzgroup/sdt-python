@@ -27,6 +27,8 @@ class TestCorrector:
     img_shape = (100, 150)
     xc = 20
     yc = 50
+    xc_off = -10
+    yc_off = 135
     wx = 40
     wy = 20
     amp = 2
@@ -39,10 +41,14 @@ class TestCorrector:
 
     fit_result = {"amplitude": amp, "center": (xc, yc), "sigma": (wx, wy),
                   "offset": 0, "rotation": 0}
+    fit_result_off = {"amplitude": amp, "center": (xc_off, yc_off),
+                      "sigma": (wx, wy), "offset": 0, "rotation": 0}
 
-    def _make_gauss(self, x, y):
-        argx = -(x - self.xc)**2 / (2 * self.wx**2)
-        argy = -(y - self.yc)**2 / (2 * self.wy**2)
+    def _make_gauss(self, x, y, center_off=False):
+        xc = self.xc_off if center_off else self.xc
+        yc = self.yc_off if center_off else self.yc
+        argx = -(x - xc)**2 / (2 * self.wx**2)
+        argy = -(y - yc)**2 / (2 * self.wy**2)
         return self.amp * np.exp(argx) * np.exp(argy)
 
     @pytest.fixture(params=["scalar", "array", "seq", "seq of seq"])
@@ -72,7 +78,7 @@ class TestCorrector:
         if request.param == "seq of seq":
             return [seq[0:2], seq[2:]], img
 
-    def _make_profile(self, param, background, offpx=False):
+    def _make_profile(self, param, background, offpx=False, center_off=False):
         """Create profile image to use
 
         Returns
@@ -84,7 +90,7 @@ class TestCorrector:
             Corrector.avg_img attribute)
         """
         y, x = np.indices(self.img_shape)
-        img = self._make_gauss(x, y)
+        img = self._make_gauss(x, y, center_off)
         if offpx:
             # Change a single pixel. Don't use the maximum of the Gaussian,
             # otherwise images will be rescaled.
@@ -188,6 +194,21 @@ class TestCorrector:
         expected["amplitude"] = 1
         self._check_fit_result(corr.fit_result, expected)
 
+    def test_init_img_fit_center_off(self, corr_factory):
+        """flatfield.Corrector.__init__: image data with Gaussian off-center"""
+        bg = 100
+        profile_bg, profile = self._make_profile("array", bg, center_off=True)
+        profile_max = profile.max()
+        corr = corr_factory(profile_bg, bg, gaussian_fit=True)
+        avg = profile / profile_max
+        np.testing.assert_allclose(corr.avg_img, avg, atol=1e-3)
+        np.testing.assert_allclose(corr.corr_img, avg, atol=1e-3)
+
+        expected = self.fit_result_off.copy()
+        expected["amplitude"] = self.amp / profile_max
+        self._check_fit_result(corr.fit_result, expected)
+        assert corr.fit_amplitude == pytest.approx(1.0)
+
     def test_init_list(self, corr_factory):
         """flatfield.Corrector.__init__: list of data points, not weighted"""
         y, x = [i.flatten() for i in np.indices(self.img_shape)]
@@ -204,6 +225,23 @@ class TestCorrector:
         np.testing.assert_allclose(corr.corr_img, prf / prf.max(), rtol=1e-5)
 
         self._check_fit_result(corr.fit_result, self.fit_result)
+
+    def test_init_list_center_off(self, corr_factory):
+        y, x = [i.flatten() for i in np.indices(self.img_shape)]
+        x = x[::10]
+        y = y[::10]
+        data = np.column_stack([x, y, self._make_gauss(x, y, center_off=True)])
+        df = pd.DataFrame(data, columns=["x", "y", "mass"])
+
+        prf = self._make_profile("array", 0, center_off=True)[1]
+
+        corr = corr_factory(df, density_weight=False, shape=self.img_shape)
+
+        np.testing.assert_allclose(corr.avg_img, prf / prf.max(), rtol=1e-5)
+        np.testing.assert_allclose(corr.corr_img, prf / prf.max(), rtol=1e-5)
+
+        self._check_fit_result(corr.fit_result, self.fit_result_off)
+        assert corr.fit_amplitude == pytest.approx(prf.max())
 
     def test_init_list_weighted(self, corr_factory):
         """flatfield.Corrector.__init__: list of data points, weighted"""
@@ -234,6 +272,7 @@ class TestCorrector:
         mass = mass_orig * self._make_gauss(x, y) / self.amp
         pdata = pd.DataFrame(dict(x=x, y=y, mass=mass))
         pdata1 = pdata.copy()
+        pdata_off = pdata.copy()
         pdata2 = pdata.copy()
 
         prf = self._make_profile("array", 0)[1]
@@ -245,6 +284,14 @@ class TestCorrector:
         pdata1 = corr_gauss(pdata1)
         np.testing.assert_allclose(pdata1["mass"].tolist(), mass_orig,
                                    rtol=1e-5)
+
+        prf_off = self._make_profile("array", 0, center_off=True)[1]
+        mass_off = mass_orig * self._make_gauss(x, y, center_off=True)
+        mass_off /= prf_off.max()
+        corr_gauss_off = corr_factory(prf_off, gaussian_fit=True)
+        pdata_off["mass"] = mass_off
+        np.testing.assert_allclose(
+            corr_gauss_off(pdata_off)["mass"].to_numpy(), mass_orig)
 
         pdata2["alt_mass"] = pdata2["mass"]
         corr_img(pdata2, inplace=True, columns={"corr": ["mass", "alt_mass"]})
@@ -286,6 +333,15 @@ class TestCorrector:
         expected[self.offpx] = np.NaN
         np.testing.assert_allclose(img_corr, expected, rtol=2e-3)
 
+    def test_image_correction_with_gauss_center_off(self, corr_factory):
+        """flatfield.Corrector.__call__: image correction, fit"""
+        img = self._make_profile("array", 0, center_off=True)[1]
+        corr_g = corr_factory(img, gaussian_fit=True)
+        img_corr = corr_g(img)
+
+        expected = np.full(self.img_shape, img.max(), dtype=float)
+        np.testing.assert_allclose(img_corr, expected, rtol=2e-3)
+
     def test_get_factors_img(self, corr_factory):
         """flatfield.Corrector.get_factors: no fit"""
         img = self._make_profile("array", 0, offpx=True)[1]
@@ -307,3 +363,17 @@ class TestCorrector:
         fact[self.offpx] = np.NaN
         expected[self.offpx] = np.NaN
         np.testing.assert_allclose(fact, expected, rtol=2e-3)
+
+    def test_load_legacy(self, tmp_path):
+        prf = self._make_profile("array", 0)[1]
+        corr = flatfield.Corrector(prf, gaussian_fit=True)
+        corr.save(tmp_path / "fc.npz")
+        with np.load(tmp_path / "fc.npz") as ld:
+            loaded1 = dict(ld)
+        # remove fit_amplitude, which has not existed up to sdt-python v17.3
+        loaded1.pop("fit_amplitude")
+        np.savez(tmp_path / "fc2.npz", **loaded1)
+        corr2 = flatfield.Corrector.load(tmp_path / "fc2.npz")
+        assert hasattr(corr2, "fit_amplitude")
+        assert (corr2.fit_amplitude ==
+                pytest.approx(corr.fit_result["amplitude"]))

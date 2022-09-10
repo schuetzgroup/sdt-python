@@ -56,6 +56,7 @@ import numbers
 from pathlib import Path
 from typing import (BinaryIO, Dict, List, Mapping, Optional, Sequence, Tuple,
                     Union)
+import warnings
 
 import pandas as pd
 import numpy as np
@@ -188,6 +189,10 @@ class Corrector(object):
     """If a Gaussian fit was done, this holds the result. Otherwise, it is
     `None`.
     """
+    fit_amplitude: float
+    """If a Gaussian fit was done, this holds the maximum of the Gaussian
+    within the image region. See also the `shape` argument to the constructor.
+    """
     bg: Union[float, np.ndarray]
     """Background to be subtracted from image data."""
 
@@ -213,9 +218,12 @@ class Corrector(object):
             Whether to fit a Gaussian to the averaged image. This is ignored
             if `data` is single molecule data.
         shape
-            If `data` is single molecule data and `shape` is not None, create
-            :py:attr:`avg_img` and :py:attr:`corr_img` from the fit using the
-            given shape.
+            If `data` is single molecule data, use this to specify the height
+            and width (in this order) of the image region. It allows for
+            calculation of the correct normalization in case the maximum of
+            the fitted Gaussian does not lie within the region. Furthermore,
+            :py:attr:`avg_img` and :py:attr:`corr_img` can be created from the
+            fit.
         density_weight
             If `data` is single molecule data, weigh data points inversely to
             their density for fitting so that areas with higher densities don't
@@ -237,12 +245,14 @@ class Corrector(object):
         self.avg_img = np.empty((0, 0))
         self.corr_img = np.empty((0, 0))
         self.fit_result = None
+        self.fit_amplitude = np.NaN
         self.bg = self._calc_bg(bg, smooth_sigma)
 
         if (isinstance(data, pd.DataFrame) or
                 (isinstance(data, np.ndarray) and data.ndim == 2)):
             data = [data]
 
+        local_max = None
         if isinstance(data[0], pd.DataFrame):
             # Get the beam shape from single molecule brightness values
             pos_columns = columns["coords"]
@@ -268,11 +278,13 @@ class Corrector(object):
             else:
                 y, x = np.indices(shape)
                 self.avg_img = funcs.gaussian_2d(x, y, **self.fit_result)
-                self.avg_img /= self.avg_img.max()
+                local_max = self.avg_img.max()
+                self.avg_img /= local_max
                 self.corr_img = self.avg_img
         else:
             # calculate the average profile image
             self.avg_img = self._calc_avg_img(data)
+            shape = self.avg_img.shape
 
             if gaussian_fit:
                 # do the fitting
@@ -281,7 +293,8 @@ class Corrector(object):
 
                 # normalization factor so that the maximum of the Gaussian is 1
                 self.corr_img = funcs.gaussian_2d(x, y, **self.fit_result)
-                self.corr_img /= self.corr_img.max()
+                local_max = self.corr_img.max()
+                self.corr_img /= local_max
             else:
                 if smooth_sigma:
                     self.corr_img = ndimage.gaussian_filter(self.avg_img,
@@ -290,6 +303,45 @@ class Corrector(object):
                 else:
                     self.corr_img = self.avg_img / self.avg_img.max()
                 self._make_interp()
+        self.fit_amplitude = self._calc_fit_amplitude(
+            self.fit_result, shape, local_max)
+
+    @staticmethod
+    def _calc_fit_amplitude(fit_result: Optional[Mapping],
+                            shape: Optional[Tuple[int, int]],
+                            local_max: float) -> float:
+        """Calculate the amplitude of the Gaussian fit within the image region
+
+        Parameters
+        ----------
+        fit_result
+            2D Gaussian fit result
+        shape
+            Height and width of image region
+        local_max
+            Value to use if maximum of the Gaussian is outside of the image
+            region (typically ``avg_image.max()``)
+
+        Returns
+        -------
+        Amplitude of Gaussian within the image region
+        """
+        if fit_result is None:
+            return np.NaN
+        if shape is None:
+            warnings.warn("Calculating excitation profile from "
+                          "single-molecule data, but no image shape "
+                          "specified. Cannot check whether fit maximum "
+                          "lies within the image, corrections may increase "
+                          "results by a constant factor.")
+            return fit_result["amplitude"]
+        if np.all((0 <= fit_result["center"]) &
+                  (fit_result["center"] <= shape[::-1])):
+            # Maximum of the Gaussian within the image
+            return fit_result["amplitude"]
+        # Maximum of the Gaussion not in the image; use
+        # (approximate) maximum within the image
+        return local_max
 
     def _make_interp(self) -> sp_int.RegularGridInterpolator:
         """Create interpolator form :py:attr:`corr_img`"""
@@ -479,7 +531,7 @@ class Corrector(object):
         """
         if self.fit_result:
             return 1. / (funcs.gaussian_2d(x, y, **self.fit_result) /
-                         self.fit_result["amplitude"])
+                         self.fit_amplitude)
         else:
             return np.transpose(1. / self.interp(np.array([y, x]).T))
 
@@ -494,7 +546,8 @@ class Corrector(object):
         """
         np.savez_compressed(
             file, avg_img=self.avg_img, corr_img=self.corr_img,
-            fit_result=_fit_result_to_list(self.fit_result), bg=self.bg)
+            fit_result=_fit_result_to_list(self.fit_result),
+            fit_amplitude=self.fit_amplitude, bg=self.bg)
 
     @classmethod
     def load(cls, file: Union[str, Path, BinaryIO]):
@@ -516,5 +569,11 @@ class Corrector(object):
             ret.fit_result = _fit_result_from_list(ld["fit_result"])
             bg = ld["bg"]
             ret.bg = bg if bg.size > 1 else bg.item()
+            if "fit_amplitude" in ld:
+                ret.fit_amplitude = ld["fit_amplitude"].item()
+            elif ret.fit_result:
+                ret.fit_amplitude = ret.fit_result["amplitude"]
+            else:
+                ret.fit_amplitude = np.NaN
             ret._make_interp()
         return ret
