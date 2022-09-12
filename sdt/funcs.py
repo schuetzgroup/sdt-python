@@ -83,6 +83,7 @@ class StepFunction:
     array([0., 0., 0., 0., 1., 1., 2., 2., 3., 3., 4., 4., 5., 5., 6., 6., 7.,
            7., 8., 8., 9., 9., 9.])
     """
+
     def __init__(self, x, y, fill_value="extrapolate", side="left", sort=True):
         """Parameters
         ----------
@@ -90,7 +91,7 @@ class StepFunction:
             Function graph
         fill_value : float or (float, float) or "extrapolate", optional
             Values to use for ``x < x[0]`` and ``x > x[-1]``. If this is
-            "extrapolate", use ``x[0]`` and ``x[-1]``, respectively. If a
+            "extrapolate", use ``y[0]`` and ``y[-1]``, respectively. If a
             float is given, use it in both cases. If a pair of floats is given,
             the first entry is used on the lower end, the second on the upper
             end. Defaults to "extrapolate".
@@ -111,6 +112,9 @@ class StepFunction:
             kind = "previous"
         else:
             raise ValueError("`side` has to be either \"left\" or \"right\"")
+
+        if fill_value == "extrapolate":
+            fill_value = (y[0], y[-1])
 
         self._interp = interpolate.interp1d(x, y, kind, assume_sorted=not sort,
                                             bounds_error=False,
@@ -154,6 +158,7 @@ class ECDF:
     array([0.  , 0.05, 0.12, 0.19, 0.22, 0.27, 0.31, 0.36, 0.44, 0.48, 0.52,
            0.53, 0.6 , 0.64, 0.71, 0.73, 0.79, 0.87, 0.89, 0.96, 1.  ])
     """
+
     def __init__(self, obs, interp=None, sort=True):
         """Parameters
         ----------

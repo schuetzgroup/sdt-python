@@ -441,7 +441,9 @@ class FrameSelector:
             # with this case here
             return np.full(len(source_idx), target_idx[0], dtype=int)
         interp_idx = scipy.interpolate.interp1d(
-            target_idx, target_idx, how, fill_value="extrapolate")(source_idx)
+            target_idx, target_idx, how, bounds_error=False,
+            fill_value=(target_idx[0], target_idx[-1])
+            )(source_idx)
         interp_idx = interp_idx.astype(int)
 
         if data is not None:
