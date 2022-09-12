@@ -151,10 +151,10 @@ class TestFindColocalizations:
         nc2_unmatched = nc1.copy()
         nc2_unmatched[["x", "y", "z"]] = np.NaN
 
-        ch1 = pos[0].iloc[[1, 3]].reset_index(drop=True).append(
-            [nc1, nc1_unmatched])
-        ch2 = pos[1].iloc[[0, 3]].reset_index(drop=True).append(
-            [nc2_unmatched, nc2])
+        ch1 = pd.concat([pos[0].iloc[[1, 3]].reset_index(drop=True),
+                         nc1, nc1_unmatched])
+        ch2 = pd.concat([pos[1].iloc[[0, 3]].reset_index(drop=True),
+                         nc2_unmatched, nc2])
 
         return pd.concat([ch1, ch2], keys=["channel1", "channel2"], axis=1
                          ).reset_index(drop=True)
