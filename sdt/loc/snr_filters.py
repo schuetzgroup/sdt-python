@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """Image filters to improve SNR"""
+import numpy as np
 from scipy import ndimage
 
 from .. import image
@@ -10,38 +11,38 @@ from .. import image
 
 class SnrFilter:
     """Abstract base class for filters for SNR improvements"""
-    def __call__(self, img):
+
+    def __call__(self, img: np.ndarray) -> np.ndarray:
         """Do the filtering
 
         This needs to be implemented by sub-classes
 
         Parameters
         ----------
-        img : numpy.ndarray
+        img
             Image data
 
         Returns
         -------
-        numpy.ndarray
-            Filtered image
+        Filtered image
         """
         raise NotImplementedError("`__call__` needs to be implemented")
 
 
 class Identity(SnrFilter):
     """Identity filter (does nothing)"""
-    def __call__(self, img):
+
+    def __call__(self, img: np.ndarray) -> np.ndarray:
         """Do nothing
 
         Parameters
         ----------
-        img : numpy.ndarray
+        img
             Image data
 
         Returns
         -------
-        numpy.ndarray
-            Same as input image
+        Same as input image
         """
         return img
 
@@ -51,29 +52,29 @@ class Cg(SnrFilter):
 
     This is a wrapper around :py:func:`image.filters.cg` (with ``noneg=True``).
     """
-    def __init__(self, feature_radius, noise_radius=1):
+
+    def __init__(self, feature_radius: int, noise_radius: int = 1):
         """Parameters
         ----------
-        feature_radius : int
+        feature_radius
             `feature_radius` parameter for :py:func:`image.filters.cg` call.
-        noise_radius : int, optional
+        noise_radius
             `noise_radius` parameter for :py:func:`image.filters.cg` call.
         """
         self.feature_radius = feature_radius
         self.noise_radius = noise_radius
 
-    def __call__(self, img):
+    def __call__(self, img: np.ndarray) -> np.ndarray:
         """Do bandpass filtering
 
         Parameters
         ----------
-        img : numpy.ndarray
+        img
             Image data
 
         Returns
         -------
-        numpy.ndarray
-            Filtered image
+        Filtered image
         """
         return image.filters.cg(img, self.feature_radius, self.noise_radius,
                                 True)
@@ -81,25 +82,25 @@ class Cg(SnrFilter):
 
 class Gaussian(SnrFilter):
     """Gaussian filter"""
-    def __init__(self, sigma):
+
+    def __init__(self, sigma: float):
         """Parameters
         ----------
-        sigma : float
+        sigma
             Sigma of the gaussian
         """
         self.sigma = sigma
 
-    def __call__(self, img):
+    def __call__(self, img: np.ndarray) -> np.ndarray:
         """Do Gaussian filtering
 
         Parameters
         ----------
-        img : numpy.ndarray
+        img
             Image data
 
         Returns
         -------
-        numpy.ndarray
-            Filtered image
+        Filtered image
         """
-        return ndimage.filters.gaussian_filter(img, self.sigma)
+        return ndimage.gaussian_filter(img, self.sigma)
