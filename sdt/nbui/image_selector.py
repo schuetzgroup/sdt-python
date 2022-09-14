@@ -105,9 +105,10 @@ class ImageSelector(ipywidgets.HBox):
                 opts.append("{} ({})".format(img.name, str(img.parent)))
                 continue
             opts.append(generic_key_pattern.format(n))
-        self._file_sel.options = opts
-        if self._file_sel.index is None:
-            self._file_sel.index = 0
+        with self.hold_trait_notifications():
+            self._file_sel.options = opts
+            if self._file_sel.index is None:
+                self._file_sel.index = 0
 
     def _file_changed(self, change=None):
         """Call-back upon change of the currently selected sequence"""
@@ -157,10 +158,12 @@ class ImageSelector(ipywidgets.HBox):
         self.output = self._cur_image[self._frame_sel.value]
 
     def _prev_button_clicked(self, button=None):
-        self._file_sel.index -= 1
+        with self.hold_trait_notifications():
+            self._file_sel.index -= 1
 
     def _next_button_clicked(self, button=None):
-        self._file_sel.index += 1
+        with self.hold_trait_notifications():
+            self._file_sel.index += 1
 
     @property
     def show_file_buttons(self) -> bool:
