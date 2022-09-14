@@ -70,14 +70,16 @@ class ROISelectorModule(ipywidgets.VBox):
         self.ax = ax
         self._path_artists = []
         self._roi_selectors = {
-            "rectangle": lambda: RectangleSelector(
+            "rectangle": RectangleSelector(
                 self.ax, self._rect_roi_selected, interactive=True),
-            "ellipse": lambda: EllipseSelector(
+            "ellipse": EllipseSelector(
                 self.ax, self._ellipse_roi_selected, interactive=True),
-            "polygon": lambda: PolygonSelector(
+            "polygon": PolygonSelector(
                 self.ax, self._poly_roi_selected, lineprops={"color": "y"}),
-            "lasso": lambda: LassoSelector(self.ax, self._lasso_roi_selected)
+            "lasso": LassoSelector(self.ax, self._lasso_roi_selected)
         }
+        for r in self._roi_selectors.values():
+            r.set_active(False)
         self._cur_roi_sel = None
 
         self._roi_cat_sel = ipywidgets.Dropdown(description="category")
@@ -88,6 +90,8 @@ class ROISelectorModule(ipywidgets.VBox):
                                          self._auto_cat_check])
 
         self._roi_multi_sel = ipywidgets.Dropdown(description="ROIs")
+        self._roi_multi_sel.observe(lambda c: self.reset_selection_tool(),
+                                    "value")
         self._roi_multi_add = ipywidgets.Button(icon="plus")
         self._roi_multi_add.on_click(lambda x: self._add_roi())
         self._roi_multi_del = ipywidgets.Button(icon="remove")
@@ -97,9 +101,10 @@ class ROISelectorModule(ipywidgets.VBox):
 
         self._roi_shape_sel = ipywidgets.ToggleButtons(
             options=list(self._roi_selectors), description="shape")
-        self._roi_shape_sel.observe(self._new_roi_selector, "value")
+        self._roi_shape_sel.observe(lambda c: self.reset_selection_tool(),
+                                    "value")
         self._cat_trait_changed()
-        self._new_roi_selector()
+        self.reset_selection_tool()
 
         super().__init__(
             [self._roi_shape_sel, self._cat_box, self._roi_multi_box],
@@ -194,7 +199,7 @@ class ROISelectorModule(ipywidgets.VBox):
 
     def _cat_sel_changed(self, change=None):
         with self.debug_output:
-            self._new_roi_selector()
+            self.reset_selection_tool()
             self._update_roi_list()
 
     @traitlets.observe("multi")
@@ -238,7 +243,7 @@ class ROISelectorModule(ipywidgets.VBox):
                                       weight="bold")
                     self._path_artists.append(ta)
 
-            self.ax.figure.canvas.draw_idle()
+        self.ax.figure.canvas.draw_idle()
 
     def _update_roi_list(self, keep_index=True):
         """Update ROI selection widget list"""
@@ -261,19 +266,17 @@ class ROISelectorModule(ipywidgets.VBox):
         elif self._roi_multi_sel.index is None and opts:
             self._roi_multi_sel.index = 0
 
-    def _new_roi_selector(self, change=None):
-        """Create a new ROI selector and delete the old one
+    def reset_selection_tool(self):
+        """Reset the ROI selector
 
         Depending on the currenly selected shape, the new one will be
         a rectangle, ellipse, polygon or lasso.
-        If no categories are defined, return a single ROI (if :py:attr:`multi`
-        is `False`) or a list of ROIs (if :py:attr:`multi` is `True`). If
-        categories are defined, return a dict mapping the category names to
-        ROIs or lists of ROIs.
         """
         if self._cur_roi_sel is not None:
-            self._cur_roi_sel.set_visible(False)
-        self._cur_roi_sel = self._roi_selectors[self._roi_shape_sel.value]()
+            self._cur_roi_sel.clear()
+            self._cur_roi_sel.set_active(False)
+        self._cur_roi_sel = self._roi_selectors[self._roi_shape_sel.value]
+        self._cur_roi_sel.set_active(True)
 
     def _next_category(self):
         """Jump to the next category if :py:attr:`auto_category` is `True`"""
@@ -445,6 +448,7 @@ class ROISelector(ipywidgets.VBox):
         else:
             r = self.roi_selector_module.get_undefined_rois()
             self.roi_selector_module.rois = r
+        self.roi_selector_module.reset_selection_tool()
 
     def _roi_drawn(self, change=None):
         """A ROI was drawn"""
