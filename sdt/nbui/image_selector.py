@@ -106,6 +106,8 @@ class ImageSelector(ipywidgets.HBox):
                 continue
             opts.append(generic_key_pattern.format(n))
         self._file_sel.options = opts
+        if self._file_sel.index is None:
+            self._file_sel.index = 0
 
     def _file_changed(self, change=None):
         """Call-back upon change of the currently selected sequence"""
