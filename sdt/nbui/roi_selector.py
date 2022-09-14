@@ -442,7 +442,7 @@ class ROISelector(ipywidgets.VBox):
     def _cur_image_changed(self, change=None):
         """Selected image was changed via :py:attr:`image_selector`"""
         self.image_display.input = self.image_selector.output
-        idx = self.image_selector._file_sel.index
+        idx = self.image_selector.index
         if idx is not None:
             self.roi_selector_module.rois = self.rois[idx]
         else:
