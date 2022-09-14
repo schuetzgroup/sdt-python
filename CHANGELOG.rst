@@ -13,6 +13,17 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+17.4
+----
+
+- :py:class:`flatfield.Corrector`: Handle Gaussian fits where the center is
+  outside the image.
+- Fix errors in :py:class:`multicolor.FrameSelector` and
+  :py:class:`funcs.StepFunction` due to change in scipy 1.9.
+- Various bug fixes, notably in :py:class:`flatfield.Corrector`,
+  :py:class:`nbui.ImageSelector`, and :py:class:`nbui.ROISelector`.
+
+
 17.3
 ----
 
