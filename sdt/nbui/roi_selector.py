@@ -188,6 +188,8 @@ class ROISelectorModule(ipywidgets.VBox):
         with self.debug_output:
             self._cat_box.layout.display = None if self.categories else "none"
             self._roi_cat_sel.options = self.categories
+            if self._roi_cat_sel.index is None and self.categories:
+                self._roi_cat_sel.index = 0
             self.rois = self.get_undefined_rois()
 
     def _cat_sel_changed(self, change=None):
@@ -241,7 +243,7 @@ class ROISelectorModule(ipywidgets.VBox):
     def _update_roi_list(self, keep_index=True):
         """Update ROI selection widget list"""
         cat = self._roi_cat_sel.value
-        old_idx = self._roi_multi_sel.index
+        old_idx = self._roi_multi_sel.index or 0
         try:
             opts = list(range(1, len(self._normalized_rois[cat]) + 1))
         except KeyError:
@@ -254,8 +256,10 @@ class ROISelectorModule(ipywidgets.VBox):
         self._roi_multi_sel.options = opts
         # Setting options will reset index to 0, therefore preserve previous
         # selection (if possible)
-        if keep_index and old_idx is not None and opts:
+        if keep_index and opts:
             self._roi_multi_sel.index = min(old_idx, len(opts) - 1)
+        elif self._roi_multi_sel.index is None and opts:
+            self._roi_multi_sel.index = 0
 
     def _new_roi_selector(self, change=None):
         """Create a new ROI selector and delete the old one
