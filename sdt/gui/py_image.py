@@ -110,10 +110,10 @@ class PyImage(QtQuick.QQuickPaintedItem):
             return
         # Maybe use self._qImage.scaled(), which would allow to specifiy
         # whether to do interpolation or not?
-        painter.drawImage(QtCore.QRect(0, 0, self.width(), self.height()),
+        painter.drawImage(QtCore.QRectF(0, 0, self.width(), self.height()),
                           self._qImage,
-                          QtCore.QRect(0, 0, self.sourceWidth,
-                                       self.sourceHeight))
+                          QtCore.QRectF(0, 0, self.sourceWidth,
+                                        self.sourceHeight))
 
     sourceWidthChanged = QtCore.pyqtSignal(int)
     """Width of the image changed."""
