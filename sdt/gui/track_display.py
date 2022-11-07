@@ -55,6 +55,8 @@ class TrackDisplay(LocDisplay):
         self._lines = []
         self._showTracks = True
 
+        self.scaleFactorChanged.connect(self._makeLines)
+
     showTracksChanged = QtCore.pyqtSignal()
 
     @QtCore.pyqtProperty(bool, notify=showTracksChanged)
