@@ -54,6 +54,7 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
         self._circles = []
         self._color = QtGui.QColor(QtCore.Qt.yellow)
         self._markerSize = 0.0
+        self._showLoc = True
 
     color = SimpleQtProperty(QtGui.QColor)
     """Color of the markers"""
@@ -61,6 +62,26 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
     """Size (radius) of the markers. If less than or equal to 0.0, use the
     sizes from :py:attr:`locData`.
     """
+
+    showLocChanged = QtCore.pyqtSignal()
+
+    @QtCore.pyqtProperty(bool, notify=showLocChanged)
+    def showLoc(self) -> bool:
+        """Whether to display localization markers
+
+        This is mostly useful for derived classes such as
+        :py:class:`TrackDisplay` where one may want to toggle the display of
+        localization markers while still showing track markers. Otherwise,
+        setting ``visible = false`` is more efficient.
+        """
+        return self._showLoc
+
+    @showLoc.setter
+    def showLoc(self, s):
+        if self._showLoc == s:
+            return
+        self._showLoc = s
+        self.update()
 
     locDataChanged = QtCore.pyqtSignal(QtCore.QVariant)
     """Localization data was changed"""
@@ -127,8 +148,9 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
         painter.setPen(pen)
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
 
-        for c in self._circles:
-            painter.drawEllipse(c)
+        if self._showLoc:
+            for c in self._circles:
+                painter.drawEllipse(c)
 
 
 QtQml.qmlRegisterType(LocDisplay, "SdtGui", 0, 1, "LocDisplay")

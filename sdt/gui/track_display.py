@@ -53,6 +53,21 @@ class TrackDisplay(LocDisplay):
         self._curFrame = -1
         self._trc = None
         self._lines = []
+        self._showTracks = True
+
+    showTracksChanged = QtCore.pyqtSignal()
+
+    @QtCore.pyqtProperty(bool, notify=showTracksChanged)
+    def showTracks(self) -> bool:
+        """Whether to display tracks"""
+        return self._showTracks
+
+    @showTracks.setter
+    def showTracks(self, s):
+        if self._showTracks == s:
+            return
+        self._showTracks = s
+        self.update()
 
     currentFrameChanged = QtCore.pyqtSignal()
     """:py:attr:`currentFrame` changed"""
@@ -114,8 +129,9 @@ class TrackDisplay(LocDisplay):
     def paint(self, painter: QtGui.QPainter):
         # Implement QQuickItem.paint
         super().paint(painter)
-        for li in self._lines:
-            painter.drawPolyline(li)
+        if self._showTracks:
+            for li in self._lines:
+                painter.drawPolyline(li)
 
 
 QtQml.qmlRegisterType(TrackDisplay, "SdtGui", 0, 1, "TrackDisplay")
