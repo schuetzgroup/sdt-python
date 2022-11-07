@@ -54,8 +54,8 @@ T.DatasetSelector {
 
         Connections {
             target: sel.model
-            onRowsInserted: { sel.selectFirstIfUnset() }
-            onModelReset: { sel.selectFirstIfUnset() }
+            function onRowsInserted() { sel.selectFirstIfUnset() }
+            function onModelReset() { sel.selectFirstIfUnset() }
         }
         // selectTextByMouse: true  // Qt >=5.15
         Component.onCompleted: { contentItem.selectByMouse = true }
