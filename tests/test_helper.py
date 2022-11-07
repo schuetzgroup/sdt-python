@@ -173,7 +173,7 @@ class TestSplitDataframe:
         d = pd.concat([data, data], axis=1, keys=["x", "y"])
         s = helper.split_dataframe(d, ("x", "split"), [("y", "B"), ("x", "A")],
                                    type="DataFrame")
-        expected = list(d.groupby([("x", "split")]))
+        expected = list(d.groupby(("x", "split")))
         assert len(s) == len(expected)
         for (i1, d1), (i2, d2) in zip(s, expected):
             assert i1 == i2
@@ -185,7 +185,7 @@ class TestSplitDataframe:
         d = pd.concat([data, data], axis=1, keys=["x", "y"])
         s = helper.split_dataframe(d, ("x", "split"), [("y", "B"), ("x", "A")],
                                    type="array")
-        expected = list(d.groupby([("x", "split")]))
+        expected = list(d.groupby(("x", "split")))
         assert len(s) == len(expected)
         for (i1, d1), (i2, d2) in zip(s, expected):
             assert i1 == i2
@@ -197,7 +197,7 @@ class TestSplitDataframe:
         cols = [("y", "B"), ("x", "A")]
         d = pd.concat([data, data], axis=1, keys=["x", "y"])
         s = helper.split_dataframe(d, ("x", "split"), cols, type="array_list")
-        expected = list(d.groupby([("x", "split")]))
+        expected = list(d.groupby(("x", "split")))
         assert len(s) == len(expected)
         for (i1, d1), (i2, d2) in zip(s, expected):
             assert i1 == i2

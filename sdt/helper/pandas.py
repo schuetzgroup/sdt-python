@@ -104,7 +104,7 @@ def split_dataframe(df: pd.DataFrame, split_column: Any,
             return [(split_column_data[i], r) for i, r in zip(split_idx, ret)]
         else:
             if columns is None:
-                vals = [d.values for n, d in df.iteritems()]
+                vals = [d.values for n, d in df.items()]
             else:
                 vals = [df[c].values for c in columns]
             if keep_index:
@@ -113,7 +113,7 @@ def split_dataframe(df: pd.DataFrame, split_column: Any,
             return [(split_column_data[j], [r[i] for r in ret])
                     for i, j in enumerate(split_idx)]
     else:
-        ret = list(df.groupby([split_column]))
+        ret = list(df.groupby(split_column))
         if columns is not None:
             ret = [(i, g[columns]) for i, g in ret]
         return ret
