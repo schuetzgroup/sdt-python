@@ -62,6 +62,7 @@ T.ROISelector {
                             break
                     }
                     item.roiChanged.connect(function() { root.roiChanged(modelData) })
+                    root.roiChanged(modelData)
                 }
                 // If not explicitly destroyed, there will be lots of errors
                 // from the resize handles
