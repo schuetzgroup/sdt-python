@@ -20,6 +20,7 @@ class Dataset(ListModel):
     file paths, while other roles (:py:attr:`dataRoles`) could, for instance
     be analysis results corresponding to a file, etc.
     """
+
     def __init__(self, parent: QtCore.QObject = None):
         """Parameters
         ----------

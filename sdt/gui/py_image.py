@@ -15,6 +15,7 @@ class PyImage(QtQuick.QQuickPaintedItem):
     Works for single-channel (grayscale) data only. Black and white points can
     be set via :py:attr:`black` and :py:attr:`white` properties, respectively.
     """
+
     def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
         ----------
