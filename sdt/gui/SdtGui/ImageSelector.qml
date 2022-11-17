@@ -34,7 +34,10 @@ T.ImageSelector {
             model: root.dataset
             textRole: root.textRole
 
-            onCountChanged: { if (count > 0) currentIndex = 0 }
+            onCountChanged: {
+                if (count > 0 && currentIndex < 0)
+                    currentIndex = 0
+            }
 
             popup: Popup {
                 y: fileSel.height - 1
@@ -90,7 +93,7 @@ T.ImageSelector {
         selectMultiple: true
 
         onAccepted: {
-            for (var u of fileUrls) root.dataset.append(u)
+            root.dataset.setFiles(root.modifyFileRole, fileUrls)
             fileSel.popup.close()
         }
     }
