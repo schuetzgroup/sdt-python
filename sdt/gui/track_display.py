@@ -6,6 +6,7 @@ from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import pandas as pd
 from typing import Optional
 
+from .. import helper
 from .loc_display import LocDisplay
 
 
@@ -69,7 +70,7 @@ class TrackDisplay(LocDisplay):
         if self._showTracks == s:
             return
         self._showTracks = s
-        self.update()
+        self._makeLines()
 
     currentFrameChanged = QtCore.pyqtSignal()
     """:py:attr:`currentFrame` changed"""
@@ -115,25 +116,26 @@ class TrackDisplay(LocDisplay):
             self.locData = None
         else:
             self.locData = self._trc[self._trc["frame"] == self._curFrame]
-            curTrc = self._trc.groupby("particle").filter(
-                lambda x: (x["frame"].min() <= self._curFrame
-                           <= x["frame"].max()))
-            # TODO: sort by frame
 
-            for p, t in curTrc.groupby("particle"):
-                xs = (t["x"].to_numpy() + 0.5) * self.scaleFactor
-                ys = (t["y"].to_numpy() + 0.5) * self.scaleFactor
-                poly = QtGui.QPolygonF(
-                    QtCore.QPointF(x, y) for x, y in zip(xs, ys))
-                self._lines.append(poly)
+            if self._showTracks:
+                for p, (x, y, fr) in helper.split_dataframe(
+                        self._trc, "particle", ["x", "y", "frame"],
+                        type="array_list"):
+                    if not fr.min() <= self._curFrame <= fr.max():
+                        continue
+                    # TODO: sort by frame
+                    xs = (x + 0.5) * self.scaleFactor
+                    ys = (y + 0.5) * self.scaleFactor
+                    poly = QtGui.QPolygonF(
+                        QtCore.QPointF(x, y) for x, y in zip(xs, ys))
+                    self._lines.append(poly)
         self.update()
 
     def paint(self, painter: QtGui.QPainter):
         # Implement QQuickItem.paint
         super().paint(painter)
-        if self._showTracks:
-            for li in self._lines:
-                painter.drawPolyline(li)
+        for li in self._lines:
+            painter.drawPolyline(li)
 
 
 QtQml.qmlRegisterType(TrackDisplay, "SdtGui", 0, 1, "TrackDisplay")
