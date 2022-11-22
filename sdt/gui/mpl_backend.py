@@ -88,6 +88,7 @@ def keyEventToMpl(event: QtGui.QKeyEvent) -> str:
 
 class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
     """QQuickItem serving as a base class for matplotlib figure canvases"""
+
     def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
         ----------
@@ -304,6 +305,7 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
 
 class FigureCanvasAgg(mpl_agg.FigureCanvasAgg, FigureCanvas):
     """QQuickItem that uses matplotlib's AGG backend to render figures"""
+
     def paint(self, painter: QtGui.QPainter):
         """Implement :py:meth:`QtQuick.QQuickPaintedItem.paint`"""
         self._draw_idle()  # Only does something if a draw is pending.
@@ -313,8 +315,9 @@ class FigureCanvasAgg(mpl_agg.FigureCanvasAgg, FigureCanvas):
         if not hasattr(self, "renderer"):
             return
 
-        img = QtGui.QImage(self.buffer_rgba(), self.renderer.width,
-                           self.renderer.height, QtGui.QImage.Format_RGBA8888)
+        img = QtGui.QImage(self.buffer_rgba(), int(self.renderer.width),
+                           int(self.renderer.height),
+                           QtGui.QImage.Format_RGBA8888)
         img.setDevicePixelRatio(self._px_ratio)
         painter.drawImage(0, 0, img)
 
