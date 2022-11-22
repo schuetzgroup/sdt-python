@@ -12,114 +12,144 @@ import SdtGui.Templates 0.1 as T
 T.ChannelConfig {
     id: root
 
-    readonly property alias sourceCount: roiConfigList.count
+    property bool channelNamesEditable: true
     property alias sameSize: sameSizeCheck.checked
 
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
-
-    function _getChannelNames() {
-        var ret = []
-        for (var i = 0; i < srcConfigList.count; i++)
-            ret.push(srcConfigList.get(i).name)
-        return ret
-    }
-
-    function _setChannelNames(names) {
-        for (var i = 0; i < srcConfigList.count; i++)
-            srcConfigList.get(i).destroy()
-        srcConfigList.clear()
-        for (var n of names) {
-            // Need to set a parent, otherwise the new object is garbage-collected
-            var obj = srcConfig.createObject(srcConfigRep, {name: n})
-            srcConfigList.append(obj)
-        }
-    }
-
-    function _getChannelSource(name) {
-        for (var i = 0; i < srcConfigList.count; i++) {
-            var obj = srcConfigList.get(i)
-            if (obj.name == name)
-                return obj.sourceId
-        }
-    }
-
-    function _setChannelSource(name, sourceId) {
-        for (var i = 0; i < srcConfigList.count; i++) {
-            var obj = srcConfigList.get(i)
-            if (obj.name == name) {
-                obj.sourceId = sourceId
-                return
-            }
-        }
-    }
-
-    function _getROIs(sourceId) {
-        return roiConfigList.get(sourceId).rois
-    }
-
-    function _setROI(sourceId, name, roi) {
-        roiConfigList.get(sourceId).setROI(name, roi)
-    }
-
-    function _setROIs(sourceId, rois) {
-        roiConfigList.get(sourceId).rois = rois
-    }
-
-
-    function _updateSourceCount() {
-        var cnt = -1
-        for (var i = 0; i < srcConfigRep.count; i++)
-            cnt = Math.max(cnt, srcConfigList.get(i).sourceId)
-        cnt += 1
-
-        _setSourceCount(cnt)
-    }
-
-    function _setSourceCount(cnt) {
-        var cntDiff = roiConfigList.count - cnt
-        if (cntDiff < 0) {
-            for (var i = roiConfigList.count; i < cnt; i++) {
-                // Need to set a parent to prevent garbage collection
-                roiConfigList.append(roiConfig.createObject(roiSelRep))
-            }
-        } else if (cntDiff > 0) {
-            for (var j = cnt; j < roiConfigList.count; j++)
-                roiConfigList.get(j).destroy()
-            roiConfigList.remove(cnt, cntDiff)
-        }
-    }
-
-    onSourceCountChanged: { if (sourceCount > 1) srcConfigCheck.checked = true }
 
     ColumnLayout {
         id: rootLayout
         anchors.fill: parent
         spacing: 15
 
-        Switch {
-            id: srcConfigCheck
-            text: "Source configuration (multiple inputs)"
-            checked: false
-            onCheckedChanged: {
-                if (!checked) {
-                    for (var i = 0; i < srcConfigRep.count; i++)
-                        srcConfigRep.itemAt(i).sourceId = 0
-                }
-            }
-        }
-
         GroupBox {
-            visible: srcConfigCheck.checked
             Layout.fillWidth: true
 
             GridLayout {
-                id: srcConfigLayout
-                anchors.fill: parent
-                columns: 3
-                Repeater {
-                    id: srcConfigRep
-                    model: srcConfigList
+                columns: 10
+
+                Label {
+                    text: "channels"
+                    visible: root.channelNamesEditable
+                }
+                ComboBox {
+                    id: chanDefBox
+                    model: root._channelList
+                    textRole: "name"
+                    editable: true
+                    visible: root.channelNamesEditable
+                    selectTextByMouse: true
+
+                    onAccepted: {
+                        if (currentIndex < 0)
+                            return
+                        root._channelList.set(currentIndex, "name", editText)
+                    }
+                }
+                ToolButton {
+                    icon.name: "list-add"
+                    visible: root.channelNamesEditable
+                    onPressed: {
+                        root._channelList.append({name: "<new>", source: 0})
+                        chanDefBox.currentIndex = root._channelList.count - 1
+                    }
+                }
+                ToolButton {
+                    icon.name: "list-remove"
+                    visible: root.channelNamesEditable
+                    enabled: root._channelList.count > 1
+                    onPressed: {
+                        if (chanDefBox.currentIndex < 0)
+                            return
+                        root._channelList.remove(chanDefBox.currentIndex)
+                    }
+                }
+                ToolSeparator { visible: root.channelNamesEditable }
+                Switch {
+                    id: srcConfigCheck
+                    text: "Configure multiple inputs"
+                    checked: false
+                    Layout.columnSpan: root.channelNamesEditable ? 5 : 10
+
+                    onCheckedChanged: {
+                        if (!checked) {
+                            for (var i = 0; i < root._channelList.count; i++)
+                                root._channelList.set(i, "source", 0)
+                        }
+                    }
+                }
+
+                Label {
+                    text: "sources"
+                    visible: srcConfigCheck.checked
+                }
+                ComboBox {
+                    id: srcDefBox
+                    visible: srcConfigCheck.checked
+                    model: root._sourceList
+                    textRole: "name"
+                    editable: true
+                    selectTextByMouse: true
+
+                    onAccepted: {
+                        if (currentIndex < 0)
+                            return
+                        root._sourceList.set(currentIndex, "name", editText)
+                    }
+                }
+                ToolButton {
+                    icon.name: "list-add"
+                    visible: srcConfigCheck.checked
+                    onPressed: {
+                        root._sourceList.append({name: "source_" + root._sourceList.count})
+                        srcDefBox.currentIndex = root._sourceList.count - 1
+                    }
+                }
+                ToolButton {
+                    icon.name: "list-remove"
+                    visible: srcConfigCheck.checked
+                    enabled: root._sourceList.count > 1
+                    onPressed: {
+                        if (srcDefBox.currentIndex < 0)
+                            return
+                        for (var i = 0; i < root._channelList.count; i++)
+                            var o = root._channelList.get(i, "source")
+                            if (i == srcDefBox.currentIndex)
+                                root._channelList.set(i, "source", 0)
+                        root._sourceList.remove(srcDefBox.currentIndex)
+                    }
+                }
+                ToolSeparator { visible: srcConfigCheck.checked }
+                Label {
+                    text: "Map"
+                    visible: srcConfigCheck.checked
+                }
+                ComboBox {
+                    id: chanMapBox
+                    model: root._channelList
+                    visible: srcConfigCheck.checked
+                    textRole: "name"
+
+                    onCurrentTextChanged: {
+                        // currentValue is not yet updated, query model directly
+                        srcMapBox.currentIndex = root._channelList.get(currentIndex, "source")
+                    }
+                }
+                Label {
+                    text: "from"
+                    visible: srcConfigCheck.checked
+                }
+                ComboBox {
+                    id: srcMapBox
+                    model: root._sourceList
+                    textRole: "name"
+                    visible: srcConfigCheck.checked
+
+                    onCurrentTextChanged: {
+                        root._channelList.set(chanMapBox.currentIndex,
+                                              "source", currentIndex)
+                    }
                 }
             }
         }
@@ -131,18 +161,16 @@ T.ChannelConfig {
                 rightPadding: parent.padding
                 spacing: 10
                 Label {
-                    text: "ROI configuration"
+                    text: (srcConfigCheck.checked ?
+                           "ROI configuration for source" :
+                           "ROI configuration")
                     anchors.verticalCenter: roiSourceSel.verticalCenter
                 }
-                Label {
-                    text: "source"
-                    visible: srcConfigCheck.checked
-                    anchors.verticalCenter: roiSourceSel.verticalCenter
-                }
-                SpinBox {
+                ComboBox {
                     id: roiSourceSel
+                    model: root._sourceList
+                    textRole: "name"
                     visible: srcConfigCheck.checked
-                    to: root.sourceCount - 1
                 }
                 Switch {
                     id: sameSizeCheck
@@ -156,143 +184,98 @@ T.ChannelConfig {
             StackLayout {
                 id: roiSelStack
                 anchors.fill: parent
-                currentIndex: roiSourceSel.value
+                currentIndex: roiSourceSel.currentIndex
+
                 Repeater {
                     id: roiSelRep
-                    model: roiConfigList
+                    model: root._sourceList
+
+                    ColumnLayout {
+                        id: rcLayout
+                        property alias dataset: imSel.dataset
+                        property alias rois: roiSel.rois
+                        property int srcIndex: index
+
+                        ImageSelector {
+                            id: imSel
+                            Layout.fillWidth: true
+                        }
+                        RowLayout {
+                            Label { text: "split" }
+                            ToolButton {
+                                icon.name: "view-split-left-right"
+                                enabled: imSel.dataset.count != 0
+                                onClicked: {
+                                    root._splitHorizontally(index, imSel.image)
+                                }
+                                hoverEnabled: true
+                                ToolTip.visible: hovered
+                                ToolTip.text: qsTr("Split horizontally")
+                            }
+                            ToolButton {
+                                icon.name: "view-split-top-bottom"
+                                enabled: imSel.dataset.count != 0
+                                onClicked: {
+                                    root._splitVertically(index, imSel.image)
+                                }
+                                hoverEnabled: true
+                                ToolTip.visible: hovered
+                                ToolTip.text: qsTr("Split vertically")
+                            }
+                            ToolButton {
+                                icon.name: "reverse"
+                                enabled: imSel.dataset.count != 0
+                                onClicked: { root._swapChannels(index) }
+                                hoverEnabled: true
+                                ToolTip.visible: hovered
+                                ToolTip.text: qsTr("Swap channels")
+                            }
+                            Item { width: 3 }
+                            ROISelector {
+                                id: roiSel
+                                names: channelNames
+                                limits: imSel.image
+                                drawingTools: ROISelector.DrawingTools.IntRectangleTool
+                                overlay.visible: imSel.image != null
+                                onRoiChanged: {
+                                    root._roiUpdatedInGUI(name, rois[name], imSel.image)
+                                }
+                                Connections {
+                                    target: root._channelList
+                                    function onItemsChanged(index, count, roles) {
+                                        if (roles.length && !roles.includes("roi"))
+                                            return
+                                        for (var i = index; i < index + count; i++) {
+                                            var n = root._channelList.get(i, "name")
+                                            var s = root._channelList.get(i, "source")
+                                            if (s != rcLayout.srcIndex)
+                                                continue
+                                            var r = root._channelList.get(i, "roi")
+                                            roiSel.setROI(n, r)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        ImageDisplay {
+                            id: imDisp
+                            image: imSel.image
+                            error: imSel.error
+                            overlays: roiSel.overlay
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+                    }
                 }
             }
         }
     }
 
-    ObjectModel {
-        id: srcConfigList
-    }
-
-    ObjectModel {
-        id: roiConfigList
-    }
-
-    Component {
-        id: srcConfig
-        RowLayout {
-            id: scLayout
-            property string name: ""
-            property alias sourceId: idSel.value
-            Label {
-                text: name + " source #"
-            }
-            SpinBox {
-                id: idSel
-                to: srcConfigList.count - 1
-                property int oldValue: { oldValue = value }
-                onValueChanged: {
-                    // Value was increased, so it may be necessary to create
-                    // new ROISelector
-                    if (value > oldValue)
-                        root._updateSourceCount()
-                    // Get old ROISelector
-                    var oldRS = roiConfigList.get(oldValue)
-                    var oldROIs = oldRS.rois
-                    // The new ROISelector is given by the current source
-                    // ID.
-                    var newRS = roiConfigList.get(value)
-                    var newROIs = newRS.rois
-                    // Move ROI and exit loop
-                    newROIs[name] = oldROIs[name]
-                    newRS.rois = newROIs
-                    delete oldROIs[name]
-                    oldRS.rois = oldROIs
-                    // Value was decreased, so it may be necessary to remove
-                    // old ROISelector
-                    if (value < oldValue)
-                        root._updateSourceCount()
-                    oldValue = value
-                }
-            }
-            Item {
-                Layout.fillWidth: (
-                    (scLayout.ObjectModel.index % srcConfigLayout.columns != srcConfigLayout.columns - 1) &&
-                    (scLayout.ObjectModel.index < srcConfigList.count - 1)
-                )
-            }
-        }
-    }
-
-    Component {
-        id: roiConfig
-        ColumnLayout {
-            id: rcLayout
-            property alias dataset: imSel.dataset
-            property alias rois: roiSel.rois
-
-            function setROI(name, roi) { roiSel.setROI(name, roi) }
-
-            ImageSelector {
-                id: imSel
-                Layout.fillWidth: true
-            }
-            RowLayout {
-                Label { text: "split" }
-                ToolButton {
-                    icon.name: "view-split-left-right"
-                    enabled: imSel.dataset.count != 0
-                    onClicked: {
-                        root._splitHorizontally(rcLayout.ObjectModel.index,
-                                                imSel.image)
-                    }
-                    hoverEnabled: true
-                    ToolTip.visible: hovered
-                    ToolTip.text: qsTr("Split horizontally")
-                }
-                ToolButton {
-                    icon.name: "view-split-top-bottom"
-                    enabled: imSel.dataset.count != 0
-                    onClicked: {
-                        root._splitVertically(rcLayout.ObjectModel.index,
-                                              imSel.image)
-                    }
-                    hoverEnabled: true
-                    ToolTip.visible: hovered
-                    ToolTip.text: qsTr("Split vertically")
-                }
-                ToolButton {
-                    icon.name: "reverse"
-                    enabled: imSel.dataset.count != 0
-                    onClicked: { root._swapChannels(rcLayout.ObjectModel.index) }
-                    hoverEnabled: true
-                    ToolTip.visible: hovered
-                    ToolTip.text: qsTr("Swap channels")
-                }
-                Item { width: 3 }
-                ROISelector {
-                    id: roiSel
-                    limits: imSel.image
-                    drawingTools: ROISelector.DrawingTools.IntRectangleTool
-                    overlay.visible: imSel.image != null
-                    onRoiChanged: {
-                        if (root.sameSize) root._resizeROIs(name, imSel.image)
-                        root.channelsChanged()
-                        root.channelsModified()
-                    }
-                }
-            }
-            ImageDisplay {
-                id: imDisp
-                image: imSel.image
-                error: imSel.error
-                overlays: roiSel.overlay
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
-        }
-    }
     DropArea {
         anchors.fill: parent
         keys: "text/uri-list"
         onDropped: {
-            for (var u of drop.urls)
-                roiSelRep.itemAt(roiSelStack.currentIndex).dataset.append(u)
+            roiSelRep.itemAt(roiSelStack.currentIndex).dataset.setFiles("source_0", drop.urls)
         }
     }
 }
