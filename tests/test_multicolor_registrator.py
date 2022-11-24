@@ -3,8 +3,6 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 from io import StringIO
-from pathlib import Path
-import tempfile
 
 import numpy as np
 import pandas as pd
@@ -215,11 +213,13 @@ class TestRegistrator:
         exp = cc.pairs["channel2"].copy()
         exp["frame"] = res["frame"]
 
-        res2 = cc(res, channel=1, inplace=False)
-        cc(res, channel=1, inplace=True)
+        for ch in 1, "channel1":
+            res2 = cc(res, channel=ch, inplace=False)
+            res3 = res.copy()
+            cc(res3, channel=ch, inplace=True)
 
-        pd.testing.assert_frame_equal(res, exp)
-        pd.testing.assert_frame_equal(res2, exp)
+            pd.testing.assert_frame_equal(res2, exp)
+            pd.testing.assert_frame_equal(res3, exp)
 
     def test_call_img(self):
         """multicolor.Registrator.__call__: image arg"""
@@ -230,8 +230,9 @@ class TestRegistrator:
                                    [0, 0, 1]])
         cc.parameters2 = np.linalg.inv(cc.parameters1)
 
-        img_corr = cc(img, channel=1)
-        np.testing.assert_allclose(img_corr, img[:, ::-1])
+        for ch in 1, "channel1":
+            img_corr = cc(img, channel=ch)
+            np.testing.assert_allclose(img_corr, img[:, ::-1])
 
     def test_call_img_callable_cval(self):
         """multicolor.Registrator.__call__: image arg with callable `cval`"""
@@ -242,11 +243,13 @@ class TestRegistrator:
                                    [0, 0, 1]])
         cc.parameters2 = np.linalg.inv(cc.parameters1)
 
-        img_corr = cc(img, channel=1, cval=lambda x: -10)
         exp = np.empty_like(img)
         exp[:, :exp.shape[1] // 2] = img[:, img.shape[1] // 2 - 1::-1]
         exp[:, exp.shape[1] // 2:] = -10
-        np.testing.assert_allclose(img_corr, exp)
+
+        for ch in 1, "channel1":
+            img_corr = cc(img, channel=1, cval=lambda x: -10)
+            np.testing.assert_allclose(img_corr, exp)
 
     @pytest.fixture(params=["npz", "mat"])
     def save_fmt(self, request):

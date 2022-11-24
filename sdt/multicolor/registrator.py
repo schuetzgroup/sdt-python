@@ -4,7 +4,8 @@
 
 from contextlib import suppress
 from pathlib import Path
-from typing import Callable, Dict, Optional, Sequence, Tuple, Union
+from typing import (Callable, Dict, Literal, Mapping, Optional,
+                    Sequence, Tuple, TypeVar, Union, overload)
 from typing.io import BinaryIO
 
 import cv2
@@ -15,8 +16,7 @@ import scipy.io
 import scipy.ndimage
 import scipy.spatial
 
-from .. import config, roi
-from ..helper import pipeline, Slicerator
+from .. import config, helper, roi
 
 
 def _affine_trafo(params: np.ndarray, loc: np.ndarray) -> np.ndarray:
@@ -198,15 +198,35 @@ class Registrator:
         self.find_pairs(n_neighbors, ambiguity_factor)
         self.fit_parameters(max_error)
 
+    @overload
+    def __call__(self, data: pd.DataFrame, channel: Union[int, str],
+                 inplace: Literal[True], mode: str,
+                 cval: Union[float, Callable[[np.ndarray], float]],
+                 columns: Mapping): ...
+
+    @overload
+    def __call__(self, data: pd.DataFrame, channel: Union[int, str],
+                 inplace: Literal[False], mode: str,
+                 cval: Union[float, Callable[[np.ndarray], float]],
+                 columns: Mapping) -> pd.DataFrame: ...
+
+    @overload
+    def __call__(self, data: Union[helper.Slicerator, helper.Pipeline],
+                 channel: Union[int, str], inplace: Literal[False], mode: str,
+                 cval: Union[float, Callable[[np.ndarray], float]],
+                 columns: Mapping) -> helper.Pipeline: ...
+
+    ImageOrROI = TypeVar("ImageOrROI",
+                         bound=Union[roi.PathROI, np.ndarray])
+
     @config.set_columns
     def __call__(self,
-                 data: Union[pd.DataFrame, roi.PathROI, Slicerator,
-                             np.ndarray],
-                 channel: int = 2, inplace: bool = False,
+                 data: ImageOrROI,
+                 channel: Union[int, str], inplace: bool = False,
                  mode: str = "constant",
                  cval: Union[float, Callable[[np.ndarray], float]] = 0.0,
-                 columns: Dict = {}):
-        """Correct for chromatic aberrations
+                 columns: Mapping = {}) -> ImageOrROI:
+        """Apply transformation to data
 
         This can be done either on coordinates (e. g. resulting from feature
         localization) or directly on raw images.
@@ -218,20 +238,21 @@ class Registrator:
             coordinates will be corrected. Otherwise,
             :py:class:`sdt.helper.Pipeline` is used to correct image data using
             an affine transformation.
-        channel : int
+        channel
             If `features` are in the first channel (corresponding to the
-            `feat1` arg of the constructor), set to 1. If features are in the
-            second channel, set to 2. Depending on this, a transformation will
+            `feat1` arg of the constructor), set to 1 or the first channel's
+            name. If features are in the second channel, set to 2 or the
+            second channel's name. Depending on this, a transformation will
             be applied to the coordinates of `features` to match the other
             channel (mathematically speaking depending on this parameter
             either the "original" transformation or its inverse are applied.)
-        inplace : bool
+        inplace
             Only has an effect if `data` is a DataFrame. If True, the
             feature coordinates will be corrected in place.
-        mode : str
+        mode
             How to fill points outside of the uncorrected image boundaries.
             Possibilities are "constant", "nearest", "reflect" or "wrap".
-        cval : scalar or callable
+        cval
             What value to use for `mode="constant"`. If this is callable, it
             should take a single argument (the uncorrected image) and return a
             scalar, which will be used as the fill value.
@@ -244,8 +265,13 @@ class Registrator:
             That means, if the DataFrame has coordinate columns "x" and "z",
             set ``columns={"coords": ["x", "z"]}``.
         """
+        with suppress(ValueError):
+            channel = self.channel_names.index(channel) + 1
         if channel not in (1, 2):
-            raise ValueError("channel has to be either 1 or 2")
+            valid = tuple(1, 2, *self.channel_names[:2])
+            raise ValueError(
+                "channel has to be one of "
+                f"{', '.join(str(v) for v in valid)}")
 
         pos_columns = columns["coords"]
 
@@ -253,7 +279,7 @@ class Registrator:
             if not inplace:
                 data = data.copy()
             loc = data[pos_columns].values
-            par = getattr(self, "parameters{}".format(channel))
+            par = getattr(self, f"parameters{channel}")
             data[pos_columns] = _affine_trafo(par, loc)
 
             if not inplace:
@@ -261,15 +287,14 @@ class Registrator:
                 return data
         elif isinstance(data, roi.PathROI):
             t = mpl.transforms.Affine2D(
-                getattr(self, "parameters{}".format(channel)))
+                getattr(self, f"parameters{channel}"))
             return roi.PathROI(t.transform_path(data.path),
                                buffer=data.buffer,
                                no_image=(data.image_mask is None))
         else:
-            parms = getattr(
-                self, "parameters{}".format(2 if channel == 1 else 1))
+            parms = getattr(self, f"parameters{2 if channel == 1 else 1}")
 
-            @pipeline
+            @helper.pipeline
             def corr(img):
                 # transpose image since matrix axes are reversed compared to
                 # coordinate axes
@@ -337,7 +362,7 @@ class Registrator:
             fig.tight_layout()
 
     def save(self, file: Union[BinaryIO, str, Path], fmt: str = "npz",
-             key: Tuple[str] = ("chromatic_param1", "chromatic_param2")):
+             key: Tuple[str, str] = ("chromatic_param1", "chromatic_param2")):
         """Save transformation parameters to file
 
         Parameters
@@ -363,7 +388,7 @@ class Registrator:
 
     @classmethod
     def load(cls, file: Union[BinaryIO, str, Path], fmt: str = "npz",
-             key: Tuple[str] = ("chromatic_param1", "chromatic_param2")
+             key: Tuple[str, str] = ("chromatic_param1", "chromatic_param2")
              ) -> "Registrator":
         """Read paramaters from a file and construct a `Registrator`
 
