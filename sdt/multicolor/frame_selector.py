@@ -557,3 +557,6 @@ class FrameSelector:
             return
         data[columns["time"]] = self.renumber_frames(
             data[columns["time"]].to_numpy(), which, True, n_frames)
+
+    def __eq__(self, other: "FrameSelector"):
+        return self.excitation_seq == other.excitation_seq
