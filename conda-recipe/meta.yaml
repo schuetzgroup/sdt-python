@@ -31,7 +31,7 @@ requirements:
         - matplotlib-base
         - scipy >0.18
         - tifffile >=0.14.0
-        - imageio <2.22.2
+        - imageio <2.22.2,>=2.18
 
 test:
     requires:
