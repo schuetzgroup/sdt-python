@@ -220,8 +220,8 @@ class FitterTest(unittest.TestCase):
         f = fit_impl.FitterZ(self.z_sim_img, self.z_sim_local_max,
                              self.z_params, 1e-6)
         f.iterate()
-        np.testing.assert_allclose(f.peaks, orig["peaks"])
-        np.testing.assert_allclose(f.residual, orig["residual"])
+        np.testing.assert_allclose(f.peaks, orig["peaks"], atol=1e-6)
+        np.testing.assert_allclose(f.residual, orig["residual"], atol=1e-6)
 
     def test_fit_z_sim(self):
         # Produced by a test run of this implementation. Differs from
