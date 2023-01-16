@@ -100,7 +100,7 @@ class Dataset(ListModel):
             if isinstance(f, QtCore.QUrl):
                 f = f.toLocalFile()
             if self._dataDir and f is not None:
-                f = str(Path(f).relative_to(self._dataDir))
+                f = str(Path(f).relative_to(self._dataDir).as_posix())
             if i < self.rowCount():
                 if (f is None and
                         all(self.get(i, r) is None for r in otherFileRoles)):
