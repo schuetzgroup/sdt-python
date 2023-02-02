@@ -443,7 +443,7 @@ class OptionTreeView(QTreeView):
 
     def sizeHintForColumn(self, column):
         if column < len(self.stretchFactors):
-            return self.viewport().width() * self.stretchFactors[column]
+            return round(self.viewport().width() * self.stretchFactors[column])
         else:
             return -1
 

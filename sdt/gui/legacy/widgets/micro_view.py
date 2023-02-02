@@ -340,20 +340,20 @@ class MicroViewWidget(mvBase):
 
     @pyqtSlot(int)
     def on_minSlider_valueChanged(self, val):
-        self._ui.minSpinBox.setValue(float(val)/self._sliderFactor)
+        self._ui.minSpinBox.setValue(val / self._sliderFactor)
 
     @pyqtSlot(int)
     def on_maxSlider_valueChanged(self, val):
-        self._ui.maxSpinBox.setValue(float(val)/self._sliderFactor)
+        self._ui.maxSpinBox.setValue(val / self._sliderFactor)
 
     @pyqtSlot(float)
     def on_minSpinBox_valueChanged(self, val):
-        self._ui.minSlider.setValue(round(val*self._sliderFactor))
+        self._ui.minSlider.setValue(round(val * self._sliderFactor))
         self.setMinIntensity(val)
 
     @pyqtSlot(float)
     def on_maxSpinBox_valueChanged(self, val):
-        self._ui.maxSlider.setValue(round(val*self._sliderFactor))
+        self._ui.maxSlider.setValue(round(val * self._sliderFactor))
         self.setMaxIntensity(val)
 
     @pyqtSlot(pd.DataFrame)
@@ -450,13 +450,15 @@ class MicroViewWidget(mvBase):
     @pyqtSlot(int)
     def setMinIntensity(self, v):
         self._intensityMin = min(v, self._intensityMax - 1)
-        self._ui.minSlider.setValue(self._intensityMin)
+        self._ui.minSlider.setValue(
+            round(self._intensityMin * self._sliderFactor))
         self.drawImage()
 
     @pyqtSlot(int)
     def setMaxIntensity(self, v):
         self._intensityMax = max(v, self._intensityMin + 1)
-        self._ui.maxSlider.setValue(self._intensityMax)
+        self._ui.maxSlider.setValue(
+            round(self._intensityMax * self._sliderFactor))
         self.drawImage()
 
     currentFrameChanged = pyqtSignal()

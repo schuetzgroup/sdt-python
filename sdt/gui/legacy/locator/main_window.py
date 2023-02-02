@@ -222,7 +222,7 @@ class MainWindow(QMainWindow):
             ims = None
             file = None
 
-        if isinstance(ims, collections.Iterable) and not len(ims):
+        if isinstance(ims, collections.abc.Iterable) and not len(ims):
             QMessageBox.critical(self, self.tr(""),
                                  self.tr("Empty image"))
             ims = None
