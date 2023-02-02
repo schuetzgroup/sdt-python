@@ -5,7 +5,7 @@
 import traceback
 import argparse
 
-from qtpy.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from .main_window import MainWindow
 

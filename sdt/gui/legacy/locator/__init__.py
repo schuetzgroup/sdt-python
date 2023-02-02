@@ -2,4 +2,4 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from .main_window import MainWindow
+from .main_window import MainWindow  # noqa F401

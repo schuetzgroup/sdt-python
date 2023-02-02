@@ -4,13 +4,13 @@
 
 import os
 
-from .. import uic
-from qtpy.QtCore import QCoreApplication, Property, Slot, Signal
-from qtpy.QtWidgets import QDialogButtonBox
+from PyQt5.QtCore import QCoreApplication, pyqtProperty, pyqtSignal, pyqtSlot
+from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt5.uic import loadUiType
 
 path = os.path.dirname(os.path.abspath(__file__))
 
-bpClass, bpBase = uic.loadUiType(os.path.join(path, "batch_progress.ui"))
+bpClass, bpBase = loadUiType(os.path.join(path, "batch_progress.ui"))
 
 
 class BatchProgressDialog(bpBase):
@@ -45,7 +45,7 @@ class BatchProgressDialog(bpBase):
             self._ui.buttonBox.addButton(QDialogButtonBox.Cancel)
             self._ui.label.setText(self._progressLabel)
 
-    @Property(int, doc="Amount of progress made")
+    @pyqtProperty(int, doc="Amount of progress made")
     def value(self):
         return self._ui.progressBar.value()
 
@@ -54,11 +54,11 @@ class BatchProgressDialog(bpBase):
         self._ui.progressBar.setValue(val)
         self._setTextAndButton()
 
-    @Slot()
+    @pyqtSlot()
     def increaseValue(self):
         self.value += 1
 
-    @Property(int, doc="The progress bar's minimum value")
+    @pyqtProperty(int, doc="The progress bar's minimum value")
     def minimum(self):
         return self._ui.progressBar.minimum()
 
@@ -66,7 +66,7 @@ class BatchProgressDialog(bpBase):
     def minimum(self, val):
         self._ui.progressBar.setMinimum(val)
 
-    @Property(int, doc="The progress bar's maximum value")
+    @pyqtProperty(int, doc="The progress bar's maximum value")
     def maximum(self):
         return self._ui.progressBar.maximum()
 
@@ -75,8 +75,8 @@ class BatchProgressDialog(bpBase):
         self._ui.progressBar.setMaximum(val)
         self._setTextAndButton()
 
-    @Slot(str)
+    @pyqtSlot(str)
     def setFilename(self, fn):
         self._ui.label.setText(self._progressFileLabel.format(fn))
 
-    canceled = Signal()
+    canceled = pyqtSignal()

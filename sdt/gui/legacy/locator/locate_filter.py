@@ -8,18 +8,17 @@ from contextlib import suppress
 
 import numpy as np
 
-import qtpy
-from qtpy.QtWidgets import QMenu, QAction
-from qtpy.QtCore import Signal, Slot, Qt, QTimer, QCoreApplication, Property
-from qtpy.QtGui import QCursor
-from .. import uic
+from PyQt5.QtCore import (QCoreApplication, QTimer, Qt, pyqtProperty,
+                          pyqtSignal, pyqtSlot)
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QMenu, QAction
+from PyQt5.uic import loadUiType
 
 
 path = os.path.dirname(os.path.abspath(__file__))
 
 
-filterClass, filterBase = uic.loadUiType(os.path.join(path,
-                                                      "locate_filter.ui"))
+filterClass, filterBase = loadUiType(os.path.join(path, "locate_filter.ui"))
 
 
 class FilterWidget(filterBase):
@@ -39,8 +38,7 @@ class FilterWidget(filterBase):
         self._delayTimer = QTimer(self)
         self._delayTimer.setInterval(self.filterChangeDelay)
         self._delayTimer.setSingleShot(True)
-        if not (qtpy.PYQT4 or qtpy.PYSIDE):
-            self._delayTimer.setTimerType(Qt.PreciseTimer)
+        self._delayTimer.setTimerType(Qt.PreciseTimer)
         self._delayTimer.timeout.connect(self.filterChanged)
 
         self._ui.filterEdit.textChanged.connect(self._delayTimer.start)
@@ -48,9 +46,9 @@ class FilterWidget(filterBase):
         self._menu = QMenu()
         self._menu.triggered.connect(self._addVariable)
 
-    filterChanged = Signal()
+    filterChanged = pyqtSignal()
 
-    @Slot(list)
+    @pyqtSlot(list)
     def setVariables(self, var):
         self._menu.clear()
         for v in var:
@@ -59,7 +57,8 @@ class FilterWidget(filterBase):
     def setFilterString(self, filt):
         self._ui.filterEdit.setPlainText(filt)
 
-    @Property(str, fset=setFilterString, doc="String describing the filter")
+    @pyqtProperty(str, fset=setFilterString,
+                  doc="String describing the filter")
     def filterString(self):
         s = self._ui.filterEdit.toPlainText()
         return self.varNameRex.subn("\\1", s)[0]
@@ -77,11 +76,11 @@ class FilterWidget(filterBase):
 
         return filterFunc
 
-    @Slot(QAction)
+    @pyqtSlot(QAction)
     def _addVariable(self, act):
         self._ui.filterEdit.textCursor().insertText(act.text())
 
-    @Slot(str)
+    @pyqtSlot(str)
     def on_showVarLabel_linkActivated(self, link):
         if not self._menu.isEmpty():
             self._menu.exec(QCursor.pos())

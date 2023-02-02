@@ -5,12 +5,11 @@
 import os
 import types
 
-import qtpy
-import qtpy.compat
-from qtpy.QtCore import (Signal, Slot, Qt, QCoreApplication, QObject,
-                         QAbstractListModel, QModelIndex, QEvent)
-from qtpy.QtGui import QPolygonF, QIcon
-from .. import uic
+from PyQt5.QtCore import (Qt, QCoreApplication, QObject, QAbstractListModel,
+                          QModelIndex, QEvent, pyqtSignal, pyqtSlot)
+from PyQt5.QtGui import QPolygonF, QIcon
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.uic import loadUiType
 
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -124,8 +123,8 @@ class KbdEventFilter(QObject):
     delPressed
         Delete/backspace was pressed
     """
-    enterPressed = Signal(QModelIndex)
-    delPressed = Signal()
+    enterPressed = pyqtSignal(QModelIndex)
+    delPressed = pyqtSignal()
 
     def eventFilter(self, watched, event):
         """Event filter that handles return, del, etc. key presses
@@ -158,7 +157,7 @@ class KbdEventFilter(QObject):
         return False
 
 
-fcClass, fcBase = uic.loadUiType(os.path.join(path, "file_chooser.ui"))
+fcClass, fcBase = loadUiType(os.path.join(path, "file_chooser.ui"))
 
 
 class FileChooser(fcBase):
@@ -197,9 +196,9 @@ class FileChooser(fcBase):
     def model(self):
         return self._model
 
-    @Slot()
+    @pyqtSlot()
     def _addFilesSlot(self):
-        fnames = qtpy.compat.getopenfilenames(
+        fnames = QFileDialog.getOpenFileNames(
             self, self._tr("Open file"), "",
             self._tr("Image sequence (*.spe *.tif *.tiff *.stk)") + ";;" +
             self._tr("All files (*)"))
@@ -209,11 +208,11 @@ class FileChooser(fcBase):
         for fname in names:
             self._model.addItem(fname)
 
-    @Slot()
+    @pyqtSlot()
     def removeSelected(self):
         idx = self._ui.fileListView.selectionModel().selectedIndexes()
         while idx:
             self._model.removeRow(idx[0].row())
             idx = self._ui.fileListView.selectionModel().selectedIndexes()
 
-    selected = Signal(QModelIndex)
+    selected = pyqtSignal(QModelIndex)
