@@ -44,6 +44,23 @@ Installation
 Using anaconda (recommended)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Install miniforge
+"""""""""""""""""
+
+Set up a minimal `conda forge <https://conda-forge.org>`_-enabled anaconda
+installation by downloading and executing a Miniforge3 installer from
+`github <https://github.com/conda-forge/miniforge/#download>`_.
+
+Then open an Anaconda prompt and type
+
+::
+
+    conda install sdt-python
+    conda install opencv trackpy lmfit ipympl scikit-learn pyqt
+
+to install the sdt-python package and some optional, recommended packages.
+
+
 Convert a miniconda installation to `conda forge <https://conda-forge.org>`_
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -123,7 +140,7 @@ Requirements
 - matplotlib
 - numpy >= 1.10
 - pandas
-- imageio
+- imageio < 2.22.2
 - tifffile >= 0.7.0
 - pyyaml
 
