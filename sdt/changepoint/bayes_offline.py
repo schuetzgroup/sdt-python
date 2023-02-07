@@ -15,7 +15,6 @@ import numpy as np
 import scipy.special
 import scipy.misc
 import scipy.signal
-import functools
 
 from ..helper import numba
 
@@ -108,7 +107,7 @@ GeometricPriorNumba = numba.jitclass(
 
 
 class NegBinomialPrior:
-    """Class implementing a neg-binomially distributed prior
+    r"""Class implementing a neg-binomially distributed prior
 
     :math:`P(t) =  {{t - k}\choose{k - 1}} p^k (1 - p)^{t - k}`
     """
@@ -229,7 +228,8 @@ class _GaussianObsLikelihoodBase:
         scale = betaT * (nuT + 1) / (alphaT * nuT)
 
         prob = np.sum(np.log(1 + (self._data[t:s] - muT)**2 / (nuT * scale)))
-        lgA = (math.lgamma((nuT + 1) / 2) - np.log(np.sqrt(np.pi * nuT * scale)) -
+        lgA = (math.lgamma((nuT + 1) / 2) -
+               np.log(np.sqrt(np.pi * nuT * scale)) -
                math.lgamma(nuT / 2))
 
         return np.sum(n * lgA - (nuT + 1) / 2 * prob)

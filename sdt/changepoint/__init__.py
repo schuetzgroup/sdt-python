@@ -194,13 +194,14 @@ References
 .. [Adam2007] Adams and McKay: "Bayesian Online Changepoint
     Detection", `arXiv:0710.3742 <https://arxiv.org/abs/0710.3742>`_
 """
-from .pelt import Pelt, CostL1, CostL1Numba, CostL2, CostL2Numba
-from .bayes_offline import (BayesOffline, ConstPrior, ConstPriorNumba,
-                            GeometricPrior, GeometricPriorNumba,
-                            NegBinomialPrior, GaussianObsLikelihood,
-                            GaussianObsLikelihoodNumba, IfmObsLikelihood,
-                            IfmObsLikelihoodNumba, FullCovObsLikelihood,
-                            FullCovObsLikelihoodNumba)
-from .bayes_online import (BayesOnline, ConstHazard, ConstHazardNumba,
-                           StudentT, StudentTNumba)
-from .utils import plot_changepoints, segment_stats
+from .pelt import Pelt, CostL1, CostL1Numba, CostL2, CostL2Numba  # noqa: F401
+from .bayes_offline import (BayesOffline, ConstPrior,  # noqa: F401
+                            ConstPriorNumba, GeometricPrior,
+                            GeometricPriorNumba, NegBinomialPrior,
+                            GaussianObsLikelihood, GaussianObsLikelihoodNumba,
+                            IfmObsLikelihood, IfmObsLikelihoodNumba,
+                            FullCovObsLikelihood, FullCovObsLikelihoodNumba)
+from .bayes_online import (BayesOnline, ConstHazard,  # noqa: F401
+                           ConstHazardNumba, StudentT, StudentTNumba)
+from .utils import (plot_changepoints, indices_to_segments,  # noqa: F401
+                    segment_stats)

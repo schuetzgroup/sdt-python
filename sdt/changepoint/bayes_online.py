@@ -45,6 +45,7 @@ class ConstHazard:
         """
         return 1 / self.time_scale * np.ones(run_lengths.shape)
 
+
 ConstHazardNumba = numba.jitclass(
     [("time_scale", numba.float64)])(ConstHazard)
 
