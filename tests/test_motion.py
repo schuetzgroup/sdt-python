@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import unittest
 import os
 import collections
 import functools
@@ -1408,8 +1407,15 @@ class TestLegacyAPI:
         np.testing.assert_allclose([d, pa], [d_exp, pa_exp])
 
 
-class TestFindImmobilizations(unittest.TestCase):
-    def setUp(self):
+def shuffle_tracks(tracks):
+    return tracks.loc[
+        np.random.RandomState(0).choice(
+            tracks.index, len(tracks), replace=False)]
+
+
+class TestFindImmobilizations:
+    @pytest.fixture
+    def tracks(self):
         tracks1 = pd.DataFrame(
             np.array([10, 10, 10, 10, 11, 11, 11, 12, 12, 12]),
             columns=["x"])
@@ -1418,86 +1424,94 @@ class TestFindImmobilizations(unittest.TestCase):
         tracks1["frame"] = np.arange(len(tracks1))
         tracks2 = tracks1.copy()
         tracks2["particle"] = 1
-        self.tracks = pd.concat((tracks1, tracks2), ignore_index=True)
+        tracks = pd.concat((tracks1, tracks2), ignore_index=True)
+        return tracks
 
-        self.count = np.array([[1, 2, 3, 4, 5, 6, 7, 7, 7, 7],
-                               [0, 1, 2, 3, 4, 5, 6, 6, 6, 9],
-                               [0, 0, 1, 2, 3, 4, 5, 5, 7, 6],
-                               [0, 0, 0, 1, 2, 3, 4, 5, 5, 6],
-                               [0, 0, 0, 0, 1, 2, 3, 4, 5, 6],
-                               [0, 0, 0, 0, 0, 1, 2, 3, 4, 5],
-                               [0, 0, 0, 0, 0, 0, 1, 2, 3, 4],
-                               [0, 0, 0, 0, 0, 0, 0, 1, 2, 3],
-                               [0, 0, 0, 0, 0, 0, 0, 0, 1, 2],
-                               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]])
+    count = np.array([[1, 2, 3, 4, 5, 6, 7, 7, 7, 7],
+                      [0, 1, 2, 3, 4, 5, 6, 6, 6, 9],
+                      [0, 0, 1, 2, 3, 4, 5, 5, 7, 6],
+                      [0, 0, 0, 1, 2, 3, 4, 5, 5, 6],
+                      [0, 0, 0, 0, 1, 2, 3, 4, 5, 6],
+                      [0, 0, 0, 0, 0, 1, 2, 3, 4, 5],
+                      [0, 0, 0, 0, 0, 0, 1, 2, 3, 4],
+                      [0, 0, 0, 0, 0, 0, 0, 1, 2, 3],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 1, 2],
+                      [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]])
 
-    def test_count_immob_python(self):
+    def test_count_immob_python(self, tracks):
         # Test the _count_immob_python function
-        loc = self.tracks.loc[self.tracks["particle"] == 0, ["x", "y"]]
+        loc = tracks[tracks["particle"] == 0].sort_values("frame")[["x", "y"]]
         old_err = np.seterr(invalid="ignore")
         res = motion.immobilization._count_immob_python(loc.values.T, 1)
         np.seterr(**old_err)
         np.testing.assert_allclose(res, self.count)
 
-    @unittest.skipUnless(numba.numba_available, "numba not numba_available")
-    def test_count_immob_numba(self):
+    @pytest.mark.skipif(not numba.numba_available,
+                        reason="numba not available")
+    def test_count_immob_numba(self, tracks):
         # Test the _count_immob_numba function
-        loc = self.tracks.loc[self.tracks["particle"] == 0, ["x", "y"]]
+        loc = tracks[tracks["particle"] == 0].sort_values("frame")[["x", "y"]]
         res = motion.immobilization._count_immob_numba(loc.values.T, 1)
         np.testing.assert_allclose(res, self.count)
 
-    def test_overlapping(self):
+    def test_overlapping(self, tracks):
         # Test where multiple immobilization candidates overlap in their frame
         # range
-        orig = self.tracks.copy()
         immob = np.array([1] + [0]*9 + [3] + [2]*9)
-        orig["immob"] = immob
-        motion.find_immobilizations(self.tracks, 1, 0)
-        np.testing.assert_allclose(self.tracks, orig)
+        shuffled_tracks = shuffle_tracks(tracks).copy()
+        tracks["immob"] = immob
+        motion.find_immobilizations(shuffled_tracks, 1, 0)
+        pd.testing.assert_frame_equal(shuffled_tracks,
+                                      shuffle_tracks(tracks))
 
-    def test_longest_only(self):
+    def test_longest_only(self, tracks):
         # Test `longest_only` option
-        orig = self.tracks.copy()
         immob = np.array([-1] + [0]*9 + [-1] + [1]*9)
-        orig["immob"] = immob
+        shuffled_tracks = shuffle_tracks(tracks).copy()
+        tracks["immob"] = immob
         motion.find_immobilizations(
-             self.tracks, 1, 2, longest_only=True, label_mobile=False)
-        np.testing.assert_allclose(self.tracks, orig)
+             shuffled_tracks, 1, 2, longest_only=True, label_mobile=False)
+        pd.testing.assert_frame_equal(shuffled_tracks,
+                                      shuffle_tracks(tracks))
 
-    def test_label_mobile(self):
+    def test_label_mobile(self, tracks):
         # Test `label_only` option
-        orig = self.tracks.copy()
         immob = np.array([-2] + [0]*9 + [-3] + [1]*9)
-        orig["immob"] = immob
+        shuffled_tracks = shuffle_tracks(tracks).copy()
+        tracks["immob"] = immob
         motion.find_immobilizations(
-             self.tracks, 1, 2, longest_only=True, label_mobile=True)
-        np.testing.assert_allclose(self.tracks, orig)
+             shuffled_tracks, 1, 2, longest_only=True, label_mobile=True)
+        pd.testing.assert_frame_equal(shuffled_tracks,
+                                      shuffle_tracks(tracks))
 
-    def test_atol(self):
+    def test_atol(self, tracks):
         # Test `atol` parameter
-        self.tracks.loc[3, "x"] = 9.9
-        orig = self.tracks.copy()
+        tracks.loc[3, "x"] = 9.9
         immob = np.array([0]*8 + [-1]*2 + [-1]*1 + [1]*9)
-        orig["immob"] = immob
+        shuffled_tracks = shuffle_tracks(tracks).copy()
+        tracks["immob"] = immob
         motion.find_immobilizations(
-             self.tracks, 1, 2, longest_only=True, label_mobile=False, atol=1,
-             rtol=np.inf)
-        np.testing.assert_allclose(self.tracks, orig)
+             shuffled_tracks, 1, 2, longest_only=True, label_mobile=False,
+             atol=1, rtol=np.inf)
+        pd.testing.assert_frame_equal(shuffled_tracks,
+                                      shuffle_tracks(tracks))
 
-    def test_rtol(self):
+    def test_rtol(self, tracks):
         # Test `rtol` parameter
-        self.tracks.loc[3, "x"] = 9.9
-        orig = self.tracks.copy()
+        tracks.loc[3, "x"] = 9.9
         immob = np.array([0]*8 + [-1]*2 + [-1]*1 + [1]*9)
-        orig["immob"] = immob
+        shuffled_tracks = shuffle_tracks(tracks).copy()
+        tracks["immob"] = immob
         motion.find_immobilizations(
-             self.tracks, 1, 2, longest_only=True, label_mobile=False,
+             shuffled_tracks, 1, 2, longest_only=True, label_mobile=False,
              atol=np.inf, rtol=0.125)
-        np.testing.assert_allclose(self.tracks, orig)
+        pd.testing.assert_frame_equal(shuffled_tracks,
+                                      shuffle_tracks(tracks))
 
 
-class TestFindImmobilizationsInt(unittest.TestCase):
-    def setUp(self):
+class TestFindImmobilizationsInt:
+    @pytest.fixture
+    def tracks(self):
         tracks1 = pd.DataFrame(
             np.array([10, 10, 10, 10, 11, 11, 11, 12, 12, 12]),
             columns=["x"])
@@ -1506,34 +1520,38 @@ class TestFindImmobilizationsInt(unittest.TestCase):
         tracks1["frame"] = np.arange(len(tracks1))
         tracks2 = tracks1.copy()
         tracks2["particle"] = 1
-        self.tracks = pd.concat((tracks1, tracks2))
+        return pd.concat((tracks1, tracks2), ignore_index=True)
 
-    def test_overlapping(self):
+    def test_overlapping(self, tracks):
         # Test where multiple immobilization candidates overlap in their frame
         # range
-        orig = self.tracks.copy()
         immob = np.array([0]*7 + [1]*3 + [2]*7 + [3]*3)
-        orig["immob"] = immob
-        motion.find_immobilizations_int(self.tracks, 1, 2, label_mobile=False)
-        np.testing.assert_allclose(self.tracks, orig)
+        shuffled_tracks = shuffle_tracks(tracks).copy()
+        tracks["immob"] = immob
+        motion.find_immobilizations_int(shuffled_tracks, 1, 2,
+                                        label_mobile=False)
+        pd.testing.assert_frame_equal(shuffled_tracks,
+                                      shuffle_tracks(tracks))
 
-    def test_longest_only(self):
+    def test_longest_only(self, tracks):
         # Test `longest_only` option
-        orig = self.tracks.copy()
         immob = np.array([0]*7 + [-1]*3 + [1]*7 + [-1]*3)
-        orig["immob"] = immob
+        shuffled_tracks = shuffle_tracks(tracks).copy()
+        tracks["immob"] = immob
         motion.find_immobilizations_int(
-             self.tracks, 1, 2, longest_only=True, label_mobile=False)
-        np.testing.assert_allclose(self.tracks, orig)
+             shuffled_tracks, 1, 2, longest_only=True, label_mobile=False)
+        pd.testing.assert_frame_equal(shuffled_tracks,
+                                      shuffle_tracks(tracks))
 
-    def test_label_mobile(self):
+    def test_label_mobile(self, tracks):
         # Test `label_only` option
-        orig = self.tracks.copy()
         immob = np.array([0]*7 + [-2]*3 + [1]*7 + [-3]*3)
-        orig["immob"] = immob
+        shuffled_tracks = shuffle_tracks(tracks).copy()
+        tracks["immob"] = immob
         motion.find_immobilizations_int(
-             self.tracks, 1, 2, longest_only=True, label_mobile=True)
-        np.testing.assert_allclose(self.tracks, orig)
+             shuffled_tracks, 1, 2, longest_only=True, label_mobile=True)
+        pd.testing.assert_frame_equal(shuffled_tracks,
+                                      shuffle_tracks(tracks))
 
     def test_find_diag_blocks(self):
         a = np.array([[1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0],
@@ -1552,29 +1570,36 @@ class TestFindImmobilizationsInt(unittest.TestCase):
         np.testing.assert_equal(end, [2, 6, 9, 10])
 
 
-class TestLabelMobile(unittest.TestCase):
-    def setUp(self):
-        self.immob = np.array([-1, -1, 0, 0, -1, -1, -1, -1, 1, -1, 2])
-        self.expected = np.array([-2, -2, 0, 0, -3, -3, -3, -3, 1, -4, 2])
+class TestLabelMobile:
+    @pytest.fixture
+    def immob(self):
+        return np.array([-1, -1, 0, 0, -1, -1, -1, -1, 1, -1, 2])
 
-    def test_label_mob_python(self):
+    @pytest.fixture
+    def expected(self):
+        return np.array([-2, -2, 0, 0, -3, -3, -3, -3, 1, -4, 2])
+
+    def test_label_mob_python(self, immob, expected):
         # Test the `_label_mob_python` function
-        motion.immobilization._label_mob_python(self.immob, -2)
-        np.testing.assert_equal(self.immob, self.expected)
+        motion.immobilization._label_mob_python(immob, -2)
+        np.testing.assert_equal(immob, expected)
 
-    @unittest.skipUnless(numba.numba_available, "numba not numba_available")
-    def test_label_mob_numba(self):
+    @pytest.mark.skipif(not numba.numba_available,
+                        reason="numba not numba_available")
+    def test_label_mob_numba(self, immob, expected):
         # Test the `_label_mob_python` function
-        motion.immobilization._label_mob_numba(self.immob, -2)
-        np.testing.assert_equal(self.immob, self.expected)
+        motion.immobilization._label_mob_numba(immob, -2)
+        np.testing.assert_equal(immob, expected)
 
-    def test_label_mobile(self):
-        d = np.array([np.zeros(len(self.immob)),
-                      np.zeros(len(self.immob)),
-                      [0]*6 + [1]*(len(self.immob)-6)]).T
-        df = pd.DataFrame(d, columns=["x", "y", "particle"])
+    def test_label_mobile(self, immob):
+        d = np.array([np.zeros(len(immob)),
+                      np.zeros(len(immob)),
+                      np.arange(len(immob)),
+                      [0]*6 + [1]*(len(immob)-6)]).T
+        df = pd.DataFrame(d, columns=["x", "y", "frame", "particle"])
         orig = df.copy()
         orig["immob"] = [-2, -2, 0, 0, -3, -3, -4, -4, 1, -5, 2]
-        df["immob"] = self.immob
+        df["immob"] = immob
+        df = shuffle_tracks(df)
         motion.label_mobile(df)
-        np.testing.assert_equal(df.values, orig.values)
+        pd.testing.assert_frame_equal(df, shuffle_tracks(orig))

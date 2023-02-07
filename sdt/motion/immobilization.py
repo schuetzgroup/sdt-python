@@ -4,6 +4,8 @@
 
 """Tools for finding immobilizations in tracking data"""
 import numpy as np
+import pandas as pd
+from typing import Mapping, Literal
 
 from .. import config, helper
 from ..helper import numba
@@ -95,6 +97,8 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
     mob_counter = -2
     # New column for `tracks` that holds the immobilization number
     immob_column = []
+    # corresponding indices
+    immob_index = []
 
     if engine == "numba" and numba.numba_available:
         count_immob_func = _count_immob_numba
@@ -104,14 +108,14 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
         label_mob_func = _label_mob_python
 
     t_sorted = tracks.sort_values([columns["particle"], columns["time"]])
-    t_split = helper.split_dataframe(t_sorted, columns["particle"],
-                                     columns["coords"] + [columns["time"]],
-                                     sort=False)
+    t_split = helper.split_dataframe(
+        t_sorted, columns["particle"], columns["coords"] + [columns["time"]],
+        type="array_list", sort=False, keep_index=True)
     for pn, t in t_split:
-        coords = t[:, :-1].T  # coordinates
-        frames = t[:, -1].astype(int)
+        coords = np.array(t[1:-1])  # coordinates
+        frames = t[-1].astype(int)
         # To be appended to immob_column
-        icol = np.full(len(t), -1, dtype=int)
+        icol = np.full(len(frames), -1, dtype=int)
 
         # Count how many localizations are within max_dist to sub-track's
         # center of mass.
@@ -162,8 +166,10 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
             mob_counter = label_mob_func(icol, mob_counter)
 
         immob_column.append(icol)
+        immob_index.append(t[0])
 
-    tracks["immob"] = np.hstack(immob_column)
+    tracks["immob"] = pd.Series(np.concatenate(immob_column),
+                                index=np.concatenate(immob_index))
     return tracks
 
 
@@ -332,17 +338,18 @@ def find_immobilizations_int(tracks, max_dist, min_duration, label_mobile=True,
     mob_counter = -2
     #  new column for `tracks` that holds the immobilization number
     immob_column = []
+    # corresponding indices
+    immob_index = []
 
     t_sorted = tracks.sort_values([columns["particle"], columns["time"]])
-    t_split = helper.split_dataframe(t_sorted, columns["particle"],
-                                     columns["coords"] + [columns["time"]],
-                                     sort=False)
-
+    t_split = helper.split_dataframe(
+        t_sorted, columns["particle"], columns["coords"] + [columns["time"]],
+        type="array_list", sort=False, keep_index=True)
     for pn, t in t_split:
-        pos = t[:, :-1]  # coordinates
-        frames = t[:, -1].astype(int)
-        # to be appended to immob_column
-        icol = np.full(len(t), -1, dtype=int)
+        pos = np.array(t[1:-1]).T  # coordinates
+        frames = t[-1].astype(int)
+        # To be appended to immob_column
+        icol = np.full(len(frames), -1, dtype=int)
 
         # d[i, j, k] is the difference of the k-th coordinate of
         # loc `i` and loc `j` in the current track
@@ -406,8 +413,10 @@ def find_immobilizations_int(tracks, max_dist, min_duration, label_mobile=True,
             mob_counter = _label_mob_python(icol, mob_counter)
 
         immob_column.append(icol)
+        immob_index.append(t[0])
 
-    tracks["immob"] = np.hstack(immob_column)
+    tracks["immob"] = pd.Series(np.concatenate(immob_column),
+                                index=np.concatenate(immob_index))
     return tracks
 
 
@@ -530,7 +539,9 @@ def _label_mob_numba(immob_col, start):
 
 
 @config.set_columns
-def label_mobile(data, engine="numba", columns={}):
+def label_mobile(tracks: pd.DataFrame,
+                 engine: Literal["numba", "python"] = "numba",
+                 columns: Mapping = {}) -> pd.DataFrame:
     """Give each mobile section of a track a label (unique number)
 
     When calling :py:func:`find_immobilizations` with ``label_mobile=False``,
@@ -538,38 +549,48 @@ def label_mobile(data, engine="numba", columns={}):
     This function assigns a unique (negative) number to each section,
     starting at `-2`.
 
-    The `data` DataFrame will be modified in place. It has to be sorted
-    according to frame number before calling this function.
+    The `data` DataFrame will be modified in place, but also returned.
 
     Parameters
     ----------
-    data : pandas.DataFrame
+    tracks
         Tracking data with an `immob` column where all mobile sections of
         tracks are assigned `-1`.
 
+    Returns
+    -------
+    `tracks` with updated ``"immob"`` column.
+
     Other parameters
     ----------------
-    engine : {"numba", "python"}, optional
+    engine
         If `engine` is "numba" and the `numba` package is installed, use the
         much faster numba-accelerated alogrithm. Otherwise, fall back to a
         pure python one. Defaults to "numba"
-    columns : dict, optional
+    columns
         Override default column names as defined in
         :py:attr:`config.columns`. The only relevant name is `particle`.
     """
-    d_arr = data[[columns["particle"], "immob"]].values
-
     if engine == "numba" and numba.numba_available:
         label_mob_func = _label_mob_numba
     else:
         label_mob_func = _label_mob_python
 
     new_immob_col = []
+    new_immob_index = []
+
+    t_sorted = tracks.sort_values([columns["particle"], columns["time"]])
+    t_split = helper.split_dataframe(
+        t_sorted, columns["particle"], ["immob"],
+        type="array_list", sort=False, keep_index=True)
 
     counter = -2
-    for p in np.unique(d_arr[:, 0]):
-        icol = d_arr[d_arr[:, 0] == p, 1]
+    for pn, t in t_split:
+        icol = t[1]
         counter = label_mob_func(icol, counter)
         new_immob_col.append(icol)
+        new_immob_index.append(t[0])
 
-    data["immob"] = np.hstack(new_immob_col)
+    tracks["immob"] = pd.Series(np.concatenate(new_immob_col),
+                                index=np.concatenate(new_immob_index))
+    return tracks
