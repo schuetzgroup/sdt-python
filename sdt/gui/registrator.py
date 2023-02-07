@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import contextlib
-from typing import Dict, Mapping, Optional
+from typing import Dict, List, Mapping, Optional, Union
 
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
@@ -14,6 +14,9 @@ from .qml_wrapper import QmlDefinedProperty
 from .thread_worker import ThreadWorker
 
 
+_default_channel = {"source": "source_0", "roi": None}
+
+
 class Registrator(QtQuick.QQuickItem):
     """QtQuick item to calculate image registration transform
 
@@ -21,6 +24,7 @@ class Registrator(QtQuick.QQuickItem):
     a :py:class:`multicolor.Registrator` from that to transform images and
     single-molecule data.
     """
+
     def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
         ----------
@@ -31,6 +35,8 @@ class Registrator(QtQuick.QQuickItem):
         self._fig = None
         self._locSettings = {}
         self._reg = multicolor.Registrator()
+        self._channels = {"channel1": _default_channel.copy(),
+                          "channel2": _default_channel.copy()}
 
     locateSettingsChanged = QtCore.pyqtSignal()
     """:py:attr:`locateSettings` changed"""
@@ -74,10 +80,6 @@ class Registrator(QtQuick.QQuickItem):
 
     dataset = QmlDefinedProperty()
     """Fiducial marker image data"""
-    channelRoles = QmlDefinedProperty()
-    """:py:attr:`dataset` roles which hold the image data. This should
-    consist of two strings.
-    """
     _locOptionItems = QmlDefinedProperty()
     """LocateOptions items in the GUI. These are exposed here for calling
     ``getBatchFunc()`` and setting options in the setter of
@@ -87,6 +89,23 @@ class Registrator(QtQuick.QQuickItem):
     """Expose the number of already processed image files to QML to show
     progress in the GUI.
     """
+
+    channelsChanged = QtCore.pyqtSignal()
+
+    @QtCore.pyqtProperty(QtCore.QVariant, notify=channelsChanged)
+    def channels(self) -> Dict[str, Dict]:
+        return self._channels.copy()
+
+    @channels.setter
+    def channels(self, ch: Union[List, Dict]):
+        if isinstance(ch, QtQml.QJSValue):
+            ch = ch.toVariant()
+        if isinstance(ch, list):
+            ch = {c: _default_channel.copy() for c in ch}
+        if self._channels == ch:
+            return
+        self._channels = ch
+        self.channelsChanged.emit()
 
     _figureChanged = QtCore.pyqtSignal()
     """:py:attr:`_figure` changed"""
@@ -121,7 +140,7 @@ class Registrator(QtQuick.QQuickItem):
     def _doCalculation(self):
         """Worker method running in background thread"""
         loc = [[], []]
-        ch = self.channelRoles
+        ch = list(self.channels.keys())
         batchFuncs = [self._locOptionItems[c].getBatchFunc() for c in ch]
         self._locCount = 0
         for i in range(self.dataset.rowCount()):
