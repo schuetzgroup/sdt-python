@@ -13,11 +13,13 @@ T.Registrator {
     id: root
 
     property alias dataset: imSel.dataset
-    property var channelRoles: ["channel1", "channel2"]
+    property var editableFileList: false
     property var _locOptionItems: {
         var ret = {}
-        for (var i = 0; i < optRep.count; i++)
-            ret[channelRoles[i]] = optRep.itemAt(i)
+        for (var i = 0; i < optRep.count; i++) {
+            var itm = optRep.itemAt(i)
+            ret[itm.channelName] = itm
+        }
         ret
     }
     property int _locCount: 0
@@ -27,7 +29,7 @@ T.Registrator {
             var ret = {}
             for (var i = 0; i < optRep.count; i++) {
                 var itm = optRep.itemAt(i)
-                ret[channelRoles[i]] = {
+                ret[itm.channelName] = {
                     "algorithm": itm.algorithm,
                     "options": itm.options
                 }
@@ -60,7 +62,7 @@ T.Registrator {
                     id: chanSel
                     Layout.fillWidth: true
                     Repeater {
-                        model: root.channelRoles
+                        model: optRep.model
                         TabButton { text: modelData }
                     }
                 }
@@ -73,9 +75,10 @@ T.Registrator {
 
                     Repeater {
                         id: optRep
-                        model: root.channelRoles
+                        model: Object.keys(root.channels)
                         LocOptions {
                             id: loc
+                            property var channelName: modelData
                             image: imSel.image
                             Layout.alignment: Qt.AlignTop
                             Layout.fillHeight: true
@@ -101,7 +104,8 @@ T.Registrator {
                     id: imSel
                     textRole: "key"
                     imageRole: optStack.currentRole
-                    editable: false
+                    editable: root.editableFileList
+                    modifyFileRole: root.channels[optStack.currentItem.channelName]["source"]
                     Layout.fillWidth: true
                 }
             }
@@ -159,6 +163,14 @@ T.Registrator {
 
                 Component.onCompleted: { root._figure = fig }
             }
+        }
+    }
+    DropArea {
+        anchors.fill: parent
+        keys: "text/uri-list"
+        onDropped: {
+            var fileRole = root.channels[optStack.currentItem.channelName]["source"]
+            root.dataset.setFiles(fileRole, drop.urls)
         }
     }
 }
