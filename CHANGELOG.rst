@@ -13,6 +13,16 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+17.5
+----
+
+- :py:mod:`motion.immobilization`: Properly handle unsorted tracking data
+- :py:class:`multicolor.Registrator`: Allow passing channel name as `channel`
+  arg
+- Lots of work on (still experimental) :py:mod:`gui` module
+- Fix :py:mod:`gui.locator` for newer Python versions.
+
+
 17.4
 ----
 
