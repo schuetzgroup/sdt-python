@@ -203,5 +203,4 @@ from .bayes_offline import (BayesOffline, ConstPrior,  # noqa: F401
                             FullCovObsLikelihood, FullCovObsLikelihoodNumba)
 from .bayes_online import (BayesOnline, ConstHazard,  # noqa: F401
                            ConstHazardNumba, StudentT, StudentTNumba)
-from .utils import (plot_changepoints, indices_to_segments,  # noqa: F401
-                    segment_stats)
+from .utils import plot_changepoints, segment_stats  # noqa: F401
