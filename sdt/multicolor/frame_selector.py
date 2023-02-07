@@ -313,7 +313,7 @@ class FrameSelector:
         -------
         New frame numbers
         """
-        if not len(eval_seq):
+        if len(eval_seq) == 0 or len(frame_nos) == 0:
             return frame_nos
         frame_nos = np.asanyarray(frame_nos, dtype=int)
         good_frame_mask = np.isin(eval_seq, list(which))
