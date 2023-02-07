@@ -115,7 +115,7 @@ def find_immobilizations(tracks, max_dist, min_duration, label_mobile=True,
         coords = np.array(t[1:-1])  # coordinates
         frames = t[-1].astype(int)
         # To be appended to immob_column
-        icol = np.full(len(frames), -1, dtype=int)
+        icol = np.full(len(frames), -1, dtype=np.intp)
 
         # Count how many localizations are within max_dist to sub-track's
         # center of mass.
@@ -349,7 +349,7 @@ def find_immobilizations_int(tracks, max_dist, min_duration, label_mobile=True,
         pos = np.array(t[1:-1]).T  # coordinates
         frames = t[-1].astype(int)
         # To be appended to immob_column
-        icol = np.full(len(frames), -1, dtype=int)
+        icol = np.full(len(frames), -1, dtype=np.intp)
 
         # d[i, j, k] is the difference of the k-th coordinate of
         # loc `i` and loc `j` in the current track

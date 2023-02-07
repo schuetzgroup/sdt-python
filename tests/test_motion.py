@@ -1417,7 +1417,7 @@ class TestFindImmobilizations:
     @pytest.fixture
     def tracks(self):
         tracks1 = pd.DataFrame(
-            np.array([10, 10, 10, 10, 11, 11, 11, 12, 12, 12]),
+            [10, 10, 10, 10, 11, 11, 11, 12, 12, 12],
             columns=["x"])
         tracks1["y"] = 20
         tracks1["particle"] = 0
@@ -1457,7 +1457,7 @@ class TestFindImmobilizations:
     def test_overlapping(self, tracks):
         # Test where multiple immobilization candidates overlap in their frame
         # range
-        immob = np.array([1] + [0]*9 + [3] + [2]*9)
+        immob = [1] + [0] * 9 + [3] + [2] * 9
         shuffled_tracks = shuffle_tracks(tracks).copy()
         tracks["immob"] = immob
         motion.find_immobilizations(shuffled_tracks, 1, 0)
@@ -1466,7 +1466,7 @@ class TestFindImmobilizations:
 
     def test_longest_only(self, tracks):
         # Test `longest_only` option
-        immob = np.array([-1] + [0]*9 + [-1] + [1]*9)
+        immob = [-1] + [0] * 9 + [-1] + [1] * 9
         shuffled_tracks = shuffle_tracks(tracks).copy()
         tracks["immob"] = immob
         motion.find_immobilizations(
@@ -1476,7 +1476,7 @@ class TestFindImmobilizations:
 
     def test_label_mobile(self, tracks):
         # Test `label_only` option
-        immob = np.array([-2] + [0]*9 + [-3] + [1]*9)
+        immob = [-2] + [0] * 9 + [-3] + [1] * 9
         shuffled_tracks = shuffle_tracks(tracks).copy()
         tracks["immob"] = immob
         motion.find_immobilizations(
@@ -1487,7 +1487,7 @@ class TestFindImmobilizations:
     def test_atol(self, tracks):
         # Test `atol` parameter
         tracks.loc[3, "x"] = 9.9
-        immob = np.array([0]*8 + [-1]*2 + [-1]*1 + [1]*9)
+        immob = [0] * 8 + [-1] * 2 + [-1] + [1] * 9
         shuffled_tracks = shuffle_tracks(tracks).copy()
         tracks["immob"] = immob
         motion.find_immobilizations(
@@ -1499,7 +1499,7 @@ class TestFindImmobilizations:
     def test_rtol(self, tracks):
         # Test `rtol` parameter
         tracks.loc[3, "x"] = 9.9
-        immob = np.array([0]*8 + [-1]*2 + [-1]*1 + [1]*9)
+        immob = [0] * 8 + [-1] * 2 + [-1] + [1] * 9
         shuffled_tracks = shuffle_tracks(tracks).copy()
         tracks["immob"] = immob
         motion.find_immobilizations(
@@ -1513,7 +1513,7 @@ class TestFindImmobilizationsInt:
     @pytest.fixture
     def tracks(self):
         tracks1 = pd.DataFrame(
-            np.array([10, 10, 10, 10, 11, 11, 11, 12, 12, 12]),
+            [10, 10, 10, 10, 11, 11, 11, 12, 12, 12],
             columns=["x"])
         tracks1["y"] = 20
         tracks1["particle"] = 0
@@ -1525,7 +1525,7 @@ class TestFindImmobilizationsInt:
     def test_overlapping(self, tracks):
         # Test where multiple immobilization candidates overlap in their frame
         # range
-        immob = np.array([0]*7 + [1]*3 + [2]*7 + [3]*3)
+        immob = [0] * 7 + [1] * 3 + [2] * 7 + [3] * 3
         shuffled_tracks = shuffle_tracks(tracks).copy()
         tracks["immob"] = immob
         motion.find_immobilizations_int(shuffled_tracks, 1, 2,
@@ -1535,7 +1535,7 @@ class TestFindImmobilizationsInt:
 
     def test_longest_only(self, tracks):
         # Test `longest_only` option
-        immob = np.array([0]*7 + [-1]*3 + [1]*7 + [-1]*3)
+        immob = [0] * 7 + [-1] * 3 + [1] * 7 + [-1] * 3
         shuffled_tracks = shuffle_tracks(tracks).copy()
         tracks["immob"] = immob
         motion.find_immobilizations_int(
@@ -1545,7 +1545,7 @@ class TestFindImmobilizationsInt:
 
     def test_label_mobile(self, tracks):
         # Test `label_only` option
-        immob = np.array([0]*7 + [-2]*3 + [1]*7 + [-3]*3)
+        immob = [0] * 7 + [-2] * 3 + [1] * 7 + [-3] * 3
         shuffled_tracks = shuffle_tracks(tracks).copy()
         tracks["immob"] = immob
         motion.find_immobilizations_int(
@@ -1573,11 +1573,13 @@ class TestFindImmobilizationsInt:
 class TestLabelMobile:
     @pytest.fixture
     def immob(self):
-        return np.array([-1, -1, 0, 0, -1, -1, -1, -1, 1, -1, 2])
+        return np.array([-1, -1, 0, 0, -1, -1, -1, -1, 1, -1, 2],
+                        dtype=np.intp)
 
     @pytest.fixture
     def expected(self):
-        return np.array([-2, -2, 0, 0, -3, -3, -3, -3, 1, -4, 2])
+        return np.array([-2, -2, 0, 0, -3, -3, -3, -3, 1, -4, 2],
+                        dtype=np.intp)
 
     def test_label_mob_python(self, immob, expected):
         # Test the `_label_mob_python` function
@@ -1592,11 +1594,10 @@ class TestLabelMobile:
         np.testing.assert_equal(immob, expected)
 
     def test_label_mobile(self, immob):
-        d = np.array([np.zeros(len(immob)),
-                      np.zeros(len(immob)),
-                      np.arange(len(immob)),
-                      [0]*6 + [1]*(len(immob)-6)]).T
-        df = pd.DataFrame(d, columns=["x", "y", "frame", "particle"])
+        df = pd.DataFrame({"x": np.zeros(len(immob), dtype=float),
+                           "y": np.zeros(len(immob), dtype=float),
+                           "frame": np.arange(len(immob), dtype=np.intp),
+                           "particle": [0] * 6 + [1] * (len(immob) - 6)})
         orig = df.copy()
         orig["immob"] = [-2, -2, 0, 0, -3, -3, -4, -4, 1, -5, 2]
         df["immob"] = immob
