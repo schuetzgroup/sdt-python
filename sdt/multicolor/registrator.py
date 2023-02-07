@@ -268,7 +268,7 @@ class Registrator:
         with suppress(ValueError):
             channel = self.channel_names.index(channel) + 1
         if channel not in (1, 2):
-            valid = tuple(1, 2, *self.channel_names[:2])
+            valid = [1, 2, *self.channel_names[:2]]
             raise ValueError(
                 "channel has to be one of "
                 f"{', '.join(str(v) for v in valid)}")
