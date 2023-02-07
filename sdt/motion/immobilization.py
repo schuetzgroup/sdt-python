@@ -265,10 +265,10 @@ def _count_immob_numba(coords, max_dist):
             for i in range(ndim):
                 s[i] += coords[i, k]  # Add to cum. sum
                 cm[i] = s[i] / (k - j + 1)  # Divide by number of locs
-            for l in range(j, k+1):  # for each loc of sub-track [j, k]
+            for m in range(j, k+1):  # for each loc of sub-track [j, k]
                 dist = 0.
                 for i in range(ndim):  # sum up coord dist**2 to center of mass
-                    dist += (cm[i] - coords[i, l])**2
+                    dist += (cm[i] - coords[i, m])**2
                 if dist <= max_dist_sq:
                     count[j, k] += 1  # and count if within max_dist
     return count
