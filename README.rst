@@ -136,7 +136,7 @@ adapt accordingly.
 Requirements
 ------------
 
-- Python >= 3.7
+- Python >= 3.9
 - matplotlib
 - numpy >= 1.10
 - pandas
