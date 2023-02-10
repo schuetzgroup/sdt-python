@@ -1,0 +1,21 @@
+name: test-sdt
+dependencies:
+  - python >=3.9
+  - numpy >=1.10
+  - pandas
+  - pytables
+  - opencv
+  - pyyaml
+  - numba
+  - pyqt
+  - matplotlib-base
+  - scipy >0.18
+  - tifffile >=0.14.0
+  - imageio <2.22.2,>=2.18
+  - pytest
+  - trackpy
+  - lmfit
+  - scikit-learn
+  - pims
+  - pywavelets >=0.3.0
+  - flake8

@@ -24,15 +24,11 @@ jobs:
         use-mamba: true
         miniforge-version: latest
         miniforge-variant: Mambaforge
+        environment-file: tests/conda-env.yml
 
     - name: Conda info
       shell: pwsh
       run: conda info
-
-    - name: Install dependencies
-      shell: pwsh
-      run: |
-        mamba install --yes flake8 pytest numpy pandas pytables opencv pyyaml pims numba matplotlib-base pywavelets scipy tifffile trackpy lmfit scikit-learn 'imageio<2.22.2,>=2.18'
 
     - name: Lint with flake8
       shell: pwsh
