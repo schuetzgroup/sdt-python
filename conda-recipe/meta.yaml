@@ -27,7 +27,7 @@ requirements:
         - opencv
         - pyyaml
         - numba
-        - PyQt5
+        - pyqt
         - matplotlib-base
         - scipy >0.18
         - tifffile >=0.14.0
