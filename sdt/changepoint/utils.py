@@ -46,6 +46,8 @@ def plot_changepoints(data, changepoints, time=None, style="shade",
         ax = plt.gca()
     if time is None:
         time = np.arange(len(data))
+    else:
+        time = np.asanyarray(time)
 
     if style == "shade":
         for s, e, c in zip(itertools.chain([0], changepoints),
