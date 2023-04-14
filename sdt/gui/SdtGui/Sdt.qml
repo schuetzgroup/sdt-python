@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 pragma Singleton
-import QtQuick 2.0
-import SdtGui.Templates 0.1 as T
+import QtQuick
+import SdtGui.Templates as T
 
 
 T.Sdt {
