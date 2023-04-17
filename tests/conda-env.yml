@@ -11,7 +11,8 @@ dependencies:
   - opencv
   - pyyaml
   - numba
-  - pyqt
+  - pyside6
+  - pytest-qt
   - matplotlib-base
   - scipy >0.18
   - tifffile >=0.14.0
