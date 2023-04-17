@@ -5,9 +5,8 @@
 import logging
 import operator
 
-import pytest
-pytest.importorskip("PySide6")
 from PySide6 import QtCore, QtGui, QtQml, QtQuick
+import pytest
 from sdt import gui
 
 
@@ -57,7 +56,7 @@ def test_Window(qapp):
     assert w.status_ == gui.Component.Status.Ready
     assert isinstance(w.window_, QtGui.QWindow)
     assert w.width == 800
-    
+
 
 def test_QmlDefinedProperty(qapp):
     class MyItem(QtQuick.QQuickItem):

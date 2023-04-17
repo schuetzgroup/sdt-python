@@ -117,7 +117,9 @@ class Component(QtCore.QObject):
 
     @QtCore.Property(int, notify=status_Changed)
     def status_(self) -> Status:
-        """Status of object creation. Can be `Init`, `Loading`, `Ready`, or `Error`."""
+        """Status of object creation. Can be `Init`, `Loading`, `Ready`,
+        or `Error`.
+        """
         return self._status
 
     @property

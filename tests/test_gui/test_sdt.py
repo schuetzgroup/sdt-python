@@ -2,10 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import pytest
-pytest.importorskip("PySide6")
-from PySide6 import QtCore, QtGui
-
+from PySide6 import QtCore
 from sdt import gui
 
 
