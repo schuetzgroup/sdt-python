@@ -21,6 +21,7 @@ from .qml_wrapper import (Component, QmlDefinedMethod, QmlDefinedProperty,
 # from .locator import Locator
 # from .mpl_backend import FigureCanvasAgg, mpl_use_qt_font
 # from .option_chooser import OptionChooser
+from .py_image import PyImage
 # from .registrator import Registrator
 # from .roi_selector import ROISelector
 from .sdt import Sdt
