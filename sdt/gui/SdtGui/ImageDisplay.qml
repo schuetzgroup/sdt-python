@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.0
-import QtQuick.Controls 2.7
-import QtQuick.Layouts 1.7
-import SdtGui 0.1
-import SdtGui.Templates 0.1 as T
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import SdtGui as Sdt
+import SdtGui.Templates as T
 
 
 T.ImageDisplay {
@@ -18,21 +18,14 @@ T.ImageDisplay {
     property list<Item> overlays
 
     onOverlaysChanged: {
-        var cld = []
-        cld.push(img)
-        for (var i = 0; i < overlays.length; i++)
-            cld.push(overlays[i])
-        // Set contentChildren to re-parent items. Otherwise setting anchors
-        // below will not work.
-        scroll.contentChildren = cld
-
+        var chld = img.children
+        for (var j = 0; j < chld.length; j++)
+            chld[j].parent = null
         for (var i = 0; i < overlays.length; i++) {
-            var a = overlays[i]
-            a.anchors.fill = img
-            a.z = i
-            // Check if scaleFactor property exists
-            if (typeof a.scaleFactor !== undefined)
-                a.scaleFactor = Qt.binding(function() { return scroll.scaleFactor })
+            var o = overlays[i]
+            o.parent = img
+            if (typeof o.scaleFactor !== undefined)
+                o.scaleFactor = scroll.scaleFactor
         }
     }
     onImageChanged: {
@@ -73,6 +66,7 @@ T.ImageDisplay {
 
                 ToolButton {
                     id: zoomOutButton
+                    objectName: "Sdt.ImageDisplay.ZoomOutButton"
                     icon.name: "zoom-out"
                     onClicked: {
                         scroll.scaleFactor /= Math.sqrt(2)
@@ -81,6 +75,7 @@ T.ImageDisplay {
                 }
                 ToolButton {
                     icon.name: "zoom-original"
+                    objectName: "Sdt.ImageDisplay.ZoomOriginalButton"
                     onClicked: {
                         scroll.scaleFactor = 1.0
                         zoomFitButton.checked = false
@@ -88,11 +83,13 @@ T.ImageDisplay {
                 }
                 ToolButton {
                     id: zoomFitButton
+                    objectName: "Sdt.ImageDisplay.ZoomFitButton"
                     icon.name: "zoom-fit-best"
                     checkable: true
                 }
                 ToolButton {
                     icon.name: "zoom-in"
+                    objectName: "Sdt.ImageDisplay.ZoomInButton"
                     onClicked: {
                         scroll.scaleFactor *= Math.sqrt(2)
                         zoomFitButton.checked = false
@@ -108,6 +105,7 @@ T.ImageDisplay {
 
                 ScrollView {
                     id: scroll
+                    objectName: "Sdt.ImageDisplay.ScrollView"
 
                     property real scaleFactor: 1.0
                     Binding on scaleFactor {
@@ -116,6 +114,15 @@ T.ImageDisplay {
                             img.sourceWidth, img.sourceHeight,
                             scroll.width, scroll.height
                         )
+                        restoreMode: Binding.RestoreNone
+                    }
+                    onScaleFactorChanged: {
+                        for (var i = 0; i < root.overlays.length; i++) {
+                            var a = root.overlays[i]
+                            // Check if scaleFactor property exists
+                            if (typeof a.scaleFactor !== undefined)
+                                a.scaleFactor = scroll.scaleFactor
+                        }
                     }
 
                     contentWidth: Math.max(availableWidth, img.width)
@@ -123,8 +130,9 @@ T.ImageDisplay {
                     clip: true
                     anchors.fill: parent
 
-                    PyImage {
+                    Sdt.PyImage {
                         id: img
+                        objectName: "Sdt.ImageDisplay.Image"
                         anchors.centerIn: parent
                         source: root.image
                         black: rootLayout.contrastMin
@@ -135,6 +143,7 @@ T.ImageDisplay {
                 }
                 Label {
                     text: "Error: " + root.error
+                    objectName: "Sdt.ImageDisplay.ErrorLabel"
                     visible: root.error
                     background: Rectangle {
                         color: "#50FF0000"
@@ -155,6 +164,7 @@ T.ImageDisplay {
             }
             RangeSlider {
                 id: contrastSlider
+                objectName: "Sdt.ImageDisplay.ContrastSlider"
                 Layout.fillWidth: true
 
                 from: root._imageMin
@@ -166,6 +176,7 @@ T.ImageDisplay {
             }
             Button  {
                 id: contrastAutoButton
+                objectName: "Sdt.ImageDisplay.AutoContrastButton"
                 text: "auto"
                 onClicked: {
                     rootLayout.contrastMin = root._imageMin

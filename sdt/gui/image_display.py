@@ -4,10 +4,9 @@
 
 from typing import Optional, Union
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
 
-from . import py_image  # noqa: F401 Register PyImage QML type
 from .qml_wrapper import SimpleQtProperty
 
 
@@ -47,10 +46,10 @@ class ImageDisplay(QtQuick.QQuickItem):
         self._imageMaxVal = 0.0
         self._error = ""
 
-    imageChanged = QtCore.pyqtSignal(QtCore.QVariant)
+    imageChanged = QtCore.Signal()
     """Input image was changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=imageChanged)
+    @QtCore.Property(object, notify=imageChanged)
     def image(self) -> Union[np.ndarray, None]:
         """Image to display"""
         return self._image
@@ -62,20 +61,20 @@ class ImageDisplay(QtQuick.QQuickItem):
         self._image = image
         self._imageMinVal = image.min() if image is not None else 0.0
         self._imageMaxVal = image.max() if image is not None else 0.0
-        self._imageMinChanged.emit(self._imageMin)
-        self._imageMaxChanged.emit(self._imageMax)
-        self.imageChanged.emit(image)
+        self._imageMinChanged.emit()
+        self._imageMaxChanged.emit()
+        self.imageChanged.emit()
 
-    _imageMinChanged = QtCore.pyqtSignal(float)
+    _imageMinChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty(float, notify=_imageMinChanged)
+    @QtCore.Property(float, notify=_imageMinChanged)
     def _imageMin(self) -> float:
         """Minimum value in input image. Used for QML property binding."""
         return self._imageMinVal
 
-    _imageMaxChanged = QtCore.pyqtSignal(float)
+    _imageMaxChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty(float, notify=_imageMaxChanged)
+    @QtCore.Property(float, notify=_imageMaxChanged)
     def _imageMax(self):
         """Maximum value in input image. Used for QML property binding."""
         return self._imageMaxVal
@@ -84,4 +83,4 @@ class ImageDisplay(QtQuick.QQuickItem):
     """Error message to be displayed"""
 
 
-QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Templates", 0, 1, "ImageDisplay")
+QtQml.qmlRegisterType(ImageDisplay, "SdtGui.Templates", 0, 2, "ImageDisplay")
