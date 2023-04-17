@@ -6,7 +6,7 @@ import contextlib
 import enum
 from typing import Any, Dict, Iterable, List, Optional, Union
 
-from PyQt5 import QtCore, QtQml
+from PySide6 import QtCore, QtQml
 
 
 class ListModel(QtCore.QAbstractListModel):
@@ -34,10 +34,10 @@ class ListModel(QtCore.QAbstractListModel):
         self.rowsRemoved.connect(self.countChanged)
         self.itemsChanged.connect(self._emitDataChanged)
 
-    rolesChanged = QtCore.pyqtSignal(list)
+    rolesChanged = QtCore.Signal(list)
     """Model roles changed"""
 
-    @QtCore.pyqtProperty(list, notify=rolesChanged)
+    @QtCore.Property(list, notify=rolesChanged)
     def roles(self) -> List[str]:
         """Names of model roles
 
@@ -55,8 +55,8 @@ class ListModel(QtCore.QAbstractListModel):
             "Roles", {n: i for i, n in enumerate(names, QtCore.Qt.UserRole)})
         self.rolesChanged.emit(list(names))
 
-    itemsChanged = QtCore.pyqtSignal(int, int, list,
-                                     arguments=["index", "count", "roles"])
+    itemsChanged = QtCore.Signal(int, int, list,
+                                 arguments=["index", "count", "roles"])
     """One or more list items were changed. `index` is the index of the
     first changed element, `count` is the number of subsequent modified
     elements, and `role` holds the affected roles. If the `role` is empty, all
@@ -110,8 +110,8 @@ class ListModel(QtCore.QAbstractListModel):
         finally:
             self.endResetModel()
 
-    @QtCore.pyqtSlot(int, result=QtCore.QVariant)
-    @QtCore.pyqtSlot(int, str, result=QtCore.QVariant)
+    @QtCore.Slot(int, result="QVariant")
+    @QtCore.Slot(int, str, result="QVariant")
     def get(self, index: int, role: Optional[str] = None) -> Any:
         """Get list element by index
 
@@ -137,8 +137,8 @@ class ListModel(QtCore.QAbstractListModel):
         except (IndexError, KeyError):
             return None
 
-    @QtCore.pyqtSlot(int, QtCore.QVariant, result=bool)
-    @QtCore.pyqtSlot(int, str, QtCore.QVariant, result=bool)
+    @QtCore.Slot(int, "QVariant", result=bool)
+    @QtCore.Slot(int, str, "QVariant", result=bool)
     def set(self, index: int, valueOrRole: Union[str, Any],
             value: Optional[Any] = None) -> bool:
         """Set list element
@@ -146,8 +146,7 @@ class ListModel(QtCore.QAbstractListModel):
         Parameters
         ----------
         index
-            Index of the element. If this is equal to ``rowCount()``, append
-            `obj` to the list.
+            Index of the element.
         valueOrRole
             If there is only one role (see :py:attr:`roles`), this
             is the value to set. If there is more than one role, assume that
@@ -173,7 +172,7 @@ class ListModel(QtCore.QAbstractListModel):
         except (IndexError, KeyError):
             return False
 
-    @QtCore.pyqtSlot(int, QtCore.QVariant)
+    @QtCore.Slot(int, "QVariant")
     def insert(self, index: int, obj: Any):
         """Insert element into the list
 
@@ -189,7 +188,7 @@ class ListModel(QtCore.QAbstractListModel):
         with self._insertRows(index, 1):
             self._data.insert(index, obj)
 
-    @QtCore.pyqtSlot(QtCore.QVariant)
+    @QtCore.Slot("QVariant")
     def append(self, obj: Any):
         """Append element to the list
 
@@ -200,8 +199,8 @@ class ListModel(QtCore.QAbstractListModel):
         """
         self.insert(self.rowCount(), obj)
 
-    @QtCore.pyqtSlot(int)
-    @QtCore.pyqtSlot(int, int)
+    @QtCore.Slot(int)
+    @QtCore.Slot(int, int)
     def remove(self, index: int, count: int = 1):
         """Remove entry/entries from list
 
@@ -215,7 +214,7 @@ class ListModel(QtCore.QAbstractListModel):
         with self._removeRows(index, count):
             del self._data[index:index+count]
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def clear(self):
         """Clear the model
 
@@ -237,19 +236,18 @@ class ListModel(QtCore.QAbstractListModel):
     def toList(self) -> List:
         """Get data as list
 
-        This returns a copy which can be modified without affecting the
-        model.
+        Do not modify this list, but make an appropriate (deep) copy.
 
         Returns
         -------
         Data list
         """
-        return self._data.copy()
+        return self._data
 
-    countChanged = QtCore.pyqtSignal()
+    countChanged = QtCore.Signal()
     """:py:attr:`count` changed"""
 
-    @QtCore.pyqtProperty(int, notify=countChanged)
+    @QtCore.Property(int, notify=countChanged)
     def count(self) -> int:
         """Number of list entries
 
@@ -329,12 +327,13 @@ class ListModel(QtCore.QAbstractListModel):
         `True` if successful, `False` otherwise.
         """
         if not index.isValid():
-            return None
+            print("invalid")
+            return False
         try:
             r = self.Roles(role)
         except ValueError:
             # role does not exist
-            return None
+            return False
         return self.set(index.row(), r.name, value)
 
     def _emitDataChanged(self, index: int, count: int,
@@ -378,6 +377,19 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         self.rowsInserted.connect(self.countChanged)
         self.rowsRemoved.connect(self.countChanged)
 
+    sourceModelChanged = QtCore.Signal()
+
+    @QtCore.Property(QtCore.QAbstractListModel, notify=sourceModelChanged)
+    def sourceModel(self) -> QtCore.QAbstractItemModel:
+        return super().sourceModel()
+
+    @sourceModel.setter
+    def sourceModel(self, s: QtCore.QAbstractItemModel):
+        if s is super().sourceModel():
+            return
+        self.setSourceModel(s)
+        self.sourceModelChanged.emit()
+
     @property
     def _roleNameMap(self) -> Dict[str, int]:
         """Map role name -> corresponding enum value"""
@@ -401,8 +413,8 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         strRoles = [rvm[r] for r in roles]
         self.itemsChanged.emit(index, count, strRoles)
 
-    itemsChanged = QtCore.pyqtSignal(int, int, list,
-                                     arguments=["index", "count", "roles"])
+    itemsChanged = QtCore.Signal(int, int, list,
+                                 arguments=["index", "count", "roles"])
     """One or more list items were changed. `index` is the index of the
     first changed element, `count` is the number of subsequent modified
     elements, and `role` holds the affected roles. If the `role` is empty, all
@@ -411,7 +423,7 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
     signal.
     """
 
-    @QtCore.pyqtSlot(int, str, result=QtCore.QVariant)
+    @QtCore.Slot(int, str, result="QVariant")
     def get(self, index: int, role: str):
         """Get list element by index
 
@@ -426,11 +438,11 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         -------
         Selected list element
         """
-        if self.sourceModel() is None:
+        if self.sourceModel is None:
             return None
         return self.data(self.index(index, 0), self._roleNameMap[role])
 
-    @QtCore.pyqtSlot(int, str, QtCore.QVariant, result=bool)
+    @QtCore.Slot(int, str, "QVariant", result=bool)
     def set(self, index: int, role: str, obj: Any):
         """Set list element
 
@@ -448,7 +460,7 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         -------
         `True` if successful, `False` otherwise.
         """
-        if self.sourceModel() is None:
+        if self.sourceModel is None:
             return False
         try:
             return self.setData(self.index(index, 0), obj,
@@ -456,10 +468,10 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         except KeyError:
             return False
 
-    countChanged = QtCore.pyqtSignal()
+    countChanged = QtCore.Signal()
     """:py:attr:`count` changed"""
 
-    @QtCore.pyqtProperty(int, notify=countChanged)
+    @QtCore.Property(int, notify=countChanged)
     def count(self) -> int:
         """Number of list entries
 
@@ -468,4 +480,4 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         return self.rowCount()
 
 
-QtQml.qmlRegisterType(ListProxyModel, "SdtGui", 0, 1, "ListProxyModel")
+QtQml.qmlRegisterType(ListProxyModel, "SdtGui", 0, 2, "ListProxyModel")
