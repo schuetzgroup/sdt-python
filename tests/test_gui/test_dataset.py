@@ -36,6 +36,12 @@ def test_Dataset(qtbot):
     with qtbot.waitSignal(ds.fileListChanged):
         assert ds.set(1, "source_0", "blub") is True
 
+    with qtbot.waitSignal(ds.fileListChanged):
+        ds.addFile("source_0", f"{dd}/file_extra")
+    assert ds.count == 4
+    assert ds.get(3, "source_0") == "file_extra"
+    assert ds.get(3, "source_1") is None
+
 
 def test_DatasetCollection(qtbot):
     class MyDataset(gui.Dataset):

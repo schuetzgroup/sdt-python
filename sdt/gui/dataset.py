@@ -75,6 +75,26 @@ class Dataset(ListModel):
         self.roles = self._fileRoles + self._dataRoles
         self.dataRolesChanged.emit(self._dataRoles)
 
+    def _fileRelativeToDataDir(self, file: Union[None, Path, str, QtCore.QUrl]
+                               ) -> Union[str, None]:
+        """Get file path relative to :py:attr:`dataDir`
+
+        Parameters
+        ----------
+        file
+            File path
+
+        Returns
+        -------
+        Path relative to :py:attr:`dataDir` in POSIX notation (forward slashes
+        as separators)
+        """
+        if isinstance(file, QtCore.QUrl):
+            file = file.toLocalFile()
+        if self._dataDir and file is not None:
+            file = str(Path(file).relative_to(self._dataDir).as_posix())
+        return file
+
     @QtCore.Slot(str, "QVariant")
     def setFiles(self, fileRole: str,
                  files: Iterable[Union[Path, str, QtCore.QUrl]]):
@@ -95,10 +115,7 @@ class Dataset(ListModel):
         removeLater = []
         missing = itertools.repeat(None, max(0, self.rowCount() - len(files)))
         for i, f in enumerate(itertools.chain(files, missing)):
-            if isinstance(f, QtCore.QUrl):
-                f = f.toLocalFile()
-            if self._dataDir and f is not None:
-                f = str(Path(f).relative_to(self._dataDir).as_posix())
+            f = self._fileRelativeToDataDir(f)
             if i < self.rowCount():
                 if (f is None and
                         all(self.get(i, r) is None for r in otherFileRoles)):
@@ -109,6 +126,22 @@ class Dataset(ListModel):
                 self.append({fileRole: f})
         for i in removeLater[::-1]:
             self.remove(i)
+
+    @QtCore.Slot(str, "QVariant")
+    def addFile(self, fileRole: str,
+                file: Union[Path, str, QtCore.QUrl, None]):
+        """Append a file
+
+        Parameters
+        ----------
+        fileRole
+            For which model role to set the files
+        file
+            File path. The model will save the path relative to
+            :py:attr:`dataDir`.
+        """
+        file = self._fileRelativeToDataDir(file)
+        self.append({fileRole: file})
 
     fileListChanged = QtCore.Signal()
     """:py:attr:`fileList` property changed"""
