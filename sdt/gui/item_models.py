@@ -327,13 +327,14 @@ class ListModel(QtCore.QAbstractListModel):
         `True` if successful, `False` otherwise.
         """
         if not index.isValid():
-            print("invalid")
             return False
         try:
             r = self.Roles(role)
         except ValueError:
             # role does not exist
             return False
+        if len(self.Roles) < 2:
+            return self.set(index.row(), value)
         return self.set(index.row(), r.name, value)
 
     def _emitDataChanged(self, index: int, count: int,

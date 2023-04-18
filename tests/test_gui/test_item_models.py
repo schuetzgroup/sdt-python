@@ -63,6 +63,56 @@ def test_ListModel(qtbot, qtmodeltester):
     qtmodeltester.check(model)
 
 
+def test_ListModel_single_role(qtbot, qtmodeltester):
+    model = gui.ListModel()
+
+    assert model.set(0, 10) is False
+    assert model.setData(model.index(0), QtCore.Qt.UserRole, 10) is False
+
+    with qtbot.waitSignals([model.rowsInserted, model.countChanged]):
+        model.insert(0, 1)
+    with qtbot.waitSignals([model.rowsInserted, model.countChanged]):
+        model.append(3)
+    with qtbot.waitSignals([model.rowsInserted, model.countChanged]):
+        model.append(4)
+
+    assert model.count == 3
+    assert model.get(0) == 1
+    assert model.get(1) == 3
+    assert model.get(3) is None
+    assert model.rowCount() == 3
+    assert model.data(model.index(0), QtCore.Qt.UserRole) == 1
+    assert model.data(model.index(1), QtCore.Qt.UserRole) == 3
+    assert model.data(model.index(3), QtCore.Qt.UserRole) is None
+    assert model.data(model.index(0), QtCore.Qt.UserRole+1) is None
+
+    lst = model.toList().copy()
+    assert lst == [1, 3, 4]
+
+    with qtbot.waitSignals([model.itemsChanged, model.dataChanged]):
+        assert model.set(1, 1000) is True
+    assert model.get(1) == 1000
+    with qtbot.waitSignals([model.itemsChanged, model.dataChanged]):
+        assert model.setData(model.index(1), 10000, QtCore.Qt.UserRole) is True
+    assert model.data(model.index(1), QtCore.Qt.UserRole) == 10000
+
+    with qtbot.waitSignals([model.rowsRemoved, model.countChanged]):
+        model.remove(1, count=2)
+    assert model.count == 1
+    assert model.toList() == lst[:1]
+
+    with qtbot.waitSignals([model.modelReset, model.countChanged]):
+        model.clear()
+    assert model.count == 0
+
+    with qtbot.waitSignals([model.modelReset, model.countChanged]):
+        model.reset(lst.copy())
+    assert model.count == 3
+    assert model.toList() == lst
+
+    qtmodeltester.check(model)
+
+
 def test_ListProxyModel(qtbot):
     c = gui.Component("""
 import QtQuick
