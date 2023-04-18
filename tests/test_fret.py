@@ -218,7 +218,7 @@ def test_numeric_exc_type():
 
     with fret.numeric_exc_type(df) as exc_types:
         assert set(exc_types) == {"d", "a"}
-        assert df["fret", "exc_type"].dtype == np.dtype(int)
+        assert np.issubdtype(df["fret", "exc_type"].dtype, np.integer)
         assert len(df) == len(col)
         for i in (0, 1):
             assert np.all((df["fret", "exc_type"] == i).values ==

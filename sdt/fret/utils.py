@@ -44,11 +44,9 @@ def numeric_exc_type(df):
     """
     exc_types = df["fret", "exc_type"].copy()
     exc_cats = exc_types.cat.categories.copy()
-    exc_types.cat.categories = list(range(len(exc_cats)))
-    df["fret", "exc_type"] = exc_types.astype(int)
+    df["fret", "exc_type"] = exc_types.cat.codes
 
     try:
         yield exc_cats
     finally:
-        exc_types.cat.categories = exc_cats
         df["fret", "exc_type"] = exc_types
