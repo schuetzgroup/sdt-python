@@ -14,7 +14,7 @@ from .qml_wrapper import (Component, QmlDefinedMethod, QmlDefinedProperty,
 from .dataset import Dataset, DatasetCollection
 # from .frame_selector import FrameSelector
 from .image_display import ImageDisplay
-# from .image_selector import ImageSelector
+from .image_selector import ImageSelector
 from .item_models import ListModel
 # from .loc_display import LocDisplay
 # from .loc_options import LocOptions

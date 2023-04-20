@@ -5,7 +5,7 @@
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .. import io, multicolor
@@ -35,19 +35,25 @@ class ImageList(Dataset):
         super().__init__(parent)
         self.fileRoles = ["source_0"]
         self.dataRoles = ["display", "image"]
+        self._imageSourceRole = "source_0"
         self._frameSel = multicolor.FrameSelector("")
         self._currentExcitationType = ""
-        self.excitationSeqChanged.connect(self._onExcTypeChanged)
-        self.currentExcitationTypeChanged.connect(self._onExcTypeChanged)
+        self._error = ""
+        self.excitationSeqChanged.connect(
+            lambda: self.itemsChanged.emit(0, self.rowCount(), ["image"]))
+        self.currentExcitationTypeChanged.connect(
+            lambda: self.itemsChanged.emit(0, self.rowCount(), ["image"]))
+        self.imageSourceRoleChanged.connect(
+            lambda: self.itemsChanged.emit(0, self.rowCount(),
+                                           ["display", "image"]))
 
-    def _onExcTypeChanged(self):
-        """Emit :py:meth:`dataChanged` if exc seq or current type change"""
-        self.itemsChanged.emit(0, self.rowCount(), ["image"])
+    imageSourceRole: str = SimpleQtProperty(str)
+    """Which of :py:attr:`fileRoles` to use to load images"""
 
-    excitationSeqChanged = QtCore.pyqtSignal()
+    excitationSeqChanged = QtCore.Signal()
     """:py:attr:`excitationSeq` changed"""
 
-    @QtCore.pyqtProperty(str, notify=excitationSeqChanged)
+    @QtCore.Property(str, notify=excitationSeqChanged)
     def excitationSeq(self) -> str:
         """Excitation sequence. See :py:class:`multicolor.FrameSelector` for
         details. No error checking es performend here.
@@ -64,7 +70,12 @@ class ImageList(Dataset):
     currentExcitationType = SimpleQtProperty(str)
     """Excitation type to use in :py:attr:`output`"""
 
-    @QtCore.pyqtSlot(int, str, result=QtCore.QVariant)
+    error = SimpleQtProperty(str, readOnly=True)
+    """Error of last attempt to open an image sequence. If empty, there was
+    no error.
+    """
+
+    @QtCore.Slot(int, str, result="QVariant")
     def get(self, index: int, role: str) -> Any:
         """Get data for an image sequence
 
@@ -82,12 +93,22 @@ class ImageList(Dataset):
         Requested data
         """
         if role == "display":
-            return "; ".join(str(self.get(index, r)) for r in self.fileRoles)
+            return self.get(index, self.imageSourceRole)
         if role == "image":
-            if not self.fileRoles:
+            if self.imageSourceRole not in self.fileRoles:
                 return None
-            d = io.ImageSequence(self.get(index, self.fileRoles[0])).open()
-            return self._frameSel.select(d, self.currentExcitationType)
+            try:
+                p = Path(self.dataDir) / self.get(index, self.imageSourceRole)
+                d = io.ImageSequence(p).open()
+                ret = self._frameSel.select(d, self.currentExcitationType)
+                if self._error:
+                    self._error = ""
+                    self.errorChanged.emit()
+                return ret
+            except Exception as e:
+                self._error = str(e)
+                self.errorChanged.emit()
+                return None
         return super().get(index, role)
 
 
@@ -111,15 +132,16 @@ class ImageSelector(QtQuick.QQuickItem):
         self._imageRole = "image"
         self._dataset = ImageList()
         self._dataset.itemsChanged.connect(self._onItemsChanged)
+        self._dataset.countChanged.connect(self._fileChanged)
         self._error = ""
         self._modifyFileRole = "source_0"
 
         self.imageRoleChanged.connect(self._fileChanged)
 
-    datasetChanged = QtCore.pyqtSignal(QtCore.QVariant)
+    datasetChanged = QtCore.Signal()
     """:py:attr:`dataset` was changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=datasetChanged)
+    @QtCore.Property("QVariant", notify=datasetChanged)
     def dataset(self) -> Dataset:
         """Model holding the image sequences to choose from
 
@@ -147,13 +169,18 @@ class ImageSelector(QtQuick.QQuickItem):
             if d is not None:
                 m.setFiles(m.fileRoles[0], d)
             d = m
+        oldIndex = self.currentIndex
+        self._dataset.countChanged.disconnect(self._fileChanged)
         self._dataset.itemsChanged.disconnect(self._onItemsChanged)
         self._dataset = d
         self._dataset.itemsChanged.connect(self._onItemsChanged)
-        self.datasetChanged.emit(d)
-        self._fileChanged()
+        self._dataset.countChanged.connect(self._fileChanged)
+        self.datasetChanged.emit()
+        if oldIndex == self.currentIndex:
+            # _fileChanged() is not called via currentIndexChanged connection
+            self._fileChanged()
 
-    image = SimpleQtProperty(QtCore.QVariant, readOnly=True)
+    image = SimpleQtProperty("QVariant", readOnly=True)
     """Selected frame from selected image sequence"""
     editable = QmlDefinedProperty()
     """If `True` show widgets to manipulate the image sequence list"""
@@ -187,7 +214,7 @@ class ImageSelector(QtQuick.QQuickItem):
             return
         self._fileChanged()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _fileChanged(self):
         """Callback upon change of currently selected file """
         oldFrame = self.currentFrame
@@ -202,18 +229,12 @@ class ImageSelector(QtQuick.QQuickItem):
                 self._error = ""
                 self.errorChanged.emit()
         else:
-            try:
-                self._curImage = self.dataset.get(self.currentIndex,
-                                                  self.imageRole)
-                if self._error:
-                    self._error = ""
-                    self.errorChanged.emit()
-            except Exception as ex:
-                self._curImage = None
-                err = str(ex)
-                if self._error != err:
-                    self._error = err
-                    self.errorChanged.emit()
+            self._curImage = self.dataset.get(self.currentIndex,
+                                              self.imageRole)
+            err = getattr(self._dataset, "error", "")
+            if self._error != err:
+                self._error = err
+                self.errorChanged.emit()
 
         if oldFrameCount != self.currentFrameCount:
             self.currentFrameCountChanged.emit()
@@ -222,16 +243,16 @@ class ImageSelector(QtQuick.QQuickItem):
             # ==> need to trigger update here
             self._frameChanged()
 
-    currentFrameCountChanged = QtCore.pyqtSignal()
+    currentFrameCountChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty(int, notify=currentFrameCountChanged)
+    @QtCore.Property(int, notify=currentFrameCountChanged)
     def currentFrameCount(self) -> int:
         """Number of frames in current image sequence"""
         if self._curImage is None:
             return 0
         return len(self._curImage)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def _frameChanged(self):
         """Callback upon change of currently selected frame"""
         if self._curImage is None:
@@ -253,4 +274,4 @@ class ImageSelector(QtQuick.QQuickItem):
         self.imageChanged.emit()
 
 
-QtQml.qmlRegisterType(ImageSelector, "SdtGui.Templates", 0, 1, "ImageSelector")
+QtQml.qmlRegisterType(ImageSelector, "SdtGui.Templates", 0, 2, "ImageSelector")
