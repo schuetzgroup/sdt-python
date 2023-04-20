@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Dialogs 1.3
-import QtQuick.Layouts 1.12
-import SdtGui 0.1
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
+import SdtGui
 
 
 Item {
@@ -33,12 +33,11 @@ Item {
             onClicked: { dataDirDialog.open() }
         }
     }
-    FileDialog {
+    FolderDialog {
         id: dataDirDialog
         title: "Choose folder…"
-        selectFolder: true
         onAccepted: {
-            dataDirEdit.text = Sdt.urlToLocalFile(fileUrl)
+            dataDirEdit.text = Sdt.urlToLocalFile(selectedFolder)
         }
     }
 }
