@@ -4,7 +4,7 @@
 
 from typing import List
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .. import multicolor
@@ -24,10 +24,10 @@ class FrameSelector(QtQuick.QQuickItem):
         self._excitationTypes = []
         self._error = False
 
-    excitationSeqChanged = QtCore.pyqtSignal()
+    excitationSeqChanged = QtCore.Signal()
     """:py:attr:`excitationSeq` changed"""
 
-    @QtCore.pyqtProperty(str, notify=excitationSeqChanged)
+    @QtCore.Property(str, notify=excitationSeqChanged)
     def excitationSeq(self) -> str:
         """Excitation sequence. See :py:class:`multicolor.FrameSelector` for
         details. When setting an erroneous sequence, this property is not
@@ -59,18 +59,18 @@ class FrameSelector(QtQuick.QQuickItem):
         self._excitationTypes = ft
         self.excitationTypesChanged.emit()
 
-    excitationTypesChanged = QtCore.pyqtSignal()
+    excitationTypesChanged = QtCore.Signal()
     """:py:attr:`excitationTypes` changed"""
 
-    @QtCore.pyqtProperty(list, notify=excitationTypesChanged)
+    @QtCore.Property(list, notify=excitationTypesChanged)
     def excitationTypes(self) -> List[str]:
         """Excitation types the :py:attr:`excitationSeq` is made of"""
         return self._excitationTypes
 
-    errorChanged = QtCore.pyqtSignal()
+    errorChanged = QtCore.Signal()
     """:py:attr:`error` changed"""
 
-    @QtCore.pyqtProperty(bool, notify=errorChanged)
+    @QtCore.Property(bool, notify=errorChanged)
     def error(self) -> bool:
         """Indicates whether there is an error when last setting the
         :py:attr:`excitationSeq`.
@@ -85,4 +85,4 @@ class FrameSelector(QtQuick.QQuickItem):
     """Currently selected (via GUI) excitation type"""
 
 
-QtQml.qmlRegisterType(FrameSelector, "SdtGui.Templates", 0, 1, "FrameSelector")
+QtQml.qmlRegisterType(FrameSelector, "SdtGui.Templates", 0, 2, "FrameSelector")

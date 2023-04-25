@@ -2,17 +2,17 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import SdtGui.Templates 0.1 as T
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import SdtGui.Templates as T
 
 
 T.FrameSelector {
     id: root
 
     property bool showTypeSelector: true
-    property alias currentExcitationType: excSel.currentText
+    property string currentExcitationType: ""
 
     implicitHeight: rootLayout.implicitHeight
     implicitWidth: rootLayout.implicitWidth
@@ -23,10 +23,11 @@ T.FrameSelector {
         Label { text: "excitation sequence" }
         TextField {
             id: seqText
+            objectName: "Sdt.FrameSelector.Text"
             Layout.fillWidth: true
             selectByMouse: true
             text: root.excitationSeq
-            onTextEdited: { root.excitationSeq = text }
+            onTextChanged: { root.excitationSeq = text }
         }
         Item {
             width: 5
@@ -38,8 +39,28 @@ T.FrameSelector {
         }
         ComboBox {
             id: excSel
+            objectName: "Sdt.FrameSelector.TypeSelector"
             model: visible ? root.excitationTypes : null
             visible: root.showTypeSelector
+
+            function updateCurExcType() {
+                if (currentIndex < 0 || !model)
+                    root.currentExcitationType = ""
+                else
+                    root.currentExcitationType = model[currentIndex]
+            }
+
+            onCurrentIndexChanged: { updateCurExcType() }
+            onModelChanged: { updateCurExcType() }
+        }
+    }
+
+    onCurrentExcitationTypeChanged: {
+        for (var i = 0; i < excSel.model.length; i++) {
+            if (excSel.model[i] == currentExcitationType) {
+                excSel.currentIndex = i
+                break
+            }
         }
     }
 
