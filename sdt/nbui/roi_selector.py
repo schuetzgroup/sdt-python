@@ -75,7 +75,7 @@ class ROISelectorModule(ipywidgets.VBox):
             "ellipse": EllipseSelector(
                 self.ax, self._ellipse_roi_selected, interactive=True),
             "polygon": PolygonSelector(
-                self.ax, self._poly_roi_selected, lineprops={"color": "y"}),
+                self.ax, self._poly_roi_selected, props={"color": "y"}),
             "lasso": LassoSelector(self.ax, self._lasso_roi_selected)
         }
         for r in self._roi_selectors.values():
