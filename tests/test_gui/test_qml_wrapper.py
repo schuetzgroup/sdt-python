@@ -55,7 +55,7 @@ def test_Window(qapp):
     w.create()
     assert w.status_ == gui.Component.Status.Ready
     assert isinstance(w.window_, QtGui.QWindow)
-    assert w.width == 800
+    assert w.window_.width() == 800
 
 
 def test_QmlDefinedProperty(qapp):

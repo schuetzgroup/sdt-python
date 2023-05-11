@@ -144,17 +144,17 @@ class Component(QtCore.QObject):
         AttributeError
             The :py:attr:`instance_` does not have such a propery
         """
-        if self._instance is None:
+        if self.instance_ is None:
             raise AttributeError("Component has not been created yet")
-        p = QtQml.QQmlProperty(self._instance, name, self._engine)
+        p = QtQml.QQmlProperty(self.instance_, name, self._engine)
         if not p.isValid():
-            raise AttributeError(f"'{type(self._instance)}' has no property "
+            raise AttributeError(f"'{type(self.instance_)}' has no property "
                                  f"'{name}'")
         return p
 
     def __getattr__(self, name):
-        if name.startswith("_"):
-            return super().__getattribute__(name)
+        if name.startswith("_") or name.endswith("_"):
+            return super().__getattr__(name)
         ret = self._getProp(name).read()
         if isinstance(ret, QtQml.QJSValue):
             # Happens with dict and list properties
