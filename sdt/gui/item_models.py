@@ -7,14 +7,13 @@ import enum
 from typing import Any, Dict, Iterable, List, Optional, Union
 
 from PySide6 import QtCore, QtQml
+import numpy as np
 
 
 class ListModel(QtCore.QAbstractListModel):
     """General list model implementation
 
-    This wraps both a plain list and a list of dicts to be used as Qt item
-    models. If only a single role is given (see :py:class:`Roles`,
-    :py:attr:`roles`), it behaves as a plain list. Otherwise, dict keys
+    This wraps a list of dicts to be used as a Qt item model. Dict keys
     correspond to role names.
     """
     class Roles(enum.IntEnum):
@@ -110,6 +109,11 @@ class ListModel(QtCore.QAbstractListModel):
         finally:
             self.endResetModel()
 
+    def _firstRoleName(self) -> Union[str, None]:
+        if len(self.Roles):
+            return next(iter(self.Roles)).name
+        raise KeyError("model has no roles")
+
     @QtCore.Slot(int, result="QVariant")
     @QtCore.Slot(int, str, result="QVariant")
     def get(self, index: int, role: Optional[str] = None) -> Any:
@@ -120,10 +124,8 @@ class ListModel(QtCore.QAbstractListModel):
         index
             Index of the element to get
         role
-            Role to get. If there is only one role (see :py:attr:`roles`), this
-            is ignored and the whole list entry is returned. If there is more
-            than one role, assume that the list entry is a dict and return the
-            dict entry with key `role`.
+            Role to get. If `None`, use the first role in
+            :py:attr:`self.Roles`.
 
         Returns
         -------
@@ -131,8 +133,8 @@ class ListModel(QtCore.QAbstractListModel):
         """
         try:
             d = self._data[index]
-            if len(self.Roles) < 2:
-                return d
+            if role is None:
+                role = self._firstRoleName()
             return d[role]
         except (IndexError, KeyError):
             return None
@@ -140,7 +142,7 @@ class ListModel(QtCore.QAbstractListModel):
     @QtCore.Slot(int, "QVariant", result=bool)
     @QtCore.Slot(int, str, "QVariant", result=bool)
     def set(self, index: int, valueOrRole: Union[str, Any],
-            value: Optional[Any] = None) -> bool:
+            value: Optional[Any] = ...) -> bool:
         """Set list element
 
         Parameters
@@ -148,32 +150,33 @@ class ListModel(QtCore.QAbstractListModel):
         index
             Index of the element.
         valueOrRole
-            If there is only one role (see :py:attr:`roles`), this
-            is the value to set. If there is more than one role, assume that
-            list entries are a dicts and set the `index`-th dict's entry
-            with key `valueOrRole` to `value` (see below).
+            Role name to use for setting `value` if the latter as passed as the
+            third argument. Otherwise, this is the value to set for the first
+            of :py:attr:`roles`.
         value
-            If there are more than one role, this is the new value for the
-            dict entry specified by `index` and `valueOrRole`. Ignored
-            otherwise.
+            If this is passed, interpret `valueOrRole` as the role name and
+            this as the value to set.
 
         Returns
         -------
         `True` if successful, `False` otherwise.
         """
         try:
-            if len(self.Roles) < 2:
-                self._data[index] = valueOrRole
-                self.itemsChanged.emit(index, 1, [])
+            if value is Ellipsis:
+                role = self._firstRoleName()
+                value = valueOrRole
+                changedRoles = []
             else:
-                self._data[index][valueOrRole] = value
-                self.itemsChanged.emit(index, 1, [valueOrRole])
+                role = valueOrRole
+                changedRoles = [role]
+            self._data[index][role] = value
+            self.itemsChanged.emit(index, 1, changedRoles)
             return True
         except (IndexError, KeyError):
             return False
 
     @QtCore.Slot(int, "QVariant")
-    def insert(self, index: int, obj: Any):
+    def insert(self, index: int, obj: Dict[str, Any]):
         """Insert element into the list
 
         Parameters
@@ -189,7 +192,7 @@ class ListModel(QtCore.QAbstractListModel):
             self._data.insert(index, obj)
 
     @QtCore.Slot("QVariant")
-    def append(self, obj: Any):
+    def append(self, obj: Dict[str, Any]):
         """Append element to the list
 
         Parameters
@@ -198,6 +201,126 @@ class ListModel(QtCore.QAbstractListModel):
             Element to append
         """
         self.insert(self.rowCount(), obj)
+
+    @QtCore.Slot()
+    @QtCore.Slot(str)
+    @QtCore.Slot(str, int, int)
+    def multiGet(self, role: Optional[str] = None, startIndex: int = 0,
+                 count: Optional[int] = None) -> List:
+        """Get multiple entries for given role
+
+        For each entry (possibly restricted by `startIndex` and `count`),
+        get value associated with `role`.
+
+        Parameters
+        ----------
+        role
+            Role name. If `None`, use first of :py:attr`self.roles`.
+        startIndex
+            Index of first element to return
+        count
+            Number of elements to return. If `None`, get all elements starting
+            at `startIndex`.
+
+        Returns
+        -------
+        List of values
+        """
+        if count is None:
+            endIndex = self.count
+        else:
+            endIndex = min(startIndex + count, self.count)
+        return [self.get(i, role) for i in range(startIndex, endIndex)]
+
+    @QtCore.Slot(list)
+    @QtCore.Slot(str, list)
+    @QtCore.Slot(str, list, int, int)
+    def multiSet(self, valuesOrRole: Union[Iterable, str],
+                 values: Optional[Iterable] = None,
+                 startIndex: int = 0, count: Optional[int] = None):
+        """Modify multiple entries for a given role
+
+        Parameters
+        ----------
+        valuesOrRole
+            Role name to use for setting `values` if the latter as passed as
+            the second argument. Otherwise, this are the values to set for the
+            first of :py:attr:`roles`.
+        value
+            If this is passed, interpret `valuesOrRole` as the role name and
+            this as the values to set.
+        startIndex
+            Index of the first element to set
+        count
+            How many entries to modify. If `count` is less than the length
+            of `values`, elements of `values` whose index exceeds `count` are
+            inserted into the model at position ``startIndex + count``.
+            If `count` is greater than the length of `values`, excessive items
+            are deleted from the model at position ``startIndex + len(objs)``.
+            If `None`, set to ``len(values)``.
+        """
+        if values is None:
+            values = valuesOrRole
+            role = self._firstRoleName()
+            changedRoles = []
+        else:
+            role = valuesOrRole
+            changedRoles = [role]
+        if count is None:
+            count = len(values)
+
+        startIndex = min(startIndex, self.count)
+        modifyCount = min(count, self.count-startIndex, len(values))
+        extraCount = len(values) - min(count, self.count-startIndex)
+
+        valIter = iter(values)
+        if modifyCount > 0:
+            for selfIdx, o in zip(
+                    range(startIndex, startIndex + modifyCount), valIter):
+                self._data[selfIdx][role] = o
+            self.itemsChanged.emit(startIndex, modifyCount, changedRoles)
+            selfIdx += 1
+        else:
+            selfIdx = startIndex
+
+        if extraCount > 0:
+            with self._insertRows(selfIdx, extraCount):
+                for selfIdx, o in zip(range(selfIdx, selfIdx + extraCount),
+                                      valIter):
+                    self._data.insert(selfIdx, {role: o})
+        elif extraCount < 0:
+            remove = []
+            modified = []
+            for selfIdx in range(selfIdx, selfIdx - extraCount):
+                d = self._data[selfIdx]
+                d.pop(role, None)
+                if all(v is None for v in d.values()):
+                    remove.append(selfIdx)
+                else:
+                    modified.append(selfIdx)
+            if remove:
+                remove = np.array(remove)
+                for r in np.split(remove,
+                                  np.nonzero(np.diff(remove) != 1)[0] + 1):
+                    with self._removeRows(r[0], len(r)):
+                        del self._data[r[0]:r[-1]+1]
+            if modified:
+                modified = np.array(modified)
+                for m in np.split(modified,
+                                  np.nonzero(np.diff(modified) != 1)[0] + 1):
+                    self.itemsChanged.emit(m[0], len(m), changedRoles)
+
+    @QtCore.Slot(list)
+    def extend(self, objs: Iterable[Dict[str, Any]]):
+        """Append multiple elements to the list
+
+        Parameters
+        ----------
+        objs
+            Elements to append
+        """
+        with self._insertRows(self.rowCount(), len(objs)):
+            self._data.extend(objs)
 
     @QtCore.Slot(int)
     @QtCore.Slot(int, int)
@@ -333,8 +456,6 @@ class ListModel(QtCore.QAbstractListModel):
         except ValueError:
             # role does not exist
             return False
-        if len(self.Roles) < 2:
-            return self.set(index.row(), value)
         return self.set(index.row(), r.name, value)
 
     def _emitDataChanged(self, index: int, count: int,

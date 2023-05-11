@@ -23,21 +23,27 @@ def test_ListModel(qtbot, qtmodeltester):
     with qtbot.waitSignals([model.rowsInserted, model.countChanged]):
         model.append({"a": 10, "b": 11})
     with qtbot.waitSignals([model.rowsInserted, model.countChanged]):
-        model.append({"a": 20, "b": 21})
+        model.extend([{"a": 20, "b": 21}, {"a": 30, "b": 31}])
 
-    assert model.count == 3
+    assert model.count == 4
     assert model.get(0, "a") == 0
     assert model.get(1, "b") == 11
-    assert model.get(3, "a") is None
+    assert model.get(4, "a") is None
     assert model.get(0, "c") is None
-    assert model.rowCount() == 3
+    assert model.rowCount() == 4
     assert model.data(model.index(0), QtCore.Qt.UserRole) == 0
     assert model.data(model.index(1), QtCore.Qt.UserRole+1) == 11
-    assert model.data(model.index(3), QtCore.Qt.UserRole) is None
+    assert model.data(model.index(4), QtCore.Qt.UserRole) is None
     assert model.data(model.index(0), QtCore.Qt.UserRole+2) is None
 
     lst = model.toList().copy()
-    assert lst == [{"a": 0, "b": 1}, {"a": 10, "b": 11}, {"a": 20, "b": 21}]
+    assert lst == [{"a": 0, "b": 1}, {"a": 10, "b": 11}, {"a": 20, "b": 21},
+                   {"a": 30, "b": 31}]
+
+    assert model.multiGet() == [0, 10, 20, 30]
+    assert model.multiGet("b") == [1, 11, 21, 31]
+    assert model.multiGet("b", 2) == [21, 31]
+    assert model.multiGet("b", 1, 2) == [11, 21]
 
     with qtbot.waitSignals([model.itemsChanged, model.dataChanged]):
         assert model.set(1, "a", 1000) is True
@@ -47,7 +53,7 @@ def test_ListModel(qtbot, qtmodeltester):
     assert model.data(model.index(1), QtCore.Qt.UserRole) == 10000
 
     with qtbot.waitSignals([model.rowsRemoved, model.countChanged]):
-        model.remove(1, count=2)
+        model.remove(1, count=3)
     assert model.count == 1
     assert model.toList() == lst[:1]
 
@@ -56,59 +62,30 @@ def test_ListModel(qtbot, qtmodeltester):
     assert model.count == 0
 
     with qtbot.waitSignals([model.modelReset, model.countChanged]):
-        model.reset(lst.copy())
+        model.reset(lst[:-1].copy())
     assert model.count == 3
-    assert model.toList() == lst
+    assert model.toList() == lst[:-1]
 
-    qtmodeltester.check(model)
+    model.reset(lst.copy())
+    with qtbot.waitSignal(model.itemsChanged):
+        model.multiSet([100, 200])
+    assert model.toList() == [{"a": 100, "b": 1}, {"a": 200, "b": 11},
+                              {"a": 20, "b": 21}, {"a": 30, "b": 31}]
+    with qtbot.waitSignal(model.itemsChanged):
+        model.multiSet([1000, 2000], startIndex=1, count=3)
+    assert model.toList() == [{"a": 100, "b": 1}, {"a": 1000, "b": 11},
+                              {"a": 2000, "b": 21}, {"b": 31}]
+    model.append({"b": 41})
+    with qtbot.waitSignals([model.itemsChanged, model.rowsRemoved]):
+        model.multiSet("b", [110, 210], 1, model.count)
+    assert model.toList() == [{"a": 100, "b": 1}, {"a": 1000, "b": 110},
+                              {"a": 2000, "b": 210}]
 
-
-def test_ListModel_single_role(qtbot, qtmodeltester):
-    model = gui.ListModel()
-
-    assert model.set(0, 10) is False
-    assert model.setData(model.index(0), QtCore.Qt.UserRole, 10) is False
-
-    with qtbot.waitSignals([model.rowsInserted, model.countChanged]):
-        model.insert(0, 1)
-    with qtbot.waitSignals([model.rowsInserted, model.countChanged]):
-        model.append(3)
-    with qtbot.waitSignals([model.rowsInserted, model.countChanged]):
-        model.append(4)
-
-    assert model.count == 3
-    assert model.get(0) == 1
-    assert model.get(1) == 3
-    assert model.get(3) is None
-    assert model.rowCount() == 3
-    assert model.data(model.index(0), QtCore.Qt.UserRole) == 1
-    assert model.data(model.index(1), QtCore.Qt.UserRole) == 3
-    assert model.data(model.index(3), QtCore.Qt.UserRole) is None
-    assert model.data(model.index(0), QtCore.Qt.UserRole+1) is None
-
-    lst = model.toList().copy()
-    assert lst == [1, 3, 4]
-
-    with qtbot.waitSignals([model.itemsChanged, model.dataChanged]):
-        assert model.set(1, 1000) is True
-    assert model.get(1) == 1000
-    with qtbot.waitSignals([model.itemsChanged, model.dataChanged]):
-        assert model.setData(model.index(1), 10000, QtCore.Qt.UserRole) is True
-    assert model.data(model.index(1), QtCore.Qt.UserRole) == 10000
-
-    with qtbot.waitSignals([model.rowsRemoved, model.countChanged]):
-        model.remove(1, count=2)
-    assert model.count == 1
-    assert model.toList() == lst[:1]
-
-    with qtbot.waitSignals([model.modelReset, model.countChanged]):
-        model.clear()
-    assert model.count == 0
-
-    with qtbot.waitSignals([model.modelReset, model.countChanged]):
-        model.reset(lst.copy())
-    assert model.count == 3
-    assert model.toList() == lst
+    with qtbot.waitSignals([model.itemsChanged, model.rowsInserted]):
+        model.multiSet("a", [10000, 20000, 30000, 40000], 1, 1)
+    assert model.toList() == [{"a": 100, "b": 1}, {"a": 10000, "b": 110},
+                              {"a": 20000}, {"a": 30000}, {"a": 40000},
+                              {"a": 2000, "b": 210}]
 
     qtmodeltester.check(model)
 
