@@ -14,6 +14,7 @@ def test_Dataset(qtbot):
     with qtbot.waitSignals([ds.fileRolesChanged, ds.rolesChanged]):
         ds.fileList = [{"source_0": "bla", "source_1": None}]
     assert set(ds.roles) == {"source_0", "source_1", "images", "locs"}
+    print(ds.fileRoles)
 
     dd = "/path/to/data"
     ds.dataDir = dd
@@ -21,7 +22,7 @@ def test_Dataset(qtbot):
     fl1 = ["file10", "file11", "file12"]
 
     with qtbot.waitSignal(ds.fileListChanged):
-        ds.setFiles("source_0", [f"{dd}/{f}" for f in fl0])
+        ds.setFiles([f"{dd}/{f}" for f in fl0])
     assert ds.fileList == [{"source_0": f0, "source_1": None} for f0 in fl0]
 
     with qtbot.waitSignal(ds.fileListChanged):
@@ -30,14 +31,14 @@ def test_Dataset(qtbot):
                             for f0, f1 in zip(fl0, fl1)] +
                            [{"source_0": fl0[-1], "source_1": None}])
 
-    ds.setFiles("source_0", [f"{dd}/{f}" for f in fl0[:-1]])
+    ds.setFiles([f"{dd}/{f}" for f in fl0[:-1]])
     assert ds.count == 3
 
     with qtbot.waitSignal(ds.fileListChanged):
         assert ds.set(1, "source_0", "blub") is True
 
     with qtbot.waitSignal(ds.fileListChanged):
-        ds.addFile("source_0", f"{dd}/file_extra")
+        ds.setFiles("source_0", [f"{dd}/file_extra"], ds.count, 1)
     assert ds.count == 4
     assert ds.get(3, "source_0") == "file_extra"
     assert ds.get(3, "source_1") is None
