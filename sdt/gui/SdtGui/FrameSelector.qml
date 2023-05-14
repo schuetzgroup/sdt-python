@@ -62,7 +62,10 @@ T.FrameSelector {
                 break
             }
         }
+        processSequenceChanged()
     }
+
+    onExcitationSeqChanged: { processSequenceChanged() }
 
     onErrorChanged: {
         if (error)

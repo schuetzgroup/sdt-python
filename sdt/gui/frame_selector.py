@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from typing import List
+from typing import Callable, List, Sequence
 
 from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
@@ -83,6 +83,13 @@ class FrameSelector(QtQuick.QQuickItem):
     """
     currentExcitationType = QmlDefinedProperty()
     """Currently selected (via GUI) excitation type"""
+
+    processSequenceChanged = QtCore.Signal()
+
+    @QtCore.Property("QVariant", notify=processSequenceChanged)
+    def processSequence(self) -> Callable[[Sequence], Sequence]:
+        """Function that selects appropriate frames from image sequence"""
+        return lambda x: self._frameSel.select(x, self.currentExcitationType)
 
 
 QtQml.qmlRegisterType(FrameSelector, "SdtGui.Templates", 0, 2, "FrameSelector")
