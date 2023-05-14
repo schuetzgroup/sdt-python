@@ -13,27 +13,31 @@ T.ImageSelector {
     id: root
 
     property bool editable: true
-    property string textRole: "display"
+    property alias textRole: fileSel.textRole
+    property alias imageRole: fileSel.valueRole
+    property string modifyFileRole: "source_0"
     property alias currentIndex: fileSel.currentIndex
     property alias currentFrame: frameSel.value
+    property var processSequence: null
 
-    implicitHeight: layout.Layout.minimumHeight
-    implicitWidth: layout.Layout.minimumWidth
+    implicitHeight: rootLayout.Layout.minimumHeight
+    implicitWidth: rootLayout.Layout.minimumWidth
 
-    onCurrentIndexChanged: { _fileChanged() }
     onCurrentFrameChanged: { _frameChanged() }
+    onProcessSequenceChanged: { _doProcessSequence() }
 
     RowLayout {
-        id: layout
+        id: rootLayout
         anchors.fill: parent
 
         Label { text: "file" }
         ComboBox {
             id: fileSel
+            model: root.dataset
             objectName: "Sdt.ImageSelector.FileSelector"
             Layout.fillWidth: true
-            model: root.dataset
-            textRole: root.textRole
+            textRole: "source_0"
+            valueRole: "source_0"
 
             onCountChanged: {
                 // if no item was selected previously, select first one
@@ -41,24 +45,10 @@ T.ImageSelector {
                     currentIndex = 0
             }
 
-            popup: Popup {
-                y: fileSel.height - 1
-                width: fileSel.width
-                implicitHeight: contentItem.implicitHeight + 2 * padding
-                padding: 1
-
-                contentItem: ListView {
-                    id: fileSelListView
-                    objectName: "Sdt.ImageSelector.FileSelView"
-                    header: root.editable ? imageListEditorComponent : null
-                    clip: true
-                    Layout.fillHeight: true
-                    implicitHeight: contentHeight
-                    model: fileSel.popup.visible ? fileSel.delegateModel : null
-                    currentIndex: fileSel.highlightedIndex
-                    ScrollIndicator.vertical: ScrollIndicator {}
-                }
+            onCurrentValueChanged: {
+                root._setCurrentFile(currentValue)
             }
+
             delegate: ItemDelegate {
                 id: fileSelDelegate
                 objectName: "Sdt.ImageSelector.FileSelDelegate"
@@ -85,9 +75,13 @@ T.ImageSelector {
                     }
                 }
             }
+
+            Component.onCompleted: {
+                popup.contentItem.objectName = "Sdt.ImageSelector.FileSelView"
+                popup.contentItem.header = imageListHeaderComponent
+            }
         }
         Item { width: 5 }
-        Label { text: "frame" }
         EditableSpinBox {
             id: frameSel
             from: root.currentFrameCount > 0 ? 0 : -1
@@ -107,16 +101,16 @@ T.ImageSelector {
         fileMode: FileDialog.OpenFiles
 
         onAccepted: {
-            for (var f of selectedFiles)
-                root.dataset.addFile(root.modifyFileRole, f)
+            root.dataset.setFiles(selectedFiles, root.modifyFileRole,
+                                  root.dataset.count, 0)
             fileSel.popup.close()
         }
     }
 
     Component {
-        id: imageListEditorComponent
+        id: imageListHeaderComponent
         Row {
-            id: imageListEditor
+            id: imageListHeader
             ToolButton {
                 id: fileOpenButton
                 icon.name: "list-add"
@@ -129,6 +123,4 @@ T.ImageSelector {
             }
         }
     }
-
-    onImageRoleChanged: { _fileChanged() }
 }
