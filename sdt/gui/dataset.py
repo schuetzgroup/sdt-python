@@ -32,9 +32,9 @@ class Dataset(ListModel):
         """
         super().__init__(parent)
         self._dataDir = ""
-        self._fileRoles = []
         self._dataRoles = []
-        self.roles = []
+        self._fileRoles = []
+        self.fileRoles = ["source_0"]
         self.itemsChanged.connect(self._onItemsChanged)
         self.countChanged.connect(self.fileListChanged)
 

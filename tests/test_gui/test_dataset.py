@@ -7,7 +7,7 @@ from sdt import gui
 
 def test_Dataset(qtbot):
     ds = gui.Dataset()
-    assert ds.roles == []
+    assert ds.roles == ["source_0"]
 
     with qtbot.waitSignals([ds.dataRolesChanged, ds.rolesChanged]):
         ds.dataRoles = ["images", "locs"]
