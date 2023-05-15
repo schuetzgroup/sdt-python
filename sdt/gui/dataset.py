@@ -96,6 +96,8 @@ class Dataset(ListModel):
             file = file.toLocalFile()
         if self._dataDir and file is not None:
             file = str(Path(file).relative_to(self._dataDir).as_posix())
+        if isinstance(file, Path):
+            file = str(file)
         return file
 
     @QtCore.Slot(list)
