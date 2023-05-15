@@ -4,7 +4,7 @@
 import argparse
 import sys
 
-from PyQt5 import QtWidgets
+from PySide6 import QtWidgets
 
 from .qml_wrapper import Window
 
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     app.setOrganizationName("schuetzgroup")
     app.setOrganizationDomain("biophysics.iap.tuwien.ac.at")
     app.setApplicationName("ImageViewer")
-    app.setApplicationVersion("0.1")
+    app.setApplicationVersion("0.2")
 
     ap = argparse.ArgumentParser(
         description="Viewer for microscopy image sequences")
@@ -22,8 +22,9 @@ if __name__ == "__main__":
     args = ap.parse_args()
 
     win = Window("ImageViewer")
+    win.create()
     if win.status_ == Window.Status.Error:
         sys.exit(1)
-    win.dataset = args.files
+    win.dataset.setFiles(args.files)
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
