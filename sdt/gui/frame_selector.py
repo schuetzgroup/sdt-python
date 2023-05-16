@@ -8,7 +8,7 @@ from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .. import multicolor
-from .qml_wrapper import QmlDefinedProperty
+from .qml_wrapper import SimpleQtProperty, QmlDefinedProperty
 
 
 class FrameSelector(QtQuick.QQuickItem):
@@ -37,7 +37,8 @@ class FrameSelector(QtQuick.QQuickItem):
 
     @excitationSeq.setter
     def excitationSeq(self, seq: str):
-        old = self.excitationSeq
+        old = self._frameSel.excitation_seq
+        oldExcType = self.currentExcitationType
         if seq == old:
             return
         self._frameSel.excitation_seq = seq
@@ -54,34 +55,26 @@ class FrameSelector(QtQuick.QQuickItem):
             self.errorChanged.emit()
         self.excitationSeqChanged.emit()
         ft = np.unique(eseq).tolist()
-        if set(ft) == set(self._excitationTypes):
-            return
-        self._excitationTypes = ft
-        self.excitationTypesChanged.emit()
+        if set(ft) != set(self._excitationTypes):
+            self._excitationTypes = ft
+            self.excitationTypesChanged.emit()
 
-    excitationTypesChanged = QtCore.Signal()
-    """:py:attr:`excitationTypes` changed"""
+        if self.currentExcitationType == oldExcType:
+            # `processSequenceChanged` was not emitted due to change of
+            # `currentExcitationType`, therefore emit now
+            self.processSequenceChanged.emit()
 
-    @QtCore.Property(list, notify=excitationTypesChanged)
-    def excitationTypes(self) -> List[str]:
-        """Excitation types the :py:attr:`excitationSeq` is made of"""
-        return self._excitationTypes
-
-    errorChanged = QtCore.Signal()
-    """:py:attr:`error` changed"""
-
-    @QtCore.Property(bool, notify=errorChanged)
-    def error(self) -> bool:
-        """Indicates whether there is an error when last setting the
-        :py:attr:`excitationSeq`.
-        """
-        return self._error
-
-    showTypeSelector = QmlDefinedProperty()
+    excitationTypes: List[str] = SimpleQtProperty(list, readOnly=True)
+    """Excitation types the :py:attr:`excitationSeq` is made of"""
+    error: bool = SimpleQtProperty(bool, readOnly=True)
+    """Indicates whether there is an error when last setting the
+    :py:attr:`excitationSeq`.
+    """
+    showTypeSelector: bool = QmlDefinedProperty()
     """Whether to show the dropdown menu for selecting
     :py:attr:`currentExcitationType`
     """
-    currentExcitationType = QmlDefinedProperty()
+    currentExcitationType: str = QmlDefinedProperty()
     """Currently selected (via GUI) excitation type"""
 
     processSequenceChanged = QtCore.Signal()

@@ -43,15 +43,7 @@ T.FrameSelector {
             model: visible ? root.excitationTypes : null
             visible: root.showTypeSelector
 
-            function updateCurExcType() {
-                if (currentIndex < 0 || !model)
-                    root.currentExcitationType = ""
-                else
-                    root.currentExcitationType = model[currentIndex]
-            }
-
-            onCurrentIndexChanged: { updateCurExcType() }
-            onModelChanged: { updateCurExcType() }
+            onCurrentValueChanged: { root.currentExcitationType = currentValue || "" }
         }
     }
 
@@ -64,8 +56,6 @@ T.FrameSelector {
         }
         processSequenceChanged()
     }
-
-    onExcitationSeqChanged: { processSequenceChanged() }
 
     onErrorChanged: {
         if (error)
