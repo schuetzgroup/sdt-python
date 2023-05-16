@@ -204,5 +204,14 @@ Item {
         }
     }
 
-    Component.onCompleted: { zoomFitButton.checked = true }
+    Component.onCompleted: {
+        zoomFitButton.checked = true
+
+        /* It seems like this prevents `img` from being destroyed too
+           early upon shutdown, which could cause
+           "Type Error: Cannot read property '…' of null" and segfaults
+           (Pyside6 6.4.3)
+        */
+        Sdt.setQObjectParent(img, root)
+    }
 }
