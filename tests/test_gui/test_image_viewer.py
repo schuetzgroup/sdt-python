@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from PySide6 import QtQuick
+from PySide6 import QtQml, QtQuick
 import numpy as np
 import pytest
 import tifffile
@@ -41,27 +41,34 @@ def test_ImageViewer(qtbot, imageFiles):
     imDisp = w.instance_.findChild(QtQuick.QQuickItem,
                                    "Sdt.ImageViewer.ImageDisplay")
 
-    np.testing.assert_array_equal(imDisp.image, makeImage(10))
+    np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
+                                  makeImage(10))
     imSel.currentFrame = 1
-    np.testing.assert_array_equal(imDisp.image, makeImage(11))
+    np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
+                                  makeImage(11))
 
     imSel.currentIndex = 1
     assert imSel.currentFrameCount == 20
-    np.testing.assert_array_equal(imDisp.image, makeImage(31))
+    np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
+                                  makeImage(31))
     imSel.currentFrame = 15
-    np.testing.assert_array_equal(imDisp.image, makeImage(45))
+    np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
+                                  makeImage(45))
 
     imSel.currentIndex = 0
     assert imSel.currentFrameCount == 10
     assert imSel.currentFrame == 9
-    np.testing.assert_array_equal(imDisp.image, makeImage(19))
+    np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
+                                  makeImage(19))
 
     frameSel.excitationSeq = "da"
     frameSel.currentExcitationType = "d"
     assert imSel.currentFrameCount == 5
     imSel.currentFrame = 4
-    np.testing.assert_array_equal(imDisp.image, makeImage(18))
+    np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
+                                  makeImage(18))
 
     frameSel.currentExcitationType = "a"
     imSel.currentFrame = 3
-    np.testing.assert_array_equal(imDisp.image, makeImage(17))
+    np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
+                                  makeImage(17))
