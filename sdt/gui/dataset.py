@@ -31,15 +31,11 @@ class Dataset(ListModel):
             Parent QObject
         """
         super().__init__(parent)
-        self._dataDir = ""
         self._dataRoles = []
         self._fileRoles = []
         self.fileRoles = ["source_0"]
         self.itemsChanged.connect(self._onItemsChanged)
         self.countChanged.connect(self.fileListChanged)
-
-    dataDir = SimpleQtProperty(str)
-    """All relative file paths are considered relative to `dataDir`"""
 
     fileRolesChanged = QtCore.Signal(list)
     """:py:attr:`fileRoles` property changed"""
@@ -78,27 +74,11 @@ class Dataset(ListModel):
         self.roles = self._fileRoles + self._dataRoles
         self.dataRolesChanged.emit(self._dataRoles)
 
-    def _fileRelativeToDataDir(self, file: Union[None, FilePath]
-                               ) -> Union[str, None]:
-        """Get file path relative to :py:attr:`dataDir`
-
-        Parameters
-        ----------
-        file
-            File path
-
-        Returns
-        -------
-        Path relative to :py:attr:`dataDir` in POSIX notation (forward slashes
-        as separators)
-        """
-        if isinstance(file, QtCore.QUrl):
-            file = file.toLocalFile()
-        if self._dataDir and file is not None:
-            file = str(Path(file).relative_to(self._dataDir).as_posix())
-        if isinstance(file, Path):
-            file = str(file)
-        return file
+    @staticmethod
+    def _filePathToStr(f):
+        if isinstance(f, QtCore.QUrl):
+            f = f.toLocalFile()
+        return Path(f).as_posix()
 
     @QtCore.Slot(list)
     @QtCore.Slot(str, list)
@@ -126,7 +106,7 @@ class Dataset(ListModel):
             count = self.count
         if isinstance(files, QtQml.QJSValue):
             files = files.toVariant()
-        files = [self._fileRelativeToDataDir(f) for f in files]
+        files = list(map(self._filePathToStr, files))
         self.multiSet(role, files, startIndex, count)
 
     fileListChanged = QtCore.Signal()
@@ -177,7 +157,6 @@ class DatasetCollection(ListModel):
             Parent QObject
         """
         super().__init__(parent)
-        self._dataDir = ""
         self._fileRoles = []
         self._dataRoles = []
         self._propagated = []
@@ -185,7 +164,6 @@ class DatasetCollection(ListModel):
         self.countChanged.connect(self.keysChanged)
         self.itemsChanged.connect(self._onItemsChanged)
 
-        self.propagateProperty("dataDir")
         self.propagateProperty("fileRoles")
         self.propagateProperty("dataRoles")
 
@@ -268,8 +246,6 @@ class DatasetCollection(ListModel):
             self.get(i, "dataset").fileListChanged.connect(
                 self.fileListsChanged)
 
-    dataDir = SimpleQtProperty(str)
-    """All relative file paths are considered relative to `dataDir`"""
     fileRoles = SimpleQtProperty(list)
     """Model roles that represent file paths. These are used for
     :py:attr:`fileLists`.

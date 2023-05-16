@@ -14,24 +14,23 @@ def test_Dataset(qtbot):
     with qtbot.waitSignals([ds.fileRolesChanged, ds.rolesChanged]):
         ds.fileList = [{"source_0": "bla", "source_1": None}]
     assert set(ds.roles) == {"source_0", "source_1", "images", "locs"}
-    print(ds.fileRoles)
 
     dd = "/path/to/data"
-    ds.dataDir = dd
-    fl0 = ["file00", "file01", "file02", "file03"]
-    fl1 = ["file10", "file11", "file12"]
+    fl0 = [f"{dd}/{f}" for f in ("file00", "file01", "file02", "file03")]
+    fl1 = [f"{dd}/{f}" for f in ("file10", "file11", "file12")]
 
     with qtbot.waitSignal(ds.fileListChanged):
-        ds.setFiles([f"{dd}/{f}" for f in fl0])
-    assert ds.fileList == [{"source_0": f0, "source_1": None} for f0 in fl0]
+        ds.setFiles(fl0)
+    assert ds.fileList == [{"source_0": f0, "source_1": None}
+                           for f0 in fl0]
 
     with qtbot.waitSignal(ds.fileListChanged):
-        ds.setFiles("source_1", [f"{dd}/{f}" for f in fl1])
+        ds.setFiles("source_1", fl1)
     assert ds.fileList == ([{"source_0": f0, "source_1": f1}
                             for f0, f1 in zip(fl0, fl1)] +
                            [{"source_0": fl0[-1], "source_1": None}])
 
-    ds.setFiles([f"{dd}/{f}" for f in fl0[:-1]])
+    ds.setFiles(fl0[:-1])
     assert ds.count == 3
 
     with qtbot.waitSignal(ds.fileListChanged):
@@ -40,7 +39,7 @@ def test_Dataset(qtbot):
     with qtbot.waitSignal(ds.fileListChanged):
         ds.setFiles("source_0", [f"{dd}/file_extra"], ds.count, 1)
     assert ds.count == 4
-    assert ds.get(3, "source_0") == "file_extra"
+    assert ds.get(3, "source_0") == f"{dd}/file_extra"
     assert ds.get(3, "source_1") is None
 
 
@@ -63,7 +62,6 @@ def test_DatasetCollection(qtbot):
             self.propagateProperty("myProp")
 
     dsc = MyCollection()
-    dsc.dataDir = "/path/to/data1"
 
     assert dsc.roles == ["key", "dataset"]
 
@@ -73,7 +71,6 @@ def test_DatasetCollection(qtbot):
         dsc.dataRoles = ["images", "locs"]
 
     ds = dsc.makeDataset()
-    assert ds.dataDir == "/path/to/data1"
     assert ds.fileRoles == ["source_0", "source_1"]
     assert ds.dataRoles == ["images", "locs"]
     assert ds.myProp == 2
@@ -86,16 +83,13 @@ def test_DatasetCollection(qtbot):
     for n, key in enumerate(("ds0", "ds1")):
         assert dsc.get(n, "key") == key
         d = dsc.get(n, "dataset")
-        assert d.dataDir == "/path/to/data1"
         assert d.fileRoles == ["source_0", "source_1"]
         assert d.dataRoles == ["images", "locs"]
         assert d.myProp == 2
 
     dsc.myProp = 3
-    dsc.dataDir = "/path/to/data"
     for n, key in enumerate(("ds0", "ds1")):
         d = dsc.get(n, "dataset")
-        assert d.dataDir == "/path/to/data"
         assert d.myProp == 3
 
     with qtbot.waitSignal(dsc.fileListsChanged):
@@ -105,9 +99,9 @@ def test_DatasetCollection(qtbot):
         dsc.get(1, "dataset").setFiles(
             "source_1", [f"/path/to/data/file_11{n}" for n in range(4)])
     assert dsc.fileLists == {
-        "ds0": [{"source_0": f"file_00{n}", "source_1": None}
+        "ds0": [{"source_0": f"/path/to/data/file_00{n}", "source_1": None}
                 for n in range(3)],
-        "ds1": [{"source_0": None, "source_1": f"file_11{n}"}
+        "ds1": [{"source_0": None, "source_1": f"/path/to/data/file_11{n}"}
                 for n in range(4)]}
     with qtbot.waitSignal(dsc.fileListsChanged):
         assert dsc.get(0, "dataset").set(0, "source_1", "bla") is True
@@ -118,11 +112,11 @@ def test_DatasetCollection(qtbot):
     with qtbot.assertNotEmitted(dsc.fileListsChanged):
         assert ds0.set(1, "source_1", "bla") is True
 
-    fl = {"dsa": [{"source_0": f"file_00{n}", "source_1": None}
+    fl = {"dsa": [{"source_0": f"/path/to/data/file_00{n}", "source_1": None}
                   for n in range(4)],
-          "dsb": [{"source_0": None, "source_1": f"file_11{n}"}
+          "dsb": [{"source_0": None, "source_1": f"/path/to/data/file_11{n}"}
                   for n in range(3)],
-          "dsc": [{"source_0": None, "source_1": f"file_21{n}"}
+          "dsc": [{"source_0": None, "source_1": f"/path/to/data/file_21{n}"}
                   for n in range(2)]}
 
     ds1 = dsc.get(0, "dataset")
