@@ -13,6 +13,7 @@ T.ImageSelector {
     id: root
 
     property bool editable: true
+    property alias dataset: fileSel.model
     property alias textRole: fileSel.textRole
     property alias imageRole: fileSel.valueRole
     property string modifyFileRole: "source_0"
@@ -33,7 +34,7 @@ T.ImageSelector {
         Label { text: "file" }
         ComboBox {
             id: fileSel
-            model: root.dataset
+            model: Dataset {}
             objectName: "Sdt.ImageSelector.FileSelector"
             Layout.fillWidth: true
             textRole: "source_0"

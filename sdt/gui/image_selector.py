@@ -8,7 +8,6 @@ from typing import Optional
 from PySide6 import QtCore, QtQml, QtQuick
 
 from .. import io
-from .dataset import Dataset
 from .qml_wrapper import QmlDefinedProperty, SimpleQtProperty
 
 
@@ -27,18 +26,16 @@ class ImageSelector(QtQuick.QQuickItem):
             Parent item
         """
         super().__init__(parent)
-        self._dataset = Dataset()
         self._curImage = None
         self._image = None
         self._error = ""
         self._curFile = None
         self._curOpened = None
         self._curSequence = None
-        self._processSequence = lambda x: x
 
     image = SimpleQtProperty(object, readOnly=True)
     """Selected frame from selected image sequence"""
-    dataset = SimpleQtProperty(Dataset)
+    dataset = QmlDefinedProperty()
     """Model holding the image sequences to choose from"""
     editable = QmlDefinedProperty()
     """If `True` show widgets to manipulate the image sequence list"""
@@ -67,14 +64,14 @@ class ImageSelector(QtQuick.QQuickItem):
 
     @QtCore.Slot("QVariant")
     def _setCurrentFile(self, f):
-        # Store these now as it won't be possible after closing the file.
+        # Store these now as they won't be accessible after closing the file.
         # Pass them to `_doProcessSequence` in the end.
         oldFrame = self.currentFrame
         oldFrameCount = self.currentFrameCount
 
         if isinstance(f, QtQml.QJSValue):
             f = f.toVariant()
-        f = None if f is None else Path(self._dataset.dataDir, f)
+        f = None if f is None else Path(f)
         if self._curFile == f:
             return
         self._curFile = f
