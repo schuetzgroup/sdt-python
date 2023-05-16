@@ -5,6 +5,8 @@
 import numpy as np
 from sdt import gui
 
+from . import utils
+
 
 def test_PyImage(qtbot):
     w = gui.Window("PyImage")
@@ -14,22 +16,20 @@ def test_PyImage(qtbot):
     img1 = np.hstack([np.full((10, 15), 10, dtype=np.uint16),
                       np.full((10, 20), 4000, dtype=np.uint16)])
 
-    inst = w.instance_
-    assert inst.black == 0.0
-    assert inst.white == 1.0
-    assert inst.sourceWidth == 0
-    assert inst.sourceHeight == 0
+    assert w.black == 0.0
+    assert w.white == 1.0
+    assert w.sourceWidth == 0
+    assert w.sourceHeight == 0
 
-    inst.source = img1
-    assert inst.sourceWidth == 35
-    assert inst.sourceHeight == 10
-    inst.black = 10
-    inst.white = 4000
+    w.source = img1
+    assert w.sourceWidth == 35
+    assert w.sourceHeight == 10
+    w.black = 10
+    w.white = 4000
 
     win = w.window_
-    # qtbot.waitExposed hangs with QQuickWindow containing QQuickPaintedItem
-    qtbot.waitUntil(lambda: win.isExposed())
-    grb = inst.grabToImage()
+    utils.waitExposed(qtbot, win)
+    grb = w.instance_.grabToImage()
     assert grb
     qtbot.waitUntil(lambda: not grb.image().isNull())
 
