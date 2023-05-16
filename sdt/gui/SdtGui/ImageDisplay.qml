@@ -5,17 +5,37 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import SdtGui as Sdt
-import SdtGui.Templates as T
 
 
-T.ImageDisplay {
+Item {
     id: root
 
     implicitHeight: viewButtonLayout.implicitHeight + contrastLayout.implicitHeight
     implicitWidth: contrastLayout.implicitWidth
 
+    // Image to display
+    property alias image: img.source
+    /* Put other items on top of the image:
+
+    ImageDisplay {
+        overlays: [
+            Rectangle {
+                property real scaleFactor: 1.0  // automatically updated
+                x: 10.5 * scaleFactor
+                y: 12.5 * scaleFactor
+                width: 2 * scaleFactor
+                height: 3 * scaleFactor
+            }
+        ]
+    }
+
+    This would draw a rectangle from the center of the image pixel (10, 12)
+    that is 2 pixels wide and 3 pixels high irrespectively of how much the
+    image is zoomed in or out.
+    */
     property list<Item> overlays
+    // Error message to display
+    property string error: ""
 
     onOverlaysChanged: {
         var chld = img.children
@@ -41,8 +61,6 @@ T.ImageDisplay {
         anchors.fill: parent
 
         // Put here instead of in root to make them private
-        property real contrastMin: 0.0
-        property real contrastMax: 0.0
         property bool imageLoaded: false
 
         function calcScaleFactor(srcW, srcH, sclW, sclH) {
@@ -130,15 +148,13 @@ T.ImageDisplay {
                     clip: true
                     anchors.fill: parent
 
-                    Sdt.PyImage {
+                    PyImage {
                         id: img
                         objectName: "Sdt.ImageDisplay.Image"
                         anchors.centerIn: parent
-                        source: root.image
-                        black: rootLayout.contrastMin
-                        white: rootLayout.contrastMax
                         width: sourceWidth * scroll.scaleFactor
                         height: sourceHeight * scroll.scaleFactor
+
                     }
                 }
                 Label {
@@ -167,22 +183,22 @@ T.ImageDisplay {
                 objectName: "Sdt.ImageDisplay.ContrastSlider"
                 Layout.fillWidth: true
 
-                from: root._imageMin
-                to: root._imageMax
+                from: img.sourceMin
+                to: img.sourceMax
                 stepSize: (to - from) / 100
 
-                first.onMoved: { rootLayout.contrastMin = first.value }
-                second.onMoved: { rootLayout.contrastMax = second.value }
+                first.onMoved: { img.black = first.value }
+                second.onMoved: { img.white = second.value }
             }
             Button  {
                 id: contrastAutoButton
                 objectName: "Sdt.ImageDisplay.AutoContrastButton"
                 text: "auto"
                 onClicked: {
-                    rootLayout.contrastMin = root._imageMin
-                    contrastSlider.first.value = root._imageMin
-                    rootLayout.contrastMax = root._imageMax
-                    contrastSlider.second.value = root._imageMax
+                    img.black = img.sourceMin
+                    contrastSlider.first.value = img.sourceMin
+                    img.white = img.sourceMax
+                    contrastSlider.second.value = img.sourceMax
                 }
             }
         }

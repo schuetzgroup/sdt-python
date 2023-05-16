@@ -9,6 +9,8 @@ import pytest
 import numpy as np
 from sdt import gui
 
+from . import utils
+
 
 def test_ImageDisplay(qtbot):
     c = gui.Component("""
@@ -74,9 +76,9 @@ Window {
     img1[-1, -1] = 3000
 
     with qtbot.waitSignal(inst.imageChanged):
-        inst.image = img1
+        QtQml.QQmlProperty.write(inst, "image", img1)
 
-    qtbot.waitUntil(lambda: win.isExposed())
+    utils.waitExposed(qtbot, win)
 
     # Test resizing of image and overlay
     imgItem = inst.findChild(QtQuick.QQuickItem, "Sdt.ImageDisplay.Image")
