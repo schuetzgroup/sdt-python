@@ -13,11 +13,6 @@ import yaml
 
 import sdt.io
 
-try:
-    import imageio
-except ImportError:
-    imageio = None
-
 
 data_path = Path(__file__).parent.absolute() / "data_io"
 
@@ -249,25 +244,23 @@ class TestYaml:
             assert kv_list == list(d.items())
 
 
-@pytest.mark.skipif(imageio is None, reason="cannot import imageio")
 def test_save_as_tiff(tmp_path):
-    img1 = np.zeros((5, 5)).view(imageio.core.Array)
+    img1 = np.zeros((5, 5))
     img1[2, 2] = 1
     meta = {"entry": "test", "entry2": 3}
-    img1.meta.update(meta)
     img2 = img1.copy()
     img2[2, 2] = 3
     images = [img1, img2]
 
     fn = tmp_path / "test.tiff"
 
-    sdt.io.save_as_tiff(images, fn, contiguous=True)
+    sdt.io.save_as_tiff(fn, images, meta, contiguous=True)
     with tifffile.TiffFile(fn) as res:
         np.testing.assert_allclose(res.asarray(), images)
         md = res.pages[0].tags["ImageDescription"].value
         assert yaml.safe_load(md) == meta
 
-    sdt.io.save_as_tiff(images, fn, contiguous=False)
+    sdt.io.save_as_tiff(fn, images, meta, contiguous=False)
     with tifffile.TiffFile(fn) as res:
         assert len(res.series) == len(images)
         np.testing.assert_allclose(
@@ -275,6 +268,18 @@ def test_save_as_tiff(tmp_path):
             images)
         md = res.pages[0].tags["ImageDescription"].value
         assert yaml.safe_load(md) == meta
+
+    meta_lst = [meta.copy(), meta.copy()]
+    meta_lst[0]["xxx"] = 1
+    meta_lst[1]["xxx"] = 2
+    sdt.io.save_as_tiff(fn, images, meta_lst, contiguous=False)
+    with tifffile.TiffFile(fn) as res:
+        assert len(res.series) == len(images)
+        for i in range(len(images)):
+            np.testing.assert_allclose(
+                res.asarray(series=i), images[i])
+            md = res.pages[i].tags["ImageDescription"].value
+            assert yaml.safe_load(md) == meta_lst[i]
 
 
 class TestFiles:
@@ -363,15 +368,18 @@ class TestFiles:
         assert i == [{"first": 0, "second": keys[0][0][0], "last": "bla"}]
 
 
-@pytest.mark.skipif(imageio is None, reason="imageio not available")
 class TestImageSequence:
+    @classmethod
+    def setup_class(cls):
+        pytest.importorskip("imageio")
+
     @pytest.fixture
     def seq(self, tmp_path):
         stack = np.array([np.full((10, 20), i) for i in range(10)])
         fname = tmp_path / "test.tiff"
-        with imageio.get_writer(fname) as wrt:
+        with tifffile.TiffWriter(fname) as wrt:
             for i, img in enumerate(stack):
-                wrt.append_data(img, meta={"description": f"testtesttest {i}"})
+                wrt.write(img, description=f"testtesttest {i}")
         s = sdt.io.ImageSequence(fname)
         yield s
         s.close()
@@ -384,7 +392,7 @@ class TestImageSequence:
             seq.open()
             assert not seq.closed
             assert len(seq) == 10
-            assert seq.format == "TIFF"
+            assert seq._is_tiff
         finally:
             seq.close()
         assert seq.closed
@@ -397,7 +405,7 @@ class TestImageSequence:
             with seq:
                 assert not seq.closed
                 assert len(seq) == 10
-                assert seq.format == "TIFF"
+                assert seq._is_tiff
                 raise FakeException()  # Make sure context manager closes
         except FakeException:
             pass
@@ -420,7 +428,7 @@ class TestImageSequence:
         with sdt.io.ImageSequence(seq.uri) as seq2:
             assert not seq2.closed
             assert len(seq2) == 10
-            assert seq2.format == "TIFF"
+            assert seq2._is_tiff
 
             with pytest.raises(RuntimeError):
                 # cannot close sliced object
@@ -457,6 +465,7 @@ class TestImageSequence:
                 seq._resolve_index(b_idx + [True])
 
             seq._indices = np.array([1, 2, 3])
+            seq._len = 3
             assert seq._resolve_index(1) == 2
             assert seq._resolve_index(-1) == 3
             np.testing.assert_array_equal(
@@ -494,17 +503,11 @@ class TestImageSequence:
         assert len(subseq) == len(frames)
         for i, fr in enumerate(frames):
             for s in subseq[i], subseq.get_data(i):
-                s = subseq[i]
                 np.testing.assert_array_equal(s, np.full((10, 20), fr))
-                np.testing.assert_array_equal(subseq.get_data(i), s)
-                desc = f"testtesttest {fr}"
-                assert s.meta["frame_no"] == fr
-                # fails due to a bug in imageio (tested with v2.9.0)
-                # should be fixed in next release of imageio
-                # assert s.meta["description"] == desc
-            md = subseq.get_meta_data(i)
+                assert s.frame_no == fr
+            md = subseq.get_metadata(i)
             assert md["frame_no"] == fr
-            assert md["description"] == desc
+            assert md["description"] == f"testtesttest {fr}"
         return subseq
 
     def test_slicing(self, seq):
@@ -577,25 +580,41 @@ class TestImageSequence:
             check_pipe(subseq_pipe[::2], list(range(0, len(seq), 6)))
 
     def test_yaml_metadata(self, seq, tmp_path):
-        seq2 = []
         with seq:
-            for i in seq:
-                i.meta["bla"] = np.array([0, 1])
-                seq2.append(i)
-        sdt.io.save_as_tiff(seq2, tmp_path / "md_seq.tif", contiguous=False)
+            seq_md = [{"bla": np.array([0, 1]), "xxx": n}
+                      for n in range(len(seq))]
+            sdt.io.save_as_tiff(tmp_path / "md_seq.tif", seq, seq_md,
+                                contiguous=False)
+            seq_len = len(seq)
         with sdt.io.ImageSequence(tmp_path / "md_seq.tif") as ims:
-            assert len(ims) == len(seq2)
+            assert len(ims) == seq_len
             for n in range(len(ims)):
-                for md in ims[n].meta, ims.get_meta_data(n):
-                    assert "bla" in md
-                    assert isinstance(md["bla"], np.ndarray)
-                    np.testing.assert_array_equal(md["bla"], [0, 1])
-
-        # contiguous=True only puts metadata with the first frame
-        sdt.io.save_as_tiff(seq2, tmp_path / "md_seq2.tif", contiguous=True)
-        with sdt.io.ImageSequence(tmp_path / "md_seq2.tif") as ims:
-            assert len(ims) == len(seq2)
-            for md in ims[0].meta, ims.get_meta_data(0):
+                md = ims.get_metadata(n)
                 assert "bla" in md
                 assert isinstance(md["bla"], np.ndarray)
                 np.testing.assert_array_equal(md["bla"], [0, 1])
+                assert md.get("xxx", -1) == n
+
+        with seq:
+            # contiguous=True only puts metadata with the first frame
+            sdt.io.save_as_tiff(tmp_path / "md_seq2.tif", seq, seq_md,
+                                contiguous=True)
+        with sdt.io.ImageSequence(tmp_path / "md_seq2.tif") as ims:
+            assert len(ims) == seq_len
+            md = ims.get_metadata(0)
+            assert "bla" in md
+            assert isinstance(md["bla"], np.ndarray)
+            np.testing.assert_array_equal(md["bla"], [0, 1])
+            assert md.get("xxx", -1) == 0
+
+    def test_spe(self):
+        # Extra test for SPE files since TIFF files used above require a
+        # special code path due to their series and pages
+        with sdt.io.ImageSequence(data_path / "test_000_.SPE") as seq:
+            assert len(seq) == 2
+            img = seq[1]
+            np.testing.assert_array_equal(img, np.full((32, 32), 1))
+            md = seq.get_metadata()
+            assert md.get("n_macro") == 2
+            assert hasattr(img, "frame_no")
+            assert img.frame_no == 1

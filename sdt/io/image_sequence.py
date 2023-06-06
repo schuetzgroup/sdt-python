@@ -14,6 +14,22 @@ import numpy as np
 from . import yaml
 
 
+class Image(np.ndarray):
+    """`ndarray` with :py:attr:`frame_no` attribute"""
+    frame_no: int
+    """Original frame number (before slicing the sequnece)"""
+
+    def __new__(cls, *args, **kwargs):
+        obj = super().__new__(*args, **kwargs)
+        obj.frame_no = -1
+        return obj
+
+    def __array_finalize__(self, obj):
+        if obj is None:
+            return
+        self.frame_no = getattr(obj, "frame_no", -1)
+
+
 class ImageSequence:
     """Sliceable, lazy-loading interface to multi-image files
 
@@ -46,13 +62,8 @@ class ImageSequence:
     """
     uri: Union[str, Path, bytes, IO]
     """File or file location or data to read from."""
-    mode: str
-    """Mode for opening file. Use "i" to retrieve a single image, "I" for
-    multple images, "v" for single volume, "V" for multiple volumes and "?"
-    for a sensible default.
-    """
     reader_args: Mapping
-    """Keyword arguments passed to :py:func:`imageio.get_reader` when opening
+    """Keyword arguments passed to :py:func:`imageio.v3.imopen` when opening
     file.
     """
     _slicerator_flag = True  # Make it work with slicerator
@@ -62,29 +73,25 @@ class ImageSequence:
         """Whether this instance is the result of slicing another instance"""
         return self._is_slice
 
-    def __init__(self, uri: Union[str, Path, bytes, IO],
-                 format: Optional[str] = None, mode: str = "I", **kwargs):
+    def __init__(self, uri: Union[str, Path, bytes, IO], **kwargs):
         """Parameters
         ----------
         uri
             File or file location or data to read from.
         format
             File format. Use `None` for automatic detection.
-        mode
-            Mode for opening file. Use "i" to retrieve a single image, "I" for
-            multple images, "v" for single volume, "V" for multiple volumes
-            and "?" for a sensible default.
         **kwargs
-            Keyword arguments passed to :py:func:`imageio.get_reader` when
-            opening file.
+            Keyword arguments passed to :py:func:`imageio.v3.imopen` when
+            opening the file.
         """
         self.uri = uri
-        self._format = format
-        self.mode = mode
         self.reader_args = kwargs
         self._reader = None
         self._indices = None
         self._is_slice = False
+        self._is_tiff = False
+        self._len = 0
+        self._closed = True
 
     def open(self) -> "ImageSequence":
         """Open the file
@@ -97,15 +104,27 @@ class ImageSequence:
             raise RuntimeError("Cannot open sliced sequence.")
         if not self.closed:
             raise IOError(f"{self.uri} already open.")
-        import imageio
-        self._reader = imageio.get_reader(self.uri, self._format, self.mode,
-                                          **self.reader_args)
+
+        import imageio.v3
+        from imageio.plugins.tifffile_v3 import TifffilePlugin
+
+        self._reader = imageio.v3.imopen(self.uri, "r", **self.reader_args)
+        self._is_tiff = isinstance(self._reader, TifffilePlugin)
+
+        if self._is_tiff:
+            self._len = self._reader.properties(index=..., page=...).n_images
+        else:
+            self._len = self._reader.properties(index=...).n_images
+
+        self._closed = False
         return self
 
     def close(self):
         """Close the file"""
         if self._is_slice:
             raise RuntimeError("Cannot close sliced sequence.")
+        self._len = 0
+        self._closed = True
         self._reader.close()
 
     @overload
@@ -175,7 +194,7 @@ class ImageSequence:
                 meta.pop("description")
                 meta.update(yaml_md)
 
-    def _get_single_frame(self, real_t: int, **kwargs) -> np.ndarray:
+    def _get_single_frame(self, real_t: int, **kwargs) -> Image:
         """Get a single frame and set extra metadata
 
         Parameters
@@ -183,20 +202,22 @@ class ImageSequence:
         real_t
             Real frame index (i.e., w.r.t original file)
         **kwargs
-            Additional keyword arguments to pass to imageio's
-            ``Reader.get_data()`` method.
+            Additional keyword arguments to pass to the imageio plugin's
+            ``read()`` method.
 
         Returns
         -------
-        Image data. The array has a ``meta`` attribute containing associated
-        metadata.
+        Image data.
         """
-        ret = self._reader.get_data(real_t, **kwargs)
-        ret.meta["frame_no"] = int(real_t)
-        self._parse_yaml_description(ret.meta)
+        if self._is_tiff:
+            ret = self._reader.read(index=..., page=real_t, **kwargs)
+        else:
+            ret = self._reader.read(index=real_t, **kwargs)
+        ret = ret.view(Image)
+        ret.frame_no = real_t
         return ret
 
-    def get_data(self, t: int, **kwargs) -> np.ndarray:
+    def get_data(self, t: int, **kwargs) -> Image:
         """Get a single frame
 
         Parameters
@@ -204,17 +225,17 @@ class ImageSequence:
         t
             Frame number
         **kwargs
-            Additional keyword arguments to pass to imageio's
-            ``Reader.get_data()`` method.
+            Additional keyword arguments to pass to the imageio plugin's
+            ``read()`` method.
 
         Returns
         -------
-        Image data. The array has a ``meta`` attribute containing associated
-        metadata.
+        Image data. This has a `frame_no` attribute holding the original frame
+        number.
         """
         return self._get_single_frame(self._resolve_index(t), **kwargs)
 
-    def get_meta_data(self, t: Optional[int] = None) -> Dict:
+    def get_metadata(self, t: Optional[int] = None) -> Dict:
         """Get metadata for a frame
 
         If ``t`` is not given, return the global metadata.
@@ -226,17 +247,25 @@ class ImageSequence:
 
         Returns
         -------
-        Metadata dictionary.
+        Metadata dictionary. A `"frame_no"` entry with the original frame
+        number (i.e., before slicing the sequence) is also added.
         """
         real_t = None if t is None else self._resolve_index(t)
-        ret = self._reader.get_meta_data(real_t)
-        if real_t is not None:
-            ret["frame_no"] = int(real_t)
+        if self._is_tiff:
+            ret = self._reader.metadata(index=..., page=real_t)
+        else:
+            ret = self._reader.metadata(index=real_t)
         self._parse_yaml_description(ret)
+        if real_t is not None:
+            ret["frame_no"] = real_t
         return ret
 
+    def get_meta_data(self, t: Optional[int] = None) -> Dict:
+        """Alias for :py:func:`get_metadata`"""
+        return self.get_metadata(t)
+
     @overload
-    def __getitem__(self, t: int) -> np.ndarray: ...
+    def __getitem__(self, t: int) -> Image: ...
 
     def __getitem__(self, t: Union[slice, Sequence[int], Sequence[bool]]
                     ) -> "ImageSequence":
@@ -249,14 +278,16 @@ class ImageSequence:
 
         Returns
         -------
-        If t is a single index, return the corresponding frame. Otherwise,
-        return a copy of ``self`` describing a substack.
+        If t is a single index, return the corresponding image data. This has a
+        `frame_no` attribute holding the original frame number.
+        Otherwise, return a copy of ``self`` describing a substack.
         """
         t = self._resolve_index(t)
         if isinstance(t, np.ndarray):
             ret = copy.copy(self)
             ret._indices = t
             ret._is_slice = True
+            ret._len = len(t)
             return ret
         # Assume t is a number
         return self._get_single_frame(t)
@@ -269,27 +300,9 @@ class ImageSequence:
         self.close()
 
     def __len__(self):
-        if self.closed:
-            return 0
-        try:
-            return len(self._indices)
-        except TypeError:
-            # self._indices is None
-            try:
-                return len(self._reader)
-            except TypeError:
-                return 0
+        return self._len
 
     @property
     def closed(self) -> bool:
         """True if the file is currently closed."""
-        return getattr(self._reader, "closed", True)
-
-    @property
-    def format(self) -> Union[None, str]:
-        """File format. Use `None` for automatic detection."""
-        return self._format if self.closed else self._reader.format.name
-
-    @format.setter
-    def format(self, fmt):
-        self._format = fmt
+        return self._closed

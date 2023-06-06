@@ -13,7 +13,7 @@ setup(
                       "scipy>0.18",
                       "tifffile>=0.14.0",
                       "pyyaml",
-                      "imageio<2.22.2",
+                      "imageio>=2.29",
                       "matplotlib", ],
     packages=find_packages(include=["sdt*"]),
     package_data={"": ["*.ui"],
