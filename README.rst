@@ -140,7 +140,7 @@ Requirements
 - matplotlib
 - numpy >= 1.10
 - pandas
-- imageio < 2.22.2
+- imageio >= 2.29
 - tifffile >= 0.7.0
 - pyyaml
 
