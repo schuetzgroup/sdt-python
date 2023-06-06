@@ -3,11 +3,13 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """High level TIFF I/O"""
+import collections
 import contextlib
 from datetime import datetime
+import itertools
 import logging
 from pathlib import Path
-from typing import Iterable, Union
+from typing import Iterable, List, Mapping, Union
 
 import numpy as np
 import tifffile
@@ -18,7 +20,17 @@ from . import yaml
 _logger = logging.getLogger(__name__)
 
 
-def save_as_tiff(frames: Iterable[np.ndarray], filename: Union[str, Path],
+redundant_tiff_metadata: List = [
+    "compression", "frame_no", "is_fluoview", "is_imagej", "is_micromanager",
+    "is_mdgel", "is_mediacy", "is_nih", "is_ome", "is_reduced", "is_shaped",
+    "is_stk", "is_tiled", "predictor", "resolution", "resolution_unit"]
+"""Metadata that should not be saved in the image description since it is
+actually stored elsewhere.
+"""
+
+
+def save_as_tiff(filename: Union[str, Path], frames: Iterable[np.ndarray],
+                 metadata: Union[None, Iterable[Mapping], Mapping] = None,
                  contiguous: bool = True):
     """Write a sequence of images to a TIFF stack
 
@@ -28,39 +40,46 @@ def save_as_tiff(frames: Iterable[np.ndarray], filename: Union[str, Path],
 
     Parameters
     ----------
-    frames
-        Frames to be written to TIFF file.
     filename
         Name of the output file
+    frames
+        Frames to be written to TIFF file.
+    metadata:
+        Metadata to be written. If a single dict, save with the first frame.
+        If an iterable, save each entry with the corresponding frame.
     contiguous
         Whether to write to the TIFF file contiguously or not. This has
         implications when reading the data. If using `PIMS`, set to `True`.
         If using `imageio`, use ``"I"`` mode for reading if `True`.
         Setting to `False` allows for per-image metadata.
     """
+    if metadata is None:
+        metadata = []
+    elif isinstance(metadata, collections.abc.Mapping):
+        metadata = [metadata]
+
     with tifffile.TiffWriter(filename) as tw:
-        for f in frames:
+        for f, md in zip(frames, itertools.chain(metadata,
+                                                 itertools.repeat({}))):
             desc = None
             dt = None
-            md = None
 
-            for k in "meta", "metadata":
-                with contextlib.suppress(AttributeError,  # no metadata
-                                         TypeError, ValueError,  # dict() fail
-                                         ):
-                    md = dict(getattr(f, k))
-                    break
+            if not md:
+                # PIMS and old imageio added metadata to frames
+                for k in "meta", "metadata":
+                    with contextlib.suppress(
+                            AttributeError,  # no metadata
+                            TypeError, ValueError,  # dict() fail
+                            ):
+                        md = dict(getattr(f, k))
+                        break
             if md:
                 for k in "datetime", "DateTime":
                     with contextlib.suppress(KeyError):
                         dt = md.pop(k)
                         break
                 # Remove redundant metadata
-                for k in ("compression", "frame_no", "is_fluoview",
-                          "is_imagej", "is_micromanager", "is_mdgel",
-                          "is_mediacy", "is_nih", "is_ome", "is_reduced",
-                          "is_shaped", "is_stk", "is_tiled", "predictor",
-                          "resolution", "resolution_unit"):
+                for k in redundant_tiff_metadata:
                     md.pop(k, None)
                 try:
                     desc = yaml.safe_dump(md)
@@ -68,12 +87,8 @@ def save_as_tiff(frames: Iterable[np.ndarray], filename: Union[str, Path],
                     _logger.error(
                         f"{filename}: Failed to serialize metadata to YAML")
 
-            save_args = {"description": desc, "datetime": dt,
-                         "contiguous": contiguous}
-            try:
-                tw.write(f, software="sdt.io", **save_args)
-            except TypeError:
-                tw.write(f, **save_args)
+            tw.write(f, software="sdt.io", description=desc, datetime=dt,
+                     contiguous=contiguous)
 
 
 with contextlib.suppress(ImportError):
