@@ -50,7 +50,9 @@ class Component(QtCore.QObject):
     """
     class Status(enum.IntEnum):
         """Status of the QML component instance"""
-        Loading = 0
+        Init = 0
+        """Instance has been initialized but not created"""
+        Loading = enum.auto()
         """Instance is being created"""
         Ready = enum.auto()
         """Instance is ready to use"""
@@ -72,25 +74,25 @@ class Component(QtCore.QObject):
             Parent QObject
         """
         super().__init__(parent)
-        self._status = self.Status.Error
+        self._status = self.Status.Init
         if qmlFile is None:
-            qmlFile = QtCore.QUrl()
+            self._qmlFile = QtCore.QUrl()
         elif isinstance(qmlFile, (str, Path)):
-            qmlFile = QtCore.QUrl.fromLocalFile(str(qmlFile))
-        self._engine = QtQml.QQmlApplicationEngine()
-        self._engine.addImportPath(qmlPath)
+            self._qmlFile = QtCore.QUrl.fromLocalFile(str(qmlFile))
         useBundledIconTheme()
-        self._engine.objectCreated.connect(self._instanceCreated)
-        # TODO: A user can only connect to status_Changed after __init__
-        # finishes and will therefore miss this signal and also the one
-        # emitted by _instanceCreated. Maybe add callback parameter to
-        # __init__?
+        self._qmlSrc = qmlSrc
+
+    def create(self):
         self._status = self.Status.Loading
         self.status_Changed.emit(self._status)
-        if isinstance(qmlSrc, Path):
-            self._engine.load(str(qmlSrc))
+
+        self._engine = QtQml.QQmlApplicationEngine()
+        self._engine.addImportPath(qmlPath)
+        self._engine.objectCreated.connect(self._instanceCreated)
+        if isinstance(self._qmlSrc, Path):
+            self._engine.load(str(self._qmlSrc))
         else:
-            self._engine.loadData(qmlSrc.encode(), qmlFile)
+            self._engine.loadData(self._qmlSrc.encode(), self._qmlFile)
 
     def _instanceCreated(self, instance: Union[QtCore.QObject, None],
                          url: QtCore.QUrl):
@@ -103,6 +105,7 @@ class Component(QtCore.QObject):
         url
             Full URL of the source file.
         """
+        self._instance = instance
         if instance is None:
             self._status = self.Status.Error
         else:
@@ -114,18 +117,15 @@ class Component(QtCore.QObject):
 
     @QtCore.pyqtProperty(int, notify=status_Changed)
     def status_(self) -> Status:
-        """Status of object creation. Can be `Loading`, `Ready`, or `Error`."""
+        """Status of object creation. Can be `Init`, `Loading`, `Ready`,
+        or `Error`.
+        """
         return self._status
 
     @property
-    def instance_(self) -> QtCore.QObject:
+    def instance_(self) -> Union[QtCore.QObject, None]:
         """QML root object instance."""
-        try:
-            return self._engine.rootObjects()[0]
-        except IndexError:
-            e = RuntimeError("No object instance has been created.")
-            e.__suppress_context__ = True
-            raise e
+        return self._instance
 
     def _getProp(self, name: str) -> QtQml.QQmlProperty:
         """Get the QML property instance
@@ -144,6 +144,8 @@ class Component(QtCore.QObject):
         AttributeError
             The :py:attr:`instance_` does not have such a propery
         """
+        if self.instance_ is None:
+            raise AttributeError("Component has not been created yet")
         p = QtQml.QQmlProperty(self.instance_, name, self._engine)
         if not p.isValid():
             raise AttributeError(f"'{type(self.instance_)}' has no property "
@@ -151,8 +153,8 @@ class Component(QtCore.QObject):
         return p
 
     def __getattr__(self, name):
-        if name.startswith("_"):
-            return super().__getattribute__(name)
+        if name.startswith("_") or name.endswith("_"):
+            return super().__getattr__(name)
         ret = self._getProp(name).read()
         if isinstance(ret, QtQml.QJSValue):
             # Happens with dict and list properties
@@ -176,12 +178,12 @@ class Window(Component):
     accessed via :py:attr:`instance_`.
     """
     _qmlSrc = """
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import QtQuick.Window 2.2
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import QtQuick.Window 2.15
 import Qt.labs.settings 1.0
-import SdtGui 0.1
+import SdtGui 0.2
 
 Window {{
     id: root
@@ -235,7 +237,7 @@ Window {{
     @property
     def instance_(self) -> QtCore.QObject:
         """QML item instance"""
-        return self.window_.findChild(QtCore.QObject, self._objectName)
+        return super().instance_.findChild(QtCore.QObject, self._objectName)
 
     def show(self):
         """Show the window"""
@@ -370,8 +372,8 @@ class QmlDefinedMethod:
 
         def call(*args):
             ret = QtCore.QMetaObject.invokeMethod(
-                obj, self._name, QtCore.Q_RETURN_ARG(QtCore.QVariant),
-                *[QtCore.Q_ARG(QtCore.QVariant, a) for a in args])
+                obj, self._name, QtCore.Q_RETURN_ARG("QVariant"),
+                *[QtCore.Q_ARG("QVariant", a) for a in args])
             if isinstance(ret, QtQml.QJSValue):
                 # Happens with dict and list properties
                 return ret.toVariant()
@@ -432,7 +434,7 @@ class SimpleQtProperty:
         type
             Data type for Qt. Either a Python type or type name string.
         readOnly
-            If `True`, don't allow for writing the property. A change signal
+            If `True`, don't permit writing the property. A change signal
             is created anyways, as the property may change implicitly.
         comp
             Used to compare old and new values when setting the property.
@@ -470,10 +472,13 @@ class SimpleQtProperty:
             setattr(instance, privName, value)
             getattr(instance, sigName).emit()
 
+        def readOnlySetter(instance, value):
+            raise AttributeError(f"can't set attribute '{name}'")
+
         # Override this descriptor
-        prop = QtCore.pyqtProperty(self._type, getter,
-                                   None if self._readOnly else setter,
-                                   notify=sig)
+        prop = QtCore.pyqtProperty(
+            self._type, getter, readOnlySetter if self._readOnly else setter,
+            notify=sig)
         setattr(owner, name, prop)
 
 
