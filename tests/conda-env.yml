@@ -12,6 +12,7 @@ dependencies:
   - pyyaml
   - numba
   - pyqt
+  - pytest-qt
   - matplotlib-base
   - scipy >0.18
   - tifffile >=2022.2.2
