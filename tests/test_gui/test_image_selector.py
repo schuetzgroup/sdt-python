@@ -149,12 +149,13 @@ def test_ImageSelector(qtbot, imageFiles):
             break
     txt = delegate.findChild(QtQuick.QQuickItem, "Sdt.ImageSelector.FileText")
     assert (QtQml.QQmlProperty.read(txt, "text") ==
-            str(imageFiles / "file_000.tif"))
+            (imageFiles / "file_000.tif").as_posix())
     fdb = delegate.findChild(QtQuick.QQuickItem,
                              "Sdt.ImageSelector.FileDeleteButton")
     with qtbot.waitSignals([ds.countChanged, inst.imageChanged]):
         fdb.clicked.emit()
-    assert ds.fileList == [{"source_0": str(imageFiles / "file_001.tif")},
-                           {"source_0": str(imageFiles / "file_004.tif")}]
+    assert ds.fileList == [
+        {"source_0": (imageFiles / "file_001.tif").as_posix()},
+        {"source_0": (imageFiles / "file_004.tif").as_posix()}]
     np.testing.assert_array_equal(inst.image,
                                   np.full((12, 10), 3, dtype=np.uint16))
