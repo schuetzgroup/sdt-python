@@ -5,12 +5,15 @@
 import enum
 import itertools
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, Union
+from typing import Dict, Iterable, List, Mapping, Optional, Union
 
 from PyQt5 import QtCore, QtQml
 
 from .item_models import ListModel
 from .qml_wrapper import SimpleQtProperty, getNotifySignal
+
+
+FilePath = Union[Path, str, QtCore.QUrl]
 
 
 class Dataset(ListModel):
@@ -28,14 +31,11 @@ class Dataset(ListModel):
             Parent QObject
         """
         super().__init__(parent)
-        self._dataDir = ""
-        self._fileRoles = []
         self._dataRoles = []
+        self._fileRoles = []
+        self.fileRoles = ["source_0"]
         self.itemsChanged.connect(self._onItemsChanged)
         self.countChanged.connect(self.fileListChanged)
-
-    dataDir = SimpleQtProperty(str)
-    """All relative file paths are considered relative to `dataDir`"""
 
     fileRolesChanged = QtCore.pyqtSignal(list)
     """:py:attr:`fileRoles` property changed"""
@@ -54,7 +54,6 @@ class Dataset(ListModel):
         self._fileRoles = names
         self.roles = self._fileRoles + self._dataRoles
         self.fileRolesChanged.emit(self._fileRoles)
-        # TODO: remove data from now non-existant roles
 
     dataRolesChanged = QtCore.pyqtSignal(list)
     """:py:attr:`dataRoles` property changed"""
@@ -74,11 +73,20 @@ class Dataset(ListModel):
         self._dataRoles = names
         self.roles = self._fileRoles + self._dataRoles
         self.dataRolesChanged.emit(self._dataRoles)
-        # TODO: remove data from now non-existant roles
 
-    @QtCore.pyqtSlot(str, QtCore.QVariant)
-    def setFiles(self, fileRole: str,
-                 files: Iterable[Union[Path, str, QtCore.QUrl]]):
+    @staticmethod
+    def _filePathToStr(f):
+        if isinstance(f, QtCore.QUrl):
+            f = f.toLocalFile()
+        return Path(f).as_posix()
+
+    @QtCore.pyqtSlot(list)
+    @QtCore.pyqtSlot(str, list)
+    @QtCore.pyqtSlot(str, list, int, int)
+    def setFiles(self,
+                 fileRoleOrFiles: Union[str, Iterable[FilePath]],
+                 files: Optional[FilePath] = None, startIndex: int = 0,
+                 count: Optional[int] = None):
         """Set source file names for all dataset entries for given model role
 
         Parameters
@@ -86,36 +94,25 @@ class Dataset(ListModel):
         fileRole
             For which model role to set the files
         files
-            Values to set. If this list is shorter than the number of
-            dataset entries, unspecified values will removed.
-            Any entries with no data after this will be deleted from the model.
+            Values to set. Any entries with no data after this will be deleted
+            from the model.
         """
+        if files is None:
+            role = self.fileRoles[0]
+            files = fileRoleOrFiles
+        else:
+            role = fileRoleOrFiles
+        if count is None:
+            count = self.count
         if isinstance(files, QtQml.QJSValue):
             files = files.toVariant()
-        otherFileRoles = self.fileRoles
-        otherFileRoles.remove(fileRole)
-        removeLater = []
-        missing = itertools.repeat(None, max(0, self.rowCount() - len(files)))
-        for i, f in enumerate(itertools.chain(files, missing)):
-            if isinstance(f, QtCore.QUrl):
-                f = f.toLocalFile()
-            if self._dataDir and f is not None:
-                f = str(Path(f).relative_to(self._dataDir).as_posix())
-            if i < self.rowCount():
-                if (f is None and
-                        all(self.get(i, r) is None for r in otherFileRoles)):
-                    removeLater.append(i)
-                else:
-                    self.set(i, fileRole, f)
-            else:
-                self.append({fileRole: f})
-        for i in removeLater[::-1]:
-            self.remove(i)
+        files = list(map(self._filePathToStr, files))
+        self.multiSet(role, files, startIndex, count)
 
     fileListChanged = QtCore.pyqtSignal()
     """:py:attr:`fileList` property changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=fileListChanged)
+    @QtCore.pyqtProperty("QVariant", notify=fileListChanged)
     def fileList(self) -> List[Dict[str, str]]:
         """The list contains dicts mapping a file role -> file. See also
         :py:attr:`fileRoles`.
@@ -125,7 +122,7 @@ class Dataset(ListModel):
 
     @fileList.setter
     def fileList(self, fl: List[Mapping[str, str]]):
-        self.fileRoles = list(set(itertools.chain(*fl)))
+        self.fileRoles = sorted(set(itertools.chain(*fl)))
         self.reset(fl)
 
     def _onItemsChanged(self, index: int, count: int, roles: Iterable[str]):
@@ -148,7 +145,7 @@ class DatasetCollection(ListModel):
         key = QtCore.Qt.UserRole
         dataset = enum.auto()
 
-    DatasetClass: type = Dataset
+    DatasetType: type = Dataset
     """Instances of this type will be created when adding new datasets.
     May be useful to change for subclasses.
     """
@@ -160,7 +157,6 @@ class DatasetCollection(ListModel):
             Parent QObject
         """
         super().__init__(parent)
-        self._dataDir = ""
         self._fileRoles = []
         self._dataRoles = []
         self._propagated = []
@@ -168,14 +164,13 @@ class DatasetCollection(ListModel):
         self.countChanged.connect(self.keysChanged)
         self.itemsChanged.connect(self._onItemsChanged)
 
-        self.propagateProperty("dataDir")
         self.propagateProperty("fileRoles")
         self.propagateProperty("dataRoles")
 
     def makeDataset(self) -> Dataset:
         """Create a dateset model
 
-        Creates an instance of :py:attr:`DatasetClass` and sets some
+        Creates an instance of :py:attr:`DatasetType` and sets some
         properties. This can be overriden in subclasses to do additional stuff
         with the new Dataset before it is added to self.
 
@@ -186,7 +181,7 @@ class DatasetCollection(ListModel):
         -------
         New dataset model instance
         """
-        model = self.DatasetClass(self)
+        model = self.DatasetType()
         for p in self._propagated:
             setattr(model, p, getattr(self, p))
         return model
@@ -205,6 +200,17 @@ class DatasetCollection(ListModel):
         ds = self.makeDataset()
         ds.fileListChanged.connect(self.fileListsChanged)
         super().insert(index, {"key": key, "dataset": ds})
+
+    @QtCore.pyqtSlot(str)
+    def append(self, key: str):
+        """Append a new, empty dataset
+
+        Parameters
+        ----------
+        key
+            Identifier of the new dataset
+        """
+        self.insert(self.count, key)
 
     @QtCore.pyqtSlot(int)
     @QtCore.pyqtSlot(int, int)
@@ -240,8 +246,6 @@ class DatasetCollection(ListModel):
             self.get(i, "dataset").fileListChanged.connect(
                 self.fileListsChanged)
 
-    dataDir = SimpleQtProperty(str)
-    """All relative file paths are considered relative to `dataDir`"""
     fileRoles = SimpleQtProperty(list)
     """Model roles that represent file paths. These are used for
     :py:attr:`fileLists`.
@@ -318,5 +322,5 @@ class DatasetCollection(ListModel):
             setattr(self.get(i, "dataset"), prop, newVal)
 
 
-QtQml.qmlRegisterType(Dataset, "SdtGui", 0, 1, "Dataset")
-QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 0, 1, "DatasetCollection")
+QtQml.qmlRegisterType(Dataset, "SdtGui", 0, 2, "Dataset")
+QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 0, 2, "DatasetCollection")
