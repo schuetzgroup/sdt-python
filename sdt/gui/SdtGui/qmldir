@@ -12,7 +12,7 @@ module SdtGui
 # DirSelector 0.1 DirSelector.qml
 # EditableSpinBox 0.1 EditableSpinBox.qml
 # FrameSelector 0.1 FrameSelector.qml
-# ImageDisplay 0.1 ImageDisplay.qml
+ImageDisplay 0.2 ImageDisplay.qml
 # ImageSelector 0.1 ImageSelector.qml
 # ImageViewer 0.1 ImageViewer.qml
 # LocOptions 0.1 LocOptions.qml
