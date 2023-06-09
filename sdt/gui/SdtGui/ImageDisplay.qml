@@ -2,37 +2,54 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.0
-import QtQuick.Controls 2.7
-import QtQuick.Layouts 1.7
-import SdtGui 0.1
-import SdtGui.Templates 0.1 as T
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+// import after QtQuick so that Binding.restoreMode is available
+import QtQml 2.15
+
+import SdtGui 0.2
 
 
-T.ImageDisplay {
+Item {
     id: root
 
     implicitHeight: viewButtonLayout.implicitHeight + contrastLayout.implicitHeight
     implicitWidth: contrastLayout.implicitWidth
 
+    // Image to display
+    property alias image: img.source
+    /* Put other items on top of the image:
+
+    ImageDisplay {
+        overlays: [
+            Rectangle {
+                property real scaleFactor: 1.0  // automatically updated
+                x: 10.5 * scaleFactor
+                y: 12.5 * scaleFactor
+                width: 2 * scaleFactor
+                height: 3 * scaleFactor
+            }
+        ]
+    }
+
+    This would draw a rectangle from the center of the image pixel (10, 12)
+    that is 2 pixels wide and 3 pixels high irrespectively of how much the
+    image is zoomed in or out.
+    */
     property list<Item> overlays
+    // Error message to display
+    property string error: ""
 
     onOverlaysChanged: {
-        var cld = []
-        cld.push(img)
-        for (var i = 0; i < overlays.length; i++)
-            cld.push(overlays[i])
-        // Set contentChildren to re-parent items. Otherwise setting anchors
-        // below will not work.
-        scroll.contentChildren = cld
-
+        var chld = img.children
+        for (var j = 0; j < chld.length; j++)
+            chld[j].parent = null
         for (var i = 0; i < overlays.length; i++) {
-            var a = overlays[i]
-            a.anchors.fill = img
-            a.z = i
-            // Check if scaleFactor property exists
-            if (typeof a.scaleFactor !== undefined)
-                a.scaleFactor = Qt.binding(function() { return scroll.scaleFactor })
+            var o = overlays[i]
+            o.parent = img
+            if (typeof o.scaleFactor !== undefined)
+                o.scaleFactor = scroll.scaleFactor
         }
     }
     onImageChanged: {
@@ -48,8 +65,6 @@ T.ImageDisplay {
         anchors.fill: parent
 
         // Put here instead of in root to make them private
-        property real contrastMin: 0.0
-        property real contrastMax: 0.0
         property bool imageLoaded: false
 
         function calcScaleFactor(srcW, srcH, sclW, sclH) {
@@ -73,6 +88,7 @@ T.ImageDisplay {
 
                 ToolButton {
                     id: zoomOutButton
+                    objectName: "Sdt.ImageDisplay.ZoomOutButton"
                     icon.name: "zoom-out"
                     onClicked: {
                         scroll.scaleFactor /= Math.sqrt(2)
@@ -81,6 +97,7 @@ T.ImageDisplay {
                 }
                 ToolButton {
                     icon.name: "zoom-original"
+                    objectName: "Sdt.ImageDisplay.ZoomOriginalButton"
                     onClicked: {
                         scroll.scaleFactor = 1.0
                         zoomFitButton.checked = false
@@ -88,11 +105,13 @@ T.ImageDisplay {
                 }
                 ToolButton {
                     id: zoomFitButton
+                    objectName: "Sdt.ImageDisplay.ZoomFitButton"
                     icon.name: "zoom-fit-best"
                     checkable: true
                 }
                 ToolButton {
                     icon.name: "zoom-in"
+                    objectName: "Sdt.ImageDisplay.ZoomInButton"
                     onClicked: {
                         scroll.scaleFactor *= Math.sqrt(2)
                         zoomFitButton.checked = false
@@ -108,6 +127,7 @@ T.ImageDisplay {
 
                 ScrollView {
                     id: scroll
+                    objectName: "Sdt.ImageDisplay.ScrollView"
 
                     property real scaleFactor: 1.0
                     Binding on scaleFactor {
@@ -116,6 +136,15 @@ T.ImageDisplay {
                             img.sourceWidth, img.sourceHeight,
                             scroll.width, scroll.height
                         )
+                        restoreMode: Binding.RestoreNone
+                    }
+                    onScaleFactorChanged: {
+                        for (var i = 0; i < root.overlays.length; i++) {
+                            var a = root.overlays[i]
+                            // Check if scaleFactor property exists
+                            if (typeof a.scaleFactor !== undefined)
+                                a.scaleFactor = scroll.scaleFactor
+                        }
                     }
 
                     contentWidth: Math.max(availableWidth, img.width)
@@ -125,16 +154,16 @@ T.ImageDisplay {
 
                     PyImage {
                         id: img
+                        objectName: "Sdt.ImageDisplay.Image"
                         anchors.centerIn: parent
-                        source: root.image
-                        black: rootLayout.contrastMin
-                        white: rootLayout.contrastMax
                         width: sourceWidth * scroll.scaleFactor
                         height: sourceHeight * scroll.scaleFactor
+
                     }
                 }
                 Label {
                     text: "Error: " + root.error
+                    objectName: "Sdt.ImageDisplay.ErrorLabel"
                     visible: root.error
                     background: Rectangle {
                         color: "#50FF0000"
@@ -155,27 +184,39 @@ T.ImageDisplay {
             }
             RangeSlider {
                 id: contrastSlider
+                objectName: "Sdt.ImageDisplay.ContrastSlider"
                 Layout.fillWidth: true
 
-                from: root._imageMin
-                to: root._imageMax
+                from: img.sourceMin
+                to: img.sourceMax
                 stepSize: (to - from) / 100
 
-                first.onMoved: { rootLayout.contrastMin = first.value }
-                second.onMoved: { rootLayout.contrastMax = second.value }
+                first.onMoved: { img.black = first.value }
+                second.onMoved: { img.white = second.value }
             }
             Button  {
                 id: contrastAutoButton
+                objectName: "Sdt.ImageDisplay.AutoContrastButton"
                 text: "auto"
                 onClicked: {
-                    rootLayout.contrastMin = root._imageMin
-                    contrastSlider.first.value = root._imageMin
-                    rootLayout.contrastMax = root._imageMax
-                    contrastSlider.second.value = root._imageMax
+                    img.black = img.sourceMin
+                    contrastSlider.first.value = img.sourceMin
+                    img.white = img.sourceMax
+                    contrastSlider.second.value = img.sourceMax
                 }
             }
         }
     }
 
-    Component.onCompleted: { zoomFitButton.checked = true }
+    Component.onCompleted: {
+        zoomFitButton.checked = true
+
+        /* It seems like this prevents `img` from being destroyed too
+           early upon shutdown, which could cause
+           "Type Error: Cannot read property '…' of null" and segfaults
+           (Pyside6 6.4.3)
+        
+        Sdt.setQObjectParent(img, root)
+        */
+    }
 }
