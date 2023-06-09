@@ -33,7 +33,7 @@ class ImageSelector(QtQuick.QQuickItem):
         self._curOpened = None
         self._curSequence = None
 
-    image = SimpleQtProperty(object, readOnly=True)
+    image = SimpleQtProperty("QVariant", readOnly=True)
     """Selected frame from selected image sequence"""
     dataset = QmlDefinedProperty()
     """Model holding the image sequences to choose from"""
