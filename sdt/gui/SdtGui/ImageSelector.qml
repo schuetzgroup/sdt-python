@@ -49,7 +49,6 @@ T.ImageSelector {
             }
 
             onCurrentValueChanged: {
-                console.log("cvc", currentValue)
                 root._setCurrentFile(currentValue)
             }
 
