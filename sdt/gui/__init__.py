@@ -11,7 +11,7 @@ from .qml_wrapper import (Component, QmlDefinedMethod, QmlDefinedProperty,
 # from .channel_config import ChannelConfig
 # from .data_collector import DataCollector, MultiDataCollector
 # from .dataset_selector import DatasetSelector
-# from .dataset import DatasetCollection, Dataset
+from .dataset import DatasetCollection, Dataset
 # from .frame_selector import FrameSelector
 # from .image_display import ImageDisplay
 # from .image_selector import ImageSelector
