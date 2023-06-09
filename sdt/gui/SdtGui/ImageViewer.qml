@@ -2,9 +2,8 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
+import QtQuick 2.15
+import QtQuick.Layouts 1.15
 
 
 Item {
@@ -19,20 +18,19 @@ Item {
         anchors.fill: parent
         FrameSelector {
             id: frameSel
+            objectName: "Sdt.ImageViewer.FrameSelector"
             Layout.fillWidth: true
-            onExcitationSeqChanged: {
-                imSel.dataset.excitationSeq = excitationSeq
-            }
-            onCurrentExcitationTypeChanged: {
-                imSel.dataset.currentExcitationType = currentExcitationType
-            }
         }
         ImageSelector {
             id: imSel
+            objectName: "Sdt.ImageViewer.ImageSelector"
             Layout.fillWidth: true
+
+            processSequence: frameSel.processSequence
         }
         ImageDisplay {
             id: imDisp
+            objectName: "Sdt.ImageViewer.ImageDisplay"
             image: imSel.image
             error: imSel.error
             Layout.fillWidth: true
@@ -41,8 +39,22 @@ Item {
             DropArea {
                 anchors.fill: parent
                 keys: "text/uri-list"
-                onDropped: { for (var u of drop.urls) imSel.dataset.append(u) }
+                onDropped: function(drop) {
+                    imSel.dataset.setFiles(drop.urls)
+                }
             }
         }
+    }
+
+    Component.onCompleted: {
+        /* This (mostly) prevents children from being destroyed too
+           early upon shutdown, which could cause
+           "Type Error: Cannot read property '…' of null" and segfaults
+           (Pyside6 6.4.3)
+
+        Sdt.setQObjectParent(frameSel, root)
+        Sdt.setQObjectParent(imSel, root)
+        Sdt.setQObjectParent(imDisp, root)
+        */
     }
 }
