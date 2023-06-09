@@ -8,6 +8,8 @@ from typing import Optional, Union
 from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import numpy as np
 
+from .qml_wrapper import SimpleQtProperty
+
 
 class PyImage(QtQuick.QQuickPaintedItem):
     """QtQuick item that displays an image from Python-supplied data
@@ -25,64 +27,72 @@ class PyImage(QtQuick.QQuickPaintedItem):
         super().__init__(parent)
         self._source = None
         self._qImage = None
-        self._qImageData = None  # Raw data needs to be kept for QImage
+
         self._black = 0.0
         self._white = 1.0
+        self._sourceWidth = 0
+        self._sourceHeight = 0
+        self._sourceMin = 0.0
+        self._sourceMax = 0.0
 
-    blackChanged = QtCore.pyqtSignal(float)
-    """Black point changed"""
+        self.blackChanged.connect(self._sourceToQImage)
+        self.whiteChanged.connect(self._sourceToQImage)
 
-    @QtCore.pyqtProperty(float, notify=blackChanged)
-    def black(self) -> float:
-        """Black point. Every pixel with a value less than or equal to this
-        will be displayed black.
-        """
-        return self._black
+    black: float = SimpleQtProperty(float)
+    """Black point. Every pixel with a value less than or equal to this will be
+    displayed black.
+    """
+    white: float = SimpleQtProperty(float)
+    """White point. Every pixel with a value greater than or equal to this will
+    be displayed white.
+    """
+    sourceWidth: int = SimpleQtProperty(int, readOnly=True)
+    """Width (pixels) of the image."""
+    sourceHeight: int = SimpleQtProperty(int, readOnly=True)
+    """Height (pixels) of the image."""
+    sourceMin: float = SimpleQtProperty(float, readOnly=True)
+    """Minimum pixel value"""
+    sourceMax: float = SimpleQtProperty(float, readOnly=True)
+    """Maximum pixel value"""
 
-    @black.setter
-    def black(self, b: float):
-        if math.isclose(self._black, b):
-            return
-        self._black = b
-        self.blackChanged.emit(b)
-        self._sourceToQImage()
+    sourceChanged = QtCore.pyqtSignal()
 
-    whiteChanged = QtCore.pyqtSignal(float)
-
-    @QtCore.pyqtProperty(float, notify=whiteChanged)
-    def white(self) -> float:
-        """White point. Every pixel with a value greater than or equal to this
-        will be displayed white.
-        """
-        return self._white
-
-    @white.setter
-    def white(self, w: float):
-        if math.isclose(self._white, w):
-            return
-        self._white = w
-        self.whiteChanged.emit(w)
-        self._sourceToQImage()
-
-    sourceChanged = QtCore.pyqtSignal(QtCore.QVariant)
-    """Source image data changed"""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=sourceChanged)
-    def source(self) -> Union[np.ndarray, None]:
+    @QtCore.pyqtProperty("QVariant", notify=sourceChanged)
+    def source(self) -> Union[None, np.ndarray]:
         """Image data array. For now, only single-channel (grayscale) data
         are supported.
         """
         return self._source
 
     @source.setter
-    def source(self, data: Union[np.ndarray, None]):
-        if self._source is data:
+    def source(self, src: Union[None, np.ndarray]):
+        if self._source is src:
             return
-        self._source = data
-        self.sourceChanged.emit(self._source)
-        self.sourceWidthChanged.emit(self.sourceWidth)
-        self.sourceHeightChanged.emit(self.sourceHeight)
+        self._source = src
+
+        if src is None:
+            mini = maxi = 0.0
+            w = h = 0
+        else:
+            mini = src.min()
+            maxi = src.max()
+            h, w = self._source.shape
+
+        if not math.isclose(self._sourceMin, mini):
+            self._sourceMin = mini
+            self.sourceMinChanged.emit()
+        if not math.isclose(self._sourceMax, maxi):
+            self._sourceMax = maxi
+            self.sourceMaxChanged.emit()
+        if w != self._sourceWidth:
+            self._sourceWidth = w
+            self.sourceWidthChanged.emit()
+        if h != self._sourceHeight:
+            self._sourceHeight = h
+            self.sourceHeightChanged.emit()
+
         self._sourceToQImage()
+        self.sourceChanged.emit()
 
     def _sourceToQImage(self):
         """Create QImage instance from source respecting black and white points
@@ -91,7 +101,6 @@ class PyImage(QtQuick.QQuickPaintedItem):
         """
         if self._source is None:
             self._qImage = None
-            self._qImageData = None
             self.update()
             return
         if math.isclose(self._black, self._white):
@@ -100,10 +109,11 @@ class PyImage(QtQuick.QQuickPaintedItem):
             img = (self._source - self._black) / (self._white - self._black)
             img = np.clip(img, 0.0, 1.0) * 255
             img = img.astype(np.uint8)
-        self._qImageData = img.tobytes()  # Rescue from garbage collector
-        self._qImage = QtGui.QImage(self._qImageData, img.shape[1],
-                                    img.shape[0], img.shape[1],
+        data = img.tobytes()
+        self._qImage = QtGui.QImage(data, img.shape[1], img.shape[0],
+                                    img.shape[1],
                                     QtGui.QImage.Format_Grayscale8)
+        self._qImage.pyData = data  # Save from garbage collector
         self.update()
 
     def paint(self, painter: QtGui.QPainter):
@@ -113,24 +123,8 @@ class PyImage(QtQuick.QQuickPaintedItem):
         # whether to do interpolation or not?
         painter.drawImage(QtCore.QRectF(0, 0, self.width(), self.height()),
                           self._qImage,
-                          QtCore.QRectF(0, 0, self.sourceWidth,
-                                        self.sourceHeight))
-
-    sourceWidthChanged = QtCore.pyqtSignal(int)
-    """Width of the image changed."""
-
-    @QtCore.pyqtProperty(int, notify=sourceWidthChanged)
-    def sourceWidth(self) -> int:
-        """Width of the image."""
-        return self._source.shape[1] if self._source is not None else 0
-
-    sourceHeightChanged = QtCore.pyqtSignal(int)
-    """Height of the image changed."""
-
-    @QtCore.pyqtProperty(int, notify=sourceHeightChanged)
-    def sourceHeight(self) -> int:
-        """Height of the image."""
-        return self._source.shape[0] if self._source is not None else 0
+                          QtCore.QRectF(0, 0, self._source.shape[1],
+                                        self._source.shape[0]))
 
 
-QtQml.qmlRegisterType(PyImage, "SdtGui", 0, 1, "PyImage")
+QtQml.qmlRegisterType(PyImage, "SdtGui", 0, 2, "PyImage")
