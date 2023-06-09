@@ -52,5 +52,21 @@ class Sdt(QtCore.QObject):
         """
         return QtCore.QUrl.fromLocalFile(str(Path(u.toLocalFile()).parent))
 
+    @QtCore.pyqtSlot(QtCore.QObject, QtCore.QObject)
+    def setQObjectParent(self, obj: QtCore.QObject, parent: QtCore.QObject):
+        """Set QObject parent
 
-QtQml.qmlRegisterType(Sdt, "SdtGui.Templates", 0, 1, "Sdt")
+        QML's `parent` property sets the visual parent. This is needed to set
+        the `QObject` parent.
+
+        Parameters
+        ==========
+        obj
+            Object to set the parent for
+        parent
+            New parent for `obj`
+        """
+        obj.setParent(parent)
+
+
+QtQml.qmlRegisterType(Sdt, "SdtGui.Templates", 0, 2, "Sdt")
