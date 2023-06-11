@@ -66,7 +66,7 @@ class OptionChooser(QtQuick.QQuickItem):
         self._inputTimer.setSingleShot(True)
         self._inputTimer.timeout.connect(self._triggerWorker)
 
-    previewEnabledChanged = QtCore.pyqtSignal(bool)
+    previewEnabledChanged = QtCore.pyqtSignal()
     """:py:attr:`previewEnabled` was changed"""
 
     @QtCore.pyqtProperty(bool, notify=previewEnabledChanged)
@@ -82,7 +82,7 @@ class OptionChooser(QtQuick.QQuickItem):
             Sdt.WorkerStatus.Idle if e else Sdt.WorkerStatus.Disabled)
 
     status = SimpleQtProperty(int, readOnly=True)
-    error = SimpleQtProperty(QtCore.QVariant, readOnly=True)
+    error = SimpleQtProperty("QVariant", readOnly=True)
 
     @staticmethod
     def workerFunc(*args, **kwargs):
@@ -127,11 +127,12 @@ class OptionChooser(QtQuick.QQuickItem):
             raise ValueError(f"property `{prop}` does not exist")
         mp = mo.property(idx)
         if mp.isWritable():
-            setattr(self, prop, val)
+            mp.write(self, val)
         else:
             pName = f"_{prop}"
             # Do nothing if old and new values are none (crude optimization)
-            if val is not None or getattr(self, pName) is not None:
+            if hasattr(self, pName) and (val is not None or
+                                         getattr(self, pName) is not None):
                 setattr(self, pName, val)
                 getNotifySignal(self, prop).emit()
 
@@ -170,7 +171,7 @@ class OptionChooser(QtQuick.QQuickItem):
         self._setStatus(Sdt.WorkerStatus.Working)
         if self._worker.busy:
             self._worker.abort()
-        # Start short timer to call _triggerTracking() so that rapid changes
+        # Start short timer to call _triggerWorker() so that rapid changes
         # do not cause lots of aborts
         self._inputTimer.start()
 
@@ -191,5 +192,5 @@ class OptionChooser(QtQuick.QQuickItem):
         self._setStatus(Sdt.WorkerStatus.Idle)
 
     def _workerError(self, exc):
-        """Callback for when worker encounters an error while tracking"""
+        """Callback for when worker encounters an error"""
         self._setStatus(Sdt.WorkerStatus.Error, exc)
