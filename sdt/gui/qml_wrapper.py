@@ -472,12 +472,9 @@ class SimpleQtProperty:
             setattr(instance, privName, value)
             getattr(instance, sigName).emit()
 
-        def readOnlySetter(instance, value):
-            raise AttributeError(f"can't set attribute '{name}'")
-
         # Override this descriptor
         prop = QtCore.pyqtProperty(
-            self._type, getter, readOnlySetter if self._readOnly else setter,
+            self._type, getter, None if self._readOnly else setter,
             notify=sig)
         setattr(owner, name, prop)
 
