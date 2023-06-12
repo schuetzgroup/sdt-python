@@ -386,7 +386,7 @@ class MicroViewWidget(mvBase):
             self._scene.setImage(QPixmap())
             return
 
-        img_buf = self._imageData.astype(np.float)
+        img_buf = self._imageData.astype(float)
         if (self._intensityMin is None) or (self._intensityMax is None):
             self._intensityMin = np.min(img_buf)
             self._intensityMax = np.max(img_buf)
@@ -443,8 +443,8 @@ class MicroViewWidget(mvBase):
                 self._intensityMax = 1
             else:
                 self._intensityMin = self._intensityMax - 1
-        self._ui.minSlider.setValue(self._intensityMin)
-        self._ui.maxSlider.setValue(self._intensityMax)
+        self._ui.minSlider.setValue(round(self._intensityMin))
+        self._ui.maxSlider.setValue(round(self._intensityMax))
         self.drawImage()
 
     @pyqtSlot(int)
