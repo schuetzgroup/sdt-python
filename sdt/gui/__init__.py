@@ -26,3 +26,4 @@ from .py_image import PyImage
 from .sdt import Sdt
 # from .track_display import TrackDisplay
 # from .track_options import TrackOptions
+from .thread_worker import ThreadWorker
