@@ -29,6 +29,14 @@ class Image(np.ndarray):
             return
         self.frame_no = getattr(obj, "frame_no", -1)
 
+    def __array_wrap__(self, array, context=None):
+        # This way numpy functions such as np.min() return a scalar, not a
+        # zero-dimensional array.
+        # See https://stackoverflow.com/a/19720866
+        if array.ndim == 0:
+            return array[()]
+        return super().__array_wrap__(array, context)
+
 
 class ImageSequence:
     """Sliceable, lazy-loading interface to multi-image files

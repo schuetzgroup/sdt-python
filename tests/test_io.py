@@ -434,6 +434,15 @@ class TestImageSequence:
                 # cannot close sliced object
                 seq2[:].close()
 
+    def test_types(self, seq):
+        from sdt.io.image_sequence import Image
+        with seq:
+            img = seq[1]
+        assert isinstance(img, Image)
+        assert isinstance(img.frame_no, int)
+        # Make sure functions returning a scalar don't return 0-dim array
+        assert not isinstance(np.min(img), Image)
+
     def test_resolve_index(self, seq):
         with seq:
             assert seq._resolve_index(2) == 2
