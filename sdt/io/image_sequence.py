@@ -233,7 +233,7 @@ class ImageSequence:
         Image data. This has a `frame_no` attribute holding the original frame
         number.
         """
-        return self._get_single_frame(self._resolve_index(t), **kwargs)
+        return self._get_single_frame(int(self._resolve_index(t)), **kwargs)
 
     def get_metadata(self, t: Optional[int] = None) -> Dict:
         """Get metadata for a frame
@@ -250,7 +250,7 @@ class ImageSequence:
         Metadata dictionary. A `"frame_no"` entry with the original frame
         number (i.e., before slicing the sequence) is also added.
         """
-        real_t = None if t is None else self._resolve_index(t)
+        real_t = None if t is None else int(self._resolve_index(t))
         if self._is_tiff:
             ret = self._reader.metadata(index=..., page=real_t)
         else:
@@ -290,7 +290,7 @@ class ImageSequence:
             ret._len = len(t)
             return ret
         # Assume t is a number
-        return self._get_single_frame(t)
+        return self._get_single_frame(int(t))
 
     def __enter__(self):
         self.open()
