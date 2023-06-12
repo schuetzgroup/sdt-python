@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.fret.sm_track &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.fret.sm_track &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/fret/sm_track';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,30 +139,119 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.fret.sm_track</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.fret.sm_track</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
@@ -107,7 +276,7 @@
 
 
 <div class="viewcode-block" id="SmFRETTracker"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker">[docs]</a><span class="k">class</span> <span class="nc">SmFRETTracker</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Class for tracking of smFRET data</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for tracking of smFRET data</span>
 
 <span class="sd">    There is support for dumping and loading to/from YAML using</span>
 <span class="sd">    :py:mod:`sdt.io.yaml`.</span>
@@ -118,41 +287,41 @@
                   <span class="s2">&quot;coloc_dist&quot;</span><span class="p">,</span> <span class="s2">&quot;acceptor_channel&quot;</span><span class="p">,</span> <span class="s2">&quot;neighbor_radius&quot;</span><span class="p">)</span>
 
     <span class="n">frame_selector</span><span class="p">:</span> <span class="n">multicolor</span><span class="o">.</span><span class="n">FrameSelector</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`FrameSelector` instance with the matching</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`FrameSelector` instance with the matching</span>
 <span class="sd">    :py:attr:`excitation_seq`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">registrator</span><span class="p">:</span> <span class="n">multicolor</span><span class="o">.</span><span class="n">Registrator</span>
-    <span class="sd">&quot;&quot;&quot;multicolor.Registrator used to overlay channels&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;multicolor.Registrator used to overlay channels&quot;&quot;&quot;</span>
     <span class="n">link_options</span><span class="p">:</span> <span class="n">Dict</span>
-    <span class="sd">&quot;&quot;&quot;Options passed to :py:func:`trackpy.link_df`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Options passed to :py:func:`trackpy.link_df`&quot;&quot;&quot;</span>
     <span class="n">min_length</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;Minimum length of tracks&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimum length of tracks&quot;&quot;&quot;</span>
     <span class="n">neighbor_radius</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="sd">&quot;&quot;&quot;How far two features may be apart while still being considered close</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;How far two features may be apart while still being considered close</span>
 <span class="sd">    enough so that one influences the brightness measurement of the other.</span>
 <span class="sd">    This is related to the `radius` option of</span>
 <span class="sd">    :py:func:`brightness.from_raw_image`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">brightness_options</span><span class="p">:</span> <span class="n">Dict</span>
-    <span class="sd">&quot;&quot;&quot;Options passed to :py:func:`brightness.from_raw_image`. Make sure to</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Options passed to :py:func:`brightness.from_raw_image`. Make sure to</span>
 <span class="sd">    adjust :py:attr:`neighbor_radius` if you change either the `mask` or the</span>
 <span class="sd">    `radius` option!</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">interpolate</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="sd">&quot;&quot;&quot;Whether to interpolate coordinates of features that have been missed</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether to interpolate coordinates of features that have been missed</span>
 <span class="sd">    by the localization algorithm.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coloc_dist</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="sd">&quot;&quot;&quot;After overlaying donor and acceptor channel features, this gives the</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;After overlaying donor and acceptor channel features, this gives the</span>
 <span class="sd">    maximum distance up to which donor and acceptor signal are considered</span>
 <span class="sd">    to come from the same molecule.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">acceptor_channel</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;Can be either 1 or 2, depending the acceptor is the first or the</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can be either 1 or 2, depending the acceptor is the first or the</span>
 <span class="sd">    second channel in :py:attr:`registrator`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span>
-    <span class="sd">&quot;&quot;&quot;Column names in DataFrames. Defaults are taken from</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Column names in DataFrames. Defaults are taken from</span>
 <span class="sd">    :py:attr:`config.columns`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -168,7 +337,7 @@
                  <span class="n">interpolate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">coloc_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
                  <span class="n">acceptor_channel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">link_quiet</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">link_options</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        excitation_seq</span>
 <span class="sd">            Set the :py:attr:`excitation_seq` attribute.</span>
@@ -253,7 +422,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">excitation_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Excitation sequence. &quot;d&quot; stands for donor, &quot;a&quot; for acceptor,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Excitation sequence. &quot;d&quot; stands for donor, &quot;a&quot; for acceptor,</span>
 <span class="sd">        anything else describes other kinds of frames which are irrelevant for</span>
 <span class="sd">        tracking.</span>
 
@@ -270,7 +439,7 @@
               <span class="n">acceptor_img</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">donor_loc</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
               <span class="n">acceptor_loc</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">d_mass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Track smFRET data</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Track smFRET data</span>
 
 <span class="sd">        Localization data for both the donor and the acceptor channel is</span>
 <span class="sd">        merged (since a FRET construct has to be visible in at least one</span>
@@ -440,7 +609,7 @@
         <span class="n">ret_d</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">(([</span><span class="s2">&quot;donor&quot;</span><span class="p">],</span> <span class="n">ret_d</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
         <span class="n">ret_a</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">(([</span><span class="s2">&quot;acceptor&quot;</span><span class="p">],</span>
                                                     <span class="n">ret_a</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="s2">&quot;acceptor&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="s2">&quot;acceptor&quot;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ret_d</span><span class="p">,</span> <span class="n">ret_a</span><span class="p">,</span> <span class="n">ret</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">ret</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
             <span class="p">[(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;donor&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])],</span>
@@ -458,7 +627,7 @@
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="SmFRETTracker.flag_excitation_type"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.flag_excitation_type">[docs]</a>    <span class="k">def</span> <span class="nf">flag_excitation_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracks</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add a column indicating excitation type (donor/acceptor/...)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a column indicating excitation type (donor/acceptor/...)</span>
 
 <span class="sd">        Add  (&quot;fret&quot;, &quot;exc_type&quot;) column in place. It is of &quot;category&quot; type.</span>
 
@@ -480,7 +649,7 @@
 
 <div class="viewcode-block" id="SmFRETTracker.to_yaml"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump as YAML</span>
 
 <span class="sd">        Pass this as the `representer` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
@@ -490,7 +659,7 @@
 
 <div class="viewcode-block" id="SmFRETTracker.from_yaml"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETTracker.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct from YAML</span>
 
 <span class="sd">        Pass this as the `constructor` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
@@ -507,31 +676,73 @@
     <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">SmFRETTracker</span><span class="p">)</span>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.roi.roi &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.roi.roi &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/roi/roi';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,30 +139,119 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.roi.roi</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.roi.roi</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
@@ -103,7 +272,7 @@
 
 
 <div class="viewcode-block" id="ROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI">[docs]</a><span class="k">class</span> <span class="nc">ROI</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Rectangular region of interest in a picture</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rectangular region of interest in a picture</span>
 
 <span class="sd">    This class represents a rectangular region of interest. It can crop images</span>
 <span class="sd">    or restrict data (such as feature localization data) to a specified region.</span>
@@ -124,7 +293,7 @@
     <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!ROI&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        top_left : tuple of int</span>
 <span class="sd">            Coordinates of the top-left corner. Pixels with coordinates</span>
@@ -139,11 +308,11 @@
 <span class="sd">            Either this or `bottom_right` need to specified.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span> <span class="o">=</span> <span class="n">top_left</span>
-        <span class="sd">&quot;&quot;&quot;x and y coordinates of the top-left corner. Data with coordinates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x and y coordinates of the top-left corner. Data with coordinates</span>
 <span class="sd">        greater or equal than these are excluded from the ROI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="sd">&quot;&quot;&quot;x and y coordinates of the bottom-right corner. Data with</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x and y coordinates of the bottom-right corner. Data with</span>
 <span class="sd">        coordinates greater or equal than these are excluded from the ROI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">bottom_right</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -162,7 +331,7 @@
 <div class="viewcode-block" id="ROI.dataframe_mask"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.dataframe_mask">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
     <span class="k">def</span> <span class="nf">dataframe_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get boolean array describing whether localizations lie within ROI</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get boolean array describing whether localizations lie within ROI</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -192,7 +361,7 @@
 
 <div class="viewcode-block" id="ROI.__call__"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;Restrict data to the region of interest.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict data to the region of interest.</span>
 
 <span class="sd">        If the input is localization data, it is filtered depending on whether</span>
 <span class="sd">        the coordinates are within the rectangle. If it is image data, it is</span>
@@ -249,7 +418,7 @@
 
 <div class="viewcode-block" id="ROI.reset_origin"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.reset_origin">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
     <span class="k">def</span> <span class="nf">reset_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;Reset coordinates to the original coordinate system</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset coordinates to the original coordinate system</span>
 
 <span class="sd">        This undoes the effect of the `reset_origin` parameter to</span>
 <span class="sd">        :py:meth:`__call__`. The coordinates of the top-left ROI corner are</span>
@@ -272,7 +441,7 @@
 
 <div class="viewcode-block" id="ROI.to_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump as YAML</span>
 
 <span class="sd">        Pass this as the `representer` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
@@ -283,7 +452,7 @@
 
 <div class="viewcode-block" id="ROI.from_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.ROI.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct from YAML</span>
 
 <span class="sd">        Pass this as the `constructor` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
@@ -303,7 +472,7 @@
 
 
 <div class="viewcode-block" id="PathROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI">[docs]</a><span class="k">class</span> <span class="nc">PathROI</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Region of interest in a picture determined by a path</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Region of interest in a picture determined by a path</span>
 
 <span class="sd">    This class represents a region of interest that is described by a path.</span>
 <span class="sd">    It uses :py:class:`matplotlib.path.Path` to this end. It can crop images</span>
@@ -315,7 +484,7 @@
     <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!PathROI&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">no_image</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        path : list of vertices or matplotlib.path.Path</span>
 <span class="sd">            Description of the path. Either a list of vertices that will</span>
@@ -332,7 +501,7 @@
 <span class="sd">            DataFrames. Defaults to False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="sd">&quot;&quot;&quot;:py:class:`matplotlib.path.Path` outlining the region of interest.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:py:class:`matplotlib.path.Path` outlining the region of interest.</span>
 <span class="sd">        Do not modifiy.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mpl</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">):</span>
@@ -347,7 +516,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">vert</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="n">buffer</span>
-        <span class="sd">&quot;&quot;&quot;Float giving the width of extra space around the path. Does not</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Float giving the width of extra space around the path. Does not</span>
 <span class="sd">        affect the size of the image, which is just the size of the bounding</span>
 <span class="sd">        box of the :py:attr:`path`, without :py:attr:`buffer`.</span>
 <span class="sd">        Do not modify.</span>
@@ -355,14 +524,14 @@
 
         <span class="c1"># calculate bounding box</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">get_extents</span><span class="p">()</span><span class="o">.</span><span class="n">get_points</span><span class="p">()</span>
-        <span class="sd">&quot;&quot;&quot;numpy.ndarray, shape(2, 2), dtype(float) describing the bounding box</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;numpy.ndarray, shape(2, 2), dtype(float) describing the bounding box</span>
 <span class="sd">        of the path, enlarged by :py:attr:`buffer` on each side.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">buffer</span><span class="p">,</span> <span class="n">buffer</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bounding_box_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
              <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">[</span><span class="mi">1</span><span class="p">])],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Smallest integer bounding box containing :py:attr:`bounding_box`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Smallest integer bounding box containing :py:attr:`bounding_box`&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">spatial</span><span class="o">.</span><span class="n">polygon_area</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
         <span class="c1"># If the path is clockwise, the `radius` argument to</span>
@@ -370,10 +539,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">buffer_sign</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
         <span class="c1"># Now that we know the sign, make the area positive</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area</span><span class="p">)</span>
-        <span class="sd">&quot;&quot;&quot;Area of the ROI (without :py:attr:`buffer`)&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Area of the ROI (without :py:attr:`buffer`)&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image_mask</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="sd">&quot;&quot;&quot;Boolean pixel array; rasterized :py:attr:`path` or None if</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Boolean pixel array; rasterized :py:attr:`path` or None if</span>
 <span class="sd">        ``no_image=True`` was passed to the constructor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">no_image</span><span class="p">:</span>
@@ -400,7 +569,7 @@
 <div class="viewcode-block" id="PathROI.dataframe_mask"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.dataframe_mask">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
     <span class="k">def</span> <span class="nf">dataframe_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get boolean array describing whether localizations lie within ROI</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get boolean array describing whether localizations lie within ROI</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -439,7 +608,7 @@
 <div class="viewcode-block" id="PathROI.__call__"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rel_origin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">crop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;Restrict data to the region of interest.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict data to the region of interest.</span>
 
 <span class="sd">        If the input is localization data, it is filtered depending on whether</span>
 <span class="sd">        the coordinates are within the path. If it is image data, it is</span>
@@ -518,7 +687,7 @@
 
 <div class="viewcode-block" id="PathROI.reset_origin"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.reset_origin">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
     <span class="k">def</span> <span class="nf">reset_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;Reset coordinates to the original coordinate system</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset coordinates to the original coordinate system</span>
 
 <span class="sd">        This undoes the effect of the `reset_origin` parameter to</span>
 <span class="sd">        :py:meth:`__call__`. The coordinates of the top-left ROI corner are</span>
@@ -544,7 +713,7 @@
                                <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="n">linear</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="n">trans</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PathROI&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a new PathROI instance with a transformed path</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new PathROI instance with a transformed path</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -591,7 +760,7 @@
 
 <div class="viewcode-block" id="PathROI.to_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump as YAML</span>
 
 <span class="sd">        Pass this as the `representer` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
@@ -605,7 +774,7 @@
 
 <div class="viewcode-block" id="PathROI.from_yaml"><a class="viewcode-back" href="../../../roi.html#sdt.roi.PathROI.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct from YAML</span>
 
 <span class="sd">        Pass this as the `constructor` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
@@ -629,7 +798,7 @@
 
 
 <div class="viewcode-block" id="RectangleROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.RectangleROI">[docs]</a><span class="k">class</span> <span class="nc">RectangleROI</span><span class="p">(</span><span class="n">PathROI</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Rectangular region of interest in a picture</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rectangular region of interest in a picture</span>
 
 <span class="sd">    This differs from :py:class:`ROI` in that it is derived from</span>
 <span class="sd">    :py:class:`PathROI` and thus allows for float coordinates. Also, the</span>
@@ -640,7 +809,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_left</span><span class="p">,</span> <span class="n">bottom_right</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">buffer</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">no_image</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        top_left : tuple of float</span>
 <span class="sd">            x and y coordinates of the top-left corner.</span>
@@ -663,13 +832,13 @@
         <span class="n">trafo</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">*</span><span class="n">top_left</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">transform_path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">no_image</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">top_left</span> <span class="o">=</span> <span class="n">top_left</span>
-        <span class="sd">&quot;&quot;&quot;x and y coordinates of the top-left corner.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x and y coordinates of the top-left corner.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bottom_right</span> <span class="o">=</span> <span class="n">bottom_right</span>
-        <span class="sd">&quot;&quot;&quot;x and y coordinates of the bottom-right corner.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x and y coordinates of the bottom-right corner.&quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump as YAML</span>
 
 <span class="sd">        Pass this as the `representer` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
@@ -681,7 +850,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct from YAML</span>
 
 <span class="sd">        Pass this as the `constructor` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
@@ -696,14 +865,14 @@
 
 
 <div class="viewcode-block" id="EllipseROI"><a class="viewcode-back" href="../../../roi.html#sdt.roi.EllipseROI">[docs]</a><span class="k">class</span> <span class="nc">EllipseROI</span><span class="p">(</span><span class="n">PathROI</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Elliptical region of interest in a picture</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Elliptical region of interest in a picture</span>
 
 <span class="sd">    Subclass of :py:class:`PathROI`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!EllipseROI&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">no_image</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        center : tuple of float</span>
 <span class="sd">        axes : tuple of float</span>
@@ -718,17 +887,17 @@
         <span class="n">trafo</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">*</span><span class="n">center</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">transform_path</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">no_image</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
-        <span class="sd">&quot;&quot;&quot;x and y coordinates of the ellipse center.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;x and y coordinates of the ellipse center.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span>
-        <span class="sd">&quot;&quot;&quot;Lengths of first and second half-axis.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lengths of first and second half-axis.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
-        <span class="sd">&quot;&quot;&quot;Angle of rotation (counterclockwise, in radians).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Angle of rotation (counterclockwise, in radians).&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump as YAML</span>
 
 <span class="sd">        Pass this as the `representer` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Dumper.add_representer`</span>
@@ -741,7 +910,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct from YAML</span>
 
 <span class="sd">        Pass this as the `constructor` parameter to</span>
 <span class="sd">        :py:meth:`yaml.Loader.add_constructor`</span>
@@ -764,31 +933,73 @@
     <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">EllipseROI</span><span class="p">)</span>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

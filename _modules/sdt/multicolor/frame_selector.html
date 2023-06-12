@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.multicolor.frame_selector &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.multicolor.frame_selector &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/multicolor/frame_selector';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,30 +139,119 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.multicolor.frame_selector</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.multicolor.frame_selector</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2021 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
@@ -101,17 +270,17 @@
 
 
 <span class="k">class</span> <span class="nc">_FlexMul</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Helper class to evaluate &quot;?&quot; in flexible sequences</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class to evaluate &quot;?&quot; in flexible sequences</span>
 
 <span class="sd">    In excitation sequences containing multiplication with &quot;?&quot;, the &quot;?&quot; is</span>
 <span class="sd">    replaced by a number so that the excitation sequence length matches</span>
 <span class="sd">    a given number of frames.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n_flex_frames</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;Number of frames to be filled by repeating sequence part&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Number of frames to be filled by repeating sequence part&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_flex_frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        n_flex_frames</span>
 <span class="sd">            Set :py:attr:`n_flex_frames` attribute</span>
@@ -119,7 +288,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_flex_frames</span> <span class="o">=</span> <span class="n">n_flex_frames</span>
 
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rep_seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Perform expansion</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform expansion</span>
 
 <span class="sd">        `rep_seq` will be repeated until the length of the result is equal to</span>
 <span class="sd">        :py:attr:`n_flex_frames`.</span>
@@ -140,12 +309,12 @@
         <span class="k">return</span> <span class="n">rep_seq</span> <span class="o">*</span> <span class="n">reps</span>
 
     <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rep_seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Same as :py:meth:`__mul__`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Same as :py:meth:`__mul__`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">rep_seq</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FrameSelector"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.FrameSelector">[docs]</a><span class="k">class</span> <span class="nc">FrameSelector</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Select images and datapoints of a certain excitation type</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select images and datapoints of a certain excitation type</span>
 
 <span class="sd">    For instance, if employing alternating excitation for a FRET experiment,</span>
 <span class="sd">    this can be used to select only the donor or only the acceptor frames.</span>
@@ -202,7 +371,7 @@
 <span class="sd">            [5, 5, 5]]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">excitation_seq</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;Excitation sequence. Use different letters to describe different</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Excitation sequence. Use different letters to describe different</span>
 <span class="sd">    excitation types, e.g., &quot;d&quot; for donor excitation, &quot;a&quot; for acceptor,</span>
 <span class="sd">    etc.</span>
 
@@ -222,12 +391,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_rm_whitespace_trans</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">string</span><span class="o">.</span><span class="n">whitespace</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;To be used with ``str.translate`` to remove whitespace&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;To be used with ``str.translate`` to remove whitespace&quot;&quot;&quot;</span>
     <span class="n">_letter_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([A-Za-z]+)&quot;</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Regular expression grouping upper- and lowercase letters&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Regular expression grouping upper- and lowercase letters&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">excitation_seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        excitation_seq</span>
 <span class="sd">            Set :py:attr:`excitation_seq`</span>
@@ -236,7 +405,7 @@
 
     <span class="k">def</span> <span class="nf">_eval_simple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">glob</span><span class="p">:</span> <span class="n">Mapping</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">loc</span><span class="p">:</span> <span class="n">Mapping</span> <span class="o">=</span> <span class="p">{}</span>
                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Evaluate non-flexible sequence</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate non-flexible sequence</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        seq</span>
@@ -256,7 +425,7 @@
         <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="n">re_seq</span><span class="p">,</span> <span class="n">glob</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FrameSelector.eval_seq"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.FrameSelector.eval_seq">[docs]</a>    <span class="k">def</span> <span class="nf">eval_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Evaluate excitation sequence</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate excitation sequence</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -300,7 +469,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_find_mask</span><span class="p">(</span><span class="n">eval_seq</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">frame_nos</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                    <span class="n">which</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Find frames of certain type in list of frames, return boolean mask</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find frames of certain type in list of frames, return boolean mask</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -326,7 +495,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_find_numbers</span><span class="p">(</span><span class="n">eval_seq</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">frame_nos</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                       <span class="n">which</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Find frames of certain type in list of frames, return numbers</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find frames of certain type in list of frames, return numbers</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -348,7 +517,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_subseq</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get a subsequence of `data`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a subsequence of `data`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -374,7 +543,7 @@
     <span class="k">def</span> <span class="nf">_renumber</span><span class="p">(</span><span class="n">eval_seq</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">frame_nos</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                   <span class="n">which</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">restore</span><span class="p">:</span> <span class="nb">bool</span>
                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Do the actual frame renumbering</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do the actual frame renumbering</span>
 
 <span class="sd">        for :py:meth:`select`, :py:meth:`renumber_frames`, and</span>
 <span class="sd">        :py:meth:`restore_frame_numbers`. If ``restore=False``, any frames that</span>
@@ -399,7 +568,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        New frame numbers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">eval_seq</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eval_seq</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_nos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">frame_nos</span>
         <span class="n">frame_nos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">frame_nos</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">good_frame_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">eval_seq</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">which</span><span class="p">))</span>
@@ -439,7 +608,7 @@
                         <span class="n">which</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
                         <span class="n">restore</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Renumber a sequence of frame numbers</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Renumber a sequence of frame numbers</span>
 
 <span class="sd">        The numbers can be with respect to the original image sequence. In this</span>
 <span class="sd">        case, set ``restore=False`` and this function will return frame numbers</span>
@@ -471,7 +640,7 @@
                           <span class="n">which</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
                           <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
                           <span class="n">how</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nearest-up&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;For given excitation type, find frames of other type</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;For given excitation type, find frames of other type</span>
 
 <span class="sd">        Typically, this is used to find the closest frame of a certain type,</span>
 <span class="sd">        e.g., find the next acceptor excitation frame for donor excitation</span>
@@ -527,7 +696,9 @@
             <span class="c1"># with this case here</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">source_idx</span><span class="p">),</span> <span class="n">target_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">interp_idx</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
-            <span class="n">target_idx</span><span class="p">,</span> <span class="n">target_idx</span><span class="p">,</span> <span class="n">how</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">)(</span><span class="n">source_idx</span><span class="p">)</span>
+            <span class="n">target_idx</span><span class="p">,</span> <span class="n">target_idx</span><span class="p">,</span> <span class="n">how</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">fill_value</span><span class="o">=</span><span class="p">(</span><span class="n">target_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target_idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">)(</span><span class="n">source_idx</span><span class="p">)</span>
         <span class="n">interp_idx</span> <span class="o">=</span> <span class="n">interp_idx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -539,7 +710,7 @@
                <span class="n">which</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">renumber</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                <span class="n">n_frames</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">Mapping</span> <span class="o">=</span> <span class="p">{}</span>
                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">helper</span><span class="o">.</span><span class="n">Slicerator</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get only data corresponding to a certain excitation type</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get only data corresponding to a certain excitation type</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -612,7 +783,7 @@
                               <span class="n">which</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
                               <span class="n">n_frames</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                               <span class="n">columns</span><span class="p">:</span> <span class="n">Mapping</span> <span class="o">=</span> <span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;Undo frame renumbering from :py:meth:`select`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Undo frame renumbering from :py:meth:`select`</span>
 
 <span class="sd">        `data` is modified in place for this purpose.</span>
 
@@ -640,34 +811,79 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">renumber_frames</span><span class="p">(</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">which</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">)</span></div></div>
+            <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">which</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;FrameSelector&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">excitation_seq</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">excitation_seq</span></div>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

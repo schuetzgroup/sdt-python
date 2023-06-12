@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.io.tiff &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.io.tiff &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/io/tiff';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,41 +139,132 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.io.tiff</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.io.tiff</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="sd">&quot;&quot;&quot;High level TIFF I/O&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">tifffile</span>
@@ -104,9 +275,19 @@
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="save_as_tiff"><a class="viewcode-back" href="../../../io.html#sdt.io.save_as_tiff">[docs]</a><span class="k">def</span> <span class="nf">save_as_tiff</span><span class="p">(</span><span class="n">frames</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
+<span class="n">redundant_tiff_metadata</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;compression&quot;</span><span class="p">,</span> <span class="s2">&quot;frame_no&quot;</span><span class="p">,</span> <span class="s2">&quot;is_fluoview&quot;</span><span class="p">,</span> <span class="s2">&quot;is_imagej&quot;</span><span class="p">,</span> <span class="s2">&quot;is_micromanager&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_mdgel&quot;</span><span class="p">,</span> <span class="s2">&quot;is_mediacy&quot;</span><span class="p">,</span> <span class="s2">&quot;is_nih&quot;</span><span class="p">,</span> <span class="s2">&quot;is_ome&quot;</span><span class="p">,</span> <span class="s2">&quot;is_reduced&quot;</span><span class="p">,</span> <span class="s2">&quot;is_shaped&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_stk&quot;</span><span class="p">,</span> <span class="s2">&quot;is_tiled&quot;</span><span class="p">,</span> <span class="s2">&quot;predictor&quot;</span><span class="p">,</span> <span class="s2">&quot;resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;resolution_unit&quot;</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;Metadata that should not be saved in the image description since it is</span>
+<span class="sd">actually stored elsewhere.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="save_as_tiff"><a class="viewcode-back" href="../../../io.html#sdt.io.save_as_tiff">[docs]</a><span class="k">def</span> <span class="nf">save_as_tiff</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">frames</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                 <span class="n">metadata</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Mapping</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">contiguous</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Write a sequence of images to a TIFF stack</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a sequence of images to a TIFF stack</span>
 
 <span class="sd">    If the items in `frames` contain a dict named `metadata`, an attempt to</span>
 <span class="sd">    serialize it to YAML and save it as the TIFF file&#39;s ImageDescription</span>
@@ -114,39 +295,46 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    frames</span>
-<span class="sd">        Frames to be written to TIFF file.</span>
 <span class="sd">    filename</span>
 <span class="sd">        Name of the output file</span>
+<span class="sd">    frames</span>
+<span class="sd">        Frames to be written to TIFF file.</span>
+<span class="sd">    metadata:</span>
+<span class="sd">        Metadata to be written. If a single dict, save with the first frame.</span>
+<span class="sd">        If an iterable, save each entry with the corresponding frame.</span>
 <span class="sd">    contiguous</span>
 <span class="sd">        Whether to write to the TIFF file contiguously or not. This has</span>
 <span class="sd">        implications when reading the data. If using `PIMS`, set to `True`.</span>
 <span class="sd">        If using `imageio`, use ``&quot;I&quot;`` mode for reading if `True`.</span>
 <span class="sd">        Setting to `False` allows for per-image metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">):</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">[</span><span class="n">metadata</span><span class="p">]</span>
+
     <span class="k">with</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">TiffWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">tw</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">md</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span>
+                                                 <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">({}))):</span>
             <span class="n">desc</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">md</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">:</span>
-                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span>  <span class="c1"># no metadata</span>
-                                         <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span>  <span class="c1"># dict() fail</span>
-                                         <span class="p">):</span>
-                    <span class="n">md</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
-                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">md</span><span class="p">:</span>
+                <span class="c1"># PIMS and old imageio added metadata to frames</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s2">&quot;meta&quot;</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span>
+                            <span class="ne">AttributeError</span><span class="p">,</span>  <span class="c1"># no metadata</span>
+                            <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span>  <span class="c1"># dict() fail</span>
+                            <span class="p">):</span>
+                        <span class="n">md</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
+                        <span class="k">break</span>
             <span class="k">if</span> <span class="n">md</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s2">&quot;datetime&quot;</span><span class="p">,</span> <span class="s2">&quot;DateTime&quot;</span><span class="p">:</span>
                     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
                         <span class="n">dt</span> <span class="o">=</span> <span class="n">md</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
                         <span class="k">break</span>
                 <span class="c1"># Remove redundant metadata</span>
-                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;compression&quot;</span><span class="p">,</span> <span class="s2">&quot;frame_no&quot;</span><span class="p">,</span> <span class="s2">&quot;is_fluoview&quot;</span><span class="p">,</span>
-                          <span class="s2">&quot;is_imagej&quot;</span><span class="p">,</span> <span class="s2">&quot;is_micromanager&quot;</span><span class="p">,</span> <span class="s2">&quot;is_mdgel&quot;</span><span class="p">,</span>
-                          <span class="s2">&quot;is_mediacy&quot;</span><span class="p">,</span> <span class="s2">&quot;is_nih&quot;</span><span class="p">,</span> <span class="s2">&quot;is_ome&quot;</span><span class="p">,</span> <span class="s2">&quot;is_reduced&quot;</span><span class="p">,</span>
-                          <span class="s2">&quot;is_shaped&quot;</span><span class="p">,</span> <span class="s2">&quot;is_stk&quot;</span><span class="p">,</span> <span class="s2">&quot;is_tiled&quot;</span><span class="p">,</span> <span class="s2">&quot;predictor&quot;</span><span class="p">,</span>
-                          <span class="s2">&quot;resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;resolution_unit&quot;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">redundant_tiff_metadata</span><span class="p">:</span>
                     <span class="n">md</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">desc</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">md</span><span class="p">)</span>
@@ -154,19 +342,15 @@
                     <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">: Failed to serialize metadata to YAML&quot;</span><span class="p">)</span>
 
-            <span class="n">save_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">desc</span><span class="p">,</span> <span class="s2">&quot;datetime&quot;</span><span class="p">:</span> <span class="n">dt</span><span class="p">,</span>
-                         <span class="s2">&quot;contiguous&quot;</span><span class="p">:</span> <span class="n">contiguous</span><span class="p">}</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">tw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">software</span><span class="o">=</span><span class="s2">&quot;sdt.io&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">save_args</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                <span class="n">tw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">save_args</span><span class="p">)</span></div>
+            <span class="n">tw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">software</span><span class="o">=</span><span class="s2">&quot;sdt.io&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">,</span> <span class="n">datetime</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span>
+                     <span class="n">contiguous</span><span class="o">=</span><span class="n">contiguous</span><span class="p">)</span></div>
 
 
 <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ImportError</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">pims</span>
 
     <span class="k">class</span> <span class="nc">SdtTiffStack</span><span class="p">(</span><span class="n">pims</span><span class="o">.</span><span class="n">TiffStack_tifffile</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Version of :py:class:`pims.TiffStack` extended for SDT needs</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Version of :py:class:`pims.TiffStack` extended for SDT needs</span>
 
 <span class="sd">        **Deperecated. Use :py:class:`ImageSequence` instead.**</span>
 
@@ -234,31 +418,73 @@
             <span class="k">return</span> <span class="n">f</span>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.io.image_sequence &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.io.image_sequence &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/io/image_sequence';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,30 +139,119 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.io.image_sequence</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.io.image_sequence</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
@@ -100,8 +269,32 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">yaml</span>
 
 
+<span class="k">class</span> <span class="nc">Image</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;`ndarray` with :py:attr:`frame_no` attribute&quot;&quot;&quot;</span>
+    <span class="n">frame_no</span><span class="p">:</span> <span class="nb">int</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Original frame number (before slicing the sequnece)&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">frame_no</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="nf">__array_finalize__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_no</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;frame_no&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__array_wrap__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># This way numpy functions such as np.min() return a scalar, not a</span>
+        <span class="c1"># zero-dimensional array.</span>
+        <span class="c1"># See https://stackoverflow.com/a/19720866</span>
+        <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">array</span><span class="p">[()]</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__array_wrap__</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="ImageSequence"><a class="viewcode-back" href="../../../io.html#sdt.io.ImageSequence">[docs]</a><span class="k">class</span> <span class="nc">ImageSequence</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Sliceable, lazy-loading interface to multi-image files</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sliceable, lazy-loading interface to multi-image files</span>
 
 <span class="sd">    Single images can be retrieved by index, while substacks can be created</span>
 <span class="sd">    by slicing and fancy indexing using lists/arrays of indices or boolean</span>
@@ -131,49 +324,40 @@
 <span class="sd">    &gt;&gt;&gt; seq.close()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">uri</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">IO</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;File or file location or data to read from.&quot;&quot;&quot;</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="sd">&quot;&quot;&quot;Mode for opening file. Use &quot;i&quot; to retrieve a single image, &quot;I&quot; for</span>
-<span class="sd">    multple images, &quot;v&quot; for single volume, &quot;V&quot; for multiple volumes and &quot;?&quot;</span>
-<span class="sd">    for a sensible default.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;File or file location or data to read from.&quot;&quot;&quot;</span>
     <span class="n">reader_args</span><span class="p">:</span> <span class="n">Mapping</span>
-    <span class="sd">&quot;&quot;&quot;Keyword arguments passed to :py:func:`imageio.get_reader` when opening</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Keyword arguments passed to :py:func:`imageio.v3.imopen` when opening</span>
 <span class="sd">    file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_slicerator_flag</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Make it work with slicerator</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Whether this instance is the result of slicing another instance&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether this instance is the result of slicing another instance&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_slice</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">IO</span><span class="p">],</span>
-                 <span class="nb">format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">IO</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        uri</span>
 <span class="sd">            File or file location or data to read from.</span>
 <span class="sd">        format</span>
 <span class="sd">            File format. Use `None` for automatic detection.</span>
-<span class="sd">        mode</span>
-<span class="sd">            Mode for opening file. Use &quot;i&quot; to retrieve a single image, &quot;I&quot; for</span>
-<span class="sd">            multple images, &quot;v&quot; for single volume, &quot;V&quot; for multiple volumes</span>
-<span class="sd">            and &quot;?&quot; for a sensible default.</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Keyword arguments passed to :py:func:`imageio.get_reader` when</span>
-<span class="sd">            opening file.</span>
+<span class="sd">            Keyword arguments passed to :py:func:`imageio.v3.imopen` when</span>
+<span class="sd">            opening the file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">uri</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="nb">format</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reader_args</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_slice</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_tiff</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ImageSequence.open"><a class="viewcode-back" href="../../../io.html#sdt.io.ImageSequence.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ImageSequence&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Open the file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open the file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -183,15 +367,27 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot open sliced sequence.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="si">}</span><span class="s2"> already open.&quot;</span><span class="p">)</span>
-        <span class="kn">import</span> <span class="nn">imageio</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">get_reader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
-                                          <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">reader_args</span><span class="p">)</span>
+
+        <span class="kn">import</span> <span class="nn">imageio.v3</span>
+        <span class="kn">from</span> <span class="nn">imageio.plugins.tifffile_v3</span> <span class="kn">import</span> <span class="n">TifffilePlugin</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">v3</span><span class="o">.</span><span class="n">imopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">reader_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_tiff</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="p">,</span> <span class="n">TifffilePlugin</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_tiff</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">index</span><span class="o">=...</span><span class="p">,</span> <span class="n">page</span><span class="o">=...</span><span class="p">)</span><span class="o">.</span><span class="n">n_images</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">index</span><span class="o">=...</span><span class="p">)</span><span class="o">.</span><span class="n">n_images</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="ImageSequence.close"><a class="viewcode-back" href="../../../io.html#sdt.io.ImageSequence.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Close the file&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the file&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_slice</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Cannot close sliced sequence.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
     <span class="nd">@overload</span>
@@ -199,7 +395,7 @@
 
     <span class="k">def</span> <span class="nf">_resolve_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span>
                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Convert index of potentially sliced stack to original index</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert index of potentially sliced stack to original index</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -246,7 +442,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_parse_yaml_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meta</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Try to parse `description` metadata entry with YAML parser</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Try to parse `description` metadata entry with YAML parser</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -261,47 +457,49 @@
                 <span class="n">meta</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">)</span>
                 <span class="n">meta</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">yaml_md</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real_t</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get a single frame and set extra metadata</span>
+    <span class="k">def</span> <span class="nf">_get_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real_t</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a single frame and set extra metadata</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        real_t</span>
 <span class="sd">            Real frame index (i.e., w.r.t original file)</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments to pass to imageio&#39;s</span>
-<span class="sd">            ``Reader.get_data()`` method.</span>
+<span class="sd">            Additional keyword arguments to pass to the imageio plugin&#39;s</span>
+<span class="sd">            ``read()`` method.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Image data. The array has a ``meta`` attribute containing associated</span>
-<span class="sd">        metadata.</span>
+<span class="sd">        Image data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">real_t</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;frame_no&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">real_t</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_yaml_description</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_tiff</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">index</span><span class="o">=...</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">real_t</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">real_t</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">Image</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">frame_no</span> <span class="o">=</span> <span class="n">real_t</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-<div class="viewcode-block" id="ImageSequence.get_data"><a class="viewcode-back" href="../../../io.html#sdt.io.ImageSequence.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get a single frame</span>
+<div class="viewcode-block" id="ImageSequence.get_data"><a class="viewcode-back" href="../../../io.html#sdt.io.ImageSequence.get_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a single frame</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        t</span>
 <span class="sd">            Frame number</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments to pass to imageio&#39;s</span>
-<span class="sd">            ``Reader.get_data()`` method.</span>
+<span class="sd">            Additional keyword arguments to pass to the imageio plugin&#39;s</span>
+<span class="sd">            ``read()`` method.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Image data. The array has a ``meta`` attribute containing associated</span>
-<span class="sd">        metadata.</span>
+<span class="sd">        Image data. This has a `frame_no` attribute holding the original frame</span>
+<span class="sd">        number.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolve_index</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_single_frame</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolve_index</span><span class="p">(</span><span class="n">t</span><span class="p">)),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ImageSequence.get_meta_data"><a class="viewcode-back" href="../../../io.html#sdt.io.ImageSequence.get_meta_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get metadata for a frame</span>
+<div class="viewcode-block" id="ImageSequence.get_metadata"><a class="viewcode-back" href="../../../io.html#sdt.io.ImageSequence.get_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata for a frame</span>
 
 <span class="sd">        If ``t`` is not given, return the global metadata.</span>
 
@@ -312,21 +510,29 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Metadata dictionary.</span>
+<span class="sd">        Metadata dictionary. A `&quot;frame_no&quot;` entry with the original frame</span>
+<span class="sd">        number (i.e., before slicing the sequence) is also added.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">real_t</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_index</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">get_meta_data</span><span class="p">(</span><span class="n">real_t</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">real_t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;frame_no&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">real_t</span><span class="p">)</span>
+        <span class="n">real_t</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolve_index</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_tiff</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">metadata</span><span class="p">(</span><span class="n">index</span><span class="o">=...</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">real_t</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">metadata</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">real_t</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_yaml_description</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">real_t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;frame_no&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">real_t</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
+<div class="viewcode-block" id="ImageSequence.get_meta_data"><a class="viewcode-back" href="../../../io.html#sdt.io.ImageSequence.get_meta_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_meta_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:func:`get_metadata`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_metadata</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span> <span class="o">...</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Image</span><span class="p">:</span> <span class="o">...</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span>
                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ImageSequence&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Implement indexing and lazy slicing</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Implement indexing and lazy slicing</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -335,17 +541,19 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        If t is a single index, return the corresponding frame. Otherwise,</span>
-<span class="sd">        return a copy of ``self`` describing a substack.</span>
+<span class="sd">        If t is a single index, return the corresponding image data. This has a</span>
+<span class="sd">        `frame_no` attribute holding the original frame number.</span>
+<span class="sd">        Otherwise, return a copy of ``self`` describing a substack.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_index</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">t</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">_is_slice</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ret</span>
         <span class="c1"># Assume t is a number</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_single_frame</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_single_frame</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
@@ -355,57 +563,81 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="c1"># self._indices is None</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;True if the file is currently closed.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="p">,</span> <span class="s2">&quot;closed&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;File format. Use `None` for automatic detection.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reader</span><span class="o">.</span><span class="n">format</span><span class="o">.</span><span class="n">name</span>
-
-    <span class="nd">@format</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="n">fmt</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the file is currently closed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_closed</span></div>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

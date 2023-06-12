@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.helper.slicerator &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.helper.slicerator &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/helper/slicerator';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,30 +139,119 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.helper.slicerator</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.helper.slicerator</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) 2015, Daniel B. Allan</span>
 <span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
@@ -114,7 +283,7 @@
 
 
 <div class="viewcode-block" id="Slicerator"><a class="viewcode-back" href="../../../helper.html#sdt.helper.Slicerator">[docs]</a><span class="k">class</span> <span class="nc">Slicerator</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A generator that supports fancy indexing</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A generator that supports fancy indexing</span>
 
 <span class="sd">    When sliced using any iterable with a known length, it returns another</span>
 <span class="sd">    object like itself, a Slicerator. When sliced with an integer,</span>
@@ -133,7 +302,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ancestor</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">propagate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ancestor : object</span>
 <span class="sd">        indices : iterable</span>
@@ -206,7 +375,7 @@
 
 <div class="viewcode-block" id="Slicerator.from_func"><a class="viewcode-back" href="../../../helper.html#sdt.helper.Slicerator.from_func">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">propagate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Make a Slicerator from a function that accepts an integer index</span>
 
 <span class="sd">        Parameters</span>
@@ -229,7 +398,7 @@
 
 <div class="viewcode-block" id="Slicerator.from_class"><a class="viewcode-back" href="../../../helper.html#sdt.helper.Slicerator.from_class">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">some_class</span><span class="p">,</span> <span class="n">propagate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Make an existing class support fancy indexing via Slicerator objects</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make an existing class support fancy indexing via Slicerator objects</span>
 
 <span class="sd">        When sliced using any iterable with a known length, it returns a</span>
 <span class="sd">        Slicerator. When sliced with an integer, it returns the data payload.</span>
@@ -277,7 +446,7 @@
                 <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">some_class</span><span class="o">.</span><span class="vm">__doc__</span>  <span class="c1"># for Python 2, do it here</span>
 
             <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-                <span class="sd">&quot;&quot;&quot;Getitem supports repeated slicing via Slicerator objects.&quot;&quot;&quot;</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Getitem supports repeated slicing via Slicerator objects.&quot;&quot;&quot;</span>
                 <span class="n">indices</span><span class="p">,</span> <span class="n">new_length</span> <span class="o">=</span> <span class="n">key_to_indices</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">new_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
@@ -325,7 +494,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;for data access&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;for data access&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">)</span> <span class="ow">or</span>
                 <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_index</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
@@ -361,7 +530,7 @@
 
 
 <span class="k">def</span> <span class="nf">key_to_indices</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts a fancy key into a list of indices.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a fancy key into a list of indices.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -423,7 +592,7 @@
 
 
 <span class="k">def</span> <span class="nf">_index_generator</span><span class="p">(</span><span class="n">new_indices</span><span class="p">,</span> <span class="n">old_indices</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Find locations of new_indicies in the ref. frame of the old_indices.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find locations of new_indicies in the ref. frame of the old_indices.</span>
 
 <span class="sd">    Example: (1, 3), (1, 3, 5, 10) -&gt; (3, 10)</span>
 
@@ -461,7 +630,7 @@
 
 
 <div class="viewcode-block" id="Pipeline"><a class="viewcode-back" href="../../../helper.html#sdt.helper.Pipeline">[docs]</a><span class="k">class</span> <span class="nc">Pipeline</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A class to support lazy function evaluation on an iterable.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class to support lazy function evaluation on an iterable.</span>
 
 <span class="sd">    When a :py:class:`Pipeline` object is indexed, it returns an element of its</span>
 <span class="sd">    ancestor modified with a process function.</span>
@@ -470,7 +639,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proc_func</span><span class="p">,</span> <span class="o">*</span><span class="n">ancestors</span><span class="p">,</span> <span class="n">propagate_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">propagate_how</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        proc_func : callable</span>
 <span class="sd">            function that processes data returned by Slicerator. The function</span>
@@ -535,7 +704,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">_propagate_attrs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_prop_ancestors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get relevant ancestor(s) for attribute propagation</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get relevant ancestor(s) for attribute propagation</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -570,7 +739,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;for data access&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;for data access&quot;&quot;&quot;</span>
         <span class="n">indices</span><span class="p">,</span> <span class="n">new_length</span> <span class="o">=</span> <span class="n">key_to_indices</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">new_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
@@ -612,7 +781,7 @@
 
 
 <div class="viewcode-block" id="pipeline"><a class="viewcode-back" href="../../../helper.html#sdt.helper.pipeline">[docs]</a><span class="k">def</span> <span class="nf">pipeline</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator to enable lazy evaluation of a function.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to enable lazy evaluation of a function.</span>
 
 <span class="sd">    When the function is applied to a Slicerator or Pipeline object, it</span>
 <span class="sd">    returns another lazily-evaluated, Pipeline object.</span>
@@ -708,7 +877,7 @@
 
 
 <span class="k">def</span> <span class="nf">_pipeline_fromclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">retain_doc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ancestor_count</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Actual `pipeline` implementation</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Actual `pipeline` implementation</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -755,7 +924,7 @@
 
 
 <span class="k">def</span> <span class="nf">_pipeline_fromfunc</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">retain_doc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ancestor_count</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Actual `pipeline` implementation</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Actual `pipeline` implementation</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -821,7 +990,7 @@
 
 
 <span class="k">class</span> <span class="nc">SliceableAttribute</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This class enables index-taking methods that are linked to a Slicerator</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class enables index-taking methods that are linked to a Slicerator</span>
 <span class="sd">    object to remap their indices according to the Slicerator indices.</span>
 
 <span class="sd">    It also enables fancy indexing, exactly like the Slicerator itself. The new</span>
@@ -901,31 +1070,73 @@
 <span class="c1"># POSSIBILITY OF SUCH DAMAGE.</span>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

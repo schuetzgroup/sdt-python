@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.multicolor.registrator &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.multicolor.registrator &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/multicolor/registrator';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,30 +139,119 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.multicolor.registrator</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.multicolor.registrator</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
@@ -90,8 +259,8 @@
 
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">suppress</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">from</span> <span class="nn">typing.io</span> <span class="kn">import</span> <span class="n">BinaryIO</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span>
+                    <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">overload</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
@@ -101,12 +270,11 @@
 <span class="kn">import</span> <span class="nn">scipy.ndimage</span>
 <span class="kn">import</span> <span class="nn">scipy.spatial</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">roi</span>
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">Slicerator</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">helper</span><span class="p">,</span> <span class="n">roi</span>
 
 
 <span class="k">def</span> <span class="nf">_affine_trafo</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Perform an affine transformation</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform an affine transformation</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -126,7 +294,7 @@
 
 
 <div class="viewcode-block" id="Registrator"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator">[docs]</a><span class="k">class</span> <span class="nc">Registrator</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Registration of two fluorescence microscopy emission channels</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registration of two fluorescence microscopy emission channels</span>
 
 <span class="sd">    This class provides an easy-to-use interface to determine maps between</span>
 <span class="sd">    the channels&#39; coordinates using localization data from fiducial markers. It</span>
@@ -195,26 +363,26 @@
     <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s2">&quot;!Registrator&quot;</span>
 
     <span class="n">feat1</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;Positions of beads (as found by a localization algorithm) in the first</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Positions of beads (as found by a localization algorithm) in the first</span>
 <span class="sd">    channel. Each DataFrame corresponds to one image (sequence), thus multiple</span>
 <span class="sd">    bead images can be used to increase the accuracy.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">feat2</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;Same as :py:attr:`feat1`, but for the second channel&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Same as :py:attr:`feat1`, but for the second channel&quot;&quot;&quot;</span>
     <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span>
-    <span class="sd">&quot;&quot;&quot;Column names in :py:attr:`feat1` and :py:attr:`feat2`. Defaults are</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Column names in :py:attr:`feat1` and :py:attr:`feat2`. Defaults are</span>
 <span class="sd">    taken from :py:attr:`config.columns`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">channel_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;Channel names&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Channel names&quot;&quot;&quot;</span>
     <span class="n">pairs</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
-    <span class="sd">&quot;&quot;&quot;Pairs found by :py:meth:`determine_parameters`.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pairs found by :py:meth:`determine_parameters`.&quot;&quot;&quot;</span>
     <span class="n">parameters1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-    <span class="sd">&quot;&quot;&quot;Array describing the affine transformation of data from channel 1 to</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Array describing the affine transformation of data from channel 1 to</span>
 <span class="sd">    channel 2.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parameters2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
-    <span class="sd">&quot;&quot;&quot;Array describing the affine transformation of data from channel 2 to</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Array describing the affine transformation of data from channel 2 to</span>
 <span class="sd">    channel 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -226,7 +394,7 @@
                                        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
                  <span class="n">channel_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;channel1&quot;</span><span class="p">,</span> <span class="s2">&quot;channel2&quot;</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        feat1, feat2</span>
 <span class="sd">            Set the `feat1` and `feat2` attribute (turning it into a list</span>
@@ -236,6 +404,8 @@
 
 <span class="sd">        Other parameters</span>
 <span class="sd">        ----------------</span>
+<span class="sd">        channel_names</span>
+<span class="sd">            Set the `channel_names` attribute.</span>
 <span class="sd">        columns</span>
 <span class="sd">            Override default column names as defined in</span>
 <span class="sd">            :py:attr:`config.columns`. Relevant name are `coords` and `time`.</span>
@@ -243,9 +413,6 @@
 <span class="sd">            and a time column &quot;alt_frame&quot;, set</span>
 <span class="sd">            ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;], &quot;time&quot;: &quot;alt_frame&quot;}``. This is</span>
 <span class="sd">            used to set the :py:attr:`columns` attribute.</span>
-<span class="sd">        channel_names</span>
-<span class="sd">            Set the `channel_names` attribute. Defaults to ``[&quot;channel1&quot;,</span>
-<span class="sd">            &quot;channel2&quot;]``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feat1</span> <span class="o">=</span> <span class="p">[</span><span class="n">feat1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feat1</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="k">else</span> <span class="n">feat1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feat2</span> <span class="o">=</span> <span class="p">[</span><span class="n">feat2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feat2</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="k">else</span> <span class="n">feat2</span>
@@ -258,7 +425,7 @@
 <div class="viewcode-block" id="Registrator.determine_parameters"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.determine_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">determine_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
                              <span class="n">ambiguity_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
                              <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Determine the parameters for the affine transformation</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the parameters for the affine transformation</span>
 
 <span class="sd">        This takes the localizations of :py:attr:`feat1` and tries to match</span>
 <span class="sd">        them with those of :py:attr:`feat2`. Then a fit is used to determine</span>
@@ -285,15 +452,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">find_pairs</span><span class="p">(</span><span class="n">n_neighbors</span><span class="p">,</span> <span class="n">ambiguity_factor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fit_parameters</span><span class="p">(</span><span class="n">max_error</span><span class="p">)</span></div>
 
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                 <span class="n">inplace</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">cval</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]],</span>
+                 <span class="n">columns</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">):</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+                 <span class="n">inplace</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">cval</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]],</span>
+                 <span class="n">columns</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">helper</span><span class="o">.</span><span class="n">Slicerator</span><span class="p">,</span> <span class="n">helper</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">],</span>
+                 <span class="n">channel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">inplace</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">cval</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]],</span>
+                 <span class="n">columns</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">helper</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="n">ImageOrROI</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;ImageOrROI&quot;</span><span class="p">,</span>
+                         <span class="n">bound</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span>
+
 <div class="viewcode-block" id="Registrator.__call__"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.__call__">[docs]</a>    <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">,</span> <span class="n">Slicerator</span><span class="p">,</span>
-                             <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
-                 <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">data</span><span class="p">:</span> <span class="n">ImageOrROI</span><span class="p">,</span>
+                 <span class="n">channel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
                  <span class="n">cval</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
-                 <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;Correct for chromatic aberrations</span>
+                 <span class="n">columns</span><span class="p">:</span> <span class="n">Mapping</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="n">ImageOrROI</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply transformation to data</span>
 
 <span class="sd">        This can be done either on coordinates (e. g. resulting from feature</span>
 <span class="sd">        localization) or directly on raw images.</span>
@@ -305,20 +492,21 @@
 <span class="sd">            coordinates will be corrected. Otherwise,</span>
 <span class="sd">            :py:class:`sdt.helper.Pipeline` is used to correct image data using</span>
 <span class="sd">            an affine transformation.</span>
-<span class="sd">        channel : int</span>
+<span class="sd">        channel</span>
 <span class="sd">            If `features` are in the first channel (corresponding to the</span>
-<span class="sd">            `feat1` arg of the constructor), set to 1. If features are in the</span>
-<span class="sd">            second channel, set to 2. Depending on this, a transformation will</span>
+<span class="sd">            `feat1` arg of the constructor), set to 1 or the first channel&#39;s</span>
+<span class="sd">            name. If features are in the second channel, set to 2 or the</span>
+<span class="sd">            second channel&#39;s name. Depending on this, a transformation will</span>
 <span class="sd">            be applied to the coordinates of `features` to match the other</span>
 <span class="sd">            channel (mathematically speaking depending on this parameter</span>
 <span class="sd">            either the &quot;original&quot; transformation or its inverse are applied.)</span>
-<span class="sd">        inplace : bool</span>
+<span class="sd">        inplace</span>
 <span class="sd">            Only has an effect if `data` is a DataFrame. If True, the</span>
 <span class="sd">            feature coordinates will be corrected in place.</span>
-<span class="sd">        mode : str</span>
+<span class="sd">        mode</span>
 <span class="sd">            How to fill points outside of the uncorrected image boundaries.</span>
 <span class="sd">            Possibilities are &quot;constant&quot;, &quot;nearest&quot;, &quot;reflect&quot; or &quot;wrap&quot;.</span>
-<span class="sd">        cval : scalar or callable</span>
+<span class="sd">        cval</span>
 <span class="sd">            What value to use for `mode=&quot;constant&quot;`. If this is callable, it</span>
 <span class="sd">            should take a single argument (the uncorrected image) and return a</span>
 <span class="sd">            scalar, which will be used as the fill value.</span>
@@ -331,8 +519,13 @@
 <span class="sd">            That means, if the DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot;,</span>
 <span class="sd">            set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;]}``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">channel</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;channel has to be either 1 or 2&quot;</span><span class="p">)</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_names</span><span class="p">[:</span><span class="mi">2</span><span class="p">]]</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;channel has to be one of &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">valid</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">pos_columns</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span>
 
@@ -340,7 +533,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">loc</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">pos_columns</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-            <span class="n">par</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;parameters</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel</span><span class="p">))</span>
+            <span class="n">par</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;parameters</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">data</span><span class="p">[</span><span class="n">pos_columns</span><span class="p">]</span> <span class="o">=</span> <span class="n">_affine_trafo</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -348,21 +541,20 @@
                 <span class="k">return</span> <span class="n">data</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">):</span>
             <span class="n">t</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Affine2D</span><span class="p">(</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;parameters</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">channel</span><span class="p">)))</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;parameters</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">transform_path</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">path</span><span class="p">),</span>
                                <span class="n">buffer</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span>
                                <span class="n">no_image</span><span class="o">=</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">image_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">parms</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;parameters</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">2</span> <span class="k">if</span> <span class="n">channel</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">parms</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;parameters</span><span class="si">{</span><span class="mi">2</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">channel</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="nd">@pipeline</span>
+            <span class="nd">@helper</span><span class="o">.</span><span class="n">pipeline</span>
             <span class="k">def</span> <span class="nf">corr</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
                 <span class="c1"># transpose image since matrix axes are reversed compared to</span>
                 <span class="c1"># coordinate axes</span>
                 <span class="n">img_t</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">T</span>
 
-                <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">cval</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">cval</span><span class="p">):</span>
                     <span class="n">cv</span> <span class="o">=</span> <span class="n">cval</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">cv</span> <span class="o">=</span> <span class="n">cval</span>
@@ -377,7 +569,7 @@
             <span class="k">return</span> <span class="n">corr</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Registrator.test"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Test validity of the correction parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test validity of the correction parameters</span>
 
 <span class="sd">        This plots the affine transformation functions and the coordinates of</span>
 <span class="sd">        the pairs that were matched in the channels. If everything went well,</span>
@@ -424,8 +616,8 @@
             <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Registrator.save"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;npz&quot;</span><span class="p">,</span>
-             <span class="n">key</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;chromatic_param1&quot;</span><span class="p">,</span> <span class="s2">&quot;chromatic_param2&quot;</span><span class="p">)):</span>
-        <span class="sd">&quot;&quot;&quot;Save transformation parameters to file</span>
+             <span class="n">key</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;chromatic_param1&quot;</span><span class="p">,</span> <span class="s2">&quot;chromatic_param2&quot;</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save transformation parameters to file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -450,9 +642,9 @@
 
 <div class="viewcode-block" id="Registrator.load"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.load">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BinaryIO</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;npz&quot;</span><span class="p">,</span>
-             <span class="n">key</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;chromatic_param1&quot;</span><span class="p">,</span> <span class="s2">&quot;chromatic_param2&quot;</span><span class="p">)</span>
+             <span class="n">key</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;chromatic_param1&quot;</span><span class="p">,</span> <span class="s2">&quot;chromatic_param2&quot;</span><span class="p">)</span>
              <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Registrator&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Read paramaters from a file and construct a `Registrator`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read paramaters from a file and construct a `Registrator`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -464,8 +656,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        A :py:class:`Registrator` instance with the parameters read from the</span>
-<span class="sd">        file.</span>
+<span class="sd">        A class instance with the parameters read from the file.</span>
 
 <span class="sd">        Other parameters</span>
 <span class="sd">        ----------------</span>
@@ -497,7 +688,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calc_bases</span><span class="p">(</span><span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create orthogonal coordinate system for each bead</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create orthogonal coordinate system for each bead</span>
 
 <span class="sd">        First basis vector is from the bead to the furthest of the n_neighbors</span>
 <span class="sd">        neighbors, second is to the second-furthest minus the projection onto</span>
@@ -537,7 +728,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_calc_local_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Calculate coordinates of neighboring beads in local coordinates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate coordinates of neighboring beads in local coordinates</span>
 
 <span class="sd">        Create a coordinate system for each bead using :py:meth:`_calc_bases`</span>
 <span class="sd">        and compute the coordinates of the neighboring beads.</span>
@@ -578,7 +769,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_signatures_from_local_coords</span><span class="p">(</span><span class="n">local_coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                                       <span class="n">triu</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extract bead signatures from local coordinates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract bead signatures from local coordinates</span>
 
 <span class="sd">        Due to the construction of the basis vectors, the furthest neighbor</span>
 <span class="sd">        will always have coordinates [1., 0., …, .0], the will have</span>
@@ -607,7 +798,7 @@
     <span class="k">def</span> <span class="nf">_pairs_from_signatures</span><span class="p">(</span><span class="n">coords</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
                                <span class="n">signatures</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
                                <span class="n">ambiguity_factor</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Find pairs from signatures</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find pairs from signatures</span>
 
 <span class="sd">        Find the nearest neighbors in signature space</span>
 
@@ -644,7 +835,7 @@
                 <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">unamb_twoway</span><span class="p">])</span>
 
 <div class="viewcode-block" id="Registrator.find_pairs"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.find_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">find_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">ambiguity_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Match features of `feat1` with features of `feat2`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Match features of `feat1` with features of `feat2`</span>
 
 <span class="sd">        Find the geomtric signature for each feature in each channel. Those</span>
 <span class="sd">        with best matching signatures are taken to be the same feature.</span>
@@ -702,7 +893,7 @@
             <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">pairs</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_product</span><span class="p">(</span><span class="n">pair_cols</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Registrator.fit_parameters"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.fit_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">fit_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_error</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Determine parameters for the affine transformation</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine parameters for the affine transformation</span>
 
 <span class="sd">        An affine transformation is used to map x and y coordinates of `feat1`</span>
 <span class="sd">        to to those of `feat2`. This requires :py:attr:`pairs` to be set, e.g.</span>
@@ -742,7 +933,7 @@
 
 <div class="viewcode-block" id="Registrator.to_yaml"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dump as YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump as YAML</span>
 
 <span class="sd">        Pass this as the `representer` parameter to your</span>
 <span class="sd">        :py:class:`yaml.Dumper` subclass&#39;s `add_representer` method.</span>
@@ -753,7 +944,7 @@
 
 <div class="viewcode-block" id="Registrator.from_yaml"><a class="viewcode-back" href="../../../multicolor.html#sdt.multicolor.Registrator.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct from YAML</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct from YAML</span>
 
 <span class="sd">        Pass this as the `constructor` parameter to your</span>
 <span class="sd">        :py:class:`yaml.Loader` subclass&#39;s `add_constructor` method.</span>
@@ -776,31 +967,73 @@
     <span class="n">yaml</span><span class="o">.</span><span class="n">register_yaml_class</span><span class="p">(</span><span class="n">Registrator</span><span class="p">)</span>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

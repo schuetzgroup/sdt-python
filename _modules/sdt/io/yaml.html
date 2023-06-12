@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.io.yaml &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.io.yaml &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/io/yaml';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,30 +139,119 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.io.yaml</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.io.yaml</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
@@ -108,12 +277,12 @@
 
 
 <span class="k">class</span> <span class="nc">ArrayNode</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">Node</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;YAML node for numpy arrays&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;YAML node for numpy arrays&quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
 
 <span class="k">class</span> <span class="nc">ArrayEvent</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">NodeEvent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;YAML parser event for numpy arrays&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;YAML parser event for numpy arrays&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span>
@@ -122,7 +291,7 @@
 
 
 <span class="k">class</span> <span class="nc">ArrayDumperBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Base class implementing a readable representation of numpy arrays</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class implementing a readable representation of numpy arrays</span>
 
 <span class="sd">    Uses :py:func:`numpy.array2string` to create a readable representation</span>
 <span class="sd">    of an array as a nested list.</span>
@@ -154,7 +323,7 @@
 
 
 <span class="k">class</span> <span class="nc">ArrayDumper</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">Dumper</span><span class="p">,</span> <span class="n">ArrayDumperBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`yaml.Dumper` making numpy array dumps more readable</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`yaml.Dumper` making numpy array dumps more readable</span>
 
 <span class="sd">    This uses :py:func:`numpy.array2string` to create a readable representation</span>
 <span class="sd">    of an array as a nested list.</span>
@@ -177,7 +346,7 @@
 
 
 <span class="k">class</span> <span class="nc">SafeArrayDumper</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeDumper</span><span class="p">,</span> <span class="n">ArrayDumperBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`yaml.SafeDumper` making numpy array dumps more readable</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`yaml.SafeDumper` making numpy array dumps more readable</span>
 
 <span class="sd">    This uses :py:func:`numpy.array2string` to create a readable representation</span>
 <span class="sd">    of an array as a nested list.</span>
@@ -205,14 +374,14 @@
 
 
 <span class="k">class</span> <span class="nc">ArrayLoaderBase</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Base class for loading arrays dumped by :py:class:`ArrayDumperBase`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for loading arrays dumped by :py:class:`ArrayDumperBase`&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">construct_numpy_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_sequence</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ArrayLoader</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">Loader</span><span class="p">,</span> <span class="n">ArrayLoaderBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`yaml.Loader` for loading numpy arrays</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`yaml.Loader` for loading numpy arrays</span>
 
 <span class="sd">    that were dumped using :py:class:`ArrayDumper`.</span>
 
@@ -223,7 +392,7 @@
 
 
 <span class="k">class</span> <span class="nc">SafeArrayLoader</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeLoader</span><span class="p">,</span> <span class="n">ArrayLoaderBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`yaml.SafeLoader` for loading numpy arrays</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`yaml.SafeLoader` for loading numpy arrays</span>
 
 <span class="sd">    that were dumped using :py:class:`SafeArrayDumper`.</span>
 
@@ -240,7 +409,7 @@
 
 
 <div class="viewcode-block" id="Dumper"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.Dumper">[docs]</a><span class="k">class</span> <span class="nc">Dumper</span><span class="p">(</span><span class="n">ArrayDumper</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`ArrayDumper` with support for many more types</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`ArrayDumper` with support for many more types</span>
 
 <span class="sd">    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -248,7 +417,7 @@
 
 
 <div class="viewcode-block" id="SafeDumper"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.SafeDumper">[docs]</a><span class="k">class</span> <span class="nc">SafeDumper</span><span class="p">(</span><span class="n">SafeArrayDumper</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`SafeArrayDumper` with support for many more types</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`SafeArrayDumper` with support for many more types</span>
 
 <span class="sd">    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -256,7 +425,7 @@
 
 
 <div class="viewcode-block" id="Loader"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.Loader">[docs]</a><span class="k">class</span> <span class="nc">Loader</span><span class="p">(</span><span class="n">ArrayLoader</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`ArrayLoader` with support for many more types</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`ArrayLoader` with support for many more types</span>
 
 <span class="sd">    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -264,7 +433,7 @@
 
 
 <div class="viewcode-block" id="SafeLoader"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.SafeLoader">[docs]</a><span class="k">class</span> <span class="nc">SafeLoader</span><span class="p">(</span><span class="n">SafeArrayLoader</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A :py:class:`SafeArrayLoader` with support for many more types</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A :py:class:`SafeArrayLoader` with support for many more types</span>
 
 <span class="sd">    of the :py:mod:`sdt` package, e. g. :py:class:`roi.ROI`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -321,7 +490,7 @@
 
 
 <span class="k">def</span> <span class="nf">_class_representer_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a representer for class `cls`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a representer for class `cls`</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -346,7 +515,7 @@
 
 
 <span class="k">def</span> <span class="nf">_class_constructor_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a constructor for class `cls`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a constructor for class `cls`</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -366,47 +535,47 @@
 
 
 <div class="viewcode-block" id="dump"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.dump">[docs]</a><span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrapper around :py:func:`yaml.dump` using :py:class:`Dumper`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around :py:func:`yaml.dump` using :py:class:`Dumper`&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="safe_dump"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.safe_dump">[docs]</a><span class="k">def</span> <span class="nf">safe_dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump` using :py:class:`SafeDumper`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump` using :py:class:`SafeDumper`&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">SafeDumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="dump_all"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.dump_all">[docs]</a><span class="k">def</span> <span class="nf">dump_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump_all` using :py:class:`Dumper`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump_all` using :py:class:`Dumper`&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="safe_dump_all"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.safe_dump_all">[docs]</a><span class="k">def</span> <span class="nf">safe_dump_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump_all` using :py:class:`SafeDumper`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.dump_all` using :py:class:`SafeDumper`&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">SafeDumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="load"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">Loader</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load` using :py:class:`Loader`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load` using :py:class:`Loader`&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="safe_load"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.safe_load">[docs]</a><span class="k">def</span> <span class="nf">safe_load</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load` using :py:class:`SafeLoader`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load` using :py:class:`SafeLoader`&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">SafeLoader</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="load_all"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.load_all">[docs]</a><span class="k">def</span> <span class="nf">load_all</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">Loader</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load_all` using :py:class:`Loader`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load_all` using :py:class:`Loader`&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load_all</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="safe_load_all"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.safe_load_all">[docs]</a><span class="k">def</span> <span class="nf">safe_load_all</span><span class="p">(</span><span class="n">stream</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load_all` using :py:class:`SafeLoader`&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrap PyYAML&#39;s :py:func:`yaml.load_all` using :py:class:`SafeLoader`&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load_all</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">SafeLoader</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="register_yaml_class"><a class="viewcode-back" href="../../../io.html#sdt.io.yaml.register_yaml_class">[docs]</a><span class="k">def</span> <span class="nf">register_yaml_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add support for representing and loading a class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add support for representing and loading a class</span>
 
 <span class="sd">    A representer is be added to :py:class:`Dumper` and</span>
 <span class="sd">    :py:class:`SafeDumper`. A loader is added to :py:class:`Loader` and</span>
@@ -428,41 +597,83 @@
 <span class="sd">        Class to add support for</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rep</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;to_yaml&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">rep</span> <span class="o">=</span> <span class="n">rep</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rep</span><span class="p">)</span> <span class="k">else</span> <span class="n">_class_representer_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="n">rep</span> <span class="o">=</span> <span class="n">rep</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rep</span><span class="p">)</span> <span class="k">else</span> <span class="n">_class_representer_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
     <span class="n">Dumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
     <span class="n">SafeDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
 
     <span class="n">cons</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;from_yaml&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">cons</span> <span class="o">=</span> <span class="n">cons</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">cons</span><span class="p">)</span> <span class="k">else</span> <span class="n">_class_representer_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+    <span class="n">cons</span> <span class="o">=</span> <span class="n">cons</span> <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">cons</span><span class="p">)</span> <span class="k">else</span> <span class="n">_class_representer_factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
     <span class="n">Loader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">cons</span><span class="p">)</span>
     <span class="n">SafeLoader</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">yaml_tag</span><span class="p">,</span> <span class="n">cons</span><span class="p">)</span></div>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

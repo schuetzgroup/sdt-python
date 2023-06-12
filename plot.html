@@ -1,46 +1,127 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting utilities &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Plotting utilities &#8212; sdt-python 18.0 documentation</title>
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'plot';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Optimization and fitting algorithms" href="optimize.html" />
-    <link rel="prev" title="Special functions" href="funcs.html" /> 
-</head>
+    <link rel="prev" title="Special functions" href="funcs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="motion.html">Diffusion analysis</a></li>
@@ -55,40 +136,190 @@
 <li class="toctree-l1"><a class="reference internal" href="nbui.html">GUIs for the Jupyter notebook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sim.html">Simulation of microscopy-related data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#programming-reference">Programming reference</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Plotting utilities</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/plot.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
   </ul>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <span class="target" id="module-sdt.plot"></span><div class="section" id="plotting-utilities">
-<h1>Plotting utilities<a class="headerlink" href="#plotting-utilities" title="Permalink to this heading"></a></h1>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Plotting utilities</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#programming-reference">Programming reference</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.plot.density_scatter"><code class="docutils literal notranslate"><span class="pre">density_scatter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.plot.PanelLabel"><code class="docutils literal notranslate"><span class="pre">PanelLabel</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.plot.align_panellabels"><code class="docutils literal notranslate"><span class="pre">align_panellabels()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <span class="target" id="module-sdt.plot"></span><section id="plotting-utilities">
+<h1>Plotting utilities<a class="headerlink" href="#plotting-utilities" title="Permalink to this heading">#</a></h1>
 <p>The <a class="reference internal" href="#module-sdt.plot" title="sdt.plot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.plot</span></code></a> module contains</p>
 <ul class="simple">
 <li><p>the <a class="reference internal" href="#sdt.plot.density_scatter" title="sdt.plot.density_scatter"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_scatter()</span></code></a> function, which creates a scatter plot where
@@ -96,11 +327,11 @@ data points are colored according to data point density.</p></li>
 <li><p><a class="reference internal" href="#sdt.plot.PanelLabel" title="sdt.plot.PanelLabel"><code class="xref py py-class docutils literal notranslate"><span class="pre">PanelLabel</span></code></a> for creating sub-panel labels for paper figures as
 well as <a class="reference internal" href="#sdt.plot.align_panellabels" title="sdt.plot.align_panellabels"><code class="xref py py-func docutils literal notranslate"><span class="pre">align_panellabels()</span></code></a> for aligning them.</p></li>
 </ul>
-<div class="section" id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading"></a></h2>
+<section id="programming-reference">
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.plot.density_scatter">
-<span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">density_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#density_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.density_scatter" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">density_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#density_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.density_scatter" title="Permalink to this definition">#</a></dt>
 <dd><p>Make a scatter plot with points colored according to density</p>
 <p>Use a Gaussian kernel density estimate to calculate the density of
 data points and color them accordingly.</p>
@@ -110,7 +341,7 @@ data points and color them accordingly.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array_like</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>)</em>) – Input data</p></li>
 <li><p><strong>y</strong> (<em>array_like</em><em>, </em><em>shape</em><em>(</em><em>n</em><em>, </em><em>)</em>) – Input data</p></li>
@@ -126,7 +357,7 @@ densities to colors. Defaults to “viridis”.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.plot.PanelLabel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">PanelLabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'axislabel'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verticalposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'top'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#PanelLabel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.PanelLabel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">PanelLabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">horizontalposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'axislabel'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verticalposition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'top'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#PanelLabel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.PanelLabel" title="Permalink to this definition">#</a></dt>
 <dd><p>(Sub-) panel label for figures</p>
 <p>Scientific figures often consist of more than one panel. This allows for
 adding labels (such as a, b, c, …) to the panels.</p>
@@ -146,7 +377,7 @@ adding labels (such as a, b, c, …) to the panels.</p>
 <p><a class="reference internal" href="#sdt.plot.align_panellabels" title="sdt.plot.align_panellabels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_panellabels</span></code></a></p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>label</strong> (<em>str</em>) – Label text</p></li>
 <li><p><strong>horizontalposition</strong> (<em>str</em>) – Where to position horizontally. Can be “axislabel” (align with the
@@ -154,7 +385,7 @@ y axis label) or “frame” (align with the frame of the plot).</p></li>
 <li><p><strong>verticalposition</strong> (<em>str</em>) – Where to position vertically. Can be “top” (align with the top of
 the panel), “axislabel” (align with the top x axis label) or
 “frame” (align with the frame of the plot).</p></li>
-<li><p><strong>pad</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>Iterable</em><em>[</em><em>float</em><em>]</em><em>]</em>) – Extra space between label and panel</p></li>
+<li><p><strong>pad</strong> (<em>float</em><em> | </em><em>Iterable</em><em>[</em><em>float</em><em>]</em>) – Extra space between label and panel</p></li>
 <li><p><strong>**kwargs</strong> – Additional settings. See <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.text.Annotation</span></code>
 for details. Note that <code class="docutils literal notranslate"><span class="pre">horizontalalignment</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;right&quot;</span></code> by
 default. If there is too much horizontal space, try setting
@@ -166,7 +397,7 @@ default. If there is too much horizontal space, try setting
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.plot.align_panellabels">
-<span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">align_panellabels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#align_panellabels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.align_panellabels" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.plot.</span></span><span class="sig-name descname"><span class="pre">align_panellabels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/plot.html#align_panellabels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.plot.align_panellabels" title="Permalink to this definition">#</a></dt>
 <dd><p>Align panel labels row-wise and column-wise</p>
 <p>Labels in the same row will be aligned vertically, those in the same column
 horizontally. For this, all axes to which the panels have been added need
@@ -186,7 +417,7 @@ to share the same GridSpec.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pls</strong> (<em>Iterable</em><em>[</em><a class="reference internal" href="#sdt.plot.PanelLabel" title="sdt.plot.PanelLabel"><em>PanelLabel</em></a><em>]</em>) – Panel labels to align</p>
 </dd>
 </dl>
@@ -196,38 +427,114 @@ to share the same GridSpec.</p>
 </div>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="funcs.html" class="btn btn-neutral float-left" title="Special functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="optimize.html" class="btn btn-neutral float-right" title="Optimization and fitting algorithms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+                </article>
+              
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="funcs.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Special functions</p>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </a>
+    <a class="right-next"
+       href="optimize.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Optimization and fitting algorithms</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
 
-</body>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#programming-reference">Programming reference</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.plot.density_scatter"><code class="docutils literal notranslate"><span class="pre">density_scatter()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.plot.PanelLabel"><code class="docutils literal notranslate"><span class="pre">PanelLabel</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.plot.align_panellabels"><code class="docutils literal notranslate"><span class="pre">align_panellabels()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>

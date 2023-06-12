@@ -1,44 +1,124 @@
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" >
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sdt.motion.msd_dist &mdash; sdt-python 17.3 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sdt-python
-          </a>
-              <div class="version">
-                17.3
-              </div>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sdt.motion.msd_dist &#8212; sdt-python 18.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/motion/msd_dist';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../multicolor.html">Multi-color data analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../motion.html">Diffusion analysis</a></li>
@@ -59,30 +139,119 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
 
-        </div>
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
       </div>
-    </nav>
+      
+      <main id="main-content" class="bd-main">
+        
+        
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">sdt-python</a>
-      </nav>
+<div class="sbt-scroll-pixel-helper"></div>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sdt.motion.msd_dist</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
-  </ul>
-  <hr/>
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/schuetzgroup/sdt-python" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <h1>Source code for sdt.motion.msd_dist</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
@@ -103,7 +272,7 @@
 
 
 <span class="k">def</span> <span class="nf">_fit_cdf_prony</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Use :py:class:`sdt_op.ProbExpSumModel` to fit the CDF</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Use :py:class:`sdt_op.ProbExpSumModel` to fit the CDF</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -138,7 +307,7 @@
 
 
 <span class="k">def</span> <span class="nf">_fit_cdf_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initial_b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initial_l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit CDF by least squares fitting</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit CDF by least squares fitting</span>
 
 <span class="sd">    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting</span>
 <span class="sd">    :math:`\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}` to the data</span>
@@ -210,7 +379,7 @@
 
 <span class="k">def</span> <span class="nf">_msd_from_cdf</span><span class="p">(</span><span class="n">square_disp</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_boot</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit the CDF of square displacements to an exponential model</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit the CDF of square displacements to an exponential model</span>
 
 <span class="sd">    The cumulative density function (CDF) of square displacements is the</span>
 <span class="sd">    sum</span>
@@ -292,7 +461,7 @@
 
 
 <span class="k">def</span> <span class="nf">_assign_components</span><span class="p">(</span><span class="n">msds</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">how</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Assign MSDs and weights to components</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assign MSDs and weights to components</span>
 
 <span class="sd">    Which of the MSDs / weights gets assigned to which component in</span>
 <span class="sd">    :py:func:`_msd_from_cdf` depends on the order the fitting function</span>
@@ -339,7 +508,7 @@
 
 
 <div class="viewcode-block" id="MsdDist"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist">[docs]</a><span class="k">class</span> <span class="nc">MsdDist</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Calculate and analyze mean square displacement (MSD) distribution</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate and analyze mean square displacement (MSD) distribution</span>
 
 <span class="sd">    from single moleclue tracking data. This differs from</span>
 <span class="sd">    :py:class:`sdt.motion.Msd` by the fact that the distributions</span>
@@ -353,7 +522,7 @@
                  <span class="n">ensemble</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_method</span><span class="o">=</span><span class="s2">&quot;lsq&quot;</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                  <span class="n">e_name</span><span class="o">=</span><span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">assign_method</span><span class="o">=</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data : pandas.DataFrame or iterable of pandas.DataFrame</span>
 <span class="sd">            Tracking data. Either a single DataFrame or a collection of</span>
@@ -434,7 +603,7 @@
                         <span class="p">[</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="s2">&quot;msd_err&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="s2">&quot;weight_err&quot;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="MsdDist.get_msd"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist.get_msd">[docs]</a>    <span class="k">def</span> <span class="nf">get_msd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get MSD and error DataFrames</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get MSD and error DataFrames</span>
 
 <span class="sd">        The columns contain data for different lag times. Each row corresponds</span>
 <span class="sd">        to one trajectory. The row index is either the particle number if a</span>
@@ -477,7 +646,7 @@
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="MsdDist.fit"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;brownian&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Fit a model function to the MSD data</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit a model function to the MSD data</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -497,9 +666,9 @@
 
 
 <span class="k">class</span> <span class="nc">MsdDistFit</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Fit diffusion parameters to MSDs from square displacement dists&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit diffusion parameters to MSDs from square displacement dists&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msd_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">weight_data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        msd_data : list of msd_base.MsdData</span>
 <span class="sd">            Each MsdData instance should contain MSD data for one component</span>
@@ -536,7 +705,7 @@
     <span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;fit_err&quot;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get fit results</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get fit results</span>
 
 <span class="sd">        The columns contain fitted parameters. Each row corresponds</span>
 <span class="sd">        to one trajectory. The row index is either the particle number or a</span>
@@ -574,7 +743,7 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msd_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot MSDs and fit results</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot MSDs and fit results</span>
 
 <span class="sd">        First plot will show weights of the components, other plots will</span>
 <span class="sd">        show MSDs and fits of each component.</span>
@@ -624,13 +793,13 @@
 
 
 <span class="k">class</span> <span class="nc">Weights</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Handle weight data for a single component from :py:class:`MsdDist`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle weight data for a single component from :py:class:`MsdDist`</span>
 
 <span class="sd">    This is similar to what e.g. :py:class:`msd.BrownianMotion` does with</span>
 <span class="sd">    MSD data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight_data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        weight_data : list of msd_base.MsdData</span>
 <span class="sd">            Weight data for each component</span>
@@ -649,7 +818,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span> <span class="o">=</span> <span class="n">weight_data</span>
 
     <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get results</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get results</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -687,7 +856,7 @@
         <span class="k">return</span> <span class="n">res_df</span><span class="p">,</span> <span class="n">err_df</span>
 
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot lag time vs. weight</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot lag time vs. weight</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -755,7 +924,7 @@
 <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
 <span class="k">def</span> <span class="nf">emsd_cdf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pixel_size</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">num_frac</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;lsq&quot;</span><span class="p">,</span>
              <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate ensemble mean square displacements from tracking data CDF</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate ensemble mean square displacements from tracking data CDF</span>
 
 <span class="sd">    .. deperecated:: 14.0</span>
 <span class="sd">        Use :py:class:`MsdDist` instead.</span>
@@ -817,31 +986,73 @@
     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 
-           </div>
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Lukas Schrangl
+</p>
 
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2015—2022, Lukas Schrangl.</p>
   </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2015—2023, Lukas Schrangl.
+      <br/>
+    
+  </p>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
-      </div>
-    </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
 
-</body>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
 </html>
