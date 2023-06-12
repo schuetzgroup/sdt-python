@@ -66,8 +66,6 @@ MyChooser {
         assert ch.roRes == "blub: 0"
         assert ch.error is None
         assert ch.status == gui.Sdt.WorkerStatus.Idle
-    except Exception:
-        raise
     finally:
         # need to disable manually for tests to avoid hang on shutdown
         ch.previewEnabled = False
@@ -104,8 +102,6 @@ MyChooserErr {
         assert isinstance(chErr.error, RuntimeError)
         assert str(chErr.error) == "this is intentional"
         assert chErr.status == gui.Sdt.WorkerStatus.Error
-    except Exception:
-        raise
     finally:
         # need to disable manually for tests to avoid hang on shutdown
         chErr.previewEnabled = False
