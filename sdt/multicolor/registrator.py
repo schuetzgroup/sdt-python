@@ -4,9 +4,8 @@
 
 from contextlib import suppress
 from pathlib import Path
-from typing import (Callable, Dict, Literal, Mapping, Optional,
+from typing import (BinaryIO, Callable, Dict, Literal, Mapping, Optional,
                     Sequence, Tuple, TypeVar, Union, overload)
-from typing.io import BinaryIO
 
 import cv2
 import matplotlib as mpl
