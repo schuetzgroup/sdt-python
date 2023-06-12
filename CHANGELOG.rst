@@ -13,6 +13,18 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+18.0
+----
+
+- :py:class:`io.ImageSequence`: Use ``imageio`` v3 API. Due to separation of
+  data and metadata, there is no more ``meta`` attribute attached to image
+  arrays. Use :py:meth:`io.ImageSequnece.get_metadata`` instead (API break).
+- Allow passing metadata separately to :py:func:`io.save_as_tiff`. For this,
+  the file name is now the first argument, followed by image data, followed by
+  optional metadata (API break).
+- Various bug fixes, mostly due to changes of underlying libraries.
+
+
 17.5
 ----
 
@@ -90,8 +102,12 @@ so watch out for those!
   from a multi-state sample to :py:class:`fret.SmFRETAnalyzer`
 
 
+Older versions
+--------------
+
+
 16.1
-----
+~~~~
 
 - Many fixes for the still-experimental :py:mod:`gui` sub-package
 - Deal consitently with empty input in :py:func:`brightness.from_raw_image`
@@ -99,19 +115,19 @@ so watch out for those!
 
 
 16.0.2
-------
+~~~~~~
 
 - Include Breeze icon theme's `index.theme` in build
 
 
 16.0.1
-------
+~~~~~~
 
 - Include QML files in build
 
 
 16.0
-----
+~~~~
 
 - Introduce :py:class:`io.ImageSequence`, a PIMS-like interface to the
   `imageio` librario.
@@ -134,19 +150,19 @@ so watch out for those!
 
 
 15.2
-----
+~~~~
 
 - Fix reading metadata in :py:class:`io.SdtTiffStack`.
 
 
 15.1
-----
+~~~~
 
 - Slightly increase tolerance on one test for CI
 
 
 15.0
-----
+~~~~
 
 - Add :py:class:`nbui.FileDialog` and :py:class:`nbui.ChannelSplitter` classes.
 - Rename :py:class:`chromatic.Corrector` ->
@@ -168,34 +184,34 @@ so watch out for those!
 
 
 14.4
-----
+~~~~
 
 - motion.MsdDist: Ensure proper assignment of MSDs/weights to components
 - fret.SmFretAnalyzer.bleach_step: Suport donor-only and acceptor-only samples
 
 
 14.3.1 – 14.3.2
----------------
+~~~~~~~~~~~~~~~
 
 - Fix tests for OSX and Windows
 - Use exclusively bundled slicerator
 
 
 14.3
-----
+~~~~
 
 - Include license files via setup.cfg
 
 
 14.2
-----
+~~~~
 
 - Publicly release under BSD 3-Clause license
 - Cleanups
 
 
 14.1
-----
+~~~~
 
 - Fix bug in :py:class:`fret.FrameSelector` which was triggered when the
   highest occuring frame number was divisible by the length of the excitation
@@ -203,7 +219,7 @@ so watch out for those!
 
 
 14.0
-----
+~~~~
 
 - Completely reworked MSD analysis framework. This can be used on the ensemble
   level or on individual tracks. It is now easier to use and extensible
@@ -225,9 +241,6 @@ so watch out for those!
   development seems to have stalled. Use it instead of the external
   slicerator.
 
-
-Older versions
---------------
 
 13.4
 ~~~~
