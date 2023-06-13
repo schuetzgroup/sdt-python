@@ -80,9 +80,9 @@ class Dataset(ListModel):
             f = f.toLocalFile()
         return Path(f).as_posix()
 
-    @QtCore.pyqtSlot(list)
-    @QtCore.pyqtSlot(str, list)
-    @QtCore.pyqtSlot(str, list, int, int)
+    @QtCore.pyqtSlot("QVariant")
+    @QtCore.pyqtSlot(str, "QVariant")
+    @QtCore.pyqtSlot(str, "QVariant", int, int)
     def setFiles(self,
                  fileRoleOrFiles: Union[str, Iterable[FilePath]],
                  files: Optional[FilePath] = None, startIndex: int = 0,
