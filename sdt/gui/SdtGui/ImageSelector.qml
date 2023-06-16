@@ -112,7 +112,7 @@ T.ImageSelector {
             var sel = fileUrls
             // Qt6
             // var sel = selectedFiles
-            root.dataset.setFiles(sel, root.modifyFileRole,
+            root.dataset.setFiles(root.modifyFileRole, sel,
                                   root.dataset.count, 0)
             fileSel.popup.close()
         }
