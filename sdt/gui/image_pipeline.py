@@ -118,10 +118,11 @@ class ImagePipeline(BasicImagePipeline):
         super().__init__(parent)
         self._frameSelector = multicolor.FrameSelector("")
         self._currentExcitationType = ""
-        self._channels = None
+        self._channels = {}
 
         self.excitationSeqChanged.connect(self.doProcess)
         self.currentExcitationTypeChanged.connect(self.doProcess)
+        self.channelsChanged.connect(self.doProcess)
 
     excitationSeqChanged = QtCore.pyqtSignal()
 
