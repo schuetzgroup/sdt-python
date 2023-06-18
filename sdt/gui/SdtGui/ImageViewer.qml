@@ -26,7 +26,16 @@ Item {
             objectName: "Sdt.ImageViewer.ImageSelector"
             Layout.fillWidth: true
 
-            processSequence: frameSel.processSequence
+            Binding {
+                target: imSel.imagePipeline
+                property: "excitationSeq"
+                value: frameSel.excitationSeq
+            }
+            Binding {
+                target: imSel.imagePipeline
+                property: "currentExcitationType"
+                value: frameSel.currentExcitationType
+            }
         }
         ImageDisplay {
             id: imDisp
