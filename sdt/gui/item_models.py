@@ -58,8 +58,8 @@ class ListModel(QtCore.QAbstractListModel):
         int, int, list, arguments=["index", "count", "roles"])
     """One or more list items were changed. `index` is the index of the
     first changed element, `count` is the number of subsequent modified
-    elements, and `role` holds the affected roles. If the `role` is empty, all
-    roles are considered affected.
+    elements, and `roles` holds the affected roles. If the `roles` is empty,
+    all roles are considered affected.
     Emitting this signal also emits Qt's standard :py:meth:`dataChanged`
     signal.
     """
@@ -113,6 +113,26 @@ class ListModel(QtCore.QAbstractListModel):
         if len(self.Roles):
             return next(iter(self.Roles)).name
         raise KeyError("model has no roles")
+
+    def modifyNewItem(self, item: Dict[str, Any]) -> Dict[str, Any]:
+        """Called on each new item inserted into the model
+
+        e.g. via :py:meth:`insert`. The default implementation returns ``item``
+        unmodified, but this can be overriden in subclasses.
+
+        Note that this is not used in :py:meth:`reset`. One should override
+        :py:meth:`reset` in the subclass if necessary.
+
+        Parameters
+        ----------
+        item
+            New item (i.e., dict mapping role name to value) to be inserted
+
+        Returns
+        -------
+        Modified item
+        """
+        return item
 
     @QtCore.pyqtSlot(int, result="QVariant")
     @QtCore.pyqtSlot(int, str, result="QVariant")
@@ -189,7 +209,7 @@ class ListModel(QtCore.QAbstractListModel):
         if isinstance(obj, QtQml.QJSValue):
             obj = obj.toVariant()
         with self._insertRows(index, 1):
-            self._data.insert(index, obj)
+            self._data.insert(index, self.modifyNewItem(obj))
 
     @QtCore.pyqtSlot("QVariant")
     def append(self, obj: Dict[str, Any]):
@@ -287,7 +307,7 @@ class ListModel(QtCore.QAbstractListModel):
             with self._insertRows(selfIdx, extraCount):
                 for selfIdx, o in zip(range(selfIdx, selfIdx + extraCount),
                                       valIter):
-                    self._data.insert(selfIdx, {role: o})
+                    self._data.insert(selfIdx, self.modifyNewItem({role: o}))
         elif extraCount < 0:
             remove = []
             modified = []
@@ -320,7 +340,7 @@ class ListModel(QtCore.QAbstractListModel):
             Elements to append
         """
         with self._insertRows(self.rowCount(), len(objs)):
-            self._data.extend(objs)
+            self._data.extend([self.modifyNewItem(o) for o in objs])
 
     @QtCore.pyqtSlot(int)
     @QtCore.pyqtSlot(int, int)

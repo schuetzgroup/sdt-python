@@ -91,6 +91,35 @@ def test_ListModel(qtbot, qtmodeltester):
     # Works on PySide6 6.4.1
     # qtmodeltester.check(model)
 
+    # Test `modifyNewItem`
+    class MyList(gui.ListModel):
+        def __init__(self):
+            super().__init__()
+            self._nextX = 0
+            self.roles = ["a", "x"]
+
+        def modifyNewItem(self, item):
+            if "x" not in item:
+                item["x"] = self._nextX
+                self._nextX += 1
+            return item
+
+    ml = MyList()
+    ml.append({"a": 10})
+    ml.insert(0, {"a": 20})
+    ml.insert(1, {"a": 30, "x": 100})
+    ml.extend([{"a": 40}, {"a": 50, "x": 110}])
+
+    assert ml.toList() == [{"a": 20, "x": 1}, {"a": 30, "x": 100},
+                           {"a": 10, "x": 0}, {"a": 40, "x": 2},
+                           {"a": 50, "x": 110}]
+
+    ml.multiSet([60, 70, 80], startIndex=1, count=2)
+
+    assert ml.toList() == [{"a": 20, "x": 1}, {"a": 60, "x": 100},
+                           {"a": 70, "x": 0}, {"a": 80, "x": 3},
+                           {"a": 40, "x": 2}, {"a": 50, "x": 110}]
+
 
 def test_ListProxyModel(qtbot, qtmodeltester):
     c = gui.Component("""
