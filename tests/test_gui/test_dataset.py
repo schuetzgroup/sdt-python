@@ -7,13 +7,14 @@ from sdt import gui
 
 def test_Dataset(qtbot):
     ds = gui.Dataset()
-    assert ds.roles == ["source_0"]
+    assert ds.roles == ["id", "source_0"]
 
     with qtbot.waitSignals([ds.dataRolesChanged, ds.rolesChanged]):
         ds.dataRoles = ["images", "locs"]
     with qtbot.waitSignals([ds.fileRolesChanged, ds.rolesChanged]):
-        ds.fileList = [{"source_0": "bla", "source_1": None}]
-    assert set(ds.roles) == {"source_0", "source_1", "images", "locs"}
+        ds.fileList = {10: {"source_0": "bla", "source_1": None}}
+    assert set(ds.fileRoles) == {"source_0", "source_1"}
+    assert set(ds.roles) == {"id", "source_0", "source_1", "images", "locs"}
 
     dd = "/path/to/data"
     fl0 = [f"{dd}/{f}" for f in ("file00", "file01", "file02", "file03")]
@@ -21,26 +22,33 @@ def test_Dataset(qtbot):
 
     with qtbot.waitSignal(ds.fileListChanged):
         ds.setFiles(fl0)
-    assert ds.fileList == [{"source_0": f0, "source_1": None}
-                           for f0 in fl0]
+    assert ds.fileList == {n+10: {"source_0": f0, "source_1": None}
+                           for n, f0 in enumerate(fl0)}
 
     with qtbot.waitSignal(ds.fileListChanged):
         ds.setFiles("source_1", fl1)
-    assert ds.fileList == ([{"source_0": f0, "source_1": f1}
-                            for f0, f1 in zip(fl0, fl1)] +
-                           [{"source_0": fl0[-1], "source_1": None}])
-
-    ds.setFiles(fl0[:-1])
-    assert ds.count == 3
+    desired = {n+10: {"source_0": f0, "source_1": f1}
+               for n, (f0, f1) in enumerate(zip(fl0, fl1))}
+    desired[len(desired)+10] = {"source_0": fl0[-1], "source_1": None}
+    assert ds.fileList == desired
 
     with qtbot.waitSignal(ds.fileListChanged):
         assert ds.set(1, "source_0", "blub") is True
 
     with qtbot.waitSignal(ds.fileListChanged):
         ds.setFiles("source_0", [f"{dd}/file_extra"], ds.count, 1)
-    assert ds.count == 4
-    assert ds.get(3, "source_0") == f"{dd}/file_extra"
-    assert ds.get(3, "source_1") is None
+    assert ds.count == 5
+    assert ds.get(4, "id") == 14
+    assert ds.get(4, "source_0") == f"{dd}/file_extra"
+    assert ds.get(4, "source_1") is None
+
+    ds.append({"source_0": f"{dd}/custom_id", "id": 100})
+    ds.append({"source_0": f"{dd}/next_id"})
+    assert ds.get(6, "id") == 101
+
+    ds.set(0, "id", 200)
+    ds.append({"source_0": f"{dd}/next_next_id"})
+    assert ds.get(7, "id") == 201
 
 
 def test_DatasetCollection(qtbot):

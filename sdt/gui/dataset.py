@@ -5,7 +5,7 @@
 import enum
 import itertools
 from pathlib import Path
-from typing import Dict, Iterable, List, Mapping, Optional, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Union
 
 from PyQt5 import QtCore, QtQml
 
@@ -24,6 +24,8 @@ class Dataset(ListModel):
     be analysis results corresponding to a file, etc.
     """
 
+    _extraRoles = ["id"]
+
     def __init__(self, parent: QtCore.QObject = None):
         """Parameters
         ----------
@@ -33,6 +35,7 @@ class Dataset(ListModel):
         super().__init__(parent)
         self._dataRoles = []
         self._fileRoles = []
+        self._nextId = 0
         self.fileRoles = ["source_0"]
         self.itemsChanged.connect(self._onItemsChanged)
         self.countChanged.connect(self.fileListChanged)
@@ -52,7 +55,7 @@ class Dataset(ListModel):
         if names == self._fileRoles:
             return
         self._fileRoles = names
-        self.roles = self._fileRoles + self._dataRoles
+        self.roles = self._extraRoles + self._fileRoles + self._dataRoles
         self.fileRolesChanged.emit(self._fileRoles)
 
     dataRolesChanged = QtCore.pyqtSignal(list)
@@ -71,7 +74,7 @@ class Dataset(ListModel):
         if names == self._dataRoles:
             return
         self._dataRoles = names
-        self.roles = self._fileRoles + self._dataRoles
+        self.roles = self._extraRoles + self._fileRoles + self._dataRoles
         self.dataRolesChanged.emit(self._dataRoles)
 
     @staticmethod
@@ -79,6 +82,25 @@ class Dataset(ListModel):
         if isinstance(f, QtCore.QUrl):
             f = f.toLocalFile()
         return Path(f).as_posix()
+
+    def modifyNewItem(self, item: Dict[str, Any]) -> Dict[str, Any]:
+        """Add unique ID to new items
+
+        Parameters
+        ----------
+        item
+            New item (i.e., dict mapping role name to value) to be inserted
+
+        Returns
+        -------
+        Modified item
+        """
+        if "id" not in item:
+            item["id"] = self._nextId
+            self._nextId += 1
+        else:
+            self._nextId = max(self._nextId, item["id"]+1)
+        return item
 
     @QtCore.pyqtSlot("QVariant")
     @QtCore.pyqtSlot(str, "QVariant")
@@ -113,22 +135,37 @@ class Dataset(ListModel):
     """:py:attr:`fileList` property changed"""
 
     @QtCore.pyqtProperty("QVariant", notify=fileListChanged)
-    def fileList(self) -> List[Dict[str, str]]:
-        """The list contains dicts mapping a file role -> file. See also
+    def fileList(self) -> Dict[int, [Dict[str, str]]]:
+        """Nested mapping `data id` -> `file role` -> `file path`. See also
         :py:attr:`fileRoles`.
         """
-        return [{r: self.get(i, r) for r in self.fileRoles}
-                for i in range(self.count)]
+        return {self.get(i, "id"): {r: self.get(i, r) for r in self.fileRoles}
+                for i in range(self.count)}
 
     @fileList.setter
-    def fileList(self, fl: List[Mapping[str, str]]):
-        self.fileRoles = sorted(set(itertools.chain(*fl)))
+    def fileList(self, fl: Mapping[int, Mapping[str, str]]):
+        self.fileRoles = sorted(set(itertools.chain(*fl.values())))
+        fl = [{"id": k, **v} for k, v in fl.items()]
         self.reset(fl)
 
     def _onItemsChanged(self, index: int, count: int, roles: Iterable[str]):
-        """Emit :py:attr:`fileListChanged` if model data changed"""
-        if roles is None or set(roles) & set(self.fileRoles):
+        if not roles or set(roles) & set(self.fileRoles):
+            # Emit :py:attr:`fileListChanged` if model data changed
             self.fileListChanged.emit()
+        if not roles or "id" in roles:
+            # Check if an ID was set and update `self._nextId` to avoid clashes
+            maxId = max(d.get("id", -1) for d in self._data[index:index+count])
+            self._nextId = max(self._nextId, maxId+1)
+
+    def reset(self, data: List = []):
+        nextId = max((d.get("id", -1) for d in data), default=-1) + 1
+        for d in data:
+            if "id" in d:
+                continue
+            d["id"] = nextId
+            nextId += 1
+        self._nextId = nextId
+        super().reset(data)
 
 
 class DatasetCollection(ListModel):
