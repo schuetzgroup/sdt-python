@@ -45,7 +45,6 @@ class BasicImagePipeline(QtCore.QObject):
 
     @QtCore.pyqtSlot("QVariantMap")
     def open(self, files: Dict[str, str]):
-        print("open", files)
         # Store these now as they won't be accessible after closing the file.
         # Pass them to `_doProcessSequence` in the end.
         oldFrame = self.currentFrame
