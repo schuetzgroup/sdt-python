@@ -38,7 +38,7 @@ def test_ImageSelector(qtbot, imageFiles):
     assert w.status_ == gui.Component.Status.Ready
 
     inst = w.instance_
-    ds = inst.dataset
+    ds = w.dataset
     assert isinstance(ds, gui.Dataset)
     ds.setFiles([imageFiles / "file_000.tif",
                  imageFiles / "file_001.tif",
@@ -48,78 +48,72 @@ def test_ImageSelector(qtbot, imageFiles):
                             (inst.currentFrameCountChanged,
                              "currentFrameCountChanged"),
                             (inst.imageChanged, "imageChanged")]):
-        inst.currentIndex = 1
-    assert inst.currentFrameCount == 4
+        w.currentIndex = 1
+    assert w.currentFrameCount == 4
     with qtbot.waitSignals([inst.currentFrameChanged,
                             inst.imageChanged]):
-        inst.currentFrame = 2
-    np.testing.assert_array_equal(inst.image,
+        w.currentFrame = 2
+    np.testing.assert_array_equal(w.image,
                                   np.full((12, 10), 5, dtype=np.uint16))
 
-    inst.currentIndex = 0
-    assert inst.currentFrame == 1
-    np.testing.assert_array_equal(inst.image,
+    w.currentIndex = 0
+    assert w.currentFrame == 1
+    np.testing.assert_array_equal(w.image,
                                   np.full((12, 10), 1, dtype=np.uint16))
 
-    # Test setting `processSequence`
-    inst.currentIndex = 1
-    inst.currentFrame = 3
+    # Test changing dataset while keeping current id the same
+    # `image` should change
+    ds2 = gui.Dataset()
+    ds2.setFiles([imageFiles / "file_003.tif"])
+    assert ds.get(w.currentIndex, "id") == ds2.get(w.currentIndex, "id")
+    with qtbot.waitSignals([inst.datasetChanged, inst.imageChanged]):
+        w.dataset = ds2
+    assert w.currentIndex == 0
+    assert w.currentFrame == 1
+    np.testing.assert_array_equal(w.image,
+                                  np.full((12, 10), 14, dtype=np.uint16))
 
-    with qtbot.waitSignals([(inst.currentFrameChanged, "currentFrameChanged"),
-                            (inst.currentFrameCountChanged,
-                             "currentFrameCountChanged"),
-                            (inst.imageChanged, "imageChanged"),
-                            (inst.processSequenceChanged,
-                             "processSequenceChanged")]):
-        inst.processSequence = lambda x: x[::2]
-    assert inst.currentFrameCount == 2
-    assert inst.currentFrame == 1
-    np.testing.assert_array_equal(inst.image,
-                                  np.full((12, 10), 5, dtype=np.uint16))
-
-    inst.processSequence = None
-
-    # Test changing dataset
+    # Test changing dataset where also frame number etc. has to change
     myModel = gui.Dataset()
     myModel.fileRoles = ["source_0", "source_1"]
-    myModel.dataDir = imageFiles
     myModel.setFiles("source_1", [imageFiles / "file_002.tif",
                                   imageFiles / "file_003.tif"])
 
+    w.dataset = ds
+
     with qtbot.waitSignal(inst.currentFrameChanged):
-        inst.currentIndex = 2
-    assert inst.currentFrame == 0
+        w.currentIndex = 2
+    assert w.currentFrame == 0
 
     with qtbot.waitSignal(inst.textRoleChanged):
-        inst.textRole = "source_1"
+        w.textRole = "source_1"
     with qtbot.waitSignals(
             [(inst.datasetChanged, "datasetChanged"),
              (inst.imageChanged, "imageChanged"),
              (inst.currentFrameCountChanged, "currentFrameCountChanged"),
              (inst.currentIndexChanged, "currentIndexChanged")]):
-        inst.dataset = myModel
-    assert inst.currentIndex == 0
-    assert inst.currentFrame == -1
-    assert inst.currentFrameCount == 0
-    assert inst.image is None
+        w.dataset = myModel
+    assert w.currentIndex == 0
+    assert w.currentFrameCount == 0
+    assert w.currentFrame == -1
+    assert w.image is None
 
-    with qtbot.waitSignals([(inst.imageRoleChanged, "imageRoleChanged"),
-                            (inst.imageChanged, "imageChanged")]):
-        inst.imageRole = "source_1"
-    np.testing.assert_array_equal(inst.image,
+    with qtbot.waitSignals([inst.currentChannelChanged, inst.imageChanged]):
+        w.currentChannel = "source_1"
+    np.testing.assert_array_equal(w.image,
                                   np.full((12, 10), 10, dtype=np.uint16))
 
     # Test error
     myModel.setFiles("source_1", [imageFiles / "nonexistent.tif"],
                      myModel.count, 1)
     with qtbot.waitSignals([inst.errorChanged, inst.imageChanged]):
-        inst.currentIndex = 2
-    assert inst.error
-    assert inst.image is None
+        w.currentIndex = 2
+    assert w.error
+    assert w.image is None
     with qtbot.waitSignals([inst.errorChanged, inst.imageChanged]):
-        inst.currentIndex = 1
-    assert not inst.error
-    np.testing.assert_array_equal(inst.image,
+        w.currentIndex = 1
+    assert not w.error
+    np.testing.assert_array_equal(w.image,
                                   np.full((12, 10), 13, dtype=np.uint16))
 
     # Test the clear button
@@ -129,16 +123,16 @@ def test_ImageSelector(qtbot, imageFiles):
                             inst.imageChanged]):
         cb.clicked.emit()
     assert myModel.count == 0
-    assert inst.currentIndex == -1
-    assert inst.currentFrame == -1
-    assert inst.currentFrameCount == 0
-    assert inst.image is None
+    assert w.currentIndex == -1
+    assert w.currentFrame == -1
+    assert w.currentFrameCount == 0
+    assert w.image is None
 
     # Test remove single file button
-    inst.dataset = ds
-    inst.textRole = "source_0"
-    inst.imageRole = "source_0"
-    inst.currentIndex = 0
+    w.dataset = ds
+    w.textRole = "source_0"
+    w.currentChannel = "source_0"
+    w.currentIndex = 0
     fs = inst.findChild(QtQuick.QQuickItem, "Sdt.ImageSelector.FileSelector")
     QtQml.QQmlProperty.read(fs, "popup").open()
     fsv = inst.findChild(QtQuick.QQuickItem, "Sdt.ImageSelector.FileSelView")
@@ -157,5 +151,5 @@ def test_ImageSelector(qtbot, imageFiles):
     assert ds.fileList == [
         {"source_0": (imageFiles / "file_001.tif").as_posix()},
         {"source_0": (imageFiles / "file_004.tif").as_posix()}]
-    np.testing.assert_array_equal(inst.image,
+    np.testing.assert_array_equal(w.image,
                                   np.full((12, 10), 3, dtype=np.uint16))

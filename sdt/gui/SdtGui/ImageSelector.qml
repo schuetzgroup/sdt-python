@@ -8,26 +8,26 @@ import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.15
 
 import SdtGui 0.2
-import SdtGui.Templates 0.2 as T
 
 
-T.ImageSelector {
+Item {
     id: root
 
     property bool editable: true
     property alias dataset: fileSel.model
     property alias textRole: fileSel.textRole
-    property alias imageRole: fileSel.valueRole
     property string modifyFileRole: "source_0"
     property alias currentIndex: fileSel.currentIndex
     property alias currentFrame: frameSel.value
-    property var processSequence: null
+
+    property BasicImagePipeline imagePipeline: ImagePipeline {}
+    property string currentChannel: imagePipeline.currentChannel
+    readonly property int currentFrameCount: imagePipeline.currentFrameCount
+    readonly property var image: imagePipeline.image
+    readonly property string error: imagePipeline.error
 
     implicitHeight: rootLayout.Layout.minimumHeight
     implicitWidth: rootLayout.Layout.minimumWidth
-
-    onCurrentFrameChanged: { _frameChanged() }
-    onProcessSequenceChanged: { _doProcessSequence() }
 
     RowLayout {
         id: rootLayout
@@ -40,17 +40,7 @@ T.ImageSelector {
             objectName: "Sdt.ImageSelector.FileSelector"
             Layout.fillWidth: true
             textRole: "source_0"
-            valueRole: "source_0"
-
-            onCountChanged: {
-                // if no item was selected previously, select first one
-                if (count > 0 && currentIndex < 0)
-                    currentIndex = 0
-            }
-
-            onCurrentValueChanged: {
-                root._setCurrentFile(currentValue)
-            }
+            valueRole: "id"
 
             delegate: ItemDelegate {
                 id: fileSelDelegate
@@ -79,6 +69,36 @@ T.ImageSelector {
                 }
             }
 
+            function openFiles() {
+                var arg = {}
+                for (var r of model.fileRoles)
+                    arg[r] = model.get(currentIndex, r)
+                root.imagePipeline.open(arg)
+            }
+
+            onCurrentValueChanged: openFiles()
+            onModelChanged: openFiles()
+
+            onCountChanged: {
+                // if no item was selected previously, select first one
+                if (count > 0 && currentIndex < 0)
+                    currentIndex = 0
+            }
+
+            Connections {
+                target: root.dataset
+
+                function onItemsChanged(index, count, roles) {
+                    if (currentIndex < index || currentIndex >= index + count)
+                        return
+                    if (roles.length > 0 &&
+                            roles.filter(
+                                function(v){return model.fileRoles.includes(v)}).length <= 0)
+                        return
+                    openFiles()
+                }
+            }
+
             Component.onCompleted: {
                 popup.contentItem.objectName = "Sdt.ImageSelector.FileSelView"
                 popup.contentItem.header = imageListHeaderComponent
@@ -87,14 +107,15 @@ T.ImageSelector {
         Item { width: 5 }
         EditableSpinBox {
             id: frameSel
-            from: root.currentFrameCount > 0 ? 0 : -1
+            from: root.imagePipeline.currentFrameCount > 0 ? 0 : -1
             to: root.currentFrameCount - 1
+            value: root.imagePipeline.currentFrame
             textFromValue: function(value, locale) {
                 if (value < 0)
                     return "none"
                 return Number(value).toLocaleString(locale, 'f', 0);
             }
-            enabled: root.currentFrameCount > 0
+            enabled: root.imagePipeline.currentFrameCount > 0
         }
     }
 
@@ -133,5 +154,16 @@ T.ImageSelector {
                 onClicked: { root.dataset.clear() }
             }
         }
+    }
+
+    Binding {
+        target: imagePipeline
+        property: "currentFrame"
+        value: frameSel.value
+    }
+    Binding {
+        target: imagePipeline
+        property: "currentChannel"
+        value: root.currentChannel
     }
 }
