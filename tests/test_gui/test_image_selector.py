@@ -148,8 +148,8 @@ def test_ImageSelector(qtbot, imageFiles):
                              "Sdt.ImageSelector.FileDeleteButton")
     with qtbot.waitSignals([ds.countChanged, inst.imageChanged]):
         fdb.clicked.emit()
-    assert ds.fileList == [
-        {"source_0": (imageFiles / "file_001.tif").as_posix()},
-        {"source_0": (imageFiles / "file_004.tif").as_posix()}]
+    assert ds.fileList == {
+        1: {"source_0": (imageFiles / "file_001.tif").as_posix()},
+        2: {"source_0": (imageFiles / "file_004.tif").as_posix()}}
     np.testing.assert_array_equal(w.image,
                                   np.full((12, 10), 3, dtype=np.uint16))
