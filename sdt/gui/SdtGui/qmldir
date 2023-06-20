@@ -6,7 +6,7 @@ module SdtGui
 
 # BatchWorker 0.1 BatchWorker.qml
 ChannelConfig 0.2 ChannelConfig.qml
-# DataCollector 0.1 DataCollector.qml
+DataCollector 0.2 DataCollector.qml
 # ModelComboBox 0.1 ModelComboBox.qml
 DatasetSelector 0.2 DatasetSelector.qml
 DirSelector 0.2 DirSelector.qml
@@ -18,7 +18,7 @@ ImageSelector 0.2 ImageSelector.qml
 ImageViewer 0.2 ImageViewer.qml
 # LocOptions 0.1 LocOptions.qml
 # Locator 0.1 Locator.qml
-# MultiDataCollector 0.1 MultiDataCollector.qml
+MultiDataCollector 0.2 MultiDataCollector.qml
 ROISelector 0.2 ROISelector.qml
 Registrator 0.2 Registrator.qml
 # RealSpinBox 0.1 RealSpinBox.qml

@@ -2,19 +2,19 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QtQuick.Dialogs 1.3
-import QtQuick.Layouts 1.12
-import SdtGui 0.1
-import SdtGui.Templates 0.1 as T
+import QtQuick.Layouts 1.15
+import SdtGui 0.2
+import SdtGui.Templates 0.2 as T
 
 
 T.DataCollector {
     id: root
-    property alias dataset: fileListView.model
+    property var dataset: Dataset {}
     property var sourceNames: 0
-    property alias showDataDirSelector: dataDirSel.visible
+    property alias dataDir: pathProxy.dataDir
 
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
@@ -23,22 +23,18 @@ T.DataCollector {
         id: rootLayout
         anchors.fill: parent
 
-        DirSelector {
-            id: dataDirSel
-            label: "Data folder:"
-            dataDir: root.dataset ? root.dataset.dataDir : ""
-            onDataDirChanged: { root.dataset.dataDir = dataDir }
-            Layout.fillWidth: true
-        }
         ListView {
             id: fileListView
 
-            model: Dataset {}
+            model: RelPathDatasetProxy {
+                id: pathProxy
+                sourceModel: root.dataset
+            }
             header: Item {
                 id: headerRoot
                 width: fileListView.width
                 implicitHeight: headerLayout.implicitHeight
-                visible: root.dataset
+                visible: root.dataset !== undefined
                 RowLayout {
                     id: headerLayout
                     anchors.left: parent.left
@@ -81,7 +77,7 @@ T.DataCollector {
                     id: delegateLayout
                     Repeater {
                         id: delegateRep
-                        model: root.dataset.fileRoles
+                        model: root.dataset ? root.dataset.fileRoles : undefined
                         ItemDelegate {
                             text: delegateRoot.modelData[modelData]
                             highlighted: hov.hovered
