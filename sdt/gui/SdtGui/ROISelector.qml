@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.7
-import QtQuick.Layouts 1.7
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 import QtQuick.Shapes 1.0
-import SdtGui.Templates 0.1 as T
+import SdtGui.Templates 0.2 as T
 
 
 T.ROISelector {
@@ -29,6 +29,7 @@ T.ROISelector {
     // This should be added to ImageDisplay.overlays
     property Item overlay: Item {
         id: overlay
+        objectName: "Sdt.ROISelector.Overlay"
         property real scaleFactor: 1.0
 
         Repeater {
@@ -116,14 +117,17 @@ T.ROISelector {
 
     RowLayout {
         id: rootLayout
+        anchors.fill: parent
         Label {
             text: "draw"
             visible: root.showNameSelector
         }
         ComboBox {
             id: nameSel
+            objectName: "Sdt.ROISelector.NameSelector"
             model: root.names
             visible: root.showNameSelector
+            Layout.fillWidth: true
         }
         Button {
             id: intRectangleButton
@@ -140,6 +144,7 @@ T.ROISelector {
         }
         Button {
             id: rectangleButton
+            objectName: "Sdt.ROISelector.RectangleButton"
             icon.name: "draw-rectangle"
             hoverEnabled: true
             ToolTip.visible: hovered
@@ -152,6 +157,7 @@ T.ROISelector {
         }
         Button {
             id: ellipseButton
+            objectName: "Sdt.ROISelector.EllipseButton"
             icon.name: "draw-ellipse"
             hoverEnabled: true
             ToolTip.visible: hovered

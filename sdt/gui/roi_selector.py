@@ -9,7 +9,6 @@ from typing import Callable, Dict, Iterable, List, Union
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 
-from . import _mpl_path_elements  # noqa: F401 Register QML type
 from .qml_wrapper import QmlDefinedMethod, QmlDefinedProperty
 from .. import roi as sdt_roi
 
@@ -62,6 +61,7 @@ class ROISelector(QtQuick.QQuickItem):
         super().__init__(parent)
         self._names = []
         self._limits = [np.inf, np.inf]
+        self.roiChanged.connect(self.roisChanged)
 
     namesChanged = QtCore.pyqtSignal(list)
     """ROI names changed"""
@@ -98,7 +98,7 @@ class ROISelector(QtQuick.QQuickItem):
         for k, v in rois.items():
             self.setROI(k, v)
 
-    @QtCore.pyqtSlot(QtCore.QVariant, QtCore.QVariant)
+    @QtCore.pyqtSlot(str, "QVariant")
     def setROI(self, name: str,
                roi: Union[sdt_roi.ROI, sdt_roi.PathROI, None]):
         """Set a ROI
@@ -122,10 +122,10 @@ class ROISelector(QtQuick.QQuickItem):
             t = self.ROIType.EllipseShape
         self._setROI(name, roi, t)
 
-    limitsChanged = QtCore.pyqtSignal(QtCore.QVariant)
+    limitsChanged = QtCore.pyqtSignal("QVariant")
     """Limits changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=limitsChanged)
+    @QtCore.pyqtProperty("QVariant", notify=limitsChanged)
     def limits(self) -> List[float]:
         """Set limits for integer rectangular ROIs. The :py:class:roi.ROI`
         class only works correctly if there are no negative coordinates and
@@ -251,7 +251,7 @@ class ShapeROIItem(QtQuick.QQuickItem):
     roiChanged = QtCore.pyqtSignal()
     """ROI changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=roiChanged)
+    @QtCore.pyqtProperty("QVariant", notify=roiChanged)
     def roi(self) -> Union[sdt_roi.PathROI, None]:
         """Region of interest"""
         if not self.width() or not self.height():
