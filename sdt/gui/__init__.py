@@ -8,7 +8,7 @@ from .qml_wrapper import (Component, QmlDefinedMethod, QmlDefinedProperty,
 
 # QML types
 # from .batch_worker import BatchWorker
-# from .channel_config import ChannelConfig
+from .channel_config import ChannelConfig
 # from .data_collector import DataCollector, MultiDataCollector
 # from .dataset_selector import DatasetSelector
 from .dataset import DatasetCollection, Dataset, RelPathDatasetProxy
