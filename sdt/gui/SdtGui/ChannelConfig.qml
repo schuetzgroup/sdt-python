@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQml.Models 2.12
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import SdtGui.Templates 0.1 as T
+import QtQml.Models 2.15
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import SdtGui.Templates 0.2 as T
 
 
 T.ChannelConfig {
@@ -14,6 +14,13 @@ T.ChannelConfig {
 
     property bool channelNamesEditable: true
     property alias sameSize: sameSizeCheck.checked
+    readonly property var images: {
+        var item = roiSelRep.itemAt(roiSelStack.currentIndex)
+        if (item)
+            item.dataset
+        else
+            undefined
+    }
 
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
@@ -275,7 +282,8 @@ T.ChannelConfig {
         anchors.fill: parent
         keys: "text/uri-list"
         onDropped: {
-            roiSelRep.itemAt(roiSelStack.currentIndex).dataset.setFiles("source_0", drop.urls)
+            var ds = roiSelRep.itemAt(roiSelStack.currentIndex).dataset
+            ds.setFiles("source_0", drop.urls, ds.count, 0)
         }
     }
 }

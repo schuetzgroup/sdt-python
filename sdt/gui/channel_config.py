@@ -8,6 +8,7 @@ from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .. import roi as sdt_roi
+from .dataset import Dataset
 from .item_models import ListModel
 from .qml_wrapper import QmlDefinedProperty
 
@@ -96,6 +97,7 @@ class ChannelConfig(QtQuick.QQuickItem):
         self._chanList = ListModel()
         self._chanList.roles = ["name", "source", "roi"]
         self._srcList = _SourceList(self._chanList)
+        self._srcList.append({"name": "source_0"})
         self._srcList.itemsChanged.connect(self._srcListItemsChanged)
         self._srcList.countChanged.connect(self.sourceNamesChanged)
         self._chanList.itemsChanged.connect(self.channelsChanged)
@@ -164,9 +166,11 @@ class ChannelConfig(QtQuick.QQuickItem):
         return [self._srcList.get(i, "name")
                 for i in range(self._srcList.count)]
 
-    sameSize = QmlDefinedProperty()
+    sameSize: bool = QmlDefinedProperty()
     """Indicates wether ROIs are resized to have the same size"""
-    # TODO: resize ROIs if this is turned on
+
+    images: Dataset = QmlDefinedProperty()
+    """Images to display"""
 
     @QtCore.pyqtProperty(QtCore.QAbstractListModel, constant=True)
     def _channelList(self) -> ListModel:
@@ -178,7 +182,7 @@ class ChannelConfig(QtQuick.QQuickItem):
         """Qt item model representing the sources (for use in QML)"""
         return self._srcList
 
-    @QtCore.pyqtSlot(int, QtCore.QVariant)
+    @QtCore.pyqtSlot(int, "QVariant")
     def _splitHorizontally(self, sourceIndex: int, image: np.ndarray):
         """Create ROIs by evenly splitting the image's width
 
@@ -198,7 +202,7 @@ class ChannelConfig(QtQuick.QQuickItem):
                 sdt_roi.ROI((i * split_width, 0), size=(split_width, height)))
         # TODO: Update ROIs from other sources if sameSize is True
 
-    @QtCore.pyqtSlot(int, QtCore.QVariant)
+    @QtCore.pyqtSlot(int, "QVariant")
     def _splitVertically(self, sourceIndex: int, image: np.ndarray):
         """Create ROIs by evenly splitting the image's height
 
@@ -237,7 +241,7 @@ class ChannelConfig(QtQuick.QQuickItem):
             self._chanList.set(orig, "roi", self._chanList.get(new, "roi"))
             self._chanList.set(new, "roi", tmp)
 
-    @QtCore.pyqtSlot(str, QtCore.QVariant, QtCore.QVariant)
+    @QtCore.pyqtSlot(str, "QVariant", "QVariant")
     def _roiUpdatedInGUI(self, name: str, newRoi, image: Optional[np.ndarray]):
         """Callback invoked when a ROI was updated via GUI
 
@@ -299,4 +303,4 @@ class ChannelConfig(QtQuick.QQuickItem):
             self.sourceNamesChanged.emit()
 
 
-QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Templates", 0, 1, "ChannelConfig")
+QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Templates", 0, 2, "ChannelConfig")
