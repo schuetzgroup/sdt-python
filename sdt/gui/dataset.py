@@ -181,6 +181,7 @@ class DatasetCollection(ListModel):
     class Roles(enum.IntEnum):
         key = QtCore.Qt.UserRole
         dataset = enum.auto()
+        special = enum.auto()
 
     DatasetType: type = Dataset
     """Instances of this type will be created when adding new datasets.
@@ -226,7 +227,8 @@ class DatasetCollection(ListModel):
         return model
 
     @QtCore.pyqtSlot(int, str)
-    def insert(self, index: int, key: str):
+    @QtCore.pyqtSlot(int, str, str)
+    def insert(self, index: int, key: str, special: bool = False):
         """Insert a new, empty dataset
 
         Parameters
@@ -235,21 +237,30 @@ class DatasetCollection(ListModel):
             Index the new dataset will have after insertion
         key
             Identifier of the new dataset
+        special
+            Whether this dataset needs special treatment (e.g., a dataset for
+            image registration). This dataset cannot be removed from
+            :py:class:`DatasetSelector` via the GUI.
         """
         ds = self.makeDataset()
         ds.fileListChanged.connect(self.fileListsChanged)
-        super().insert(index, {"key": key, "dataset": ds})
+        super().insert(index, {"key": key, "dataset": ds, "special": special})
 
     @QtCore.pyqtSlot(str)
-    def append(self, key: str):
+    @QtCore.pyqtSlot(str, str)
+    def append(self, key: str, special: bool = False):
         """Append a new, empty dataset
 
         Parameters
         ----------
         key
             Identifier of the new dataset
+        special
+            Whether this dataset needs special treatment (e.g., a dataset for
+            image registration). This dataset cannot be removed from
+            :py:class:`DatasetSelector` via the GUI.
         """
-        self.insert(self.count, key)
+        self.insert(self.count, key, special)
 
     @QtCore.pyqtSlot(int)
     @QtCore.pyqtSlot(int, int)
@@ -313,7 +324,7 @@ class DatasetCollection(ListModel):
         for key, lst in fl.items():
             ds = self.makeDataset()
             ds.fileList = lst
-            models.append({"key": key, "dataset": ds})
+            models.append({"key": key, "dataset": ds, "special": False})
         self.reset(models)
 
     keysChanged = QtCore.pyqtSignal()
