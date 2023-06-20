@@ -5,8 +5,8 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import SdtGui 0.1
-import SdtGui.Templates 0.1 as T
+import SdtGui 0.2
+import SdtGui.Templates 0.2 as T
 
 
 T.Registrator {
@@ -23,6 +23,7 @@ T.Registrator {
         ret
     }
     property int _locCount: 0
+    property alias _imagePipeline: imSel.imagePipeline
 
     Binding on locateSettings {
         value: {
@@ -70,7 +71,7 @@ T.Registrator {
                     id: optStack
 
                     property var currentItem: optRep.model, optRep.itemAt(currentIndex)
-                    property string currentRole: optRep.model[currentIndex]
+                    property string currentChannel: optRep.model[currentIndex]
                     currentIndex: chanSel.currentIndex
 
                     Repeater {
@@ -99,14 +100,18 @@ T.Registrator {
         }
         Item { width: 2 }
         ColumnLayout {
-            RowLayout {
-                ImageSelector {
-                    id: imSel
-                    textRole: "key"
-                    imageRole: optStack.currentRole
-                    editable: root.editableFileList
-                    modifyFileRole: root.channels[optStack.currentItem.channelName]["source"]
-                    Layout.fillWidth: true
+            ImageSelector {
+                id: imSel
+                textRole: root.channels[optStack.currentItem.channelName]["source"]
+                currentChannel: optStack.currentChannel
+                editable: root.editableFileList
+                modifyFileRole: root.channels[optStack.currentItem.channelName]["source"]
+                Layout.fillWidth: true
+
+                Binding {
+                    target: imSel.imagePipeline
+                    property: "channels"
+                    value: root.channels
                 }
             }
             ImageDisplay {
@@ -130,7 +135,7 @@ T.Registrator {
         anchors.centerIn: parent
         closePolicy: Popup.NoAutoClose
         modal: true
-        title: workerFinished ? "Result" : "Locating…"
+        title: workerFinished ? (root.error ? "Error" : "Result") : "Locating…"
         standardButtons: workerFinished ? Dialog.Close : Dialog.Abort
         width: 0.75 * root.width
         height: 0.75 * root.height
@@ -138,7 +143,7 @@ T.Registrator {
         onRejected: { if (!workerFinished) root.abortCalculation() }
 
         StackLayout {
-            currentIndex: workerDialog.workerFinished
+            currentIndex: workerDialog.workerFinished ? (root.error ? 2 : 1) : 0
             anchors.fill: parent
 
             ColumnLayout {
@@ -162,6 +167,11 @@ T.Registrator {
                 Layout.fillHeight: true
 
                 Component.onCompleted: { root._figure = fig }
+            }
+            Label {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                text: root.error
             }
         }
     }

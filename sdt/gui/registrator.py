@@ -8,9 +8,11 @@ from typing import Dict, List, Mapping, Optional, Union
 from PyQt5 import QtCore, QtQml, QtQuick
 import numpy as np
 
-from .. import multicolor
+from .. import io, multicolor
+from .image_pipeline import BasicImagePipeline
+from .dataset import Dataset
 from .mpl_backend import FigureCanvasAgg
-from .qml_wrapper import QmlDefinedProperty
+from .qml_wrapper import QmlDefinedProperty, SimpleQtProperty
 from .thread_worker import ThreadWorker
 
 
@@ -37,6 +39,7 @@ class Registrator(QtQuick.QQuickItem):
         self._reg = multicolor.Registrator()
         self._channels = {"channel1": _default_channel.copy(),
                           "channel2": _default_channel.copy()}
+        self._error = ""
 
     locateSettingsChanged = QtCore.pyqtSignal()
     """:py:attr:`locateSettings` changed"""
@@ -62,7 +65,7 @@ class Registrator(QtQuick.QQuickItem):
     registratorChanged = QtCore.pyqtSignal()
     """:py:attr:`registrator` changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=registratorChanged)
+    @QtCore.pyqtProperty("QVariant", notify=registratorChanged)
     def registrator(self) -> multicolor.Registrator:
         """:py:class:`multicolor.Registrator` instance which was computed
         from fiducial marker localizations.
@@ -78,21 +81,27 @@ class Registrator(QtQuick.QQuickItem):
                 np.allclose(old.parameters2, self._reg.parameters2)):
             self.registratorChanged.emit()
 
-    dataset = QmlDefinedProperty()
+    dataset: Dataset = QmlDefinedProperty()
     """Fiducial marker image data"""
-    _locOptionItems = QmlDefinedProperty()
+    error: str = SimpleQtProperty(str, readOnly=True)
+    """Information about errors encountered during image registration. If
+    empty, no error occurred.
+    """
+    _locOptionItems: Dict = QmlDefinedProperty()
     """LocateOptions items in the GUI. These are exposed here for calling
     ``getBatchFunc()`` and setting options in the setter of
     :py:attr:`locateSettings`.
     """
-    _locCount = QmlDefinedProperty()
+    _locCount: int = QmlDefinedProperty()
     """Expose the number of already processed image files to QML to show
     progress in the GUI.
     """
+    _imagePipeline: BasicImagePipeline = QmlDefinedProperty()
+    """This provides `processFunc` for opening image sequences."""
 
     channelsChanged = QtCore.pyqtSignal()
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=channelsChanged)
+    @QtCore.pyqtProperty("QVariant", notify=channelsChanged)
     def channels(self) -> Dict[str, Dict]:
         return self._channels.copy()
 
@@ -110,7 +119,7 @@ class Registrator(QtQuick.QQuickItem):
     _figureChanged = QtCore.pyqtSignal()
     """:py:attr:`_figure` changed"""
 
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=_figureChanged)
+    @QtCore.pyqtProperty("QVariant", notify=_figureChanged)
     def _figure(self) -> FigureCanvasAgg:
         """Figure canvas for plotting results"""
         return self._fig
@@ -132,6 +141,9 @@ class Registrator(QtQuick.QQuickItem):
 
         Work is performed in a background thread.
         """
+        if self._error:
+            self._error = ""
+            self.errorChanged.emit()
         self._worker = ThreadWorker(self._doCalculation, enabled=True)
         self._worker.finished.connect(self._workerFinished)
         self._worker.error.connect(self._workerError)
@@ -142,10 +154,14 @@ class Registrator(QtQuick.QQuickItem):
         loc = [[], []]
         ch = list(self.channels.keys())
         batchFuncs = [self._locOptionItems[c].getBatchFunc() for c in ch]
+        pipelineFunc = self._imagePipeline.processFunc
         self._locCount = 0
         for i in range(self.dataset.rowCount()):
             for curCh, curLoc, batch in zip(ch, loc, batchFuncs):
-                curLoc.append(batch(self.dataset.get(i, curCh)))
+                src = self.channels[curCh]["source"]
+                with io.ImageSequence(self.dataset.get(i, src)) as img:
+                    pipe = pipelineFunc({src: img}, curCh)
+                    curLoc.append(batch(pipe))
             self._locCount += 1
         reg = multicolor.Registrator(*loc, channel_names=ch)
         reg.determine_parameters()
@@ -177,9 +193,20 @@ class Registrator(QtQuick.QQuickItem):
         self.abortCalculation()
 
     def _workerError(self, exc: Exception):
-        # TODO: error handling
-        print("worker exc", exc)
+        """Worker encountered an error
+
+        Store information in :py:attr:`error`
+
+        Parameters
+        ----------
+        exc
+            Exception that was raised
+        """
+        import traceback
+        self._error = "".join(traceback.format_exception(
+            None, exc, exc.__traceback__))
+        self.errorChanged.emit()
         self.abortCalculation()
 
 
-QtQml.qmlRegisterType(Registrator, "SdtGui.Templates", 0, 1, "Registrator")
+QtQml.qmlRegisterType(Registrator, "SdtGui.Templates", 0, 2, "Registrator")
