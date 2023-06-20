@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 import QtQuick.Dialogs 1.3
-import QtQuick.Layouts 1.12
-import SdtGui 0.1
+import QtQuick.Layouts 1.15
+import SdtGui 0.2
 
 
 Item {
@@ -33,12 +33,19 @@ Item {
             onClicked: { dataDirDialog.open() }
         }
     }
+    // Qt5
     FileDialog {
+        selectFolder: true
+    // Qt6
+    // FolderDialog {
         id: dataDirDialog
         title: "Choose folder…"
-        selectFolder: true
         onAccepted: {
-            dataDirEdit.text = Sdt.urlToLocalFile(fileUrl)
+            // Qt5
+            var sel = fileUrl
+            // Qt6
+            // var sel = selectedFolder
+            dataDirEdit.text = Sdt.urlToLocalFile(sel)
         }
     }
 }

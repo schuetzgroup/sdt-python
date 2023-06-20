@@ -9,7 +9,7 @@ module SdtGui
 # DataCollector 0.1 DataCollector.qml
 # ModelComboBox 0.1 ModelComboBox.qml
 # DatasetSelector 0.1 DatasetSelector.qml
-# DirSelector 0.1 DirSelector.qml
+DirSelector 0.2 DirSelector.qml
 EditableSpinBox 0.2 EditableSpinBox.qml
 FrameSelector 0.2 FrameSelector.qml
 ImageDisplay 0.2 ImageDisplay.qml
