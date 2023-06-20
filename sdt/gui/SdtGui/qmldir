@@ -10,6 +10,7 @@ ChannelConfig 0.2 ChannelConfig.qml
 # ModelComboBox 0.1 ModelComboBox.qml
 # DatasetSelector 0.1 DatasetSelector.qml
 DirSelector 0.2 DirSelector.qml
+EditableComboBox 0.2 EditableComboBox.qml
 EditableSpinBox 0.2 EditableSpinBox.qml
 FrameSelector 0.2 FrameSelector.qml
 ImageDisplay 0.2 ImageDisplay.qml
