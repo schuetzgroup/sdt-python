@@ -71,7 +71,7 @@ def test_DatasetCollection(qtbot):
 
     dsc = MyCollection()
 
-    assert dsc.roles == ["key", "dataset"]
+    assert dsc.roles == ["key", "dataset", "special"]
 
     with qtbot.waitSignal(dsc.fileRolesChanged):
         dsc.fileRoles = ["source_0", "source_1"]
@@ -85,7 +85,7 @@ def test_DatasetCollection(qtbot):
 
     dsc.append("ds1")
     with qtbot.waitSignal(dsc.keysChanged):
-        dsc.insert(0, "ds0")
+        dsc.insert(0, "ds0", special=True)
     assert dsc.count == 2
     assert dsc.keys == ["ds0", "ds1"]
     for n, key in enumerate(("ds0", "ds1")):
@@ -94,6 +94,8 @@ def test_DatasetCollection(qtbot):
         assert d.fileRoles == ["source_0", "source_1"]
         assert d.dataRoles == ["images", "locs"]
         assert d.myProp == 2
+    assert dsc.get(0, "special") is True
+    assert dsc.get(1, "special") is False
 
     dsc.myProp = 3
     for n, key in enumerate(("ds0", "ds1")):
