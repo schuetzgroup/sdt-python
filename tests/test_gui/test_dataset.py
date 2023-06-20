@@ -107,10 +107,10 @@ def test_DatasetCollection(qtbot):
         dsc.get(1, "dataset").setFiles(
             "source_1", [f"/path/to/data/file_11{n}" for n in range(4)])
     assert dsc.fileLists == {
-        "ds0": [{"source_0": f"/path/to/data/file_00{n}", "source_1": None}
-                for n in range(3)],
-        "ds1": [{"source_0": None, "source_1": f"/path/to/data/file_11{n}"}
-                for n in range(4)]}
+        "ds0": {n: {"source_0": f"/path/to/data/file_00{n}", "source_1": None}
+                for n in range(3)},
+        "ds1": {n: {"source_0": None, "source_1": f"/path/to/data/file_11{n}"}
+                for n in range(4)}}
     with qtbot.waitSignal(dsc.fileListsChanged):
         assert dsc.get(0, "dataset").set(0, "source_1", "bla") is True
     with qtbot.assertNotEmitted(dsc.fileListsChanged):
@@ -120,12 +120,15 @@ def test_DatasetCollection(qtbot):
     with qtbot.assertNotEmitted(dsc.fileListsChanged):
         assert ds0.set(1, "source_1", "bla") is True
 
-    fl = {"dsa": [{"source_0": f"/path/to/data/file_00{n}", "source_1": None}
-                  for n in range(4)],
-          "dsb": [{"source_0": None, "source_1": f"/path/to/data/file_11{n}"}
-                  for n in range(3)],
-          "dsc": [{"source_0": None, "source_1": f"/path/to/data/file_21{n}"}
-                  for n in range(2)]}
+    fl = {"dsa": {n: {"source_0": f"/path/to/data/file_00{n}",
+                      "source_1": None}
+                  for n in range(4)},
+          "dsb": {n: {"source_0": None,
+                      "source_1": f"/path/to/data/file_11{n}"}
+                  for n in range(3)},
+          "dsc": {n: {"source_0": None,
+                      "source_1": f"/path/to/data/file_21{n}"}
+                  for n in range(2)}}
 
     ds1 = dsc.get(0, "dataset")
     with qtbot.waitSignal(dsc.fileListsChanged):
