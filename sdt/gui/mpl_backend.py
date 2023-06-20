@@ -300,7 +300,8 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         h = max(self.height(), 0) * self._px_ratio
         d = self.figure.dpi
         self.figure.set_size_inches(w / d, h / d, forward=False)
-        self.resize_event()  # MPL resize event
+        mpl_event = mpl.backend_bases.ResizeEvent("resize_event", self)
+        self.callbacks.process("resize_event", mpl_event)
         self.draw_idle()
 
     def draw(self):

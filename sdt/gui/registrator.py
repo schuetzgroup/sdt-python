@@ -121,7 +121,7 @@ class Registrator(QtQuick.QQuickItem):
             return
         self._fig = fig
         fig.figure.clf()
-        fig.figure.set_constrained_layout(True)
+        fig.figure.set_layout_engine("constrained")
         grid = fig.figure.add_gridspec(1, 2, width_ratios=[1, 2])
         fig.figure.add_subplot(grid[0, 0])
         fig.figure.add_subplot(grid[0, 1])
