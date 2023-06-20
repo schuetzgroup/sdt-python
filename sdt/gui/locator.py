@@ -71,7 +71,7 @@ class Locator(QtQuick.QQuickItem):
                      "roi": [], "filter": ""}, yf)
 
 
-QtQml.qmlRegisterType(Locator, "SdtGui.Templates", 0, 1, "Locator")
+QtQml.qmlRegisterType(Locator, "SdtGui.Templates", 0, 2, "Locator")
 
 
 if __name__ == "__main__":
@@ -111,9 +111,10 @@ if __name__ == "__main__":
         w.showPreview = not args.no_preview
     else:
         win = Window("Locator")
+        win.create()
         if win.status_ == Window.Status.Error:
             sys.exit(1)
-        win.dataset = args.files
+        win.dataset.setFiles(args.files)
         win.previewEnabled = not args.no_preview
 
     sys.exit(app.exec_())
