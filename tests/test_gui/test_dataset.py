@@ -137,3 +137,20 @@ def test_DatasetCollection(qtbot):
         dsc.fileLists = fl
     with qtbot.assertNotEmitted(dsc.fileListsChanged):
         assert ds1.set(1, "source_0", "blub") is True
+
+
+def test_RelPathDatasetProxy(qtbot):
+    ds = gui.Dataset()
+    ds.setFiles(["/path/to/file1", "/path/to/file/in/subdir", "other_file"])
+
+    rp = gui.RelPathDatasetProxy()
+    rp.setSourceModel(ds)
+
+    assert rp.data(rp.index(0, 0), ds.Roles.source_0) == "/path/to/file1"
+
+    with qtbot.waitSignals([rp.dataDirChanged, rp.dataChanged]):
+        rp.dataDir = "/path/to"
+
+    assert rp.data(rp.index(0, 0), ds.Roles.source_0) == "file1"
+    assert rp.data(rp.index(1, 0), ds.Roles.source_0) == "file/in/subdir"
+    assert rp.data(rp.index(2, 0), ds.Roles.source_0) == "other_file"

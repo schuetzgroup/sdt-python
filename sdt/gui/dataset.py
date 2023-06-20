@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import contextlib
 import enum
 import itertools
 from pathlib import Path
@@ -219,7 +220,7 @@ class DatasetCollection(ListModel):
         -------
         New dataset model instance
         """
-        # Set `self` as QObject parent to avoid segfault when setting 
+        # Set `self` as QObject parent to avoid segfault when setting
         # `fileList` property (PyQt5 5.15.7)
         model = self.DatasetType(self)
         for p in self._propagated:
@@ -372,5 +373,58 @@ class DatasetCollection(ListModel):
             setattr(self.get(i, "dataset"), prop, newVal)
 
 
+class RelPathDatasetProxy(QtCore.QIdentityProxyModel):
+    """Proxy model to get file paths relative to a given path
+
+    Values from a :py:class:`Dataset` ``fileRole`` are modified to be
+    relative to :py:attr:`dataDir`.
+    """
+    def __init__(self, parent: Optional[QtCore.QObject] = None):
+        """Parameters
+        ----------
+        parent
+            Parent QObject
+        """
+        super().__init__(parent)
+        self._dataDir = ""
+
+    dataDirChanged = QtCore.pyqtSignal()
+
+    @QtCore.pyqtProperty(str, notify=dataDirChanged)
+    def dataDir(self) -> str:
+        """Path to which returned file paths should be relative"""
+        return self._dataDir
+
+    @dataDir.setter
+    def dataDir(self, d: str):
+        if d == self._dataDir:
+            return
+        self._dataDir = d
+        self.dataDirChanged.emit()
+        src = self.sourceModel()
+        if src is None:
+            return
+        self.dataChanged.emit(self.index(0, 0),
+                              self.index(self.rowCount() - 1, 0),
+                              [int(src.Roles[r]) for r in src.fileRoles])
+
+    def data(self, index, role):
+        src = self.sourceModel()
+        if src is None:
+            return
+        try:
+            isFile = src.Roles(role).name in src.fileRoles
+        except (ValueError, TypeError, AttributeError):
+            isFile = False
+
+        d = super().data(index, role)
+        if isFile:
+            with contextlib.suppress(Exception):
+                d = Path(d).relative_to(self._dataDir).as_posix()
+        return d
+
+
 QtQml.qmlRegisterType(Dataset, "SdtGui", 0, 2, "Dataset")
 QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 0, 2, "DatasetCollection")
+QtQml.qmlRegisterType(RelPathDatasetProxy, "SdtGui", 0, 2,
+                      "RelPathDatasetProxy")
