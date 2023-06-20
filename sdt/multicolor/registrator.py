@@ -684,7 +684,8 @@ class Registrator:
         Pass this as the `representer` parameter to your
         :py:class:`yaml.Dumper` subclass's `add_representer` method.
         """
-        m = (("parameters1", data.parameters1),
+        m = (("channel_names", list(data.channel_names)),
+             ("parameters1", data.parameters1),
              ("parameters2", data.parameters2))
         return dumper.represent_mapping(cls.yaml_tag, m)
 
@@ -697,6 +698,8 @@ class Registrator:
         """
         m = loader.construct_mapping(node)
         ret = cls()
+        with suppress(KeyError):
+            ret.channel_names = m["channel_names"]
         ret.parameters1 = m["parameters1"]
         ret.parameters2 = m["parameters2"]
         return ret
