@@ -3,13 +3,13 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import enum
-import traceback
 from typing import Any, Callable, List, Optional, Union
 
 from PyQt5 import QtCore, QtQuick, QtQml
 
 from .dataset import DatasetCollection
 from .item_models import ListModel
+from .qml_wrapper import SimpleQtProperty
 from .thread_worker import ThreadWorker
 
 
@@ -48,140 +48,40 @@ class BatchWorker(QtQuick.QQuickItem):
         self._errorPolicy = self.ErrorPolicy.Abort
         self._errLst = []
 
-    datasetChanged = QtCore.pyqtSignal()
-    """:py:attr:`dataset` was changed"""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=datasetChanged)
-    def dataset(self) -> ListModel:
-        """Apply :py:attr:`func` to each entry of this dataset. If this is
-        a :py:class:`DatasetCollection` instance, :py:attr:`func` is applied
-        to each entry of each element.
-        """
-        return self._dataset
-
-    @dataset.setter
-    def dataset(self, data: ListModel):
-        if data is self._dataset:
-            return
-        self._dataset = data
-        self.datasetChanged.emit()
-
-    funcChanged = QtCore.pyqtSignal()
-    """:py:attr:`func` was changed"""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=funcChanged)
-    def func(self) -> Callable:
-        """Function to apply to each dataset entry. This should take each
-        of :py:attr:`argRoles` as a keyword argument. The return value is
-        stored in :py:attr:`dataset` using :py:attr:`resultRole`.
-        """
-        return self._func
-
-    @func.setter
-    def func(self, f: Callable):
-        if self._func is f:
-            return
-        self._func = f
-        self.funcChanged.emit()
-
-    argRolesChanged = QtCore.pyqtSignal()
-    """:py:attr:`argRoles` was changed"""
-
-    @QtCore.pyqtProperty(list, notify=argRolesChanged)
-    def argRoles(self) -> List[str]:
-        """For each dataset entry, these roles are passed as positional
-        arguments to :py:attr:`func`.
-        """
-        return self._argRoles
-
-    @argRoles.setter
-    def argRoles(self, r: List[str]):
-        if r == self._argRoles:
-            return
-        self._argRoles = r
-        self.argRolesChanged.emit()
-
-    kwargRolesChanged = QtCore.pyqtSignal()
-    """:py:attr:`kwargRoles` was changed"""
-
-    @QtCore.pyqtProperty(list, notify=kwargRolesChanged)
-    def kwargRoles(self) -> List[str]:
-        """For each dataset entry, these roles are passed as keyword arguments
-        to :py:attr:`func`.
-        """
-        return self._kwargRoles
-
-    @kwargRoles.setter
-    def kwargRoles(self, r: List[str]):
-        if r == self._kwargRoles:
-            return
-        self._kwargRoles = r
-        self.kwargRolesChanged.emit()
-
-    resultRoleChanged = QtCore.pyqtSignal()
-    """:py:attr:`resultRole` was changed"""
-
-    @QtCore.pyqtProperty(str, notify=resultRoleChanged)
-    def resultRole(self) -> str:
-        """Store the results of :py:attr:`func` calls in :py:attr:`datasets`
-        using this role. If it does not exist, it is created. If empty,
-        results are not stored.
-        """
-        return self._resultRole
-
-    @resultRole.setter
-    def resultRole(self, r: str):
-        if r == self._resultRole:
-            return
-        self._resultRole = r
-        self.resultRoleChanged.emit()
-
-    displayRoleChanged = QtCore.pyqtSignal()
-    """:py:attr:`displayRole` was changed"""
-
-    @QtCore.pyqtProperty(str, notify=displayRoleChanged)
-    def displayRole(self) -> str:
-        """Role to use for displaying currently processed item"""
-        return self._displayRole
-
-    @displayRole.setter
-    def displayRole(self, r: str):
-        if self._displayRole == r:
-            return
-        self._displayRole = r
-        self.displayRoleChanged.emit()
-
-    countChanged = QtCore.pyqtSignal()
-    """:py:attr:`count` was changed"""
-
-    @QtCore.pyqtProperty(int, notify=countChanged)
-    def count(self) -> int:
-        """Number of dataset entries to be processed. This is only updated
-        on calling :py:meth:`start`.
-        """
-        return self._count
-
-    progressChanged = QtCore.pyqtSignal()
-    """:py:attr:`progress` was changed"""
-
-    @QtCore.pyqtProperty(int, notify=progressChanged)
-    def progress(self) -> int:
-        """Number of processed dataset entries"""
-        return self._progress
-
-    errorPolicyChanged = QtCore.pyqtSignal()
-    """:py:attr:`errorPolicy` was changed"""
-
-    @QtCore.pyqtProperty(ErrorPolicy, notify=errorPolicyChanged)
-    def errorPolicy(self) -> ErrorPolicy:
-        return self._errorPolicy
-
-    @errorPolicy.setter
-    def errorPolicy(self, ep: ErrorPolicy):
-        if self._errorPolicy == ep:
-            return
-        self._errorPolicy = ep
-        self.errorPolicyChanged.emit()
+    dataset: ListModel = SimpleQtProperty("QVariant")
+    """Apply :py:attr:`func` to each entry of this dataset. If this is a
+    :py:class:`DatasetCollection` instance, :py:attr:`func` is applied to each
+    entry of each element that where the value for the ``"special"`` role is
+    `False`.
+    """
+    func: Callable = SimpleQtProperty("QVariant")
+    """Function to apply to each dataset entry. This should take each of
+    :py:attr:`argRoles` as a keyword argument. The return value is stored in
+    :py:attr:`dataset` using :py:attr:`resultRole`.
+    """
+    argRoles: List[str] = SimpleQtProperty(list)
+    """For each dataset entry, these roles are passed as positional arguments
+    to :py:attr:`func`.
+    """
+    kwargRoles: List[str] = SimpleQtProperty(list)
+    """For each dataset entry, these roles are passed as keyword arguments
+    to :py:attr:`func`.
+    """
+    resultRole: str = SimpleQtProperty(str)
+    """Store the results of :py:attr:`func` calls in :py:attr:`datasets` using
+    this role. If it does not exist, it is created. If empty, results are not
+    stored.
+    """
+    displayRole: str = SimpleQtProperty(str)
+    """Role to use for displaying currently processed item"""
+    count: int = SimpleQtProperty(int, readOnly=True)
+    """Number of dataset entries to be processed. This is only updated on
+    calling :py:meth:`start`.
+    """
+    progress = SimpleQtProperty(int, readOnly=True)
+    """Number of processed dataset entries"""
+    errorPolicy = SimpleQtProperty(ErrorPolicy)
+    """What to do if an error occurs while processing a dataset entry."""
 
     _errorListChanged = QtCore.pyqtSignal()
     """:py:attr:`_errorList` was changed"""
@@ -200,6 +100,7 @@ class BatchWorker(QtQuick.QQuickItem):
 
     @QtCore.pyqtProperty(bool, notify=isRunningChanged)
     def isRunning(self):
+        """Whether the worker is currently working."""
         return self._worker is not None and self._worker.enabled
 
     _currentItemChanged = QtCore.pyqtSignal()
@@ -213,6 +114,23 @@ class BatchWorker(QtQuick.QQuickItem):
             return ""
         return self._curDset.get(self._curIndex, self._displayRole)
 
+    def _findNextNonSpecial(self, oldIndex: int = -1) -> int:
+        """Find next dataset where ``special`` role value is `False
+
+        Parameters
+        ----------
+        oldIndex
+            Index of last dataset
+
+        Returns
+        -------
+            Index of non-special dataset with index > `oldIndex`
+        """
+        for i in range(oldIndex + 1, self._dataset.count):
+            if not self._dataset.get(i, "special"):
+                return i
+        return -1
+
     @QtCore.pyqtSlot()
     def start(self):
         """Start processing the data
@@ -223,17 +141,20 @@ class BatchWorker(QtQuick.QQuickItem):
         """
         if isinstance(self._dataset, DatasetCollection):
             cnt = sum(self._dataset.get(i, "dataset").count
-                      for i in range(self._dataset.count))
+                      for i in range(self._dataset.count)
+                      if not self._dataset.get(i, "special"))
             # TODO: Handle empty
-            self._curDset = self._dataset.get(0, "dataset")
+            self._curDsetIndex = self._findNextNonSpecial()
+            self._curDset = self._dataset.get(self._curDsetIndex, "dataset")
         else:
             cnt = self._dataset.count
             self._curDset = self._dataset
+            self._curDsetIndex = 0
         self._curIndex = 0
-        self._curDsetIndex = 0
 
-        self._errLst = []
-        self._errorListChanged.emit()
+        if self._errLst:
+            self._errLst = []
+            self._errorListChanged.emit()
 
         if cnt != self._count:
             self._count = cnt
@@ -265,7 +186,7 @@ class BatchWorker(QtQuick.QQuickItem):
     def _nextCall(self):
         """Process next dataset entry"""
         while self._curIndex >= self._curDset.rowCount():
-            self._curDsetIndex += 1
+            self._curDsetIndex = self._findNextNonSpecial(self._curDsetIndex)
             self._curIndex = 0
             self._curDset = self._dataset.get(self._curDsetIndex, "dataset")
         self._currentItemChanged.emit()
@@ -286,8 +207,6 @@ class BatchWorker(QtQuick.QQuickItem):
             Return value of :py:attr:`func` call
         """
         if self._resultRole:
-            if self._resultRole not in self._curDset.roles:
-                self._curDset.roles = self._curDset.roles + [self._resultRole]
             self._curDset.set(self._curIndex, self._resultRole, retval)
         self._progress += 1
         self._curIndex += 1
@@ -297,9 +216,19 @@ class BatchWorker(QtQuick.QQuickItem):
         else:
             self.abort()
 
-    def _workerError(self, exc):
-        tb = traceback.TracebackException.from_exception(exc)
-        print("".join(tb.format()))
+    def _workerError(self, exc: Exception):
+        """Worker encountered an error
+
+        Print traceback and store information in :py:attr:`_errorList`
+
+        Parameters
+        ----------
+        exc
+            Exception that was raised
+        """
+        import traceback
+        print("".join(traceback.format_exception(
+            None, exc, exc.__traceback__)))
 
         self._errLst.append(self._currentItem or self._progress + 1)
         self._errorListChanged.emit()
@@ -316,4 +245,4 @@ class BatchWorker(QtQuick.QQuickItem):
             self.abort()
 
 
-QtQml.qmlRegisterType(BatchWorker, "SdtGui.Templates", 0, 1, "BatchWorker")
+QtQml.qmlRegisterType(BatchWorker, "SdtGui.Templates", 0, 2, "BatchWorker")
