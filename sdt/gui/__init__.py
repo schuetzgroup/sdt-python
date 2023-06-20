@@ -18,7 +18,7 @@ from .item_models import ListModel
 # from .loc_display import LocDisplay
 # from .loc_options import LocOptions
 # from .locator import Locator
-# from .mpl_backend import FigureCanvasAgg, mpl_use_qt_font
+from .mpl_backend import FigureCanvasAgg, mpl_use_qt_font
 from .option_chooser import OptionChooser
 from .py_image import PyImage
 from .registrator import Registrator
