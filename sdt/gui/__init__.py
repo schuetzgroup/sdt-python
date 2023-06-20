@@ -22,7 +22,7 @@ from .mpl_backend import FigureCanvasAgg, mpl_use_qt_font
 from .option_chooser import OptionChooser
 from .py_image import PyImage
 from .registrator import Registrator
-# from .roi_selector import ROISelector
+from .roi_selector import ROISelector
 from .sdt import Sdt
 # from .track_display import TrackDisplay
 # from .track_options import TrackOptions
