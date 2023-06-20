@@ -20,7 +20,7 @@ ImageViewer 0.2 ImageViewer.qml
 # Locator 0.1 Locator.qml
 # MultiDataCollector 0.1 MultiDataCollector.qml
 ROISelector 0.2 ROISelector.qml
-# Registrator 0.1 Registrator.qml
+Registrator 0.2 Registrator.qml
 # RealSpinBox 0.1 RealSpinBox.qml
 # StatusDisplay 0.1 StatusDisplay.qml
 # TrackOptions 0.1 TrackOptions.qml
