@@ -19,6 +19,8 @@ import QtQuick.Window 2.15
 import SdtGui 0.2
 
 Window {
+    width: 800
+    height: 600
     visible: true
 
     ImageDisplay {
@@ -27,36 +29,45 @@ Window {
         anchors.fill: parent
 
         overlays: [
-            Rectangle {
+            Item {
                 objectName: "redRect"
                 property real scaleFactor: 1.0
-                color: "red"
-                x: 2 * scaleFactor
-                y: 1 * scaleFactor
-                width: 3 * scaleFactor
-                height: 2 * scaleFactor
+
+                Rectangle {
+                    color: "red"
+                    x: 2 * parent.scaleFactor
+                    y: 1 * parent.scaleFactor
+                    width: 3 * parent.scaleFactor
+                    height: 2 * parent.scaleFactor
+                }
             }
         ]
     }
 
     property list<Item> overlay2: [
-        Rectangle {
+        Item {
             objectName: "blueRect"
             property real scaleFactor: 1.0
-            color: "blue"
-            x: 20 * scaleFactor
-            y: 4 * scaleFactor
-            width: 2 * scaleFactor
-            height: 2 * scaleFactor
+
+            Rectangle {
+                color: "blue"
+                x: 20 * parent.scaleFactor
+                y: 4 * parent.scaleFactor
+                width: 2 * parent.scaleFactor
+                height: 2 * parent.scaleFactor
+            }
         },
-        Rectangle {
+        Item {
             objectName: "greenRect"
             property real scaleFactor: 1.0
-            color: "lime"
-            x: 15 * scaleFactor
-            y: 4 * scaleFactor
-            width: 2 * scaleFactor
-            height: 2 * scaleFactor
+
+            Rectangle {
+                color: "lime"
+                x: 15 * parent.scaleFactor
+                y: 4 * parent.scaleFactor
+                width: 2 * parent.scaleFactor
+                height: 2 * parent.scaleFactor
+            }
         }
     ]
 
@@ -140,6 +151,8 @@ Window {
             pytest.approx(1.0))
     grb = imgItem.grabToImage()
     qtbot.waitUntil(lambda: not grb.image().isNull())
+    gi = grb.image()
+    print(gi.width(), gi.height(), f"{gi.pixel(20, 4):x}")
     assert grb.image().pixel(3, 2) != 0xffff0000
     assert grb.image().pixel(20, 4) == 0xff0000ff
     assert grb.image().pixel(15, 4) == 0xff00ff00

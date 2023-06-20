@@ -48,6 +48,7 @@ Item {
         for (var i = 0; i < overlays.length; i++) {
             var o = overlays[i]
             o.parent = img
+            o.anchors.fill = img
             if (typeof o.scaleFactor !== undefined)
                 o.scaleFactor = scroll.scaleFactor
         }
