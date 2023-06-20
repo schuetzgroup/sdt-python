@@ -299,6 +299,7 @@ class TestRegistrator:
         cc = multicolor.Registrator()
         cc.parameters1 = trafo
         cc.parameters2 = np.linalg.inv(trafo)
+        cc.channel_names = ["bla", "blub"]
         sio = StringIO()
         io.yaml.safe_dump(cc, sio)
         sio.seek(0)
@@ -306,6 +307,7 @@ class TestRegistrator:
 
         np.testing.assert_allclose(cc_loaded.parameters1, trafo)
         np.testing.assert_allclose(cc_loaded.parameters2, np.linalg.inv(trafo))
+        assert cc_loaded.channel_names == ["bla", "blub"]
 
     def test_eq(self, trafo):
         """multicolor.Registrator: Test equality operator"""
