@@ -2,65 +2,53 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import SdtGui 0.1
-import SdtGui.Templates 0.1 as T
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import SdtGui 0.2
 
 
-T.DatasetSelector {
+Item {
     id: root
 
+    property DatasetCollection datasets: DatasetCollection {}
     property bool editable: false
-    readonly property int currentType: (
-        sel.currentIndex < 0 ? DatasetSelector.DatasetType.Null :
-        sel.currentIndex >= specialDatasets.count ? DatasetSelector.DatasetType.Normal :
-        DatasetSelector.DatasetType.Special
-    )
-    readonly property var currentDataset: (
-        sel.currentIndex < 0 ? null :
-        sel.currentIndex >= specialDatasets.count ? datasets.get(
-            sel.currentIndex - specialDatasets.count, "dataset") :
-        specialDatasets.get(sel.currentIndex, "dataset")
-    )
-    property int currentIndex
-    Binding on currentIndex {
-        value: (sel.currentIndex < specialDatasets.count ?
-                sel.currentIndex :
-                sel.currentIndex - specialDatasets.count)
-    }
-    function select(index) {
-        sel.currentIndex = index + specialDatasets.count
-    }
-    function selectSpecial(index) {
-        sel.currentIndex = index
-    }
+    property alias currentIndex: sel.currentIndex
+    property alias currentDataset: sel.currentValue
 
-    ComboBox {
-        id: sel
+    implicitWidth: rootLayout.implicitWidth
+    implicitHeight: rootLayout.implicitHeight
+
+    RowLayout {
+        id: rootLayout
         anchors.fill: parent
-        model: root._keys
-        editable: root.editable && currentIndex >= specialDatasets.count
-        onEditTextChanged: {
-            if (currentIndex >= specialDatasets.count && editText)
-                datasets.set(currentIndex - specialDatasets.count, "key", editText)
-        }
-        onModelChanged: { sel.selectFirstIfUnset() }
 
-        function selectFirstIfUnset() {
-            if (currentIndex < 0 && model.rowCount() > 0)
-                currentIndex = 0
+        EditableComboBox {
+            id: sel
+            Layout.fillWidth: true
+            model: root.datasets
+            textRole: "key"
+            valueRole: "dataset"
+            deletable: function(modelData) {
+                return root.editable && !Boolean(modelData.special)
+            }
+            editable: (root.editable &&
+                       !model.data(model.index(currentIndex, 0), "special"))
+            selectTextByMouse: true
+            onEditTextChanged: {
+                if (editText)
+                    datasets.set(currentIndex, "key", editText)
+            }
         }
-
-        Connections {
-            target: sel.model
-            function onRowsInserted() { sel.selectFirstIfUnset() }
-            function onModelReset() { sel.selectFirstIfUnset() }
+        ToolButton {
+            icon.name: "list-add"
+            visible: root.editable
+            onClicked: {
+                root.datasets.append("<new>")
+                sel.currentIndex = root.datasets.rowCount() - 1
+                sel.contentItem.selectAll()
+                sel.contentItem.forceActiveFocus()
+            }
         }
-        // selectTextByMouse: true  // Qt >=5.15
-        Component.onCompleted: { contentItem.selectByMouse = true }
     }
-
-    implicitWidth: sel.implicitWidth
-    implicitHeight: sel.implicitHeight
 }
