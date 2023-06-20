@@ -1,24 +1,20 @@
-# SPDX-FileCopyrightText: Copyright (c) 2012- Matplotlib Development Team; All Rights Reserved
 # SPDX-FileCopyrightText: 2021 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
 #
-# SPDX-License-Identifier: LicenseRef-Matplotlib-1.3
 # SPDX-License-Identifier: BSD-3-Clause
-#
-# Building on QWidget-based FigureCanvasQT and FigureCanvasQTAgg, this
-# implements QQuickItem-based figure canvas classes.
 
-import traceback
-import sys
-from typing import Dict, Optional, Tuple
+"""QQuickItem-based figure canvas classes for matplotlib
+
+building on QWidget-based FigureCanvasQT and FigureCanvasQTAgg.
+"""
+
+from typing import Dict, List, Optional, Tuple, Union
 
 from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import matplotlib as mpl
-import matplotlib.backend_bases as mpl_bases
+import matplotlib.backend_bases
 import matplotlib.backends.backend_agg as mpl_agg
-try:
-    import matplotlib.backends.backend_qt as mpl_qt  # mpl >= 3.5
-except ImportError:
-    import matplotlib.backends.backend_qt5 as mpl_qt
+import matplotlib.backends.backend_qt as mpl_qt  # mpl >= 3.5
+import matplotlib.figure
 
 
 def mpl_use_qt_font():
@@ -40,7 +36,32 @@ special_key_map: Dict[int, str] = mpl_qt.SPECIAL_KEYS
 modifier_key_map: Dict[int, int] = dict(mpl_qt._MODIFIER_KEYS)
 
 
-def keyEventToMpl(event: QtGui.QKeyEvent) -> str:
+def qt_to_mpl_modifiers(modifiers: Union[int, QtCore.Qt.KeyboardModifiers],
+                        ignore: Union[int, QtCore.Qt.Key, None] = None
+                        ) -> List[str]:
+    """Get matplotlib-compatible names of modifier keys from Qt flags
+
+    Parameters
+    ----------
+    modifiers
+        Qt KeyboardModifiers flags
+    ignore
+        Key which should not be added to the returned modifier list
+
+    Returns
+    -------
+    matplotlib compatible strings such as ``["ctrl", "shift"]``.
+    """
+    modifiers = int(modifiers)
+    # 'control' is standalone key, 'ctrl' the modifier
+    qt_keys = filter(lambda x: x[0] & modifiers and x[0] != ignore,
+                     modifier_key_map.items())
+    mpl_keys = map(lambda x: special_key_map[x[1]].replace("control", "ctrl"),
+                   qt_keys)
+    return list(mpl_keys)
+
+
+def qt_to_mpl_keyevent(event: QtGui.QKeyEvent) -> Union[str, None]:
     """Translate keys from Qt keyEvent to matplotlib key string
 
     Parameters
@@ -50,43 +71,28 @@ def keyEventToMpl(event: QtGui.QKeyEvent) -> str:
 
     Returns
     -------
-    matplotlib-compatible string, e.g. ``"ctrl+a"``.
+    matplotlib-compatible string, e.g. ``"ctrl+a"`` or `None` if
+    conversion failed.
     """
-    event_key = event.key()
-    event_mods = int(event.modifiers())  # actually a bitmask
-
-    # get names of the pressed modifier keys
-    # 'control' is named 'control' when a standalone key, but 'ctrl' when a
-    # modifier
-    # bit twiddling to pick out modifier keys from event_mods bitmask,
-    # if event_key is a MODIFIER, it should not be duplicated in mods
-    mods = [special_key_map[key].replace("control", "ctrl")
-            for mod, key in modifier_key_map.items()
-            if event_key != key and event_mods & mod]
+    qt_key = event.key()
+    mpl_mods = qt_to_mpl_modifiers(event.modifiers(), ignore=qt_key)
     try:
-        # for certain keys (enter, left, backspace, etc) use a word for the
-        # key, rather than unicode
-        key = special_key_map[event_key]
+        mpl_key = special_key_map[qt_key]
     except KeyError:
-        # unicode defines code points up to 0x10ffff (sys.maxunicode)
-        # QT will use Key_Codes larger than that for keyboard keys that are
-        # are not unicode characters (like multimedia keys)
-        # skip these
-        # if you really want them, you should add them to SPECIAL_KEYS
-        if event_key > sys.maxunicode:
+        mpl_key = event.text()
+        if not mpl_key:
             return None
-        key = chr(event_key)
-        # qt delivers capitalized letters.  fix capitalization
-        # note that capslock is ignored
-        if "shift" in mods:
-            mods.remove("shift")
-        else:
-            key = key.lower()
+        # shift is already accounted for in QKeyEvent.text()
+        try:
+            mpl_mods.remove("shift")
+        except ValueError:
+            pass
 
-    return "+".join(mods + [key])
+    return "+".join([*mpl_mods, mpl_key])
 
 
-class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
+class FigureCanvas(QtQuick.QQuickPaintedItem,
+                   mpl.backend_bases.FigureCanvasBase):
     """QQuickItem serving as a base class for matplotlib figure canvases"""
 
     def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
@@ -96,7 +102,8 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
             Parent QQuickItem
         """
         QtQuick.QQuickPaintedItem.__init__(self, parent=parent)
-        mpl_bases.FigureCanvasBase.__init__(self, figure=mpl.figure.Figure())
+        mpl.backend_bases.FigureCanvasBase.__init__(
+            self, figure=mpl.figure.Figure())
 
         self._px_ratio = 1.0  # DevicePixelRatio
         self.figure._original_dpi = self.figure.dpi
@@ -104,7 +111,6 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
 
         self._draw_pending = False
         self._is_drawing = False
-        self._draw_rect_callback = lambda painter: None
 
         self.setAcceptHoverEvents(True)
         self.setAcceptedMouseButtons(QtCore.Qt.AllButtons)
@@ -115,8 +121,8 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
 
     def _update_figure_dpi(self):
         """Scale figure's DPI with DevicePixelRatio"""
-        dpi = self._px_ratio * self.figure._original_dpi
-        self.figure._set_dpi(dpi, forward=False)
+        self.figure._set_dpi(self._px_ratio * self.figure._original_dpi,
+                             forward=False)
 
     def _update_pixel_ratio(self, r: float):
         """Update DevicePixelRatio
@@ -178,47 +184,70 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
         return x, y
 
     def hoverEnterEvent(self, event: QtGui.QHoverEvent):
-        """Translate Qt hoverEnterEvent to MPL enter_notify_event"""
-        self.enter_notify_event(event, self.mapToFigure(event.pos()))
+        """Translate Qt hoverEnterEvent to MPL LocationEvent"""
+        mpl_event = mpl.backend_bases.LocationEvent(
+            "figure_enter_event", self, *self.mapToFigure(event.pos()),
+            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+        self.callbacks.process("figure_enter_event", mpl_event)
 
     def hoverLeaveEvent(self, event: QtGui.QHoverEvent):
-        """Translate Qt hoverLeaveEvent to MPL leave_notify_event"""
+        """Translate Qt hoverLeaveEvent to MPL LocationEvent"""
         # TODO: restore cursor?
-        self.leave_notify_event(event)
+        mpl_event = mpl.backend_bases.LocationEvent(
+            "figure_leave_event", self, *self.mapToFigure(event.pos()),
+            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+        self.callbacks.process("figure_leave_event", mpl_event)
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
         """Translate Qt mousePressEvent to MPL button_press_event"""
         b = mouse_button_map.get(event.button())
-        if b is not None:
-            self.button_press_event(*self.mapToFigure(event.pos()), b,
-                                    dblclick=False, guiEvent=event)
+        if b is None:
+            return
+        mpl_event = mpl.backend_bases.MouseEvent(
+            "button_press_event", self, *self.mapToFigure(event.pos()), b,
+            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+        self.callbacks.process("button_press_event", mpl_event)
 
     def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent):
         """Translate Qt mouseDoubleClickEvent to MPL button_press_event"""
         b = mouse_button_map.get(event.button())
-        if b is not None:
-            self.button_press_event(*self.mapToFigure(event.pos()), b,
-                                    dblclick=True, guiEvent=event)
+        if b is None:
+            return
+        mpl_event = mpl.backend_bases.MouseEvent(
+            "button_press_event", self, *self.mapToFigure(event.pos()), b,
+            dblclick=True, modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event)
+        self.callbacks.process("button_press_event", mpl_event)
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent):
         """Translate Qt mouseReleaseEvent to MPL button_release_event"""
         b = mouse_button_map.get(event.button())
-        if b is not None:
-            self.button_release_event(*self.mapToFigure(event.pos()), b, event)
+        if b is None:
+            return
+        mpl_event = mpl.backend_bases.MouseEvent(
+            "button_release_event", self, *self.mapToFigure(event.pos()), b,
+            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+        self.callbacks.process("button_release_event", mpl_event)
 
     def mouseMoveEvent(self, event: QtGui.QMouseEvent):
         """Translate Qt mouseMoveEvent to MPL motion_notify_event
 
         Qt calls this when the mouse is moved while a mouse button is pressed.
         """
-        self.motion_notify_event(*self.mapToFigure(event.pos()), event)
+        mpl_event = mpl.backend_bases.MouseEvent(
+            "motion_notify_event", self, *self.mapToFigure(event.pos()),
+            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+        self.callbacks.process("motion_notify_event", mpl_event)
 
     def hoverMoveEvent(self, event: QtGui.QHoverEvent):
         """Translate Qt hoverMoveEvent to MPL motion_notify_event
 
         Qt calls this when the mouse is moved while no mouse button is pressed.
         """
-        self.motion_notify_event(*self.mapToFigure(event.pos()), event)
+        mpl_event = mpl.backend_bases.MouseEvent(
+            "motion_notify_event", self, *self.mapToFigure(event.pos()),
+            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+        self.callbacks.process("motion_notify_event", mpl_event)
 
     def wheelEvent(self, event: QtGui.QWheelEvent):
         """Translate Qt wheelEvent to MPL scroll_event"""
@@ -228,20 +257,35 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
             step = pxDelta.y()
         else:
             step = event.angleDelta().y() / 120
-        if step:
-            self.scroll_event(*self.mapToFigure(event.pos()), step, event)
+        if not step:
+            return
+
+        mpl_event = mpl.backend_bases.MouseEvent(
+            "scroll_event", self, *self.mapToFigure(event.pos()), step=step,
+            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+        self.callbacks.process("scroll_event", mpl_event)
 
     def keyPressEvent(self, event: QtGui.QKeyEvent):
         """Translate Qt keyPressEvent to MPL key_press_event"""
-        key = keyEventToMpl(event)
-        if key is not None:
-            self.key_press_event(key, event)
+        key = qt_to_mpl_keyevent(event)
+        if key is None:
+            return
+        pos = self.mapFromGlobal(QtGui.QCursor.pos())
+        mpl_event = mpl.backend_bases.KeyEvent(
+            "key_press_event", self, key, *self.mapToFigure(pos),
+            guiEvent=event)
+        self.callbacks.process("key_press_event", mpl_event)
 
     def keyReleaseEvent(self, event: QtGui.QKeyEvent):
         """Translate Qt keyReleaseEvent to MPL key_release_event"""
-        key = keyEventToMpl(event)
-        if key is not None:
-            self.key_release_event(key, event)
+        key = qt_to_mpl_keyevent(event)
+        if key is None:
+            return
+        pos = self.mapFromGlobal(QtGui.QCursor.pos())
+        mpl_event = mpl.backend_bases.KeyEvent(
+            "key_release_event", self, key, *self.mapToFigure(pos),
+            guiEvent=event)
+        self.callbacks.process("key_release_event", mpl_event)
 
     def flush_events(self):
         """Implement :py:meth:`FigureCanvasBase.flush_events`"""
@@ -260,23 +304,21 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
         self.draw_idle()
 
     def draw(self):
-        """Render the figure, and queue a request for a Qt draw."""
+        # render the figure
         if self._is_drawing:
             return
         with mpl.cbook._setattr_cm(self, _is_drawing=True):
             super().draw()
+        # tell Qt to draw
         self.update()
 
     def draw_idle(self):
-        """Queue redraw"""
-        # The Agg draw needs to be handled by the same thread Matplotlib
-        # modifies the scene graph from. Post Agg draw request to the
-        # current event loop in order to ensure thread affinity and to
-        # accumulate multiple draw requests from event handling.
-        # TODO: queued signal connection might be safer than singleShot
-        if not (self._draw_pending or self._is_drawing):
-            self._draw_pending = True
-            QtCore.QTimer.singleShot(0, self._draw_idle)
+        if self._draw_pending or self._is_drawing:
+            return
+        self._draw_pending = True
+        # Agg draw needs to be done in the same thread as which Matplotlib
+        # modifies the scene graph from
+        QtCore.QTimer.singleShot(0, self._draw_idle)
 
     def _draw_idle(self):
         """Slot to handle _draw_idle in the main thread"""
@@ -284,12 +326,13 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
             if not self._draw_pending:
                 return
             self._draw_pending = False
-            if self.height() <= 0 or self.width() <= 0:
+            if self.width() < 0 or self.height() < 0:
                 return
             try:
                 self.draw()
             except Exception:
-                # Uncaught exceptions are fatal for PyQt5, so catch them.
+                # Catch exception so that PyQt won't terminate
+                import traceback
                 traceback.print_exc()
 
     def blit(self, bbox=None):
@@ -298,9 +341,8 @@ class FigureCanvas(QtQuick.QQuickPaintedItem, mpl_bases.FigureCanvasBase):
         # only the bbox is copied in paint.
         if bbox is None and self.figure:
             bbox = self.figure.bbox
-        l, b, w, h = [int(pt / self._px_ratio) for pt in bbox.bounds]
-        t = b + h
-        self.update(QtCore.QRect(l, self.height() - t, w, h))
+        l, b, w, h = [int(coord / self._px_ratio) for coord in bbox.bounds]
+        self.update(QtCore.QRect(l, self.height() - (b + h), w, h))
 
 
 class FigureCanvasAgg(mpl_agg.FigureCanvasAgg, FigureCanvas):
@@ -321,7 +363,5 @@ class FigureCanvasAgg(mpl_agg.FigureCanvasAgg, FigureCanvas):
         img.setDevicePixelRatio(self._px_ratio)
         painter.drawImage(0, 0, img)
 
-        self._draw_rect_callback(painter)
 
-
-QtQml.qmlRegisterType(FigureCanvasAgg, "SdtGui", 0, 1, "FigureCanvasAgg")
+QtQml.qmlRegisterType(FigureCanvasAgg, "SdtGui", 0, 2, "FigureCanvasAgg")
