@@ -218,7 +218,9 @@ class DatasetCollection(ListModel):
         -------
         New dataset model instance
         """
-        model = self.DatasetType()
+        # Set `self` as QObject parent to avoid segfault when setting 
+        # `fileList` property (PyQt5 5.15.7)
+        model = self.DatasetType(self)
         for p in self._propagated:
             setattr(model, p, getattr(self, p))
         return model
