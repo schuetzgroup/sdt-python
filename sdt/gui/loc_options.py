@@ -39,9 +39,9 @@ class LocOptions(OptionChooser):
         self._locData = None
 
     # Properties
-    image = SimpleQtProperty(QtCore.QVariant, comp=operator.is_)
-    """Image data (ndarray) to find preview localizations, which are exposed via
-    the :py:attr:`locData` property.
+    image = SimpleQtProperty("QVariant", comp=operator.is_)
+    """Image data (ndarray) to find preview localizations, which are exposed
+    via the :py:attr:`locData` property.
     """
     algorithm = SimpleQtProperty(str)
     """Localization algorithm to use. Currently ``"daostorm_3d"`` and
@@ -51,12 +51,12 @@ class LocOptions(OptionChooser):
     """Options to the localization algorithm. See
     :py:func:`sdt.loc.daostorm_3d.locate` and :py:func:`sdt.loc.cg.locate`.
     """
-    locData = SimpleQtProperty(QtCore.QVariant, readOnly=True)
+    locData = SimpleQtProperty("QVariant", readOnly=True)
     """Result of running the localization algorithm on the :py:attr:`input`
     image with :py:attr:`options`.
     """
 
-    @QtCore.pyqtSlot(result=QtCore.QVariant)
+    @QtCore.pyqtSlot(result="QVariant")
     def getBatchFunc(self) -> Callable[[Iterable[np.ndarray]], pd.DataFrame]:
         """Get a function for batch localization using current settings
 
@@ -98,4 +98,4 @@ class LocOptions(OptionChooser):
         return result
 
 
-QtQml.qmlRegisterType(LocOptions, "SdtGui.Templates", 0, 1, "LocOptions")
+QtQml.qmlRegisterType(LocOptions, "SdtGui.Templates", 0, 2, "LocOptions")

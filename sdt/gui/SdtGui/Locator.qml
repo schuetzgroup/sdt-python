@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import SdtGui 0.1
-import SdtGui.Templates 0.1 as T
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import SdtGui 0.2
+import SdtGui.Templates 0.2 as T
 
 
 T.Locator {
@@ -29,32 +29,43 @@ T.Locator {
             Layout.fillWidth: true
         }
         RowLayout {
-            ColumnLayout {
-                LocOptions {
-                    id: loc
-                    image: imSel.image
-                    Layout.alignment: Qt.AlignTop
-                    Layout.fillHeight: true
-                }
-                RowLayout {
-                    Button {
-                        text: "Load settings…"
-                        Layout.fillWidth: true
-                        enabled: false
+            Item {
+                // Wrap into item, otherwise the column will take half of the
+                // window width due to buttons' `Layout.fillWidth: true`
+                Layout.fillHeight: true
+                implicitWidth: controlLayout.implicitWidth
+                implicitHeight: controlLayout.implicitHeight
+
+                ColumnLayout {
+                    id: controlLayout
+                    anchors.fill: parent
+
+                    LocOptions {
+                        id: loc
+                        image: imSel.image
+                        Layout.alignment: Qt.AlignTop
+                        Layout.fillHeight: true
+                    }
+                    RowLayout {
+                        Button {
+                            text: "Load settings…"
+                            Layout.fillWidth: true
+                            enabled: false
+                        }
+                        Button {
+                            text: "Save settings…"
+                            Layout.fillWidth: true
+                            enabled: false
+                        }
                     }
                     Button {
-                        text: "Save settings…"
+                        text: "Locate all…"
                         Layout.fillWidth: true
-                        enabled: false
-                    }
-                }
-                Button {
-                    text: "Locate all…"
-                    Layout.fillWidth: true
-                    onClicked: {
-                        batchWorker.func = root.getLocateFunc()
-                        batchWorker.start()
-                        batchDialog.open()
+                        onClicked: {
+                            batchWorker.func = root.getLocateFunc()
+                            batchWorker.start()
+                            batchDialog.open()
+                        }
                     }
                 }
             }
@@ -74,7 +85,7 @@ T.Locator {
     DropArea {
         anchors.fill: parent
         keys: "text/uri-list"
-        onDropped: { for (var u of drop.urls) imSel.dataset.append(u) }
+        onDropped: { for (var u of drop.urls) imSel.dataset.setFiles(u) }
     }
     Dialog {
         id: batchDialog

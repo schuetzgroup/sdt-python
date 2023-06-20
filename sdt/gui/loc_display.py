@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import math
+import operator
 from typing import Optional
 
 from PyQt5 import QtCore, QtGui, QtQml, QtQuick
@@ -56,64 +57,31 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
         self._markerSize = 0.0
         self._showLoc = True
 
+        self.showLocChanged.connect(self.update)
+        self.locDataChanged.connect(self._makeCircles)
+        self.scaleFactorChanged.connect(self._makeCircles)
+
     color = SimpleQtProperty(QtGui.QColor)
     """Color of the markers"""
     markerSize = SimpleQtProperty(float)
     """Size (radius) of the markers. If less than or equal to 0.0, use the
     sizes from :py:attr:`locData`.
     """
+    showLoc: bool = SimpleQtProperty(bool)
+    """Whether to display localization markers
 
-    showLocChanged = QtCore.pyqtSignal()
-
-    @QtCore.pyqtProperty(bool, notify=showLocChanged)
-    def showLoc(self) -> bool:
-        """Whether to display localization markers
-
-        This is mostly useful for derived classes such as
-        :py:class:`TrackDisplay` where one may want to toggle the display of
-        localization markers while still showing track markers. Otherwise,
-        setting ``visible = false`` is more efficient.
-        """
-        return self._showLoc
-
-    @showLoc.setter
-    def showLoc(self, s):
-        if self._showLoc == s:
-            return
-        self._showLoc = s
-        self.update()
-
-    locDataChanged = QtCore.pyqtSignal(QtCore.QVariant)
-    """Localization data was changed"""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=locDataChanged)
-    def locData(self) -> pd.DataFrame:
-        """Localization data to display"""
-        return self._locData
-
-    @locData.setter
-    def locData(self, val):
-        self._locData = val
-        self.locDataChanged.emit(val)
-        self._makeCircles()
-
-    scaleFactorChanged = QtCore.pyqtSignal(float)
-    """Scale factor has changed"""
-
-    @QtCore.pyqtProperty(float, notify=scaleFactorChanged)
-    def scaleFactor(self) -> float:
-        """Zoom factor of the underlying image. Used to transform image
-        coordinates to GUI coordinates.
-        """
-        return self._scaleFactor
-
-    @scaleFactor.setter
-    def scaleFactor(self, fac):
-        if math.isclose(self._scaleFactor, fac):
-            return
-        self._scaleFactor = fac
-        self.scaleFactorChanged.emit(fac)
-        self._makeCircles()
+    This is mostly useful for derived classes such as
+    :py:class:`TrackDisplay` where one may want to toggle the display of
+    localization markers while still showing track markers. Otherwise,
+    setting ``visible = false`` is more efficient.
+    """
+    locData: Optional[pd.DataFrame] = SimpleQtProperty(
+        "QVariant", comp=operator.is_)
+    """Localization data to display"""
+    scaleFactor: float = SimpleQtProperty(float, comp=math.isclose)
+    """Zoom factor of the underlying image. Used to transform image
+    coordinates to GUI coordinates.
+    """
 
     def _makeCircles(self):
         """Create circles marking localizations
@@ -140,7 +108,6 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
         self.update()
 
     def paint(self, painter: QtGui.QPainter):
-        # Implement QQuickItem.paint
         pen = painter.pen()
         pen.setColor(self.color)
         pen.setWidthF(2.5)
@@ -153,4 +120,4 @@ class LocDisplay(QtQuick.QQuickPaintedItem):
                 painter.drawEllipse(c)
 
 
-QtQml.qmlRegisterType(LocDisplay, "SdtGui", 0, 1, "LocDisplay")
+QtQml.qmlRegisterType(LocDisplay, "SdtGui", 0, 2, "LocDisplay")

@@ -2,12 +2,15 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+import operator
+from typing import Optional
+
 from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import pandas as pd
-from typing import Optional
 
 from .. import helper
 from .loc_display import LocDisplay
+from .qml_wrapper import SimpleQtProperty
 
 
 class TrackDisplay(LocDisplay):
@@ -51,60 +54,25 @@ class TrackDisplay(LocDisplay):
             Parent QQuickItem
         """
         super().__init__(parent)
-        self._curFrame = -1
-        self._trc = None
+        self._currentFrame = -1
+        self._trackData = None
         self._lines = []
         self._showTracks = True
 
         self.scaleFactorChanged.connect(self._makeLines)
+        self.showTracksChanged.connect(self._makeLines)
+        self.currentFrameChanged.connect(self._makeLines)
+        self.trackDataChanged.connect(self._makeLines)
 
-    showTracksChanged = QtCore.pyqtSignal()
-
-    @QtCore.pyqtProperty(bool, notify=showTracksChanged)
-    def showTracks(self) -> bool:
-        """Whether to display tracks"""
-        return self._showTracks
-
-    @showTracks.setter
-    def showTracks(self, s):
-        if self._showTracks == s:
-            return
-        self._showTracks = s
-        self._makeLines()
-
-    currentFrameChanged = QtCore.pyqtSignal()
-    """:py:attr:`currentFrame` changed"""
-
-    @QtCore.pyqtProperty(int, notify=currentFrameChanged)
-    def currentFrame(self) -> int:
-        """Current frame number. Used to display localization markers and
-        selecting only tracks present in the current frame.
-        """
-        return self._curFrame
-
-    @currentFrame.setter
-    def currentFrame(self, f: int):
-        if self._curFrame == f:
-            return
-        self._curFrame = f
-        self.currentFrameChanged.emit()
-        self._makeLines()
-
-    trackDataChanged = QtCore.pyqtSignal()
-    """:py:attr:`trackData` changed"""
-
-    @QtCore.pyqtProperty(QtCore.QVariant, notify=trackDataChanged)
-    def trackData(self) -> pd.DataFrame:
-        """Tracking data"""
-        return self._trc
-
-    @trackData.setter
-    def trackData(self, trc: pd.DataFrame):
-        if self._trc is trc:
-            return
-        self._trc = trc
-        self.trackDataChanged.emit()
-        self._makeLines()
+    showTracks: bool = SimpleQtProperty(bool)
+    """Whether to display tracks"""
+    currentFrame: int = SimpleQtProperty(int)
+    """Current frame number. Used to display localization markers and
+    selecting only tracks present in the current frame.
+    """
+    trackData: Optional[pd.DataFrame] = SimpleQtProperty(
+        "QVariant", comp=operator.is_)
+    """Tracking data"""
 
     def _makeLines(self):
         """Create lines marking the tracks
@@ -112,16 +80,17 @@ class TrackDisplay(LocDisplay):
         This calls also :py:meth:`update` to trigger paint.
         """
         self._lines = []
-        if self._curFrame < 0 or self._trc is None:
+        if self._currentFrame < 0 or self._trackData is None:
             self.locData = None
         else:
-            self.locData = self._trc[self._trc["frame"] == self._curFrame]
+            self.locData = self._trackData[
+                self._trackData["frame"] == self._currentFrame]
 
             if self._showTracks:
                 for p, (x, y, fr) in helper.split_dataframe(
-                        self._trc, "particle", ["x", "y", "frame"],
+                        self._trackData, "particle", ["x", "y", "frame"],
                         type="array_list"):
-                    if not fr.min() <= self._curFrame <= fr.max():
+                    if not fr.min() <= self._currentFrame <= fr.max():
                         continue
                     # TODO: sort by frame
                     xs = (x + 0.5) * self.scaleFactor
@@ -132,10 +101,9 @@ class TrackDisplay(LocDisplay):
         self.update()
 
     def paint(self, painter: QtGui.QPainter):
-        # Implement QQuickItem.paint
         super().paint(painter)
         for li in self._lines:
             painter.drawPolyline(li)
 
 
-QtQml.qmlRegisterType(TrackDisplay, "SdtGui", 0, 1, "TrackDisplay")
+QtQml.qmlRegisterType(TrackDisplay, "SdtGui", 0, 2, "TrackDisplay")

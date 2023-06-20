@@ -15,13 +15,13 @@ FrameSelector 0.2 FrameSelector.qml
 ImageDisplay 0.2 ImageDisplay.qml
 ImageSelector 0.2 ImageSelector.qml
 ImageViewer 0.2 ImageViewer.qml
-# LocOptions 0.1 LocOptions.qml
-# Locator 0.1 Locator.qml
+LocOptions 0.2 LocOptions.qml
+Locator 0.2 Locator.qml
 MultiDataCollector 0.2 MultiDataCollector.qml
 ROISelector 0.2 ROISelector.qml
 Registrator 0.2 Registrator.qml
-# RealSpinBox 0.1 RealSpinBox.qml
-# StatusDisplay 0.1 StatusDisplay.qml
-# TrackOptions 0.1 TrackOptions.qml
+RealSpinBox 0.2 RealSpinBox.qml
+StatusDisplay 0.2 StatusDisplay.qml
+TrackOptions 0.2 TrackOptions.qml
 
 singleton Sdt 0.2 Sdt.qml
