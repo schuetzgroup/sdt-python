@@ -10,7 +10,8 @@ from .qml_wrapper import (Component, QmlDefinedMethod, QmlDefinedProperty,
 from .batch_worker import BatchWorker
 from .channel_config import ChannelConfig
 from .data_collector import DataCollector, MultiDataCollector
-from .dataset import DatasetCollection, Dataset, RelPathDatasetProxy
+from .dataset import (DatasetCollection, Dataset, RelPathDatasetProxy,
+                      FilterDatasetProxy)
 from .frame_selector import FrameSelector
 from .image_pipeline import BasicImagePipeline, ImagePipeline
 from .item_models import ListModel

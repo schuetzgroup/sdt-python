@@ -154,3 +154,30 @@ def test_RelPathDatasetProxy(qtbot):
     assert rp.data(rp.index(0, 0), ds.Roles.source_0) == "file1"
     assert rp.data(rp.index(1, 0), ds.Roles.source_0) == "file/in/subdir"
     assert rp.data(rp.index(2, 0), ds.Roles.source_0) == "other_file"
+
+
+def test_FilterDatasetProxy():
+    dsc = gui.DatasetCollection()
+
+    dsc.append("ds0")
+    dsc.append("ds1", special=True)
+    dsc.append("ds2")
+
+    p = gui.FilterDatasetProxy()
+    p.setSourceModel(dsc)
+
+    assert p.rowCount() == 2
+    assert p.data(p.index(0, 0), dsc.Roles.key) == "ds0"
+    assert p.data(p.index(1, 0), dsc.Roles.key) == "ds2"
+    assert p.getSourceRow(0) == 0
+    assert p.getSourceRow(1) == 2
+
+    p.showSpecial = True
+
+    assert p.rowCount() == 3
+    assert p.data(p.index(0, 0), dsc.Roles.key) == "ds0"
+    assert p.data(p.index(1, 0), dsc.Roles.key) == "ds1"
+    assert p.data(p.index(2, 0), dsc.Roles.key) == "ds2"
+    assert p.getSourceRow(0) == 0
+    assert p.getSourceRow(1) == 1
+    assert p.getSourceRow(2) == 2

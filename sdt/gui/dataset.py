@@ -424,7 +424,51 @@ class RelPathDatasetProxy(QtCore.QIdentityProxyModel):
         return d
 
 
+class FilterDatasetProxy(QtCore.QSortFilterProxyModel):
+    """Proxy model that removes datasets marked as `special`"""
+    def __init__(self, parent: Optional[QtCore.QObject] = None):
+        super().__init__(parent)
+        self._showSpecial = False
+        self.setDynamicSortFilter(True)
+
+    showSpecialChanged = QtCore.pyqtSignal()
+
+    @QtCore.pyqtProperty(bool, notify=showSpecialChanged)
+    def showSpecial(self) -> bool:
+        """Whether to show special datasets"""
+        return self._showSpecial
+
+    @showSpecial.setter
+    def showSpecial(self, s: bool):
+        if s == self._showSpecial:
+            return
+        self._showSpecial = s
+        self.showSpecialChanged.emit()
+        self.invalidateFilter()
+
+    def filterAcceptsRow(self, sourceRow: int,
+                         sourceParent: QtCore.QModelIndex) -> bool:
+        return (self._showSpecial or
+                not self.sourceModel().get(sourceRow, "special"))
+
+    @QtCore.pyqtSlot(int, result=int)
+    def getSourceRow(self, row: int) -> int:
+        """Get the row number in the source model
+
+        Parameters
+        ----------
+        row
+            Row number in the filtered model (``self``)
+
+        Returns
+        -------
+            Corresponding row number in the source model
+        """
+        return self.mapToSource(self.index(row, 0)).row()
+
+
 QtQml.qmlRegisterType(Dataset, "SdtGui", 0, 2, "Dataset")
 QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 0, 2, "DatasetCollection")
 QtQml.qmlRegisterType(RelPathDatasetProxy, "SdtGui", 0, 2,
                       "RelPathDatasetProxy")
+QtQml.qmlRegisterType(FilterDatasetProxy, "SdtGui", 0, 2, "FilterDatasetProxy")
