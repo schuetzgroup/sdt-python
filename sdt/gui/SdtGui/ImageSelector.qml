@@ -99,9 +99,14 @@ Item {
                 }
             }
 
+            Binding {
+                target: fileSel.popup.contentItem
+                property: "header"
+                value: root.editable ? imageListHeaderComponent : undefined
+            }
+
             Component.onCompleted: {
                 popup.contentItem.objectName = "Sdt.ImageSelector.FileSelView"
-                popup.contentItem.header = imageListHeaderComponent
             }
         }
         Item { width: 5 }
