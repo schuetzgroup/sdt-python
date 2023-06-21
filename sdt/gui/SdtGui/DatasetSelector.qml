@@ -67,6 +67,12 @@ Item {
                     root.datasets.get(srcRow, "special")
                 }
             }
+
+            Binding {
+                target: sel.popup.contentItem.section
+                property: "property"
+                value: root.showSpecial ? "special" : ""
+            }
         }
         ToolButton {
             icon.name: "list-add"
@@ -83,5 +89,18 @@ Item {
     FilterDatasetProxy {
         id: specialProxy
         sourceModel: root.datasets
+    }
+
+    Component {
+        id: sectionHeader
+
+        Label {
+            required property bool section
+            text: section ? "special datasets" : "data"
+        }
+    }
+
+    Component.onCompleted: {
+        sel.popup.contentItem.section.delegate = sectionHeader
     }
 }
