@@ -15,6 +15,7 @@ Item {
     property bool editable: false
     property alias currentIndex: sel.currentIndex
     property alias currentDataset: sel.currentValue
+    property alias showSpecial: specialProxy.showSpecial
 
     implicitWidth: rootLayout.implicitWidth
     implicitHeight: rootLayout.implicitHeight
@@ -25,19 +26,46 @@ Item {
 
         EditableComboBox {
             id: sel
+            property bool currentIsSpecial: false
             Layout.fillWidth: true
-            model: root.datasets
+            model: specialProxy
             textRole: "key"
             valueRole: "dataset"
             deletable: function(modelData) {
                 return root.editable && !Boolean(modelData.special)
             }
-            editable: (root.editable &&
-                       !model.data(model.index(currentIndex, 0), "special"))
+            editable: root.editable && !currentIsSpecial
             selectTextByMouse: true
+
             onEditTextChanged: {
-                if (editText)
-                    datasets.set(currentIndex, "key", editText)
+                if (!editText)
+                    return
+                var srcRow = specialProxy.getSourceRow(currentIndex)
+                var oldText = root.datasets.get(srcRow, "key")
+                if (oldText == editText)
+                    return
+                root.datasets.set(srcRow, "key", editText)
+            }
+
+            onRemoveItem: index => {
+                var srcRow = specialProxy.getSourceRow(index)
+                root.datasets.remove(srcRow)
+            }
+
+            Connections {
+                target: root.datasets
+
+                function onItemsChanged(index, count, roles) {
+                    var srcRow = specialProxy.getSourceRow(currentIndex)
+                    sel.currentIsSpecial = root.datasets.get(srcRow, "special")
+                }
+            }
+
+            Binding on currentIsSpecial {
+                value: {
+                    var srcRow = specialProxy.getSourceRow(currentIndex)
+                    root.datasets.get(srcRow, "special")
+                }
             }
         }
         ToolButton {
@@ -50,5 +78,10 @@ Item {
                 sel.contentItem.forceActiveFocus()
             }
         }
+    }
+
+    FilterDatasetProxy {
+        id: specialProxy
+        sourceModel: root.datasets
     }
 }

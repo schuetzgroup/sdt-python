@@ -26,6 +26,7 @@ T.MultiDataCollector {
             id: datasetSel
             Layout.fillWidth: true
 
+            showSpecial: true
             editable: true
         }
         DataCollector {

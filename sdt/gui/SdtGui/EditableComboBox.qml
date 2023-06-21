@@ -11,13 +11,15 @@ import QtQuick.Layouts 1.15
 ComboBox {
     id: root
 
+    property var deletable: function(modelData) { return true; }
+
+    signal removeItem(int index)
+
     onCountChanged: {
         // if no item was selected previously, select first one
         if (count > 0 && currentIndex < 0)
             currentIndex = 0
     }
-
-    property var deletable: function(modelData) { return true; }
 
     delegate: ItemDelegate {
         id: delegate
@@ -40,7 +42,7 @@ ComboBox {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
                 icon.name: "edit-delete"
-                onClicked: { root.model.remove(model.index) }
+                onClicked: { root.removeItem(model.index) }
                 visible: root.deletable(model)
             }
         }
