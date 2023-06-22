@@ -43,32 +43,33 @@ def test_ImageViewer(qtbot, imageFiles):
 
     np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
                                   makeImage(10))
-    imSel.currentFrame = 1
+    with qtbot.waitSignal(imSel.imageChanged):
+        QtQml.QQmlProperty.write(imSel, "currentFrame", 1)
     np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
                                   makeImage(11))
 
-    imSel.currentIndex = 1
-    assert imSel.currentFrameCount == 20
+    QtQml.QQmlProperty.write(imSel, "currentIndex", 1)
+    assert QtQml.QQmlProperty.read(imSel, "currentFrameCount") == 20
     np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
                                   makeImage(31))
-    imSel.currentFrame = 15
+    QtQml.QQmlProperty.write(imSel, "currentFrame", 15)
     np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
                                   makeImage(45))
 
-    imSel.currentIndex = 0
-    assert imSel.currentFrameCount == 10
-    assert imSel.currentFrame == 9
+    QtQml.QQmlProperty.write(imSel, "currentIndex", 0)
+    assert QtQml.QQmlProperty.read(imSel, "currentFrameCount") == 10
+    assert QtQml.QQmlProperty.read(imSel, "currentFrame") == 9
     np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
                                   makeImage(19))
 
     frameSel.excitationSeq = "da"
     frameSel.currentExcitationType = "d"
-    assert imSel.currentFrameCount == 5
-    imSel.currentFrame = 4
+    assert QtQml.QQmlProperty.read(imSel, "currentFrameCount") == 5
+    assert QtQml.QQmlProperty.read(imSel, "currentFrame") == 4
     np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
                                   makeImage(18))
 
     frameSel.currentExcitationType = "a"
-    imSel.currentFrame = 3
+    QtQml.QQmlProperty.write(imSel, "currentFrame", 3)
     np.testing.assert_array_equal(QtQml.QQmlProperty.read(imDisp, "image"),
                                   makeImage(17))
