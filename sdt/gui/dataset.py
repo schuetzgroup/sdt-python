@@ -136,7 +136,7 @@ class Dataset(ListModel):
     """:py:attr:`fileList` property changed"""
 
     @QtCore.pyqtProperty("QVariant", notify=fileListChanged)
-    def fileList(self) -> Dict[int, [Dict[str, str]]]:
+    def fileList(self) -> Dict[int, Dict[str, str]]:
         """Nested mapping `data id` -> `file role` -> `file path`. See also
         :py:attr:`fileRoles`.
         """
