@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import warnings
+from typing import Dict, List, Optional, Union
 
 import ipywidgets
 import matplotlib.pyplot as plt
@@ -11,6 +12,7 @@ import traitlets
 
 from sdt import loc
 from .image_display import ImageDisplay
+from .image_selector import ImageSelector
 
 
 class D3DOptions(ipywidgets.GridBox):
@@ -232,7 +234,7 @@ algorithms = [D3DOptions, CGOptions]
 """List of algorithm option widget classes"""
 
 
-class Locator(ipywidgets.HBox):
+class Locator(ipywidgets.VBox):
     """Notebook UI for finding parameters for single molecule localizations
 
     This allows for loading single molecule image data, setting localization
@@ -257,12 +259,10 @@ class Locator(ipywidgets.HBox):
     >>> locator.input = img_array  # assuming this is an array of pixels
     >>> locator
 
-    or create an ImageSelector to go through multiple files
+    or create use the built-in ImageSelector to go through multiple files
 
     >>> files = sorted(pathlib.Path().glob("*.tif"))
-    >>> sel = nbui.ImageSelector(files)
-    >>> traitlets.link((sel, "output"), (locator, "input"))
-    >>> traitlets.VBox([sel, locator])
+    >>> locator.images = files
 
     Now one can play around with the parameters. Once a satisfactory
     combination has been found, get the parameters in another notebook cell:
@@ -284,7 +284,14 @@ class Locator(ipywidgets.HBox):
 
     >>> data = locator.batch_func(img_files, **par)  # loc.daostorm_3d.batch
     """
-    input: np.ndarray = traitlets.Instance(np.ndarray, allow_none=True)
+    images: Union[Dict, List, None] = traitlets.Union(
+        [traitlets.Dict(), traitlets.List()], allow_none=True)
+    """Image files/sequences passed to the built-in :py:class:`ImageSelector`.
+    If empty or `None`, the selector is hidden. Using the selector to choose a
+    frame sets :py:attr:`input` accordingly.
+    """
+    input: Optional[np.ndarray] = traitlets.Instance(
+        np.ndarray, allow_none=True)
     """Image data"""
     image_display: ImageDisplay
     """Image display widget"""
@@ -299,6 +306,10 @@ class Locator(ipywidgets.HBox):
             warnings.warn("Turning off matplotlib's interactive mode as it "
                           "is not compatible with this.")
             plt.ioff()
+
+        # Image selector
+        self._imsel = ImageSelector()
+        self._imsel.observe(self._image_selector_output_changed, "output")
 
         # General options
         self._algo_sel = ipywidgets.Dropdown(
@@ -321,7 +332,8 @@ class Locator(ipywidgets.HBox):
 
         left_box = ipywidgets.VBox([self._algo_sel, *self._loc_options,
                                     self._show_loc_check])
-        super().__init__([left_box, self.image_display])
+        super().__init__([self._imsel,
+                          ipywidgets.HBox([left_box, self.image_display])])
 
         traitlets.link((self._algo_sel, "value"), (self, "algorithm"))
         self.observe(self._update, "options")
@@ -362,6 +374,17 @@ class Locator(ipywidgets.HBox):
                 a.layout.display = "none"
 
         self._options_changed()
+
+    @traitlets.observe("images")
+    def _images_changed(self, change=None):
+        if not self.images:
+            self._imsel.layout.display = "none"
+        else:
+            self._imsel.layout.display = None
+        self._imsel.images = self.images
+
+    def _image_selector_output_changed(self, change=None):
+        self.input = self._imsel.output
 
     @traitlets.observe("input")
     def _update(self, change=None):
