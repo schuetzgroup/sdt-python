@@ -125,7 +125,7 @@ class ChannelSplitter(ipywidgets.VBox):
 
             r = mpl.widgets.RectangleSelector(
                 self.image_display.ax, self._roi_drawn, interactive=True,
-                rectprops={"facecolor": color, "alpha": alpha},
+                props={"facecolor": color, "alpha": alpha},
                 useblit=True
             )
             r.active = False
