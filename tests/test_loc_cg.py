@@ -47,15 +47,23 @@ def check_regression_result(res, exp, img_shape):
             frame_col = res["frame"]
         res = res[algorithm.peak_params].to_numpy()
 
-    r = regression_options["radius"]
-    # Remove peaks close to edge.
-    good = np.all((r + 1 <= exp[["x", "y"]]) &
-                  (exp[["x", "y"]] < np.array(img_shape) - r - 1),
-                  axis=1)
-    exp = exp[good]
+    radius = regression_options["radius"]
+    # The original implementation's `local_maxima` removed maxima that
+    # were ``radius + 1`` pixels away from right/bottom edge, which is
+    # not necessary; removing maxima ``radius`` or less pixels away
+    # from  edges is sufficient.
+    yx = res[:, [algorithm.col_nums.y, algorithm.col_nums.x]]
+    yx_max_wrong = np.array(img_shape) - radius - 1
+    print(yx_max_wrong)
+    wrongly_removed = np.any(
+        (yx >= yx_max_wrong - 1) & (yx <= yx_max_wrong + 1),
+        axis=1,
+    )
+    res = res[~wrongly_removed]
 
     if frame_col is not None:
-        np.testing.assert_array_equal(frame_col, exp["frame"])
+        np.testing.assert_array_equal(frame_col[~wrongly_removed],
+                                      exp["frame"])
 
     # Since subpixel image shifting was fixed, tolerances need to
     # be higher.
@@ -77,8 +85,8 @@ regression_options = {"radius": 3, "signal_thresh": 300, "mass_thresh": 5000,
 class TestAlgorithm:
     def test_locate(self):
         """Test with synthetic data"""
-        d = np.array([[4.45, 10.0, 1000.0, 0.8],  # close to edge
-                      [10.0, 4.48, 1500.0, 0.9],  # close to edge
+        d = np.array([[3.45, 10.0, 1000.0, 0.8],  # close to edge
+                      [10.0, 3.48, 1500.0, 0.9],  # close to edge
                       [96.0, 50.0, 1200.0, 1.0],  # close to edge
                       [52.0, 77.5, 1750.0, 1.1],  # close to edge
                       [27.3, 56.7, 1450.0, 1.2],  # good
@@ -280,15 +288,63 @@ class TestFind:
         with np.load(data_path / "cg_local_max_orig.npz") as orig:
             return {int(k): v for k, v in orig.items()}
 
+    def test_local_maxima(self):
+        img = np.zeros((80, 100))
+        img[30, 40] = 300
+        img[10, 20] = 100  # too dim
+        img[3, 40] = 300  # right at the border
+        img[20, 3] = 300
+        img[76, 41] = 300
+        img[21, 96] = 300
+        img[2, 60] = 300  # too close to border
+        img[30, 2] = 300
+        img[77, 50] = 300
+        img[30, 97] = 300
+        img[50, 40] = 400  # two peaks close together
+        img[50, 42] = 300
+        img[40:42, 70:72] = 300  # one flat peak
+        img[43, 70] = 300
+
+        res = find.local_maxima(img, 3, 150)
+        print(res)
+        exp = np.array([[30, 40],
+                        [3, 40],
+                        [20, 3],
+                        [76, 41],
+                        [21, 96],
+                        [50, 40],
+                        [43, 70]])
+        np.testing.assert_array_equal(res[np.argsort(res[:, 0])],
+                                      exp[np.argsort(exp[:, 0])])
+
     def test_local_maxima_regression(self, regression_img,
                                      regression_local_max):
         for i, img in enumerate(regression_img):
-            lm = find.local_maxima(img, regression_options["radius"],
+            radius = regression_options["radius"]
+            lm = find.local_maxima(img, radius,
                                    regression_options["signal_thresh"])
-            np.testing.assert_allclose(lm, regression_local_max[i].T)
+            expected = regression_local_max[i].T
+            # The original implementation's `local_maxima` removed maxima that
+            # were ``radius + 1`` pixels away from right/bottom edge, which is
+            # not necessary; removing maxima ``radius`` or less pixels away
+            # from  edges is sufficient.
+            wrongly_removed = np.any(
+                lm == np.array(img.shape) - radius - 1,
+                axis=1,
+            )
+            np.testing.assert_allclose(lm[~wrongly_removed], expected)
 
     def test_find_regression(self, regression_img, regression_local_max):
         for i, img in enumerate(regression_img):
-            lm = find.find(img, regression_options["radius"],
-                           regression_options["signal_thresh"])
-            np.testing.assert_allclose(lm, regression_local_max[i].T[:, ::-1])
+            radius = regression_options["radius"]
+            lm = find.find(img, radius, regression_options["signal_thresh"])
+            expected = regression_local_max[i].T[:, ::-1]
+            # The original implementation's `local_maxima` removed maxima that
+            # were ``radius + 1`` pixels away from right/bottom edge, which is
+            # not necessary; removing maxima ``radius`` or less pixels away
+            # from  edges is sufficient.
+            wrongly_removed = np.any(
+                lm == np.array(img.shape[::-1]) - radius - 1,
+                axis=1,
+            )
+            np.testing.assert_allclose(lm[~wrongly_removed], expected)

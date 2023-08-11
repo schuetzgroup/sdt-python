@@ -87,7 +87,7 @@ def local_maxima(image, search_radius, threshold):
     # discard maxima within `search_radius` pixels of the edges
     in_margin = np.any(
         (candidates < search_radius) |
-        (candidates >= np.array(image.shape) - search_radius - 1), axis=1)
+        (candidates >= np.array(image.shape) - search_radius), axis=1)
     candidates = candidates[~in_margin]
 
     # remove spurious maxima which result from flat peaks
