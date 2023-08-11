@@ -4,6 +4,8 @@
 
 """Put together finding and fitting for feature localization"""
 import collections
+import math
+from typing import Tuple, Union
 
 import numpy as np
 import scipy
@@ -15,6 +17,32 @@ from .find import find
 peak_params = ["x", "y", "mass", "size", "ecc"]
 ColumnNums = collections.namedtuple("ColumnNums", peak_params)
 col_nums = ColumnNums(**{k: v for v, k in enumerate(peak_params)})
+
+
+def _get_crop(img: np.ndarray, start_idx: Tuple[int, int],
+              end_idx: Tuple[int, int]) -> Union[np.ndarray, None]:
+    """Get a crop of an image (i.e., 2d array)
+
+    If the crop is not possible because some index is out of bounds, return
+    `None`
+
+    Parameters
+    ----------
+    img
+        Image to crop
+    start_idx
+        Lower bound indices of the crop
+    end_idx
+        Upper bound indices of the crop
+
+    Returns
+    -------
+    Cropped region if possible, else `None`
+    """
+    if not (all(0 <= i <= s for i, s in zip(start_idx, img.shape)) and
+            all(0 <= i <= s for i, s in zip(end_idx, img.shape))):
+        return None
+    return img[start_idx[0]:end_idx[0], start_idx[1]:end_idx[1]]
 
 
 def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
@@ -86,16 +114,12 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
     # than mass_thresh
     valid = np.ones(len(peaks_found), dtype=bool)
     for i, (x, y) in enumerate(peaks_found):
-        if not (radius + 1 <= x < raw_image.shape[1] - radius - 1 and
-                radius + 1 <= y < raw_image.shape[0] - radius - 1):
-            # Too close to the edge. For shifting (below), a region with a
-            # radius of ``radius + 1`` around the peak has to be within the
-            # image.
+        # region of interest for this peak
+        roi = _get_crop(image, (y - radius, x - radius),
+                        (y + radius + 1, x + radius + 1))
+        if roi is None:
             valid[i] = False
             continue
-
-        # region of interest for this peak
-        roi = image[y-radius:y+radius+1, x-radius:x+radius+1]
 
         # estimate mass
         m = np.sum(roi * feat_mask)
@@ -114,30 +138,48 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
         xc = x + dx
         yc = y + dy
 
-        # Shift the image. This needs a larger ROI.
-        shifted_img = scipy.ndimage.shift(
-            image[y-radius-1:y+radius+2, x-radius-1:x+radius+2].astype(float),
-            (-dy, -dx), order=1, cval=np.NaN)
-        shifted_img = shifted_img[1:-1, 1:-1]  # crop to `roi` dimensions
+        # Shift the image.
+        # One extra pixel row/column is needed for interpolation.
+        # E.g. if dx in [0, 1], the left ROI boundary does not need to be
+        # shifted, the right needs to be shifted to the right by 1.
+        # If dx in [-2, -1], the left ROI boundary needs to be shifted to the
+        # left by 2, the right by 1.
+        shift_x_int = math.floor(dx)
+        shift_x_frac = dx % 1
+        shift_y_int = math.floor(dy)
+        shift_y_frac = dy % 1
+        shifted_roi = _get_crop(
+            image,
+            (y-radius+shift_y_int, x-radius+shift_x_int),
+            (y+radius+shift_y_int+2, x+radius+shift_x_int+2))
+        if shifted_roi is None:
+            valid[i] = False
+            continue
+        shifted_roi = scipy.ndimage.shift(
+            shifted_roi.astype(float), (-shift_y_frac, -shift_x_frac), order=1,
+            cval=np.NaN)
+        # Remove extra pixels
+        shifted_roi = shifted_roi[:-1, :-1]
 
         # calculate peak properties
         # mass
-        m = np.sum(shifted_img * feat_mask)
+        m = np.sum(shifted_roi * feat_mask)
         ret[i, col_nums.mass] = m
 
         # radius of gyration
-        rg_sq = np.sum(shifted_img * (rsq_mask * feat_mask + 1./6.))/m
+        rg_sq = np.sum(shifted_roi * (rsq_mask * feat_mask + 1./6.))/m
         ret[i, col_nums.size] = np.sqrt(rg_sq)
 
         # eccentricity
-        ecc = np.sqrt(np.sum(shifted_img * cos_mask)**2 +
-                      np.sum(shifted_img * sin_mask)**2)
-        ecc /= m - shifted_img[radius, radius] + 1e-6
+        ecc = np.sqrt(np.sum(shifted_roi * cos_mask)**2 +
+                      np.sum(shifted_roi * sin_mask)**2)
+        ecc /= m - shifted_roi[radius, radius] + 1e-6
         ret[i, col_nums.ecc] = ecc
 
         # peak center, like above
-        dx = np.sum(shifted_img * x_mask) / m - radius
-        dy = np.sum(shifted_img * y_mask) / m - radius
+        dx = np.sum(shifted_roi * x_mask) / m - radius
+        dy = np.sum(shifted_roi * y_mask) / m - radius
+
         ret[i, col_nums.x] = xc + dx
         ret[i, col_nums.y] = yc + dy
 

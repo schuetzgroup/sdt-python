@@ -109,6 +109,57 @@ class TestAlgorithm:
         np.testing.assert_allclose(res[:, algorithm.col_nums.ecc], 0.0,
                                    atol=0.03)
 
+    def test_large_shift(self):
+        """Make sure a large shift (> 1 pixel) between local maximum and center
+        of mass is handled correctly.
+        """
+        img = np.zeros((80, 100), dtype=int)
+        img[10, 12] = 200
+        img[10, 13] = 150
+        img[11, 14] = 150
+        img[11, 15] = 150
+
+        img[11, 85] = 150
+        img[11, 86] = 150
+        img[10, 87] = 150
+        img[10, 88] = 200
+
+        img[69, 85] = 150
+        img[69, 86] = 150
+        img[70, 87] = 150
+        img[70, 88] = 200
+
+        img[70, 12] = 200
+        img[70, 13] = 150
+        img[69, 14] = 150
+        img[69, 15] = 150
+
+        img[3, 50] = 200  # too close to the edge
+        img[76, 50] = 200  # too close to the edge
+        img[40, 2] = 150
+        img[40, 3] = 150
+        img[40, 4] = 200  # local max is in bounds, but shifted image is not
+        img[40, 95] = 200  # local max is in bounds, but shifted image is not
+        img[40, 96] = 150
+        img[40, 97] = 150
+
+        res = algorithm.locate(img, 4, 180, 100, bandpass=False)
+
+        # determined by a modified version of the previous algorithm which
+        # ignored NaNs coming from shifts > 1 pixel (which is fine if
+        # background is zero and radius is large enough)
+        x = 13.384615384615383
+        y = 10.461538461538462
+        mass = 650.0
+        rg = 1.4879529376876057
+        ecc = 0.567533779144851
+        expected = np.array([[x, y, mass, rg, ecc],
+                             [100 - x, y, mass, rg, ecc],
+                             [x, 80 - y, mass, rg, ecc],
+                             [100 - x, 80 - y, mass, rg, ecc]])
+
+        np.testing.assert_allclose(res, expected)
+
     def test_locate_regression(self, regression_data, regression_img):
         """Compare to result of the original implementation (regression test)
         """
