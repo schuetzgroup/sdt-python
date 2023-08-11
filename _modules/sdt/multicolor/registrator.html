@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdt.multicolor.registrator &#8212; sdt-python 18.0 documentation</title>
+    <title>sdt.multicolor.registrator &#8212; sdt-python 18.1 documentation</title>
   
   
   
@@ -113,7 +113,7 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.0 documentation</p>
+    <p class="title logo__title">sdt-python 18.1 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
@@ -879,6 +879,7 @@ document.write(`
                     <span class="c1"># time compared to f[sel.columns[&quot;coords&quot;]].to_numpy()</span>
                     <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
                                        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+                    <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">coords</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
                     <span class="n">lc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_local_coords</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="p">)</span>
                     <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signatures_from_local_coords</span><span class="p">(</span><span class="n">lc</span><span class="p">,</span> <span class="n">triu</span><span class="p">)</span>
                     <span class="n">signatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>

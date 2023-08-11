@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>GUIs for the Jupyter notebook &#8212; sdt-python 18.0 documentation</title>
+    <title>GUIs for the Jupyter notebook &#8212; sdt-python 18.1 documentation</title>
   
   
   
@@ -116,7 +116,7 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.0 documentation</p>
+    <p class="title logo__title">sdt-python 18.1 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
@@ -303,6 +303,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#programming-reference">Programming reference</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator"><code class="docutils literal notranslate"><span class="pre">Locator</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator.images"><code class="docutils literal notranslate"><span class="pre">Locator.images</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator.input"><code class="docutils literal notranslate"><span class="pre">Locator.input</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator.image_display"><code class="docutils literal notranslate"><span class="pre">Locator.image_display</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator.algorithm"><code class="docutils literal notranslate"><span class="pre">Locator.algorithm</span></code></a></li>
@@ -410,11 +411,9 @@ algorithm parameters and inspecting the result.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">locator</span>
 </pre></div>
 </div>
-<p>or create an ImageSelector to go through multiple files</p>
+<p>or create use the built-in ImageSelector to go through multiple files</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.tif&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span> <span class="o">=</span> <span class="n">nbui</span><span class="o">.</span><span class="n">ImageSelector</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">traitlets</span><span class="o">.</span><span class="n">link</span><span class="p">((</span><span class="n">sel</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">locator</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">traitlets</span><span class="o">.</span><span class="n">VBox</span><span class="p">([</span><span class="n">sel</span><span class="p">,</span> <span class="n">locator</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">locator</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">files</span>
 </pre></div>
 </div>
 <p>Now one can play around with the parameters. Once a satisfactory
@@ -443,8 +442,16 @@ combination has been found, get the parameters in another notebook cell:</p>
 </dd>
 </dl>
 <dl class="py attribute">
+<dt class="sig sig-object py" id="sdt.nbui.Locator.images">
+<span class="sig-name descname"><span class="pre">images</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sdt.nbui.Locator.images" title="Permalink to this definition">#</a></dt>
+<dd><p>Image files/sequences passed to the built-in <a class="reference internal" href="#sdt.nbui.ImageSelector" title="sdt.nbui.ImageSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageSelector</span></code></a>.
+If empty or <cite>None</cite>, the selector is hidden. Using the selector to choose a
+frame sets <a class="reference internal" href="#sdt.nbui.Locator.input" title="sdt.nbui.Locator.input"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input</span></code></a> accordingly.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.input">
-<span class="sig-name descname"><span class="pre">input</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#sdt.nbui.Locator.input" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">input</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sdt.nbui.Locator.input" title="Permalink to this definition">#</a></dt>
 <dd><p>Image data</p>
 </dd></dl>
 
@@ -893,6 +900,7 @@ representative images.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#programming-reference">Programming reference</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator"><code class="docutils literal notranslate"><span class="pre">Locator</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator.images"><code class="docutils literal notranslate"><span class="pre">Locator.images</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator.input"><code class="docutils literal notranslate"><span class="pre">Locator.input</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator.image_display"><code class="docutils literal notranslate"><span class="pre">Locator.image_display</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sdt.nbui.Locator.algorithm"><code class="docutils literal notranslate"><span class="pre">Locator.algorithm</span></code></a></li>

@@ -13,6 +13,19 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+18.1
+----
+
+- :py:class:`nbui.ChannelSplitter`: Update to work with newer `matplotlib`.
+- :py:class:`nbui.Locator`: Add built-in :py:class:`nbui.FrameSelector`.
+- :py:mod:`loc.cg`: Fix off-by-one error in local maximum detection, which 
+  could lead to wrongly discarding peaks close to the edges.
+- :py:mod:`loc.cg`: Fix issue where some peaks produced NaNs.
+- :py:mod:`loc.daostorm_3d`: Warn if ``radius >= 3`` as this can lead to a
+  segfault.  Accordingly, set 2.9 as upper limit in the locator GUI and NbUI.
+- :py:class:`multicolor.Registrator`: Ignore NaNs when finding transform.
+
+
 18.0
 ----
 

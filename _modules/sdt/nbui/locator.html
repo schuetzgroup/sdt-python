@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdt.nbui.locator &#8212; sdt-python 18.0 documentation</title>
+    <title>sdt.nbui.locator &#8212; sdt-python 18.1 documentation</title>
   
   
   
@@ -113,7 +113,7 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.0 documentation</p>
+    <p class="title logo__title">sdt-python 18.1 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
@@ -258,6 +258,7 @@ document.write(`
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">ipywidgets</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -266,6 +267,7 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">sdt</span> <span class="kn">import</span> <span class="n">loc</span>
 <span class="kn">from</span> <span class="nn">.image_display</span> <span class="kn">import</span> <span class="n">ImageDisplay</span>
+<span class="kn">from</span> <span class="nn">.image_selector</span> <span class="kn">import</span> <span class="n">ImageSelector</span>
 
 
 <span class="k">class</span> <span class="nc">D3DOptions</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">GridBox</span><span class="p">):</span>
@@ -279,8 +281,8 @@ document.write(`
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">empty</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_radius_sel</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">FloatText</span><span class="p">(</span>
-            <span class="n">value</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;radius&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_radius_sel</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">BoundedFloatText</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">2.9</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;radius&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_thresh_sel</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">FloatText</span><span class="p">(</span>
             <span class="n">value</span><span class="o">=</span><span class="mf">100.</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;threshold&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model_sel</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
@@ -487,7 +489,7 @@ document.write(`
 <span class="sd">&quot;&quot;&quot;List of algorithm option widget classes&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="Locator"><a class="viewcode-back" href="../../../nbui.html#sdt.nbui.Locator">[docs]</a><span class="k">class</span> <span class="nc">Locator</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">):</span>
+<div class="viewcode-block" id="Locator"><a class="viewcode-back" href="../../../nbui.html#sdt.nbui.Locator">[docs]</a><span class="k">class</span> <span class="nc">Locator</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Notebook UI for finding parameters for single molecule localizations</span>
 
 <span class="sd">    This allows for loading single molecule image data, setting localization</span>
@@ -512,12 +514,10 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; locator.input = img_array  # assuming this is an array of pixels</span>
 <span class="sd">    &gt;&gt;&gt; locator</span>
 
-<span class="sd">    or create an ImageSelector to go through multiple files</span>
+<span class="sd">    or create use the built-in ImageSelector to go through multiple files</span>
 
 <span class="sd">    &gt;&gt;&gt; files = sorted(pathlib.Path().glob(&quot;*.tif&quot;))</span>
-<span class="sd">    &gt;&gt;&gt; sel = nbui.ImageSelector(files)</span>
-<span class="sd">    &gt;&gt;&gt; traitlets.link((sel, &quot;output&quot;), (locator, &quot;input&quot;))</span>
-<span class="sd">    &gt;&gt;&gt; traitlets.VBox([sel, locator])</span>
+<span class="sd">    &gt;&gt;&gt; locator.images = files</span>
 
 <span class="sd">    Now one can play around with the parameters. Once a satisfactory</span>
 <span class="sd">    combination has been found, get the parameters in another notebook cell:</span>
@@ -539,7 +539,14 @@ document.write(`
 
 <span class="sd">    &gt;&gt;&gt; data = locator.batch_func(img_files, **par)  # loc.daostorm_3d.batch</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">input</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Instance</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">images</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Union</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">traitlets</span><span class="o">.</span><span class="n">Dict</span><span class="p">(),</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">List</span><span class="p">()],</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Image files/sequences passed to the built-in :py:class:`ImageSelector`.</span>
+<span class="sd">    If empty or `None`, the selector is hidden. Using the selector to choose a</span>
+<span class="sd">    frame sets :py:attr:`input` accordingly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Instance</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Image data&quot;&quot;&quot;</span>
     <span class="n">image_display</span><span class="p">:</span> <span class="n">ImageDisplay</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Image display widget&quot;&quot;&quot;</span>
@@ -554,6 +561,10 @@ document.write(`
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Turning off matplotlib&#39;s interactive mode as it &quot;</span>
                           <span class="s2">&quot;is not compatible with this.&quot;</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">ioff</span><span class="p">()</span>
+
+        <span class="c1"># Image selector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_imsel</span> <span class="o">=</span> <span class="n">ImageSelector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_imsel</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_selector_output_changed</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">)</span>
 
         <span class="c1"># General options</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_algo_sel</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
@@ -576,7 +587,8 @@ document.write(`
 
         <span class="n">left_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_algo_sel</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_loc_options</span><span class="p">,</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">_show_loc_check</span><span class="p">])</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="n">left_box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_display</span><span class="p">])</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_imsel</span><span class="p">,</span>
+                          <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">left_box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_display</span><span class="p">])])</span>
 
         <span class="n">traitlets</span><span class="o">.</span><span class="n">link</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_algo_sel</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;algorithm&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">,</span> <span class="s2">&quot;options&quot;</span><span class="p">)</span>
@@ -617,6 +629,17 @@ document.write(`
                 <span class="n">a</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_options_changed</span><span class="p">()</span>
+
+    <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;images&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_images_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_imsel</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_imsel</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_imsel</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images</span>
+
+    <span class="k">def</span> <span class="nf">_image_selector_output_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imsel</span><span class="o">.</span><span class="n">output</span>
 
     <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

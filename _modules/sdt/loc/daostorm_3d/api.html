@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdt.loc.daostorm_3d.api &#8212; sdt-python 18.0 documentation</title>
+    <title>sdt.loc.daostorm_3d.api &#8212; sdt-python 18.1 documentation</title>
   
   
   
@@ -113,7 +113,7 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.0 documentation</p>
+    <p class="title logo__title">sdt-python 18.1 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
@@ -414,6 +414,10 @@ document.write(`
         <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid find-filter&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">radius</span> <span class="o">&gt;=</span> <span class="mf">3.0</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;`radius` &gt;= 3 may result in a crash. Keep below 3 &quot;</span>
+                      <span class="s2">&quot;unless you know what you are doing.&quot;</span><span class="p">)</span>
 
     <span class="n">peaks</span> <span class="o">=</span> <span class="n">algorithm</span><span class="o">.</span><span class="n">locate</span><span class="p">(</span><span class="n">raw_image</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">max_iterations</span><span class="p">,</span>
                              <span class="n">find_filter</span><span class="p">,</span> <span class="n">Finder</span><span class="p">,</span> <span class="n">Fitter</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">,</span>
