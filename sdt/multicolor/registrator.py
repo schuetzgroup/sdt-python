@@ -624,6 +624,7 @@ class Registrator:
                     # time compared to f[sel.columns["coords"]].to_numpy()
                     coords = np.array([f[c].to_numpy()
                                        for c in self.columns["coords"]]).T
+                    coords = coords[np.all(np.isfinite(coords), axis=1)]
                     lc = self._calc_local_coords(coords, n_neighbors)
                     s = self._signatures_from_local_coords(lc, triu)
                     signatures.append(s)
