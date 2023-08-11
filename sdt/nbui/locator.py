@@ -26,8 +26,8 @@ class D3DOptions(ipywidgets.GridBox):
     def __init__(self):
         empty = ipywidgets.HTML()
 
-        self._radius_sel = ipywidgets.FloatText(
-            value=1., step=0.1, description="radius")
+        self._radius_sel = ipywidgets.BoundedFloatText(
+            value=1., step=0.1, min=0.1, max=2.9, description="radius")
         self._thresh_sel = ipywidgets.FloatText(
             value=100., step=10, description="threshold")
         self._model_sel = ipywidgets.Dropdown(

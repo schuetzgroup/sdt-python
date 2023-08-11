@@ -114,7 +114,7 @@ class Container(contBase):
 
 def makeDaostorm3DOptions():
     root = option_model.OptionElement("root")
-    e = option_model.NumberOption("Radius", "radius", 0., 100., 1., 2)
+    e = option_model.NumberOption("Radius", "radius", 0., 2.9, 1., 2)
     root.addChild(e)
     e = option_model.ChoiceOption("Model", "model",
                                   ["2d_fixed", "2d", "3d"], "2d")

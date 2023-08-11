@@ -159,6 +159,10 @@ def locate(raw_image, radius, model, threshold, z_params=None,
     else:
         return ValueError("Invalid find-filter")
 
+    if radius >= 3.0:
+        warnings.warn("`radius` >= 3 may result in a crash. Keep below 3 "
+                      "unless you know what you are doing.")
+
     peaks = algorithm.locate(raw_image, radius, threshold, max_iterations,
                              find_filter, Finder, Fitter, min_distance,
                              size_range)
