@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import collections
-from typing import Mapping, Optional, Sequence, Tuple, Union
+from typing import Literal, Mapping, Optional, Sequence, Tuple, Union
 import warnings
 
 import pandas as pd
@@ -277,15 +277,18 @@ def merge_channels(features1, features2, max_dist=2., mean_pos=False,
 
 
 @config.set_columns
-def find_codiffusion(tracks1: pd.DataFrame, tracks2: pd.DataFrame(),
-                     abs_threshold: int = 3, rel_threshold: float = 0.75,
-                     return_data: str = "data",
-                     feature_pairs: Optional[pd.DataFrame] = None,
-                     max_dist: float = 2.0, keep_unmatched: str = "gaps",
-                     channel_names: Sequence[str] = _channel_names,
-                     columns: Mapping = {}) -> Union[
-                         pd.DataFrame, np.ndarray,
-                         Tuple[pd.DataFrame, np.ndarray]]:
+def find_codiffusion(
+    tracks1: pd.DataFrame,
+    tracks2: pd.DataFrame,
+    abs_threshold: int = 3,
+    rel_threshold: float = 0.75,
+    return_data: Literal["data", "numbers", "both"] = "data",
+    feature_pairs: Optional[pd.DataFrame] = None,
+    max_dist: float = 2.0,
+    keep_unmatched: Literal["gaps", "all", "none"] = "gaps",
+    channel_names: Sequence[str] = _channel_names,
+    columns: Mapping = {},
+) -> Union[pd.DataFrame, np.ndarray, Tuple[pd.DataFrame, np.ndarray]]:
     """Find codiffusion in tracking data
 
     First, find pairs of localizations, the look up to which tracks they
@@ -348,14 +351,17 @@ def find_codiffusion(tracks1: pd.DataFrame, tracks2: pd.DataFrame(),
     """
     keep_unmatched = keep_unmatched.lower()
     if keep_unmatched not in ("none", "gaps", "all"):
-        raise ValueError("`keep_unmatched` must be one of 'none', 'gaps', "
-                         "'all'")
+        raise ValueError("`keep_unmatched` must be one of 'none', 'gaps', 'all'")
 
     if feature_pairs is None:
         feature_pairs = find_colocalizations(
-                tracks1, tracks2, max_dist, channel_names=channel_names,
-                keep_unmatched=keep_unmatched != "none",
-                columns=columns)
+            tracks1,
+            tracks2,
+            max_dist,
+            channel_names=channel_names,
+            keep_unmatched=keep_unmatched != "none",
+            columns=columns,
+        )
 
     p_col = columns["particle"]
     t_col = columns["time"]
@@ -413,8 +419,7 @@ def find_codiffusion(tracks1: pd.DataFrame, tracks2: pd.DataFrame(),
     elif return_data == "both":
         return feature_pairs, matches
     else:
-        raise ValueError("`return_data` has to be one of 'data', 'numbers', "
-                         "or 'both'.")
+        raise ValueError("`return_data` has to be one of 'data', 'numbers', or 'both'.")
 
 
 @config.set_columns
