@@ -131,6 +131,7 @@ T.ROISelector {
         }
         Button {
             id: intRectangleButton
+            objectName: "Sdt.ROISelector.IntRectangleButton"
             icon.name: "draw-rectangle"
             icon.color: "steelblue"
             hoverEnabled: true
@@ -169,6 +170,7 @@ T.ROISelector {
             visible: root.drawingTools == ROISelector.DrawingTools.PathROITools
         }
         ToolButton {
+            objectName: "Sdt.ROISelector.CancelButton"
             icon.name: "process-stop"
             hoverEnabled: true
             ToolTip.visible: hovered
@@ -177,6 +179,7 @@ T.ROISelector {
             onClicked: { newShapeButtons.checkedButton = null }
         }
         ToolButton {
+            objectName: "Sdt.ROISelector.DeleteButton"
             icon.name: "edit-delete"
             hoverEnabled: true
             ToolTip.visible: hovered
@@ -291,6 +294,3 @@ T.ROISelector {
         }
     ]
 }
-
-// FIXME:
-// * IntRectangle ROIs change size upon resizing the overlays

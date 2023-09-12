@@ -63,7 +63,7 @@ class ROISelector(QtQuick.QQuickItem):
         self._limits = [np.inf, np.inf]
         self.roiChanged.connect(self.roisChanged)
 
-    namesChanged = QtCore.pyqtSignal(list)
+    namesChanged = QtCore.pyqtSignal()
     """ROI names changed"""
 
     @QtCore.pyqtProperty(list, notify=namesChanged)
@@ -79,7 +79,8 @@ class ROISelector(QtQuick.QQuickItem):
         if self._names == names:
             return
         self._names = names
-        self.namesChanged.emit(names)
+        self.namesChanged.emit()
+        self.roisChanged.emit()
 
     roiChanged = QtCore.pyqtSignal(str, arguments=["name"])
     """A ROI has changed. ROI name is given by `name` argument."""
@@ -319,10 +320,7 @@ class ShapeROIItem(QtQuick.QQuickItem):
         """
         new = prop() / self.scaleFactor
         if self.shape == self.Shape.IntRectangleShape:
-            if idx < 2:
-                new = math.floor(new)
-            else:
-                new = math.ceil(new)
+            new = int(round(new))
         if not math.isclose(new, self._coords[idx], abs_tol=0.01):
             self._coords[idx] = new
             self.roiChanged.emit()
