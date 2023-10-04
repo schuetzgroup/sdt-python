@@ -98,6 +98,7 @@ class ROISelectorModule(ipywidgets.VBox):
         self._roi_multi_del.on_click(lambda x: self._remove_roi())
         self._roi_multi_box = ipywidgets.HBox(
             [self._roi_multi_sel, self._roi_multi_add, self._roi_multi_del])
+        self._roi_multi_box.layout.display = "none"
 
         self._roi_shape_sel = ipywidgets.ToggleButtons(
             options=list(self._roi_selectors), description="shape")
