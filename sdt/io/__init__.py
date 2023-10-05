@@ -8,14 +8,13 @@ r"""Data input/output
 :py:mod:`sdt.io` provides convenient ways to save and load all kinds of data.
 
 - Image sequences can be saved as multi-page TIFF files with help of
-  :py:func:`save_as_tiff`, including metadata. Using the
-  :py:class:`SdtTiffStack` package, these files can be easily read again.
+  :py:func:`save_as_tiff`, including metadata.
 - There is support for reading single molecule data as produced by the
   :py:mod:`sdt` package and various MATLAB tools using the :py:func:`load`
   function. Most data formats can be written by :py:func:`save`.
 - Further, there are helpers for common filesystem-related tasks, such as the
   :py:func:`chdir` and :py:func:`get_files`.
-- YAML is a way of data in a both human- and machine-readable way.
+- YAML is a way of storing data in a both human- and machine-readable way.
   The :py:mod:`sdt.io.yaml` submodule extends PyYAML to give a nice
   representation of :py:class:`numpy.ndarrays`. Further, it provides a
   mechanism to easily add representations for custom data types.
@@ -115,6 +114,8 @@ Image files
 
 .. autoclass:: ImageSequence
     :members:
+.. autoclass:: MultiImageSequence
+    :members:
 .. autofunction:: save_as_tiff
 
 
@@ -168,14 +169,30 @@ YAML
 .. autoclass:: SafeDumper
 .. autofunction:: register_yaml_class
 """
-from contextlib import suppress
+
+import lazy_loader
 
 from .fs import chdir, get_files  # noqa: F401
-from .image_sequence import ImageSequence  # noqa: F401
-from .sm import (load, load_csv, load_msdplot, load_pkmatrix,  # noqa: F401
-                 load_pks, load_pt2d, load_trc, save, save_pt2d, save_trc)
+from .sm import (  # noqa: F401
+    load,
+    load_csv,
+    load_msdplot,
+    load_pkmatrix,
+    load_pks,
+    load_pt2d,
+    load_trc,
+    save,
+    save_pt2d,
+    save_trc,
+)
 from .tiff import save_as_tiff  # noqa: F401
-with suppress(ImportError):
-    from .tiff import SdtTiffStack  # noqa: F401
-with suppress(ImportError):
-    from . import yaml  # noqa: F401
+
+
+# Lazy loading of stuff with optional dependencies
+__getattr__, __dir__, __all__ = lazy_loader.attach(
+    __name__,
+    submodules=["yaml"],
+    submod_attrs={
+        "image_sequence": ["ImageSequence", "MultiImageSequence"],
+    },
+)

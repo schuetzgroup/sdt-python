@@ -32,6 +32,7 @@ requirements:
         - scipy >0.18
         - tifffile >=0.14.0
         - imageio >=2.29
+        - lazy_loader
 
 test:
     requires:
