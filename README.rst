@@ -146,6 +146,7 @@ Requirements
 - imageio >= 2.29
 - tifffile >= 0.7.0
 - pyyaml
+- lazy_loader
 
 
 Recommended packages
