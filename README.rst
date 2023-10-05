@@ -44,6 +44,9 @@ Installation
 Using anaconda (recommended)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Choose one of the three following options.
+
+
 Install miniforge
 """""""""""""""""
 
