@@ -368,74 +368,10 @@ class TestFiles:
         assert i == [{"first": 0, "second": keys[0][0][0], "last": "bla"}]
 
 
-class TestImageSequence:
-    @classmethod
-    def setup_class(cls):
-        pytest.importorskip("imageio")
-
-    @pytest.fixture
-    def seq(self, tmp_path):
-        stack = np.array([np.full((10, 20), i) for i in range(10)])
-        fname = tmp_path / "test.tiff"
-        with tifffile.TiffWriter(fname) as wrt:
-            for i, img in enumerate(stack):
-                wrt.write(img, description=f"testtesttest {i}")
-        s = sdt.io.ImageSequence(fname)
-        yield s
-        s.close()
-
-    def test_open_close(self, seq):
-        assert seq.closed
-        assert len(seq) == 0
-
-        try:
-            seq.open()
-            assert not seq.closed
-            assert len(seq) == 10
-            assert seq._is_tiff
-        finally:
-            seq.close()
-        assert seq.closed
-        assert len(seq) == 0
-
-        class FakeException(Exception):
-            pass
-
-        try:
-            with seq:
-                assert not seq.closed
-                assert len(seq) == 10
-                assert seq._is_tiff
-                raise FakeException()  # Make sure context manager closes
-        except FakeException:
-            pass
-        assert seq.closed
-        assert len(seq) == 0
-
-        try:
-            seq.open()
-            assert not seq.is_slice
-            s = seq[:]
-            assert s.is_slice
-            seq.close()
-            with pytest.raises(RuntimeError):
-                # Cannot open sliced object
-                s.open()
-        finally:
-            if not seq.closed:
-                seq.close()
-
-        with sdt.io.ImageSequence(seq.uri) as seq2:
-            assert not seq2.closed
-            assert len(seq2) == 10
-            assert seq2._is_tiff
-
-            with pytest.raises(RuntimeError):
-                # cannot close sliced object
-                seq2[:].close()
-
+class _ImageSequenceTestBase:
     def test_types(self, seq):
         from sdt.io.image_sequence import Image
+
         with seq:
             img = seq[1]
         assert isinstance(img, Image)
@@ -443,16 +379,19 @@ class TestImageSequence:
         # Make sure functions returning a scalar don't return 0-dim array
         assert not isinstance(np.min(img), Image)
 
+    @staticmethod
+    def set_seq_len(seq, len_):
+        raise NotImplementedError("implement in subclass")
+
     def test_resolve_index(self, seq):
         with seq:
             assert seq._resolve_index(2) == 2
             assert seq._resolve_index(-2) == 8
+            np.testing.assert_array_equal(seq._resolve_index([1, 4, -3]), [1, 4, 7])
             np.testing.assert_array_equal(
-                seq._resolve_index([1, 4, -3]), [1, 4, 7])
-            np.testing.assert_array_equal(
-                seq._resolve_index(np.array([1, 4, -3])), [1, 4, 7])
-            np.testing.assert_array_equal(
-                seq._resolve_index(slice(1, 6, 2)), [1, 3, 5])
+                seq._resolve_index(np.array([1, 4, -3])), [1, 4, 7]
+            )
+            np.testing.assert_array_equal(seq._resolve_index(slice(1, 6, 2)), [1, 3, 5])
             with pytest.raises(IndexError):
                 seq._resolve_index(15)
             with pytest.raises(IndexError):
@@ -466,23 +405,19 @@ class TestImageSequence:
             with pytest.raises(IndexError):
                 seq._resolve_index(np.array([1, 2, -12]))
             b_idx = [True] * 5 + [False] * 5
-            np.testing.assert_array_equal(
-                seq._resolve_index(b_idx), [0, 1, 2, 3, 4])
+            np.testing.assert_array_equal(seq._resolve_index(b_idx), [0, 1, 2, 3, 4])
             with pytest.raises(IndexError):
                 seq._resolve_index(b_idx[:-1])
             with pytest.raises(IndexError):
                 seq._resolve_index(b_idx + [True])
 
             seq._indices = np.array([1, 2, 3])
-            seq._len = 3
+            self.set_seq_len(seq, 3)
             assert seq._resolve_index(1) == 2
             assert seq._resolve_index(-1) == 3
-            np.testing.assert_array_equal(
-                seq._resolve_index([0, -1]), [1, 3])
-            np.testing.assert_array_equal(
-                seq._resolve_index(np.array([0, -1])), [1, 3])
-            np.testing.assert_array_equal(
-                seq._resolve_index(slice(0, 6, 2)), [1, 3])
+            np.testing.assert_array_equal(seq._resolve_index([0, -1]), [1, 3])
+            np.testing.assert_array_equal(seq._resolve_index(np.array([0, -1])), [1, 3])
+            np.testing.assert_array_equal(seq._resolve_index(slice(0, 6, 2)), [1, 3])
             with pytest.raises(IndexError):
                 seq._resolve_index(3)
             with pytest.raises(IndexError):
@@ -496,7 +431,8 @@ class TestImageSequence:
             with pytest.raises(IndexError):
                 seq._resolve_index(np.array([0, 1, -4]))
             np.testing.assert_array_equal(
-                seq._resolve_index([True, False, True]), [1, 3])
+                seq._resolve_index([True, False, True]), [1, 3]
+            )
             with pytest.raises(IndexError):
                 seq._resolve_index([True, False])
             with pytest.raises(IndexError):
@@ -578,7 +514,7 @@ class TestImageSequence:
             assert isinstance(pipe, (Pipeline, Slicerator))
             assert len(pipe) == len(frames)
             for p, f in zip(pipe, frames):
-                np.testing.assert_array_equal(p, np.full((10, 20), f+1))
+                np.testing.assert_array_equal(p, np.full((10, 20), f + 1))
 
         with seq:
             seq_pipe = pipe(seq)
@@ -588,12 +524,81 @@ class TestImageSequence:
             check_pipe(subseq_pipe, list(range(0, len(seq), 3)))
             check_pipe(subseq_pipe[::2], list(range(0, len(seq), 6)))
 
+
+class TestImageSequence(_ImageSequenceTestBase):
+    @classmethod
+    def setup_class(cls):
+        pytest.importorskip("imageio")
+
+    @pytest.fixture
+    def seq(self, tmp_path):
+        stack = np.array([np.full((10, 20), i) for i in range(10)])
+        fname = tmp_path / "test.tiff"
+        with tifffile.TiffWriter(fname) as wrt:
+            for i, img in enumerate(stack):
+                wrt.write(img, description=f"testtesttest {i}")
+        s = sdt.io.ImageSequence(fname)
+        yield s
+        s.close()
+
+    @staticmethod
+    def set_seq_len(seq, len_):
+        seq._len = len_
+
+    def test_open_close(self, seq):
+        assert seq.closed
+        assert len(seq) == 0
+
+        try:
+            seq.open()
+            assert not seq.closed
+            assert len(seq) == 10
+            assert seq._is_tiff
+        finally:
+            seq.close()
+        assert seq.closed
+        assert len(seq) == 0
+
+        class FakeException(Exception):
+            pass
+
+        try:
+            with seq:
+                assert not seq.closed
+                assert len(seq) == 10
+                assert seq._is_tiff
+                raise FakeException()  # Make sure context manager closes
+        except FakeException:
+            pass
+        assert seq.closed
+        assert len(seq) == 0
+
+        try:
+            seq.open()
+            assert not seq.is_slice
+            s = seq[:]
+            assert s.is_slice
+            seq.close()
+            with pytest.raises(RuntimeError):
+                # Cannot open sliced object
+                s.open()
+        finally:
+            if not seq.closed:
+                seq.close()
+
+        with sdt.io.ImageSequence(seq.uri) as seq2:
+            assert not seq2.closed
+            assert len(seq2) == 10
+            assert seq2._is_tiff
+
+            with pytest.raises(RuntimeError):
+                # cannot close sliced object
+                seq2[:].close()
+
     def test_yaml_metadata(self, seq, tmp_path):
         with seq:
-            seq_md = [{"bla": np.array([0, 1]), "xxx": n}
-                      for n in range(len(seq))]
-            sdt.io.save_as_tiff(tmp_path / "md_seq.tif", seq, seq_md,
-                                contiguous=False)
+            seq_md = [{"bla": np.array([0, 1]), "xxx": n} for n in range(len(seq))]
+            sdt.io.save_as_tiff(tmp_path / "md_seq.tif", seq, seq_md, contiguous=False)
             seq_len = len(seq)
         with sdt.io.ImageSequence(tmp_path / "md_seq.tif") as ims:
             assert len(ims) == seq_len
@@ -606,8 +611,7 @@ class TestImageSequence:
 
         with seq:
             # contiguous=True only puts metadata with the first frame
-            sdt.io.save_as_tiff(tmp_path / "md_seq2.tif", seq, seq_md,
-                                contiguous=True)
+            sdt.io.save_as_tiff(tmp_path / "md_seq2.tif", seq, seq_md, contiguous=True)
         with sdt.io.ImageSequence(tmp_path / "md_seq2.tif") as ims:
             assert len(ims) == seq_len
             md = ims.get_metadata(0)
@@ -627,3 +631,47 @@ class TestImageSequence:
             assert md.get("n_macro") == 2
             assert hasattr(img, "frame_no")
             assert img.frame_no == 1
+
+
+class TestMultiImageSequence(_ImageSequenceTestBase):
+    @classmethod
+    def setup_class(cls):
+        pytest.importorskip("imageio")
+
+    @pytest.fixture
+    def seq(self, tmp_path):
+        stack = np.array([np.full((10, 20), i) for i in range(10)])
+        fnames = [tmp_path / f"test_{i:02}.tif" for i in range(len(stack))]
+        for i, (fn, img) in enumerate(zip(fnames, stack)):
+            with tifffile.TiffWriter(fn) as wrt:
+                wrt.write(img, description=f"testtesttest {i}")
+        s = sdt.io.MultiImageSequence(fnames)
+        return s
+
+    @staticmethod
+    def set_seq_len(seq, len_):
+        seq.uris = seq.uris[:len_]
+
+    def test_open_close(self, seq):
+        assert len(seq) == 10
+        assert not seq.is_slice
+        s = seq[:]
+        assert s.is_slice
+
+    def test_yaml_metadata(self, seq, tmp_path):
+        with seq:
+            seq_md = [{"bla": np.array([0, 1]), "xxx": n} for n in range(len(seq))]
+            seq_fnames = []
+            for n, (s, m) in enumerate(zip(seq, seq_md)):
+                f = tmp_path / f"md_seq_{n:02}.tif"
+                sdt.io.save_as_tiff(f, [s], [m])
+                seq_fnames.append(f)
+            seq_len = len(seq)
+        with sdt.io.MultiImageSequence(seq_fnames) as ims:
+            assert len(ims) == seq_len
+            for n in range(len(ims)):
+                md = ims.get_metadata(n)
+                assert "bla" in md
+                assert isinstance(md["bla"], np.ndarray)
+                np.testing.assert_array_equal(md["bla"], [0, 1])
+                assert md.get("xxx", -1) == n
