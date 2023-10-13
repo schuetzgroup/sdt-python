@@ -71,7 +71,6 @@ about:
         - LICENSES/CC-BY-4.0.txt
         - LICENSES/CC0-1.0.txt
         - LICENSES/LGPL-3.0-or-later.txt
-        - LICENSES/LicenseRef-Matplotlib-1.3.txt
         - LICENSES/MIT.txt
         - sdt/gui/breeze-icons/COPYING-ICONS
     summary: "Tools for fluorescence microscopy data analysis"
