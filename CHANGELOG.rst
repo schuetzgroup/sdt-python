@@ -13,6 +13,15 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+18.2
+----
+
+- :py:class:`nbui.ROISelector`: Minor fix
+- :py:mod:`io`: Add MultiImageSequence for sequences from single-image files
+- Remove :py:class:`io.SdtTiffStack` which was based on PIMS
+- :py:mod:`gui.mpl_backend`: Update to work with newer Matplotlib
+
+
 18.1
 ----
 
