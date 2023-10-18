@@ -50,6 +50,7 @@ Overview
 - The :py:mod:`sdt.funcs` module contains classes for creation of step
   functions and eCDFs as well as some special functions like Gaussians and
   sums of exponentials.
+- Permutation tests are implemented in :py:mod:`sdt.stats`.
 - Plot data with methods from :py:mod:`sdt.plot`.
 - Fitting routines are available in the :py:mod:`sdt.optimize` module.
 - Some helpers for writing new code can be found in :py:mod:`sdt.helper` and
@@ -84,6 +85,7 @@ Table of contents
   funcs
   plot
   optimize
+  stats
   helper
   CHANGELOG
 
@@ -94,4 +96,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
