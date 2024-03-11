@@ -30,7 +30,7 @@ requirements:
         - pyqt
         - matplotlib-base
         - scipy >0.18
-        - tifffile >=0.14.0
+        - tifffile >=2022.2.2
         - imageio >=2.29
         - lazy_loader
 

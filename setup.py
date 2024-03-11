@@ -12,7 +12,7 @@ setup(
         "pandas",
         "tables",
         "scipy>0.18",
-        "tifffile>=0.14.0",
+        "tifffile>=2022.2.2",
         "pyyaml",
         "imageio>=2.29",
         "matplotlib",
