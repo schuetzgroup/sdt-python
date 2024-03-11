@@ -348,7 +348,10 @@ class Thresholder(ipywidgets.VBox):
         # Use cont[-2] as it works in OpenCV 3, where findContours returns
         # three values, and in OpenCV 4, where it returns two.
         for c in cont[-2]:
-            pth = mpl.path.Path(c[:, 0, :], closed=True)
+            vert = np.empty((c.shape[0] + 1, c.shape[2]), dtype=float)
+            vert[:-1, :] = c[:, 0, :]
+            vert[-1, :] = vert[0, :]
+            pth = mpl.path.Path(vert, closed=True)
             pp = mpl.patches.PathPatch(pth, alpha=0.2, color="C1")
             a = ax.add_patch(pp)
             self._artists.append(a)
