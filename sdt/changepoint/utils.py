@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import itertools
-from typing import Callable, Iterable, Optional, Tuple, Union
+from typing import Callable, Iterable, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -63,6 +63,42 @@ def plot_changepoints(data, changepoints, time=None, style="shade",
 
     ax.plot(time, data)
     return ax
+
+
+def labels_from_indices(indices: Sequence, length: int) -> np.ndarray:
+    """Generate label for each time point for changepoint indices
+
+    This returns an array of length `length` (which usually is the length of the of the
+    time series analyzed by a changepoint detection algorithm). The `i`-th entry of the
+    array identifies the segment the `i`-th point in the time series belongs to.
+    E.g., time points before the first changepoint (i.e., element of `indices`) are
+    assigned label ``0``, time points between first and second changepoint are assigned
+    ``1``, etc.
+
+    Parameters
+    ----------
+    indices
+        Indices of changepoints
+    length
+        Length of time series/returned array
+
+    Returns
+    -------
+    1D array assigning a label to each timepoint
+
+    Example
+    -------
+    >>> ts = numpy.array([0] * 10 + [1] * 5 + [2] * 15, dtype=float)  # time series
+    >>> cp = changepoint.Pelt().find_changepoints(ts, penalty=1)
+    >>> cp
+    array([10, 15])
+    >>> changepoint.labels_from_indices(cp, len(ts))
+    array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2])
+    """
+    seg = np.arange(len(indices) + 1)
+    reps = np.diff(indices, prepend=0, append=length)
+    return np.repeat(seg, reps)
 
 
 def segment_stats(data: np.ndarray,

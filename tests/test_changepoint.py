@@ -726,3 +726,9 @@ def test_segment_stats(segment_params):
             stat, np.repeat(np.stack([segment_params["means"],
                                       segment_params["medians"]], axis=1),
                             segment_params["reps"], axis=0))
+
+
+def test_labels_from_indices():
+    cp = np.array([9, 15])
+    lab = changepoint.labels_from_indices(cp, 20)
+    np.testing.assert_array_equal(lab, [0] * 9 + [1] * 6 + [2] * 5)
