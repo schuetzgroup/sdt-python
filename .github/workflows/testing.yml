@@ -18,6 +18,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install system packages
+      uses: amitie10g/install-package@v1
+      with:
+        apt: libegl1 libopengl0
+
     - name: Set up Python
       uses: conda-incubator/setup-miniconda@v2
       with:
