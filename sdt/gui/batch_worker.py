@@ -38,7 +38,7 @@ class BatchWorker(QtQuick.QQuickItem):
         self._worker = None
         self._argRoles = []
         self._kwargRoles = []
-        self._resultRole = ""
+        self._resultRoles = []
         self._displayRole = ""
         self._count = -1
         self._progress = 0
@@ -57,7 +57,7 @@ class BatchWorker(QtQuick.QQuickItem):
     func: Callable = SimpleQtProperty("QVariant")
     """Function to apply to each dataset entry. This should take each of
     :py:attr:`argRoles` as a keyword argument. The return value is stored in
-    :py:attr:`dataset` using :py:attr:`resultRole`.
+    :py:attr:`dataset` using :py:attr:`resultRoles`.
     """
     argRoles: List[str] = SimpleQtProperty(list)
     """For each dataset entry, these roles are passed as positional arguments
@@ -67,7 +67,7 @@ class BatchWorker(QtQuick.QQuickItem):
     """For each dataset entry, these roles are passed as keyword arguments
     to :py:attr:`func`.
     """
-    resultRole: str = SimpleQtProperty(str)
+    resultRoles: List[str] = SimpleQtProperty(list)
     """Store the results of :py:attr:`func` calls in :py:attr:`datasets` using
     this role. If it does not exist, it is created. If empty, results are not
     stored.
@@ -206,8 +206,11 @@ class BatchWorker(QtQuick.QQuickItem):
         retval
             Return value of :py:attr:`func` call
         """
-        if self._resultRole:
-            self._curDset.set(self._curIndex, self._resultRole, retval)
+        if len(self._resultRoles) == 1:
+            self._curDset.set(self._curIndex, self._resultRoles[0], retval)
+        else:
+            for r, v in zip(self._resultRoles, retval):
+                self._curDset.set(self._curIndex, r, v)
         self._progress += 1
         self._curIndex += 1
         self.progressChanged.emit()

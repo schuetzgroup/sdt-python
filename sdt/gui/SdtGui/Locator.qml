@@ -109,7 +109,7 @@ T.Locator {
                 id: batchWorker
                 dataset: imSel.dataset
                 argRoles: ["image"]
-                resultRole: "locData"
+                resultRoles: ["locData"]
                 Layout.fillWidth: true
             }
         }
