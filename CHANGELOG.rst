@@ -13,6 +13,15 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+18.3
+----
+
+- Refactor (still experimental) :py:mod:`gui`, bump QML parts to v0.2
+- Require tifffile >= 2022.2.2
+- :py:mod:`changepoint`: Add :py:func:`labels_from_indices` function
+- :py:class:`nbui.Thresholder`: Fix creation of Path for plotting
+
+
 18.2
 ----
 
