@@ -71,8 +71,10 @@ Item {
 
             function openFiles() {
                 var arg = {}
-                for (var r of model.fileRoles)
-                    arg[r] = model.get(currentIndex, r)
+                if (model) {
+                    for (var r of model.fileRoles)
+                        arg[r] = model.get(currentIndex, r)
+                }
                 root.imagePipeline.open(arg)
             }
 
@@ -86,7 +88,8 @@ Item {
             }
 
             Connections {
-                target: root.dataset
+                // avoid error if root.dataset is undefined; explicitly set to null
+                target: root.dataset ? root.dataset : null
 
                 function onItemsChanged(index, count, roles) {
                     if (currentIndex < index || currentIndex >= index + count)
