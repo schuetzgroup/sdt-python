@@ -11,7 +11,8 @@ from PyQt5 import QtCore
 from .. import helper
 
 
-class _InterruptThread(Exception):
+# derive from BaseException so that this does not get caught by unexpecting code
+class _InterruptThread(BaseException):
     """Raise this in worker thread to stop current function call"""
     pass
 
