@@ -43,7 +43,7 @@ test:
         - pims
         - pywavelets >=0.3.0
     commands:
-        - pytest -v tests
+        - pytest -v --ignore=tests/test_gui/ tests  # ignore GUI tests since they segfault on Linux
     source_files:
         - tests
     imports:
@@ -70,7 +70,6 @@ about:
         - LICENSES/BSD-3-Clause.txt
         - LICENSES/CC-BY-4.0.txt
         - LICENSES/CC0-1.0.txt
-        - LICENSES/LGPL-3.0-or-later.txt
         - LICENSES/MIT.txt
         - sdt/gui/breeze-icons/COPYING-ICONS
     summary: "Tools for fluorescence microscopy data analysis"
