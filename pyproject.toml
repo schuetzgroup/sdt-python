@@ -1,0 +1,123 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+dynamic = ["version"]
+name = "sdt-python"
+dependencies = [
+    "imageio >= 2.29",
+    "lazy_loader",
+    "matplotlib",
+    "numpy >= 1.10, < 2.0",
+    "opencv-python",
+    "pandas",
+    "pyyaml",
+    "tables",
+    "tifffile >= 2022.2.2",
+    "scipy > 0.18",
+]
+requires_python = ">= 3.9"
+authors = [
+    { name = "Lukas Schrangl", email = "lukas.schrangl@boku.ac.at" }
+]
+maintainers = [
+    { name = "Lukas Schrangl", email = "lukas.schrangl@boku.ac.at" }
+]
+description = "Tools for fluorescence microscopy analysis"
+readme = "README.rst"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+
+    "License :: OSI Approved :: BSD License",
+    "License :: OSI Approved :: MIT License",
+
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+license-files = { globs = ["LICENSES/*.txt", "sdt/gui/breeze-icons/COPYING-ICONS"] }
+
+[project.urls]
+Documentation = "https://schuetzgroup.github.io/sdt-python"
+Repository = "https://github.com/schuetzgroup/sdt-python"
+
+[tool.hatch.version]
+path = "sdt/_version.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    ".*",
+    "/doc/_build",
+    # unneeded icons below; keep in sync with wheel!
+    "/sdt/gui/breeze-icons/autotests",
+    "/sdt/gui/breeze-icons/cmake",
+    "/sdt/gui/breeze-icons/icons/*/[13456789]*/*.svg",
+    "/sdt/gui/breeze-icons/icons/*/22@*/*.svg",
+    "/sdt/gui/breeze-icons/icons/*/256*/*.svg",
+    "/sdt/gui/breeze-icons/icons/*/symbolic*/*.svg",
+    "/sdt/gui/breeze-icons/icons-dark",
+    "/sdt/gui/breeze-icons/webfont",
+    "/sdt/gui/breeze-icons/CMakeLists.txt",
+    "/sdt/gui/breeze-icons/metainfo.yaml",
+    "/sdt/gui/breeze-icons/qrcAlias.cpp",
+    "/sdt/gui/breeze-icons/*.py",
+    "/sdt/gui/breeze-icons/*.sh",
+]
+only-include = [
+    "/doc",
+    "/sdt",
+    "/tests",
+]
+
+[tool.hatch.build.targets.wheel]
+exclude = [
+    # unneeded icons below; keep in sync with sdist!
+    "/sdt/gui/breeze-icons/autotests",
+    "/sdt/gui/breeze-icons/cmake",
+    "/sdt/gui/breeze-icons/icons/*/[13456789]*/*.svg",
+    "/sdt/gui/breeze-icons/icons/*/22@*/*.svg",
+    "/sdt/gui/breeze-icons/icons/*/256*/*.svg",
+    "/sdt/gui/breeze-icons/icons/*/symbolic*/*.svg",
+    "/sdt/gui/breeze-icons/icons-dark",
+    "/sdt/gui/breeze-icons/webfont",
+    "/sdt/gui/breeze-icons/CMakeLists.txt",
+    "/sdt/gui/breeze-icons/metainfo.yaml",
+    "/sdt/gui/breeze-icons/qrcAlias.cpp",
+    "/sdt/gui/breeze-icons/*.py",
+    "/sdt/gui/breeze-icons/*.sh",
+]
+only-include = [
+    "/sdt",
+]
+
+[tool.hatch.envs.hatch-test]
+dependencies = [
+    "lmfit",
+    "numba",
+    "pims",
+    "pywavelets",
+    "scikit-learn",
+    "trackpy",
+]
+
+[tool.hatch.envs.test-wheel]
+dependencies = [
+    "lmfit",
+    "numba",
+    "pims",
+    "pywavelets",
+    "scikit-learn",
+    "trackpy",
+]
+dev-mode = false
+
+[tool.pytest.ini_options]
+markers = "slow: tests that take some time"
