@@ -6,7 +6,6 @@
 from collections import namedtuple, OrderedDict
 import itertools
 import math
-import warnings
 
 import numpy as np
 import pandas as pd
@@ -662,70 +661,3 @@ class Weights:
             ax.legend(loc=0)
 
         return ax
-
-
-# Old API
-
-@config.set_columns
-def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, method="lsq",
-             poly_order=30, columns={}):
-    r"""Calculate ensemble mean square displacements from tracking data CDF
-
-    .. deperecated:: 14.0
-        Use :py:class:`MsdDist` instead.
-
-    Fit the model cumulative density function to the measured CDF of tracking
-    data. For details, see the documentation of :py:class:`MsdDist`.
-
-    Parameters
-    ----------
-    data : list of pandas.DataFrames or pandas.DataFrame
-        Tracking data
-    pixel_size : float
-        width of a pixel in micrometers.
-    fps : float
-        Frames per second
-    num_frac : int, optional
-        The number of diffusing species. Defaults to 2
-    max_lagtime : int, optional
-        Maximum number of time lags to consider. Defaults to 10.
-    method : {"prony", "lsq", "weighted-lsq"}, optional
-        Which fit method to use. "prony" is a modified Prony's method, "lsq"
-        is least squares fitting, and "weighted-lsq" is weighted least squares
-        fitting to account for the fact that the CDF data are concentrated
-        at x=0. Defaults to "prony".
-
-    Returns
-    -------
-    list of pandas.DataFrames([lagt, msd, fraction])
-        For each species, the DataFrame contains for each lag time the msd,
-        the fraction.
-
-    Other parameters
-    ----------------
-    poly_order : int, optional
-        For the "prony" method, the sum of exponentials is approximated by a
-        polynomial. This parameter gives the degree of the polynomial.
-        Defaults to 30.
-    columns : dict, optional
-        Override default column names as defined in :py:attr:`config.columns`.
-        Relevant names are `coords`, `particle`, and `time`.
-        This means, if your DataFrame has coordinate columns "x" and "z" and
-        the time column "alt_frame", set ``columns={"coords": ["x", "z"],
-        "time": "alt_frame"}``.
-
-    """
-    warnings.warn("`emsd_cdf` is deprecated. Use the `Msd` class instead.",
-                  DeprecationWarning)
-    msd_cls = MsdDist(data, fps, n_components=num_frac, n_lag=max_lagtime,
-                      fit_method=method, poly_order=poly_order,
-                      pixel_size=pixel_size, columns=columns)
-    ret = []
-    for m in msd_cls.get_msd():
-        r = pd.DataFrame.from_dict(
-            OrderedDict([("lagt", m.msd.index), ("msd", m.msd),
-                         ("fraction", m.weight)]))
-        r.index.name = None
-        r.sort_values("lagt", inplace=True)
-        ret.append(r)
-    return ret

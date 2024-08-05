@@ -6,7 +6,6 @@ import os
 import collections
 import functools
 import itertools
-from pathlib import Path
 import warnings
 
 try:
@@ -19,7 +18,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from sdt import motion, io
+from sdt import motion
 from sdt.motion import msd, msd_dist
 from sdt.motion.msd_base import _displacements, _square_displacements, MsdData
 from sdt.helper import numba
@@ -1245,166 +1244,6 @@ class TestMsdDistWeights:
         """msd_cdf.Weights.plot: Make sure it runs"""
         w_cls = msd_dist.Weights(weight_data)
         w_cls.plot()
-
-
-class TestLegacyAPI:
-    """Old API"""
-    @pytest.fixture
-    def traj1(self):
-        return io.load(Path(data_path, "B-1_000__tracks.mat"))
-
-    @pytest.fixture
-    def traj2(self):
-        return io.load(Path(data_path, "B-1_001__tracks.mat"))
-
-    def test_emsd(self, traj1, traj2):
-        orig = pd.read_hdf(Path(data_path, "emsd.h5"), "emsd")
-        with pytest.warns(DeprecationWarning):
-            e = motion.emsd([traj1, traj2], 1, 1)
-        columns = ["msd", "stderr", "lagt"]
-        np.testing.assert_allclose(e[columns], orig[columns])
-
-    def test_imsd(self, traj1):
-        # orig gives the same results as trackpy.imsd, except for one case
-        # where trackpy is wrong when handling trajectories with missing
-        # frames
-        orig = pd.read_hdf(Path(data_path, "imsd.h5"), "imsd")
-        with pytest.warns(DeprecationWarning):
-            imsd = motion.imsd(traj1, 1, 1)
-        np.testing.assert_allclose(imsd, orig)
-
-    def test_emsd_cdf(self, cdf_fit_method_name):
-        n = 10000
-        f = 2 / 3
-        msds = [0.02, 0.04]
-        fps = 100
-        n_lag = 10
-        px_size = 0.1
-        fn = round(f * n)
-        sq_disp = np.concatenate([exp_sample(fn, msds[0]),
-                                  exp_sample(n - fn, msds[1])])
-        x = np.cumsum(np.sqrt(sq_disp))
-        fr = np.arange(len(x))
-        trc = pd.DataFrame({"x": x, "y": 10, "frame": fr, "particle": 0})
-        trc[["x", "y"]] /= px_size
-
-        with pytest.warns(DeprecationWarning):
-            e = motion.emsd_cdf(trc, px_size, fps, max_lagtime=n_lag,
-                                method=cdf_fit_method_name)
-
-        for e_, m, f_ in zip(e, msds, [f, (1 - f)]):
-            assert e_.shape == (n_lag, 3)
-            # Only check first entry since only single step MSDs were
-            # distributed exponentially
-            assert e_.iloc[0]["lagt"] == 1 / fps
-            assert e_.iloc[0]["msd"] == pytest.approx(m, abs=0.003)
-            assert e_.iloc[0]["fraction"] == pytest.approx(f_, abs=0.02)
-
-    def test_fit_msd_matlab(self):
-        """motion.fit_msd: Regression test against MATLAB msdplot"""
-        # 2 lags
-        orig_D_2 = 0.523933764304220
-        orig_pa_2 = -np.sqrt(0.242600359795181/4)
-        # 5 lags
-        orig_D_5 = 0.530084611225235
-        orig_pa_5 = -np.sqrt(0.250036294078863/4)
-
-        emsd = pd.read_hdf(os.path.join(data_path, "emsd.h5"), "emsd")
-
-        with pytest.warns(DeprecationWarning):
-            D_2, pa_2 = motion.fit_msd(emsd, max_lagtime=2)
-        with pytest.warns(DeprecationWarning):
-            D_5, pa_5 = motion.fit_msd(emsd, max_lagtime=5)
-
-        np.testing.assert_allclose(D_2, orig_D_2, rtol=1e-5)
-        np.testing.assert_allclose(pa_2, orig_pa_2, rtol=1e-5)
-        np.testing.assert_allclose(D_5, orig_D_5, rtol=1e-5)
-        np.testing.assert_allclose(pa_5, orig_pa_5, rtol=1e-5)
-
-    def test_fit_msd(self):
-        """motion.fit_msd: simple data"""
-        lagts = np.arange(1, 11)
-        msds = np.arange(2, 12)
-        d_exp, pa_exp = 0.25, 0.5
-        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
-        with pytest.warns(DeprecationWarning):
-            d2, pa2 = motion.fit_msd(emsd, max_lagtime=2)
-        with pytest.warns(DeprecationWarning):
-            d5, pa5 = motion.fit_msd(emsd, max_lagtime=5)
-        np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
-        np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
-
-    def test_fit_msd_neg(self):
-        """motion.fit_msd: simple data, negative intercept"""
-        lagts = np.arange(1, 11)
-        msds = np.arange(0, 10)
-        d_exp, pa_exp = 0.25, -0.5
-        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
-        with pytest.warns(DeprecationWarning):
-            d2, pa2 = motion.fit_msd(emsd, max_lagtime=2)
-        with pytest.warns(DeprecationWarning):
-            d5, pa5 = motion.fit_msd(emsd, max_lagtime=5)
-        np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
-        np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
-
-    def test_fit_msd_anomalous(self):
-        """motion.fit_msd: anomalous diffusion"""
-        t = np.arange(0.01, 0.205, 0.01)
-        d_e = 0.7
-        pa_e = 0.03
-        alpha_e = 1.1
-        msd = 4 * d_e * t**alpha_e + 4 * pa_e**2
-        emsd = pd.DataFrame({"lagt": t, "msd": msd})
-
-        with pytest.warns(DeprecationWarning):
-            d, pa, a = motion.fit_msd(emsd, model="anomalous")
-
-        np.testing.assert_allclose([d, pa, a], [d_e, pa_e, alpha_e])
-
-    def test_fit_msd_anomalous_neg(self):
-        """motion.fit_msd: anomalous diffusion, negative intercept"""
-        t = np.arange(0.01, 0.205, 0.01)
-        d_e = 0.7
-        pa_e = 0.03
-        alpha_e = 1.1
-        msd = 4 * d_e * t**alpha_e - 4 * pa_e**2
-        emsd = pd.DataFrame({"lagt": t, "msd": msd})
-
-        with pytest.warns(DeprecationWarning):
-            d, pa, a = motion.fit_msd(emsd, model="anomalous")
-
-        np.testing.assert_allclose([d, pa, a], [d_e, -pa_e, alpha_e])
-
-    def test_fit_msd_anomalous_texp(self):
-        """motion.fit_msd: anomalous diffusion, exposure time correction"""
-        t = np.arange(0.01, 0.205, 0.01)
-        d_e = 0.7
-        pa_e = 0.03
-        alpha_e = 1.1
-        t_exp = 0.003
-
-        t_app = motion.AnomalousDiffusion.exposure_time_corr(t, alpha_e, t_exp)
-        msd = 4 * d_e * t_app**alpha_e + 4 * pa_e**2
-        emsd = pd.DataFrame({"lagt": t, "msd": msd})
-
-        with pytest.warns(DeprecationWarning):
-            d, pa, a = motion.fit_msd(emsd, exposure_time=t_exp,
-                                      model="anomalous")
-
-        np.testing.assert_allclose([d, pa, a], [d_e, pa_e, alpha_e])
-
-    def test_fit_msd_exposure_corr(self):
-        """motion.fit_msd: exposure time correction"""
-        lagts = np.arange(1, 11)
-        msds = np.arange(1, 11)
-        emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
-        t = 0.3
-        d_exp = 0.25
-        pa_exp = np.sqrt(0.1/4)  # shift by t/3 to the left with slope 1
-        with pytest.warns(DeprecationWarning):
-            d, pa = motion.fit_msd(emsd, exposure_time=t)
-
-        np.testing.assert_allclose([d, pa], [d_exp, pa_exp])
 
 
 def shuffle_tracks(tracks):
