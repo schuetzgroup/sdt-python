@@ -1417,9 +1417,9 @@ class TestFindImmobilizations:
     @pytest.fixture
     def tracks(self):
         tracks1 = pd.DataFrame(
-            [10, 10, 10, 10, 11, 11, 11, 12, 12, 12],
+            [10.0] * 4 + [11.0] * 3 + [12.0] * 3,
             columns=["x"])
-        tracks1["y"] = 20
+        tracks1["y"] = 20.0
         tracks1["particle"] = 0
         tracks1["frame"] = np.arange(len(tracks1))
         tracks2 = tracks1.copy()

@@ -522,7 +522,7 @@ class MsdDistFit:
         if weight_ax is None or msd_ax is None:
             if fig is None:
                 fig = plt.gcf()
-                fig.set_constrained_layout(True)
+                fig.set_layout_engine("constrained")
             n_sub = len(self.msd_fits) + 1
             ax = fig.subplots(1, n_sub)
             weight_ax = ax[0]

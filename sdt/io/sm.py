@@ -436,7 +436,7 @@ def save(filename, data, typ="auto", fmt="auto"):
             typ = "features"
 
     if fmt == "hdf5":
-        data.to_hdf(p, typ)
+        data.to_hdf(p, key=typ)
         return
     if fmt == "particle_tracker":
         save_pt2d(p, data, typ)
