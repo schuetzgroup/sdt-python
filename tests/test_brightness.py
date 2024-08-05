@@ -162,7 +162,7 @@ class TestFromRawImage(unittest.TestCase):
             res,
             np.array([[self.signal1 + self.bg,
                        self.mass1 + self.bg * (2 * self.radius + 1)**2,
-                       np.NaN, np.NaN]]))
+                       np.nan, np.nan]]))
 
     def test_from_raw_image_helper_nan(self):
         """brightness._from_raw_image_python: feature close to edge"""

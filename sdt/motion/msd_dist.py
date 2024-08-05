@@ -716,7 +716,7 @@ def emsd_cdf(data, pixel_size, fps, num_frac=2, max_lagtime=10, method="lsq",
 
     """
     warnings.warn("`emsd_cdf` is deprecated. Use the `Msd` class instead.",
-                  np.VisibleDeprecationWarning)
+                  DeprecationWarning)
     msd_cls = MsdDist(data, fps, n_components=num_frac, n_lag=max_lagtime,
                       fit_method=method, poly_order=poly_order,
                       pixel_size=pixel_size, columns=columns)

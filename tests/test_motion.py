@@ -97,12 +97,12 @@ class TestDisplacements:
 
         assert len(res) == len(trc_disp_list)
 
-        trc_disp_list[0][0][2, :] = np.NaN
-        trc_disp_list[1][0][1, :] = np.NaN
-        trc_disp_list[2][0][0, :] = np.NaN
+        trc_disp_list[0][0][2, :] = np.nan
+        trc_disp_list[1][0][1, :] = np.nan
+        trc_disp_list[2][0][0, :] = np.nan
         for t in trc_disp_list:
             if len(t[0]) > 3:
-                t[0][3, :] = np.NaN
+                t[0][3, :] = np.nan
 
         for r, t in zip(res, trc_disp_list):
             np.testing.assert_allclose(r, t)
@@ -191,7 +191,7 @@ class TestMsdData:
         self._assert_dict_allclose(mdata.means,
                                    {k: v[:, 0] for k, v in d.items()})
         self._assert_dict_allclose(mdata.errors,
-                                   {k: np.full(v.shape[0], np.NaN)
+                                   {k: np.full(v.shape[0], np.nan)
                                     for k, v in d.items()})
 
     def test_init_boot(self):
@@ -630,9 +630,9 @@ class TestAnomalousDiffusion:
         p2 = np.array([2e-5 * ar2**2 + 1.6e-3, 0.8 * ar2**0.5 + 0.0256,
                        0.6 * ar2 + 0.16]).T
         if request.param == "with_nan":
-            r1 = np.full((2 * p1.shape[0], p1.shape[1]), np.NaN)
+            r1 = np.full((2 * p1.shape[0], p1.shape[1]), np.nan)
             r1[1::2, ...] = p1
-            r2 = np.full((2 * p2.shape[0], p2.shape[1]), np.NaN)
+            r2 = np.full((2 * p2.shape[0], p2.shape[1]), np.nan)
             r2[1::2, ...] = p2
             frate = 200
         else:
@@ -751,9 +751,9 @@ class TestBrownianMotion(TestAnomalousDiffusion):
         # D = [10, 15, 20] @ 10 fps, PA = [2, 4, 6]
         p2 = np.array([4 * ar2 + 16, 6 * ar2 + 64, 8 * ar2 + 144]).T
         if request.param == "with_nan":
-            r1 = np.full((2 * p1.shape[0], p1.shape[1]), np.NaN)
+            r1 = np.full((2 * p1.shape[0], p1.shape[1]), np.nan)
             r1[1::2, ...] = p1
-            r2 = np.full((2 * p2.shape[0], p2.shape[1]), np.NaN)
+            r2 = np.full((2 * p2.shape[0], p2.shape[1]), np.nan)
             r2[1::2, ...] = p2
             frate = 20
         else:
@@ -1259,7 +1259,7 @@ class TestLegacyAPI:
 
     def test_emsd(self, traj1, traj2):
         orig = pd.read_hdf(Path(data_path, "emsd.h5"), "emsd")
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             e = motion.emsd([traj1, traj2], 1, 1)
         columns = ["msd", "stderr", "lagt"]
         np.testing.assert_allclose(e[columns], orig[columns])
@@ -1269,7 +1269,7 @@ class TestLegacyAPI:
         # where trackpy is wrong when handling trajectories with missing
         # frames
         orig = pd.read_hdf(Path(data_path, "imsd.h5"), "imsd")
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             imsd = motion.imsd(traj1, 1, 1)
         np.testing.assert_allclose(imsd, orig)
 
@@ -1288,7 +1288,7 @@ class TestLegacyAPI:
         trc = pd.DataFrame({"x": x, "y": 10, "frame": fr, "particle": 0})
         trc[["x", "y"]] /= px_size
 
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             e = motion.emsd_cdf(trc, px_size, fps, max_lagtime=n_lag,
                                 method=cdf_fit_method_name)
 
@@ -1311,9 +1311,9 @@ class TestLegacyAPI:
 
         emsd = pd.read_hdf(os.path.join(data_path, "emsd.h5"), "emsd")
 
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             D_2, pa_2 = motion.fit_msd(emsd, max_lagtime=2)
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             D_5, pa_5 = motion.fit_msd(emsd, max_lagtime=5)
 
         np.testing.assert_allclose(D_2, orig_D_2, rtol=1e-5)
@@ -1327,9 +1327,9 @@ class TestLegacyAPI:
         msds = np.arange(2, 12)
         d_exp, pa_exp = 0.25, 0.5
         emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             d2, pa2 = motion.fit_msd(emsd, max_lagtime=2)
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             d5, pa5 = motion.fit_msd(emsd, max_lagtime=5)
         np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
         np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
@@ -1340,9 +1340,9 @@ class TestLegacyAPI:
         msds = np.arange(0, 10)
         d_exp, pa_exp = 0.25, -0.5
         emsd = pd.DataFrame(dict(lagt=lagts, msd=msds))
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             d2, pa2 = motion.fit_msd(emsd, max_lagtime=2)
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             d5, pa5 = motion.fit_msd(emsd, max_lagtime=5)
         np.testing.assert_allclose([d2, pa2], [d_exp, pa_exp])
         np.testing.assert_allclose([d5, pa5], [d_exp, pa_exp])
@@ -1356,7 +1356,7 @@ class TestLegacyAPI:
         msd = 4 * d_e * t**alpha_e + 4 * pa_e**2
         emsd = pd.DataFrame({"lagt": t, "msd": msd})
 
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             d, pa, a = motion.fit_msd(emsd, model="anomalous")
 
         np.testing.assert_allclose([d, pa, a], [d_e, pa_e, alpha_e])
@@ -1370,7 +1370,7 @@ class TestLegacyAPI:
         msd = 4 * d_e * t**alpha_e - 4 * pa_e**2
         emsd = pd.DataFrame({"lagt": t, "msd": msd})
 
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             d, pa, a = motion.fit_msd(emsd, model="anomalous")
 
         np.testing.assert_allclose([d, pa, a], [d_e, -pa_e, alpha_e])
@@ -1387,7 +1387,7 @@ class TestLegacyAPI:
         msd = 4 * d_e * t_app**alpha_e + 4 * pa_e**2
         emsd = pd.DataFrame({"lagt": t, "msd": msd})
 
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             d, pa, a = motion.fit_msd(emsd, exposure_time=t_exp,
                                       model="anomalous")
 
@@ -1401,7 +1401,7 @@ class TestLegacyAPI:
         t = 0.3
         d_exp = 0.25
         pa_exp = np.sqrt(0.1/4)  # shift by t/3 to the left with slope 1
-        with pytest.warns(np.VisibleDeprecationWarning):
+        with pytest.warns(DeprecationWarning):
             d, pa = motion.fit_msd(emsd, exposure_time=t)
 
         np.testing.assert_allclose([d, pa], [d_exp, pa_exp])

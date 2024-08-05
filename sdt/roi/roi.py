@@ -588,8 +588,8 @@ class RectangleROI(PathROI):
         Pass this as the `representer` parameter to
         :py:meth:`yaml.Dumper.add_representer`
         """
-        m = (("top_left", list(data.top_left)),
-             ("bottom_right", list(data.bottom_right)),
+        m = (("top_left", data.top_left.tolist()),
+             ("bottom_right", data.bottom_right.tolist()),
              ("buffer", data.buffer))
         return dumper.represent_mapping(cls.yaml_tag, m)
 
@@ -647,8 +647,8 @@ class EllipseROI(PathROI):
         Pass this as the `representer` parameter to
         :py:meth:`yaml.Dumper.add_representer`
         """
-        m = (("center", list(data.center)),
-             ("axes", list(data.axes)),
+        m = (("center", data.center.tolist()),
+             ("axes", data.axes.tolist()),
              ("angle", data.angle),
              ("buffer", data.buffer))
         return dumper.represent_mapping(cls.yaml_tag, m)

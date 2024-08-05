@@ -147,9 +147,9 @@ class TestFindColocalizations:
         nc2.index = np.arange(5, 9)
 
         nc1_unmatched = nc2.copy()
-        nc1_unmatched[["x", "y", "z"]] = np.NaN
+        nc1_unmatched[["x", "y", "z"]] = np.nan
         nc2_unmatched = nc1.copy()
-        nc2_unmatched[["x", "y", "z"]] = np.NaN
+        nc2_unmatched[["x", "y", "z"]] = np.nan
 
         ch1 = pd.concat([pos[0].iloc[[1, 3]].reset_index(drop=True),
                          nc1, nc1_unmatched])
@@ -244,12 +244,12 @@ class TestFindCodiffusion:
 
         codiff2 = multicolor.find_codiffusion(track, track2,
                                               keep_unmatched="all")
-        exp.loc[4, ("channel2", "x")] = np.NaN
-        exp.loc[4, ("channel2", "y")] = np.NaN
+        exp.loc[4, ("channel2", "x")] = np.nan
+        exp.loc[4, ("channel2", "y")] = np.nan
         exp.loc[4, ("channel2", "particle")]
-        exp.loc[9, ("channel2", "x")] = np.NaN
-        exp.loc[9, ("channel2", "y")] = np.NaN
-        exp.loc[9, ("channel2", "particle")] = np.NaN
+        exp.loc[9, ("channel2", "x")] = np.nan
+        exp.loc[9, ("channel2", "y")] = np.nan
+        exp.loc[9, ("channel2", "particle")] = np.nan
         exp.loc[9, ("codiff", "particle")] = -1
         pd.testing.assert_frame_equal(
             codiff2.sort_values(("channel1", "frame"), ignore_index=True),
@@ -300,7 +300,7 @@ class TestFindCodiffusion:
         codiff2 = multicolor.find_codiffusion(track, track2,
                                               keep_unmatched="all")
         track_e = track.copy()
-        track_e.loc[gap_idx] = [np.NaN, np.NaN, 1.0, gap_idx]
+        track_e.loc[gap_idx] = [np.nan, np.nan, 1.0, gap_idx]
         track2_e = track2.merge(
             pd.Series(unm_idx, index=unm_idx, name="frame"),
             how="outer").sort_values("frame").reset_index(drop=True)

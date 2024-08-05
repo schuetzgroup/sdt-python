@@ -613,8 +613,8 @@ def segment_params(request):
         ret["cp_arr"] = np.array([], dtype=int)
         ret["cp_func"] = lambda x: np.array([], dtype=int)
         ret["seg"] = [-1]
-        ret["means"] = [np.NaN]
-        ret["medians"] = [np.NaN]
+        ret["means"] = [np.nan]
+        ret["medians"] = [np.nan]
         ret["reps"] = len(data)
     elif request.param == "stat_margin":
         ret["stat_margin"] = 1
@@ -626,8 +626,8 @@ def segment_params(request):
         mask[[1, 4, 5, -1]] = False
         ret["mask"] = mask
         ret["cp_func"] = lambda x: np.array([2, 4])
-        ret["means"] = [20.0, np.NaN, -0.5]
-        ret["medians"] = [20.0, np.NaN, -0.5]
+        ret["means"] = [20.0, np.nan, -0.5]
+        ret["medians"] = [20.0, np.nan, -0.5]
     elif request.param == "no changepoint":
         ret["cp_arr"] = np.array([], dtype=int)
         ret["cp_func"] = lambda x: ret["cp_arr"]
@@ -636,19 +636,19 @@ def segment_params(request):
         ret["seg"] = [0]
         ret["reps"] = len(data)
     elif request.param == "NaN+array":
-        ret["data"][3] = np.NaN
-        ret["means"] = [20.0, np.NaN, 0.5]
-        ret["medians"] = [20.0, np.NaN, 0.5]
+        ret["data"][3] = np.nan
+        ret["means"] = [20.0, np.nan, 0.5]
+        ret["medians"] = [20.0, np.nan, 0.5]
         ret["cp_func"] = None
     elif request.param == "NaN+func":
-        ret["data"][3] = np.NaN
-        ret["means"] = [np.NaN]
-        ret["medians"] = [np.NaN]
+        ret["data"][3] = np.nan
+        ret["means"] = [np.nan]
+        ret["medians"] = [np.nan]
         ret["cp_arr"] = None
         ret["seg"] = [-1]
         ret["reps"] = len(data)
     elif request.param == "masking+NaN":
-        ret["data"][3] = np.NaN
+        ret["data"][3] = np.nan
         mask = np.ones_like(data, dtype=bool)
         mask[3] = False
         ret["mask"] = mask

@@ -157,7 +157,7 @@ def locate(raw_image, radius, signal_thresh, mass_thresh, bandpass=True,
             continue
         shifted_roi = scipy.ndimage.shift(
             shifted_roi.astype(float), (-shift_y_frac, -shift_x_frac), order=1,
-            cval=np.NaN)
+            cval=np.nan)
         # Remove extra pixels
         shifted_roi = shifted_roi[:-1, :-1]
 

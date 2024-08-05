@@ -79,7 +79,7 @@ class FitterZ(fit_numba.Fitter):
                  max_iterations=200):
         self._x_params = np.hstack(z_params.x)
         self._y_params = np.hstack(z_params.y)
-        self._z_range = np.array(z_params.z_range, copy=False)
+        self._z_range = np.asarray(z_params.z_range)
         super().__init__(image, peaks, tolerance, margin, max_iterations)
 
     def _init_exp_factor(self):

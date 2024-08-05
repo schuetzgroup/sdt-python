@@ -321,7 +321,7 @@ class SmFRETAnalyzer:
 
                     if len(a_direct) == 0:
                         # No direct acceptor excitation, cannot do anything
-                        a_mass.append(np.full(len(trc_p[0]), np.NaN))
+                        a_mass.append(np.full(len(trc_p[0]), np.nan))
                         continue
                     elif len(a_direct) == 1:
                         # Only one direct acceptor excitation; use this value
@@ -341,7 +341,7 @@ class SmFRETAnalyzer:
                         a_mass.append(a_mass_func(trc_p[1]))
             a_mass = np.concatenate(a_mass)
         else:
-            a_mass = np.full(len(self.tracks), np.NaN)
+            a_mass = np.full(len(self.tracks), np.nan)
 
         # Total mass upon donor excitation
         if keep_d_mass and ("fret", "d_mass") in self.tracks:
@@ -361,9 +361,9 @@ class SmFRETAnalyzer:
             # For direct acceptor excitation, FRET efficiency and stoichiometry
             # are not sensible
             nd_mask = self.tracks["fret", "exc_type"] != "d"
-            eff[nd_mask] = np.NaN
-            stoi[nd_mask] = np.NaN
-            d_mass[nd_mask] = np.NaN
+            eff[nd_mask] = np.nan
+            stoi[nd_mask] = np.nan
+            d_mass[nd_mask] = np.nan
 
         self.tracks["fret", "eff_app"] = eff
         self.tracks["fret", "stoi_app"] = stoi
@@ -1090,7 +1090,7 @@ class SmFRETAnalyzer:
             i_da_post = t[1][post_mask]
 
             if len(i_dd_pre) < min_seg_len or len(i_dd_post) < min_seg_len:
-                gammas[p] = np.NaN
+                gammas[p] = np.nan
                 continue
 
             gammas[p] = ((stat(i_da_pre) - stat(i_da_post)) /
@@ -1271,8 +1271,8 @@ class SmFRETAnalyzer:
 
         if invalid_nan:
             sel = self.tracks["fret", "exc_type"] != "d"
-            f_da[sel] = np.NaN
-            f_dd[sel] = np.NaN
+            f_da[sel] = np.nan
+            f_dd[sel] = np.nan
 
         self.tracks["fret", "f_da"] = f_da
         self.tracks["fret", "f_dd"] = f_dd

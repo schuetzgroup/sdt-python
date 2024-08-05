@@ -277,7 +277,7 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator,
         if feat_region.shape != feat_mask.shape:
             # The signal was too close to the egde of the image, we could not
             # read all the pixels we wanted
-            ret[i, :] = np.NaN
+            ret[i, :] = np.nan
             continue
 
         feat_pixels = feat_region[feat_mask]
@@ -294,8 +294,8 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator,
                 bg = bg_estimator(bg_pixels)
                 bg_std = np.std(bg_pixels)
             else:
-                bg = np.NaN
-                bg_std = np.NaN
+                bg = np.nan
+                bg_std = np.nan
 
         mass_uncorr = feat_pixels.sum()
         signal_uncorr = feat_pixels.max()
@@ -378,7 +378,7 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator,
         if feat_pixels.size != feat_mask.size:
             # The signal was too close to the egde of the image, we could not
             # read all the pixels we wanted
-            ret[i, :] = np.NaN
+            ret[i, :] = np.nan
             continue
 
         f_mask_pixels = feat_mask[feat_bd[2, i, 0]:feat_bd[3, i, 0],
@@ -406,8 +406,8 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator,
                     bg = np.mean(bg_pixels_masked)
                 bg_std = np.std(bg_pixels_masked)
             else:
-                bg = np.NaN
-                bg_std = np.NaN
+                bg = np.nan
+                bg_std = np.nan
 
         if math.isfinite(bg):
             mass = mass_uncorr - feat_mask_ones * bg
@@ -671,7 +671,7 @@ class Distribution(object):
         self.norm_factor = np.trapz(y, x)
 
         y /= self.norm_factor
-        self.graph = np.array([x, y], copy=False)
+        self.graph = np.asarray([x, y])
         """:py:class:`numpy.ndarray` of shape (2, n); First row is the
         abscissa, second row is the ordinate of the normalized distribution
         function.

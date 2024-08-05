@@ -347,7 +347,7 @@ class TestSmFRETAnalyzer:
         fret10 = fret9.copy()
         fret10["d_mass"] = [3000, 0] * 7 + [600, 0] * 3
         fret10["d_seg"] = -1
-        fret10["d_seg_mean"] = np.NaN
+        fret10["d_seg_mean"] = np.nan
         fret10["particle"] = 9
         data10 = pd.concat([loc10, loc10, fret10], axis=1,
                            keys=["donor", "acceptor", "fret"])
@@ -498,7 +498,7 @@ class TestSmFRETAnalyzer:
         # does not ignore acceptor frames, we should see that.
         a_mass = np.array([6000, 6001, 6005, 12000, 12000] * 5 +
                           [0, 4, 2, 12000, 12000] * 4 +
-                          [5007, 5002, 5003, np.NaN, np.NaN] * 3)
+                          [5007, 5002, 5003, np.nan, np.nan] * 3)
         reps = [25, 20, 15]
         segs = np.repeat([0, 1, 2], reps)
         frame = np.arange(len(a_mass))
@@ -509,7 +509,7 @@ class TestSmFRETAnalyzer:
                            ("donor", "frame"): frame,
                            ("acceptor", "frame"): frame})
         # Add NaN to test filtering
-        fd.loc[0, ("fret", "a_mass")] = np.NaN
+        fd.loc[0, ("fret", "a_mass")] = np.nan
         # multiple particles
         fd["fret", "particle"] = 0
         fd2 = fd.copy()
@@ -539,7 +539,7 @@ class TestSmFRETAnalyzer:
                 assert ("fret", f"a_seg_{s}") in tracks
                 np.testing.assert_array_equal(
                     tracks["fret", f"a_seg_{s}"],
-                    r.tolist() + [np.NaN] * len(fd) * 2)
+                    r.tolist() + [np.nan] * len(fd) * 2)
 
         ana = fret.SmFRETAnalyzer(fret_data, cp_detector=cp_det,
                                   reset_filters=False)
@@ -550,7 +550,7 @@ class TestSmFRETAnalyzer:
         min1_data = np.repeat([6000, 0, 5002], reps)
         mean2_data = np.repeat([6002, 1.75, 5003.857142857143], reps)
         min2_data = np.repeat([6000, 0, 5002], reps)
-        mean6_data = np.repeat([6002.25, np.NaN, 5004], reps)
+        mean6_data = np.repeat([6002.25, np.nan, 5004], reps)
 
         ana.mass_changepoints("acceptor", stats="mean", penalty=1e7)
         check_result(ana.tracks, ["mean"], [mean1_data])
@@ -605,8 +605,8 @@ class TestSmFRETAnalyzer:
 
         # direct acceptor ex
         acc_dir = ana2.tracks["fret", "exc_type"] == "a"
-        eff[acc_dir] = np.NaN
-        d_mass[acc_dir] = np.NaN
+        eff[acc_dir] = np.nan
+        d_mass[acc_dir] = np.nan
 
         assert ("fret", "eff_app") in ana2.tracks
         assert ("fret", "d_mass") in ana2.tracks
@@ -630,7 +630,7 @@ class TestSmFRETAnalyzer:
             linear_mass[direct_acc]
 
         stoi = (mass + mass) / (mass + mass + linear_mass)
-        stoi[direct_acc] = np.NaN
+        stoi[direct_acc] = np.nan
 
         ana2.calc_fret_values(a_mass_interp="linear")
 
@@ -655,7 +655,7 @@ class TestSmFRETAnalyzer:
 
         stoi = (mass + mass) / (mass + mass + mass_acc1)
         stoi = np.full(len(trc), stoi)
-        stoi[a_direct1] = np.NaN
+        stoi[a_direct1] = np.nan
 
         first_fr = ana2.tracks["acceptor", "frame"].min()
         last1 = first_fr + a_direct1[-1]
@@ -670,7 +670,7 @@ class TestSmFRETAnalyzer:
                         (prev2, "previous"), (next2, "next")]:
             s = stoi.copy()
             s[n] = (mass + mass) / (mass + mass + mass_acc2)
-            s[a_direct2] = np.NaN
+            s[a_direct2] = np.nan
             nm = near_mass.copy()
             nm[n] = mass_acc2
 
@@ -694,7 +694,7 @@ class TestSmFRETAnalyzer:
 
         stoi = (mass + mass) / (mass + mass + mass_acc)
         stoi = np.full(len(trc), stoi)
-        stoi[a] = np.NaN
+        stoi[a] = np.nan
 
         single_mass = np.full(len(trc), mass_acc)
 
@@ -722,7 +722,7 @@ class TestSmFRETAnalyzer:
         """fret.SmFRETAnalyzer.calc_fret_values: keep_d_mass=True"""
         dm = np.arange(len(ana2.tracks), dtype=float)
         ana2.tracks["fret", "d_mass"] = dm
-        dm[~(ana2.tracks["fret", "exc_type"] == "d")] = np.NaN
+        dm[~(ana2.tracks["fret", "exc_type"] == "d")] = np.nan
 
         ana2.calc_fret_values(keep_d_mass=True)
 
@@ -735,7 +735,7 @@ class TestSmFRETAnalyzer:
         ana2.tracks["donor", "mass"] = 100 * np.arange(len(ana2.tracks))
         ana2.tracks["acceptor", "mass"] = 200 * np.arange(len(ana2.tracks))
         dm_orig = 300 * np.arange(len(ana2.tracks), dtype=float)
-        dm_orig[~(ana2.tracks["fret", "exc_type"] == "d")] = np.NaN
+        dm_orig[~(ana2.tracks["fret", "exc_type"] == "d")] = np.nan
 
         ana2.tracks["fret", "d_mass"] = dm
 
@@ -751,7 +751,7 @@ class TestSmFRETAnalyzer:
         ana2.tracks["donor", "mass"] = 100 * np.arange(len(ana2.tracks))
         ana2.tracks["acceptor", "mass"] = 200 * np.arange(len(ana2.tracks))
         dm_orig = 300 * np.arange(len(ana2.tracks), dtype=float)
-        dm_orig[~(ana2.tracks["fret", "exc_type"] == "d")] = np.NaN
+        dm_orig[~(ana2.tracks["fret", "exc_type"] == "d")] = np.nan
 
         ana2.calc_fret_values(keep_d_mass=True)
 
@@ -1028,7 +1028,7 @@ class TestSmFRETAnalyzer:
 
     def test_calc_leakage(self):
         """fret.SmFRETAnalyzer.calc_leakage"""
-        d = {("donor", "mass"): [1e3, 1e3, 1e6, 1e3, np.NaN, 2e6],
+        d = {("donor", "mass"): [1e3, 1e3, 1e6, 1e3, np.nan, 2e6],
              ("donor", "frame"): [0, 1, 2, 3, 4, 5],
              ("acceptor", "mass"): [1e2, 1e2, 1e2, 1e2, 1e5, 2e2],
              ("fret", "exc_type"): pd.Series(list("dddddd"), dtype="category"),
@@ -1059,7 +1059,7 @@ class TestSmFRETAnalyzer:
 
     def test_calc_detection_eff(self):
         """fret.SmFRETAnalyzer.calc_detection_eff"""
-        d1 = {("donor", "mass"): [0, 0, 0, 4, np.NaN, 6, 6, 6, 6, 9000],
+        d1 = {("donor", "mass"): [0, 0, 0, 4, np.nan, 6, 6, 6, 6, 9000],
               ("acceptor", "mass"): [10, 12, 10, 12, 3000, 1, 1, 1, 1, 7000],
               ("fret", "has_neighbor"): [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
               ("fret", "a_seg"): [0] * 5 + [1] * 5,
@@ -1084,8 +1084,8 @@ class TestSmFRETAnalyzer:
 
         d5 = d1.copy()
         d5["fret", "particle"] = 4
-        d5["donor", "mass"] = [np.NaN] * 5 + [10] * 5
-        d5["acceptor", "mass"] = [10] * 5 + [np.NaN] * 5
+        d5["donor", "mass"] = [np.nan] * 5 + [10] * 5
+        d5["acceptor", "mass"] = [10] * 5 + [np.nan] * 5
 
         # Test filtering
         d6 = d1.copy()
@@ -1099,10 +1099,10 @@ class TestSmFRETAnalyzer:
 
         ana.calc_detection_eff(3, "individual")
         pd.testing.assert_series_equal(
-            ana.detection_eff, pd.Series([10 / 6, np.NaN, np.NaN, 1., np.NaN]))
+            ana.detection_eff, pd.Series([10 / 6, np.nan, np.nan, 1., np.nan]))
         ana.calc_detection_eff(3, "individual", stat=np.mean)
         pd.testing.assert_series_equal(
-            ana.detection_eff, pd.Series([2., np.NaN, np.NaN, 1., np.NaN]))
+            ana.detection_eff, pd.Series([2., np.nan, np.nan, 1., np.nan]))
 
         ana.calc_detection_eff(3, np.nanmean, stat=np.mean)
         assert ana.detection_eff == pytest.approx(1.5)
@@ -1268,8 +1268,8 @@ class TestSmFRETAnalyzer:
             f_aa = np.array([3750, 3750, 2500, 2500], dtype=float)
 
             if invalid_nan:
-                f_da[1::2] = np.NaN
-                f_dd[1::2] = np.NaN
+                f_da[1::2] = np.nan
+                f_dd[1::2] = np.nan
 
             np.testing.assert_allclose(ana.tracks["fret", "f_da"], f_da)
             np.testing.assert_allclose(ana.tracks["fret", "f_dd"], f_dd)

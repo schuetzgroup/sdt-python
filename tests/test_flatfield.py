@@ -185,8 +185,8 @@ class TestCorrector:
         corr = corr_factory(profile_offpx[0], background[0], gaussian_fit=True)
         avg = profile_offpx[1] / profile_offpx[1].max()
         np.testing.assert_allclose(corr.avg_img, avg)
-        avg[self.offpx] = np.NaN  # This is the pixel that was changed in
-        corr.corr_img[self.offpx] = np.NaN  # fixture
+        avg[self.offpx] = np.nan  # This is the pixel that was changed in
+        corr.corr_img[self.offpx] = np.nan  # fixture
         np.testing.assert_allclose(corr.corr_img, avg, atol=1e-3,
                                    equal_nan=True)
 
@@ -329,8 +329,8 @@ class TestCorrector:
         # If Gaussian fit was used, the off pixel should be corrected.
         assert expected[self.offpx] != pytest.approx(img_corr[self.offpx],
                                                      rel=0.1)
-        img_corr[self.offpx] = np.NaN
-        expected[self.offpx] = np.NaN
+        img_corr[self.offpx] = np.nan
+        expected[self.offpx] = np.nan
         np.testing.assert_allclose(img_corr, expected, rtol=2e-3)
 
     def test_image_correction_with_gauss_center_off(self, corr_factory):
@@ -360,8 +360,8 @@ class TestCorrector:
         expected = img.max() / img
         # If Gaussian fit was used, the off pixel should be corrected.
         assert expected[self.offpx] != pytest.approx(fact[self.offpx], rel=0.1)
-        fact[self.offpx] = np.NaN
-        expected[self.offpx] = np.NaN
+        fact[self.offpx] = np.nan
+        expected[self.offpx] = np.nan
         np.testing.assert_allclose(fact, expected, rtol=2e-3)
 
     def test_load_legacy(self, tmp_path):

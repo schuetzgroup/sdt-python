@@ -80,21 +80,21 @@ class Msd:
                         m = np.mean(b, axis=0)
                     else:
                         # No data for this lag time
-                        m = np.NaN
+                        m = np.nan
                     msds_p[i, :] = m
                 msd_set[p] = msds_p
                 msds = None  # Calculate in `MsdData.__init__`
                 err = None
         else:
             msds = OrderedDict([
-                (p, np.array([np.mean(v) if len(v) > 0 else np.NaN
+                (p, np.array([np.mean(v) if len(v) > 0 else np.nan
                               for v in s]))
                 for p, s in square_disp.items()])
             # Use corrected sample std as a less biased estimator of the
             # population  std
             err = OrderedDict([
                 (p, np.array([np.std(v, ddof=1) / np.sqrt(len(v))
-                              if len(v) > 1 else np.NaN
+                              if len(v) > 1 else np.nan
                               for v in s]))
                 for p, s in square_disp.items()])
             msd_set = OrderedDict(
@@ -130,7 +130,7 @@ class Msd:
                 if "stderr" in data.columns:
                     err = data["stderr"].values
                 else:
-                    err = np.full_like(msds, np.NaN)
+                    err = np.full_like(msds, np.nan)
                 msd_set = OrderedDict([(e_name, msds[:, None])])
                 msds = OrderedDict([(e_name, msds)])
                 err = OrderedDict([(e_name, err)])
@@ -352,10 +352,10 @@ class AnomalousDiffusion:
         numpy.ndarray or scalar
             Calculated theoretical MSDs
         """
-        t = np.array(t, ndmin=1, copy=False)
-        d = np.array(d, ndmin=1, copy=False)
-        eps = np.array(eps, ndmin=1, copy=False)
-        alpha = np.array(alpha, ndmin=1, copy=False)
+        t = np.atleast_1d(t)
+        d = np.atleast_1d(d)
+        eps = np.atleast_1d(eps)
+        alpha = np.atleast_1d(alpha)
         if d.shape != eps.shape or d.shape != alpha.shape:
             raise ValueError("`d`, `eps`, and `alpha` should have same shape.")
         if t.ndim > 1 or d.ndim > 1 or eps.ndim > 1:
@@ -473,7 +473,7 @@ class AnomalousDiffusion:
         return ax
 
     @staticmethod
-    def _value_with_error(name, unit, value, err=np.NaN, formatter=".2g"):
+    def _value_with_error(name, unit, value, err=np.nan, formatter=".2g"):
         """Write a value with a name, a unit and an error
 
         Parameters
@@ -519,7 +519,7 @@ class AnomalousDiffusion:
             Color of the plotted line
         """
         d, eps, alpha = self._results[data_id]
-        d_err, eps_err, alpha_err = self._err.get(data_id, (np.NaN,) * 3)
+        d_err, eps_err, alpha_err = self._err.get(data_id, (np.nan,) * 3)
 
         x = np.linspace(0, n_lag, 100)
         y = self.theoretical(x, d, eps, alpha, self.exposure_time)
@@ -569,9 +569,9 @@ class BrownianMotion(AnomalousDiffusion):
             nl = min(n_lag, m.shape[0])
             if nl < 2:
                 # Too few datapoints
-                self._results[particle] = [np.NaN, np.NaN]
+                self._results[particle] = [np.nan, np.nan]
                 if m.shape[1] > 1:
-                    self._err[particle] = [np.NaN, np.NaN]
+                    self._err[particle] = [np.nan, np.nan]
                 continue
             if nl == 2:
                 dt = lagt[1] - lagt[0]
@@ -628,7 +628,7 @@ class BrownianMotion(AnomalousDiffusion):
 
     def _plot_single(self, data_id, n_lag, name, ax, color):
         d, eps = self._results[data_id]
-        d_err, eps_err = self._err.get(data_id, (np.NaN,) * 2)
+        d_err, eps_err = self._err.get(data_id, (np.nan,) * 2)
 
         x = np.linspace(0, n_lag, 100)
         y = self.theoretical(x, d, eps, self.exposure_time)
@@ -680,7 +680,7 @@ def imsd(data, pixel_size, fps, max_lagtime=100, columns={}):
         "time": "alt_frame"}``.
     """
     warnings.warn("`imsd` is deprecated. Use the `Msd` class instead.",
-                  np.VisibleDeprecationWarning)
+                  DeprecationWarning)
     msd_cls = Msd(data, fps, max_lagtime, n_boot=0, ensemble=False,
                   columns=columns, pixel_size=pixel_size)
     return msd_cls.get_msd(series=False)[0].T
@@ -724,7 +724,7 @@ def emsd(data, pixel_size, fps, max_lagtime=100, columns={}):
         "time": "alt_frame"}``.
     """
     warnings.warn("`emsd` is deprecated. Use the `Msd` class instead.",
-                  np.VisibleDeprecationWarning)
+                  DeprecationWarning)
     msd_cls = Msd(data, fps, max_lagtime, n_boot=0, columns=columns,
                   pixel_size=pixel_size)
     msd = msd_cls.get_msd()
@@ -772,7 +772,7 @@ def fit_msd(emsd, max_lagtime=2, exposure_time=0, model="brownian"):
         Anomalous diffusion exponent. Only returned if ``model="anomalous"``.
     """
     warnings.warn("`fit_msd` is deprecated. Use the `Msd` class instead.",
-                  np.VisibleDeprecationWarning)
+                  DeprecationWarning)
     msd_cls = Msd._from_data(emsd)
     fit_args = {"exposure_time": exposure_time}
     if model == "brownian":
@@ -832,7 +832,7 @@ def plot_msd(emsd, d=None, pa=None, max_lagtime=100, show_legend=True, ax=None,
         Anomalous diffusion exponent.
     """
     warnings.warn("`plot_msd` is deprecated. Use the `Msd` class instead.",
-                  np.VisibleDeprecationWarning)
+                  DeprecationWarning)
     msd_cls = Msd._from_data(emsd)
 
     if d is None or pa is None:

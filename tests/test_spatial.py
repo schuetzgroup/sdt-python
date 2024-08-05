@@ -90,7 +90,7 @@ class TestInterpolateCoords(unittest.TestCase):
         trc_miss = self.trc[~self.trc["interp"].astype(bool)]
 
         trc_interp = sdt.spatial.interpolate_coords(trc_miss)
-        self.trc.loc[self.trc["interp"].astype(bool), "extra"] = np.NaN
+        self.trc.loc[self.trc["interp"].astype(bool), "extra"] = np.nan
 
         pd.testing.assert_frame_equal(trc_interp, self.trc)
 

@@ -245,7 +245,7 @@ class Corrector(object):
         self.avg_img = np.empty((0, 0))
         self.corr_img = np.empty((0, 0))
         self.fit_result = None
-        self.fit_amplitude = np.NaN
+        self.fit_amplitude = np.nan
         self.bg = self._calc_bg(bg, smooth_sigma)
 
         if (isinstance(data, pd.DataFrame) or
@@ -327,7 +327,7 @@ class Corrector(object):
         Amplitude of Gaussian within the image region
         """
         if fit_result is None:
-            return np.NaN
+            return np.nan
         if shape is None:
             warnings.warn("Calculating excitation profile from "
                           "single-molecule data, but no image shape "
@@ -347,7 +347,7 @@ class Corrector(object):
         """Create interpolator form :py:attr:`corr_img`"""
         self.interp = sp_int.RegularGridInterpolator(
             [np.arange(i) for i in self.corr_img.shape], self.corr_img,
-            bounds_error=False, fill_value=np.NaN)
+            bounds_error=False, fill_value=np.nan)
 
     @staticmethod
     def _calc_bg(data: Union[float, np.ndarray, Sequence[np.ndarray],
@@ -574,6 +574,6 @@ class Corrector(object):
             elif ret.fit_result:
                 ret.fit_amplitude = ret.fit_result["amplitude"]
             else:
-                ret.fit_amplitude = np.NaN
+                ret.fit_amplitude = np.nan
             ret._make_interp()
         return ret

@@ -424,8 +424,8 @@ def smallest_enclosing_circle_impl(coords: Union[np.ndarray, List]):
     -------
     Center coordinates and radius
     """
-    center = (np.NaN, np.NaN)
-    radius = np.NaN
+    center = (np.nan, np.nan)
+    radius = np.nan
     for i, p in enumerate(coords):
         if math.isnan(radius) or not _in_circle(center, radius, p):
             center, radius = _enclosing_circle_1(coords[:i+1], p)
@@ -516,7 +516,7 @@ def _enclosing_circle_2(coords: Sequence[Sequence[float]],
     center_2, radius_2 = _circumscribe_2(point1, point2)
     area_left = -np.inf
     area_right = np.inf
-    center_left = center_right = (np.NaN, np.NaN)
+    center_left = center_right = (np.nan, np.nan)
     radius_left = radius_right = np.inf
 
     for p in coords:
@@ -622,7 +622,7 @@ def _circumscribe_3(point1: Sequence[float], point2: Sequence[float],
     c = 2 * (x1 * dy1 + x2 * dy2 + x3 * dy3)
     if math.isclose(c, 0):
         # This happens e.g. when points lie on a line
-        return (np.NaN, np.NaN), np.NaN
+        return (np.nan, np.nan), np.nan
     n1 = x1 * x1 + y1 * y1
     n2 = x2 * x2 + y2 * y2
     n3 = x3 * x3 + y3 * y3

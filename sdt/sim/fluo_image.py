@@ -63,7 +63,7 @@ def simulate_gauss(shape, centers, amplitudes, sigmas, cutoff=5., mass=False,
         sigmas = np.broadcast_to(sigmas, centers.shape)
 
     if mass:
-        amplitudes = amplitudes / (2 * np.pi * np.product(sigmas, axis=1))
+        amplitudes = amplitudes / (2 * np.pi * np.prod(sigmas, axis=1))
 
     if engine == "numba":
         # There have been weird problems in unittest if `sigmas` was not

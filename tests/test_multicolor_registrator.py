@@ -81,15 +81,15 @@ class TestRegistrator:
         coords2[0, :] = coords2[1, :]
         coords2[1, :] = tmp
         # Add some NaNs
-        coords1_nan = np.vstack([coords1, [[10, np.NaN], [np.NaN, 20]]])
+        coords1_nan = np.vstack([coords1, [[10, np.nan], [np.nan, 20]]])
         coords2_nan = np.empty_like(coords1_nan)
         # Some shuffling
         coords2_nan[0, :] = coords2[1, :]
         coords2_nan[1, :] = coords2[0, :]
         coords2_nan[2:5, :] = coords2[2:5, :]
-        coords2_nan[5, :] = [np.NaN, -1]
+        coords2_nan[5, :] = [np.nan, -1]
         coords2_nan[6, :] = coords2[5, :]
-        coords2_nan[7, :] = [-2, np.NaN]
+        coords2_nan[7, :] = [-2, np.nan]
         coords2_nan[8, :] = coords2[6, :]
         return (pd.DataFrame(coords1_nan, columns=["x", "y"]),
                 pd.DataFrame(coords2_nan, columns=["x", "y"]))

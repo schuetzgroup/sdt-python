@@ -29,7 +29,7 @@ class ConstPrior:
     """
     def __init__(self):
         self._data = np.empty((0, 0))
-        self._prior = np.NaN
+        self._prior = np.nan
 
     def set_data(self, data):
         """Set data for calculation of the prior

@@ -169,7 +169,7 @@ def segment_stats(data: np.ndarray,
         shape = [len(data) if return_len == "data" else 1]
         if stat_axis:
             shape.append(len(stat_funcs))
-        return np.full(shape[0], -1, dtype=int), np.full(shape, np.NaN)
+        return np.full(shape[0], -1, dtype=int), np.full(shape, np.nan)
 
     # `cp` are changepoint indices with respect to masked data
     if callable(changepoints):
@@ -194,7 +194,7 @@ def segment_stats(data: np.ndarray,
         stat = np.empty((len(cp) + 1, len(stat_funcs), data.shape[1]))
     for i, m_s, m_e in zip(itertools.count(), md_start, md_end):
         for j, func in enumerate(stat_funcs):
-            stat[i, j] = func(m_data[m_s:m_e], axis=0) if m_s < m_e else np.NaN
+            stat[i, j] = func(m_data[m_s:m_e], axis=0) if m_s < m_e else np.nan
     seg = np.arange(len(cp) + 1)
 
     if return_len == "data":

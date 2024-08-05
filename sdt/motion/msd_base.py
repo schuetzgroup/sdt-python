@@ -42,7 +42,7 @@ def _displacements(particle_data, n_lag, disp_list):
     frames = np.round(particle_data[:, 0]).astype(int)
     start = frames[0]
     end = frames[-1]
-    pdata = np.full((end - start + 1, ndim), np.NaN)
+    pdata = np.full((end - start + 1, ndim), np.nan)
     pdata[frames - start] = particle_data[:, 1:]
 
     # there can be at most len(pdata) - 1 steps
@@ -224,7 +224,7 @@ class MsdData:
                     e = np.std(v, axis=1, ddof=1)
                 else:
                     # no bootstrapping, no error
-                    e = np.full(v.shape[0], np.NaN)
+                    e = np.full(v.shape[0], np.nan)
                 err.append((k, e))
             self.errors = OrderedDict(err)
 
