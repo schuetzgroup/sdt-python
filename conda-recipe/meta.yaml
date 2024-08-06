@@ -18,6 +18,7 @@ requirements:
     host:
         - python
         - pip
+        - hatch
 
     run:
         - python >=3.9
