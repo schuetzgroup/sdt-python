@@ -105,13 +105,14 @@ have a look
 `here <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_.
 
 
-Using pip (untested)
-^^^^^^^^^^^^^^^^^^^^
+Using pip
+^^^^^^^^^
 
-Install some Python distribution. Download this source code, change into the
-root folder (where this README is located) and run::
+Install some Python distribution and run (possibly in a virtual environment)
 
-    python -m pip install .
+::
+
+    pip install sdt-python
 
 
 Updating
@@ -134,6 +135,12 @@ If a separate environment is used, type
 
 If you chose an environment name different from ``sdt_env`` when installing,
 adapt accordingly.
+
+If `pip` is used, run
+
+::
+
+    pip install --upgrade sdt-python
 
 
 Requirements
