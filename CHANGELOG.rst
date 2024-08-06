@@ -13,6 +13,15 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+19.0.0
+------
+
+- :py:mod:`motion`: Remove legacy API (API break)
+- `numpy` 2.x compatibility; however We still depend on numpy < 2.0 since there
+  are some issues with `pandas`.
+- Use `pyproject.toml` and `hatch` for project management
+
+
 18.3
 ----
 
