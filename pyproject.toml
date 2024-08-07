@@ -99,11 +99,14 @@ only-include = [
 ]
 
 [tool.hatch.envs.hatch-test]
+default-args = ["-v", "-rs", "tests"]
 dependencies = [
+    "PyQt5",
     "lmfit",
     "numba",
     "pims",
     "pytest",
+    "pytest-qt",
     "pywavelets",
     "scikit-learn",
     "trackpy",
@@ -111,10 +114,12 @@ dependencies = [
 
 [tool.hatch.envs.test-wheel]
 dependencies = [
+    "PyQt5",
     "lmfit",
     "numba",
     "pims",
     "pytest",
+    "pytest-qt",
     "pywavelets",
     "scikit-learn",
     "trackpy",
