@@ -499,10 +499,14 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
     ndim = len(columns["coords"])
 
     if engine == "numba":
+        if not numba.numba_available:
+            warnings.warn("numba not available. Falling back to python backend.")
+            engine = "python"
         if ndim != 2:
             warnings.warn("numba engine supports only 2D data. Falling back "
                           "to python backend.")
             engine = "python"
+    if engine == "numba":
         if bg_estimator is np.mean:
             bg_estimator = 0
         elif bg_estimator is np.median:
