@@ -83,6 +83,7 @@ T.Registrator {
                             image: imSel.image
                             Layout.alignment: Qt.AlignTop
                             Layout.fillHeight: true
+                            Layout.preferredWidth: implicitWidth
                             // FIXME: Currently preview is computed also for
                             // hidden channel, and when not visible
                         }
