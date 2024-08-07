@@ -13,6 +13,10 @@ The ``sdt-python`` package
    :target: https://anaconda.org/conda-forge/sdt-python
    :alt: conda-forge
 
+.. image:: https://badge.fury.io/py/sdt-python.svg
+   :target: https://badge.fury.io/py/sdt-python
+   :alt: PyPI
+
 sdt-python is a collection of tools for analysis of fluorescence microscopy
 data.
 
