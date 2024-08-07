@@ -13,6 +13,13 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+19.0.1
+------
+
+- :py:class:`gui.Registrator`: Fix layout width of option widgets
+- :py:func:`brightness.from_raw_image`: Handle missing numba
+
+
 19.0.0
 ------
 
