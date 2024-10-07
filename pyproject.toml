@@ -10,7 +10,7 @@ dependencies = [
     "lazy_loader",
     "matplotlib",
     "numpy >= 1.10, < 2.0",
-    "opencv-python",
+    "opencv-python-headless",
     "pandas",
     "pyyaml",
     "tables",
