@@ -13,6 +13,12 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+19.0.2
+------
+
+- Depend on ``opencv-python-headless`` instead of ``opencv-python``.
+
+
 19.0.1
 ------
 
