@@ -16,39 +16,26 @@ jobs:
         os: [ubuntu, macOS, windows]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
-    - name: Install system packages
-      uses: amitie10g/install-package@v1
-      with:
-        apt: libegl1 libopengl0
+    # - name: Install system packages
+    #   uses: amitie10g/install-package@v1
+    #   with:
+    #     apt: libegl1 libopengl0
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
 
     - name: Set up Python
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        use-mamba: true
-        miniforge-version: latest
-        miniforge-variant: Mambaforge
-        environment-file: tests/conda-env.yml
-
-    - name: Conda info
       shell: pwsh
-      run: conda info
-
-    - name: Lint with flake8
-      shell: pwsh
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings.
-        flake8 . --count --exit-zero --max-complexity=10 --statistics
+      run: uv sync
 
     - name: Test with pytest
       shell: pwsh
       run: |
         $os = "${{ runner.os }}"
         if ( $os -eq "Linux") {
-          pytest -v --ignore=tests/test_gui/ tests/
+          uv run pytest -v -rs --ignore=tests/test_gui/ tests
         } else {
-          pytest -v tests/
+          uv run pytest -v -rs tests
         }
