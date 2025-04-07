@@ -263,7 +263,7 @@ def _batchWorkerFunc(idx, fileName, frameRange, options, method, roi_list):
 
         if len(roi_list) > 2:
             data = algoDesc.batch_roi(frames[start:end], roi_list,
-                                      reset_origin=False, **options)
+                                      rel_origin=False, **options)
         else:
             data = algoDesc.batch(frames[start:end], **options)
     except Exception as e:
