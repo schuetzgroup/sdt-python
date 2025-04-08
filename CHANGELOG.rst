@@ -13,6 +13,13 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+20.0.0
+------
+
+- Require numpy >= 2.1. There have been some problems with older numpy and pandas
+  version, thus moving forward support for everything older is dropped.
+
+
 19.0.3
 ------
 
