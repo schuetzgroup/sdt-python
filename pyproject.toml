@@ -9,15 +9,15 @@ dependencies = [
     "imageio >= 2.29",
     "lazy_loader",
     "matplotlib",
-    "numpy >= 1.10, < 2.0",
+    "numpy>=2.0",
     "opencv-python-headless",
-    "pandas",
+    "pandas>=2.2.3",
     "pyyaml",
-    "tables",
+    "tables>=3.10",
     "tifffile >= 2022.2.2",
     "scipy > 0.18",
 ]
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 authors = [
     { name = "Lukas Schrangl", email = "lukas.schrangl@boku.ac.at" }
 ]
