@@ -13,7 +13,6 @@ import math
 
 import numpy as np
 import scipy.special
-import scipy.misc
 import scipy.signal
 
 from ..helper import numba
