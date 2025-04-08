@@ -18,11 +18,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    # - name: Install system packages
-    #   uses: amitie10g/install-package@v1
-    #   with:
-    #     apt: libegl1 libopengl0
-
     - name: Install uv
       uses: astral-sh/setup-uv@v5
       with:
