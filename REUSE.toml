@@ -1,0 +1,5 @@
+version = 1
+SPDX-PackageName = "sdt-python"
+SPDX-PackageSupplier = "Lukas Schrangl <lukas.schrangl@boku.ac.at>"
+SPDX-PackageDownloadLocation = "https://github.com/schuetzgroup/sdt-python"
+annotations = []
