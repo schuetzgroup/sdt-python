@@ -32,13 +32,13 @@ class Image(np.ndarray):
             return
         self.frame_no = getattr(obj, "frame_no", -1)
 
-    def __array_wrap__(self, array, context=None):
+    def __array_wrap__(self, array, context=None, return_scalar=True):
         # This way numpy functions such as np.min() return a scalar, not a
         # zero-dimensional array.
         # See https://stackoverflow.com/a/19720866
-        if array.ndim == 0:
+        if array.ndim == 0 and return_scalar:
             return array[()]
-        return super().__array_wrap__(array, context)
+        return super().__array_wrap__(array, context, return_scalar)
 
 
 def _parse_yaml_description(meta: Mapping):
