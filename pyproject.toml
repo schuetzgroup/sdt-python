@@ -9,7 +9,7 @@ dependencies = [
     "imageio >= 2.29",
     "lazy_loader",
     "matplotlib",
-    "numpy>=2.0",
+    "numpy>=2.1",
     "opencv-python-headless",
     "pandas>=2.2.3",
     "pyyaml",
