@@ -45,8 +45,45 @@ please `cite <https://doi.org/10.5281/zenodo.4604495>`_ the software.
 Installation
 ------------
 
-Using anaconda (recommended)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Using uv (recommended)
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Install ``uv`` according to the `official instructions <https://docs.astral.sh/uv/getting-started/installation/>`_
+  or using e.g. your Linux distribution's package manager.
+- Create a folder for your project.
+- Inside this folder, run
+
+  ::
+
+    uv init
+
+  in a console prompt to create a new project. See the
+  `official guide <https://docs.astral.sh/uv/guides/projects/>`_ for more information.
+- Add `sdt-python` and optional dependencies by running
+
+  ::
+
+      uv add sdt-python
+      uv add opencv trackpy lmfit ipympl scikit-learn pyqt
+
+- Start the python interpreter by executing
+
+  ::
+
+      uv run python
+
+  or Jupyter Lab by executing
+
+  ::
+
+      uv run --with jupyter jupyter lab
+
+  (see the `official documentation <https://docs.astral.sh/uv/guides/integration/jupyter/>`_
+  for details).
+
+
+Using anaconda
+^^^^^^^^^^^^^^
 
 Choose one of the three following options.
 
@@ -122,6 +159,20 @@ Install some Python distribution and run (possibly in a virtual environment)
 Updating
 --------
 
+If using uv, execute
+
+::
+
+    uv sync -P sdt-python
+
+to update only `sdt-python` or
+
+::
+
+    uv sync -U
+
+to update everything.
+
 If the conda installation was converted to `conda forge`, type
 
 ::
@@ -150,10 +201,10 @@ If `pip` is used, run
 Requirements
 ------------
 
-- Python >= 3.9
+- Python >= 3.10
 - matplotlib
-- numpy >= 1.10
-- pandas
+- numpy >= 2.1
+- pandas >= 2.2.3
 - imageio >= 2.29
 - tifffile >= 0.7.0
 - pyyaml
