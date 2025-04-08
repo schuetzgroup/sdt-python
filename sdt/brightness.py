@@ -672,7 +672,7 @@ class Distribution(object):
         else:
             raise ValueError("Unknown engine \"{}\"".format(engine))
 
-        self.norm_factor = np.trapz(y, x)
+        self.norm_factor = np.trapezoid(y, x)
 
         y /= self.norm_factor
         self.graph = np.asarray([x, y])
@@ -695,7 +695,7 @@ class Distribution(object):
             Mean (1st moment) of the distribution
         """
         x, y = self.graph
-        return np.trapz(x*y, x)
+        return np.trapezoid(x * y, x)
 
     def std(self):
         """Standard deviation
@@ -708,7 +708,7 @@ class Distribution(object):
         """
         m = self.mean()
         x, y = self.graph
-        var = np.trapz((x-m)**2*y, x)
+        var = np.trapezoid((x - m)**2 * y, x)
         return np.sqrt(var)
 
     def most_probable(self):
