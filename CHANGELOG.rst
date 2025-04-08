@@ -13,6 +13,13 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+19.0.3
+------
+
+- Fix (legacy) locator GUI when using `cg` algorithm with ROI
+- Fix some compatibility warnings
+
+
 19.0.2
 ------
 
