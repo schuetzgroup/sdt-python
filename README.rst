@@ -82,20 +82,14 @@ Using uv (recommended)
   for details).
 
 
-Using anaconda
-^^^^^^^^^^^^^^
+Using conda-forge
+^^^^^^^^^^^^^^^^^
 
-Choose one of the three following options.
+Set up a `conda forge <https://conda-forge.org>`_-enabled
+installation by downloading and executing an installer from
+`the web page <https://conda-forge.org/download/>`_.
 
-
-Install miniforge
-"""""""""""""""""
-
-Set up a minimal `conda forge <https://conda-forge.org>`_-enabled anaconda
-installation by downloading and executing a Miniforge3 installer from
-`github <https://github.com/conda-forge/miniforge/#download>`_.
-
-Then open an Anaconda prompt and type
+Then open a Miniforge prompt and type
 
 ::
 
@@ -103,47 +97,6 @@ Then open an Anaconda prompt and type
     conda install opencv trackpy lmfit ipympl scikit-learn pyqt
 
 to install the sdt-python package and some optional, recommended packages.
-
-
-Convert a miniconda installation to `conda forge <https://conda-forge.org>`_
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-The following will most likely fail on a full Anaconda install, hence it is
-recommended to use `miniconda <https://docs.conda.io/en/latest/miniconda.html>`_
-(minimal Anaconda)
-First, install miniconda (Python 3.x version). Then open an Anaconda prompt and
-type
-
-::
-
-    conda config --add channels conda-forge
-    conda config --set channel_priority strict
-    conda update --all
-    conda install sdt-python
-    conda install opencv trackpy lmfit ipympl scikit-learn pyqt
-
-The last line installs optional, recommended packages.
-
-Instead of converting the whole installation to conda-forge, it is possible to
-
-
-Create a new environment using `conda forge <https://conda-forge.org>`_
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-This method works for
-`Anaconda <https://www.anaconda.com/products/individual>`_ /
-`miniconda <https://docs.conda.io/en/latest/miniconda.html>`_ installs.
-
-::
-
-    conda create -n sdt_env -c conda-forge --strict-channel-priority sdt-python
-    conda install -n sdt_env -c conda-forge --strict-channel-priority opencv trackpy lmfit ipympl scikit-learn
-    conda activate sdt_env
-
-The second line installs optional, recommended packages. ``sdt_env`` is the
-name of the new environment. For more information on conda environments,
-have a look
-`here <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html>`_.
 
 
 Using pip
@@ -180,16 +133,6 @@ If the conda installation was converted to `conda forge`, type
     conda update sdt-python
 
 in an Anaconda prompt.
-
-If a separate environment is used, type
-
-::
-
-    conda activate sdt_env
-    conda update -c conda-forge --strict-channel-priority sdt-python
-
-If you chose an environment name different from ``sdt_env`` when installing,
-adapt accordingly.
 
 If `pip` is used, run
 
