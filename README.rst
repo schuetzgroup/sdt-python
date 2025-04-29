@@ -126,13 +126,13 @@ to update only `sdt-python` or
 
 to update everything.
 
-If the conda installation was converted to `conda forge`, type
+If the conda-forge installation is used, type
 
 ::
 
     conda update sdt-python
 
-in an Anaconda prompt.
+in a Miniforge prompt.
 
 If `pip` is used, run
 
