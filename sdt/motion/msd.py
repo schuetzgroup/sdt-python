@@ -3,15 +3,16 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 """Analyze mean square displacements (MSDs)"""
-from collections import namedtuple, OrderedDict
 import math
+from collections import OrderedDict, namedtuple
+from typing import Literal, Tuple
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import scipy.optimize
 
-from . import msd_base
 from .. import config
+from . import msd_base
 
 
 class Msd:
@@ -209,32 +210,40 @@ class Msd:
 class AnomalousDiffusion:
     r"""Fit anomalous diffusion parameters to MSD values
 
-    Fit a function :math:`msd(t_\text{lag}) = 4 D t_\text{lag}^\alpha +
-    4 \epsilon^2`
+    Fit a function :math:`msd(t_\text{lag}) = 2 n_\text{dim} D t_\text{lag}^\alpha +
+    2 n_\text{dim} \epsilon^2`
     to the tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient,
-    :math:`\epsilon` is the positional accuracy (uncertainty), and
-    :math:`\alpha` the anomalous diffusion exponent.
+    :math:`\epsilon` is the positional uncertainty, and :math:`\alpha` the anomalous
+    diffusion exponent.
     """
     _fit_parameters = ["D", "eps", "alpha"]
 
-    def __init__(self, msd_data, n_lag=np.inf, exposure_time=0.,
-                 initial=(0.5, 0.05, 1.)):
+    def __init__(
+        self,
+        msd_data: msd_base.MsdData,
+        n_lag: int | Literal[math.inf] = math.inf,
+        exposure_time: float = 0.0,
+        n_dim: int = 2,
+        initial: Tuple[float, float, float] = (0.5, 0.05, 1.0),
+    ):
         r"""Parameters
         ----------
-        msd_data : msd_base.MsdData
+        msd_data
             MSD data
-        n_lag : int or inf, optional
+        n_lag
             Maximum number of lag times to use for fitting. Defaults to
             `inf`, i.e. using all.
-        exposure_time : float, optional
-            Exposure time. Defaults to 0, i.e. no exposure time correction
-        initial : tuple of float, optional
+        exposure_time
+            Exposure time. 0 disables exposure time correction.
+        n_dim
+            Number of spatial dimensions
+        initial
             Initial guesses for the fitting for :math:`D`, :math:`\epsilon`,
-            and :math:`\alpha`. Defaults to ``(0.5, 0.05, 1.)``.
+            and :math:`\alpha`.
         """
         def residual(x, lagt, target):
             d, eps, alpha = x
-            r = self.theoretical(lagt, d, eps, alpha, exposure_time)
+            r = self.theoretical(lagt, d, eps, alpha, exposure_time, n_dim)
             return r - target
 
         initial = np.asarray(initial)
@@ -249,9 +258,11 @@ class AnomalousDiffusion:
                 lt = lagt[fin]
                 nl = min(n_lag, len(tgt))
                 f = scipy.optimize.least_squares(
-                    residual, initial,
+                    residual,
+                    initial,
                     bounds=([0, -np.inf, 0], [np.inf, np.inf, np.inf]),
-                    kwargs={"lagt": lt[:nl], "target": tgt[:nl]})
+                    kwargs={"lagt": lt[:nl], "target": tgt[:nl]},
+                )
                 r.append(f.x)
             r = np.array(r)
             self._results[particle] = np.mean(r, axis=0)
@@ -262,6 +273,7 @@ class AnomalousDiffusion:
 
         self._msd_data = msd_data
         self.exposure_time = exposure_time
+        self.n_dim = n_dim
 
     @staticmethod
     def exposure_time_corr(t, alpha, exposure_time, n=100,
@@ -321,7 +333,15 @@ class AnomalousDiffusion:
         return (np.sum(s, axis=(1, 2)) / n**2)**(1/alpha)
 
     @staticmethod
-    def theoretical(t, d, eps, alpha=1, exposure_time=0, squeeze_result=True):
+    def theoretical(
+        t: np.ndarray | float,
+        d: np.ndarray | float,
+        eps: np.ndarray | float,
+        alpha: np.ndarray | float = 1.0,
+        exposure_time: float = 0.0,
+        n_dim: int = 2,
+        squeeze_result: bool = True,
+    ) -> np.ndarray | float:
         r"""Calculate theoretical MSDs for different lag times
 
         Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4
@@ -331,24 +351,25 @@ class AnomalousDiffusion:
 
         Parameters
         ----------
-        t : array-like or scalar
+        t
             Lag times
-        d : float
+        d
             Diffusion coefficient
-        eps : float
-            Positional accuracy.
-        alpha : float, optional
-            Anomalous diffusion exponent. Defaults to 1.
-        exposure_time : float, optional
-            Exposure time. Defaults to 0.
-        squeeze_result : bool, optional
+        eps
+            Positional uncertainty.
+        alpha
+            Anomalous diffusion exponent.
+        exposure_time
+            Exposure time.
+        n_dim
+            Number of spatial dimensions
+        squeeze_result
             If `True`, return the result as a scalar type or 1D array if
-            possible. Otherwise, always return a 2D array. Defaults to `True`.
+            possible. Otherwise, always return a 2D array.
 
         Returns
         -------
-        numpy.ndarray or scalar
-            Calculated theoretical MSDs
+        Calculated theoretical MSDs
         """
         t = np.atleast_1d(t)
         d = np.atleast_1d(d)
@@ -357,17 +378,18 @@ class AnomalousDiffusion:
         if d.shape != eps.shape or d.shape != alpha.shape:
             raise ValueError("`d`, `eps`, and `alpha` should have same shape.")
         if t.ndim > 1 or d.ndim > 1 or eps.ndim > 1:
-            raise ValueError("Number of dimensions of `t`, `d`, `eps`, and "
-                             "`alpha` need to be less than 2")
+            raise ValueError(
+                "Number of dimensions of `t`, `d`, `eps`, and `alpha` need to be"
+                "less than 2"
+            )
 
-        ic = 4 * eps**2
+        ic = 2 * n_dim * eps**2
         ic[eps < 0] *= -1
         t_corr = np.empty((len(t), len(alpha)), dtype=float)
         for i, a in enumerate(alpha):
-            t_corr[:, i] = AnomalousDiffusion.exposure_time_corr(
-                t, a, exposure_time)
+            t_corr[:, i] = AnomalousDiffusion.exposure_time_corr(t, a, exposure_time)
 
-        ret = 4 * d[None, :] * t_corr**alpha[None, :] + ic[None, :]
+        ret = 2 * n_dim * d[None, :] * t_corr ** alpha[None, :] + ic[None, :]
 
         if squeeze_result:
             if ret.size == 1:
@@ -520,7 +542,7 @@ class AnomalousDiffusion:
         d_err, eps_err, alpha_err = self._err.get(data_id, (np.nan,) * 3)
 
         x = np.linspace(0, n_lag, 100)
-        y = self.theoretical(x, d, eps, alpha, self.exposure_time)
+        y = self.theoretical(x, d, eps, alpha, self.exposure_time, self.n_dim)
 
         legend = []
         if name:
@@ -544,15 +566,23 @@ class BrownianMotion(AnomalousDiffusion):
     """
     _fit_parameters = ["D", "eps"]
 
-    def __init__(self, msd_data, n_lag=2, exposure_time=0):
+    def __init__(
+        self,
+        msd_data: msd_base.MsdData,
+        n_lag: int | Literal[math.inf] = 2,
+        exposure_time: float = 0.0,
+        n_dim: int = 2,
+    ):
         """Parameters
         ----------
-        msd_data : msd_base.MsdData
+        msd_data
             MSD data
-        n_lag : int or inf, optional
-            Maximum number of lag times to use for fitting. Defaults to 2.
-        exposure_time : float, optional
-            Exposure time. Defaults to 0, i.e. no exposure time correction
+        n_lag
+            Maximum number of lag times to use for fitting.
+        exposure_time
+            Exposure time. 0 disables exposure time correction.
+        n_dim
+            Number of spatial dimensions
         """
         self._results = OrderedDict()
         self._err = OrderedDict()
@@ -578,8 +608,8 @@ class BrownianMotion(AnomalousDiffusion):
             else:
                 s, i = np.polyfit(lagt[:nl] - exposure_time / 3, m[:nl, :], 1)
 
-            d = s / 4
-            eps = np.sqrt(i.astype(complex)) / 2
+            d = s / (2 * n_dim)
+            eps = np.sqrt(i.astype(complex) / (2 * n_dim))
             eps = np.where(i > 0, np.real(eps), -np.imag(eps))
 
             self._results[particle] = [np.mean(d), np.mean(eps)]
@@ -590,9 +620,17 @@ class BrownianMotion(AnomalousDiffusion):
 
         self._msd_data = msd_data
         self.exposure_time = exposure_time
+        self.n_dim = n_dim
 
     @staticmethod
-    def theoretical(t, d, eps, exposure_time=0):
+    def theoretical(  # pyright: ignore reportIncompatibleMethodOverride
+        t: np.ndarray | float,
+        d: np.ndarray | float,
+        eps: np.ndarray | float,
+        exposure_time: float = 0.0,
+        n_dim: int = 2,
+        squeeze_result: bool = False,
+    ) -> np.ndarray | float:
         r"""Calculate theoretical MSDs for different lag times
 
         Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app} + 4
@@ -602,34 +640,34 @@ class BrownianMotion(AnomalousDiffusion):
 
         Parameters
         ----------
-        t : array-like or scalar
+        t
             Lag times
-        d : float
+        d
             Diffusion coefficient
-        eps : float
-            Positional accuracy.
-        alpha : float, optional
-            Anomalous diffusion exponent. Defaults to 1.
-        exposure_time : float, optional
-            Exposure time. Defaults to 0.
-        squeeze_result : bool, optional
+        eps
+            Positional uncertainty
+        exposure_time
+            Exposure time
+        n_dim
+            Number of spatial dimensions
+        squeeze_result
             If `True`, return the result as a scalar type or 1D array if
             possible. Otherwise, always return a 2D array. Defaults to `True`.
 
         Returns
         -------
-        numpy.ndarray or scalar
-            Calculated theoretical MSDs
+        Calculated theoretical MSDs
         """
-        return AnomalousDiffusion.theoretical(t, d, eps, np.ones_like(d),
-                                              exposure_time)
+        return AnomalousDiffusion.theoretical(
+            t, d, eps, np.ones_like(d), exposure_time, n_dim, squeeze_result
+        )
 
     def _plot_single(self, data_id, n_lag, name, ax, color):
         d, eps = self._results[data_id]
         d_err, eps_err = self._err.get(data_id, (np.nan,) * 2)
 
         x = np.linspace(0, n_lag, 100)
-        y = self.theoretical(x, d, eps, self.exposure_time)
+        y = self.theoretical(x, d, eps, self.exposure_time, self.n_dim)
 
         legend = []
         if name:

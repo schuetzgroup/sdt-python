@@ -127,3 +127,8 @@ only-include = [
 
 [tool.pytest.ini_options]
 markers = "slow: tests that take some time"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+reportIncompatibleMethodOverride = false

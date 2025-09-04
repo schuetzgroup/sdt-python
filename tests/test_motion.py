@@ -2,10 +2,10 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-import os
 import collections
 import functools
 import itertools
+import os
 import warnings
 
 try:
@@ -19,10 +19,9 @@ import pandas as pd
 import pytest
 
 from sdt import motion
-from sdt.motion import msd, msd_dist
-from sdt.motion.msd_base import _displacements, _square_displacements, MsdData
 from sdt.helper import numba
-
+from sdt.motion import msd, msd_dist
+from sdt.motion.msd_base import MsdData, _displacements, _square_displacements
 
 path, f = os.path.split(os.path.abspath(__file__))
 data_path = os.path.join(path, "data_motion")
@@ -560,7 +559,8 @@ class TestAnomalousDiffusionStaticMethods:
         r = np.array(r)**2
         np.testing.assert_allclose(t_app, r)
 
-    def test_theoretical_scalar(self):
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_theoretical_scalar(self, ndim):
         """theoretical, scalar args"""
         d = 0.1
         alpha = 1
@@ -569,10 +569,14 @@ class TestAnomalousDiffusionStaticMethods:
         pa = 0.05
         for f in (-1, 1):
             m = motion.AnomalousDiffusion.theoretical(
-                t, d, f * pa, alpha, exposure_time=t_exp)
-            assert m == pytest.approx(4 * d * (t - t_exp/3) + f * 4 * pa**2)
+                t, d, f * pa, alpha, exposure_time=t_exp, n_dim=ndim
+            )
+            assert m == pytest.approx(
+                2 * ndim * d * (t - t_exp / 3) + f * 2 * ndim * pa**2
+            )
 
-    def test_theoretical_vec_t(self):
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_theoretical_vec_t(self, ndim):
         """theoretical, time vector"""
         d = 0.1
         alpha = 1
@@ -581,11 +585,14 @@ class TestAnomalousDiffusionStaticMethods:
         pa = 0.05
         for f in (-1, 1):
             m = motion.AnomalousDiffusion.theoretical(
-                t, d, f * pa, alpha, exposure_time=t_exp)
+                t, d, f * pa, alpha, exposure_time=t_exp, n_dim=ndim
+            )
             np.testing.assert_allclose(
-                m, 4 * d * (t - t_exp/3) + f * 4 * pa**2)
+                m, 2 * ndim * d * (t - t_exp / 3) + f * 2 * ndim * pa**2
+            )
 
-    def test_theoretical_vec_param(self):
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_theoretical_vec_param(self, ndim):
         """theoretical, param vector"""
         d = np.array([0.1, 0.2])
         alpha = np.array([1, 2])
@@ -594,12 +601,18 @@ class TestAnomalousDiffusionStaticMethods:
         pa = np.array([0.05, 0.1])
         for f in (-1, 1):
             m = motion.AnomalousDiffusion.theoretical(
-                t, d, f * pa, alpha, exposure_time=t_exp)
+                t, d, f * pa, alpha, exposure_time=t_exp, n_dim=ndim
+            )
             np.testing.assert_allclose(
-                m, [4 * d[0] * (t - t_exp/3) + f * 4 * pa[0]**2,
-                    4 * d[1] * t**2 + f * 4 * pa[1]**2])
+                m,
+                [
+                    2 * ndim * d[0] * (t - t_exp / 3) + f * 2 * ndim * pa[0] ** 2,
+                    2 * ndim * d[1] * t**2 + f * 2 * ndim * pa[1] ** 2,
+                ],
+            )
 
-    def test_theoretical_vec_all(self):
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_theoretical_vec_all(self, ndim):
         """theoretical, param and time vector"""
         d = np.array([0.1, 0.2])
         alpha = np.array([1, 2])
@@ -608,9 +621,14 @@ class TestAnomalousDiffusionStaticMethods:
         pa = np.array([0.05, 0.1])
         for f in (-1, 1):
             m = motion.AnomalousDiffusion.theoretical(
-                t, d, f * pa, alpha, exposure_time=t_exp)
-            expected = np.array([4 * d[0] * (t - t_exp/3) + f * 4 * pa[0]**2,
-                                 4 * d[1] * t**2 + f * 4 * pa[1]**2]).T
+                t, d, f * pa, alpha, exposure_time=t_exp, n_dim=ndim
+            )
+            expected = np.array(
+                [
+                    2 * ndim * d[0] * (t - t_exp / 3) + f * 2 * ndim * pa[0] ** 2,
+                    2 * ndim * d[1] * t**2 + f * 2 * ndim * pa[1] ** 2,
+                ]
+            ).T
             np.testing.assert_allclose(m, expected)
 
 
@@ -642,102 +660,123 @@ class TestAnomalousDiffusion:
 
     @pytest.fixture
     def fit_results(self):
-        r = np.array([[[0.25, 1, 7.5], [0.01, 0.04, 0.1], [1, 2, 0.5]],
-                      [[0.05, 2, 15], [0.02, 0.08, 0.2], [2, 0.5, 1]]])
+        r = np.array(
+            [
+                [[0.25, 1, 7.5], [0.01, 0.04, 0.1], [1, 2, 0.5]],
+                [[0.05, 2, 15], [0.02, 0.08, 0.2], [2, 0.5, 1]],
+            ]
+        )
         return r
 
     results_columns = ["D", "eps", "alpha"]
     n_lag = (5, 20)
 
-    def make_fitter(self, frame_rate, msd_set, n_lag):
+    def make_fitter(self, frame_rate, msd_set, n_lag, n_dim):
         m = MsdData(frame_rate, msd_set)
-        return motion.AnomalousDiffusion(m, n_lag=n_lag)
+        return motion.AnomalousDiffusion(m, n_lag=n_lag, n_dim=n_dim)
 
-    def test_single_fit(self, msd_set, fit_results):
+    @pytest.mark.parametrize("nlag", [5, 20])
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_single_fit(self, msd_set, fit_results, nlag, ndim):
         """Test with a single set per particle (i.e. no bootstrapping)"""
         frate, msd_set = msd_set
         for k, v in msd_set.items():
             msd_set[k] = v[:, [1]]
 
-        for n_lag in self.n_lag:
-            f = self.make_fitter(frate, msd_set, n_lag)
-            assert list(f._results.keys()) == [0, 2]
-            np.testing.assert_allclose(f._results[0], fit_results[0, :, 1],
-                                       rtol=1e-5)
-            np.testing.assert_allclose(f._results[2], fit_results[1, :, 1],
-                                       rtol=1e-5)
-            assert len(f._err) == 0
+        # fit results are for ndim == 2
+        fit_results[:, 0, :] /= ndim / 2
+        fit_results[:, 1, :] /= np.sqrt(ndim / 2)
 
-    def test_multiple_fit(self, msd_set, fit_results):
+        f = self.make_fitter(frate, msd_set, nlag, ndim)
+        assert list(f._results.keys()) == [0, 2]
+        np.testing.assert_allclose(
+            f._results[0], fit_results[0, :, 1], rtol=1e-5
+        )
+        np.testing.assert_allclose(
+            f._results[2], fit_results[1, :, 1], rtol=1e-5
+        )
+        assert len(f._err) == 0
+
+    @pytest.mark.parametrize("nlag", [5, 20])
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_multiple_fit(self, msd_set, fit_results, nlag, ndim):
         """Test with multiple sets per particle (i.e. with bootstrapping)"""
         frate, msd_set = msd_set
-        for n_lag in self.n_lag:
-            f = self.make_fitter(frate, msd_set, n_lag)
 
-            assert list(f._results.keys()) == [0, 2]
-            assert list(f._err.keys()) == [0, 2]
+        f = self.make_fitter(frate, msd_set, nlag, ndim)
 
-            means0 = [np.mean(r) for r in fit_results[0]]
-            np.testing.assert_allclose(f._results[0], means0, rtol=1e-4)
-            stds0 = [np.std(r, ddof=1) for r in fit_results[0]]
-            np.testing.assert_allclose(f._err[0], stds0, rtol=1e-4)
+        # fit results are for ndim == 2
+        fit_results[:, 0, :] /= ndim / 2
+        fit_results[:, 1, :] /= np.sqrt(ndim / 2)
 
-            means2 = [np.mean(r) for r in fit_results[1]]
-            np.testing.assert_allclose(f._results[2], means2, rtol=1e-4)
-            stds2 = [np.std(r, ddof=1) for r in fit_results[1]]
-            np.testing.assert_allclose(f._err[2], stds2, rtol=1e-4)
+        assert list(f._results.keys()) == [0, 2]
+        assert list(f._err.keys()) == [0, 2]
 
-    def test_get_results(self, msd_set, fit_results):
+        means0 = [np.mean(r) for r in fit_results[0]]
+        np.testing.assert_allclose(f._results[0], means0, rtol=1e-4)
+        stds0 = [np.std(r, ddof=1) for r in fit_results[0]]
+        np.testing.assert_allclose(f._err[0], stds0, rtol=1e-4)
+
+        means2 = [np.mean(r) for r in fit_results[1]]
+        np.testing.assert_allclose(f._results[2], means2, rtol=1e-4)
+        stds2 = [np.std(r, ddof=1) for r in fit_results[1]]
+        np.testing.assert_allclose(f._err[2], stds2, rtol=3e-4)
+
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_get_results(self, msd_set, fit_results, ndim):
         """get_results"""
         frate, msd_set = msd_set
         msd_set_single = collections.OrderedDict(
-            [(k, v[:, [1]]) for k, v in msd_set.items()])
+            [(k, v[:, [1]]) for k, v in msd_set.items()]
+        )
 
-        f = self.make_fitter(frate, msd_set_single, 20)
+        # fit results are for ndim == 2
+        fit_results[:, 0, :] /= ndim / 2
+        fit_results[:, 1, :] /= np.sqrt(ndim / 2)
+
+        f = self.make_fitter(frate, msd_set_single, 20, ndim)
         res, err = f.get_results()
         assert list(res.columns) == list(err.columns) == self.results_columns
         assert list(res.index) == [0, 2]
         assert np.all(np.isnan(err.to_numpy()))
-        np.testing.assert_allclose(res.values, fit_results[:, :, 1],
-                                   rtol=1.e-4)
+        np.testing.assert_allclose(res.values, fit_results[:, :, 1], rtol=1.0e-4)
 
         k, v = next(iter(msd_set_single.items()))
         msd_set_single_first = {k: v}
 
-        f2 = self.make_fitter(frate, msd_set_single_first, 20)
+        f2 = self.make_fitter(frate, msd_set_single_first, 20, ndim)
         res, err = f2.get_results()
         assert list(res.index) == list(err.index) == self.results_columns
         assert res.name == 0
         assert np.all(np.isnan(err.to_numpy()))
-        np.testing.assert_allclose(res.to_numpy(), fit_results[0, :, 1],
-                                   rtol=1.e-4)
+        np.testing.assert_allclose(res.to_numpy(), fit_results[0, :, 1], rtol=1.0e-4)
 
         # pd.Series
-        f = self.make_fitter(frate, msd_set, 20)
+        f = self.make_fitter(frate, msd_set, 20, ndim)
         res, err = f.get_results()
         assert list(res.columns) == list(err.columns) == self.results_columns
         assert list(res.index) == list(err.index) == [0, 2]
-        np.testing.assert_allclose(res.values, np.mean(fit_results, axis=2),
-                                   rtol=1.e-4)
-        np.testing.assert_allclose(err.values,
-                                   np.std(fit_results, axis=2, ddof=1),
-                                   rtol=1.e-4)
+        np.testing.assert_allclose(
+            res.values, np.mean(fit_results, axis=2), rtol=1.0e-4
+        )
+        np.testing.assert_allclose(
+            err.values, np.std(fit_results, axis=2, ddof=1), rtol=1.0e-4
+        )
 
         k, v = next(iter(msd_set.items()))
         msd_set_first = {k: v}
 
         # pd.Series
-        f = self.make_fitter(frate, msd_set_first, 20)
+        f = self.make_fitter(frate, msd_set_first, 20, ndim)
         res, err = f.get_results()
         assert list(res.index) == list(err.index) == self.results_columns
         assert res.name == 0
-        np.testing.assert_allclose(res.to_numpy(),
-                                   np.mean(fit_results[0, :, :], axis=1),
-                                   rtol=1.e-4)
-        np.testing.assert_allclose(err.values,
-                                   np.std(fit_results[0, :, :], axis=1,
-                                          ddof=1),
-                                   rtol=1.e-4)
+        np.testing.assert_allclose(
+            res.to_numpy(), np.mean(fit_results[0, :, :], axis=1), rtol=1.0e-4
+        )
+        np.testing.assert_allclose(
+            err.values, np.std(fit_results[0, :, :], axis=1, ddof=1), rtol=1.0e-4
+        )
 
 
 class TestBrownianMotion(TestAnomalousDiffusion):
@@ -770,53 +809,56 @@ class TestBrownianMotion(TestAnomalousDiffusion):
     results_columns = ["D", "eps"]
     n_lag = (2, 20)
 
-    def make_fitter(self, frate, msd_set, n_lag, exposure_time=0):
+    def make_fitter(self, frate, msd_set, n_lag, ndim, exposure_time=0):
         m = MsdData(frate, msd_set)
-        return motion.BrownianMotion(m, n_lag=n_lag,
-                                     exposure_time=exposure_time)
+        return motion.BrownianMotion(
+            m, n_lag=n_lag, n_dim=ndim, exposure_time=exposure_time
+        )
 
-    def test_single_fit(self, msd_set):
+    @pytest.mark.parametrize("nlag", [2, 20])
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_single_fit(self, msd_set, nlag, ndim):
         """Test with a single set per particle (i.e. no bootstrapping)"""
         frate, msd_set = msd_set
         for k, v in msd_set.items():
             msd_set[k] = v[:, [1]]
 
-        for n_lag in (2, 20):
-            # no exposure time correction
-            f = self.make_fitter(frate, msd_set, n_lag=n_lag)
-            assert list(f._results.keys()) == [0, 2]
-            np.testing.assert_allclose(f._results[0], [5, 2])
-            np.testing.assert_allclose(f._results[2], [15, 4])
-            assert len(f._err) == 0
+        # no exposure time correction
+        f = self.make_fitter(frate, msd_set, n_lag=nlag, ndim=ndim)
+        assert list(f._results.keys()) == [0, 2]
+        np.testing.assert_allclose(f._results[0], [10 / ndim, np.sqrt(8 / ndim)])
+        np.testing.assert_allclose(f._results[2], [30 / ndim, np.sqrt(32 / ndim)])
+        assert len(f._err) == 0
 
-            # exposure time correction
-            f = self.make_fitter(frate, msd_set, n_lag=n_lag, exposure_time=3)
-            assert list(f._results.keys()) == [0, 2]
-            np.testing.assert_allclose(f._results[0], [5, 3])
-            np.testing.assert_allclose(f._results[2], [15, np.sqrt(124 / 4)])
-            assert len(f._err) == 0
+        # exposure time correction
+        f = self.make_fitter(frate, msd_set, n_lag=nlag, ndim=ndim, exposure_time=3)
+        assert list(f._results.keys()) == [0, 2]
+        np.testing.assert_allclose(f._results[0], [10 / ndim, np.sqrt(18 / ndim)])
+        np.testing.assert_allclose(f._results[2], [30 / ndim, np.sqrt(248 / 4 / ndim)])
+        assert len(f._err) == 0
 
-    def test_multiple_fit(self, msd_set):
+    @pytest.mark.parametrize("nlag", [2, 20])
+    @pytest.mark.parametrize("ndim", [1, 2])
+    def test_multiple_fit(self, msd_set, nlag, ndim):
         """Test with multiple sets per particle (i.e. with bootstrapping)"""
         frate, msd_set = msd_set
-        for n_lag in (2, 10):
-            # no exposure time correction
-            f = self.make_fitter(frate, msd_set, n_lag=n_lag)
-            assert list(f._results.keys()) == list(f._err) == [0, 2]
-            np.testing.assert_allclose(f._results[0], [5, 2])
-            np.testing.assert_allclose(f._err[0], [2.5, 1])
-            np.testing.assert_allclose(f._results[2], [15, 4])
-            np.testing.assert_allclose(f._err[2], [5, 2])
+        # no exposure time correction
+        f = self.make_fitter(frate, msd_set, n_lag=nlag, ndim=ndim)
+        assert list(f._results.keys()) == list(f._err) == [0, 2]
+        np.testing.assert_allclose(f._results[0], [10 / ndim, np.sqrt(8 / ndim)])
+        np.testing.assert_allclose(f._err[0], [5 / ndim, np.sqrt(2 / ndim)])
+        np.testing.assert_allclose(f._results[2], [30 / ndim, np.sqrt(32 / ndim)])
+        np.testing.assert_allclose(f._err[2], [10 / ndim, np.sqrt(8 / ndim)])
 
-            # exposure time correction
-            f = self.make_fitter(frate, msd_set, n_lag=n_lag, exposure_time=3)
-            assert list(f._results.keys()) == list(f._err) == [0, 2]
-            pa0 = [np.sqrt(14 / 4), np.sqrt(36 / 4), np.sqrt(66 / 4)]
-            np.testing.assert_allclose(f._results[0], [5, np.mean(pa0)])
-            np.testing.assert_allclose(f._err[0], [2.5, np.std(pa0, ddof=1)])
-            pa2 = [np.sqrt(56 / 4), np.sqrt(124 / 4), np.sqrt(224 / 4)]
-            np.testing.assert_allclose(f._results[2], [15, np.mean(pa2)])
-            np.testing.assert_allclose(f._err[2], [5, np.std(pa2, ddof=1)])
+        # exposure time correction
+        f = self.make_fitter(frate, msd_set, n_lag=nlag, ndim=ndim, exposure_time=3)
+        assert list(f._results.keys()) == list(f._err) == [0, 2]
+        pa0 = [np.sqrt(28 / 4 / ndim), np.sqrt(72 / 4 / ndim), np.sqrt(132 / 4 / ndim)]
+        np.testing.assert_allclose(f._results[0], [10 / ndim, np.mean(pa0)])
+        np.testing.assert_allclose(f._err[0], [5 / ndim, np.std(pa0, ddof=1)])
+        pa2 = [np.sqrt(112 / 4 / ndim), np.sqrt(248 / 4 / ndim), np.sqrt(448 / 4 / ndim)]
+        np.testing.assert_allclose(f._results[2], [30 / ndim, np.mean(pa2)])
+        np.testing.assert_allclose(f._err[2], [10 / ndim, np.std(pa2, ddof=1)])
 
 
 @pytest.fixture(params=["lsq", "weighted-lsq", "prony"])
