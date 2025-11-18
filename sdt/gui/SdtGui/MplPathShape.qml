@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.10
-import QtQuick.Shapes 1.0
-import SdtGui.Templates 0.1 as T
+import QtQuick
+import QtQuick.Shapes
+import SdtGui.Templates as T
 
 
 Shape {

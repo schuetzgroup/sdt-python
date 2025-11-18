@@ -14,9 +14,9 @@ from . import utils
 
 def test_ImageDisplay(qtbot):
     c = gui.Component("""
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import SdtGui 0.2
+import QtQuick
+import QtQuick.Window
+import SdtGui
 
 Window {
     width: 800

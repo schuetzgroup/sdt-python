@@ -123,14 +123,14 @@ def test_ListModel(qtbot, qtmodeltester):
 
 def test_ListProxyModel(qtbot, qtmodeltester):
     c = gui.Component("""
-import QtQuick 2.15
-import SdtGui 0.2
+import QtQuick
+import SdtGui as Sdt
 
 Item {
     property var afterChange: null
     property var afterInsert: null
 
-    ListProxyModel {
+    Sdt.ListProxyModel {
         id: proxy
         sourceModel: lst
     }

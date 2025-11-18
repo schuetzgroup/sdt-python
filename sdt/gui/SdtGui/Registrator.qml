@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import SdtGui 0.2
-import SdtGui.Templates 0.2 as T
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import SdtGui
+import SdtGui.Templates as T
 
 
 T.Registrator {

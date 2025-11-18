@@ -36,8 +36,8 @@ def test_OptionChooser(qtbot):
     QtQml.qmlRegisterType(MyChooser, "SdtGuiTest", 0, 1, "MyChooser")
 
     comp = gui.Component("""
-import QtQuick 2.15
-import SdtGuiTest 0.1
+import QtQuick
+import SdtGuiTest
 
 MyChooser {
     Component.onCompleted: { completeInit() }
@@ -83,8 +83,8 @@ MyChooser {
     QtQml.qmlRegisterType(MyChooserErr, "SdtGuiTest", 0, 1, "MyChooserErr")
 
     compErr = gui.Component("""
-import QtQuick 2.15
-import SdtGuiTest 0.1
+import QtQuick
+import SdtGuiTest
 
 MyChooserErr {
     Component.onCompleted: { completeInit() }

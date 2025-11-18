@@ -8,8 +8,8 @@ from sdt import gui
 
 def test_url(qapp):
     c = gui.Component("""
-import QtQuick 2.15
-import SdtGui 0.2
+import QtQuick
+import SdtGui
 
 Item {
     property url testUrl: "file:///bla/blub/qua"
@@ -26,8 +26,8 @@ Item {
 
 def test_setQObjectParent(qapp):
     c = gui.Component("""
-import QtQuick 2.15
-import SdtGui 0.2
+import QtQuick
+import SdtGui
 
 Item {
     id: root

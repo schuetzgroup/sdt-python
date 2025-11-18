@@ -178,12 +178,12 @@ class Window(Component):
     accessed via :py:attr:`instance_`.
     """
     _qmlSrc = """
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
-import QtQuick.Window 2.15
-import Qt.labs.settings 1.0
-import SdtGui 0.2
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import QtQuick.Window
+import QtCore
+import SdtGui
 
 Window {{
     id: root

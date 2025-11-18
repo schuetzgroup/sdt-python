@@ -22,8 +22,8 @@ class TrackDisplay(LocDisplay):
 
     .. code-block:: qml
 
-        import QtQuick 2.0
-        import SdtGui 1.0
+        import QtQuick
+        import SdtGui
 
         ImageDisplay {
             // …

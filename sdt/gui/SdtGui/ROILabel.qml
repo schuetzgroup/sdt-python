@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.15
+import QtQuick
 
 
 Text {

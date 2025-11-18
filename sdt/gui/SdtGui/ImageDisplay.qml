@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 // import after QtQuick so that Binding.restoreMode is available
-import QtQml 2.15
+import QtQml
 
-import SdtGui 0.2
+import SdtGui
 
 
 Item {

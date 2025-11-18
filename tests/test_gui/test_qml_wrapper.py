@@ -12,7 +12,7 @@ from sdt import gui
 
 def test_Component(qapp, tmp_path):
     rect_qml = """
-import QtQuick 2.15
+import QtQuick
 
 Rectangle {
     property int myInt: 1
@@ -41,7 +41,7 @@ Rectangle {
         assert c.myInt == 2
 
     c2 = gui.Component("""
-import QtQuick 2.15
+import QtQuick
 
 bla {;
 """)
@@ -70,7 +70,7 @@ def test_QmlDefinedProperty(qapp):
     QtQml.qmlRegisterType(MyItem, "SdtGuiTest", 0, 1, "MyItem")
 
     c = gui.Component("""
-import SdtGuiTest 0.1
+import SdtGuiTest
 
 MyItem {
     property var myDict: {"a": 1, "b": 2}
@@ -106,7 +106,7 @@ def test_QmlDefinedMethod(qapp):
     QtQml.qmlRegisterType(MyItem, "SdtGuiTest", 0, 1, "MyMethodItem")
 
     c = gui.Component("""
-import SdtGuiTest 0.1
+import SdtGuiTest
 
 MyMethodItem {
     property int num: 2
@@ -210,7 +210,7 @@ def test_blockSignals(qtbot):
 
 def test_getNotifySignal(qapp):
     c = gui.Component("""
-import QtQuick 2.15
+import QtQuick
 
 Rectangle {
     property int myInt: 1

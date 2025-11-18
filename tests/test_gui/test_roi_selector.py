@@ -14,10 +14,10 @@ from . import utils
 def test_RoiSelector(qtbot):
     comp = gui.Component(
         """
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import QtQuick.Layouts 1.15
-import SdtGui 0.2
+import QtQuick
+import QtQuick.Window
+import QtQuick.Layouts
+import SdtGui
 
 Window {
     id: root

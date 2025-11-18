@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
-import SdtGui 0.2
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import SdtGui
 
 
 Item {
