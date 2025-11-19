@@ -14,7 +14,7 @@ dependencies = [
     "lazy_loader",
     "matplotlib",
     "numpy>=2.1",
-    "opencv-python-headless",
+    "opencv-python",
     "pandas>=2.2.3",
     "pyyaml",
     "tables>=3.10",
@@ -58,7 +58,6 @@ dev = [
     "lmfit>=1.3.3",
     "numba>=0.60.0",
     "pims>=0.7",
-    "pyqt5>=5.15.11",
     "pytest>=8.3.5",
     "pytest-qt>=4.4.0",
     "pywavelets>=1.6.0",
@@ -66,9 +65,10 @@ dev = [
     "trackpy>=0.6.4",
 ]
 
-[tool.uv]
-# This is the latest version on Windows; if not specified, uv fails
-constraint-dependencies = ["pyqt5-qt5==5.15.2; sys_platform == 'win32'"]
+[project.optional-dependencies]
+gui = [
+    "pyside6>=6.10.0",
+]
 
 [[tool.uv.index]]
 name = "testpypi"
