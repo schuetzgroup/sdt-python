@@ -464,17 +464,20 @@ class SimpleQtProperty:
         def getter(instance):
             return getattr(instance, privName)
 
-        def setter(instance, value):
-            old = getattr(instance, privName)
-            if callable(self._comp) and self._comp(old, value):
-                return
-            setattr(instance, privName, value)
-            getattr(instance, sigName).emit()
+        prop_kwargs = {"fget": getter, "notify": sig}
+        if not self._readOnly:
+
+            def setter(instance, value):
+                old = getattr(instance, privName)
+                if callable(self._comp) and self._comp(old, value):
+                    return
+                setattr(instance, privName, value)
+                getattr(instance, sigName).emit()
+
+            prop_kwargs["fset"] = setter
 
         # Override this descriptor
-        prop = QtCore.Property(
-            self._type, getter, None if self._readOnly else setter,
-            notify=sig)
+        prop = QtCore.Property(self._type, **prop_kwargs)
         setattr(owner, name, prop)
 
 
