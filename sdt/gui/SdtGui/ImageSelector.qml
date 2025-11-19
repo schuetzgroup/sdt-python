@@ -130,17 +130,10 @@ Item {
     FileDialog {
         id: fileDialog
         title: "Choose image file(s)…"
-
-        // Qt5
-        selectMultiple: true
-        // Qt6
-        //fileMode: FileDialog.OpenFiles
+        fileMode: FileDialog.OpenFiles
 
         onAccepted: {
-            // Qt5
-            var sel = fileUrls
-            // Qt6
-            // var sel = selectedFiles
+            var sel = selectedFiles
             root.dataset.setFiles(root.modifyFileRole, sel,
                                   root.dataset.count, 0)
             fileSel.popup.close()

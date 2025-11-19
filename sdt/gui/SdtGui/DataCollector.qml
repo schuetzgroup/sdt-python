@@ -123,11 +123,11 @@ T.DataCollector {
     FileDialog {
         id: fileDialog
         title: "Choose image file(s)…"
-        selectMultiple: true
+        fileMode: FileDialog.OpenFiles
         property string targetRole
 
         onAccepted: {
-            root.dataset.setFiles(targetRole, fileDialog.fileUrls)
+            root.dataset.setFiles(targetRole, fileDialog.selectedFiles)
         }
     }
 

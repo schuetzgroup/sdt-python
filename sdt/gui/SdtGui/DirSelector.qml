@@ -33,18 +33,11 @@ Item {
             onClicked: { dataDirDialog.open() }
         }
     }
-    // Qt5
-    FileDialog {
-        selectFolder: true
-    // Qt6
-    // FolderDialog {
+    FolderDialog {
         id: dataDirDialog
         title: "Choose folder…"
         onAccepted: {
-            // Qt5
-            var sel = fileUrl
-            // Qt6
-            // var sel = selectedFolder
+            var sel = selectedFolder
             dataDirEdit.text = Sdt.urlToLocalFile(sel)
         }
     }
