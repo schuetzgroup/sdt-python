@@ -48,7 +48,8 @@ T.FrameSelector {
     }
 
     onCurrentExcitationTypeChanged: {
-        for (var i = 0; i < excSel.model.length; i++) {
+        var len = excSel.model != null ? excSel.model.length : 0
+        for (var i = 0; i < len; i++) {
             if (excSel.model[i] == currentExcitationType) {
                 excSel.currentIndex = i
                 break

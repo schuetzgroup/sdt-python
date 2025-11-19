@@ -216,8 +216,7 @@ Item {
            early upon shutdown, which could cause
            "Type Error: Cannot read property '…' of null" and segfaults
            (Pyside6 6.4.3)
-        
-        Sdt.setQObjectParent(img, root)
         */
+        Sdt.setQObjectParent(img, root)
     }
 }

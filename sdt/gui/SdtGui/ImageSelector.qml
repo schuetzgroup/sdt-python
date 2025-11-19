@@ -96,7 +96,9 @@ Item {
                         return
                     if (roles.length > 0 &&
                             roles.filter(
-                                function(v){return model.fileRoles.includes(v)}).length <= 0)
+                                function(v){
+                                    return fileSel.model.fileRoles.includes(v)
+                                }).length <= 0)
                         return
                     openFiles()
                 }
