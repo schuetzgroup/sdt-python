@@ -32,7 +32,9 @@ def mpl_use_qt_font():
     mpl.rcParams["axes.titlesize"] = "medium"
 
 
-mouse_button_map: Dict[int, int] = mpl_qt.FigureCanvasQT.buttond
+mouse_button_map: Dict[QtCore.Qt.MouseButton, mpl.backend_bases.MouseButton] = (
+    mpl_qt.FigureCanvasQT.buttond
+)
 special_key_map: Dict[int, str] = mpl_qt.SPECIAL_KEYS
 modifier_key_map: Dict[int, int] = dict(mpl_qt._MODIFIER_KEYS)
 
@@ -96,7 +98,7 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
                    mpl.backend_bases.FigureCanvasBase):
     """QQuickItem serving as a base class for matplotlib figure canvases"""
 
-    def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
+    def __init__(self, parent: QtQuick.QQuickItem | None = None):
         """Parameters
         ----------
         parent
@@ -142,8 +144,7 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         self._update_figure_dpi()
         self._onSizeChanged()
 
-    def itemChange(self, change: QtQuick.QQuickItem.ItemChange,
-                   value: QtQuick.QQuickItem.ItemChangeData):
+    def itemChange(self, change: QtQuick.QQuickItem.ItemChange, value):
         """Override :py:meth:`QQuickItem.itemChange`
 
         Allows for reacting to changes in DevicePixelRatio
@@ -167,7 +168,7 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         w, h = super().get_width_height()
         return int(w / self._px_ratio), int(h / self._px_ratio)
 
-    def mapToFigure(self, pos: QtCore.QPointF) -> Tuple[float]:
+    def mapToFigure(self, pos: QtCore.QPointF) -> Tuple[float, float]:
         """Map Qt item coordinates to matplotlib figure coordinates
 
         Parameters
@@ -323,7 +324,7 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         QtCore.QTimer.singleShot(0, self._draw_idle)
 
     def _draw_idle(self):
-        """Slot to handle _draw_idle in the main thread"""
+        """Slot to handle draw_idle in the main thread"""
         with self._idle_draw_cntx():
             if not self._draw_pending:
                 return

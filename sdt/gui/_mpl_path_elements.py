@@ -22,7 +22,7 @@ class MplPathElements(QtCore.QObject):
     "points": flattened vertices}
     for use by MplPathShape QML type.
     """
-    def __init__(self, parent: QtCore.QObject = None):
+    def __init__(self, parent: QtCore.QObject | None = None):
         """Parameters
         ---------
         parent

@@ -54,7 +54,7 @@ T.TrackOptions {
             editable: true
             Layout.alignment: Qt.AlignRight
         }
-        Item { 
+        Item {
             Layout.columnSpan: 2
             Layout.fillHeight: true
         }

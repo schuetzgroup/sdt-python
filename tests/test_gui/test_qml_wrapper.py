@@ -10,7 +10,7 @@ import pytest
 from sdt import gui
 
 
-def test_Component(qapp, tmp_path):
+def test_Component(qapp: QtWidgets.QApplication, tmp_path):
     rect_qml = """
 import QtQuick
 

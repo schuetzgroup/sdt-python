@@ -4,7 +4,7 @@
 
 import functools
 import operator
-from typing import Any, Callable, Iterable, Mapping, Optional
+from typing import Any, Callable, Iterable, Mapping
 
 import numpy as np
 import pandas as pd
@@ -25,7 +25,7 @@ class LocOptions(OptionChooser):
     :py:class:`LocDisplay` in :py:class:`ImageDisplay`'s
     ``overlays`` for visual feedback.
     """
-    def __init__(self, parent: Optional[QtCore.QObject] = None):
+    def __init__(self, parent: QtQuick.QQuickItem | None = None):
         """Parameters
         ----------
         parent

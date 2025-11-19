@@ -26,7 +26,7 @@ class Dataset(ListModel):
 
     _extraRoles = ["id"]
 
-    def __init__(self, parent: QtCore.QObject = None):
+    def __init__(self, parent: QtCore.QObject | None = None):
         """Parameters
         ----------
         parent
@@ -175,8 +175,8 @@ class DatasetCollection(ListModel):
     such as source file path(s), etc, saved in an :py:class:`Dataset`
     instance ("dataset" role).
 
-    Some properties (:py:attr:`dataDir`, :py:attr:`fileRoles`,
-    :py:attr:`dataRoles` ) can be set for all datasets via this class.
+    Some properties (:py:attr:`fileRoles`, :py:attr:`dataRoles`) can be set for all
+    datasets via this class.
     """
     class Roles(enum.IntEnum):
         key = QtCore.Qt.UserRole
@@ -188,7 +188,7 @@ class DatasetCollection(ListModel):
     May be useful to change for subclasses.
     """
 
-    def __init__(self, parent: QtCore.QObject = None):
+    def __init__(self, parent: QtCore.QObject | None = None):
         """Parameters
         ---------
         parent
@@ -205,7 +205,7 @@ class DatasetCollection(ListModel):
         self.propagateProperty("fileRoles")
         self.propagateProperty("dataRoles")
 
-    def makeDataset(self) -> Dataset:
+    def makeDataset(self) -> DatasetType:
         """Create a dateset model
 
         Creates an instance of :py:attr:`DatasetType` and sets some

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from typing import Any, Iterable, Optional, Union
+from typing import Any, Optional, Sequence
 
 from PySide6 import QtCore, QtQuick
 
@@ -29,9 +29,12 @@ class OptionChooser(QtQuick.QQuickItem):
     has to be made to run initialization code that needs to execute after the
     QML component has been set up.
     """
-    def __init__(self, argProperties: Union[str, Iterable[str]],
-                 resultProperties: Union[str, Iterable[str]],
-                 parent: Optional[QtQuick.QQuickItem] = None):
+    def __init__(
+        self,
+        argProperties: str | Sequence[str],
+        resultProperties: str | Sequence[str],
+        parent: QtQuick.QQuickItem | None = None,
+    ):
         """Parameters
         ----------
         argProperties

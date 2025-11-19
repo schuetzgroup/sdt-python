@@ -4,7 +4,7 @@
 
 import contextlib
 import enum
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional
 
 import numpy as np
 from PySide6 import QtCore, QtQml
@@ -20,7 +20,7 @@ class ListModel(QtCore.QAbstractListModel):
         """Model roles"""
         modelData = QtCore.Qt.UserRole
 
-    def __init__(self, parent: QtCore.QObject = None):
+    def __init__(self, parent: QtCore.QObject | None = None):
         """Parameters
         ----------
         parent
@@ -108,7 +108,7 @@ class ListModel(QtCore.QAbstractListModel):
         finally:
             self.endResetModel()
 
-    def _firstRoleName(self) -> Union[str, None]:
+    def _firstRoleName(self) -> str | None:
         if len(self.Roles):
             return next(iter(self.Roles)).name
         raise KeyError("model has no roles")
