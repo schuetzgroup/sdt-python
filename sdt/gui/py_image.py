@@ -5,8 +5,8 @@
 import math
 from typing import Optional, Union
 
-from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import numpy as np
+from PySide6 import QtCore, QtGui, QtQml, QtQuick
 
 from .qml_wrapper import SimpleQtProperty
 
@@ -55,17 +55,15 @@ class PyImage(QtQuick.QQuickPaintedItem):
     sourceMax: float = SimpleQtProperty(float, readOnly=True)
     """Maximum pixel value"""
 
-    sourceChanged = QtCore.pyqtSignal()
+    sourceChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty("QVariant", notify=sourceChanged)
-    def source(self) -> Union[None, np.ndarray]:
+    def _get_source(self) -> Union[None, np.ndarray]:
         """Image data array. For now, only single-channel (grayscale) data
         are supported.
         """
         return self._source
 
-    @source.setter
-    def source(self, src: Union[None, np.ndarray]):
+    def _set_source(self, src: Union[None, np.ndarray]):
         if self._source is src:
             return
         self._source = src
@@ -93,6 +91,10 @@ class PyImage(QtQuick.QQuickPaintedItem):
 
         self._sourceToQImage()
         self.sourceChanged.emit()
+
+    source = QtCore.Property(
+        "QVariant", fget=_get_source, fset=_set_source, notify=sourceChanged
+    )
 
     def _sourceToQImage(self):
         """Create QImage instance from source respecting black and white points

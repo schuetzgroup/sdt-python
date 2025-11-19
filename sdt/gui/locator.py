@@ -7,7 +7,7 @@ import sys
 import traceback
 from typing import Callable, Iterable
 
-from PyQt5 import QtCore, QtQml, QtQuick, QtWidgets
+from PySide6 import QtCore, QtQml, QtQuick, QtWidgets
 import numpy as np
 import pandas as pd
 
@@ -31,7 +31,7 @@ class Locator(QtQuick.QQuickItem):
     and display the results.
     """
 
-    @QtCore.pyqtSlot(result=QtCore.QVariant)
+    @QtCore.Slot(result="QVariant")
     def getLocateFunc(self) -> Callable[[Iterable[np.ndarray]], pd.DataFrame]:
         """Get a function that runs localization algorithm on image sequence
 
@@ -51,7 +51,7 @@ class Locator(QtQuick.QQuickItem):
 
         return ret
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def saveAll(self):
         """Save localization data and options alongside image files
 

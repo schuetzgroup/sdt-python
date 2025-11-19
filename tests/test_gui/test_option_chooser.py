@@ -4,7 +4,7 @@
 
 import threading
 
-from PyQt5 import QtQml
+from PySide6 import QtQml
 
 from sdt import gui
 

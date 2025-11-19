@@ -6,7 +6,7 @@ import math
 import operator
 from typing import Optional
 
-from PyQt5 import QtCore, QtGui, QtQml, QtQuick
+from PySide6 import QtCore, QtGui, QtQml, QtQuick
 import numpy as np
 import pandas as pd
 

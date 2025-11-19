@@ -6,29 +6,43 @@
 
 Contains MainWindow (derived from QMainWindow)
 """
-import os
 import collections
 import contextlib
+import os
 
-import yaml
 import numpy as np
 import pandas as pd
+import yaml
+from PySide6.QtCore import (
+    Property,
+    QMetaObject,
+    QModelIndex,
+    QPersistentModelIndex,
+    QPointF,
+    QSettings,
+    Qt,
+    Slot,
+)
+from PySide6.QtGui import QCursor, QPolygonF
+from PySide6.QtWidgets import (
+    QApplication,
+    QDockWidget,
+    QFileDialog,
+    QMainWindow,
+    QMessageBox,
+)
 
-from PyQt5.QtGui import QPolygonF, QCursor
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QMessageBox,
-                             QDockWidget, QFileDialog)
-from PyQt5.QtCore import (Qt, QSettings, QModelIndex, QPersistentModelIndex,
-                          QMetaObject, QPointF, pyqtSlot, pyqtProperty)
-
+from ....io import ImageSequence, load, save
 from ..widgets import micro_view
-from . import locate_options
-from . import file_chooser
+from . import (
+    batch_progress,
+    file_chooser,
+    locate_filter,
+    locate_options,
+    locate_saver,
+    workers,
+)
 from .file_chooser import FileListModel
-from . import locate_filter
-from . import locate_saver
-from . import batch_progress
-from . import workers
-from ....io import ImageSequence, save, load
 
 
 def yaml_dict_representer(dumper, data):
@@ -195,8 +209,8 @@ class MainWindow(QMainWindow):
 
         QMetaObject.connectSlotsByName(self)
 
-    @pyqtSlot(QModelIndex)
-    @pyqtSlot(str)
+    @Slot(QModelIndex)
+    @Slot(str)
     def open(self, file):
         """Open an image sequence
 
@@ -239,14 +253,14 @@ class MainWindow(QMainWindow):
         else:
             self.setWindowTitle("locator")
 
-    @pyqtSlot(int)
+    @Slot(int)
     def on_viewer_frameReadError(self, frameno):
         """Slot getting called when a frame could not be read"""
         QMessageBox.critical(
             self, self.tr("Read Error"),
             self.tr("Could not read frame number {}".format(frameno + 1)))
 
-    @pyqtSlot()
+    @Slot()
     def _makePreviewWorkerWork(self):
         """Called when something happens that requires a new preview
 
@@ -314,7 +328,7 @@ class MainWindow(QMainWindow):
         settings.setValue("Viewer/showPreview", self._viewer.showLocalizations)
         super().closeEvent(event)
 
-    @pyqtSlot()
+    @Slot()
     def _checkFileList(self):
         """If currently previewed file was removed from list, remove preview
 
@@ -324,14 +338,14 @@ class MainWindow(QMainWindow):
             self._locOptionsWidget.numFrames = 0
             self._viewer.setImageSequence(None)
 
-    @pyqtSlot(bool)
+    @Slot(bool)
     def _setBusyCursor(self, busy):
         if busy:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         else:
             QApplication.restoreOverrideCursor()
 
-    @pyqtSlot(pd.DataFrame)
+    @Slot(pd.DataFrame)
     def _previewFinished(self, data):
         """The preview worker finished
 
@@ -342,13 +356,13 @@ class MainWindow(QMainWindow):
         self._locFilterWidget.setVariables(data.columns.values.tolist())
         self._filterLocalizations()
 
-    @pyqtSlot(Exception)
+    @Slot(Exception)
     def _previewError(self, err):
         QMessageBox.critical(
             self, self.tr("Localization error"),
             self.tr("Failed to create preview.\n\n{}").format(err))
 
-    @pyqtSlot()
+    @Slot()
     def _filterLocalizations(self):
         """Set good/bad localizations in the viewer
 
@@ -364,7 +378,7 @@ class MainWindow(QMainWindow):
         self._viewer.setLocalizationData(self._currentLocData[good],
                                          self._currentLocData[~good])
 
-    @pyqtSlot(QPolygonF)
+    @Slot(QPolygonF)
     def on_viewer_roiChanged(self, roi):
         """Update ROI polygon and filter localizations"""
         self._roiPolygon = roi
@@ -379,8 +393,7 @@ class MainWindow(QMainWindow):
         self._viewer.showLocalizations = show
         self._makePreviewWorkerWork()
 
-    @pyqtProperty(bool, fset=setShowPreview,
-                  doc="Show preview of localizations")
+    @Property(bool, fset=setShowPreview, doc="Show preview of localizations")
     def showPreview(self):
         return self._viewer.showLocalizations
 
@@ -403,7 +416,7 @@ class MainWindow(QMainWindow):
         with open(fname, "w") as f:
             yaml.dump(metadata, f, default_flow_style=False)
 
-    @pyqtSlot()
+    @Slot()
     def on_locOptionsWidget_save(self):
         # save options
         fname, _ = QFileDialog.getSaveFileName(
@@ -420,7 +433,7 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, self.tr("Error writing to file"),
                                  self.tr(str(e)))
 
-    @pyqtSlot()
+    @Slot()
     def on_locOptionsWidget_load(self):
         # load options
         fname, _ = QFileDialog.getOpenFileName(
@@ -465,7 +478,7 @@ class MainWindow(QMainWindow):
             self._viewer.roi = r
             self._roiPolygon = r
 
-    @pyqtSlot(str)
+    @Slot(str)
     def on_locateSaveWidget_locateAndSave(self, format):
         """Locate all features in all files and save the data and metadata"""
         # TODO: check if current localizations are up-to-date
@@ -479,7 +492,7 @@ class MainWindow(QMainWindow):
                                        optWid.options, optWid.method,
                                        self._roiPolygon)
 
-    @pyqtSlot(int, pd.DataFrame, dict)
+    @Slot(int, pd.DataFrame, dict)
     def _locateRunnerFinished(self, idx, data, options):
         """A LocateRunner finished locating all peaks in a sequence
 
@@ -519,7 +532,7 @@ class MainWindow(QMainWindow):
         save(saveFileName, data)  # sdt.data.save
         self._saveMetadata(metaFileName)
 
-    @pyqtSlot(int, Exception)
+    @Slot(int, Exception)
     def _locateRunnerError(self, idx, e):
         """A LocateRunner encountered an error
 

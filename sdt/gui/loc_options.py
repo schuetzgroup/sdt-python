@@ -6,9 +6,9 @@ import functools
 import operator
 from typing import Any, Callable, Iterable, Mapping, Optional
 
-from PyQt5 import QtCore, QtQml
 import numpy as np
 import pandas as pd
+from PySide6 import QtCore, QtQml, QtQuick
 
 from .. import loc
 from .option_chooser import OptionChooser
@@ -56,7 +56,7 @@ class LocOptions(OptionChooser):
     image with :py:attr:`options`.
     """
 
-    @QtCore.pyqtSlot(result="QVariant")
+    @QtCore.Slot(result="QVariant")
     def getBatchFunc(self) -> Callable[[Iterable[np.ndarray]], pd.DataFrame]:
         """Get a function for batch localization using current settings
 

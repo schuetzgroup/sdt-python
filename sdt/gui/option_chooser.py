@@ -4,7 +4,7 @@
 
 from typing import Any, Iterable, Optional, Union
 
-from PyQt5 import QtCore, QtQuick
+from PySide6 import QtCore, QtQuick
 
 from .qml_wrapper import SimpleQtProperty, getNotifySignal
 from .sdt import Sdt
@@ -66,10 +66,10 @@ class OptionChooser(QtQuick.QQuickItem):
         self._inputTimer.setSingleShot(True)
         self._inputTimer.timeout.connect(self._triggerWorker)
 
-    previewEnabledChanged = QtCore.pyqtSignal()
+    previewEnabledChanged = QtCore.Signal()
     """:py:attr:`previewEnabled` was changed"""
 
-    @QtCore.pyqtProperty(bool, notify=previewEnabledChanged)
+    @QtCore.Property(bool, notify=previewEnabledChanged)
     def previewEnabled(self) -> bool:
         """Whether or not to compute results when inputs are changed."""
         return self._worker.enabled
@@ -93,7 +93,7 @@ class OptionChooser(QtQuick.QQuickItem):
         raise NotImplementedError(
             "_workerFunc needs to be implemented in subclass")
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def completeInit(self):
         """Complete the intialization
 

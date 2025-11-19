@@ -4,7 +4,7 @@
 
 from typing import Optional
 
-from PyQt5 import QtCore, QtQuick
+from PySide6 import QtCore, QtQuick
 import pytestqt
 
 

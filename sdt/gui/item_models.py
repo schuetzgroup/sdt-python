@@ -6,8 +6,8 @@ import contextlib
 import enum
 from typing import Any, Dict, Iterable, List, Optional, Union
 
-from PyQt5 import QtCore, QtQml
 import numpy as np
+from PySide6 import QtCore, QtQml
 
 
 class ListModel(QtCore.QAbstractListModel):
@@ -33,10 +33,10 @@ class ListModel(QtCore.QAbstractListModel):
         self.rowsRemoved.connect(self.countChanged)
         self.itemsChanged.connect(self._emitDataChanged)
 
-    rolesChanged = QtCore.pyqtSignal(list)
+    rolesChanged = QtCore.Signal(list)
     """Model roles changed"""
 
-    @QtCore.pyqtProperty(list, notify=rolesChanged)
+    @QtCore.Property(list, notify=rolesChanged)
     def roles(self) -> List[str]:
         """Names of model roles
 
@@ -54,8 +54,7 @@ class ListModel(QtCore.QAbstractListModel):
             "Roles", {n: i for i, n in enumerate(names, QtCore.Qt.UserRole)})
         self.rolesChanged.emit(list(names))
 
-    itemsChanged = QtCore.pyqtSignal(
-        int, int, list, arguments=["index", "count", "roles"])
+    itemsChanged = QtCore.Signal(int, int, list, arguments=["index", "count", "roles"])
     """One or more list items were changed. `index` is the index of the
     first changed element, `count` is the number of subsequent modified
     elements, and `roles` holds the affected roles. If the `roles` is empty,
@@ -134,9 +133,9 @@ class ListModel(QtCore.QAbstractListModel):
         """
         return item
 
-    @QtCore.pyqtSlot(int, result="QVariant")
-    @QtCore.pyqtSlot(int, str, result="QVariant")
-    def get(self, index: int, role: Optional[str] = None) -> Any:
+    @QtCore.Slot(int, result="QVariant")
+    @QtCore.Slot(int, str, result="QVariant")
+    def get(self, index: int, role: str | None = None) -> Any:
         """Get list element by index
 
         Parameters
@@ -159,10 +158,9 @@ class ListModel(QtCore.QAbstractListModel):
         except (IndexError, KeyError):
             return None
 
-    @QtCore.pyqtSlot(int, "QVariant", result=bool)
-    @QtCore.pyqtSlot(int, str, "QVariant", result=bool)
-    def set(self, index: int, valueOrRole: Union[str, Any],
-            value: Optional[Any] = ...) -> bool:
+    @QtCore.Slot(int, "QVariant", result=bool)
+    @QtCore.Slot(int, str, "QVariant", result=bool)
+    def set(self, index: int, valueOrRole: str | Any, value: Any | None = ...) -> bool:
         """Set list element
 
         Parameters
@@ -195,7 +193,7 @@ class ListModel(QtCore.QAbstractListModel):
         except (IndexError, KeyError):
             return False
 
-    @QtCore.pyqtSlot(int, "QVariant")
+    @QtCore.Slot(int, "QVariant")
     def insert(self, index: int, obj: Dict[str, Any]):
         """Insert element into the list
 
@@ -211,7 +209,7 @@ class ListModel(QtCore.QAbstractListModel):
         with self._insertRows(index, 1):
             self._data.insert(index, self.modifyNewItem(obj))
 
-    @QtCore.pyqtSlot("QVariant")
+    @QtCore.Slot("QVariant")
     def append(self, obj: Dict[str, Any]):
         """Append element to the list
 
@@ -222,11 +220,12 @@ class ListModel(QtCore.QAbstractListModel):
         """
         self.insert(self.rowCount(), obj)
 
-    @QtCore.pyqtSlot()
-    @QtCore.pyqtSlot(str)
-    @QtCore.pyqtSlot(str, int, int)
-    def multiGet(self, role: Optional[str] = None, startIndex: int = 0,
-                 count: Optional[int] = None) -> List:
+    @QtCore.Slot()
+    @QtCore.Slot(str)
+    @QtCore.Slot(str, int, int)
+    def multiGet(
+        self, role: str | None = None, startIndex: int = 0, count: int | None = None
+    ) -> List:
         """Get multiple entries for given role
 
         For each entry (possibly restricted by `startIndex` and `count`),
@@ -252,12 +251,16 @@ class ListModel(QtCore.QAbstractListModel):
             endIndex = min(startIndex + count, self.count)
         return [self.get(i, role) for i in range(startIndex, endIndex)]
 
-    @QtCore.pyqtSlot(list)
-    @QtCore.pyqtSlot(str, list)
-    @QtCore.pyqtSlot(str, list, int, int)
-    def multiSet(self, valuesOrRole: Union[Iterable, str],
-                 values: Optional[Iterable] = None,
-                 startIndex: int = 0, count: Optional[int] = None):
+    @QtCore.Slot(list)
+    @QtCore.Slot(str, list)
+    @QtCore.Slot(str, list, int, int)
+    def multiSet(
+        self,
+        valuesOrRole: Iterable | str,
+        values: Iterable | None = None,
+        startIndex: int = 0,
+        count: int | None = None,
+    ):
         """Modify multiple entries for a given role
 
         Parameters
@@ -330,7 +333,7 @@ class ListModel(QtCore.QAbstractListModel):
                                   np.nonzero(np.diff(modified) != 1)[0] + 1):
                     self.itemsChanged.emit(m[0], len(m), changedRoles)
 
-    @QtCore.pyqtSlot(list)
+    @QtCore.Slot(list)
     def extend(self, objs: Iterable[Dict[str, Any]]):
         """Append multiple elements to the list
 
@@ -342,8 +345,8 @@ class ListModel(QtCore.QAbstractListModel):
         with self._insertRows(self.rowCount(), len(objs)):
             self._data.extend([self.modifyNewItem(o) for o in objs])
 
-    @QtCore.pyqtSlot(int)
-    @QtCore.pyqtSlot(int, int)
+    @QtCore.Slot(int)
+    @QtCore.Slot(int, int)
     def remove(self, index: int, count: int = 1):
         """Remove entry/entries from list
 
@@ -357,7 +360,7 @@ class ListModel(QtCore.QAbstractListModel):
         with self._removeRows(index, count):
             del self._data[index:index+count]
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def clear(self):
         """Clear the model
 
@@ -387,10 +390,10 @@ class ListModel(QtCore.QAbstractListModel):
         """
         return self._data
 
-    countChanged = QtCore.pyqtSignal()
+    countChanged = QtCore.Signal()
     """:py:attr:`count` changed"""
 
-    @QtCore.pyqtProperty(int, notify=countChanged)
+    @QtCore.Property(int, notify=countChanged)
     def count(self) -> int:
         """Number of list entries
 
@@ -519,9 +522,9 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         self.rowsInserted.connect(self.countChanged)
         self.rowsRemoved.connect(self.countChanged)
 
-    sourceModelChanged = QtCore.pyqtSignal()
+    sourceModelChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty(QtCore.QAbstractListModel, notify=sourceModelChanged)
+    @QtCore.Property(QtCore.QAbstractListModel, notify=sourceModelChanged)
     def sourceModel(self) -> QtCore.QAbstractItemModel:
         return super().sourceModel()
 
@@ -555,8 +558,7 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         strRoles = [rvm[r] for r in roles]
         self.itemsChanged.emit(index, count, strRoles)
 
-    itemsChanged = QtCore.pyqtSignal(
-        int, int, list, arguments=["index", "count", "roles"])
+    itemsChanged = QtCore.Signal(int, int, list, arguments=["index", "count", "roles"])
     """One or more list items were changed. `index` is the index of the
     first changed element, `count` is the number of subsequent modified
     elements, and `role` holds the affected roles. If the `role` is empty, all
@@ -565,7 +567,7 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
     signal.
     """
 
-    @QtCore.pyqtSlot(int, str, result="QVariant")
+    @QtCore.Slot(int, str, result="QVariant")
     def get(self, index: int, role: str):
         """Get list element by index
 
@@ -584,7 +586,7 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
             return None
         return self.data(self.index(index, 0), self._roleNameMap[role])
 
-    @QtCore.pyqtSlot(int, str, "QVariant", result=bool)
+    @QtCore.Slot(int, str, "QVariant", result=bool)
     def set(self, index: int, role: str, obj: Any):
         """Set list element
 
@@ -610,10 +612,10 @@ class ListProxyModel(QtCore.QIdentityProxyModel):
         except KeyError:
             return False
 
-    countChanged = QtCore.pyqtSignal()
+    countChanged = QtCore.Signal()
     """:py:attr:`count` changed"""
 
-    @QtCore.pyqtProperty(int, notify=countChanged)
+    @QtCore.Property(int, notify=countChanged)
     def count(self) -> int:
         """Number of list entries
 

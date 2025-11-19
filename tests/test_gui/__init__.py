@@ -3,4 +3,4 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import pytest
-pytest.importorskip("PyQt5")
+pytest.importorskip("PySide6")

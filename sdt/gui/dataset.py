@@ -8,11 +8,10 @@ import itertools
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Union
 
-from PyQt5 import QtCore, QtQml
+from PySide6 import QtCore, QtQml
 
 from .item_models import ListModel
 from .qml_wrapper import SimpleQtProperty, getNotifySignal
-
 
 FilePath = Union[Path, str, QtCore.QUrl]
 
@@ -41,10 +40,10 @@ class Dataset(ListModel):
         self.itemsChanged.connect(self._onItemsChanged)
         self.countChanged.connect(self.fileListChanged)
 
-    fileRolesChanged = QtCore.pyqtSignal(list)
+    fileRolesChanged = QtCore.Signal(list)
     """:py:attr:`fileRoles` property changed"""
 
-    @QtCore.pyqtProperty(list, notify=fileRolesChanged)
+    @QtCore.Property(list, notify=fileRolesChanged)
     def fileRoles(self) -> List[str]:
         """Model roles that represent file paths. These are used for
         :py:attr:`fileLists`.
@@ -59,10 +58,10 @@ class Dataset(ListModel):
         self.roles = self._extraRoles + self._fileRoles + self._dataRoles
         self.fileRolesChanged.emit(self._fileRoles)
 
-    dataRolesChanged = QtCore.pyqtSignal(list)
+    dataRolesChanged = QtCore.Signal(list)
     """:py:attr:`dataRoles` property changed"""
 
-    @QtCore.pyqtProperty(list, notify=dataRolesChanged)
+    @QtCore.Property(list, notify=dataRolesChanged)
     def dataRoles(self) -> List[str]:
         """Model roles that do not represent file paths. These could, for
         instance, be data loaded from any of the :py:attr:`fileRoles` or
@@ -103,9 +102,9 @@ class Dataset(ListModel):
             self._nextId = max(self._nextId, item["id"]+1)
         return item
 
-    @QtCore.pyqtSlot("QVariant")
-    @QtCore.pyqtSlot(str, "QVariant")
-    @QtCore.pyqtSlot(str, "QVariant", int, int)
+    @QtCore.Slot("QVariant")
+    @QtCore.Slot(str, "QVariant")
+    @QtCore.Slot(str, "QVariant", int, int)
     def setFiles(self,
                  fileRoleOrFiles: Union[str, Iterable[FilePath]],
                  files: Optional[FilePath] = None, startIndex: int = 0,
@@ -132,10 +131,10 @@ class Dataset(ListModel):
         files = list(map(self._filePathToStr, files))
         self.multiSet(role, files, startIndex, count)
 
-    fileListChanged = QtCore.pyqtSignal()
+    fileListChanged = QtCore.Signal()
     """:py:attr:`fileList` property changed"""
 
-    @QtCore.pyqtProperty("QVariant", notify=fileListChanged)
+    @QtCore.Property("QVariant", notify=fileListChanged)
     def fileList(self) -> Dict[int, Dict[str, str]]:
         """Nested mapping `data id` -> `file role` -> `file path`. See also
         :py:attr:`fileRoles`.
@@ -227,8 +226,8 @@ class DatasetCollection(ListModel):
             setattr(model, p, getattr(self, p))
         return model
 
-    @QtCore.pyqtSlot(int, str)
-    @QtCore.pyqtSlot(int, str, str)
+    @QtCore.Slot(int, str)
+    @QtCore.Slot(int, str, str)
     def insert(self, index: int, key: str, special: bool = False):
         """Insert a new, empty dataset
 
@@ -247,8 +246,8 @@ class DatasetCollection(ListModel):
         ds.fileListChanged.connect(self.fileListsChanged)
         super().insert(index, {"key": key, "dataset": ds, "special": special})
 
-    @QtCore.pyqtSlot(str)
-    @QtCore.pyqtSlot(str, str)
+    @QtCore.Slot(str)
+    @QtCore.Slot(str, str)
     def append(self, key: str, special: bool = False):
         """Append a new, empty dataset
 
@@ -263,8 +262,8 @@ class DatasetCollection(ListModel):
         """
         self.insert(self.count, key, special)
 
-    @QtCore.pyqtSlot(int)
-    @QtCore.pyqtSlot(int, int)
+    @QtCore.Slot(int)
+    @QtCore.Slot(int, int)
     def remove(self, index: int, count: int = 1):
         """Removes a dataset
 
@@ -307,10 +306,10 @@ class DatasetCollection(ListModel):
     etc.
     """
 
-    fileListsChanged = QtCore.pyqtSignal()
+    fileListsChanged = QtCore.Signal()
     """:py:attr:`fileLists` property changed"""
 
-    @QtCore.pyqtProperty("QVariantMap", notify=fileListsChanged)
+    @QtCore.Property("QVariantMap", notify=fileListsChanged)
     def fileLists(self) -> Dict[str, List[Dict[str, str]]]:
         """Map of dataset key -> file list. Each file list contains
         dicts mapping a file role -> file. See also :py:attr:`fileRoles`.
@@ -328,10 +327,10 @@ class DatasetCollection(ListModel):
             models.append({"key": key, "dataset": ds, "special": False})
         self.reset(models)
 
-    keysChanged = QtCore.pyqtSignal()
+    keysChanged = QtCore.Signal()
     """py:attr:`keys` property changed``"""
 
-    @QtCore.pyqtProperty(list, notify=keysChanged)
+    @QtCore.Property(list, notify=keysChanged)
     def keys(self) -> List[str]:
         """List of all keys currently present in the model"""
         return [self.get(i, "key") for i in range(self.rowCount())]
@@ -388,9 +387,9 @@ class RelPathDatasetProxy(QtCore.QIdentityProxyModel):
         super().__init__(parent)
         self._dataDir = ""
 
-    dataDirChanged = QtCore.pyqtSignal()
+    dataDirChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty(str, notify=dataDirChanged)
+    @QtCore.Property(str, notify=dataDirChanged)
     def dataDir(self) -> str:
         """Path to which returned file paths should be relative"""
         return self._dataDir
@@ -431,9 +430,9 @@ class FilterDatasetProxy(QtCore.QSortFilterProxyModel):
         self._showSpecial = False
         self.setDynamicSortFilter(True)
 
-    showSpecialChanged = QtCore.pyqtSignal()
+    showSpecialChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty(bool, notify=showSpecialChanged)
+    @QtCore.Property(bool, notify=showSpecialChanged)
     def showSpecial(self) -> bool:
         """Whether to show special datasets"""
         return self._showSpecial
@@ -451,7 +450,7 @@ class FilterDatasetProxy(QtCore.QSortFilterProxyModel):
         return (self._showSpecial or
                 not self.sourceModel().get(sourceRow, "special"))
 
-    @QtCore.pyqtSlot(int, result=int)
+    @QtCore.Slot(int, result=int)
     def getSourceRow(self, row: int) -> int:
         """Get the row number in the source model
 

@@ -4,7 +4,7 @@
 
 from typing import Callable, List, Sequence
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .. import multicolor
@@ -24,10 +24,10 @@ class FrameSelector(QtQuick.QQuickItem):
         self._excitationTypes = []
         self._error = False
 
-    excitationSeqChanged = QtCore.pyqtSignal()
+    excitationSeqChanged = QtCore.Signal()
     """:py:attr:`excitationSeq` changed"""
 
-    @QtCore.pyqtProperty(str, notify=excitationSeqChanged)
+    @QtCore.Property(str, notify=excitationSeqChanged)
     def excitationSeq(self) -> str:
         """Excitation sequence. See :py:class:`multicolor.FrameSelector` for
         details. When setting an erroneous sequence, this property is not
@@ -77,9 +77,9 @@ class FrameSelector(QtQuick.QQuickItem):
     currentExcitationType: str = QmlDefinedProperty()
     """Currently selected (via GUI) excitation type"""
 
-    processSequenceChanged = QtCore.pyqtSignal()
+    processSequenceChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty("QVariant", notify=processSequenceChanged)
+    @QtCore.Property("QVariant", notify=processSequenceChanged)
     def processSequence(self) -> Callable[[Sequence], Sequence]:
         """Function that selects appropriate frames from image sequence"""
         return lambda x: self._frameSel.select(x, self.currentExcitationType)

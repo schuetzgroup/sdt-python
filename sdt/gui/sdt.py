@@ -5,7 +5,7 @@
 import enum
 from pathlib import Path
 
-from PyQt5 import QtCore, QtQml
+from PySide6 import QtCore, QtQml
 
 
 class Sdt(QtCore.QObject):
@@ -13,6 +13,7 @@ class Sdt(QtCore.QObject):
 
     similar to Qt's ``Qt`` namespace.
     """
+    @QtCore.QEnum
     class WorkerStatus(enum.IntEnum):
         """Status of a (thread/process) worker"""
         Idle = 0
@@ -20,9 +21,7 @@ class Sdt(QtCore.QObject):
         Error = enum.auto()
         Disabled = enum.auto()
 
-    QtCore.Q_ENUM(WorkerStatus)
-
-    @QtCore.pyqtSlot(QtCore.QUrl, result=str)
+    @QtCore.Slot(QtCore.QUrl, result=str)
     def urlToLocalFile(self, u: QtCore.QUrl) -> str:
         """Convert QUrl to local file name string
 
@@ -37,7 +36,7 @@ class Sdt(QtCore.QObject):
         """
         return u.toLocalFile()
 
-    @QtCore.pyqtSlot(QtCore.QUrl, result=QtCore.QUrl)
+    @QtCore.Slot(QtCore.QUrl, result=QtCore.QUrl)
     def parentUrl(self, u: QtCore.QUrl) -> QtCore.QUrl:
         """Get URL of directory containing `u`
 
@@ -52,7 +51,7 @@ class Sdt(QtCore.QObject):
         """
         return QtCore.QUrl.fromLocalFile(str(Path(u.toLocalFile()).parent))
 
-    @QtCore.pyqtSlot(QtCore.QObject, QtCore.QObject)
+    @QtCore.Slot(QtCore.QObject, QtCore.QObject)
     def setQObjectParent(self, obj: QtCore.QObject, parent: QtCore.QObject):
         """Set QObject parent
 

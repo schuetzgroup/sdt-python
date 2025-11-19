@@ -4,9 +4,10 @@
 
 import math
 
-from PyQt5 import QtQml, QtQuick
-import pytest
 import numpy as np
+import pytest
+from PySide6 import QtQml, QtQuick
+
 from sdt import gui
 
 from . import utils

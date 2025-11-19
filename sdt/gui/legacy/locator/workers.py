@@ -11,19 +11,18 @@ Separate processes are used in order to be able to terminate workers
 cleanly if desired (e. g. they take too long and should therefore be aborted).
 Also, this makes the code a lot simpler.
 """
-import numpy as np
-import pandas as pd
 import logging
 import multiprocessing as mp
 from typing import Mapping, Optional
 
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QPolygonF
+import numpy as np
+import pandas as pd
+from PySide6.QtCore import Property, QObject, Signal, Slot
+from PySide6.QtGui import QPolygonF
 
-from .file_chooser import FileListModel
-from . import algorithms
 from .... import io
-
+from . import algorithms
+from .file_chooser import FileListModel
 
 _logger = logging.getLogger(__name__)
 
@@ -108,10 +107,14 @@ class PreviewWorker(QObject):
         self._enabled = enable
         self.enabledChanged.emit(enable)
 
-    enabledChanged = pyqtSignal(bool)
+    enabledChanged = Signal(bool)
 
-    @pyqtProperty(bool, fset=setEnabled, notify=enabledChanged,
-                  doc="Indicates whether the worker is enabled")
+    @Property(
+        bool,
+        fset=setEnabled,
+        notify=enabledChanged,
+        doc="Indicates whether the worker is enabled",
+    )
     def enabled(self):
         return self._enabled
 
@@ -121,15 +124,14 @@ class PreviewWorker(QObject):
         self.busyChanged.emit(isBusy)
         self._busy = isBusy
 
-    busyChanged = pyqtSignal(bool)
+    busyChanged = Signal(bool)
 
-    @pyqtProperty(bool, notify=busyChanged,
-                  doc="Indicates whether the worker is busy")
+    @Property(bool, notify=busyChanged, doc="Indicates whether the worker is busy")
     def busy(self):
         return self._busy
 
-    finished = pyqtSignal(pd.DataFrame)
-    error = pyqtSignal(Exception)
+    finished = Signal(pd.DataFrame)
+    error = Signal(Exception)
 
     def _finishedCallback(self, result):
         """Called by the `multiprocessing.pool.Pool` when task is finished
@@ -140,7 +142,7 @@ class PreviewWorker(QObject):
         """
         self.finished.emit(result)
 
-    @pyqtSlot()
+    @Slot()
     def _finishedSlot(self):
         """Called when a job was finished
 
@@ -218,7 +220,7 @@ class BatchWorker(QObject):
                 (i, fname, frameRange, options, method, roi_list),
                 callback=self._finishedCallback)
 
-    @pyqtSlot()
+    @Slot()
     def stop(self):
         """Terminate the worker
 
@@ -227,8 +229,8 @@ class BatchWorker(QObject):
         self._pool.terminate()
         self._newPool()
 
-    fileFinished = pyqtSignal(int, pd.DataFrame, dict)
-    fileError = pyqtSignal(int, Exception)
+    fileFinished = Signal(int, pd.DataFrame, dict)
+    fileError = Signal(int, Exception)
 
     def _newPool(self):
         """Start a new worker pool"""

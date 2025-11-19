@@ -2,23 +2,32 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-# -*- coding: utf-8 -*-
 """Widgets for viewing microscopy images"""
-import os
 import locale
+import os
 
 import numpy as np
 import pandas as pd
-
-from PyQt5.QtCore import (QPointF, Qt, QTimer, QObject, QCoreApplication,
-                          pyqtProperty, pyqtSignal, pyqtSlot)
-from PyQt5.QtGui import (QImage, QPixmap, QIcon, QTransform, QPen,
-                         QPolygonF, QPainter)
-from PyQt5.QtWidgets import (QGraphicsPixmapItem, QGraphicsScene,
-                             QGraphicsEllipseItem, QGraphicsItem,
-                             QGraphicsPolygonItem, QGraphicsView)
-from PyQt5.uic import loadUiType
-
+from PySide6.QtCore import (
+    Property,
+    QCoreApplication,
+    QObject,
+    QPointF,
+    Qt,
+    QTimer,
+    Signal,
+    Slot,
+)
+from PySide6.QtGui import QIcon, QImage, QPainter, QPen, QPixmap, QPolygonF, QTransform
+from PySide6.QtUiTools import loadUiType
+from PySide6.QtWidgets import (
+    QGraphicsEllipseItem,
+    QGraphicsItem,
+    QGraphicsPixmapItem,
+    QGraphicsPolygonItem,
+    QGraphicsScene,
+    QGraphicsView,
+)
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -28,7 +37,7 @@ class ImageGraphicsItem(QGraphicsPixmapItem):
         def __init__(self, parent=None):
             super().__init__(parent)
 
-        mouseMoved = pyqtSignal(int, int)
+        mouseMoved = Signal(int, int)
 
     def __init__(self, pixmap=None, parent=None):
         if pixmap is None:
@@ -69,7 +78,7 @@ class MicroViewScene(QGraphicsScene):
             img = QPixmap.fromImage(img)
         self._imageItem.setPixmap(img)
 
-    @pyqtProperty(ImageGraphicsItem)
+    @Property(object)
     def imageItem(self):
         return self._imageItem
 
@@ -87,9 +96,9 @@ class MicroViewScene(QGraphicsScene):
         self._roiMode = enable
         self.roiModeChanged.emit(enable)
 
-    roiModeChanged = pyqtSignal(bool)
+    roiModeChanged = Signal(bool)
 
-    @pyqtProperty(bool, fset=enableRoiMode)
+    @Property(bool, fset=enableRoiMode)
     def roiMode(self):
         return self._roiMode
 
@@ -100,10 +109,11 @@ class MicroViewScene(QGraphicsScene):
         self._roiItem.setPolygon(self._roiPolygon)
         self.roiChanged.emit(roi)
 
-    roiChanged = pyqtSignal(QPolygonF)
+    roiChanged = Signal(QPolygonF)
 
-    @pyqtProperty(QPolygonF, fset=setRoi,
-                  doc="Polygon describing the region of interest (ROI)")
+    @Property(
+        QPolygonF, fset=setRoi, doc="Polygon describing the region of interest (ROI)"
+    )
     def roi(self):
         return self._roiPolygon
 
@@ -258,10 +268,11 @@ class MicroViewWidget(mvBase):
     def setRoi(self, roi):
         self._scene.roi = roi
 
-    roiChanged = pyqtSignal(QPolygonF)
+    roiChanged = Signal(QPolygonF)
 
-    @pyqtProperty(QPolygonF, fset=setRoi,
-                  doc="Polygon describing the region of interest (ROI)")
+    @Property(
+        QPolygonF, fset=setRoi, doc="Polygon describing the region of interest (ROI)"
+    )
     def roi(self):
         return self._scene.roi
 
@@ -338,25 +349,25 @@ class MicroViewWidget(mvBase):
 
         self.currentFrameChanged.emit()
 
-    @pyqtSlot(int)
+    @Slot(int)
     def on_minSlider_valueChanged(self, val):
         self._ui.minSpinBox.setValue(val / self._sliderFactor)
 
-    @pyqtSlot(int)
+    @Slot(int)
     def on_maxSlider_valueChanged(self, val):
         self._ui.maxSpinBox.setValue(val / self._sliderFactor)
 
-    @pyqtSlot(float)
+    @Slot(float)
     def on_minSpinBox_valueChanged(self, val):
         self._ui.minSlider.setValue(round(val * self._sliderFactor))
         self.setMinIntensity(val)
 
-    @pyqtSlot(float)
+    @Slot(float)
     def on_maxSpinBox_valueChanged(self, val):
         self._ui.maxSlider.setValue(round(val * self._sliderFactor))
         self.setMaxIntensity(val)
 
-    @pyqtSlot(pd.DataFrame)
+    @Slot(pd.DataFrame)
     def setLocalizationData(self, good, bad):
         self._locDataGood = good
         self._locDataBad = bad
@@ -431,7 +442,7 @@ class MicroViewWidget(mvBase):
 
         self._locMarkers = self._scene.createItemGroup(markerList)
 
-    @pyqtSlot()
+    @Slot()
     def autoIntensity(self):
         if self._imageData is None:
             return
@@ -447,23 +458,23 @@ class MicroViewWidget(mvBase):
         self._ui.maxSlider.setValue(round(self._intensityMax))
         self.drawImage()
 
-    @pyqtSlot(int)
+    @Slot(int)
     def setMinIntensity(self, v):
         self._intensityMin = min(v, self._intensityMax - 1)
         self._ui.minSlider.setValue(
             round(self._intensityMin * self._sliderFactor))
         self.drawImage()
 
-    @pyqtSlot(int)
+    @Slot(int)
     def setMaxIntensity(self, v):
         self._intensityMax = max(v, self._intensityMin + 1)
         self._ui.maxSlider.setValue(
             round(self._intensityMax * self._sliderFactor))
         self.drawImage()
 
-    currentFrameChanged = pyqtSignal()
+    currentFrameChanged = Signal()
 
-    @pyqtSlot(int)
+    @Slot(int)
     def selectFrame(self, frameno):
         if self._ims is None:
             return
@@ -476,9 +487,9 @@ class MicroViewWidget(mvBase):
         self.drawImage()
         self.drawLocalizations()
 
-    frameReadError = pyqtSignal(int)
+    frameReadError = Signal(int)
 
-    @pyqtSlot()
+    @Slot()
     def nextFrame(self):
         if self._ims is None:
             return
@@ -488,26 +499,26 @@ class MicroViewWidget(mvBase):
             next = 1
         self._ui.framenoBox.setValue(next)
 
-    @pyqtSlot()
+    @Slot()
     def zoomIn(self):
         self._ui.view.scale(1.5, 1.5)
 
-    @pyqtSlot()
+    @Slot()
     def zoomOut(self):
         self._ui.view.scale(2./3., 2./3.)
 
-    @pyqtSlot()
+    @Slot()
     def zoomOriginal(self):
         self._ui.view.setTransform(QTransform())
 
-    @pyqtSlot()
+    @Slot()
     def zoomFit(self):
         self._ui.view.fitInView(self._scene.imageItem, Qt.KeepAspectRatio)
 
     def getCurrentFrame(self):
         return self._imageData
 
-    @pyqtProperty(int, doc="Number of the currently displayed frame")
+    @Property(int, doc="Number of the currently displayed frame")
     def currentFrameNumber(self):
         return self._ui.framenoBox.value() - 1
 
@@ -519,21 +530,20 @@ class MicroViewWidget(mvBase):
         self._ui.posLabel.setText("({x}, {y})".format(x=x, y=y))
         self._ui.intLabel.setText(locale.str(self._imageData[y, x]))
 
-    @pyqtSlot(bool)
+    @Slot(bool)
     def on_roiButton_toggled(self, checked):
         self._scene.roiMode = checked
 
-    @pyqtSlot(bool)
+    @Slot(bool)
     def on_scene_roiModeChanged(self, enabled):
         self._ui.roiButton.setChecked(enabled)
 
     def setShowLocalizations(self, show):
         self._ui.locButton.setChecked(show)
 
-    showLocalizationsChanged = pyqtSignal(bool)
+    showLocalizationsChanged = Signal(bool)
 
-    @pyqtProperty(bool, fset=setShowLocalizations,
-                  notify=showLocalizationsChanged)
+    @Property(bool, fset=setShowLocalizations, notify=showLocalizationsChanged)
     def showLocalizations(self):
         return self._ui.locButton.isChecked()
 

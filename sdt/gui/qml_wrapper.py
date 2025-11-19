@@ -6,12 +6,11 @@ import contextlib
 import enum
 import logging
 import operator
-from pathlib import Path
 import sys
+from pathlib import Path
 from typing import Any, Callable, Optional, Union
 
-from PyQt5 import QtCore, QtGui, QtQml
-
+from PySide6 import QtCore, QtGui, QtQml
 
 _logger = logging.getLogger("Qt")
 
@@ -112,10 +111,10 @@ class Component(QtCore.QObject):
             self._status = self.Status.Ready
         self.status_Changed.emit(self._status)
 
-    status_Changed = QtCore.pyqtSignal(int)
+    status_Changed = QtCore.Signal(int)
     """:py:attr:`status_` property changed"""
 
-    @QtCore.pyqtProperty(int, notify=status_Changed)
+    @QtCore.Property(int, notify=status_Changed)
     def status_(self) -> Status:
         """Status of object creation. Can be `Init`, `Loading`, `Ready`,
         or `Error`.
@@ -410,9 +409,9 @@ class SimpleQtProperty:
                 super().__init__(parent)
                 self._prop = "bla"
 
-            propChanged = QtCore.pyqtSignal()
+            propChanged = QtCore.Signal()
 
-            @QtCore.pyqtProperty(str, notify=propChanged)
+            @QtCore.Property(str, notify=propChanged)
             def prop(self):
                 return self._prop
 
@@ -456,7 +455,7 @@ class SimpleQtProperty:
 
         # Signal
         sigName = name + "Changed"
-        sig = QtCore.pyqtSignal()
+        sig = QtCore.Signal()
         setattr(owner, sigName, sig)
 
         # Property getter and setter
@@ -473,7 +472,7 @@ class SimpleQtProperty:
             getattr(instance, sigName).emit()
 
         # Override this descriptor
-        prop = QtCore.pyqtProperty(
+        prop = QtCore.Property(
             self._type, getter, None if self._readOnly else setter,
             notify=sig)
         setattr(owner, name, prop)
@@ -516,7 +515,7 @@ def blockSignals(obj: QtCore.QObject):
         obj.blockSignals(wasBlocked)
 
 
-def getNotifySignal(obj: QtCore.QObject, prop: str) -> QtCore.pyqtBoundSignal:
+def getNotifySignal(obj: QtCore.QObject, prop: str) -> QtCore.SignalInstance:
     """Get the notify signal of an object's property
 
     Parameters

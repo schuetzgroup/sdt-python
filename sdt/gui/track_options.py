@@ -5,7 +5,7 @@
 import functools
 from typing import Callable, Optional, Union
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PySide6 import QtCore, QtQml, QtQuick
 import pandas as pd
 import trackpy
 
@@ -25,13 +25,13 @@ class TrackOptions(OptionChooser):
         self._locData = None
         self._trackData = None
 
-    locData = SimpleQtProperty(QtCore.QVariant, comp=None)
+    locData = SimpleQtProperty("QVariant", comp=None)
     """Localization data to use for tracking"""
     searchRange = QmlDefinedProperty()
     """`search_range` parameter to :py:func:`trackpy.link`"""
     memory = QmlDefinedProperty()
     """`memory` parameter to :py:func:`trackpy.link`"""
-    trackData = SimpleQtProperty(QtCore.QVariant, readOnly=True)
+    trackData = SimpleQtProperty("QVariant", readOnly=True)
     """Tracking results"""
 
     @staticmethod
@@ -61,7 +61,7 @@ class TrackOptions(OptionChooser):
         trackpy.quiet()
         return trackpy.link(locData, search_range=searchRange, memory=memory)
 
-    @QtCore.pyqtSlot(result=QtCore.QVariant)
+    @QtCore.Slot(result="QVariant")
     def getTrackFunc(self) -> Callable[[pd.DataFrame], pd.DataFrame]:
         return functools.partial(self.workerFunc, searchRange=self.searchRange,
                                  memory=self.memory)

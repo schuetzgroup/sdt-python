@@ -2,10 +2,10 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from PyQt5 import QtQml, QtQuick
 import numpy as np
 import pytest
 import tifffile
+from PySide6 import QtQml, QtQuick
 
 from sdt import gui
 

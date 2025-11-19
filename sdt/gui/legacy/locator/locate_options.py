@@ -9,13 +9,12 @@ displays the settings widget for the currently selected one.
 """
 import os
 
-from PyQt5.QtCore import Qt, pyqtProperty, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon
-from PyQt5.uic import loadUiType
+from PySide6.QtCore import Property, Qt, Signal, Slot
+from PySide6.QtGui import QIcon
+from PySide6.QtUiTools import loadUiType
 
-from . import algorithms
 from .. import option_model
-
+from . import algorithms
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -66,10 +65,14 @@ class Container(contBase):
     def setOptions(self, opts):
         self._ui.optionView.model().options = opts
 
-    optionsChanged = pyqtSignal()
+    optionsChanged = Signal()
 
-    @pyqtProperty(dict, fset=setOptions, notify=optionsChanged,
-                  doc="Parameters to the currently selected algorithm")
+    @Property(
+        dict,
+        fset=setOptions,
+        notify=optionsChanged,
+        doc="Parameters to the currently selected algorithm",
+    )
     def options(self):
         return self._ui.optionView.model().options
 
@@ -79,12 +82,11 @@ class Container(contBase):
             raise ValueError("Unsupported algorithm")
         self._ui.algorithmBox.setCurrentIndex(idx)
 
-    @pyqtProperty(str, fset=setMethod,
-                  doc="Name of the currently selected algorithm")
+    @Property(str, fset=setMethod, doc="Name of the currently selected algorithm")
     def method(self):
         return self._ui.algorithmBox.currentText()
 
-    @pyqtSlot(int)
+    @Slot(int)
     def on_algorithmBox_currentIndexChanged(self, idx):
         self._ui.optionView.setModel(self._ui.algorithmBox.itemData(idx))
         self.optionsChanged.emit()
@@ -93,14 +95,13 @@ class Container(contBase):
         self._ui.startFrameBox.setMaximum(n)
         self._ui.endFrameBox.setMaximum(n)
 
-    numFramesChanged = pyqtSignal(int)
+    numFramesChanged = Signal(int)
 
-    @pyqtProperty(int, fset=setNumFrames, notify=numFramesChanged,
-                  doc="Number of frames")
+    @Property(int, fset=setNumFrames, notify=numFramesChanged, doc="Number of frames")
     def numFrames(self):
         return self._ui.endFrameBox.maximum()
 
-    @pyqtProperty(tuple, doc="(startFrame, endFrame) as set in the GUI")
+    @Property(tuple, doc="(startFrame, endFrame) as set in the GUI")
     def frameRange(self):
         start = self._ui.startFrameBox.value()
         start = start - 1 if start > 0 else 0
@@ -108,8 +109,8 @@ class Container(contBase):
         end = end if end > 0 else -1
         return start, end
 
-    save = pyqtSignal()
-    load = pyqtSignal()
+    save = Signal()
+    load = Signal()
 
 
 def makeDaostorm3DOptions():

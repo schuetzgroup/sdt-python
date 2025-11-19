@@ -5,7 +5,7 @@
 import contextlib
 from typing import Dict, List, Mapping, Optional, Union
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .. import io, multicolor
@@ -41,10 +41,10 @@ class Registrator(QtQuick.QQuickItem):
                           "channel2": _default_channel.copy()}
         self._error = ""
 
-    locateSettingsChanged = QtCore.pyqtSignal()
+    locateSettingsChanged = QtCore.Signal()
     """:py:attr:`locateSettings` changed"""
 
-    @QtCore.pyqtProperty("QVariantMap", notify=locateSettingsChanged)
+    @QtCore.Property("QVariantMap", notify=locateSettingsChanged)
     def locateSettings(self) -> Dict:
         """Map of channel name -> dict containing the keys "algorithm"
         and "options" describing the current localization settings.
@@ -62,10 +62,10 @@ class Registrator(QtQuick.QQuickItem):
         self._locSettings = s
         self.locateSettingsChanged.emit()
 
-    registratorChanged = QtCore.pyqtSignal()
+    registratorChanged = QtCore.Signal()
     """:py:attr:`registrator` changed"""
 
-    @QtCore.pyqtProperty("QVariant", notify=registratorChanged)
+    @QtCore.Property("QVariant", notify=registratorChanged)
     def registrator(self) -> multicolor.Registrator:
         """:py:class:`multicolor.Registrator` instance which was computed
         from fiducial marker localizations.
@@ -99,9 +99,9 @@ class Registrator(QtQuick.QQuickItem):
     _imagePipeline: BasicImagePipeline = QmlDefinedProperty()
     """This provides `processFunc` for opening image sequences."""
 
-    channelsChanged = QtCore.pyqtSignal()
+    channelsChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty("QVariant", notify=channelsChanged)
+    @QtCore.Property("QVariant", notify=channelsChanged)
     def channels(self) -> Dict[str, Dict]:
         return self._channels.copy()
 
@@ -116,10 +116,10 @@ class Registrator(QtQuick.QQuickItem):
         self._channels = ch
         self.channelsChanged.emit()
 
-    _figureChanged = QtCore.pyqtSignal()
+    _figureChanged = QtCore.Signal()
     """:py:attr:`_figure` changed"""
 
-    @QtCore.pyqtProperty("QVariant", notify=_figureChanged)
+    @QtCore.Property("QVariant", notify=_figureChanged)
     def _figure(self) -> FigureCanvasAgg:
         """Figure canvas for plotting results"""
         return self._fig
@@ -135,7 +135,7 @@ class Registrator(QtQuick.QQuickItem):
         fig.figure.add_subplot(grid[0, 0])
         fig.figure.add_subplot(grid[0, 1])
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def startCalculation(self):
         """Start locating fiducial markers and transform calculation
 
@@ -171,7 +171,7 @@ class Registrator(QtQuick.QQuickItem):
         self._figure.draw_idle()
         return reg
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def abortCalculation(self):
         """Abort processing"""
         if self._worker is None:

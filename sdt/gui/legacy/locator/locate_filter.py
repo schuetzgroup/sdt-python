@@ -7,13 +7,10 @@ import re
 from contextlib import suppress
 
 import numpy as np
-
-from PyQt5.QtCore import (QCoreApplication, QTimer, Qt, pyqtProperty,
-                          pyqtSignal, pyqtSlot)
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QMenu, QAction
-from PyQt5.uic import loadUiType
-
+from PySide6.QtCore import Property, QCoreApplication, Qt, QTimer, Signal, Slot
+from PySide6.QtGui import QAction, QCursor
+from PySide6.QtUiTools import loadUiType
+from PySide6.QtWidgets import QMenu
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -46,9 +43,9 @@ class FilterWidget(filterBase):
         self._menu = QMenu()
         self._menu.triggered.connect(self._addVariable)
 
-    filterChanged = pyqtSignal()
+    filterChanged = Signal()
 
-    @pyqtSlot(list)
+    @Slot(list)
     def setVariables(self, var):
         self._menu.clear()
         for v in var:
@@ -57,8 +54,7 @@ class FilterWidget(filterBase):
     def setFilterString(self, filt):
         self._ui.filterEdit.setPlainText(filt)
 
-    @pyqtProperty(str, fset=setFilterString,
-                  doc="String describing the filter")
+    @Property(str, fset=setFilterString, doc="String describing the filter")
     def filterString(self):
         s = self._ui.filterEdit.toPlainText()
         return self.varNameRex.subn("\\1", s)[0]
@@ -76,11 +72,11 @@ class FilterWidget(filterBase):
 
         return filterFunc
 
-    @pyqtSlot(QAction)
+    @Slot(QAction)
     def _addVariable(self, act):
         self._ui.filterEdit.textCursor().insertText(act.text())
 
-    @pyqtSlot(str)
+    @Slot(str)
     def on_showVarLabel_linkActivated(self, link):
         if not self._menu.isEmpty():
             self._menu.exec(QCursor.pos())

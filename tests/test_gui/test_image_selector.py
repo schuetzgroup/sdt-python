@@ -5,8 +5,8 @@
 import numpy as np
 import pytest
 import tifffile
+from PySide6 import QtQml, QtQuick
 
-from PyQt5 import QtQml, QtQuick
 from sdt import gui
 
 

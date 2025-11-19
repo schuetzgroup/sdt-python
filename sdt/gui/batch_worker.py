@@ -5,7 +5,7 @@
 import enum
 from typing import Any, Callable, List, Optional, Union
 
-from PyQt5 import QtCore, QtQuick, QtQml
+from PySide6 import QtCore, QtQuick, QtQml
 
 from .dataset import DatasetCollection
 from .item_models import ListModel
@@ -19,12 +19,11 @@ class BatchWorker(QtQuick.QQuickItem):
     This is useful when some calculation should be done with each entry of
     a dataset.
     """
+    @QtCore.QEnum
     class ErrorPolicy(enum.IntEnum):
         """What to do if an error occurs while processing a dataset entry."""
         Abort = 0
         Continue = enum.auto()
-
-    QtCore.Q_ENUM(ErrorPolicy)
 
     def __init__(self, parent: Optional[QtQuick.QQuickItem] = None):
         """Parameters
@@ -80,13 +79,13 @@ class BatchWorker(QtQuick.QQuickItem):
     """
     progress = SimpleQtProperty(int, readOnly=True)
     """Number of processed dataset entries"""
-    errorPolicy = SimpleQtProperty(ErrorPolicy)
+    errorPolicy = SimpleQtProperty(int)
     """What to do if an error occurs while processing a dataset entry."""
 
-    _errorListChanged = QtCore.pyqtSignal()
+    _errorListChanged = QtCore.Signal()
     """:py:attr:`_errorList` was changed"""
 
-    @QtCore.pyqtProperty(list, notify=_errorListChanged)
+    @QtCore.Property(list, notify=_errorListChanged)
     def _errorList(self) -> Union[List[str], List[int]]:
         """Data items for which errors were encountered.
 
@@ -95,18 +94,18 @@ class BatchWorker(QtQuick.QQuickItem):
         """
         return self._errLst
 
-    isRunningChanged = QtCore.pyqtSignal()
+    isRunningChanged = QtCore.Signal()
     """:py:attr:`isRunning` was changed"""
 
-    @QtCore.pyqtProperty(bool, notify=isRunningChanged)
+    @QtCore.Property(bool, notify=isRunningChanged)
     def isRunning(self):
         """Whether the worker is currently working."""
         return self._worker is not None and self._worker.enabled
 
-    _currentItemChanged = QtCore.pyqtSignal()
+    _currentItemChanged = QtCore.Signal()
     """:py:attr:`_currentItem` was changed"""
 
-    @QtCore.pyqtProperty(str, notify=_currentItemChanged)
+    @QtCore.Property(str, notify=_currentItemChanged)
     def _currentItem(self) -> str:
         """Currently processed item to be displayed beneath progress bar"""
         if (not self._displayRole or self._curDset is None or
@@ -131,7 +130,7 @@ class BatchWorker(QtQuick.QQuickItem):
                 return i
         return -1
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def start(self):
         """Start processing the data
 
@@ -171,7 +170,7 @@ class BatchWorker(QtQuick.QQuickItem):
 
         self._nextCall()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def abort(self):
         """Abort processing"""
         self._curIndex = -1

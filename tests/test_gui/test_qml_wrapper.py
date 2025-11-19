@@ -5,7 +5,7 @@
 import logging
 import operator
 
-from PyQt5 import QtCore, QtGui, QtQml, QtQuick
+from PySide6 import QtCore, QtGui, QtQml, QtQuick, QtWidgets
 import pytest
 from sdt import gui
 
@@ -193,7 +193,7 @@ def test_messageHandler(qapp, caplog):
 
 def test_blockSignals(qtbot):
     class MyObject(QtCore.QObject):
-        sig = QtCore.pyqtSignal(int)
+        sig = QtCore.Signal(int)
 
     o = MyObject()
 

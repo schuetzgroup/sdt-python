@@ -5,10 +5,10 @@
 import math
 from typing import Dict, List
 
-from PyQt5 import QtCore, QtQml
 import matplotlib as mpl
 import matplotlib.path
 import numpy as np
+from PySide6 import QtCore, QtQml
 
 from .qml_wrapper import SimpleQtProperty
 
@@ -36,10 +36,10 @@ class MplPathElements(QtCore.QObject):
         self._width = 0.0
         self._height = 0.0
 
-    pathChanged = QtCore.pyqtSignal()
+    pathChanged = QtCore.Signal()
     """Path property was changed"""
 
-    @QtCore.pyqtProperty("QVariant", notify=pathChanged)
+    @QtCore.Property("QVariant", notify=pathChanged)
     def path(self) -> mpl.path.Path:
         """Input path"""
         return self._path

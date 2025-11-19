@@ -4,11 +4,11 @@
 
 from typing import Dict, Optional
 
-from PyQt5 import QtCore, QtQml
 import numpy as np
+from PySide6 import QtCore, QtQml
 
-from .qml_wrapper import SimpleQtProperty
 from .. import io, multicolor
+from .qml_wrapper import SimpleQtProperty
 
 
 class BasicImagePipeline(QtCore.QObject):
@@ -34,16 +34,16 @@ class BasicImagePipeline(QtCore.QObject):
     occurred.
     """
 
-    currentFrameCountChanged = QtCore.pyqtSignal()
+    currentFrameCountChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty(int, notify=currentFrameCountChanged)
+    @QtCore.Property(int, notify=currentFrameCountChanged)
     def currentFrameCount(self) -> int:
         """Number of frames in current image sequence"""
         if self._pipeline is None:
             return 0
         return len(self._pipeline)
 
-    @QtCore.pyqtSlot("QVariantMap")
+    @QtCore.Slot("QVariantMap")
     def open(self, files: Dict[str, str]):
         # Store these now as they won't be accessible after closing the file.
         # Pass them to `_doProcessSequence` in the end.
@@ -124,9 +124,9 @@ class ImagePipeline(BasicImagePipeline):
         self.currentExcitationTypeChanged.connect(self.doProcess)
         self.channelsChanged.connect(self.doProcess)
 
-    excitationSeqChanged = QtCore.pyqtSignal()
+    excitationSeqChanged = QtCore.Signal()
 
-    @QtCore.pyqtProperty(str, notify=excitationSeqChanged)
+    @QtCore.Property(str, notify=excitationSeqChanged)
     def excitationSeq(self) -> str:
         return self._frameSelector.excitation_seq
 

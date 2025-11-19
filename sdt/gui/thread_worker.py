@@ -6,7 +6,7 @@ import threading
 from typing import Any, Callable, Optional
 import warnings
 
-from PyQt5 import QtCore
+from PySide6 import QtCore
 
 from .. import helper
 
@@ -98,24 +98,24 @@ class ThreadWorker(QtCore.QObject):
                 self.busyChanged.emit()
             self._callCondition.notify()
 
-    finished = QtCore.pyqtSignal(object)
+    finished = QtCore.Signal(object)
     """Function call finished. Signal argument is the return value."""
-    error = QtCore.pyqtSignal(Exception)
+    error = QtCore.Signal(Exception)
     """An error occured while executing function call. Signal argument is
     the exception that was raised.
     """
-    busyChanged = QtCore.pyqtSignal()
+    busyChanged = QtCore.Signal()
     """Busy status changed"""
 
-    @QtCore.pyqtProperty(bool, notify=busyChanged)
+    @QtCore.Property(bool, notify=busyChanged)
     def busy(self) -> bool:
         """True if a function call is currently executed."""
         return self._busy
 
-    enabledChanged = QtCore.pyqtSignal(bool)
+    enabledChanged = QtCore.Signal(bool)
     """Enabled status changed"""
 
-    @QtCore.pyqtProperty(bool, notify=enabledChanged)
+    @QtCore.Property(bool, notify=enabledChanged)
     def enabled(self) -> bool:
         """If enabled, a worker thread is running in the background and
         waiting to execute a function call. Disabling stopps the worker

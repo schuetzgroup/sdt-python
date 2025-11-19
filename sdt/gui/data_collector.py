@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from PyQt5 import QtQml, QtQuick
+from PySide6 import QtQml, QtQuick
 
 from .qml_wrapper import QmlDefinedProperty
 

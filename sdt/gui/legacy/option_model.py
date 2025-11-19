@@ -4,10 +4,23 @@
 
 from collections import OrderedDict
 
-from PyQt5.QtCore import (Qt, QAbstractItemModel, QModelIndex,
-                          QCoreApplication, pyqtProperty, pyqtSignal)
-from PyQt5.QtWidgets import (QStyledItemDelegate, QSpinBox, QDoubleSpinBox,
-                             QComboBox, QTreeView, QWidget, QHBoxLayout)
+from PySide6.QtCore import (
+    Property,
+    QAbstractItemModel,
+    QCoreApplication,
+    QModelIndex,
+    Qt,
+    Signal,
+)
+from PySide6.QtWidgets import (
+    QComboBox,
+    QDoubleSpinBox,
+    QHBoxLayout,
+    QSpinBox,
+    QStyledItemDelegate,
+    QTreeView,
+    QWidget,
+)
 
 
 class OptionElement:
@@ -406,14 +419,13 @@ class OptionModel(QAbstractItemModel):
         return self.createIndex(element.parent.children.index(element), column,
                                 element)
 
-    optionsChanged = pyqtSignal()
+    optionsChanged = Signal()
 
     def setOptions(self, opts):
         self._root.setTreeValuesFromDict(opts)
         self.optionsChanged.emit()
 
-    @pyqtProperty(dict, fset=setOptions,
-                  doc="Localization algorithm parameters")
+    @Property(dict, fset=setOptions, doc="Localization algorithm parameters")
     def options(self):
         return self._root._dict
 

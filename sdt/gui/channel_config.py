@@ -4,7 +4,7 @@
 
 from typing import Any, Dict, Iterable, List, Mapping, Optional
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .. import roi as sdt_roi
@@ -104,10 +104,10 @@ class ChannelConfig(QtQuick.QQuickItem):
         self._chanList.countChanged.connect(self.channelsChanged)
         self._chanList.countChanged.connect(self.channelNamesChanged)
 
-    channelNamesChanged = QtCore.pyqtSignal()
+    channelNamesChanged = QtCore.Signal()
     """:py:attr:`channelNames` change signal"""
 
-    @QtCore.pyqtProperty(list, notify=channelNamesChanged)
+    @QtCore.Property(list, notify=channelNamesChanged)
     def channelNames(self) -> List[str]:
         """Channel names. Setting this property is equivalent to setting
         :py:attr:`channelsPerSource` with all channels assigned to the first
@@ -123,10 +123,10 @@ class ChannelConfig(QtQuick.QQuickItem):
         self._chanList.reset([{"name": c, "source": 0, "roi": None}
                               for c in channels])
 
-    channelsChanged = QtCore.pyqtSignal()
+    channelsChanged = QtCore.Signal()
     """:py:attr:`channels` change signal"""
 
-    @QtCore.pyqtProperty("QVariantMap", notify=channelsChanged)
+    @QtCore.Property("QVariantMap", notify=channelsChanged)
     def channels(self) -> Dict[str, Dict[str, Any]]:
         """Channel configuration
 
@@ -157,10 +157,10 @@ class ChannelConfig(QtQuick.QQuickItem):
         self._srcList.reset(newSrc)
         self._chanList.reset(newList)
 
-    sourceNamesChanged = QtCore.pyqtSignal()
+    sourceNamesChanged = QtCore.Signal()
     """:py:attr:`sourceNames` change signal"""
 
-    @QtCore.pyqtProperty(list, notify=sourceNamesChanged)
+    @QtCore.Property(list, notify=sourceNamesChanged)
     def sourceNames(self) -> List[str]:
         """Identifiers of sources (e.g., camera outputs)"""
         return [self._srcList.get(i, "name")
@@ -172,17 +172,17 @@ class ChannelConfig(QtQuick.QQuickItem):
     images: Dataset = QmlDefinedProperty()
     """Images to display"""
 
-    @QtCore.pyqtProperty(QtCore.QAbstractListModel, constant=True)
+    @QtCore.Property(QtCore.QAbstractListModel, constant=True)
     def _channelList(self) -> ListModel:
         """Qt item model representing the channels (for use in QML)"""
         return self._chanList
 
-    @QtCore.pyqtProperty(QtCore.QAbstractListModel, constant=True)
+    @QtCore.Property(QtCore.QAbstractListModel, constant=True)
     def _sourceList(self) -> _SourceList:
         """Qt item model representing the sources (for use in QML)"""
         return self._srcList
 
-    @QtCore.pyqtSlot(int, "QVariant")
+    @QtCore.Slot(int, "QVariant")
     def _splitHorizontally(self, sourceIndex: int, image: np.ndarray):
         """Create ROIs by evenly splitting the image's width
 
@@ -202,7 +202,7 @@ class ChannelConfig(QtQuick.QQuickItem):
                 sdt_roi.ROI((i * split_width, 0), size=(split_width, height)))
         # TODO: Update ROIs from other sources if sameSize is True
 
-    @QtCore.pyqtSlot(int, "QVariant")
+    @QtCore.Slot(int, "QVariant")
     def _splitVertically(self, sourceIndex: int, image: np.ndarray):
         """Create ROIs by evenly splitting the image's height
 
@@ -222,7 +222,7 @@ class ChannelConfig(QtQuick.QQuickItem):
                 sdt_roi.ROI((0, i * split_height), size=(width, split_height)))
         # TODO: Update ROIs from other sources if sameSize is True
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def _swapChannels(self, sourceIndex: int):
         """Reverse ROIs
 
@@ -241,7 +241,7 @@ class ChannelConfig(QtQuick.QQuickItem):
             self._chanList.set(orig, "roi", self._chanList.get(new, "roi"))
             self._chanList.set(new, "roi", tmp)
 
-    @QtCore.pyqtSlot(str, "QVariant", "QVariant")
+    @QtCore.Slot(str, "QVariant", "QVariant")
     def _roiUpdatedInGUI(self, name: str, newRoi, image: Optional[np.ndarray]):
         """Callback invoked when a ROI was updated via GUI
 

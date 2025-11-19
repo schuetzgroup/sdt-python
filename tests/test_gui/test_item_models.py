@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from PyQt5 import QtCore
+from PySide6 import QtCore
 from sdt import gui
 
 

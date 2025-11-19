@@ -7,14 +7,15 @@
 building on QWidget-based FigureCanvasQT and FigureCanvasQTAgg.
 """
 
-from typing import Dict, List, Optional, Tuple, Union
+import contextlib
+from typing import Dict, List, Tuple, Union
 
-from PyQt5 import QtCore, QtGui, QtQml, QtQuick
 import matplotlib as mpl
 import matplotlib.backend_bases
 import matplotlib.backends.backend_agg as mpl_agg
 import matplotlib.backends.backend_qt as mpl_qt  # mpl >= 3.5
 import matplotlib.figure
+from PySide6 import QtCore, QtGui, QtQml, QtQuick
 
 
 def mpl_use_qt_font():

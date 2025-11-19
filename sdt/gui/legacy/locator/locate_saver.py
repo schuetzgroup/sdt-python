@@ -4,9 +4,9 @@
 
 import os
 
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QIcon
-from PyQt5.uic import loadUiType
+from PySide6.QtCore import Signal, Slot
+from PySide6.QtGui import QIcon
+from PySide6.QtUiTools import loadUiType
 
 
 path = os.path.dirname(os.path.abspath(__file__))
@@ -28,9 +28,9 @@ class SaveWidget(locSaveBase):
         self._ui.saveButton.setIcon(
             QIcon.fromTheme("document-save"))
 
-    locateAndSave = pyqtSignal(str)
+    locateAndSave = Signal(str)
 
-    @pyqtSlot()
+    @Slot()
     def on_saveButton_pressed(self):
         format = self.formatIndexToName[self._ui.formatBox.currentIndex()]
         self.locateAndSave.emit(format)

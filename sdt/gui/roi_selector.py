@@ -6,7 +6,7 @@ import enum
 import math
 from typing import Callable, Dict, Iterable, List, Union
 
-from PyQt5 import QtCore, QtQml, QtQuick
+from PySide6 import QtCore, QtQml, QtQuick
 import numpy as np
 
 from .qml_wrapper import QmlDefinedMethod, QmlDefinedProperty
@@ -37,20 +37,18 @@ class ROISelector(QtQuick.QQuickItem):
 
     The resulting ROIs can be retrieved via the :py:attr:`rois` property.
     """
+    @QtCore.QEnum
     class ROIType(enum.IntEnum):
         NullShape = 0
         RectangleShape = enum.auto()
         IntRectangleShape = enum.auto()
         EllipseShape = enum.auto()
 
-    QtCore.Q_ENUM(ROIType)
-
+    @QtCore.QEnum
     class DrawingTools(enum.IntEnum):
         """Which drawing tools to display"""
         IntRectangleTool = 0
         PathROITools = enum.auto()
-
-    QtCore.Q_ENUM(DrawingTools)
 
     def __init__(self, parent: QtQuick.QQuickItem = None):
         """Parameters
@@ -63,10 +61,10 @@ class ROISelector(QtQuick.QQuickItem):
         self._limits = [np.inf, np.inf]
         self.roiChanged.connect(self.roisChanged)
 
-    namesChanged = QtCore.pyqtSignal()
+    namesChanged = QtCore.Signal()
     """ROI names changed"""
 
-    @QtCore.pyqtProperty(list, notify=namesChanged)
+    @QtCore.Property(list, notify=namesChanged)
     def names(self) -> List[str]:
         """ROI names. List of keys in :py:attr:`rois` property. Setting
         this property will associate no ROIs with names that are newly added.
@@ -82,13 +80,13 @@ class ROISelector(QtQuick.QQuickItem):
         self.namesChanged.emit()
         self.roisChanged.emit()
 
-    roiChanged = QtCore.pyqtSignal(str, arguments=["name"])
+    roiChanged = QtCore.Signal(str, arguments=["name"])
     """A ROI has changed. ROI name is given by `name` argument."""
 
-    roisChanged = QtCore.pyqtSignal()
+    roisChanged = QtCore.Signal()
     """:py:attr:`rois` property changed"""
 
-    @QtCore.pyqtProperty("QVariantMap", notify=roisChanged)
+    @QtCore.Property("QVariantMap", notify=roisChanged)
     def rois(self) -> Dict[str, Union[sdt_roi.PathROI, None]]:
         """ROI names and associated ROIs"""
         return {n: self._getROI(n) for n in self._names}
@@ -99,7 +97,7 @@ class ROISelector(QtQuick.QQuickItem):
         for k, v in rois.items():
             self.setROI(k, v)
 
-    @QtCore.pyqtSlot(str, "QVariant")
+    @QtCore.Slot(str, "QVariant")
     def setROI(self, name: str,
                roi: Union[sdt_roi.ROI, sdt_roi.PathROI, None]):
         """Set a ROI
@@ -123,10 +121,10 @@ class ROISelector(QtQuick.QQuickItem):
             t = self.ROIType.EllipseShape
         self._setROI(name, roi, t)
 
-    limitsChanged = QtCore.pyqtSignal("QVariant")
+    limitsChanged = QtCore.Signal("QVariant")
     """Limits changed"""
 
-    @QtCore.pyqtProperty("QVariant", notify=limitsChanged)
+    @QtCore.Property("QVariant", notify=limitsChanged)
     def limits(self) -> List[float]:
         """Set limits for integer rectangular ROIs. The :py:class:roi.ROI`
         class only works correctly if there are no negative coordinates and
@@ -191,13 +189,12 @@ class ShapeROIItem(QtQuick.QQuickItem):
     This ROI is defined by its bounding box. Currently rectangular and
     ellipticial ROIs are supported.
     """
+    @QtCore.QEnum
     class Shape(enum.IntEnum):
         """Available ROI shapes"""
         RectangleShape = ROISelector.ROIType.RectangleShape
         IntRectangleShape = ROISelector.ROIType.IntRectangleShape
         EllipseShape = ROISelector.ROIType.EllipseShape
-
-    QtCore.Q_ENUM(Shape)
 
     def __init__(self, parent: QtQuick.QQuickItem = None):
         """Parameters
@@ -215,10 +212,10 @@ class ShapeROIItem(QtQuick.QQuickItem):
         self.widthChanged.connect(lambda: self._onResized(self.width, 2))
         self.heightChanged.connect(lambda: self._onResized(self.height, 3))
 
-    scaleFactorChanged = QtCore.pyqtSignal(float)
+    scaleFactorChanged = QtCore.Signal(float)
     """Scale factor changed"""
 
-    @QtCore.pyqtProperty(float, notify=scaleFactorChanged)
+    @QtCore.Property(float, notify=scaleFactorChanged)
     def scaleFactor(self) -> float:
         """Factor for scaling the ROI path. Typically bound to the
         ImageDisplay overlay item's `scaleFactor`.
@@ -233,10 +230,10 @@ class ShapeROIItem(QtQuick.QQuickItem):
         self._resizeShape()
         self.scaleFactorChanged.emit(f)
 
-    shapeChanged = QtCore.pyqtSignal(Shape)
+    shapeChanged = QtCore.Signal(int)
     """Shape changed"""
 
-    @QtCore.pyqtProperty(Shape, notify=shapeChanged)
+    @QtCore.Property(int, notify=shapeChanged)
     def shape(self) -> Shape:
         """Shape of the ROI"""
         return self._shape
@@ -249,10 +246,10 @@ class ShapeROIItem(QtQuick.QQuickItem):
         self.shapeChanged.emit(s)
         self.roiChanged.emit()
 
-    roiChanged = QtCore.pyqtSignal()
+    roiChanged = QtCore.Signal()
     """ROI changed"""
 
-    @QtCore.pyqtProperty("QVariant", notify=roiChanged)
+    @QtCore.Property("QVariant", notify=roiChanged)
     def roi(self) -> Union[sdt_roi.PathROI, None]:
         """Region of interest"""
         if not self.width() or not self.height():
@@ -275,10 +272,10 @@ class ShapeROIItem(QtQuick.QQuickItem):
             self._coords[:] = roi.path.get_extents().bounds
         self._resizeShape()
 
-    limitsChanged = QtCore.pyqtSignal(list)
+    limitsChanged = QtCore.Signal(list)
     """Limits changed"""
 
-    @QtCore.pyqtProperty(list, notify=limitsChanged)
+    @QtCore.Property(list, notify=limitsChanged)
     def limits(self) -> List[float]:
         """Set limits for integer rectangular ROIs. The :py:class:roi.ROI`
         class only works correctly if there are no negative coordinates and
