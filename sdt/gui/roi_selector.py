@@ -230,7 +230,7 @@ class ShapeROIItem(QtQuick.QQuickItem):
         self._resizeShape()
         self.scaleFactorChanged.emit(f)
 
-    shapeChanged = QtCore.Signal(int)
+    shapeChanged = QtCore.Signal()
     """Shape changed"""
 
     @QtCore.Property(int, notify=shapeChanged)
@@ -243,7 +243,7 @@ class ShapeROIItem(QtQuick.QQuickItem):
         if self._shape == s:
             return
         self._shape = s
-        self.shapeChanged.emit(s)
+        self.shapeChanged.emit()
         self.roiChanged.emit()
 
     roiChanged = QtCore.Signal()

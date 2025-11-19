@@ -33,7 +33,7 @@ class ListModel(QtCore.QAbstractListModel):
         self.rowsRemoved.connect(self.countChanged)
         self.itemsChanged.connect(self._emitDataChanged)
 
-    rolesChanged = QtCore.Signal(list)
+    rolesChanged = QtCore.Signal()
     """Model roles changed"""
 
     @QtCore.Property(list, notify=rolesChanged)
@@ -54,7 +54,7 @@ class ListModel(QtCore.QAbstractListModel):
             "Roles",
             {n: i for i, n in enumerate(names, QtCore.Qt.ItemDataRole.UserRole)},
         )
-        self.rolesChanged.emit(list(names))
+        self.rolesChanged.emit()
 
     itemsChanged = QtCore.Signal(int, int, list, arguments=["index", "count", "roles"])
     """One or more list items were changed. `index` is the index of the
