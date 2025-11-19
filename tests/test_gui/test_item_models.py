@@ -87,9 +87,7 @@ def test_ListModel(qtbot, qtmodeltester):
                               {"a": 20000}, {"a": 30000}, {"a": 40000},
                               {"a": 2000, "b": 210}]
 
-    # Fails on PyQt 5.15.7, don't know why
-    # Works on PySide6 6.4.1
-    # qtmodeltester.check(model)
+    qtmodeltester.check(model)
 
     # Test `modifyNewItem`
     class MyList(gui.ListModel):

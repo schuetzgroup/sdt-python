@@ -57,8 +57,13 @@ MyChooser {
             ch.arg2 = "blub"
         assert ch.status == gui.Sdt.WorkerStatus.Working
 
-        with qtbot.waitSignals([ch.resChanged, ch.roResChanged,
-                                ch.statusChanged]):
+        with qtbot.waitSignals(
+            [
+                (ch.resChanged, "resChanged"),
+                (ch.roResChanged, "roResChanged"),
+                (ch.statusChanged, "statusChanged"),
+            ]
+        ):
             ch.threadEvent.set()
 
         assert ch.res != 0
