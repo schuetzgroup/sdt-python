@@ -121,6 +121,9 @@ class FigureCanvas(mpl.backend_bases.FigureCanvasBase, QtQuick.QQuickPaintedItem
 
         self.widthChanged.connect(self._onSizeChanged)
         self.heightChanged.connect(self._onSizeChanged)
+        self._drawIdleSignal.connect(self._draw_idle)
+
+    _drawIdleSignal = QtCore.Signal()
 
     def _update_figure_dpi(self):
         """Scale figure's DPI with DevicePixelRatio"""
@@ -358,9 +361,8 @@ class FigureCanvas(mpl.backend_bases.FigureCanvasBase, QtQuick.QQuickPaintedItem
         if self._draw_pending or self._is_drawing:
             return
         self._draw_pending = True
-        # Agg draw needs to be done in the same thread as which Matplotlib
-        # modifies the scene graph from
-        QtCore.QTimer.singleShot(0, self._draw_idle)
+        # call _draw_idle from the main thread
+        self._drawIdleSignal.emit()
 
     @QtCore.Slot()
     def _draw_idle(self):
@@ -371,12 +373,8 @@ class FigureCanvas(mpl.backend_bases.FigureCanvasBase, QtQuick.QQuickPaintedItem
             self._draw_pending = False
             if self.width() < 0 or self.height() < 0:
                 return
-            try:
-                self.draw()
-            except Exception:
-                # Catch exception so that PyQt won't terminate
-                import traceback
-                traceback.print_exc()
+
+            self.draw()
 
     def blit(self, bbox=None):
         """Implement :py:meth:`FigureCanvasBase.blit`"""
