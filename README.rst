@@ -157,7 +157,6 @@ Requirements
 Recommended packages
 --------------------
 
-- PyQt5 >= 5.12
 - opencv
 - trackpy
 - lmfit
