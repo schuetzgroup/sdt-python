@@ -100,5 +100,4 @@ class MplPathElements(QtCore.QObject):
     height: float = SimpleQtProperty(float, readOnly=True)
 
 
-QtQml.qmlRegisterType(MplPathElements, "SdtGui.Templates", 0, 2,
-                      "MplPathElements")
+QtQml.qmlRegisterType(MplPathElements, "SdtGui.Templates", 0, 3, "MplPathElements")

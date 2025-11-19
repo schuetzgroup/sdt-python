@@ -466,8 +466,7 @@ class FilterDatasetProxy(QtCore.QSortFilterProxyModel):
         return self.mapToSource(self.index(row, 0)).row()
 
 
-QtQml.qmlRegisterType(Dataset, "SdtGui", 0, 2, "Dataset")
-QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 0, 2, "DatasetCollection")
-QtQml.qmlRegisterType(RelPathDatasetProxy, "SdtGui", 0, 2,
-                      "RelPathDatasetProxy")
-QtQml.qmlRegisterType(FilterDatasetProxy, "SdtGui", 0, 2, "FilterDatasetProxy")
+QtQml.qmlRegisterType(Dataset, "SdtGui", 0, 3, "Dataset")
+QtQml.qmlRegisterType(DatasetCollection, "SdtGui", 0, 3, "DatasetCollection")
+QtQml.qmlRegisterType(RelPathDatasetProxy, "SdtGui", 0, 3, "RelPathDatasetProxy")
+QtQml.qmlRegisterType(FilterDatasetProxy, "SdtGui", 0, 3, "FilterDatasetProxy")

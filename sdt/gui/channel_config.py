@@ -303,4 +303,4 @@ class ChannelConfig(QtQuick.QQuickItem):
             self.sourceNamesChanged.emit()
 
 
-QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Templates", 0, 2, "ChannelConfig")
+QtQml.qmlRegisterType(ChannelConfig, "SdtGui.Templates", 0, 3, "ChannelConfig")

@@ -4,24 +4,24 @@
 
 module SdtGui
 
-BatchWorker 0.2 BatchWorker.qml
-ChannelConfig 0.2 ChannelConfig.qml
-DataCollector 0.2 DataCollector.qml
-DatasetSelector 0.2 DatasetSelector.qml
-DirSelector 0.2 DirSelector.qml
-EditableComboBox 0.2 EditableComboBox.qml
-EditableSpinBox 0.2 EditableSpinBox.qml
-FrameSelector 0.2 FrameSelector.qml
-ImageDisplay 0.2 ImageDisplay.qml
-ImageSelector 0.2 ImageSelector.qml
-ImageViewer 0.2 ImageViewer.qml
-LocOptions 0.2 LocOptions.qml
-Locator 0.2 Locator.qml
-MultiDataCollector 0.2 MultiDataCollector.qml
-ROISelector 0.2 ROISelector.qml
-Registrator 0.2 Registrator.qml
-RealSpinBox 0.2 RealSpinBox.qml
-StatusDisplay 0.2 StatusDisplay.qml
-TrackOptions 0.2 TrackOptions.qml
+BatchWorker 0.3 BatchWorker.qml
+ChannelConfig 0.3 ChannelConfig.qml
+DataCollector 0.3 DataCollector.qml
+DatasetSelector 0.3 DatasetSelector.qml
+DirSelector 0.3 DirSelector.qml
+EditableComboBox 0.3 EditableComboBox.qml
+EditableSpinBox 0.3 EditableSpinBox.qml
+FrameSelector 0.3 FrameSelector.qml
+ImageDisplay 0.3 ImageDisplay.qml
+ImageSelector 0.3 ImageSelector.qml
+ImageViewer 0.3 ImageViewer.qml
+LocOptions 0.3 LocOptions.qml
+Locator 0.3 Locator.qml
+MultiDataCollector 0.3 MultiDataCollector.qml
+ROISelector 0.3 ROISelector.qml
+Registrator 0.3 Registrator.qml
+RealSpinBox 0.3 RealSpinBox.qml
+StatusDisplay 0.3 StatusDisplay.qml
+TrackOptions 0.3 TrackOptions.qml
 
-singleton Sdt 0.2 Sdt.qml
+singleton Sdt 0.3 Sdt.qml

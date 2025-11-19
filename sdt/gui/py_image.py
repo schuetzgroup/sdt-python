@@ -129,4 +129,4 @@ class PyImage(QtQuick.QQuickPaintedItem):
                                         self._source.shape[0]))
 
 
-QtQml.qmlRegisterType(PyImage, "SdtGui", 0, 2, "PyImage")
+QtQml.qmlRegisterType(PyImage, "SdtGui", 0, 3, "PyImage")

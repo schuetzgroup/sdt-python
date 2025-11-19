@@ -85,4 +85,4 @@ class FrameSelector(QtQuick.QQuickItem):
         return lambda x: self._frameSel.select(x, self.currentExcitationType)
 
 
-QtQml.qmlRegisterType(FrameSelector, "SdtGui.Templates", 0, 2, "FrameSelector")
+QtQml.qmlRegisterType(FrameSelector, "SdtGui.Templates", 0, 3, "FrameSelector")

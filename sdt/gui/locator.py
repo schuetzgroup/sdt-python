@@ -71,7 +71,7 @@ class Locator(QtQuick.QQuickItem):
                      "roi": [], "filter": ""}, yf)
 
 
-QtQml.qmlRegisterType(Locator, "SdtGui.Templates", 0, 2, "Locator")
+QtQml.qmlRegisterType(Locator, "SdtGui.Templates", 0, 3, "Locator")
 
 
 if __name__ == "__main__":

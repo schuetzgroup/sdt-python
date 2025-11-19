@@ -68,4 +68,4 @@ class Sdt(QtCore.QObject):
         obj.setParent(parent)
 
 
-QtQml.qmlRegisterType(Sdt, "SdtGui.Templates", 0, 2, "Sdt")
+QtQml.qmlRegisterType(Sdt, "SdtGui.Templates", 0, 3, "Sdt")

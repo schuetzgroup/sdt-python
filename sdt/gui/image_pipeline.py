@@ -159,6 +159,5 @@ class ImagePipeline(BasicImagePipeline):
         return seq
 
 
-QtQml.qmlRegisterType(BasicImagePipeline, "SdtGui", 0, 2,
-                      "BasicImagePipeline")
-QtQml.qmlRegisterType(ImagePipeline, "SdtGui", 0, 2, "ImagePipeline")
+QtQml.qmlRegisterType(BasicImagePipeline, "SdtGui", 0, 3, "BasicImagePipeline")
+QtQml.qmlRegisterType(ImagePipeline, "SdtGui", 0, 3, "ImagePipeline")

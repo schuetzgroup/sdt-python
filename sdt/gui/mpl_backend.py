@@ -367,4 +367,4 @@ class FigureCanvasAgg(mpl_agg.FigureCanvasAgg, FigureCanvas):
         painter.drawImage(0, 0, img)
 
 
-QtQml.qmlRegisterType(FigureCanvasAgg, "SdtGui", 0, 1, "FigureCanvasAgg")
+QtQml.qmlRegisterType(FigureCanvasAgg, "SdtGui", 0, 3, "FigureCanvasAgg")

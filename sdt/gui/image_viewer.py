@@ -14,7 +14,7 @@ if __name__ == "__main__":
     app.setOrganizationName("schuetzgroup")
     app.setOrganizationDomain("biophysics.iap.tuwien.ac.at")
     app.setApplicationName("ImageViewer")
-    app.setApplicationVersion("0.2")
+    app.setApplicationVersion("0.3")
 
     ap = argparse.ArgumentParser(
         description="Viewer for microscopy image sequences")
