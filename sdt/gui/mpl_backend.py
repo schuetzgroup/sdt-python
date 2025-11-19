@@ -192,16 +192,24 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
     def hoverEnterEvent(self, event: QtGui.QHoverEvent):
         """Translate Qt hoverEnterEvent to MPL LocationEvent"""
         mpl_event = mpl.backend_bases.LocationEvent(
-            "figure_enter_event", self, *self.mapToFigure(event.pos()),
-            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+            "figure_enter_event",
+            self,
+            *self.mapToFigure(event.position()),
+            modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event,
+        )
         self.callbacks.process("figure_enter_event", mpl_event)
 
     def hoverLeaveEvent(self, event: QtGui.QHoverEvent):
         """Translate Qt hoverLeaveEvent to MPL LocationEvent"""
         # TODO: restore cursor?
         mpl_event = mpl.backend_bases.LocationEvent(
-            "figure_leave_event", self, *self.mapToFigure(event.pos()),
-            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+            "figure_leave_event",
+            self,
+            *self.mapToFigure(event.position()),
+            modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event,
+        )
         self.callbacks.process("figure_leave_event", mpl_event)
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
@@ -210,8 +218,13 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         if b is None:
             return
         mpl_event = mpl.backend_bases.MouseEvent(
-            "button_press_event", self, *self.mapToFigure(event.pos()), b,
-            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+            "button_press_event",
+            self,
+            *self.mapToFigure(event.position()),
+            b,
+            modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event,
+        )
         self.callbacks.process("button_press_event", mpl_event)
 
     def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent):
@@ -220,9 +233,14 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         if b is None:
             return
         mpl_event = mpl.backend_bases.MouseEvent(
-            "button_press_event", self, *self.mapToFigure(event.pos()), b,
-            dblclick=True, modifiers=qt_to_mpl_modifiers(event.modifiers()),
-            guiEvent=event)
+            "button_press_event",
+            self,
+            *self.mapToFigure(event.position()),
+            b,
+            dblclick=True,
+            modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event,
+        )
         self.callbacks.process("button_press_event", mpl_event)
 
     def mouseReleaseEvent(self, event: QtGui.QMouseEvent):
@@ -231,8 +249,13 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         if b is None:
             return
         mpl_event = mpl.backend_bases.MouseEvent(
-            "button_release_event", self, *self.mapToFigure(event.pos()), b,
-            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+            "button_release_event",
+            self,
+            *self.mapToFigure(event.position()),
+            b,
+            modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event,
+        )
         self.callbacks.process("button_release_event", mpl_event)
 
     def mouseMoveEvent(self, event: QtGui.QMouseEvent):
@@ -241,8 +264,12 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         Qt calls this when the mouse is moved while a mouse button is pressed.
         """
         mpl_event = mpl.backend_bases.MouseEvent(
-            "motion_notify_event", self, *self.mapToFigure(event.pos()),
-            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+            "motion_notify_event",
+            self,
+            *self.mapToFigure(event.position()),
+            modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event,
+        )
         self.callbacks.process("motion_notify_event", mpl_event)
 
     def hoverMoveEvent(self, event: QtGui.QHoverEvent):
@@ -251,8 +278,12 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         Qt calls this when the mouse is moved while no mouse button is pressed.
         """
         mpl_event = mpl.backend_bases.MouseEvent(
-            "motion_notify_event", self, *self.mapToFigure(event.pos()),
-            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+            "motion_notify_event",
+            self,
+            *self.mapToFigure(event.position()),
+            modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event,
+        )
         self.callbacks.process("motion_notify_event", mpl_event)
 
     def wheelEvent(self, event: QtGui.QWheelEvent):
@@ -267,8 +298,13 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
             return
 
         mpl_event = mpl.backend_bases.MouseEvent(
-            "scroll_event", self, *self.mapToFigure(event.pos()), step=step,
-            modifiers=qt_to_mpl_modifiers(event.modifiers()), guiEvent=event)
+            "scroll_event",
+            self,
+            *self.mapToFigure(event.position()),
+            step=step,
+            modifiers=qt_to_mpl_modifiers(event.modifiers()),
+            guiEvent=event,
+        )
         self.callbacks.process("scroll_event", mpl_event)
 
     def keyPressEvent(self, event: QtGui.QKeyEvent):
