@@ -112,7 +112,7 @@ class ThreadWorker(QtCore.QObject):
         """True if a function call is currently executed."""
         return self._busy
 
-    enabledChanged = QtCore.Signal(bool)
+    enabledChanged = QtCore.Signal()
     """Enabled status changed"""
 
     @QtCore.Property(bool, notify=enabledChanged)
@@ -143,7 +143,7 @@ class ThreadWorker(QtCore.QObject):
                 # May be necessary to wake up
                 self._callCondition.notify()
             self._workerThread = None
-        self.enabledChanged.emit(e)
+        self.enabledChanged.emit()
 
     def _workerFunc(self):
         """Actual function to be executed in worker process
@@ -207,6 +207,7 @@ class ThreadWorker(QtCore.QObject):
                 # No exception, also no `return` due to `_stopRequested`
                 self.finished.emit(result)
 
+    @QtCore.Slot()
     def _disable(self):
         """Set ``enabled = False``
 
