@@ -18,7 +18,7 @@ class ListModel(QtCore.QAbstractListModel):
     """
     class Roles(enum.IntEnum):
         """Model roles"""
-        modelData = QtCore.Qt.UserRole
+        modelData = QtCore.Qt.ItemDataRole.UserRole
 
     def __init__(self, parent: QtCore.QObject | None = None):
         """Parameters
@@ -51,7 +51,9 @@ class ListModel(QtCore.QAbstractListModel):
         if set(names) == set(self.roles):
             return
         self.Roles = enum.IntEnum(
-            "Roles", {n: i for i, n in enumerate(names, QtCore.Qt.UserRole)})
+            "Roles",
+            {n: i for i, n in enumerate(names, QtCore.Qt.ItemDataRole.UserRole)},
+        )
         self.rolesChanged.emit(list(names))
 
     itemsChanged = QtCore.Signal(int, int, list, arguments=["index", "count", "roles"])

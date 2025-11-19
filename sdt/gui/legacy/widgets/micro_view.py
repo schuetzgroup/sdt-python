@@ -157,7 +157,7 @@ class MicroViewScene(QGraphicsScene):
 
 
 class LocalizationMarker(QGraphicsEllipseItem):
-    def __init__(self, data, color=Qt.green, parent=None):
+    def __init__(self, data, color=Qt.GlobalColor.green, parent=None):
         if ("size_x" in data.index) and ("size_y" in data.index):
             size_x = data["size_x"]
             size_y = data["size_y"]
@@ -200,8 +200,9 @@ class MicroViewWidget(mvBase):
         # on image change; there are white rectangles on the updated area
         # until the mouse is moved in or out of the view
         self._ui.view.setViewportUpdateMode(
-             QGraphicsView.BoundingRectViewportUpdate)
-        self._ui.view.setRenderHints(QPainter.Antialiasing)
+            QGraphicsView.ViewportUpdateMode.BoundingRectViewportUpdate
+        )
+        self._ui.view.setRenderHints(QPainter.RenderHint.Antialiasing)
         self._scene.imageItem.signals.mouseMoved.connect(
             self._updateCurrentPixelInfo)
 
@@ -213,7 +214,7 @@ class MicroViewWidget(mvBase):
 
         self._playing = False
         self._playTimer = QTimer()
-        self._playTimer.setTimerType(Qt.PreciseTimer)
+        self._playTimer.setTimerType(Qt.TimerType.PreciseTimer)
         self._playTimer.setSingleShot(False)
 
         # set up preview button
@@ -411,8 +412,12 @@ class MicroViewWidget(mvBase):
         qi[:, :, 0] = qi[:, :, 1] = qi[:, :, 2] = qi[:, :, 3] = img_buf
 
         # prevent QImage from being garbage collected
-        self._qImg = QImage(qi, self._imageData.shape[1],
-                            self._imageData.shape[0], QImage.Format_RGB32)
+        self._qImg = QImage(
+            qi,
+            self._imageData.shape[1],
+            self._imageData.shape[0],
+            QImage.Format.Format_RGB32,
+        )
         self._scene.setImage(self._qImg)
 
     def drawLocalizations(self):
@@ -436,9 +441,9 @@ class MicroViewWidget(mvBase):
 
         markerList = []
         for n, d in dBad.iterrows():
-            markerList.append(LocalizationMarker(d, Qt.red))
+            markerList.append(LocalizationMarker(d, Qt.GlobalColor.red))
         for n, d in dGood.iterrows():
-            markerList.append(LocalizationMarker(d, Qt.green))
+            markerList.append(LocalizationMarker(d, Qt.GlobalColor.green))
 
         self._locMarkers = self._scene.createItemGroup(markerList)
 
@@ -513,7 +518,9 @@ class MicroViewWidget(mvBase):
 
     @Slot()
     def zoomFit(self):
-        self._ui.view.fitInView(self._scene.imageItem, Qt.KeepAspectRatio)
+        self._ui.view.fitInView(
+            self._scene.imageItem, Qt.AspectRatioMode.KeepAspectRatio
+        )
 
     def getCurrentFrame(self):
         return self._imageData

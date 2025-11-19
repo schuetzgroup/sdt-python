@@ -179,7 +179,7 @@ class DatasetCollection(ListModel):
     datasets via this class.
     """
     class Roles(enum.IntEnum):
-        key = QtCore.Qt.UserRole
+        key = QtCore.Qt.ItemDataRole.UserRole
         dataset = enum.auto()
         special = enum.auto()
 

@@ -112,9 +112,13 @@ class PyImage(QtQuick.QQuickPaintedItem):
             img = np.clip(img, 0.0, 1.0) * 255
             img = img.astype(np.uint8)
         data = img.tobytes()
-        self._qImage = QtGui.QImage(data, img.shape[1], img.shape[0],
-                                    img.shape[1],
-                                    QtGui.QImage.Format_Grayscale8)
+        self._qImage = QtGui.QImage(
+            data,
+            img.shape[1],
+            img.shape[0],
+            img.shape[1],
+            QtGui.QImage.Format.Format_Grayscale8,
+        )
         self._qImage.pyData = data  # Save from garbage collector
         self.update()
 

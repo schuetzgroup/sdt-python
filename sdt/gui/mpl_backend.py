@@ -55,7 +55,9 @@ def qt_to_mpl_modifiers(modifiers: Union[int, QtCore.Qt.KeyboardModifiers],
     -------
     matplotlib compatible strings such as ``["ctrl", "shift"]``.
     """
-    modifiers = int(modifiers)
+    with contextlib.suppress(AttributeError):
+        # convert QtCore.Qt.KeyboardModifiers to int
+        modifiers = modifiers.value
     # 'control' is standalone key, 'ctrl' the modifier
     qt_keys = filter(lambda x: x[0] & modifiers and x[0] != ignore,
                      modifier_key_map.items())
@@ -149,10 +151,12 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
 
         Allows for reacting to changes in DevicePixelRatio
         """
-        if (change == QtQuick.QQuickItem.ItemSceneChange and
-                value.item is not None):
+        if (
+            change == QtQuick.QQuickItem.ItemChange.ItemSceneChange
+            and value.item is not None
+        ):
             self._update_pixel_ratio(value.item.devicePixelRatio())
-        elif change == QtQuick.QQuickItem.ItemDevicePixelRatioHasChanged:
+        elif change == QtQuick.QQuickItem.ItemChange.ItemDevicePixelRatioHasChanged:
             self._update_pixel_ratio(value.realValue)
         super().itemChange(change, value)
 
@@ -360,9 +364,12 @@ class FigureCanvasAgg(mpl_agg.FigureCanvasAgg, FigureCanvas):
         if not hasattr(self, "renderer"):
             return
 
-        img = QtGui.QImage(self.buffer_rgba(), int(self.renderer.width),
-                           int(self.renderer.height),
-                           QtGui.QImage.Format_RGBA8888)
+        img = QtGui.QImage(
+            self.buffer_rgba(),
+            int(self.renderer.width),
+            int(self.renderer.height),
+            QtGui.QImage.Format.Format_RGBA8888,
+        )
         img.setDevicePixelRatio(self._px_ratio)
         painter.drawImage(0, 0, img)
 
