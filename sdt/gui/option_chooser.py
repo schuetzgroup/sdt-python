@@ -158,6 +158,7 @@ class OptionChooser(QtQuick.QQuickItem):
             self.errorChanged.emit()
 
     # Slots
+    @QtCore.Slot()
     def _inputsChanged(self):
         """Called if any of `argProperties` was changed.
 
@@ -178,11 +179,13 @@ class OptionChooser(QtQuick.QQuickItem):
         # do not cause lots of aborts
         self._inputTimer.start()
 
+    @QtCore.Slot()
     def _triggerWorker(self):
         """Run :py:meth:`workerFunc` in separate thread"""
         args = [getattr(self, p) for p in self._argProperties]
         self._worker(*args)
 
+    @QtCore.Slot(object)
     def _workerFinished(self, result: Any):
         """Set result properties
 
@@ -194,6 +197,7 @@ class OptionChooser(QtQuick.QQuickItem):
             self._setProperty(p, r)
         self._setStatus(Sdt.WorkerStatus.Idle)
 
+    @QtCore.Slot(Exception)
     def _workerError(self, exc):
         """Callback for when worker encounters an error"""
         self._setStatus(Sdt.WorkerStatus.Error, exc)

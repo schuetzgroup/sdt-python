@@ -483,8 +483,8 @@ class ListModel(QtCore.QAbstractListModel):
             return False
         return self.set(index.row(), r.name, value)
 
-    def _emitDataChanged(self, index: int, count: int,
-                         roles: Iterable[str] = []):
+    @QtCore.Slot(int, int, list)
+    def _emitDataChanged(self, index: int, count: int, roles: Iterable[str] = []):
         """Emit :py:meth:`dataChanged` signal
 
         This is a slot connected to :py:meth:`itemsChanged`.

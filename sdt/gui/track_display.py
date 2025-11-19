@@ -74,6 +74,7 @@ class TrackDisplay(LocDisplay):
         "QVariant", comp=operator.is_)
     """Tracking data"""
 
+    @QtCore.Slot()
     def _makeLines(self):
         """Create lines marking the tracks
 

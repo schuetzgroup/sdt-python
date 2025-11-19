@@ -148,6 +148,7 @@ class Dataset(ListModel):
         fl = [{"id": k, **v} for k, v in fl.items()]
         self.reset(fl)
 
+    @QtCore.Slot(int, int, list)
     def _onItemsChanged(self, index: int, count: int, roles: Iterable[str]):
         if not roles or set(roles) & set(self.fileRoles):
             # Emit :py:attr:`fileListChanged` if model data changed
@@ -335,8 +336,8 @@ class DatasetCollection(ListModel):
         """List of all keys currently present in the model"""
         return [self.get(i, "key") for i in range(self.rowCount())]
 
-    def _onItemsChanged(self, index: int, count: int,
-                        roles: Iterable[str] = []):
+    @QtCore.Slot(int, int, list)
+    def _onItemsChanged(self, index: int, count: int, roles: Iterable[str] = []):
         """Emit :py:attr:`keysChanged` if model data changed"""
         if not roles or "key" in roles:
             self.keysChanged.emit()
@@ -357,6 +358,7 @@ class DatasetCollection(ListModel):
         sig = getNotifySignal(self, prop)
         sig.connect(lambda: self._propagatedPropertyChanged(prop))
 
+    @QtCore.Slot(str)
     def _propagatedPropertyChanged(self, prop: str):
         """Slot called when a property marked for propagation changes
 

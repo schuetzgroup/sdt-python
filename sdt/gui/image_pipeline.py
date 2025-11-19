@@ -67,6 +67,7 @@ class BasicImagePipeline(QtCore.QObject):
                         self.errorChanged.emit()
         self.doProcess(oldFrame, oldFrameCount)
 
+    @QtCore.Slot(object, object)
     def doProcess(self, oldFrame=None, oldFrameCount=None):
         if oldFrame is None:
             oldFrame = self.currentFrame
@@ -92,6 +93,7 @@ class BasicImagePipeline(QtCore.QObject):
                     channel: str) -> io.ImageSequence:
         return imageSeqs.get(channel)
 
+    @QtCore.Slot()
     def _getFrame(self):
         """Callback upon change of currently selected frame"""
         if self._pipeline is None:

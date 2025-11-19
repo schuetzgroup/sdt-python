@@ -297,6 +297,7 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         """Implement :py:meth:`FigureCanvasBase.flush_events`"""
         QtCore.QCoreApplication.processEvents()
 
+    @QtCore.Slot()
     def _onSizeChanged(self):
         """Slot called when figure needs to be resized
 
@@ -327,6 +328,7 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         # modifies the scene graph from
         QtCore.QTimer.singleShot(0, self._draw_idle)
 
+    @QtCore.Slot()
     def _draw_idle(self):
         """Slot to handle draw_idle in the main thread"""
         with self._idle_draw_cntx():
