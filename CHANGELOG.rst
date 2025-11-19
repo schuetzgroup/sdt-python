@@ -13,6 +13,14 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+20.1.0
+------
+
+- Port :py:mod:`gui` module to PySide6
+- Add :py:func:`stats.avg_shifted_hist` for average shifted histogram calculation
+- :py:mod:`motion`: Support nD case in motion models
+
+
 20.0.0
 ------
 
@@ -72,7 +80,7 @@ so watch out for those!
 
 - :py:class:`nbui.ChannelSplitter`: Update to work with newer `matplotlib`.
 - :py:class:`nbui.Locator`: Add built-in :py:class:`nbui.FrameSelector`.
-- :py:mod:`loc.cg`: Fix off-by-one error in local maximum detection, which 
+- :py:mod:`loc.cg`: Fix off-by-one error in local maximum detection, which
   could lead to wrongly discarding peaks close to the edges.
 - :py:mod:`loc.cg`: Fix issue where some peaks produced NaNs.
 - :py:mod:`loc.daostorm_3d`: Warn if ``radius >= 3`` as this can lead to a
