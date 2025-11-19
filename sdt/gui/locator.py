@@ -117,4 +117,4 @@ if __name__ == "__main__":
         win.dataset.setFiles(args.files)
         win.previewEnabled = not args.no_preview
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

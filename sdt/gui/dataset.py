@@ -443,9 +443,10 @@ class FilterDatasetProxy(QtCore.QSortFilterProxyModel):
     def showSpecial(self, s: bool):
         if s == self._showSpecial:
             return
+        self.beginFilterChange()
         self._showSpecial = s
         self.showSpecialChanged.emit()
-        self.invalidateFilter()
+        self.endFilterChange()
 
     def filterAcceptsRow(self, sourceRow: int,
                          sourceParent: QtCore.QModelIndex) -> bool:

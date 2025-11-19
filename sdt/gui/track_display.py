@@ -97,7 +97,8 @@ class TrackDisplay(LocDisplay):
                     xs = (x + 0.5) * self.scaleFactor
                     ys = (y + 0.5) * self.scaleFactor
                     poly = QtGui.QPolygonF(
-                        QtCore.QPointF(x, y) for x, y in zip(xs, ys))
+                        [QtCore.QPointF(x, y) for x, y in zip(xs, ys)]
+                    )
                     self._lines.append(poly)
         self.update()
 
