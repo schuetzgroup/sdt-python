@@ -96,8 +96,7 @@ def qt_to_mpl_keyevent(event: QtGui.QKeyEvent) -> Union[str, None]:
     return "+".join([*mpl_mods, mpl_key])
 
 
-class FigureCanvas(QtQuick.QQuickPaintedItem,
-                   mpl.backend_bases.FigureCanvasBase):
+class FigureCanvas(mpl.backend_bases.FigureCanvasBase, QtQuick.QQuickPaintedItem):
     """QQuickItem serving as a base class for matplotlib figure canvases"""
 
     def __init__(self, parent: QtQuick.QQuickItem | None = None):
@@ -106,9 +105,8 @@ class FigureCanvas(QtQuick.QQuickPaintedItem,
         parent
             Parent QQuickItem
         """
-        QtQuick.QQuickPaintedItem.__init__(self, parent=parent)
-        mpl.backend_bases.FigureCanvasBase.__init__(
-            self, figure=mpl.figure.Figure())
+        super().__init__(figure=mpl.figure.Figure())  # calls QQuickItem.__init__
+        self.setParentItem(parent)
 
         self._px_ratio = 1.0  # DevicePixelRatio
         self.figure._original_dpi = self.figure.dpi
