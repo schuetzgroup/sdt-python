@@ -80,7 +80,7 @@ T.ROISelector {
             property var newItem: null
             property var itemData: null
 
-            onPressed: {
+            onPressed: function(mouse) {
                 var ri = overlayRep.itemAt(nameSel.currentIndex)
                 if (ri.item)
                     ri.item.destroy()
@@ -90,7 +90,7 @@ T.ROISelector {
                 newItem.y = mouse.y
                 itemData = {x0: mouse.x, y0: mouse.y}
             }
-            onPositionChanged: {
+            onPositionChanged: function(mouse) {
                 newItem.x = Math.min(itemData.x0, mouse.x)
                 newItem.y = Math.min(itemData.y0, mouse.y)
                 newItem.width = Math.abs(itemData.x0 - mouse.x)
