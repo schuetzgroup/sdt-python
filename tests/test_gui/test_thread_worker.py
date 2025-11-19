@@ -78,7 +78,9 @@ def test_ThreadWorker(qtbot):
         barr.wait()
         w3.abort()
         threadBlock.set()
-        with qtbot.waitSignals([w3.finished, w3.busyChanged]):
+        # qtbot.waitSignals([w3.finished, w3.busyChanged]) fails with a KeyError
+        # (Windows, PySide6 6.10.0, pytest-qt 4.5.0)
+        with qtbot.waitSignal(w3.finished), qtbot.waitSignal(w3.busyChanged):
             w3(1, False)
 
         qtbot.waitUntil(lambda: w3.busy is False)
