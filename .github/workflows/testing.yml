@@ -34,7 +34,13 @@ jobs:
       shell: pwsh
       run: uv sync --extra gui
 
-    - name: Test with pytest
+    - name: Test with pytest, no GUI tests
       shell: pwsh
       run: |
-        uv run pytest -v -rs tests
+        uv run pytest -v -rs --ignore=tests/test_gui tests
+
+    - name: Test with pytest, GUI tests only
+      shell: pwsh
+      if: "${{ matrix.os != 'ubuntu' }}"  # these segfault on Ubuntu
+      run: |
+        uv run pytest -v -rs tests/test_gui
