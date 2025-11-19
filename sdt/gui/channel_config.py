@@ -172,12 +172,12 @@ class ChannelConfig(QtQuick.QQuickItem):
     images: Dataset = QmlDefinedProperty()
     """Images to display"""
 
-    @QtCore.Property(QtCore.QAbstractListModel, constant=True)
+    @QtCore.Property(ListModel, constant=True)
     def _channelList(self) -> ListModel:
         """Qt item model representing the channels (for use in QML)"""
         return self._chanList
 
-    @QtCore.Property(QtCore.QAbstractListModel, constant=True)
+    @QtCore.Property(ListModel, constant=True)
     def _sourceList(self) -> _SourceList:
         """Qt item model representing the sources (for use in QML)"""
         return self._srcList
