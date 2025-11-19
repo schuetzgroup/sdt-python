@@ -20,12 +20,13 @@ References
 """
 
 import inspect
-from typing import Callable, Iterable, Optional, TypeVar, Union
+import math
+from typing import Callable, Iterable, Literal, Optional, Tuple, TypeVar, Union
 
 import numpy as np
 import pandas as pd
 import scipy.stats
-
+from numpy.typing import ArrayLike
 
 PermutationTestResult = TypeVar("PermutationTestResult")
 """Placeholder for the type returned by `scipy.stats.permutation_test`,
@@ -143,3 +144,68 @@ def grouped_permutation_test(
         return statistic(np.concatenate(d1)) - statistic(np.concatenate(d2))
 
     return scipy.stats.permutation_test([data1, data2], statfunc, **kwargs)
+
+
+def avg_shifted_hist(
+    x: ArrayLike,
+    nbins: int | Literal["terrell-scott", "rice", "sqrt", "sturges", "scott"],
+    nshifts: int,
+    limits: Tuple[float, float] | None = None,
+    density: bool = False,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Average shifted histogram
+
+    Parameters
+    ----------
+    x
+        values for which to generate average shifted histogram
+    nbins
+        either literal number of histogram bins or name of the method to determine the
+        number (see https://en.wikipedia.org/wiki/Histogram)
+    nshifts
+        number of shifts
+    limits
+        histogram x axis range. If `None`, use min and max.
+    density
+        y axis scale. If `True`, generate probability density, if `False` use the
+        number of events
+
+    Returns
+    -------
+    y axis value for each bin and bin edges
+    """
+    x = np.asarray(x)
+
+    if limits is None:
+        limits = (x.min(), x.max())
+
+    # according to https://en.wikipedia.org/wiki/Histogram
+    if nbins == "terrell-scott":
+        nbins = math.ceil((2 * len(x)) ** (1 / 3))
+    elif nbins == "rice":
+        nbins = math.ceil(2 * len(x) ** (1 / 3))
+    elif nbins == "sqrt":
+        nbins = math.ceil(math.sqrt(len(x)))
+    elif nbins == "sturges":
+        nbins = math.ceil(math.log2(len(x))) + 1
+    elif nbins == "scott":
+        nbins = math.ceil(
+            (limits[1] - limits[0]) * len(x) ** (1 / 3) / (3.49 * np.std(x, ddof=1))
+        )
+    elif not isinstance(nbins, int):
+        raise ValueError(f"unsupported value for nbins: {nbins}")
+
+    nbins_shifted = nbins * nshifts
+    bins = np.linspace(*limits, nbins_shifted + 1)
+    hist = np.histogram(x, bins=bins, range=limits, density=density)[0]
+
+    # DOI: 10.1002/wics.54
+    # weights
+    w = np.empty(2 * nshifts - 1)
+    ar = np.arange(1, nshifts + 1)
+    w[:nshifts] = ar
+    w[nshifts:] = ar[-2::-1]
+    w /= nshifts * nshifts
+
+    f = np.convolve(hist, w, mode="same")
+    return f, bins

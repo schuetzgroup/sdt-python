@@ -270,3 +270,21 @@ def test_grouped_permutation_test():
     assert math.isclose(rm.statistic, p0m)
     assert math.isclose(rm.pvalue, pm_exp)
     np.testing.assert_allclose(np.sort(rm.null_distribution), np.sort([p1m, p2m, p3m]))
+
+
+def test_avg_shifted_hist():
+    x = [0.1, 0.15, 0.2, 0.4, 0.5, 0.55, 0.6, 0.7]
+    ash1, asb1 = stats.avg_shifted_hist(x, 3, 2)
+    h1, _ = np.histogram(x, np.linspace(0.1, 0.7, 7))
+    ash2 = (
+        np.array(
+            [
+                2 * h1[0] + h1[1],
+                *[h1[i - 1] + 2 * h1[i] + h1[i + 1] for i in range(1, 5)],
+                h1[4] + 2 * h1[5],
+            ]
+        )
+        / 4
+    )
+    np.testing.assert_array_equal(asb1, np.linspace(0.1, 0.7, 7))
+    np.testing.assert_array_almost_equal(ash1, ash2)
