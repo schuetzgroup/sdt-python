@@ -31,9 +31,4 @@ jobs:
     - name: Test with pytest
       shell: pwsh
       run: |
-        $os = "${{ runner.os }}"
-        if ( $os -eq "Linux") {
-          uv run pytest -v -rs --ignore=tests/test_gui/ tests
-        } else {
-          uv run pytest -v -rs tests
-        }
+        uv run pytest -v -rs tests
