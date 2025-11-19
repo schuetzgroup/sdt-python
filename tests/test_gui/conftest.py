@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2025 Lukas Schrangl <lukas.schrangl@tuwien.ac.at>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 import pytest
 
 
