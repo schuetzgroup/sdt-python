@@ -555,7 +555,7 @@ def from_raw_image(positions, frames, radius, bg_frame=2, bg_estimator="mean",
         raise ValueError("Unknown engine \"{}\".".format(engine))
 
     if bg_mask is None:
-        bg_mask = np.emtpy((0,)*ndim, dtype=bool)
+        bg_mask = np.empty((0,) * ndim, dtype=bool)
         global_bg = True
     else:
         global_bg = False
