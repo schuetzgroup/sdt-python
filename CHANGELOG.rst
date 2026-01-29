@@ -13,6 +13,12 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+20.1.1
+------
+
+- Fix calling :py:func:`brightness.from_raw_image` with ``bg_frame=float("inf")``
+
+
 20.1.0
 ------
 
@@ -100,8 +106,12 @@ so watch out for those!
 - Various bug fixes, mostly due to changes of underlying libraries.
 
 
+Older versions
+--------------
+
+
 17.5
-----
+~~~~
 
 - :py:mod:`motion.immobilization`: Properly handle unsorted tracking data
 - :py:class:`multicolor.Registrator`: Allow passing channel name as `channel`
@@ -111,7 +121,7 @@ so watch out for those!
 
 
 17.4
-----
+~~~~
 
 - :py:class:`flatfield.Corrector`: Handle Gaussian fits where the center is
   outside the image.
@@ -122,7 +132,7 @@ so watch out for those!
 
 
 17.3
-----
+~~~~
 
 - Depend on the `imageio` package for reading images instead of `PIMS`
 - Remove deprecated ``channel_reg`` module
@@ -135,7 +145,7 @@ so watch out for those!
 
 
 17.2
-----
+~~~~
 
 - Improvements to :py:class:`gui.BatchWorker` and :py:class:`gui.LocDisplay`
 - Fix QtQuick matplotlib backend for matplotlib >= 3.5
@@ -148,7 +158,7 @@ so watch out for those!
 
 
 17.1
-----
+~~~~
 
 - Prevent performing flatfield correction multiple times in
   :py:class:`fret.SmFRETAnalyzer`
@@ -160,7 +170,7 @@ so watch out for those!
 
 
 17.0
-----
+~~~~
 
 - Improvements to :py:mod:`helper.numba`
 - Add function for computing smallest enclosing circle
@@ -175,10 +185,6 @@ so watch out for those!
   as filtered (API break)
 - Add method to calculate detection and excitation efficiency corrections
   from a multi-state sample to :py:class:`fret.SmFRETAnalyzer`
-
-
-Older versions
---------------
 
 
 16.1
