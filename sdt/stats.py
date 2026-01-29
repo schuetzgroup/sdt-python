@@ -12,6 +12,12 @@ Hypothesis testing
 .. autofunction:: grouped_permutation_test
 
 
+Probability density function estimation
+---------------------------------------
+
+.. autofunction:: avg_shifted_hist
+
+
 References
 ----------
 .. [Schn2022] Schneider, M. C. & Schütz, G. J.: "Don’t Be Fooled by Randomness: Valid
