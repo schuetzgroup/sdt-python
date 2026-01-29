@@ -17,6 +17,7 @@ so watch out for those!
 ------
 
 - Fix calling :py:func:`brightness.from_raw_image` with ``bg_frame=float("inf")``
+- Compatibility fixes for new `scipy` and `pandas` versions
 
 
 20.1.0
