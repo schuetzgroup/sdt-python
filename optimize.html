@@ -1,50 +1,50 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Optimization and fitting algorithms &#8212; sdt-python 18.1 documentation</title>
+    <title>Optimization and fitting algorithms &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/documentation_options.js?v=7805977c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'optimize';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Helpers for writing new code" href="helper.html" />
+    <link rel="next" title="Statistical functions" href="stats.html" />
     <link rel="prev" title="Plotting utilities" href="plot.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -55,19 +55,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -89,12 +93,20 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -109,6 +121,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -117,10 +132,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.1 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
@@ -139,6 +166,7 @@
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Statistical functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -156,7 +184,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -165,14 +193,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -262,26 +290,28 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -392,12 +422,12 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
-  <span class="target" id="module-sdt.optimize"></span><section id="optimization-and-fitting-algorithms">
-<h1>Optimization and fitting algorithms<a class="headerlink" href="#optimization-and-fitting-algorithms" title="Permalink to this heading">#</a></h1>
+  <section id="optimization-and-fitting-algorithms">
+<span id="module-sdt.optimize"></span><h1>Optimization and fitting algorithms<a class="headerlink" href="#optimization-and-fitting-algorithms" title="Link to this heading">#</a></h1>
 <section id="fitting-of-1d-and-2d-gaussian-functions">
-<h2>Fitting of 1D and 2D Gaussian functions<a class="headerlink" href="#fitting-of-1d-and-2d-gaussian-functions" title="Permalink to this heading">#</a></h2>
+<h2>Fitting of 1D and 2D Gaussian functions<a class="headerlink" href="#fitting-of-1d-and-2d-gaussian-functions" title="Link to this heading">#</a></h2>
 <p><a class="reference internal" href="#sdt.optimize.Gaussian1DModel" title="sdt.optimize.Gaussian1DModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian1DModel</span></code></a> and <a class="reference internal" href="#sdt.optimize.Gaussian2DModel" title="sdt.optimize.Gaussian2DModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gaussian2DModel</span></code></a> are models for the
 <a class="reference external" href="http://lmfit.github.io/lmfit-py/">lmfit</a> package for easy fitting of 1D and
 2D Gaussian functions to data. For further information on how to use these,
@@ -448,10 +478,10 @@ please refer to the <code class="xref py py-mod docutils literal notranslate"><s
 </pre></div>
 </div>
 <section id="models">
-<h3>Models<a class="headerlink" href="#models" title="Permalink to this heading">#</a></h3>
+<h3>Models<a class="headerlink" href="#models" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.optimize.Gaussian1DModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">Gaussian1DModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/gaussian_fit.html#Gaussian1DModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.Gaussian1DModel" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">Gaussian1DModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/gaussian_fit.html#Gaussian1DModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.Gaussian1DModel" title="Link to this definition">#</a></dt>
 <dd><p>Model class for fitting a 1D Gaussian</p>
 <p>Derives from <code class="xref py py-class docutils literal notranslate"><span class="pre">lmfit.Model</span></code>.</p>
 <p>Parameters are <cite>amplitude</cite>, <cite>center</cite>, <cite>sigma</cite>, <cite>offset</cite>.</p>
@@ -476,11 +506,15 @@ as the model function (<cite>func</cite>).</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>1. Parameter names are inferred from the function arguments, and a
-residual function is automatically constructed.</p>
-<p>2. The model function must return an array that will be the same
+<p>1. The model function must return an array that will be the same
 size as the data being modeled.</p>
-<p>3. <cite>nan_policy</cite> sets what to do when a NaN or missing value is
+<p>2. Parameter names are inferred from the function arguments by default,
+and a residual function is automatically constructed.</p>
+<p>3. Specifying <cite>independent_vars</cite> here will explicitly name the
+independent variables for the Model.  in contrast, <cite>param_names</cite> is
+meant to help infer Parameter names for keyword arguments defined with
+<code class="docutils literal notranslate"><span class="pre">**kws</span></code> in the Model function.</p>
+<p>4. <cite>nan_policy</cite> sets what to do when a NaN or missing value is
 seen in the data. Should be one of:</p>
 <blockquote>
 <div><ul class="simple">
@@ -494,8 +528,8 @@ seen in the data. Should be one of:</p>
 (generally, the first argument) and a series of arguments that are
 meant to be parameters for the model. Thus, a simple peak using a
 Gaussian defined as:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">cen</span><span class="p">,</span> <span class="n">wid</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">cen</span><span class="p">,</span> <span class="n">wid</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">cen</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">wid</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -513,7 +547,7 @@ variables and parameters:</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.optimize.Gaussian2DModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">Gaussian2DModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/gaussian_fit.html#Gaussian2DModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.Gaussian2DModel" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">Gaussian2DModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/gaussian_fit.html#Gaussian2DModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.Gaussian2DModel" title="Link to this definition">#</a></dt>
 <dd><p>Model class for fitting a 2D Gaussian</p>
 <p>Derives from <code class="xref py py-class docutils literal notranslate"><span class="pre">lmfit.Model</span></code>.</p>
 <p>Parameters are <cite>amplitude</cite>, <cite>centerx</cite>, <cite>sigmax</cite>, <cite>centery</cite>, <cite>sigmay</cite>,
@@ -539,11 +573,15 @@ as the model function (<cite>func</cite>).</p></li>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>1. Parameter names are inferred from the function arguments, and a
-residual function is automatically constructed.</p>
-<p>2. The model function must return an array that will be the same
+<p>1. The model function must return an array that will be the same
 size as the data being modeled.</p>
-<p>3. <cite>nan_policy</cite> sets what to do when a NaN or missing value is
+<p>2. Parameter names are inferred from the function arguments by default,
+and a residual function is automatically constructed.</p>
+<p>3. Specifying <cite>independent_vars</cite> here will explicitly name the
+independent variables for the Model.  in contrast, <cite>param_names</cite> is
+meant to help infer Parameter names for keyword arguments defined with
+<code class="docutils literal notranslate"><span class="pre">**kws</span></code> in the Model function.</p>
+<p>4. <cite>nan_policy</cite> sets what to do when a NaN or missing value is
 seen in the data. Should be one of:</p>
 <blockquote>
 <div><ul class="simple">
@@ -557,8 +595,8 @@ seen in the data. Should be one of:</p>
 (generally, the first argument) and a series of arguments that are
 meant to be parameters for the model. Thus, a simple peak using a
 Gaussian defined as:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">cen</span><span class="p">,</span> <span class="n">wid</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">cen</span><span class="p">,</span> <span class="n">wid</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">cen</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">wid</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -576,10 +614,10 @@ variables and parameters:</p>
 
 </section>
 <section id="auxiliary-functions">
-<h3>Auxiliary functions<a class="headerlink" href="#auxiliary-functions" title="Permalink to this heading">#</a></h3>
+<h3>Auxiliary functions<a class="headerlink" href="#auxiliary-functions" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.optimize.guess_gaussian_parameters">
-<span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">guess_gaussian_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">indep_vars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/gaussian_fit.html#guess_gaussian_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.guess_gaussian_parameters" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">guess_gaussian_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">indep_vars</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/gaussian_fit.html#guess_gaussian_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.guess_gaussian_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Initial guess of parameters of the Gaussian</p>
 <p>This function does a crude estimation of the parameters:</p>
 <ul class="simple">
@@ -620,7 +658,7 @@ function.</p>
 </section>
 </section>
 <section id="random-sample-consensus-ransac">
-<h2>Random sample consensus (RANSAC)<a class="headerlink" href="#random-sample-consensus-ransac" title="Permalink to this heading">#</a></h2>
+<h2>Random sample consensus (RANSAC)<a class="headerlink" href="#random-sample-consensus-ransac" title="Link to this heading">#</a></h2>
 <p>Perform a fit to noisy data (i.e., data containing outliers) by repeatedly</p>
 <ul class="simple">
 <li><p>randomly choosing a (small) subset of the data</p></li>
@@ -641,10 +679,10 @@ fit can be performed as follows:</p>
 </pre></div>
 </div>
 <section id="programming-interface">
-<h3>Programming interface<a class="headerlink" href="#programming-interface" title="Permalink to this heading">#</a></h3>
+<h3>Programming interface<a class="headerlink" href="#programming-interface" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">RANSAC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/ransac.html#RANSAC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.RANSAC" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">RANSAC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_fit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_outliers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">independent_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/ransac.html#RANSAC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.RANSAC" title="Link to this definition">#</a></dt>
 <dd><p>Perform a fit to noisy data using RANSAC</p>
 <p>Take a subset of the data, fit to the subset and compute the error of the
 remaining datapoints. Repeat. Finally use the best fit.</p>
@@ -677,63 +715,63 @@ for <cite>lmfit</cite> models) and fall back to <code class="docutils literal no
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.model">
-<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#sdt.optimize.RANSAC.model" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">model</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></span><a class="headerlink" href="#sdt.optimize.RANSAC.model" title="Link to this definition">#</a></dt>
 <dd><p>Fitting model instance</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.n_fit">
-<span class="sig-name descname"><span class="pre">n_fit</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sdt.optimize.RANSAC.n_fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">n_fit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#sdt.optimize.RANSAC.n_fit" title="Link to this definition">#</a></dt>
 <dd><p>Number of datapoints to use for fitting</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.n_iter">
-<span class="sig-name descname"><span class="pre">n_iter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sdt.optimize.RANSAC.n_iter" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">n_iter</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#sdt.optimize.RANSAC.n_iter" title="Link to this definition">#</a></dt>
 <dd><p>Number of fitting iterations</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.max_outliers">
-<span class="sig-name descname"><span class="pre">max_outliers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.optimize.RANSAC.max_outliers" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">max_outliers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#sdt.optimize.RANSAC.max_outliers" title="Link to this definition">#</a></dt>
 <dd><p>Maximum fraction of outliers for a fit not to be rejected</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.max_error">
-<span class="sig-name descname"><span class="pre">max_error</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.optimize.RANSAC.max_error" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">max_error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#sdt.optimize.RANSAC.max_error" title="Link to this definition">#</a></dt>
 <dd><p>Maximum error between data and fit for a datapoint to be considered
 an inlier</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.norm">
-<span class="sig-name descname"><span class="pre">norm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sdt.optimize.RANSAC.norm" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">norm</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#sdt.optimize.RANSAC.norm" title="Link to this definition">#</a></dt>
 <dd><p>p-norm to use for error calculation</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.independent_vars">
-<span class="sig-name descname"><span class="pre">independent_vars</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.optimize.RANSAC.independent_vars" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">independent_vars</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#sdt.optimize.RANSAC.independent_vars" title="Link to this definition">#</a></dt>
 <dd><p>Names of independent variables</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.random_state">
-<span class="sig-name descname"><span class="pre">random_state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">RandomState</span></em><a class="headerlink" href="#sdt.optimize.RANSAC.random_state" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">random_state</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">RandomState</span></span><a class="headerlink" href="#sdt.optimize.RANSAC.random_state" title="Link to this definition">#</a></dt>
 <dd><p>Used for randomly drawing the sample to fit in each iteration</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.initial_guess">
-<span class="sig-name descname"><span class="pre">initial_guess</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sdt.optimize.RANSAC.initial_guess" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">initial_guess</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#sdt.optimize.RANSAC.initial_guess" title="Link to this definition">#</a></dt>
 <dd><p>If given, this is called before fitting in each iteration and should
 return an initial guess for fitting values.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.RANSAC.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/ransac.html#RANSAC.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.RANSAC.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/ransac.html#RANSAC.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.RANSAC.fit" title="Link to this definition">#</a></dt>
 <dd><p>Perform fitting</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -765,7 +803,7 @@ fit.</p></li>
 </section>
 </section>
 <section id="fitting-affine-transformations-to-point-pairs">
-<h2>Fitting affine transformations to point pairs<a class="headerlink" href="#fitting-affine-transformations-to-point-pairs" title="Permalink to this heading">#</a></h2>
+<h2>Fitting affine transformations to point pairs<a class="headerlink" href="#fitting-affine-transformations-to-point-pairs" title="Link to this heading">#</a></h2>
 <p>Given a set of pairs of points, an affine transformation between first and
 second pair entries can be found by means of a linear least squares fit.</p>
 <p class="rubric">Examples</p>
@@ -778,16 +816,16 @@ counterparts, i.e., <code class="docutils literal notranslate"><span class="pre"
 </pre></div>
 </div>
 <section id="id1">
-<h3>Programming interface<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3>Programming interface<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">AffineModel</span></span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModel" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">AffineModel</span></span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModel" title="Link to this definition">#</a></dt>
 <dd><p>Fit an affine transformation to pairs of points</p>
 <p>This provides a similar programming interface as <cite>lmfit</cite> and other
 fitting classes in the <a class="reference internal" href="#module-sdt.optimize" title="sdt.optimize"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.optimize</span></code></a> module.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModel.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModel.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModel.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModel.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModel.fit" title="Link to this definition">#</a></dt>
 <dd><p>Perform the fit</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -804,7 +842,7 @@ fitting classes in the <a class="reference internal" href="#module-sdt.optimize"
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModel.eval">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModel.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModel.eval" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModel.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModel.eval" title="Link to this definition">#</a></dt>
 <dd><p>Perform an affine transformation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -821,7 +859,7 @@ fitting classes in the <a class="reference internal" href="#module-sdt.optimize"
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModel.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModel.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModel.__call__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModel.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModel.__call__" title="Link to this definition">#</a></dt>
 <dd><p>Alias for <a class="reference internal" href="#sdt.optimize.AffineModel.eval" title="sdt.optimize.AffineModel.eval"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval()</span></code></a></p>
 </dd></dl>
 
@@ -829,7 +867,7 @@ fitting classes in the <a class="reference internal" href="#module-sdt.optimize"
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModelResult">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">AffineModelResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModelResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModelResult" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">AffineModelResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModelResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModelResult" title="Link to this definition">#</a></dt>
 <dd><p>Result of fitting an affine transformation to pairs of points</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -841,26 +879,26 @@ fitting classes in the <a class="reference internal" href="#module-sdt.optimize"
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModelResult.model">
-<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#sdt.optimize.AffineModel" title="sdt.optimize.affine_fit.AffineModel"><span class="pre">AffineModel</span></a></em><a class="headerlink" href="#sdt.optimize.AffineModelResult.model" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">model</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#sdt.optimize.AffineModel" title="sdt.optimize.affine_fit.AffineModel"><span class="pre">AffineModel</span></a></span><a class="headerlink" href="#sdt.optimize.AffineModelResult.model" title="Link to this definition">#</a></dt>
 <dd><p>Model instance used for fitting</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModelResult.best_values">
-<span class="sig-name descname"><span class="pre">best_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.optimize.AffineModelResult.best_values" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">best_values</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#sdt.optimize.AffineModelResult.best_values" title="Link to this definition">#</a></dt>
 <dd><p>Fit parameters in a lmfit-compatible way. Contains only a “transform”
 entry.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModelResult.transform">
-<span class="sig-name descname"><span class="pre">transform</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#sdt.optimize.AffineModelResult.transform" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#sdt.optimize.AffineModelResult.transform" title="Link to this definition">#</a></dt>
 <dd><p>Transformation matrix</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModelResult.eval">
-<span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModelResult.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModelResult.eval" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModelResult.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModelResult.eval" title="Link to this definition">#</a></dt>
 <dd><p>Perform an affine transformation with fitted parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -874,7 +912,7 @@ entry.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.AffineModelResult.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModelResult.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModelResult.__call__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/affine_fit.html#AffineModelResult.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.AffineModelResult.__call__" title="Link to this definition">#</a></dt>
 <dd><p>Alias for <a class="reference internal" href="#sdt.optimize.AffineModelResult.eval" title="sdt.optimize.AffineModelResult.eval"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval()</span></code></a></p>
 </dd></dl>
 
@@ -883,7 +921,7 @@ entry.</p>
 </section>
 </section>
 <section id="fitting-of-a-sum-of-exponential-functions">
-<h2>Fitting of a sum of exponential functions<a class="headerlink" href="#fitting-of-a-sum-of-exponential-functions" title="Permalink to this heading">#</a></h2>
+<h2>Fitting of a sum of exponential functions<a class="headerlink" href="#fitting-of-a-sum-of-exponential-functions" title="Link to this heading">#</a></h2>
 <p>The <a class="reference internal" href="#sdt.optimize.ExpSumModel" title="sdt.optimize.ExpSumModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExpSumModel</span></code></a> class allows for fitting a sum of exponential
 functions</p>
 <div class="math notranslate nohighlight">
@@ -895,12 +933,12 @@ This module includes rewrite of the GPLv3-licensed code by Greg von Winckel,
 which is also available at <a class="footnote-reference brackets" href="#id5" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. Further insights about the algorithm may be
 gained by reading anything about Prony’s method and <a class="footnote-reference brackets" href="#id6" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id5" role="note">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
 <p><a class="reference external" href="https://web.archive.org/web/20160813110706/http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions">https://web.archive.org/web/20160813110706/http://www.scientificpython.net/pyblog/fitting-of-data-with-exponential-functions</a></p>
 </aside>
-<aside class="footnote brackets" id="id6" role="note">
+<aside class="footnote brackets" id="id6" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">2</a><span class="fn-bracket">]</span></span>
 <p>M. R. Osborne, G. K. Smyth: A Modified Prony Algorithm for Fitting
 Functions Defined by Difference Equations. SIAM J. on Sci. and Statist.
@@ -922,10 +960,10 @@ of corresponding values of the sum of the exponentials, the parameters
 </pre></div>
 </div>
 <section id="id7">
-<h3>Programming interface<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<h3>Programming interface<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">ExpSumModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_exp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModel" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">ExpSumModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_exp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModel" title="Link to this definition">#</a></dt>
 <dd><p>Fit a sum of exponential functions to data</p>
 <p>Determine the best parameters <span class="math notranslate nohighlight">\(\alpha, \beta_k, \lambda_k\)</span> by
 fitting <span class="math notranslate nohighlight">\(y(x) = \alpha + \sum_{k=1}^p \beta_k
@@ -940,19 +978,19 @@ fitting <span class="math notranslate nohighlight">\(y(x) = \alpha + \sum_{k=1}^
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModel.n_exp">
-<span class="sig-name descname"><span class="pre">n_exp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sdt.optimize.ExpSumModel.n_exp" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">n_exp</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#sdt.optimize.ExpSumModel.n_exp" title="Link to this definition">#</a></dt>
 <dd><p>Number of exponential summands</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModel.poly_order">
-<span class="sig-name descname"><span class="pre">poly_order</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sdt.optimize.ExpSumModel.poly_order" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">poly_order</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#sdt.optimize.ExpSumModel.poly_order" title="Link to this definition">#</a></dt>
 <dd><p>Order of polynomial used for approximation</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModel.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModel.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModel.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModel.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModel.fit" title="Link to this definition">#</a></dt>
 <dd><p>Perform the fit</p>
 <p>Determine the best parameters <span class="math notranslate nohighlight">\(\alpha, \beta_k, \lambda_k\)</span>.</p>
 <dl class="field-list simple">
@@ -973,7 +1011,7 @@ has <cite>n_exp</cite> + 1 entries. If <cite>None</cite>, use <code class="docut
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModel.eval">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModel.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModel.eval" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModel.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModel.eval" title="Link to this definition">#</a></dt>
 <dd><p>Evaluate the sum of exponentials</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -992,7 +1030,7 @@ has <cite>n_exp</cite> + 1 entries. If <cite>None</cite>, use <code class="docut
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModel.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModel.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModel.__call__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModel.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModel.__call__" title="Link to this definition">#</a></dt>
 <dd><p>Alias for <a class="reference internal" href="#sdt.optimize.ExpSumModel.eval" title="sdt.optimize.ExpSumModel.eval"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval()</span></code></a></p>
 </dd></dl>
 
@@ -1000,7 +1038,7 @@ has <cite>n_exp</cite> + 1 entries. If <cite>None</cite>, use <code class="docut
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">ExpSumModelResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_coeff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModelResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModelResult" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">ExpSumModelResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ode_coeff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModelResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModelResult" title="Link to this definition">#</a></dt>
 <dd><p>Result of fitting a sum of exponential functions to data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1016,43 +1054,43 @@ has <cite>n_exp</cite> + 1 entries. If <cite>None</cite>, use <code class="docut
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult.model">
-<span class="sig-name descname"><span class="pre">model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#sdt.optimize.ExpSumModel" title="sdt.optimize.exp_fit.ExpSumModel"><span class="pre">ExpSumModel</span></a></em><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.model" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">model</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#sdt.optimize.ExpSumModel" title="sdt.optimize.exp_fit.ExpSumModel"><span class="pre">ExpSumModel</span></a></span><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.model" title="Link to this definition">#</a></dt>
 <dd><p>Model instance used for fitting</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult.offset">
-<span class="sig-name descname"><span class="pre">offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.offset" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">offset</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.offset" title="Link to this definition">#</a></dt>
 <dd><p>Additive parameter <span class="math notranslate nohighlight">\(\alpha\)</span></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult.mant">
-<span class="sig-name descname"><span class="pre">mant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.mant" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">mant</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.mant" title="Link to this definition">#</a></dt>
 <dd><p>Mantissa coefficients <span class="math notranslate nohighlight">\(\beta_k\)</span></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult.exp">
-<span class="sig-name descname"><span class="pre">exp</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.exp" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">exp</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.exp" title="Link to this definition">#</a></dt>
 <dd><p>Mantissa coefficients <span class="math notranslate nohighlight">\(\lambda_k\)</span></p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult.ode_coeff">
-<span class="sig-name descname"><span class="pre">ode_coeff</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.ode_coeff" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">ode_coeff</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.ode_coeff" title="Link to this definition">#</a></dt>
 <dd><p>ODE coefficients (from the modified Prony’s method)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult.best_values">
-<span class="sig-name descname"><span class="pre">best_values</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.best_values" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">best_values</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.best_values" title="Link to this definition">#</a></dt>
 <dd><p>Fit parameters in a lmfit-compatible way</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult.eval">
-<span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModelResult.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.eval" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModelResult.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.eval" title="Link to this definition">#</a></dt>
 <dd><p>Evaluate the sum of exponentials with fitted parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1066,7 +1104,7 @@ has <cite>n_exp</cite> + 1 entries. If <cite>None</cite>, use <code class="docut
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.ExpSumModelResult.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModelResult.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.__call__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ExpSumModelResult.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ExpSumModelResult.__call__" title="Link to this definition">#</a></dt>
 <dd><p>Alias for <a class="reference internal" href="#sdt.optimize.ExpSumModelResult.eval" title="sdt.optimize.ExpSumModelResult.eval"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eval()</span></code></a></p>
 </dd></dl>
 
@@ -1074,7 +1112,7 @@ has <cite>n_exp</cite> + 1 entries. If <cite>None</cite>, use <code class="docut
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.optimize.ProbExpSumModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">ProbExpSumModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_exp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ProbExpSumModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ProbExpSumModel" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.optimize.</span></span><span class="sig-name descname"><span class="pre">ProbExpSumModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_exp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ProbExpSumModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ProbExpSumModel" title="Link to this definition">#</a></dt>
 <dd><p>Fit a mixture of exponential distribution CDFs</p>
 <p>Determine the best parameters <span class="math notranslate nohighlight">\(\alpha, \beta_k, \lambda_k\)</span> by fitting
 <span class="math notranslate nohighlight">\(\alpha + \sum_{k=1}^p \beta_k \text{e}^{\lambda_k t}\)</span>. Additionally,
@@ -1105,7 +1143,7 @@ determined from the constraint.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.optimize.ProbExpSumModel.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ProbExpSumModel.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ProbExpSumModel.fit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/optimize/exp_fit.html#ProbExpSumModel.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.optimize.ProbExpSumModel.fit" title="Link to this definition">#</a></dt>
 <dd><p>Perform the fit</p>
 <p>Determine the best parameters <span class="math notranslate nohighlight">\(\alpha, \beta_k, \lambda_k\)</span>.</p>
 <dl class="field-list simple">
@@ -1128,7 +1166,7 @@ has <cite>n_exp</cite> + 1 entries. If <cite>None</cite>, use <code class="docut
 
 </section>
 <section id="theory">
-<span id="id8"></span><h3>Theory<a class="headerlink" href="#theory" title="Permalink to this heading">#</a></h3>
+<span id="id8"></span><h3>Theory<a class="headerlink" href="#theory" title="Link to this heading">#</a></h3>
 <p><span class="math notranslate nohighlight">\(y(t)\)</span> is the general solution of the ordinary differential equation
 (ODE)</p>
 <div class="math notranslate nohighlight">
@@ -1184,11 +1222,10 @@ parameters <span class="math notranslate nohighlight">\(\alpha\)</span> and <spa
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="plot.html"
@@ -1200,18 +1237,15 @@ parameters <span class="math notranslate nohighlight">\(\alpha\)</span> and <spa
       </div>
     </a>
     <a class="right-next"
-       href="helper.html"
+       href="stats.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Helpers for writing new code</p>
+        <p class="prev-next-title">Statistical functions</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -1219,6 +1253,7 @@ parameters <span class="math notranslate nohighlight">\(\alpha\)</span> and <spa
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -1328,6 +1363,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -1354,8 +1390,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

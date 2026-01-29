@@ -1,45 +1,45 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>GUIs for the Jupyter notebook &#8212; sdt-python 18.1 documentation</title>
+    <title>GUIs for the Jupyter notebook &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="_static/documentation_options.js?v=7805977c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'nbui';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -54,19 +54,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -88,12 +92,20 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -108,6 +120,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -116,10 +131,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.1 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
@@ -138,6 +165,7 @@
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Statistical functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -155,7 +183,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -164,14 +192,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -261,26 +289,28 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -368,10 +398,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
-  <span class="target" id="module-sdt.nbui"></span><section id="guis-for-the-jupyter-notebook">
-<h1>GUIs for the Jupyter notebook<a class="headerlink" href="#guis-for-the-jupyter-notebook" title="Permalink to this heading">#</a></h1>
+  <section id="guis-for-the-jupyter-notebook">
+<span id="module-sdt.nbui"></span><h1>GUIs for the Jupyter notebook<a class="headerlink" href="#guis-for-the-jupyter-notebook" title="Link to this heading">#</a></h1>
 <p>The <a class="reference internal" href="#module-sdt.nbui" title="sdt.nbui"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.nbui</span></code></a> module contains graphical user interfaces to be used
 within Jupyter notebooks.</p>
 <p>Currently, there is</p>
@@ -388,10 +418,10 @@ images</p></li>
 recorded using the same camera.</p></li>
 </ul>
 <section id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading">#</a></h2>
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.nbui.Locator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">Locator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.Locator" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">Locator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.Locator" title="Link to this definition">#</a></dt>
 <dd><p>Notebook UI for finding parameters for single molecule localizations</p>
 <p>This allows for loading single molecule image data, setting localization
 algorithm parameters and inspecting the result.</p>
@@ -443,7 +473,7 @@ combination has been found, get the parameters in another notebook cell:</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.images">
-<span class="sig-name descname"><span class="pre">images</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sdt.nbui.Locator.images" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">images</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#sdt.nbui.Locator.images" title="Link to this definition">#</a></dt>
 <dd><p>Image files/sequences passed to the built-in <a class="reference internal" href="#sdt.nbui.ImageSelector" title="sdt.nbui.ImageSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageSelector</span></code></a>.
 If empty or <cite>None</cite>, the selector is hidden. Using the selector to choose a
 frame sets <a class="reference internal" href="#sdt.nbui.Locator.input" title="sdt.nbui.Locator.input"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input</span></code></a> accordingly.</p>
@@ -451,55 +481,55 @@ frame sets <a class="reference internal" href="#sdt.nbui.Locator.input" title="s
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.input">
-<span class="sig-name descname"><span class="pre">input</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sdt.nbui.Locator.input" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">input</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#sdt.nbui.Locator.input" title="Link to this definition">#</a></dt>
 <dd><p>Image data</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.image_display">
-<span class="sig-name descname"><span class="pre">image_display</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#sdt.nbui.ImageDisplay" title="sdt.nbui.image_display.ImageDisplay"><span class="pre">ImageDisplay</span></a></em><a class="headerlink" href="#sdt.nbui.Locator.image_display" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">image_display</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#sdt.nbui.ImageDisplay" title="sdt.nbui.image_display.ImageDisplay"><span class="pre">ImageDisplay</span></a></span><a class="headerlink" href="#sdt.nbui.Locator.image_display" title="Link to this definition">#</a></dt>
 <dd><p>Image display widget</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.algorithm">
-<span class="sig-name descname"><span class="pre">algorithm</span></span><a class="headerlink" href="#sdt.nbui.Locator.algorithm" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">algorithm</span></span><a class="headerlink" href="#sdt.nbui.Locator.algorithm" title="Link to this definition">#</a></dt>
 <dd><p>Name of the algorithm</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.options">
-<span class="sig-name descname"><span class="pre">options</span></span><a class="headerlink" href="#sdt.nbui.Locator.options" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">options</span></span><a class="headerlink" href="#sdt.nbui.Locator.options" title="Link to this definition">#</a></dt>
 <dd><p>dict of options to the localizing function</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.locate_func">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">locate_func</span></span><a class="headerlink" href="#sdt.nbui.Locator.locate_func" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">locate_func</span></span><a class="headerlink" href="#sdt.nbui.Locator.locate_func" title="Link to this definition">#</a></dt>
 <dd><p>Currently selected single frame localization function</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.batch_func">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_func</span></span><a class="headerlink" href="#sdt.nbui.Locator.batch_func" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">batch_func</span></span><a class="headerlink" href="#sdt.nbui.Locator.batch_func" title="Link to this definition">#</a></dt>
 <dd><p>Currently selected batch localization function</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.locate_roi_func">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">locate_roi_func</span></span><a class="headerlink" href="#sdt.nbui.Locator.locate_roi_func" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">locate_roi_func</span></span><a class="headerlink" href="#sdt.nbui.Locator.locate_roi_func" title="Link to this definition">#</a></dt>
 <dd><p>Currently selected single frame localization (+ ROI) function</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.batch_roi_func">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_roi_func</span></span><a class="headerlink" href="#sdt.nbui.Locator.batch_roi_func" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">batch_roi_func</span></span><a class="headerlink" href="#sdt.nbui.Locator.batch_roi_func" title="Link to this definition">#</a></dt>
 <dd><p>Currently selected batch localization (+ ROI) function</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.get_settings">
-<span class="sig-name descname"><span class="pre">get_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator.get_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.Locator.get_settings" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator.get_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.Locator.get_settings" title="Link to this definition">#</a></dt>
 <dd><p>Get all settings (algorithm and options)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -514,7 +544,7 @@ accessible via the “algorithm” and “options” keys, respectively.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.nbui.Locator.set_settings">
-<span class="sig-name descname"><span class="pre">set_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator.set_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.Locator.set_settings" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/locator.html#Locator.set_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.Locator.set_settings" title="Link to this definition">#</a></dt>
 <dd><p>Set all settings (algorithm and options)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -529,7 +559,7 @@ keys, respectively.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.nbui.Thresholder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">Thresholder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/thresholder.html#Thresholder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.Thresholder" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">Thresholder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/thresholder.html#Thresholder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.Thresholder" title="Link to this definition">#</a></dt>
 <dd><p>Notebook UI for finding image thresholding parameters</p>
 <p>This allows for loading image data, setting thresholding algorithm
 parameters and inspecting the result.</p>
@@ -566,19 +596,19 @@ combination has been found, get the parameters in another notebook cell:</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.Thresholder.algorithm">
-<span class="sig-name descname"><span class="pre">algorithm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#sdt.nbui.Thresholder.algorithm" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">algorithm</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#sdt.nbui.Thresholder.algorithm" title="Link to this definition">#</a></dt>
 <dd><p>Name of the algorithm</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.Thresholder.options">
-<span class="sig-name descname"><span class="pre">options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></em><a class="headerlink" href="#sdt.nbui.Thresholder.options" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">options</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span></span><a class="headerlink" href="#sdt.nbui.Thresholder.options" title="Link to this definition">#</a></dt>
 <dd><p>Options to the thresholding function</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.nbui.Thresholder.func">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">func</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span></em><a class="headerlink" href="#sdt.nbui.Thresholder.func" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">func</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span></span><a class="headerlink" href="#sdt.nbui.Thresholder.func" title="Link to this definition">#</a></dt>
 <dd><p>Processing function of the currently selected algorithm</p>
 </dd></dl>
 
@@ -586,7 +616,7 @@ combination has been found, get the parameters in another notebook cell:</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.nbui.ROISelector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">ROISelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/roi_selector.html#ROISelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ROISelector" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">ROISelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/roi_selector.html#ROISelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ROISelector" title="Link to this definition">#</a></dt>
 <dd><p>Notebook UI for creating ROIs by drawing them on images</p>
 <p>This is useful e.g. to select the region occupied by a cell from a
 transmission light image.</p>
@@ -638,14 +668,14 @@ ROIs if no categories were defined).</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ROISelector.images">
-<span class="sig-name descname"><span class="pre">images</span></span><a class="headerlink" href="#sdt.nbui.ROISelector.images" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">images</span></span><a class="headerlink" href="#sdt.nbui.ROISelector.images" title="Link to this definition">#</a></dt>
 <dd><p>Images or sequences to select from. See <a class="reference internal" href="#sdt.nbui.ImageSelector" title="sdt.nbui.ImageSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageSelector</span></code></a>
 documentation for details.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ROISelector.rois">
-<span class="sig-name descname"><span class="pre">rois</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span></em><a class="headerlink" href="#sdt.nbui.ROISelector.rois" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">rois</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span></span><a class="headerlink" href="#sdt.nbui.ROISelector.rois" title="Link to this definition">#</a></dt>
 <dd><p>Each list entry corresponds to one entry in <a class="reference internal" href="#sdt.nbui.ROISelector.images" title="sdt.nbui.ROISelector.images"><code class="xref py py-attr docutils literal notranslate"><span class="pre">images</span></code></a>. An entry
 can be either a single ROI, a list of ROIs (if <a class="reference internal" href="#sdt.nbui.ROISelector.multi" title="sdt.nbui.ROISelector.multi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">multi</span></code></a> is <cite>True</cite>,
 or a dict mapping a category name to a ROI or list of ROIs.</p>
@@ -653,27 +683,27 @@ or a dict mapping a category name to a ROI or list of ROIs.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ROISelector.categories">
-<span class="sig-name descname"><span class="pre">categories</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.nbui.ROISelector.categories" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">categories</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#sdt.nbui.ROISelector.categories" title="Link to this definition">#</a></dt>
 <dd><p>ROI categories. If empty, there is just one (unnamed) category.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ROISelector.multi">
-<span class="sig-name descname"><span class="pre">multi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#sdt.nbui.ROISelector.multi" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">multi</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#sdt.nbui.ROISelector.multi" title="Link to this definition">#</a></dt>
 <dd><p>Whether to enable selection of mulitple ROIs per image und category</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.nbui.ROISelector.set_rois">
-<span class="sig-name descname"><span class="pre">set_rois</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/roi_selector.html#ROISelector.set_rois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ROISelector.set_rois" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_rois</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/roi_selector.html#ROISelector.set_rois"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ROISelector.set_rois" title="Link to this definition">#</a></dt>
 <dd><p>Set ROIs for a file</p>
 <p>This makes sure that the <a class="reference internal" href="#sdt.nbui.ROISelector.rois" title="sdt.nbui.ROISelector.rois"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rois</span></code></a> traitlet is properly updated
 and callback functions are called.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<em>int</em>) – </p></li>
-<li><p><strong>r</strong> (<a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.roi.PathROI"><em>PathROI</em></a><em> | </em><em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.roi.PathROI"><em>PathROI</em></a><em>] </em><em>| </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.roi.PathROI"><em>PathROI</em></a><em>]</em><em>]</em>) – </p></li>
+<li><p><strong>index</strong> (<em>int</em>)</p></li>
+<li><p><strong>r</strong> (<a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.roi.PathROI"><em>PathROI</em></a><em> | </em><em>Dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.roi.PathROI"><em>PathROI</em></a><em>] </em><em>| </em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><a class="reference internal" href="roi.html#sdt.roi.PathROI" title="sdt.roi.roi.PathROI"><em>PathROI</em></a><em>]</em><em>]</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -683,7 +713,7 @@ and callback functions are called.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.nbui.FileDialog">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">FileDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/file_dialog.html#FileDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.FileDialog" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">FileDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/file_dialog.html#FileDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.FileDialog" title="Link to this definition">#</a></dt>
 <dd><p>File selection dialog</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -696,13 +726,13 @@ and callback functions are called.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.FileDialog.selected">
-<span class="sig-name descname"><span class="pre">selected</span></span><a class="headerlink" href="#sdt.nbui.FileDialog.selected" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">selected</span></span><a class="headerlink" href="#sdt.nbui.FileDialog.selected" title="Link to this definition">#</a></dt>
 <dd><p>List of selected files</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.FileDialog.cur_dir">
-<span class="sig-name descname"><span class="pre">cur_dir</span></span><a class="headerlink" href="#sdt.nbui.FileDialog.cur_dir" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cur_dir</span></span><a class="headerlink" href="#sdt.nbui.FileDialog.cur_dir" title="Link to this definition">#</a></dt>
 <dd><p>Current directory</p>
 </dd></dl>
 
@@ -710,7 +740,7 @@ and callback functions are called.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.nbui.ImageDisplay">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">ImageDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/image_display.html#ImageDisplay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ImageDisplay" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">ImageDisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/image_display.html#ImageDisplay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ImageDisplay" title="Link to this definition">#</a></dt>
 <dd><p>Widget to display an image</p>
 <p>Additionally, a slider to set black and white points is provided.</p>
 <dl class="field-list simple">
@@ -725,25 +755,25 @@ and callback functions are called.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ImageDisplay.ax">
-<span class="sig-name descname"><span class="pre">ax</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Axes</span></em><a class="headerlink" href="#sdt.nbui.ImageDisplay.ax" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">ax</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Axes</span></span><a class="headerlink" href="#sdt.nbui.ImageDisplay.ax" title="Link to this definition">#</a></dt>
 <dd><p>Axes instance to use for plotting</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ImageDisplay.cmap">
-<span class="sig-name descname"><span class="pre">cmap</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Colormap</span></em><a class="headerlink" href="#sdt.nbui.ImageDisplay.cmap" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cmap</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Colormap</span></span><a class="headerlink" href="#sdt.nbui.ImageDisplay.cmap" title="Link to this definition">#</a></dt>
 <dd><p>Colormap for image display</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ImageDisplay.input">
-<span class="sig-name descname"><span class="pre">input</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#sdt.nbui.ImageDisplay.input" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">input</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#sdt.nbui.ImageDisplay.input" title="Link to this definition">#</a></dt>
 <dd><p>Image array to display</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.nbui.ImageDisplay.auto_scale">
-<span class="sig-name descname"><span class="pre">auto_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/image_display.html#ImageDisplay.auto_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ImageDisplay.auto_scale" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">auto_scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/image_display.html#ImageDisplay.auto_scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ImageDisplay.auto_scale" title="Link to this definition">#</a></dt>
 <dd><p>Auto-set black and white points</p>
 <p>Set black point to the minimum and white point to the maximum value
 of the image data (<a class="reference internal" href="#sdt.nbui.ImageDisplay.input" title="sdt.nbui.ImageDisplay.input"><code class="xref py py-attr docutils literal notranslate"><span class="pre">input</span></code></a> attribute).</p>
@@ -753,7 +783,7 @@ of the image data (<a class="reference internal" href="#sdt.nbui.ImageDisplay.in
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.nbui.ImageSelector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">ImageSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/image_selector.html#ImageSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ImageSelector" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">ImageSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/image_selector.html#ImageSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ImageSelector" title="Link to this definition">#</a></dt>
 <dd><p>UI element to select an image sequence and frame number</p>
 <p>Given a list of file names, images, or image sequences, this allows the
 user to chose one of entry and also to select a frame number. The selected
@@ -768,19 +798,19 @@ image is available via the <a class="reference internal" href="#sdt.nbui.ImageSe
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ImageSelector.output">
-<span class="sig-name descname"><span class="pre">output</span></span><a class="headerlink" href="#sdt.nbui.ImageSelector.output" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">output</span></span><a class="headerlink" href="#sdt.nbui.ImageSelector.output" title="Link to this definition">#</a></dt>
 <dd><p>2D array representing the currently selected frame.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ImageSelector.index">
-<span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#sdt.nbui.ImageSelector.index" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#sdt.nbui.ImageSelector.index" title="Link to this definition">#</a></dt>
 <dd><p>Currently selected index (w.r.t. <a class="reference internal" href="#sdt.nbui.ImageSelector.images" title="sdt.nbui.ImageSelector.images"><code class="xref py py-attr docutils literal notranslate"><span class="pre">images</span></code></a>)</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ImageSelector.images">
-<span class="sig-name descname"><span class="pre">images</span></span><a class="headerlink" href="#sdt.nbui.ImageSelector.images" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">images</span></span><a class="headerlink" href="#sdt.nbui.ImageSelector.images" title="Link to this definition">#</a></dt>
 <dd><p>Images or sequences to select from. Image sequences can be passed as
 3D <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, as lists of 2D arrays, or as paths to image
 files, which will be opened using <code class="xref py py-class docutils literal notranslate"><span class="pre">io.ImageSequence</span></code>. Single
@@ -793,7 +823,7 @@ image (sequence).</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.nbui.ImageSelector.show_file_buttons">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">show_file_buttons</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#sdt.nbui.ImageSelector.show_file_buttons" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">show_file_buttons</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#sdt.nbui.ImageSelector.show_file_buttons" title="Link to this definition">#</a></dt>
 <dd><p>Whether to show “back” and “forward” buttons for file selection</p>
 </dd></dl>
 
@@ -801,7 +831,7 @@ image (sequence).</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.nbui.ChannelSplitter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">ChannelSplitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/channel_splitter.html#ChannelSplitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ChannelSplitter" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.nbui.</span></span><span class="sig-name descname"><span class="pre">ChannelSplitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/nbui/channel_splitter.html#ChannelSplitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.nbui.ChannelSplitter" title="Link to this definition">#</a></dt>
 <dd><p>Find regions of different imaging channels recorded with same camera</p>
 <p>If several channels are recorded side-by-side on the same camera chip,
 find the region for each channel by drawing corresponding rectangles on
@@ -817,31 +847,31 @@ representative images.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ChannelSplitter.input">
-<span class="sig-name descname"><span class="pre">input</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#sdt.nbui.ChannelSplitter.input" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">input</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#sdt.nbui.ChannelSplitter.input" title="Link to this definition">#</a></dt>
 <dd><p>Image to display</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ChannelSplitter.same_size">
-<span class="sig-name descname"><span class="pre">same_size</span></span><a class="headerlink" href="#sdt.nbui.ChannelSplitter.same_size" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">same_size</span></span><a class="headerlink" href="#sdt.nbui.ChannelSplitter.same_size" title="Link to this definition">#</a></dt>
 <dd><p>If True, all channels are forced to be the same size</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ChannelSplitter.colors">
-<span class="sig-name descname"><span class="pre">colors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['C1',</span> <span class="pre">'C8',</span> <span class="pre">'C6',</span> <span class="pre">'C2',</span> <span class="pre">'C9']</span></em><a class="headerlink" href="#sdt.nbui.ChannelSplitter.colors" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">colors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['C1',</span> <span class="pre">'C8',</span> <span class="pre">'C6',</span> <span class="pre">'C2',</span> <span class="pre">'C9']</span></span><a class="headerlink" href="#sdt.nbui.ChannelSplitter.colors" title="Link to this definition">#</a></dt>
 <dd><p>Colors to use for drawing the channel ROIs</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ChannelSplitter.rois">
-<span class="sig-name descname"><span class="pre">rois</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="roi.html#sdt.roi.ROI" title="sdt.roi.roi.ROI"><span class="pre">ROI</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.nbui.ChannelSplitter.rois" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">rois</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="roi.html#sdt.roi.ROI" title="sdt.roi.roi.ROI"><span class="pre">ROI</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#sdt.nbui.ChannelSplitter.rois" title="Link to this definition">#</a></dt>
 <dd><p>ROIs selected using the widget</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.nbui.ChannelSplitter.channel_names">
-<span class="sig-name descname"><span class="pre">channel_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sdt.nbui.ChannelSplitter.channel_names" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">channel_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#sdt.nbui.ChannelSplitter.channel_names" title="Link to this definition">#</a></dt>
 <dd><p>Channel names as displayed in the tab titles</p>
 </dd></dl>
 
@@ -856,11 +886,10 @@ representative images.</p>
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="loc.html"
@@ -880,10 +909,7 @@ representative images.</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -891,6 +917,7 @@ representative images.</p>
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -977,6 +1004,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -1003,8 +1031,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

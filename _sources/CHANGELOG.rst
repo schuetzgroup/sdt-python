@@ -13,12 +13,81 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+20.1.1
+------
+
+- Fix calling :py:func:`brightness.from_raw_image` with ``bg_frame=float("inf")``
+- Compatibility fixes for new `scipy` and `pandas` versions
+
+
+20.1.0
+------
+
+- Port :py:mod:`gui` module to PySide6
+- Add :py:func:`stats.avg_shifted_hist` for average shifted histogram calculation
+- :py:mod:`motion`: Support nD case in motion models
+
+
+20.0.0
+------
+
+- Require numpy >= 2.1. There have been some problems with older numpy and pandas
+  version, thus moving forward support for everything older is dropped.
+
+
+19.0.3
+------
+
+- Fix (legacy) locator GUI when using `cg` algorithm with ROI
+- Fix some compatibility warnings
+
+
+19.0.2
+------
+
+- Depend on ``opencv-python-headless`` instead of ``opencv-python``.
+
+
+19.0.1
+------
+
+- :py:class:`gui.Registrator`: Fix layout width of option widgets
+- :py:func:`brightness.from_raw_image`: Handle missing numba
+
+
+19.0.0
+------
+
+- :py:mod:`motion`: Remove legacy API (API break)
+- `numpy` 2.x compatibility; however We still depend on numpy < 2.0 since there
+  are some issues with `pandas`.
+- Use `pyproject.toml` and `hatch` for project management
+
+
+18.3
+----
+
+- Refactor (still experimental) :py:mod:`gui`, bump QML parts to v0.2
+- Require tifffile >= 2022.2.2
+- :py:mod:`changepoint`: Add :py:func:`labels_from_indices` function
+- :py:class:`nbui.Thresholder`: Fix creation of Path for plotting
+
+
+18.2
+----
+
+- :py:class:`nbui.ROISelector`: Minor fix
+- :py:mod:`io`: Add MultiImageSequence for sequences from single-image files
+- Remove :py:class:`io.SdtTiffStack` which was based on PIMS
+- :py:mod:`gui.mpl_backend`: Update to work with newer Matplotlib
+
+
 18.1
 ----
 
 - :py:class:`nbui.ChannelSplitter`: Update to work with newer `matplotlib`.
 - :py:class:`nbui.Locator`: Add built-in :py:class:`nbui.FrameSelector`.
-- :py:mod:`loc.cg`: Fix off-by-one error in local maximum detection, which 
+- :py:mod:`loc.cg`: Fix off-by-one error in local maximum detection, which
   could lead to wrongly discarding peaks close to the edges.
 - :py:mod:`loc.cg`: Fix issue where some peaks produced NaNs.
 - :py:mod:`loc.daostorm_3d`: Warn if ``radius >= 3`` as this can lead to a
@@ -38,8 +107,12 @@ so watch out for those!
 - Various bug fixes, mostly due to changes of underlying libraries.
 
 
+Older versions
+--------------
+
+
 17.5
-----
+~~~~
 
 - :py:mod:`motion.immobilization`: Properly handle unsorted tracking data
 - :py:class:`multicolor.Registrator`: Allow passing channel name as `channel`
@@ -49,7 +122,7 @@ so watch out for those!
 
 
 17.4
-----
+~~~~
 
 - :py:class:`flatfield.Corrector`: Handle Gaussian fits where the center is
   outside the image.
@@ -60,7 +133,7 @@ so watch out for those!
 
 
 17.3
-----
+~~~~
 
 - Depend on the `imageio` package for reading images instead of `PIMS`
 - Remove deprecated ``channel_reg`` module
@@ -73,7 +146,7 @@ so watch out for those!
 
 
 17.2
-----
+~~~~
 
 - Improvements to :py:class:`gui.BatchWorker` and :py:class:`gui.LocDisplay`
 - Fix QtQuick matplotlib backend for matplotlib >= 3.5
@@ -86,7 +159,7 @@ so watch out for those!
 
 
 17.1
-----
+~~~~
 
 - Prevent performing flatfield correction multiple times in
   :py:class:`fret.SmFRETAnalyzer`
@@ -98,7 +171,7 @@ so watch out for those!
 
 
 17.0
-----
+~~~~
 
 - Improvements to :py:mod:`helper.numba`
 - Add function for computing smallest enclosing circle
@@ -113,10 +186,6 @@ so watch out for those!
   as filtered (API break)
 - Add method to calculate detection and excitation efficiency corrections
   from a multi-state sample to :py:class:`fret.SmFRETAnalyzer`
-
-
-Older versions
---------------
 
 
 16.1

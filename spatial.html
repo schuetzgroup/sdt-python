@@ -1,46 +1,46 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Analyze spatial aspects of data &#8212; sdt-python 18.1 documentation</title>
+    <title>Analyze spatial aspects of data &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/documentation_options.js?v=7805977c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'spatial';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -55,19 +55,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -89,12 +93,20 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -109,6 +121,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -117,10 +132,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.1 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
@@ -139,6 +166,7 @@
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Statistical functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -156,7 +184,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -165,14 +193,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -262,26 +290,28 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -320,10 +350,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
-  <span class="target" id="module-sdt.spatial"></span><section id="analyze-spatial-aspects-of-data">
-<h1>Analyze spatial aspects of data<a class="headerlink" href="#analyze-spatial-aspects-of-data" title="Permalink to this heading">#</a></h1>
+  <section id="analyze-spatial-aspects-of-data">
+<span id="module-sdt.spatial"></span><h1>Analyze spatial aspects of data<a class="headerlink" href="#analyze-spatial-aspects-of-data" title="Link to this heading">#</a></h1>
 <p>The <a class="reference internal" href="#module-sdt.spatial" title="sdt.spatial"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.spatial</span></code></a> module provides methods for analyzing spatial
 aspects of single molecule data:</p>
 <ul class="simple">
@@ -376,10 +406,10 @@ by <a class="reference internal" href="#sdt.spatial.interpolate_coords" title="s
 </pre></div>
 </div>
 <section id="programming-reference">
-<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading">#</a></h2>
+<h2>Programming reference<a class="headerlink" href="#programming-reference" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.spatial.has_near_neighbor">
-<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">has_near_neighbor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#has_near_neighbor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.has_near_neighbor" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">has_near_neighbor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#has_near_neighbor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.has_near_neighbor" title="Link to this definition">#</a></dt>
 <dd><p>Check whether localized features have near neighbors</p>
 <p>Given a <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> <cite>data</cite> with localization data, each
 data point is checked whether other points (in the same frame) are closer
@@ -404,7 +434,7 @@ the time column “alt_frame”, set <code class="docutils literal notranslate">
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.spatial.interpolate_coords">
-<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">interpolate_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#interpolate_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.interpolate_coords" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">interpolate_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#interpolate_coords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.interpolate_coords" title="Link to this definition">#</a></dt>
 <dd><p>Interpolate coordinates for missing localizations</p>
 <p>For each particle in <cite>tracks</cite>, interpolate coordinates for frames
 where no localization was detected.</p>
@@ -432,7 +462,7 @@ True, it was added via interpolation by this method.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.spatial.polygon_area">
-<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">polygon_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#polygon_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.polygon_area" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">polygon_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#polygon_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.polygon_area" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the (signed) area of a simple polygon</p>
 <p>The polygon may not self-intersect.</p>
 <p>This is based on JavaScript code from
@@ -473,7 +503,7 @@ is used.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.spatial.polygon_center">
-<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">polygon_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#polygon_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.polygon_center" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">polygon_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#polygon_center"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.polygon_center" title="Link to this definition">#</a></dt>
 <dd><p>Compute center of mass of a polygon</p>
 <p>according to the formula</p>
 <div class="math notranslate nohighlight">
@@ -498,7 +528,7 @@ polygon. This function also works for open polygons.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.spatial.smallest_enclosing_circle">
-<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">smallest_enclosing_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#smallest_enclosing_circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.smallest_enclosing_circle" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.spatial.</span></span><span class="sig-name descname"><span class="pre">smallest_enclosing_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/spatial.html#smallest_enclosing_circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.spatial.smallest_enclosing_circle" title="Link to this definition">#</a></dt>
 <dd><p>Find the smallest circle enclosing a set of points</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -522,7 +552,7 @@ function, have a look at <code class="xref py py-func docutils literal notransla
 
 </section>
 <section id="smallest-enclosing-circle-algorithm">
-<h2>Smallest enclosing circle algorithm<a class="headerlink" href="#smallest-enclosing-circle-algorithm" title="Permalink to this heading">#</a></h2>
+<h2>Smallest enclosing circle algorithm<a class="headerlink" href="#smallest-enclosing-circle-algorithm" title="Link to this heading">#</a></h2>
 <p>The smallest enclosing circle <span class="math notranslate nohighlight">\(C_n\)</span> for points <span class="math notranslate nohighlight">\(p_1, p_2, …,
 p_n\)</span> in randomized order is found iteratively. Let’s assume that
 <span class="math notranslate nohighlight">\(C_{i-1}\)</span> has already been found. If <span class="math notranslate nohighlight">\(p_i\)</span> lies within
@@ -541,7 +571,8 @@ the line <span class="math notranslate nohighlight">\(l\)</span> connecting <spa
 those circles through <span class="math notranslate nohighlight">\(p_k\)</span> on either side of the line <span class="math notranslate nohighlight">\(l\)</span> such
 that the circle centers are farthest away from <span class="math notranslate nohighlight">\(l\)</span>. Of those two,
 the circle with the smaller radius is chosen.</p>
-<a class="reference internal image-reference" href="_images/enclosing_circles.svg"><img alt="How to find smallest enclosing circle with two given points" class="align-center" src="_images/enclosing_circles.svg" width="300" /></a>
+<a class="reference internal image-reference" href="_images/enclosing_circles.svg"><img alt="How to find smallest enclosing circle with two given points" class="align-center" src="_images/enclosing_circles.svg" width="300" />
+</a>
 <p>Source: <a class="reference external" href="https://www.nayuki.io/res/smallest-enclosing-circle/smallestenclosingcircle.py">Project Nayuki</a>,
 in particular <a class="reference external" href="https://www.nayuki.io/res/smallest-enclosing-circle/computational-geometry-lecture-6.pdf">this presentation</a>.</p>
 </section>
@@ -553,11 +584,10 @@ in particular <a class="reference external" href="https://www.nayuki.io/res/smal
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="changepoint.html"
@@ -577,10 +607,7 @@ in particular <a class="reference external" href="https://www.nayuki.io/res/smal
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -588,6 +615,7 @@ in particular <a class="reference external" href="https://www.nayuki.io/res/smal
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -625,6 +653,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -651,8 +680,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

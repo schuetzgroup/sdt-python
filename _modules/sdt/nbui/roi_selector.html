@@ -1,44 +1,44 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdt.nbui.roi_selector &#8212; sdt-python 18.0 documentation</title>
+    <title>sdt.nbui.roi_selector &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../../_static/documentation_options.js?v=7805977c"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/nbui/roi_selector';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -51,19 +51,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -85,12 +89,22 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -105,6 +119,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="../../../index.html">
@@ -113,10 +130,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
@@ -135,6 +164,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stats.html">Statistical functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
@@ -152,7 +182,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -161,14 +191,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -210,20 +240,22 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -250,29 +282,29 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for sdt.nbui.roi_selector</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
 <span class="c1">#</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">ipywidgets</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">matplotlib.widgets</span> <span class="kn">import</span> <span class="p">(</span><span class="n">EllipseSelector</span><span class="p">,</span> <span class="n">PolygonSelector</span><span class="p">,</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ipywidgets</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">EllipseSelector</span><span class="p">,</span> <span class="n">PolygonSelector</span><span class="p">,</span>
                                 <span class="n">RectangleSelector</span><span class="p">,</span> <span class="n">LassoSelector</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">traitlets</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traitlets</span>
 
-<span class="kn">from</span> <span class="nn">.image_selector</span> <span class="kn">import</span> <span class="n">ImageSelector</span>
-<span class="kn">from</span> <span class="nn">.image_display</span> <span class="kn">import</span> <span class="n">ImageDisplay</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">roi</span><span class="p">,</span> <span class="n">spatial</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.image_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.image_display</span><span class="w"> </span><span class="kn">import</span> <span class="n">ImageDisplay</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">roi</span><span class="p">,</span> <span class="n">spatial</span>
 
 
-<span class="k">class</span> <span class="nc">ROISelectorModule</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ROISelectorModule</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;UI for creating ROIs by drawing them on images</span>
 
 <span class="sd">    This is useful e.g. to select the region occupied by a cell from a</span>
@@ -307,7 +339,7 @@ document.write(`
 <span class="sd">    one entry if :py:attr:`multi` is `False`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">mpl</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">:</span> <span class="n">mpl</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ax</span>
@@ -353,6 +385,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_del</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_roi</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_box</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">(</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_sel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_add</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_del</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_box</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_shape_sel</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButtons</span><span class="p">(</span>
             <span class="n">options</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_selectors</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;shape&quot;</span><span class="p">)</span>
@@ -368,7 +401,7 @@ document.write(`
         <span class="n">traitlets</span><span class="o">.</span><span class="n">link</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_auto_cat_check</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
                        <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;auto_category&quot;</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_normalize_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rois</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rois</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create normalized ROI collection from the convenient representation</span>
 
 <span class="sd">        Parameters</span>
@@ -399,7 +432,7 @@ document.write(`
             <span class="k">return</span> <span class="p">{</span><span class="kc">None</span><span class="p">:</span> <span class="n">rois</span><span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span><span class="kc">None</span><span class="p">:</span> <span class="p">[</span><span class="n">rois</span><span class="p">]}</span>
 
-    <span class="k">def</span> <span class="nf">_unnormalize_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">normalized_rois</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unnormalize_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">normalized_rois</span><span class="p">:</span> <span class="n">Dict</span>
                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create convenient ROI collection from normalized ROI dict</span>
 
@@ -430,7 +463,7 @@ document.write(`
             <span class="k">return</span> <span class="n">normalized_rois</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">normalized_rois</span><span class="p">[</span><span class="kc">None</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">normalized_rois</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_copy_normalized_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_copy_normalized_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
                                             <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a copy of :py:attr:`_normalized_rois`</span>
 
@@ -443,7 +476,7 @@ document.write(`
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_rois</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
     <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;categories&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_cat_trait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cat_trait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;:py:attr:`categories` traitlet changed&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cat_box</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="k">else</span> <span class="s2">&quot;none&quot;</span>
@@ -452,28 +485,28 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">_roi_cat_sel</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_undefined_rois</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_cat_sel_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cat_sel_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset_selection_tool</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_roi_list</span><span class="p">()</span>
 
     <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;multi&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_multi_trait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_multi_trait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_box</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi</span> <span class="k">else</span> <span class="s2">&quot;none&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unnormalize_rois</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalized_rois</span><span class="p">)</span>
 
     <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;rois&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_update_normalized_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_normalized_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_rois</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rois</span><span class="p">)</span>
 
     <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;_normalized_rois&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_normalized_rois_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalized_rois_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_roi_list</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">redraw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Redraw all ROIs&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">pa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_artists</span><span class="p">:</span>
             <span class="n">pa</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
@@ -500,7 +533,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw_idle</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_update_roi_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_index</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_roi_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_index</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update ROI selection widget list&quot;&quot;&quot;</span>
         <span class="n">cat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_cat_sel</span><span class="o">.</span><span class="n">value</span>
         <span class="n">old_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_sel</span><span class="o">.</span><span class="n">index</span> <span class="ow">or</span> <span class="mi">0</span>
@@ -521,7 +554,7 @@ document.write(`
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_sel</span><span class="o">.</span><span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">opts</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_sel</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">reset_selection_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_selection_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the ROI selector</span>
 
 <span class="sd">        Depending on the currenly selected shape, the new one will be</span>
@@ -533,14 +566,14 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_cur_roi_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_selectors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_shape_sel</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cur_roi_sel</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_next_category</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_next_category</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Jump to the next category if :py:attr:`auto_category` is `True`&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_category</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_cat_sel</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_cat_sel</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span>
                                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Common code for all callbacks for ROI selection</span>
 
 <span class="sd">        Parameters</span>
@@ -555,14 +588,14 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unnormalize_rois</span><span class="p">(</span><span class="n">r_dict</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_next_category</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_rect_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">click</span><span class="p">,</span> <span class="n">release</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rect_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">click</span><span class="p">,</span> <span class="n">release</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback for rectangular ROI&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="n">ex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cur_roi_sel</span><span class="o">.</span><span class="n">extents</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_roi_selected</span><span class="p">(</span>
                 <span class="n">roi</span><span class="o">.</span><span class="n">RectangleROI</span><span class="p">((</span><span class="n">ex</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ex</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="p">(</span><span class="n">ex</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ex</span><span class="p">[</span><span class="mi">3</span><span class="p">])))</span>
 
-    <span class="k">def</span> <span class="nf">_ellipse_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">click</span><span class="p">,</span> <span class="n">release</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ellipse_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">click</span><span class="p">,</span> <span class="n">release</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback for ellipse ROI&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cur_roi_sel</span>
@@ -571,17 +604,17 @@ document.write(`
                                <span class="p">((</span><span class="n">ex</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ex</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">ex</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">ex</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_roi_selected</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_poly_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_poly_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback for polygon ROI&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_roi_selected</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">(</span><span class="n">vertices</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_lasso_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_lasso_roi_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback for lasso ROI&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_roi_selected</span><span class="p">(</span><span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">(</span><span class="n">vertices</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">get_undefined_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_undefined_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an entry for :py:attr:`rois` specifying undefined ROIs</span>
 
 <span class="sd">        If no categories have been defined, this is simply `None`. Else this is</span>
@@ -590,7 +623,7 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unnormalize_rois</span><span class="p">(</span>
             <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="ow">or</span> <span class="p">[</span><span class="kc">None</span><span class="p">])})</span>
 
-    <span class="k">def</span> <span class="nf">_add_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an undefined ROI (`None`) to current category&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="n">cat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_cat_sel</span><span class="o">.</span><span class="n">value</span>
@@ -599,7 +632,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unnormalize_rois</span><span class="p">(</span><span class="n">r_dict</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_sel</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_roi_multi_sel</span><span class="o">.</span><span class="n">options</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="nf">_remove_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_roi</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove current ROI from current category&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug_output</span><span class="p">:</span>
             <span class="n">cat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_roi_cat_sel</span><span class="o">.</span><span class="n">value</span>
@@ -609,7 +642,9 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unnormalize_rois</span><span class="p">(</span><span class="n">r_dict</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ROISelector"><a class="viewcode-back" href="../../../nbui.html#sdt.nbui.ROISelector">[docs]</a><span class="k">class</span> <span class="nc">ROISelector</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+<div class="viewcode-block" id="ROISelector">
+<a class="viewcode-back" href="../../../nbui.html#sdt.nbui.ROISelector">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ROISelector</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Notebook UI for creating ROIs by drawing them on images</span>
 
 <span class="sd">    This is useful e.g. to select the region occupied by a cell from a</span>
@@ -668,7 +703,7 @@ document.write(`
     <span class="n">multi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">traitlets</span><span class="o">.</span><span class="n">Bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether to enable selection of mulitple ROIs per image und category&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">images</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ---------</span>
 <span class="sd">        images</span>
@@ -694,7 +729,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">image_selector</span><span class="o">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images</span>
 
-    <span class="k">def</span> <span class="nf">_cur_image_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cur_image_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Selected image was changed via :py:attr:`image_selector`&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_display</span><span class="o">.</span><span class="n">input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_selector</span><span class="o">.</span><span class="n">output</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_selector</span><span class="o">.</span><span class="n">index</span>
@@ -705,14 +740,14 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_module</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="n">r</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_module</span><span class="o">.</span><span class="n">reset_selection_tool</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_roi_drawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_roi_drawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A ROI was drawn&quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_selector</span><span class="o">.</span><span class="n">index</span>
         <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_rois</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_module</span><span class="o">.</span><span class="n">rois</span><span class="p">)</span>
 
     <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;categories&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_cats_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cats_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;`categories` traitlet was changed&quot;&quot;&quot;</span>
         <span class="c1"># Use a directional_link in __init__ to propagete from</span>
         <span class="c1"># self.roi_selector_module to self. The other way round we have to be</span>
@@ -724,19 +759,21 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_roi_list</span><span class="p">()</span>
 
     <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;images&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_initialize_roi_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_roi_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize :py:attr:`rois` with undefined entries&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_module</span><span class="o">.</span><span class="n">get_undefined_rois</span><span class="p">()]</span> <span class="o">*</span>
                      <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images</span><span class="p">))</span>
 
     <span class="nd">@traitlets</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="s2">&quot;rois&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_rois_trait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rois_trait_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_selector</span><span class="o">.</span><span class="n">index</span>
         <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">roi_selector_module</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rois</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
-<div class="viewcode-block" id="ROISelector.set_rois"><a class="viewcode-back" href="../../../nbui.html#sdt.nbui.ROISelector.set_rois">[docs]</a>    <span class="k">def</span> <span class="nf">set_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<div class="viewcode-block" id="ROISelector.set_rois">
+<a class="viewcode-back" href="../../../nbui.html#sdt.nbui.ROISelector.set_rois">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_rois</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                  <span class="n">r</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">],</span>
                           <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">roi</span><span class="o">.</span><span class="n">PathROI</span><span class="p">]]]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set ROIs for a file</span>
@@ -746,7 +783,9 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rois</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">r_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="n">r_list</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rois</span> <span class="o">=</span> <span class="n">r_list</span></div>
+</div>
+
 </pre></div>
 
                 </article>
@@ -754,16 +793,12 @@ document.write(`
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -786,6 +821,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -812,8 +848,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

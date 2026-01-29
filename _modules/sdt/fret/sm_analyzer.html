@@ -1,44 +1,44 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdt.fret.sm_analyzer &#8212; sdt-python 18.0 documentation</title>
+    <title>sdt.fret.sm_analyzer &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../../_static/documentation_options.js?v=7805977c"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/fret/sm_analyzer';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -51,19 +51,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -85,12 +89,22 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -105,6 +119,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="../../../index.html">
@@ -113,10 +130,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
@@ -135,6 +164,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stats.html">Statistical functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
@@ -152,7 +182,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -161,14 +191,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -210,20 +240,22 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -250,7 +282,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for sdt.fret.sm_analyzer</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
@@ -258,20 +290,22 @@ document.write(`
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="sd">&quot;&quot;&quot;Module containing a class for analyzing and filtering smFRET data&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span>
                     <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">flatfield</span><span class="p">,</span> <span class="n">helper</span><span class="p">,</span> <span class="n">changepoint</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">roi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">flatfield</span><span class="p">,</span> <span class="n">helper</span><span class="p">,</span> <span class="n">changepoint</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">roi</span>
 
 
-<div class="viewcode-block" id="gaussian_mixture_split"><a class="viewcode-back" href="../../../fret.html#sdt.fret.gaussian_mixture_split">[docs]</a><span class="k">def</span> <span class="nf">gaussian_mixture_split</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<div class="viewcode-block" id="gaussian_mixture_split">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.gaussian_mixture_split">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gaussian_mixture_split</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                            <span class="n">columns</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
                                <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;eff_app&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;stoi_app&quot;</span><span class="p">)],</span>
                            <span class="n">random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
@@ -300,7 +334,7 @@ document.write(`
 <span class="sd">    Component label for each entry in `data` and mean values for each</span>
 <span class="sd">    component, one line per component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">sklearn.mixture</span> <span class="kn">import</span> <span class="n">GaussianMixture</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.mixture</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianMixture</span>
 
     <span class="n">rs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
@@ -314,7 +348,10 @@ document.write(`
     <span class="k">return</span> <span class="n">labels</span><span class="p">,</span> <span class="n">gmm</span><span class="o">.</span><span class="n">means_</span><span class="p">[</span><span class="n">mean_sort_idx</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="apply_track_filters"><a class="viewcode-back" href="../../../fret.html#sdt.fret.apply_track_filters">[docs]</a><span class="k">def</span> <span class="nf">apply_track_filters</span><span class="p">(</span><span class="n">tracks</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">include_negative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+
+<div class="viewcode-block" id="apply_track_filters">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.apply_track_filters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_track_filters</span><span class="p">(</span><span class="n">tracks</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">include_negative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                         <span class="n">ignore</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
                         <span class="n">ret_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span>
                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">]:</span>
@@ -359,7 +396,10 @@ document.write(`
     <span class="k">return</span> <span class="n">mask</span></div>
 
 
-<div class="viewcode-block" id="SmFRETAnalyzer"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer">[docs]</a><span class="k">class</span> <span class="nc">SmFRETAnalyzer</span><span class="p">:</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SmFRETAnalyzer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for analyzing and filtering of smFRET data</span>
 
 <span class="sd">    This provides various analysis and filtering methods which act on the</span>
@@ -409,7 +449,7 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracks</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">cp_detector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracks</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">cp_detector</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">reset_filters</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">keep_filters</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
                  <span class="n">columns</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}):</span>
@@ -457,7 +497,9 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_reason_counter</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.reset_filters"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.reset_filters">[docs]</a>    <span class="k">def</span> <span class="nf">reset_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.reset_filters">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.reset_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset filters</span>
 
 <span class="sd">        This drops filter columns from :py:attr:`tracks`.</span>
@@ -476,7 +518,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">rm_cols</span><span class="p">],</span>
                          <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.calc_fret_values"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_fret_values">[docs]</a>    <span class="k">def</span> <span class="nf">calc_fret_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_d_mass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_fret_values">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_fret_values">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_fret_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_d_mass</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                          <span class="n">invalid_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                          <span class="n">a_mass_interp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nearest-up&quot;</span><span class="p">,</span>
                          <span class="n">skip_neighbors</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
@@ -576,7 +621,7 @@ document.write(`
 
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a_direct</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="c1"># No direct acceptor excitation, cannot do anything</span>
-                        <span class="n">a_mass</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">))</span>
+                        <span class="n">a_mass</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">))</span>
                         <span class="k">continue</span>
                     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">a_direct</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="c1"># Only one direct acceptor excitation; use this value</span>
@@ -596,7 +641,7 @@ document.write(`
                         <span class="n">a_mass</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_mass_func</span><span class="p">(</span><span class="n">trc_p</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
             <span class="n">a_mass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">a_mass</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">a_mass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+            <span class="n">a_mass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
         <span class="c1"># Total mass upon donor excitation</span>
         <span class="k">if</span> <span class="n">keep_d_mass</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;d_mass&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">:</span>
@@ -616,9 +661,9 @@ document.write(`
             <span class="c1"># For direct acceptor excitation, FRET efficiency and stoichiometry</span>
             <span class="c1"># are not sensible</span>
             <span class="n">nd_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;d&quot;</span>
-            <span class="n">eff</span><span class="p">[</span><span class="n">nd_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-            <span class="n">stoi</span><span class="p">[</span><span class="n">nd_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-            <span class="n">d_mass</span><span class="p">[</span><span class="n">nd_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="n">eff</span><span class="p">[</span><span class="n">nd_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">stoi</span><span class="p">[</span><span class="n">nd_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">d_mass</span><span class="p">[</span><span class="n">nd_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;eff_app&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;stoi_app&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stoi</span>
@@ -628,7 +673,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">sortlevel</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">tmp_mask_col</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.apply_filters"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.apply_filters">[docs]</a>    <span class="k">def</span> <span class="nf">apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_negative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.apply_filters">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.apply_filters">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_negative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                       <span class="n">ignore</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
                       <span class="n">ret_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply filters to :py:attr:`tracks`</span>
@@ -663,7 +711,10 @@ document.write(`
         <span class="k">return</span> <span class="n">apply_track_filters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">,</span> <span class="n">include_negative</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span>
                                    <span class="n">ret_type</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.mass_changepoints"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.mass_changepoints">[docs]</a>    <span class="k">def</span> <span class="nf">mass_changepoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.mass_changepoints">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.mass_changepoints">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mass_changepoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                           <span class="n">stats</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span>
                                        <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
                                        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span>
@@ -745,7 +796,7 @@ document.write(`
 
             <span class="n">exc_num</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">exc_cats</span> <span class="o">==</span> <span class="s2">&quot;d&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-            <span class="k">def</span> <span class="nf">cp_func</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">cp_func</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cp_detector</span><span class="o">.</span><span class="n">find_changepoints</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="n">segments</span> <span class="o">=</span> <span class="p">[]</span>
@@ -765,7 +816,8 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">tmp_mask_col</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_bleaches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_bleaches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether there is single-step bleaching</span>
 
 <span class="sd">        Parameters</span>
@@ -783,7 +835,7 @@ document.write(`
         <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span>
                 <span class="nb">all</span><span class="p">(</span><span class="n">s</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bleach_thresh</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
 
-    <span class="k">def</span> <span class="nf">_bleaches_partially</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_bleaches_partially</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span>
                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether there is partial bleaching</span>
 
@@ -804,7 +856,7 @@ document.write(`
         <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span>
                 <span class="nb">any</span><span class="p">(</span><span class="n">s</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bleach_thresh</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
 
-    <span class="k">def</span> <span class="nf">_update_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flt</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flt</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update a filter column</span>
 
 <span class="sd">        If it does not exist yet, append to :py:attr:`self.tracks`. Otherwise,</span>
@@ -834,7 +886,9 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">old_good</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">flt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="p">)]</span> <span class="o">=</span> <span class="n">rc</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">old_good</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">flt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.bleach_step"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.bleach_step">[docs]</a>    <span class="k">def</span> <span class="nf">bleach_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;donor or acceptor&quot;</span><span class="p">,</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.bleach_step">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.bleach_step">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bleach_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;donor or acceptor&quot;</span><span class="p">,</span>
                     <span class="n">stat</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bleach_step&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find tracks with acceptable fluorophore bleaching behavior</span>
 
@@ -931,8 +985,9 @@ document.write(`
         <span class="n">filtered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;particle&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">good_p</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_filter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="o">~</span><span class="n">filtered</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">),</span> <span class="n">reason</span><span class="p">)</span></div>
 
+
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_eval</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mi_sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_eval</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mi_sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Call ``eval(expr)`` for `data`</span>
 
 <span class="sd">        Flatten the column MultiIndex and call the resulting DataFrame&#39;s</span>
@@ -979,7 +1034,9 @@ document.write(`
 
         <span class="k">return</span> <span class="n">e</span>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.query"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mi_sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;query&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="SmFRETAnalyzer.query">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.query">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mi_sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;query&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter features according to column values</span>
 
 <span class="sd">        Flatten the column MultiIndex and filter the resulting DataFrame&#39;s</span>
@@ -1005,7 +1062,10 @@ document.write(`
         <span class="n">filtered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="o">~</span><span class="n">filtered</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_filter</span><span class="p">(</span><span class="n">filtered</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.query_particles"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.query_particles">[docs]</a>    <span class="k">def</span> <span class="nf">query_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">min_abs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.query_particles">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.query_particles">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_particles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">min_abs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                         <span class="n">min_rel</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">mi_sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span>
                         <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;query_p&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove particles that don&#39;t fulfill `expr` enough times</span>
@@ -1079,7 +1139,10 @@ document.write(`
         <span class="n">flt</span><span class="p">[</span><span class="n">bad</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_filter</span><span class="p">(</span><span class="n">flt</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.image_mask"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.image_mask">[docs]</a>    <span class="k">def</span> <span class="nf">image_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]],</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.image_mask">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.image_mask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">image_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]],</span>
                    <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;image_mask&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Filter using a boolean mask image</span>
 
@@ -1168,7 +1231,10 @@ document.write(`
             <span class="n">filtered</span> <span class="o">=</span> <span class="n">filtered</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_filter</span><span class="p">(</span><span class="n">filtered</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.flatfield_correction"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.flatfield_correction">[docs]</a>    <span class="k">def</span> <span class="nf">flatfield_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_corr</span><span class="p">:</span> <span class="n">flatfield</span><span class="o">.</span><span class="n">Corrector</span><span class="p">,</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.flatfield_correction">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.flatfield_correction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flatfield_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donor_corr</span><span class="p">:</span> <span class="n">flatfield</span><span class="o">.</span><span class="n">Corrector</span><span class="p">,</span>
                              <span class="n">acceptor_corr</span><span class="p">:</span> <span class="n">flatfield</span><span class="o">.</span><span class="n">Corrector</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply flatfield correction to donor and acceptor localization data</span>
 
@@ -1209,7 +1275,10 @@ document.write(`
             <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">dest</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">src_cols</span><span class="p">,</span> <span class="n">dest_cols</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="n">dest</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">src</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.calc_leakage"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_leakage">[docs]</a>    <span class="k">def</span> <span class="nf">calc_leakage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_leakage">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_leakage">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_leakage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate donor leakage (bleed-through) into the acceptor channel</span>
 
 <span class="sd">        For this to work, :py:attr:`tracks` must be a dataset of donor-only</span>
@@ -1239,7 +1308,10 @@ document.write(`
         <span class="n">m_eff</span> <span class="o">=</span> <span class="n">trc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;eff_app&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">leakage</span> <span class="o">=</span> <span class="n">m_eff</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">m_eff</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.calc_direct_excitation"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_direct_excitation">[docs]</a>    <span class="k">def</span> <span class="nf">calc_direct_excitation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_direct_excitation">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_direct_excitation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_direct_excitation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate direct acceptor excitation by the donor laser</span>
 
 <span class="sd">        For this to work, :py:attr:`tracks` must be a dataset of acceptor-only</span>
@@ -1269,7 +1341,10 @@ document.write(`
         <span class="n">m_stoi</span> <span class="o">=</span> <span class="n">trc</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;stoi_app&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direct_excitation</span> <span class="o">=</span> <span class="n">m_stoi</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">m_stoi</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.calc_detection_eff"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_detection_eff">[docs]</a>    <span class="k">def</span> <span class="nf">calc_detection_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_seg_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_detection_eff">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_detection_eff">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_detection_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_seg_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
                            <span class="n">how</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">,</span>
                            <span class="n">stat</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate detection efficiency ratio of dyes</span>
@@ -1345,7 +1420,7 @@ document.write(`
             <span class="n">i_da_post</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">post_mask</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_dd_pre</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_seg_len</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_dd_post</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_seg_len</span><span class="p">:</span>
-                <span class="n">gammas</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+                <span class="n">gammas</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
                 <span class="k">continue</span>
 
             <span class="n">gammas</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">stat</span><span class="p">(</span><span class="n">i_da_pre</span><span class="p">)</span> <span class="o">-</span> <span class="n">stat</span><span class="p">(</span><span class="n">i_da_post</span><span class="p">))</span> <span class="o">/</span>
@@ -1359,7 +1434,10 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`how` must be </span><span class="se">\&quot;</span><span class="s2">individual</span><span class="se">\&quot;</span><span class="s2"> or a function &quot;</span>
                              <span class="s2">&quot;accepting an array as its argument.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.calc_excitation_eff"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_excitation_eff">[docs]</a>    <span class="k">def</span> <span class="nf">calc_excitation_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_excitation_eff">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_excitation_eff">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_excitation_eff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">component</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                             <span class="n">random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate excitation efficiency ratio of dyes</span>
 
@@ -1426,7 +1504,10 @@ document.write(`
         <span class="n">s_gamma</span> <span class="o">=</span> <span class="n">trc</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;stoi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">excitation_eff</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s_gamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">s_gamma</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.calc_detection_excitation_effs"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_detection_excitation_effs">[docs]</a>    <span class="k">def</span> <span class="nf">calc_detection_excitation_effs</span><span class="p">(</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.calc_detection_excitation_effs">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.calc_detection_excitation_effs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_detection_excitation_effs</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">random_seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get detection and excitation efficiency from multi-state sample</span>
@@ -1475,7 +1556,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">detection_eff</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">excitation_eff</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">-</span> <span class="mi">1</span></div>
 
-<div class="viewcode-block" id="SmFRETAnalyzer.fret_correction"><a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.fret_correction">[docs]</a>    <span class="k">def</span> <span class="nf">fret_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SmFRETAnalyzer.fret_correction">
+<a class="viewcode-back" href="../../../fret.html#sdt.fret.SmFRETAnalyzer.fret_correction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fret_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">invalid_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply corrections to calculate real FRET-related values</span>
 
 <span class="sd">        By correcting the measured acceptor and donor intensities upon</span>
@@ -1526,15 +1610,17 @@ document.write(`
 
         <span class="k">if</span> <span class="n">invalid_nan</span><span class="p">:</span>
             <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;exc_type&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;d&quot;</span>
-            <span class="n">f_da</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-            <span class="n">f_dd</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+            <span class="n">f_da</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+            <span class="n">f_dd</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;f_da&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_da</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;f_dd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_dd</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;f_aa&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_aa</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;eff&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f_da</span> <span class="o">/</span> <span class="p">(</span><span class="n">f_dd</span> <span class="o">+</span> <span class="n">f_da</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;stoi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_dd</span> <span class="o">+</span> <span class="n">f_da</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">f_dd</span> <span class="o">+</span> <span class="n">f_da</span> <span class="o">+</span> <span class="n">f_aa</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracks</span><span class="p">[</span><span class="s2">&quot;fret&quot;</span><span class="p">,</span> <span class="s2">&quot;stoi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_dd</span> <span class="o">+</span> <span class="n">f_da</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">f_dd</span> <span class="o">+</span> <span class="n">f_da</span> <span class="o">+</span> <span class="n">f_aa</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
                 </article>
@@ -1542,16 +1628,12 @@ document.write(`
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -1574,6 +1656,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -1600,8 +1683,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -1,50 +1,50 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Helpers for writing new code &#8212; sdt-python 18.1 documentation</title>
+    <title>Helpers for writing new code &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="_static/documentation_options.js?v=7805977c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'helper';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Change log" href="CHANGELOG.html" />
-    <link rel="prev" title="Optimization and fitting algorithms" href="optimize.html" />
+    <link rel="prev" title="Statistical functions" href="stats.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -54,19 +54,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -88,12 +92,20 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -108,6 +120,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -116,10 +131,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.1 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
@@ -138,6 +165,7 @@
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Statistical functions</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -155,7 +183,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -164,14 +192,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -261,26 +289,28 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -348,12 +378,12 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section id="module-sdt.helper">
-<span id="helpers-for-writing-new-code"></span><h1>Helpers for writing new code<a class="headerlink" href="#module-sdt.helper" title="Permalink to this heading">#</a></h1>
+<span id="helpers-for-writing-new-code"></span><h1>Helpers for writing new code<a class="headerlink" href="#module-sdt.helper" title="Link to this heading">#</a></h1>
 <section id="helper-classes-and-functions">
-<h2>Helper classes and functions<a class="headerlink" href="#helper-classes-and-functions" title="Permalink to this heading">#</a></h2>
+<h2>Helper classes and functions<a class="headerlink" href="#helper-classes-and-functions" title="Link to this heading">#</a></h2>
 <p>The <a class="reference internal" href="#module-sdt.helper" title="sdt.helper"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.helper</span></code></a> package provides some common tools to be used in
 higher level functions. This includes</p>
 <ul class="simple">
@@ -405,8 +435,8 @@ in specific threads.</p></li>
 but <a class="reference internal" href="#sdt.helper.ThreadSafeSingleton" title="sdt.helper.ThreadSafeSingleton"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThreadSafeSingleton</span></code></a> addtionally uses a mutex to ensure
 thread safety.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@helper</span><span class="o">.</span><span class="n">Singleton</span>
-<span class="gp">... </span><span class="k">class</span> <span class="nc">Example</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span><span class="k">class</span><span class="w"> </span><span class="nc">Example</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Example</span><span class="p">()</span>  <span class="c1"># Try constructing an instance, which is not allowed</span>
 <span class="gt">Traceback (most recent call last):</span>
@@ -422,15 +452,15 @@ thread safety.</p>
 </pre></div>
 </div>
 <p>Use the <code class="xref py py-mod docutils literal notranslate"><span class="pre">numba</span></code> submodule to avoid a hard dependency on numba:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sdt.helper</span> <span class="kn">import</span> <span class="n">numba</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sdt.helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">numba</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nd">@numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># This will not raise an error</span>
-<span class="gp">... </span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">x</span>
 </pre></div>
 </div>
 <p>However, trying to call <code class="docutils literal notranslate"><span class="pre">f()</span></code> will raise an error if numba is not installed.</p>
 <p>To check whether numba is available, one can use</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sdt.helper</span> <span class="kn">import</span> <span class="n">numba</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sdt.helper</span><span class="w"> </span><span class="kn">import</span> <span class="n">numba</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">numba</span><span class="o">.</span><span class="n">numba_available</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="c1"># numba is installed</span>
 <span class="gp">... </span><span class="k">else</span><span class="p">:</span>
@@ -438,10 +468,10 @@ thread safety.</p>
 </pre></div>
 </div>
 <section id="programming-reference">
-<h3>Programming reference<a class="headerlink" href="#programming-reference" title="Permalink to this heading">#</a></h3>
+<h3>Programming reference<a class="headerlink" href="#programming-reference" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.helper.split_dataframe">
-<span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">split_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/pandas.html#split_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.split_dataframe" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">split_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/pandas.html#split_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.split_dataframe" title="Link to this definition">#</a></dt>
 <dd><p>Split a DataFrame according to the values of a column</p>
 <p>This is somewhat like <code class="xref py py-meth docutils literal notranslate"><span class="pre">pandas.DataFrame.groupby()</span></code>, but (optionally)
 turning the data into a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.array</span></code>, which makes it a lot
@@ -479,7 +509,7 @@ the <cite>type</cite> parameter.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.helper.flatten_multiindex">
-<span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">flatten_multiindex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/pandas.html#flatten_multiindex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.flatten_multiindex" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">flatten_multiindex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/pandas.html#flatten_multiindex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.flatten_multiindex" title="Link to this definition">#</a></dt>
 <dd><p>Flatten pandas <cite>MultiIndex</cite></p>
 <p>by concatenating the different levels’ names.</p>
 <p class="rubric">Examples</p>
@@ -509,13 +539,13 @@ the <cite>type</cite> parameter.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.helper.Singleton">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">Singleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/singleton.html#Singleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Singleton" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">Singleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/singleton.html#Singleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Singleton" title="Link to this definition">#</a></dt>
 <dd><p>Class decorator to create singleton objects</p>
 <p>Based on <a class="github reference external" href="https://github.com/reyoung/singleton">reyoung/singleton</a> (released under MIT license).</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@Singleton</span>
-<span class="gp">... </span><span class="k">class</span> <span class="nc">Example</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span><span class="k">class</span><span class="w"> </span><span class="nc">Example</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Example</span><span class="o">.</span><span class="n">instance</span>
 <span class="go">&lt;__main__.Example object at 0x7fe65a904a20&gt;</span>
@@ -528,7 +558,7 @@ the <cite>type</cite> parameter.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.helper.Singleton.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/singleton.html#Singleton.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Singleton.initialize" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/singleton.html#Singleton.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Singleton.initialize" title="Link to this definition">#</a></dt>
 <dd><p>Initialize singleton object if it has not been initialized</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -542,13 +572,13 @@ the <cite>type</cite> parameter.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.helper.Singleton.is_initialized">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_initialized</span></span><a class="headerlink" href="#sdt.helper.Singleton.is_initialized" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_initialized</span></span><a class="headerlink" href="#sdt.helper.Singleton.is_initialized" title="Link to this definition">#</a></dt>
 <dd><p>True if <a class="reference internal" href="#sdt.helper.Singleton.instance" title="sdt.helper.Singleton.instance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">instance</span></code></a> is initialized</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.helper.Singleton.instance">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instance</span></span><a class="headerlink" href="#sdt.helper.Singleton.instance" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">instance</span></span><a class="headerlink" href="#sdt.helper.Singleton.instance" title="Link to this definition">#</a></dt>
 <dd><p>Singleton instance</p>
 </dd></dl>
 
@@ -556,7 +586,7 @@ the <cite>type</cite> parameter.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.helper.ThreadSafeSingleton">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">ThreadSafeSingleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/singleton.html#ThreadSafeSingleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.ThreadSafeSingleton" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">ThreadSafeSingleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/singleton.html#ThreadSafeSingleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.ThreadSafeSingleton" title="Link to this definition">#</a></dt>
 <dd><p>Thread-safe version of the <a class="reference internal" href="#sdt.helper.Singleton" title="sdt.helper.Singleton"><code class="xref py py-class docutils literal notranslate"><span class="pre">Singleton</span></code></a> class decorator</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -565,7 +595,7 @@ the <cite>type</cite> parameter.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.helper.ThreadSafeSingleton.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/singleton.html#ThreadSafeSingleton.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.ThreadSafeSingleton.initialize" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/singleton.html#ThreadSafeSingleton.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.ThreadSafeSingleton.initialize" title="Link to this definition">#</a></dt>
 <dd><p>Initialize singleton object if it has not been initialized</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -579,13 +609,13 @@ the <cite>type</cite> parameter.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.helper.ThreadSafeSingleton.is_initialized">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_initialized</span></span><a class="headerlink" href="#sdt.helper.ThreadSafeSingleton.is_initialized" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_initialized</span></span><a class="headerlink" href="#sdt.helper.ThreadSafeSingleton.is_initialized" title="Link to this definition">#</a></dt>
 <dd><p>True if <a class="reference internal" href="#sdt.helper.ThreadSafeSingleton.instance" title="sdt.helper.ThreadSafeSingleton.instance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">instance</span></code></a> is initialized</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sdt.helper.ThreadSafeSingleton.instance">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instance</span></span><a class="headerlink" href="#sdt.helper.ThreadSafeSingleton.instance" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">instance</span></span><a class="headerlink" href="#sdt.helper.ThreadSafeSingleton.instance" title="Link to this definition">#</a></dt>
 <dd><p>Singleton instance</p>
 </dd></dl>
 
@@ -593,7 +623,7 @@ the <cite>type</cite> parameter.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.helper.Slicerator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">Slicerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ancestor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#Slicerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Slicerator" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">Slicerator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ancestor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#Slicerator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Slicerator" title="Link to this definition">#</a></dt>
 <dd><p>A generator that supports fancy indexing</p>
 <p>When sliced using any iterable with a known length, it returns another
 object like itself, a Slicerator. When sliced with an integer,
@@ -608,7 +638,7 @@ with <cite>index_attr</cite>. They also have to be present in the
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ancestor</strong> (<em>object</em>) – </p></li>
+<li><p><strong>ancestor</strong> (<em>object</em>)</p></li>
 <li><p><strong>indices</strong> (<em>iterable</em>) – Giving indices into <cite>ancestor</cite>.
 Required if len(ancestor) is invalid.</p></li>
 <li><p><strong>length</strong> (<em>integer</em>) – length of indices
@@ -640,7 +670,7 @@ impossible:</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.helper.Slicerator.from_func">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#Slicerator.from_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Slicerator.from_func" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#Slicerator.from_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Slicerator.from_func" title="Link to this definition">#</a></dt>
 <dd><p>Make a Slicerator from a function that accepts an integer index</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -655,7 +685,7 @@ impossible:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.helper.Slicerator.from_class">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">some_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#Slicerator.from_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Slicerator.from_class" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">some_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#Slicerator.from_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Slicerator.from_class" title="Link to this definition">#</a></dt>
 <dd><p>Make an existing class support fancy indexing via Slicerator objects</p>
 <p>When sliced using any iterable with a known length, it returns a
 Slicerator. When sliced with an integer, it returns the data payload.</p>
@@ -686,7 +716,7 @@ produce a <a class="reference internal" href="#sdt.helper.Slicerator" title="sdt
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>some_class</strong> (<em>type</em>) – </p></li>
+<li><p><strong>some_class</strong> (<em>type</em>)</p></li>
 <li><p><strong>propagated_attrs</strong> (<em>list</em><em>, </em><em>optional</em>) – list of attributes to be propagated into Slicerator
 this will overwrite any other propagation list</p></li>
 </ul>
@@ -698,7 +728,7 @@ this will overwrite any other propagation list</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.helper.Pipeline">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">Pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proc_func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">ancestors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_how</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'first'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#Pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Pipeline" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">Pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proc_func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">ancestors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">propagate_how</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'first'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#Pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.Pipeline" title="Link to this definition">#</a></dt>
 <dd><p>A class to support lazy function evaluation on an iterable.</p>
 <p>When a <a class="reference internal" href="#sdt.helper.Pipeline" title="sdt.helper.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> object is indexed, it returns an element of its
 ancestor modified with a process function.</p>
@@ -741,7 +771,7 @@ from its ancestor, and then applies the process function.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.helper.pipeline">
-<span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.pipeline" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/slicerator.html#pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.pipeline" title="Link to this definition">#</a></dt>
 <dd><p>Decorator to enable lazy evaluation of a function.</p>
 <p>When the function is applied to a Slicerator or Pipeline object, it
 returns another lazily-evaluated, Pipeline object.</p>
@@ -774,14 +804,14 @@ for the pipeline. Defaults to 1.</p></li>
 <p class="rubric">Examples</p>
 <p>Apply the pipeline decorator to your image processing function.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@pipeline</span>
-<span class="gp">... </span> <span class="k">def</span> <span class="nf">color_channel</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+<span class="gp">... </span> <span class="k">def</span><span class="w"> </span><span class="nf">color_channel</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
 <span class="gp">... </span>     <span class="k">return</span> <span class="n">image</span><span class="p">[</span><span class="n">channel</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 </pre></div>
 </div>
 <p>In order to preserve the original function’s doc string (i. e. do not add
 a note saying that it was made lazy), use the decorator like so:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@pipeline</span><span class="p">(</span><span class="n">retain_doc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="gp">... </span><span class="k">def</span> <span class="nf">color_channel</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">color_channel</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
 <span class="gp">... </span><span class="w">    </span><span class="sd">&#39;&#39;&#39;This doc string will not be changed&#39;&#39;&#39;</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">image</span><span class="p">[</span><span class="n">channel</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 </pre></div>
@@ -796,7 +826,7 @@ independent objects.</p>
 </div>
 <p>Pipeline functions can also be composed.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@pipeline</span>
-<span class="gp">... </span><span class="k">def</span> <span class="nf">rescale</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">rescale</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="p">(</span><span class="n">image</span> <span class="o">-</span> <span class="n">image</span><span class="o">.</span><span class="n">min</span><span class="p">())</span><span class="o">/</span><span class="n">image</span><span class="o">.</span><span class="n">ptp</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rescale</span><span class="p">(</span><span class="n">color_channel</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 </pre></div>
@@ -809,7 +839,7 @@ only takes affect when a Slicerator object is passed.</p>
 </div>
 <p>Pipeline functions can take more than one slicerator.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@pipeline</span><span class="p">(</span><span class="n">ancestor_count</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">... </span> <span class="k">def</span> <span class="nf">sum_offset</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+<span class="gp">... </span> <span class="k">def</span><span class="w"> </span><span class="nf">sum_offset</span><span class="p">(</span><span class="n">img1</span><span class="p">,</span> <span class="n">img2</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
 <span class="gp">... </span>     <span class="k">return</span> <span class="n">img1</span> <span class="o">+</span> <span class="n">img2</span> <span class="o">+</span> <span class="n">offset</span>
 </pre></div>
 </div>
@@ -817,13 +847,13 @@ only takes affect when a Slicerator object is passed.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.helper.raise_in_thread">
-<span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">raise_in_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/raise_in_thread.html#raise_in_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.raise_in_thread" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.helper.</span></span><span class="sig-name descname"><span class="pre">raise_in_thread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">thread_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/helper/raise_in_thread.html#raise_in_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.helper.raise_in_thread" title="Link to this definition">#</a></dt>
 <dd><p>Raises an exception an a thread</p>
 <p>This can be used e.g. to stop a thread</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">StopThread</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">StopThread</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
-<span class="k">def</span> <span class="nf">worker</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">worker</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># do stuff</span>
     <span class="k">except</span> <span class="n">StopThread</span><span class="p">:</span>
@@ -852,8 +882,8 @@ an instance.</p></li>
 
 </section>
 </section>
-<span class="target" id="module-sdt.config"></span><section id="mechanism-for-getting-and-setting-default-function-parameters">
-<h2>Mechanism for getting and setting default function parameters<a class="headerlink" href="#mechanism-for-getting-and-setting-default-function-parameters" title="Permalink to this heading">#</a></h2>
+<section id="mechanism-for-getting-and-setting-default-function-parameters">
+<span id="module-sdt.config"></span><h2>Mechanism for getting and setting default function parameters<a class="headerlink" href="#mechanism-for-getting-and-setting-default-function-parameters" title="Link to this heading">#</a></h2>
 <p>Typically, <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrames</span></code> containing single molecule
 localization data would have x coordinates in the “x” column, y coordinates in
 the y column, the total intensity in the “mass” column and so on. Sometimes,
@@ -873,7 +903,7 @@ reads <a class="reference internal" href="#sdt.config.rc" title="sdt.config.rc">
 <p>Define a function that will take the DataFrame column names from the
 <cite>column</cite> argument:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@set_columns</span>
-<span class="gp">... </span><span class="k">def</span> <span class="nf">get_mass</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">get_mass</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]]</span>
 </pre></div>
 </div>
@@ -882,10 +912,10 @@ default values (which can be changed globally by the user by setting the
 corresponding items in <a class="reference internal" href="#sdt.config.columns" title="sdt.config.columns"><code class="xref py py-attr docutils literal notranslate"><span class="pre">columns</span></code></a>). Additionally, any user of the
 <cite>get_mass</cite> function can override the column names when calling the function.</p>
 <section id="id1">
-<h3>Programming reference<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3>Programming reference<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.config.set_columns">
-<span class="sig-prename descclassname"><span class="pre">sdt.config.</span></span><span class="sig-name descname"><span class="pre">set_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/config.html#set_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.config.set_columns" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.config.</span></span><span class="sig-name descname"><span class="pre">set_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/config.html#set_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.config.set_columns" title="Link to this definition">#</a></dt>
 <dd><p>Decorator to set default column names for DataFrames</p>
 <p>Use this on functions that accept a dict as the <cite>columns</cite> argument.
 Values from <a class="reference internal" href="#sdt.config.columns" title="sdt.config.columns"><code class="xref py py-attr docutils literal notranslate"><span class="pre">columns</span></code></a> will be added for any key not present in
@@ -916,7 +946,7 @@ on DataFrames with non-standard column names.</p>
 <p>Example function which should return the “mass” column from a single
 molecule data DataFrame:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@set_columns</span>
-<span class="gp">... </span><span class="k">def</span> <span class="nf">get_mass</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">get_mass</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">columns</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_mass</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="go">0    0</span>
@@ -938,7 +968,7 @@ this can be achieved by</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.config.use_defaults">
-<span class="sig-prename descclassname"><span class="pre">sdt.config.</span></span><span class="sig-name descname"><span class="pre">use_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/config.html#use_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.config.use_defaults" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.config.</span></span><span class="sig-name descname"><span class="pre">use_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/config.html#use_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.config.use_defaults" title="Link to this definition">#</a></dt>
 <dd><p>Decorator to apply default values to functions</p>
 <p>If any function argument whose name is a key in <a class="reference internal" href="#sdt.config.rc" title="sdt.config.rc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rc</span></code></a> is <cite>None</cite>,
 set its value to what is specified in <a class="reference internal" href="#sdt.config.rc" title="sdt.config.rc"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rc</span></code></a>.</p>
@@ -955,7 +985,7 @@ set its value to what is specified in <a class="reference internal" href="#sdt.c
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@use_defaults</span>
-<span class="gp">... </span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">channel_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">channel_names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">channel_names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="s1">&#39;channel1&#39;</span><span class="p">,</span> <span class="s1">&#39;channel2&#39;</span><span class="p">]</span>
 <span class="go">[&#39;channel1&#39;, &#39;channel2&#39;]</span>
@@ -972,13 +1002,13 @@ set its value to what is specified in <a class="reference internal" href="#sdt.c
 
 <dl class="py data">
 <dt class="sig sig-object py" id="sdt.config.columns">
-<span class="sig-prename descclassname"><span class="pre">sdt.config.</span></span><span class="sig-name descname"><span class="pre">columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'bg':</span> <span class="pre">'bg',</span> <span class="pre">'bg_dev':</span> <span class="pre">'bg_dev',</span> <span class="pre">'coords':</span> <span class="pre">['x',</span> <span class="pre">'y'],</span> <span class="pre">'mass':</span> <span class="pre">'mass',</span> <span class="pre">'particle':</span> <span class="pre">'particle',</span> <span class="pre">'signal':</span> <span class="pre">'signal',</span> <span class="pre">'time':</span> <span class="pre">'frame'}</span></em><a class="headerlink" href="#sdt.config.columns" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.config.</span></span><span class="sig-name descname"><span class="pre">columns</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'bg':</span> <span class="pre">'bg',</span> <span class="pre">'bg_dev':</span> <span class="pre">'bg_dev',</span> <span class="pre">'coords':</span> <span class="pre">['x',</span> <span class="pre">'y'],</span> <span class="pre">'mass':</span> <span class="pre">'mass',</span> <span class="pre">'particle':</span> <span class="pre">'particle',</span> <span class="pre">'signal':</span> <span class="pre">'signal',</span> <span class="pre">'time':</span> <span class="pre">'frame'}</span></span><a class="headerlink" href="#sdt.config.columns" title="Link to this definition">#</a></dt>
 <dd><p>Default column names in <code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></p>
 </dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="sdt.config.rc">
-<span class="sig-prename descclassname"><span class="pre">sdt.config.</span></span><span class="sig-name descname"><span class="pre">rc</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'channel_names':</span> <span class="pre">['channel1',</span> <span class="pre">'channel2']}</span></em><a class="headerlink" href="#sdt.config.rc" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.config.</span></span><span class="sig-name descname"><span class="pre">rc</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'channel_names':</span> <span class="pre">['channel1',</span> <span class="pre">'channel2']}</span></span><a class="headerlink" href="#sdt.config.rc" title="Link to this definition">#</a></dt>
 <dd><p>Global config dictionary</p>
 </dd></dl>
 
@@ -992,19 +1022,18 @@ set its value to what is specified in <a class="reference internal" href="#sdt.c
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="optimize.html"
+       href="stats.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Optimization and fitting algorithms</p>
+        <p class="prev-next-title">Statistical functions</p>
       </div>
     </a>
     <a class="right-next"
@@ -1016,10 +1045,7 @@ set its value to what is specified in <a class="reference internal" href="#sdt.c
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -1027,6 +1053,7 @@ set its value to what is specified in <a class="reference internal" href="#sdt.c
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -1093,6 +1120,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -1119,8 +1147,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

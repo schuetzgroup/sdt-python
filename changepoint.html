@@ -1,46 +1,46 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Changepoint detection &#8212; sdt-python 18.1 documentation</title>
+    <title>Changepoint detection &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/documentation_options.js?v=7805977c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'changepoint';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -55,19 +55,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -89,12 +93,20 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -109,6 +121,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -117,10 +132,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.1 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="roi.html">Regions of interest (ROIs)</a></li>
@@ -139,6 +166,7 @@
 <li class="toctree-l1"><a class="reference internal" href="funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stats.html">Statistical functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Change log</a></li>
 </ul>
@@ -156,7 +184,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -165,14 +193,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -262,26 +290,28 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
-<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
-</label>
+</button>
 </div></div>
       
     </div>
@@ -415,10 +445,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
-  <span class="target" id="module-sdt.changepoint"></span><section id="changepoint-detection">
-<h1>Changepoint detection<a class="headerlink" href="#changepoint-detection" title="Permalink to this heading">#</a></h1>
+  <section id="changepoint-detection">
+<span id="module-sdt.changepoint"></span><h1>Changepoint detection<a class="headerlink" href="#changepoint-detection" title="Link to this heading">#</a></h1>
 <p>The <a class="reference internal" href="#module-sdt.changepoint" title="sdt.changepoint"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sdt.changepoint</span></code></a> module provides alogrithms for changepoint
 detection, i.e. for finding changepoints in a time series.</p>
 <p>There are several algorithms available:</p>
@@ -491,12 +521,12 @@ be a 2D array with one dataset per column.</p>
 <p>When using <a class="reference internal" href="#sdt.changepoint.BayesOffline" title="sdt.changepoint.BayesOffline"><code class="xref py py-class docutils literal notranslate"><span class="pre">BayesOffline</span></code></a>, it is recommended to choose either the
 “ifm” or the “full_cov” model for multivariate data.</p>
 <section id="pelt">
-<span id="id4"></span><h2>PELT<a class="headerlink" href="#pelt" title="Permalink to this heading">#</a></h2>
+<span id="id4"></span><h2>PELT<a class="headerlink" href="#pelt" title="Link to this heading">#</a></h2>
 <section id="detector-class">
-<h3>Detector class<a class="headerlink" href="#detector-class" title="Permalink to this heading">#</a></h3>
+<h3>Detector class<a class="headerlink" href="#detector-class" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.Pelt">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">Pelt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cost</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jump</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#Pelt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.Pelt" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">Pelt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cost</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'l2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jump</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#Pelt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.Pelt" title="Link to this definition">#</a></dt>
 <dd><p>PELT changepoint detection</p>
 <p>Implementation of the PELT algorithm <a class="reference internal" href="#kill2012" id="id5"><span>[Kill2012]</span></a>. It is compatible with the
 implementation from <a class="reference external" href="https://github.com/deepcharles/ruptures">ruptures</a>.</p>
@@ -525,7 +555,7 @@ if <cite>cost</cite> is not a class instance. Defaults to {}.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.Pelt.find_changepoints">
-<span class="sig-name descname"><span class="pre">find_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_exp_cp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#Pelt.find_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.Pelt.find_changepoints" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">find_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_exp_cp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#Pelt.find_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.Pelt.find_changepoints" title="Link to this definition">#</a></dt>
 <dd><p>Do the changpoint detection on <cite>data</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -551,15 +581,15 @@ Defaults to 10.</p></li>
 
 </section>
 <section id="cost-classes">
-<h3>Cost classes<a class="headerlink" href="#cost-classes" title="Permalink to this heading">#</a></h3>
+<h3>Cost classes<a class="headerlink" href="#cost-classes" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.CostL1">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">CostL1</span></span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL1" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">CostL1</span></span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL1" title="Link to this definition">#</a></dt>
 <dd><p>L1 norm cost</p>
 <p>The cost is <span class="math notranslate nohighlight">\(\sum_i |y_i - \operatorname{median}(y)|\)</span>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.changepoint.CostL1.min_size">
-<span class="sig-name descname"><span class="pre">min_size</span></span><a class="headerlink" href="#sdt.changepoint.CostL1.min_size" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">min_size</span></span><a class="headerlink" href="#sdt.changepoint.CostL1.min_size" title="Link to this definition">#</a></dt>
 <dd><p>Minimum size of a segment that works with this cost function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -570,7 +600,7 @@ Defaults to 10.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.CostL1.set_data">
-<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL1.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL1.set_data" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL1.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL1.set_data" title="Link to this definition">#</a></dt>
 <dd><p>Set data for cost function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -581,7 +611,7 @@ Defaults to 10.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.CostL1.cost">
-<span class="sig-name descname"><span class="pre">cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL1.cost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL1.cost" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL1.cost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL1.cost" title="Link to this definition">#</a></dt>
 <dd><p>Calculate cost from time <cite>t</cite> to time <cite>s</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -603,13 +633,13 @@ Defaults to 10.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.CostL2">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">CostL2</span></span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL2" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">CostL2</span></span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL2" title="Link to this definition">#</a></dt>
 <dd><p>L2 norm cost</p>
 <p>The cost is <span class="math notranslate nohighlight">\(\operatorname{var}(y) Δt\)</span>, where <span class="math notranslate nohighlight">\(Δt\)</span> is the
 duration of the segment.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sdt.changepoint.CostL2.min_size">
-<span class="sig-name descname"><span class="pre">min_size</span></span><a class="headerlink" href="#sdt.changepoint.CostL2.min_size" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">min_size</span></span><a class="headerlink" href="#sdt.changepoint.CostL2.min_size" title="Link to this definition">#</a></dt>
 <dd><p>Minimum size of a segment that works with this cost function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -620,7 +650,7 @@ duration of the segment.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.CostL2.set_data">
-<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL2.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL2.set_data" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL2.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL2.set_data" title="Link to this definition">#</a></dt>
 <dd><p>Set data for cost function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -631,7 +661,7 @@ duration of the segment.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.CostL2.cost">
-<span class="sig-name descname"><span class="pre">cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL2.cost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL2.cost" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/pelt.html#CostL2.cost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.CostL2.cost" title="Link to this definition">#</a></dt>
 <dd><p>Calculate cost from time <cite>t</cite> to time <cite>s</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -656,12 +686,12 @@ duration of the segment.</p>
 </section>
 </section>
 <section id="offline-bayesian-changepoint-detection">
-<span id="bayes-offline"></span><h2>Offline Bayesian changepoint detection<a class="headerlink" href="#offline-bayesian-changepoint-detection" title="Permalink to this heading">#</a></h2>
+<span id="bayes-offline"></span><h2>Offline Bayesian changepoint detection<a class="headerlink" href="#offline-bayesian-changepoint-detection" title="Link to this heading">#</a></h2>
 <section id="id6">
-<h3>Detector class<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h3>
+<h3>Detector class<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.BayesOffline">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">BayesOffline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'const'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gauss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_likelihood_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numba_logsumexp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#BayesOffline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOffline" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">BayesOffline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'const'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gauss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_likelihood_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numba_logsumexp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#BayesOffline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOffline" title="Link to this definition">#</a></dt>
 <dd><p>Bayesian offline changepoint detector</p>
 <p>This is an implementation of <a class="reference internal" href="#fear2006" id="id7"><span>[Fear2006]</span></a> based on the one from the
 <a class="reference external" href="https://github.com/hildensia/bayesian_changepoint_detection">bayesian_changepoint_detection</a> python
@@ -703,7 +733,7 @@ use <code class="xref py py-func docutils literal notranslate"><span class="pre"
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.BayesOffline.find_changepoints">
-<span class="sig-name descname"><span class="pre">find_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truncate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#BayesOffline.find_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOffline.find_changepoints" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">find_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truncate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#BayesOffline.find_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOffline.find_changepoints" title="Link to this definition">#</a></dt>
 <dd><p>Find changepoints in datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -746,15 +776,15 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 
 </section>
 <section id="prior-probability-classes">
-<h3>Prior probability classes<a class="headerlink" href="#prior-probability-classes" title="Permalink to this heading">#</a></h3>
+<h3>Prior probability classes<a class="headerlink" href="#prior-probability-classes" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.ConstPrior">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">ConstPrior</span></span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#ConstPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstPrior" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">ConstPrior</span></span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#ConstPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstPrior" title="Link to this definition">#</a></dt>
 <dd><p>Class implementing a constant prior</p>
 <p><span class="math notranslate nohighlight">\(P(t) = 1 / (\text{len}(data) + 1)\)</span></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.ConstPrior.set_data">
-<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#ConstPrior.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstPrior.set_data" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#ConstPrior.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstPrior.set_data" title="Link to this definition">#</a></dt>
 <dd><p>Set data for calculation of the prior</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -765,7 +795,7 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.ConstPrior.prior">
-<span class="sig-name descname"><span class="pre">prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#ConstPrior.prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstPrior.prior" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#ConstPrior.prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstPrior.prior" title="Link to this definition">#</a></dt>
 <dd><p>Get prior at time <cite>t</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -784,7 +814,7 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.GeometricPrior">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">GeometricPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#GeometricPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.GeometricPrior" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">GeometricPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#GeometricPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.GeometricPrior" title="Link to this definition">#</a></dt>
 <dd><p>Class implementing a geometrically distributed prior</p>
 <p><span class="math notranslate nohighlight">\(P(t) =  p (1 - p)^{t - 1}\)</span></p>
 <dl class="field-list simple">
@@ -794,7 +824,7 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.GeometricPrior.set_data">
-<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#GeometricPrior.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.GeometricPrior.set_data" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#GeometricPrior.set_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.GeometricPrior.set_data" title="Link to this definition">#</a></dt>
 <dd><p>Set data for calculation of the prior</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -805,7 +835,7 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.GeometricPrior.prior">
-<span class="sig-name descname"><span class="pre">prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#GeometricPrior.prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.GeometricPrior.prior" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">prior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#GeometricPrior.prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.GeometricPrior.prior" title="Link to this definition">#</a></dt>
 <dd><p>Get prior at time <cite>t</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -824,7 +854,7 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.NegBinomialPrior">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">NegBinomialPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#NegBinomialPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.NegBinomialPrior" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">NegBinomialPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#NegBinomialPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.NegBinomialPrior" title="Link to this definition">#</a></dt>
 <dd><p>Class implementing a neg-binomially distributed prior</p>
 <p><span class="math notranslate nohighlight">\(P(t) =  {{t - k}\choose{k - 1}} p^k (1 - p)^{t - k}\)</span></p>
 <dl class="field-list simple">
@@ -841,14 +871,14 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ConstPriorNumba</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">GeometricPriorNumba</span></code>.</p>
 </section>
 <section id="observation-likelihood-classes">
-<h3>Observation likelihood classes<a class="headerlink" href="#observation-likelihood-classes" title="Permalink to this heading">#</a></h3>
+<h3>Observation likelihood classes<a class="headerlink" href="#observation-likelihood-classes" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.GaussianObsLikelihood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">GaussianObsLikelihood</span></span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#GaussianObsLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.GaussianObsLikelihood" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">GaussianObsLikelihood</span></span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#GaussianObsLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.GaussianObsLikelihood" title="Link to this definition">#</a></dt>
 <dd><p>Gaussian observation likelihood</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.GaussianObsLikelihood.likelihood">
-<span class="sig-name descname"><span class="pre">likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.GaussianObsLikelihood.likelihood" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.GaussianObsLikelihood.likelihood" title="Link to this definition">#</a></dt>
 <dd><p>Get likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -868,7 +898,7 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.GaussianObsLikelihood.set_data">
-<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.GaussianObsLikelihood.set_data" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.GaussianObsLikelihood.set_data" title="Link to this definition">#</a></dt>
 <dd><p>Set data for calculation of the likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -881,13 +911,13 @@ changepoint at time step <code class="docutils literal notranslate"><span class=
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.IfmObsLikelihood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">IfmObsLikelihood</span></span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#IfmObsLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.IfmObsLikelihood" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">IfmObsLikelihood</span></span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#IfmObsLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.IfmObsLikelihood" title="Link to this definition">#</a></dt>
 <dd><p>Independent features model from Xuan et al.</p>
 <p>See <em>Xuan Xiang, Kevin Murphy: “Modeling Changing Dependency Structure in
 Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.IfmObsLikelihood.likelihood">
-<span class="sig-name descname"><span class="pre">likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.IfmObsLikelihood.likelihood" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.IfmObsLikelihood.likelihood" title="Link to this definition">#</a></dt>
 <dd><p>Get likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -907,7 +937,7 @@ Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.IfmObsLikelihood.set_data">
-<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.IfmObsLikelihood.set_data" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.IfmObsLikelihood.set_data" title="Link to this definition">#</a></dt>
 <dd><p>Set data for calculation of the likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -920,13 +950,13 @@ Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.FullCovObsLikelihood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">FullCovObsLikelihood</span></span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#FullCovObsLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.FullCovObsLikelihood" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">FullCovObsLikelihood</span></span><a class="reference internal" href="_modules/sdt/changepoint/bayes_offline.html#FullCovObsLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.FullCovObsLikelihood" title="Link to this definition">#</a></dt>
 <dd><p>Full covariance model from Xuan et al.</p>
 <p>See <em>Xuan Xiang, Kevin Murphy: “Modeling Changing Dependency Structure
 in Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.FullCovObsLikelihood.likelihood">
-<span class="sig-name descname"><span class="pre">likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.FullCovObsLikelihood.likelihood" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.FullCovObsLikelihood.likelihood" title="Link to this definition">#</a></dt>
 <dd><p>Get likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -946,7 +976,7 @@ in Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.FullCovObsLikelihood.set_data">
-<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.FullCovObsLikelihood.set_data" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sdt.changepoint.FullCovObsLikelihood.set_data" title="Link to this definition">#</a></dt>
 <dd><p>Set data for calculation of the likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -963,12 +993,12 @@ in Multivariate Time Series”, ICML (2007), pp. 1055–1062</em>.</p>
 </section>
 </section>
 <section id="online-bayesian-changepoint-detection">
-<span id="bayes-online"></span><h2>Online Bayesian changepoint detection<a class="headerlink" href="#online-bayesian-changepoint-detection" title="Permalink to this heading">#</a></h2>
+<span id="bayes-online"></span><h2>Online Bayesian changepoint detection<a class="headerlink" href="#online-bayesian-changepoint-detection" title="Link to this heading">#</a></h2>
 <section id="id8">
-<h3>Detector class<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h3>
+<h3>Detector class<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.BayesOnline">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">BayesOnline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hazard</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'const'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'student_t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hazard_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'time_scale':</span> <span class="pre">250.0}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'alpha':</span> <span class="pre">0.1,</span> <span class="pre">'beta':</span> <span class="pre">0.01,</span> <span class="pre">'kappa':</span> <span class="pre">1.0,</span> <span class="pre">'mu':</span> <span class="pre">0.0}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">BayesOnline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hazard</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'const'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'student_t'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hazard_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'time_scale':</span> <span class="pre">250.0}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'alpha':</span> <span class="pre">0.1,</span> <span class="pre">'beta':</span> <span class="pre">0.01,</span> <span class="pre">'kappa':</span> <span class="pre">1.0,</span> <span class="pre">'mu':</span> <span class="pre">0.0}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numba'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline" title="Link to this definition">#</a></dt>
 <dd><p>Bayesian online changepoint detector</p>
 <p>This is an implementation of <a class="reference internal" href="#adam2007" id="id9"><span>[Adam2007]</span></a> based on the one from the
 <a class="reference external" href="https://github.com/hildensia/bayesian_changepoint_detection">bayesian_changepoint_detection</a> python
@@ -996,7 +1026,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">[0.1,</
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.BayesOnline.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline.reset" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline.reset" title="Link to this definition">#</a></dt>
 <dd><p>Reset the detector</p>
 <p>All previous data will be forgotten. Useful if one wants to start
 on a new dataset.</p>
@@ -1004,7 +1034,7 @@ on a new dataset.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.BayesOnline.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline.update" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline.update" title="Link to this definition">#</a></dt>
 <dd><p>Add data point an calculate changepoint probabilities</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1015,7 +1045,7 @@ on a new dataset.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.BayesOnline.find_changepoints">
-<span class="sig-name descname"><span class="pre">find_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline.find_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline.find_changepoints" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">find_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline.find_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline.find_changepoints" title="Link to this definition">#</a></dt>
 <dd><p>Analyze dataset</p>
 <p>This resets the detector and calls <a class="reference internal" href="#sdt.changepoint.BayesOnline.update" title="sdt.changepoint.BayesOnline.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> on all data
 points.</p>
@@ -1050,7 +1080,7 @@ to 0.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.BayesOnline.get_probabilities">
-<span class="sig-name descname"><span class="pre">get_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">past</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline.get_probabilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline.get_probabilities" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">past</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#BayesOnline.get_probabilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.BayesOnline.get_probabilities" title="Link to this definition">#</a></dt>
 <dd><p>Get changepoint probabilities</p>
 <p>To calculate the probabilities, look a number of data points (as
 given by the <cite>past</cite> parameter) into the past to increase robustness.</p>
@@ -1079,10 +1109,10 @@ the array equals the number of datapoints - <cite>past</cite>.</p>
 
 </section>
 <section id="hazard-classes">
-<h3>Hazard classes<a class="headerlink" href="#hazard-classes" title="Permalink to this heading">#</a></h3>
+<h3>Hazard classes<a class="headerlink" href="#hazard-classes" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.ConstHazard">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">ConstHazard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#ConstHazard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstHazard" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">ConstHazard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#ConstHazard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstHazard" title="Link to this definition">#</a></dt>
 <dd><p>Class implementing a constant hazard function</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1091,7 +1121,7 @@ the array equals the number of datapoints - <cite>past</cite>.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.ConstHazard.hazard">
-<span class="sig-name descname"><span class="pre">hazard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#ConstHazard.hazard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstHazard.hazard" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">hazard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_lengths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#ConstHazard.hazard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.ConstHazard.hazard" title="Link to this definition">#</a></dt>
 <dd><p>Calculate hazard</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1112,10 +1142,10 @@ the array equals the number of datapoints - <cite>past</cite>.</p>
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ConstHazardNumba</span></code>.</p>
 </section>
 <section id="id11">
-<h3>Observation likelihood classes<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h3>
+<h3>Observation likelihood classes<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="sdt.changepoint.StudentT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">StudentT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#StudentT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.StudentT" title="Permalink to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">StudentT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kappa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#StudentT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.StudentT" title="Link to this definition">#</a></dt>
 <dd><p>Student T observation likelihood</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1129,13 +1159,13 @@ the array equals the number of datapoints - <cite>past</cite>.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.StudentT.reset">
-<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#StudentT.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.StudentT.reset" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#StudentT.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.StudentT.reset" title="Link to this definition">#</a></dt>
 <dd><p>Reset state</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.StudentT.pdf">
-<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#StudentT.pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.StudentT.pdf" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#StudentT.pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.StudentT.pdf" title="Link to this definition">#</a></dt>
 <dd><p>Calculate probability density function (PDF)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1146,7 +1176,7 @@ the array equals the number of datapoints - <cite>past</cite>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sdt.changepoint.StudentT.update_theta">
-<span class="sig-name descname"><span class="pre">update_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#StudentT.update_theta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.StudentT.update_theta" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">update_theta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/bayes_online.html#StudentT.update_theta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.StudentT.update_theta" title="Link to this definition">#</a></dt>
 <dd><p>Update parameters for every possible run length</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1162,10 +1192,10 @@ the array equals the number of datapoints - <cite>past</cite>.</p>
 </section>
 </section>
 <section id="calculation-of-statistics-for-data-segments">
-<h2>Calculation of statistics for data segments<a class="headerlink" href="#calculation-of-statistics-for-data-segments" title="Permalink to this heading">#</a></h2>
+<h2>Calculation of statistics for data segments<a class="headerlink" href="#calculation-of-statistics-for-data-segments" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.changepoint.segment_stats">
-<span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">segment_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">changepoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_funcs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'segments'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/utils.html#segment_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.segment_stats" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">segment_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">changepoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_funcs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'segments'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/utils.html#segment_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.segment_stats" title="Link to this definition">#</a></dt>
 <dd><p>Calculate statistics for each segment found via changepoint detection</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1211,10 +1241,10 @@ length as the <cite>data</cite> parameter.</p></li>
 
 </section>
 <section id="plotting-of-changepoints">
-<h2>Plotting of changepoints<a class="headerlink" href="#plotting-of-changepoints" title="Permalink to this heading">#</a></h2>
+<h2>Plotting of changepoints<a class="headerlink" href="#plotting-of-changepoints" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sdt.changepoint.plot_changepoints">
-<span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">plot_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">changepoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shade'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['#4286f4',</span> <span class="pre">'#f44174']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/utils.html#plot_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.plot_changepoints" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sdt.changepoint.</span></span><span class="sig-name descname"><span class="pre">plot_changepoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">changepoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shade'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['#4286f4',</span> <span class="pre">'#f44174']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sdt/changepoint/utils.html#plot_changepoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sdt.changepoint.plot_changepoints" title="Link to this definition">#</a></dt>
 <dd><p>Plot time series with changepoints</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1275,11 +1305,10 @@ Detection”, <a class="reference external" href="https://arxiv.org/abs/0710.374
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
        href="io.html"
@@ -1299,10 +1328,7 @@ Detection”, <a class="reference external" href="https://arxiv.org/abs/0710.374
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -1310,6 +1336,7 @@ Detection”, <a class="reference external" href="https://arxiv.org/abs/0710.374
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
@@ -1442,6 +1469,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -1468,8 +1496,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

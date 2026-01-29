@@ -1,44 +1,44 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdt.motion.msd_dist &#8212; sdt-python 18.0 documentation</title>
+    <title>sdt.motion.msd_dist &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../../_static/documentation_options.js?v=7805977c"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/motion/msd_dist';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -51,19 +51,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -85,12 +89,22 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -105,6 +119,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="../../../index.html">
@@ -113,10 +130,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
@@ -135,6 +164,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stats.html">Statistical functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
@@ -152,7 +182,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -161,14 +191,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -210,20 +240,22 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -250,7 +282,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for sdt.motion.msd_dist</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
@@ -258,20 +290,19 @@ document.write(`
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="sd">&quot;&quot;&quot;Tools for calculation of MSDs via cumulative density functions&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span><span class="p">,</span> <span class="n">OrderedDict</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">sp_opt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">sp_opt</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">msd_base</span><span class="p">,</span> <span class="n">msd</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">funcs</span><span class="p">,</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">sdt_opt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">msd_base</span><span class="p">,</span> <span class="n">msd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">funcs</span><span class="p">,</span> <span class="n">optimize</span> <span class="k">as</span> <span class="n">sdt_opt</span>
 
 
-<span class="k">def</span> <span class="nf">_fit_cdf_prony</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_fit_cdf_prony</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Use :py:class:`sdt_op.ProbExpSumModel` to fit the CDF</span>
 
 <span class="sd">    Parameters</span>
@@ -306,7 +337,7 @@ document.write(`
     <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">mant</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">exp</span>
 
 
-<span class="k">def</span> <span class="nf">_fit_cdf_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initial_b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initial_l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_fit_cdf_lsq</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_exp</span><span class="p">,</span> <span class="n">weighted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initial_b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initial_l</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit CDF by least squares fitting</span>
 
 <span class="sd">    Determine the best parameters :math:`\alpha, \beta_k, \lambda_k` by fitting</span>
@@ -339,7 +370,7 @@ document.write(`
 <span class="sd">    exp_coeff : numpy.ndarray</span>
 <span class="sd">        List of exponential coefficients (:math:`\lambda_k`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">constrained_func</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">constrained_func</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="n">lam</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
         <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
         <span class="n">beta</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -377,7 +408,7 @@ document.write(`
     <span class="k">return</span> <span class="n">b</span><span class="p">,</span> <span class="n">popt</span><span class="p">[</span><span class="n">n_exp</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
 
 
-<span class="k">def</span> <span class="nf">_msd_from_cdf</span><span class="p">(</span><span class="n">square_disp</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_boot</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_msd_from_cdf</span><span class="p">(</span><span class="n">square_disp</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_boot</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit the CDF of square displacements to an exponential model</span>
 
@@ -460,7 +491,7 @@ document.write(`
     <span class="k">return</span> <span class="n">msds</span><span class="p">,</span> <span class="n">weights</span>
 
 
-<span class="k">def</span> <span class="nf">_assign_components</span><span class="p">(</span><span class="n">msds</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">how</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_assign_components</span><span class="p">(</span><span class="n">msds</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">how</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assign MSDs and weights to components</span>
 
 <span class="sd">    Which of the MSDs / weights gets assigned to which component in</span>
@@ -507,7 +538,9 @@ document.write(`
     <span class="k">return</span> <span class="n">msds_assigned</span><span class="p">,</span> <span class="n">weights_assigned</span>
 
 
-<div class="viewcode-block" id="MsdDist"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist">[docs]</a><span class="k">class</span> <span class="nc">MsdDist</span><span class="p">:</span>
+<div class="viewcode-block" id="MsdDist">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MsdDist</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate and analyze mean square displacement (MSD) distribution</span>
 
 <span class="sd">    from single moleclue tracking data. This differs from</span>
@@ -518,7 +551,7 @@ document.write(`
 <span class="sd">    Only valid for 2D data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">ensemble</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fit_method</span><span class="o">=</span><span class="s2">&quot;lsq&quot;</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                  <span class="n">e_name</span><span class="o">=</span><span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">assign_method</span><span class="o">=</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
@@ -602,7 +635,9 @@ document.write(`
     <span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span>
                         <span class="p">[</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="s2">&quot;msd_err&quot;</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">,</span> <span class="s2">&quot;weight_err&quot;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="MsdDist.get_msd"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist.get_msd">[docs]</a>    <span class="k">def</span> <span class="nf">get_msd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="MsdDist.get_msd">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist.get_msd">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_msd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get MSD and error DataFrames</span>
 
 <span class="sd">        The columns contain data for different lag times. Each row corresponds</span>
@@ -645,7 +680,10 @@ document.write(`
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="MsdDist.fit"><a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;brownian&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MsdDist.fit">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.MsdDist.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;brownian&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit a model function to the MSD data</span>
 
 <span class="sd">        Parameters</span>
@@ -662,12 +700,14 @@ document.write(`
 <span class="sd">            are diffusion coefficient, positional accuracy, and alpha.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">MsdDistFit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span><span class="p">,</span>
-                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
-<span class="k">class</span> <span class="nc">MsdDistFit</span><span class="p">:</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MsdDistFit</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit diffusion parameters to MSDs from square displacement dists&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msd_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">weight_data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msd_data</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">weight_data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        msd_data : list of msd_base.MsdData</span>
@@ -704,7 +744,7 @@ document.write(`
 
     <span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;fit_err&quot;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get fit results</span>
 
 <span class="sd">        The columns contain fitted parameters. Each row corresponds</span>
@@ -742,7 +782,7 @@ document.write(`
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msd_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">msd_ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot MSDs and fit results</span>
 
 <span class="sd">        First plot will show weights of the components, other plots will</span>
@@ -772,12 +812,12 @@ document.write(`
 <span class="sd">        msd_ax : list of matplotlib.axes.Axes</span>
 <span class="sd">            Axes objects for plotting the MSDs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
         <span class="k">if</span> <span class="n">weight_ax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">msd_ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
-                <span class="n">fig</span><span class="o">.</span><span class="n">set_constrained_layout</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">fig</span><span class="o">.</span><span class="n">set_layout_engine</span><span class="p">(</span><span class="s2">&quot;constrained&quot;</span><span class="p">)</span>
             <span class="n">n_sub</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_fits</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_sub</span><span class="p">)</span>
             <span class="n">weight_ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -792,13 +832,13 @@ document.write(`
         <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">weight_ax</span><span class="p">,</span> <span class="n">msd_ax</span>
 
 
-<span class="k">class</span> <span class="nc">Weights</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Weights</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle weight data for a single component from :py:class:`MsdDist`</span>
 
 <span class="sd">    This is similar to what e.g. :py:class:`msd.BrownianMotion` does with</span>
 <span class="sd">    MSD data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight_data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight_data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        weight_data : list of msd_base.MsdData</span>
@@ -817,7 +857,7 @@ document.write(`
                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_components</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_weight_data</span> <span class="o">=</span> <span class="n">weight_data</span>
 
-    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get results</span>
 
 <span class="sd">        Parameters</span>
@@ -855,7 +895,7 @@ document.write(`
                 <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;particle&quot;</span>
         <span class="k">return</span> <span class="n">res_df</span><span class="p">,</span> <span class="n">err_df</span>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot lag time vs. weight</span>
 
 <span class="sd">        Parameters</span>
@@ -871,7 +911,7 @@ document.write(`
 <span class="sd">        matplotlib.axes.Axes</span>
 <span class="sd">            Axes used for plotting</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
 
@@ -917,73 +957,6 @@ document.write(`
             <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ax</span>
-
-
-<span class="c1"># Old API</span>
-
-<span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-<span class="k">def</span> <span class="nf">emsd_cdf</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pixel_size</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">num_frac</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;lsq&quot;</span><span class="p">,</span>
-             <span class="n">poly_order</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate ensemble mean square displacements from tracking data CDF</span>
-
-<span class="sd">    .. deperecated:: 14.0</span>
-<span class="sd">        Use :py:class:`MsdDist` instead.</span>
-
-<span class="sd">    Fit the model cumulative density function to the measured CDF of tracking</span>
-<span class="sd">    data. For details, see the documentation of :py:class:`MsdDist`.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    data : list of pandas.DataFrames or pandas.DataFrame</span>
-<span class="sd">        Tracking data</span>
-<span class="sd">    pixel_size : float</span>
-<span class="sd">        width of a pixel in micrometers.</span>
-<span class="sd">    fps : float</span>
-<span class="sd">        Frames per second</span>
-<span class="sd">    num_frac : int, optional</span>
-<span class="sd">        The number of diffusing species. Defaults to 2</span>
-<span class="sd">    max_lagtime : int, optional</span>
-<span class="sd">        Maximum number of time lags to consider. Defaults to 10.</span>
-<span class="sd">    method : {&quot;prony&quot;, &quot;lsq&quot;, &quot;weighted-lsq&quot;}, optional</span>
-<span class="sd">        Which fit method to use. &quot;prony&quot; is a modified Prony&#39;s method, &quot;lsq&quot;</span>
-<span class="sd">        is least squares fitting, and &quot;weighted-lsq&quot; is weighted least squares</span>
-<span class="sd">        fitting to account for the fact that the CDF data are concentrated</span>
-<span class="sd">        at x=0. Defaults to &quot;prony&quot;.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list of pandas.DataFrames([lagt, msd, fraction])</span>
-<span class="sd">        For each species, the DataFrame contains for each lag time the msd,</span>
-<span class="sd">        the fraction.</span>
-
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    poly_order : int, optional</span>
-<span class="sd">        For the &quot;prony&quot; method, the sum of exponentials is approximated by a</span>
-<span class="sd">        polynomial. This parameter gives the degree of the polynomial.</span>
-<span class="sd">        Defaults to 30.</span>
-<span class="sd">    columns : dict, optional</span>
-<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
-<span class="sd">        Relevant names are `coords`, `particle`, and `time`.</span>
-<span class="sd">        This means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and</span>
-<span class="sd">        the time column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
-<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;`emsd_cdf` is deprecated. Use the `Msd` class instead.&quot;</span><span class="p">,</span>
-                  <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
-    <span class="n">msd_cls</span> <span class="o">=</span> <span class="n">MsdDist</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">num_frac</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="n">max_lagtime</span><span class="p">,</span>
-                      <span class="n">fit_method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="n">poly_order</span><span class="p">,</span>
-                      <span class="n">pixel_size</span><span class="o">=</span><span class="n">pixel_size</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">msd_cls</span><span class="o">.</span><span class="n">get_msd</span><span class="p">():</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
-            <span class="n">OrderedDict</span><span class="p">([(</span><span class="s2">&quot;lagt&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">msd</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">msd</span><span class="p">),</span>
-                         <span class="p">(</span><span class="s2">&quot;fraction&quot;</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">weight</span><span class="p">)]))</span>
-        <span class="n">r</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">r</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;lagt&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 
                 </article>
@@ -991,16 +964,12 @@ document.write(`
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -1023,6 +992,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -1049,8 +1019,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

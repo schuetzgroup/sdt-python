@@ -1,44 +1,44 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sdt.motion.msd &#8212; sdt-python 18.0 documentation</title>
+    <title>sdt.motion.msd &#8212; sdt-python 20.1.1 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-    <script src="../../../_static/doctools.js"></script>
-    <script src="../../../_static/sphinx_highlight.js"></script>
-    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../../../_static/documentation_options.js?v=7805977c"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/sdt/motion/msd';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -51,19 +51,23 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
   
   <input type="checkbox"
           class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
   
   <div class="search-button__wrapper">
     <div class="search-button__overlay"></div>
@@ -85,12 +89,22 @@
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -105,6 +119,9 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="../../../index.html">
@@ -113,10 +130,22 @@
   
   
   
-    <p class="title logo__title">sdt-python 18.0 documentation</p>
+  
+    <p class="title logo__title">sdt-python 20.1.1 documentation</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../roi.html">Regions of interest (ROIs)</a></li>
@@ -135,6 +164,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../funcs.html">Special functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../optimize.html">Optimization and fitting algorithms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stats.html">Statistical functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../helper.html">Helpers for writing new code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../CHANGELOG.html">Change log</a></li>
 </ul>
@@ -152,7 +182,7 @@
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
 
@@ -161,14 +191,14 @@
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
-        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
   <span class="fa-solid fa-bars"></span>
-</label></div>
+</button></div>
       
     </div>
   
@@ -210,20 +240,22 @@
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -250,7 +282,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <h1>Source code for sdt.motion.msd</h1><div class="highlight"><pre>
 <span></span><span class="c1"># SPDX-FileCopyrightText: 2020 Lukas Schrangl &lt;lukas.schrangl@tuwien.ac.at&gt;</span>
@@ -258,26 +290,27 @@ document.write(`
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
 <span class="sd">&quot;&quot;&quot;Analyze mean square displacements (MSDs)&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span><span class="p">,</span> <span class="n">OrderedDict</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">namedtuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.optimize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">msd_base</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">msd_base</span>
 
 
-<div class="viewcode-block" id="Msd"><a class="viewcode-back" href="../../../motion.html#sdt.motion.Msd">[docs]</a><span class="k">class</span> <span class="nc">Msd</span><span class="p">:</span>
+<div class="viewcode-block" id="Msd">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.Msd">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Msd</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate and analyze mean square displacements (MSDs)</span>
 
 <span class="sd">    from single moleclue tracking data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ensemble</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">frame_rate</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ensemble</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">e_name</span><span class="o">=</span><span class="s2">&quot;ensemble&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
@@ -335,21 +368,21 @@ document.write(`
                         <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># No data for this lag time</span>
-                        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+                        <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
                     <span class="n">msds_p</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">m</span>
                 <span class="n">msd_set</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">msds_p</span>
                 <span class="n">msds</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Calculate in `MsdData.__init__`</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msds</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
-                <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+                <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
                               <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]))</span>
                 <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">square_disp</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
             <span class="c1"># Use corrected sample std as a less biased estimator of the</span>
             <span class="c1"># population  std</span>
             <span class="n">err</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
                 <span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-                              <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
+                              <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
                               <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]))</span>
                 <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">square_disp</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
             <span class="n">msd_set</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
@@ -357,7 +390,7 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span> <span class="o">=</span> <span class="n">msd_base</span><span class="o">.</span><span class="n">MsdData</span><span class="p">(</span><span class="n">frame_rate</span><span class="p">,</span> <span class="n">msd_set</span><span class="p">,</span> <span class="n">msds</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">e_name</span><span class="o">=</span><span class="s2">&quot;ensemble&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">e_name</span><span class="o">=</span><span class="s2">&quot;ensemble&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create class instance from pre-calculated data</span>
 
 <span class="sd">        With this, it is possible to create a class instance from legacy</span>
@@ -385,7 +418,7 @@ document.write(`
                 <span class="k">if</span> <span class="s2">&quot;stderr&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                     <span class="n">err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;stderr&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">msds</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">msds</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
                 <span class="n">msd_set</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">e_name</span><span class="p">,</span> <span class="n">msds</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])])</span>
                 <span class="n">msds</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">e_name</span><span class="p">,</span> <span class="n">msds</span><span class="p">)])</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">e_name</span><span class="p">,</span> <span class="n">err</span><span class="p">)])</span>
@@ -400,7 +433,9 @@ document.write(`
 
     <span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;msd&quot;</span><span class="p">,</span> <span class="s2">&quot;msd_err&quot;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="Msd.get_msd"><a class="viewcode-back" href="../../../motion.html#sdt.motion.Msd.get_msd">[docs]</a>    <span class="k">def</span> <span class="nf">get_msd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Msd.get_msd">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.Msd.get_msd">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_msd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get MSD and error DataFrames</span>
 
 <span class="sd">        The columns contain data for different lag times. Each row corresponds</span>
@@ -436,7 +471,10 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;means&quot;</span><span class="p">,</span> <span class="n">series</span><span class="p">),</span>
                            <span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;errors&quot;</span><span class="p">,</span> <span class="n">series</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Msd.fit"><a class="viewcode-back" href="../../../motion.html#sdt.motion.Msd.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;brownian&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Msd.fit">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.Msd.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;brownian&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit a model function to the MSD data</span>
 
 <span class="sd">        Parameters</span>
@@ -460,38 +498,50 @@ document.write(`
         <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;brownian&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">BrownianMotion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown model: &quot;</span> <span class="o">+</span> <span class="n">model</span><span class="p">)</span></div></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown model: &quot;</span> <span class="o">+</span> <span class="n">model</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="AnomalousDiffusion"><a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion">[docs]</a><span class="k">class</span> <span class="nc">AnomalousDiffusion</span><span class="p">:</span>
+
+<div class="viewcode-block" id="AnomalousDiffusion">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnomalousDiffusion</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit anomalous diffusion parameters to MSD values</span>
 
-<span class="sd">    Fit a function :math:`msd(t_\text{lag}) = 4 D t_\text{lag}^\alpha +</span>
-<span class="sd">    4 \epsilon^2`</span>
+<span class="sd">    Fit a function :math:`msd(t_\text{lag}) = 2 n_\text{dim} D t_\text{lag}^\alpha +</span>
+<span class="sd">    2 n_\text{dim} \epsilon^2`</span>
 <span class="sd">    to the tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient,</span>
-<span class="sd">    :math:`\epsilon` is the positional accuracy (uncertainty), and</span>
-<span class="sd">    :math:`\alpha` the anomalous diffusion exponent.</span>
+<span class="sd">    :math:`\epsilon` is the positional uncertainty, and :math:`\alpha` the anomalous</span>
+<span class="sd">    diffusion exponent.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_fit_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;eps&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msd_data</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">exposure_time</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-                 <span class="n">initial</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">msd_data</span><span class="p">:</span> <span class="n">msd_base</span><span class="o">.</span><span class="n">MsdData</span><span class="p">,</span>
+        <span class="n">n_lag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
+        <span class="n">exposure_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">n_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">initial</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        msd_data : msd_base.MsdData</span>
+<span class="sd">        msd_data</span>
 <span class="sd">            MSD data</span>
-<span class="sd">        n_lag : int or inf, optional</span>
+<span class="sd">        n_lag</span>
 <span class="sd">            Maximum number of lag times to use for fitting. Defaults to</span>
 <span class="sd">            `inf`, i.e. using all.</span>
-<span class="sd">        exposure_time : float, optional</span>
-<span class="sd">            Exposure time. Defaults to 0, i.e. no exposure time correction</span>
-<span class="sd">        initial : tuple of float, optional</span>
+<span class="sd">        exposure_time</span>
+<span class="sd">            Exposure time. 0 disables exposure time correction.</span>
+<span class="sd">        n_dim</span>
+<span class="sd">            Number of spatial dimensions</span>
+<span class="sd">        initial</span>
 <span class="sd">            Initial guesses for the fitting for :math:`D`, :math:`\epsilon`,</span>
-<span class="sd">            and :math:`\alpha`. Defaults to ``(0.5, 0.05, 1.)``.</span>
+<span class="sd">            and :math:`\alpha`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">residual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lagt</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lagt</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
             <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theoretical</span><span class="p">(</span><span class="n">lagt</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theoretical</span><span class="p">(</span><span class="n">lagt</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">,</span> <span class="n">n_dim</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">r</span> <span class="o">-</span> <span class="n">target</span>
 
         <span class="n">initial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">initial</span><span class="p">)</span>
@@ -506,9 +556,11 @@ document.write(`
                 <span class="n">lt</span> <span class="o">=</span> <span class="n">lagt</span><span class="p">[</span><span class="n">fin</span><span class="p">]</span>
                 <span class="n">nl</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_lag</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tgt</span><span class="p">))</span>
                 <span class="n">f</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">least_squares</span><span class="p">(</span>
-                    <span class="n">residual</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span>
+                    <span class="n">residual</span><span class="p">,</span>
+                    <span class="n">initial</span><span class="p">,</span>
                     <span class="n">bounds</span><span class="o">=</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]),</span>
-                    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;lagt&quot;</span><span class="p">:</span> <span class="n">lt</span><span class="p">[:</span><span class="n">nl</span><span class="p">],</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">tgt</span><span class="p">[:</span><span class="n">nl</span><span class="p">]})</span>
+                    <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;lagt&quot;</span><span class="p">:</span> <span class="n">lt</span><span class="p">[:</span><span class="n">nl</span><span class="p">],</span> <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="n">tgt</span><span class="p">[:</span><span class="n">nl</span><span class="p">]},</span>
+                <span class="p">)</span>
                 <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -519,9 +571,12 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span> <span class="o">=</span> <span class="n">msd_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span> <span class="o">=</span> <span class="n">exposure_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_dim</span> <span class="o">=</span> <span class="n">n_dim</span>
 
-<div class="viewcode-block" id="AnomalousDiffusion.exposure_time_corr"><a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion.exposure_time_corr">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">exposure_time_corr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<div class="viewcode-block" id="AnomalousDiffusion.exposure_time_corr">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion.exposure_time_corr">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exposure_time_corr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                            <span class="n">force_numeric</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Correct lag times for the movement of particles during exposure</span>
 
@@ -577,8 +632,19 @@ document.write(`
              <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">m_diff</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span><span class="o">**</span><span class="n">alpha</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">alpha</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AnomalousDiffusion.theoretical"><a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion.theoretical">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">theoretical</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">exposure_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">squeeze_result</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AnomalousDiffusion.theoretical">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion.theoretical">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">theoretical</span><span class="p">(</span>
+        <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">d</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">exposure_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">n_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">squeeze_result</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate theoretical MSDs for different lag times</span>
 
 <span class="sd">        Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app}^\alpha + 4</span>
@@ -588,43 +654,45 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        t : array-like or scalar</span>
+<span class="sd">        t</span>
 <span class="sd">            Lag times</span>
-<span class="sd">        d : float</span>
+<span class="sd">        d</span>
 <span class="sd">            Diffusion coefficient</span>
-<span class="sd">        eps : float</span>
-<span class="sd">            Positional accuracy.</span>
-<span class="sd">        alpha : float, optional</span>
-<span class="sd">            Anomalous diffusion exponent. Defaults to 1.</span>
-<span class="sd">        exposure_time : float, optional</span>
-<span class="sd">            Exposure time. Defaults to 0.</span>
-<span class="sd">        squeeze_result : bool, optional</span>
+<span class="sd">        eps</span>
+<span class="sd">            Positional uncertainty.</span>
+<span class="sd">        alpha</span>
+<span class="sd">            Anomalous diffusion exponent.</span>
+<span class="sd">        exposure_time</span>
+<span class="sd">            Exposure time.</span>
+<span class="sd">        n_dim</span>
+<span class="sd">            Number of spatial dimensions</span>
+<span class="sd">        squeeze_result</span>
 <span class="sd">            If `True`, return the result as a scalar type or 1D array if</span>
-<span class="sd">            possible. Otherwise, always return a 2D array. Defaults to `True`.</span>
+<span class="sd">            possible. Otherwise, always return a 2D array.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        numpy.ndarray or scalar</span>
-<span class="sd">            Calculated theoretical MSDs</span>
+<span class="sd">        Calculated theoretical MSDs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">eps</span><span class="o">.</span><span class="n">shape</span> <span class="ow">or</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">alpha</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`d`, `eps`, and `alpha` should have same shape.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">d</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">eps</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of dimensions of `t`, `d`, `eps`, and &quot;</span>
-                             <span class="s2">&quot;`alpha` need to be less than 2&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Number of dimensions of `t`, `d`, `eps`, and `alpha` need to be&quot;</span>
+                <span class="s2">&quot;less than 2&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">ic</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">eps</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">ic</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_dim</span> <span class="o">*</span> <span class="n">eps</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">ic</span><span class="p">[</span><span class="n">eps</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">t_corr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">alpha</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alpha</span><span class="p">):</span>
-            <span class="n">t_corr</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">AnomalousDiffusion</span><span class="o">.</span><span class="n">exposure_time_corr</span><span class="p">(</span>
-                <span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">)</span>
+            <span class="n">t_corr</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">AnomalousDiffusion</span><span class="o">.</span><span class="n">exposure_time_corr</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">exposure_time</span><span class="p">)</span>
 
-        <span class="n">ret</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">t_corr</span><span class="o">**</span><span class="n">alpha</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">ic</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_dim</span> <span class="o">*</span> <span class="n">d</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">t_corr</span> <span class="o">**</span> <span class="n">alpha</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">ic</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
 
         <span class="k">if</span> <span class="n">squeeze_result</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ret</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -633,9 +701,12 @@ document.write(`
 
         <span class="k">return</span> <span class="n">ret</span></div>
 
+
     <span class="n">Result</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;fit_err&quot;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="AnomalousDiffusion.get_results"><a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="AnomalousDiffusion.get_results">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion.get_results">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get fit results</span>
 
 <span class="sd">        The columns contain fitted parameters. Each row corresponds</span>
@@ -687,7 +758,10 @@ document.write(`
                 <span class="n">d</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;particle&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Result</span><span class="p">(</span><span class="n">res_df</span><span class="p">,</span> <span class="n">err_df</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AnomalousDiffusion.plot"><a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AnomalousDiffusion.plot">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.AnomalousDiffusion.plot">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot lag time vs. MSD with fitted theoretical curve</span>
 
 <span class="sd">        Parameters</span>
@@ -703,7 +777,7 @@ document.write(`
 <span class="sd">        matplotlib.axes.Axes</span>
 <span class="sd">            Axes used for plotting</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
 
@@ -727,8 +801,9 @@ document.write(`
 
         <span class="k">return</span> <span class="n">ax</span></div>
 
+
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_value_with_error</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="s2">&quot;.2g&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_value_with_error</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="s2">&quot;.2g&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a value with a name, a unit and an error</span>
 
 <span class="sd">        Parameters</span>
@@ -757,7 +832,7 @@ document.write(`
                  <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="s2">unit</span><span class="se">}}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">err</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_plot_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_id</span><span class="p">,</span> <span class="n">n_lag</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_plot_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_id</span><span class="p">,</span> <span class="n">n_lag</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot a single theoretical curve</span>
 
 <span class="sd">        Parameters</span>
@@ -774,10 +849,10 @@ document.write(`
 <span class="sd">            Color of the plotted line</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">data_id</span><span class="p">]</span>
-        <span class="n">d_err</span><span class="p">,</span> <span class="n">eps_err</span><span class="p">,</span> <span class="n">alpha_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data_id</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">d_err</span><span class="p">,</span> <span class="n">eps_err</span><span class="p">,</span> <span class="n">alpha_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data_id</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_lag</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theoretical</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theoretical</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dim</span><span class="p">)</span>
 
         <span class="n">legend</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
@@ -791,7 +866,10 @@ document.write(`
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">legend</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="BrownianMotion"><a class="viewcode-back" href="../../../motion.html#sdt.motion.BrownianMotion">[docs]</a><span class="k">class</span> <span class="nc">BrownianMotion</span><span class="p">(</span><span class="n">AnomalousDiffusion</span><span class="p">):</span>
+
+<div class="viewcode-block" id="BrownianMotion">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.BrownianMotion">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BrownianMotion</span><span class="p">(</span><span class="n">AnomalousDiffusion</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Fit Brownian motion parameters to MSD values</span>
 
 <span class="sd">    Fit a function :math:`\mathit{msd}(t_\text{lag}) = 4 D t_\text{lag} +</span>
@@ -801,15 +879,23 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_fit_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;eps&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msd_data</span><span class="p">,</span> <span class="n">n_lag</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">exposure_time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">msd_data</span><span class="p">:</span> <span class="n">msd_base</span><span class="o">.</span><span class="n">MsdData</span><span class="p">,</span>
+        <span class="n">n_lag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">exposure_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">n_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        msd_data : msd_base.MsdData</span>
+<span class="sd">        msd_data</span>
 <span class="sd">            MSD data</span>
-<span class="sd">        n_lag : int or inf, optional</span>
-<span class="sd">            Maximum number of lag times to use for fitting. Defaults to 2.</span>
-<span class="sd">        exposure_time : float, optional</span>
-<span class="sd">            Exposure time. Defaults to 0, i.e. no exposure time correction</span>
+<span class="sd">        n_lag</span>
+<span class="sd">            Maximum number of lag times to use for fitting.</span>
+<span class="sd">        exposure_time</span>
+<span class="sd">            Exposure time. 0 disables exposure time correction.</span>
+<span class="sd">        n_dim</span>
+<span class="sd">            Number of spatial dimensions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_err</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
@@ -824,9 +910,9 @@ document.write(`
             <span class="n">nl</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_lag</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">nl</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="c1"># Too few datapoints</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">nl</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">dt</span> <span class="o">=</span> <span class="n">lagt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">lagt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -835,8 +921,8 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">s</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">lagt</span><span class="p">[:</span><span class="n">nl</span><span class="p">]</span> <span class="o">-</span> <span class="n">exposure_time</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">m</span><span class="p">[:</span><span class="n">nl</span><span class="p">,</span> <span class="p">:],</span> <span class="mi">1</span><span class="p">)</span>
 
-            <span class="n">d</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="mi">4</span>
-            <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">complex</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_dim</span><span class="p">)</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">complex</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_dim</span><span class="p">))</span>
             <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">eps</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="n">eps</span><span class="p">))</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">particle</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eps</span><span class="p">)]</span>
@@ -847,9 +933,19 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_msd_data</span> <span class="o">=</span> <span class="n">msd_data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span> <span class="o">=</span> <span class="n">exposure_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_dim</span> <span class="o">=</span> <span class="n">n_dim</span>
 
-<div class="viewcode-block" id="BrownianMotion.theoretical"><a class="viewcode-back" href="../../../motion.html#sdt.motion.BrownianMotion.theoretical">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">theoretical</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">exposure_time</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="BrownianMotion.theoretical">
+<a class="viewcode-back" href="../../../motion.html#sdt.motion.BrownianMotion.theoretical">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">theoretical</span><span class="p">(</span>  <span class="c1"># pyright: ignore reportIncompatibleMethodOverride</span>
+        <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">d</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">exposure_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">n_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">squeeze_result</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate theoretical MSDs for different lag times</span>
 
 <span class="sd">        Calculate :math:`msd(t_\text{lag}) = 4 D t_\text{app} + 4</span>
@@ -859,34 +955,35 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        t : array-like or scalar</span>
+<span class="sd">        t</span>
 <span class="sd">            Lag times</span>
-<span class="sd">        d : float</span>
+<span class="sd">        d</span>
 <span class="sd">            Diffusion coefficient</span>
-<span class="sd">        eps : float</span>
-<span class="sd">            Positional accuracy.</span>
-<span class="sd">        alpha : float, optional</span>
-<span class="sd">            Anomalous diffusion exponent. Defaults to 1.</span>
-<span class="sd">        exposure_time : float, optional</span>
-<span class="sd">            Exposure time. Defaults to 0.</span>
-<span class="sd">        squeeze_result : bool, optional</span>
+<span class="sd">        eps</span>
+<span class="sd">            Positional uncertainty</span>
+<span class="sd">        exposure_time</span>
+<span class="sd">            Exposure time</span>
+<span class="sd">        n_dim</span>
+<span class="sd">            Number of spatial dimensions</span>
+<span class="sd">        squeeze_result</span>
 <span class="sd">            If `True`, return the result as a scalar type or 1D array if</span>
 <span class="sd">            possible. Otherwise, always return a 2D array. Defaults to `True`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        numpy.ndarray or scalar</span>
-<span class="sd">            Calculated theoretical MSDs</span>
+<span class="sd">        Calculated theoretical MSDs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">AnomalousDiffusion</span><span class="o">.</span><span class="n">theoretical</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">d</span><span class="p">),</span>
-                                              <span class="n">exposure_time</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">AnomalousDiffusion</span><span class="o">.</span><span class="n">theoretical</span><span class="p">(</span>
+            <span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">exposure_time</span><span class="p">,</span> <span class="n">n_dim</span><span class="p">,</span> <span class="n">squeeze_result</span>
+        <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_plot_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_id</span><span class="p">,</span> <span class="n">n_lag</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_plot_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_id</span><span class="p">,</span> <span class="n">n_lag</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
         <span class="n">d</span><span class="p">,</span> <span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">data_id</span><span class="p">]</span>
-        <span class="n">d_err</span><span class="p">,</span> <span class="n">eps_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data_id</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">d_err</span><span class="p">,</span> <span class="n">eps_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data_id</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_lag</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theoretical</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theoretical</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exposure_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_dim</span><span class="p">)</span>
 
         <span class="n">legend</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
@@ -898,214 +995,6 @@ document.write(`
 
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">legend</span><span class="p">)</span></div>
 
-
-<span class="c1"># Old API</span>
-
-<span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-<span class="k">def</span> <span class="nf">imsd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pixel_size</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate mean square displacements from tracking data for each particle</span>
-
-<span class="sd">    .. deperecated:: 14.0</span>
-<span class="sd">        Use :py:class:`Msd` instead.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    data : pandas.DataFrame</span>
-<span class="sd">        Tracking data</span>
-<span class="sd">    pixel_size : float</span>
-<span class="sd">        width of a pixel in micrometers.</span>
-<span class="sd">    fps : float</span>
-<span class="sd">        Frames per second</span>
-<span class="sd">    max_lagtime : int, optional</span>
-<span class="sd">        Maximum number of time lags to consider. Defaults to 100.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    pandas.DataFrame([0, ..., n])</span>
-<span class="sd">        For each lag time and each particle/trajectory return the calculated</span>
-<span class="sd">        mean square displacement.</span>
-
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    columns : dict, optional</span>
-<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
-<span class="sd">        Relevant names are `coords`, `particle`, and `time`.</span>
-<span class="sd">        This means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and</span>
-<span class="sd">        the time column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
-<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;`imsd` is deprecated. Use the `Msd` class instead.&quot;</span><span class="p">,</span>
-                  <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
-    <span class="n">msd_cls</span> <span class="o">=</span> <span class="n">Msd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ensemble</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                  <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="n">pixel_size</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">msd_cls</span><span class="o">.</span><span class="n">get_msd</span><span class="p">(</span><span class="n">series</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
-
-
-<span class="nd">@config</span><span class="o">.</span><span class="n">set_columns</span>
-<span class="k">def</span> <span class="nf">emsd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pixel_size</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{}):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate ensemble mean square displacements from tracking data</span>
-
-<span class="sd">    .. deperecated:: 14.0</span>
-<span class="sd">        Use :py:class:`Msd` instead.</span>
-
-<span class="sd">    This is equivalent to consecutively calling :func:`all_displacements`,</span>
-<span class="sd">    :func:`all_square_displacements`, and</span>
-<span class="sd">    :func:`emsd_from_square_displacements`.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    data : list of pandas.DataFrames or pandas.DataFrame</span>
-<span class="sd">        Tracking data</span>
-<span class="sd">    pixel_size : float</span>
-<span class="sd">        width of a pixel in micrometers.</span>
-<span class="sd">    fps : float</span>
-<span class="sd">        Frames per second</span>
-<span class="sd">    max_lagtime : int, optional</span>
-<span class="sd">        Maximum number of time lags to consider. Defaults to 100.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    pandas.DataFrame([msd, stderr, lagt])</span>
-<span class="sd">        For each lag time return the calculated mean square displacement and</span>
-<span class="sd">        standard error.</span>
-
-<span class="sd">    Other parameters</span>
-<span class="sd">    ----------------</span>
-<span class="sd">    columns : dict, optional</span>
-<span class="sd">        Override default column names as defined in :py:attr:`config.columns`.</span>
-<span class="sd">        Relevant names are `coords`, `particle`, and `time`.</span>
-<span class="sd">        This means, if your DataFrame has coordinate columns &quot;x&quot; and &quot;z&quot; and</span>
-<span class="sd">        the time column &quot;alt_frame&quot;, set ``columns={&quot;coords&quot;: [&quot;x&quot;, &quot;z&quot;],</span>
-<span class="sd">        &quot;time&quot;: &quot;alt_frame&quot;}``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;`emsd` is deprecated. Use the `Msd` class instead.&quot;</span><span class="p">,</span>
-                  <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
-    <span class="n">msd_cls</span> <span class="o">=</span> <span class="n">Msd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span>
-                  <span class="n">pixel_size</span><span class="o">=</span><span class="n">pixel_size</span><span class="p">)</span>
-    <span class="n">msd</span> <span class="o">=</span> <span class="n">msd_cls</span><span class="o">.</span><span class="n">get_msd</span><span class="p">()</span>
-    <span class="n">msd</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;msd&quot;</span>
-    <span class="n">msd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;stderr&quot;</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">msd</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;lagt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="o">.</span><span class="n">index</span>
-    <span class="n">ret</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">ret</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="n">ret</span>
-
-
-<span class="k">def</span> <span class="nf">fit_msd</span><span class="p">(</span><span class="n">emsd</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">exposure_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;brownian&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the diffusion coefficient and positional accuracy from MSDs</span>
-
-<span class="sd">    .. deperecated:: 14.0</span>
-<span class="sd">        Use :py:class:`Msd` instead.</span>
-
-<span class="sd">    Fit a function :math:`msd(t) = 4 D t^\alpha + 4 \mathit{PA}^2` to the</span>
-<span class="sd">    tlag-vs.-MSD graph, where :math:`D` is the diffusion coefficient and</span>
-<span class="sd">    :math:`\mathit{PA}` is the positional accuracy (uncertainty) and</span>
-<span class="sd">    :math:`\alpha` the anomalous diffusion exponent.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    emsd : DataFrame([lagt, msd])</span>
-<span class="sd">        MSD data as computed by `emsd`</span>
-<span class="sd">    max_lagtime : int, optional</span>
-<span class="sd">        Use the first `max_lagtime` lag times for fitting only. Defaults to 2.</span>
-<span class="sd">    exposure_time : float, optional</span>
-<span class="sd">        Correct positional accuracy for motion during exposure. Settings to 0</span>
-<span class="sd">        turns this off. Defaults to 0.</span>
-<span class="sd">    model : {&quot;brownian&quot;, &quot;anomalous&quot;}</span>
-<span class="sd">        If &quot;brownian&quot;, set :math:`\alpha=1`. Otherwise, also fit</span>
-<span class="sd">        :math:`\alpha`.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    d : float</span>
-<span class="sd">        Diffusion coefficient</span>
-<span class="sd">    pa : float</span>
-<span class="sd">        Positional accuracy. If this is negative, the fitted graph&#39;s</span>
-<span class="sd">        intercept was negative (i. e. not meaningful).</span>
-<span class="sd">    alpha : float</span>
-<span class="sd">        Anomalous diffusion exponent. Only returned if ``model=&quot;anomalous&quot;``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;`fit_msd` is deprecated. Use the `Msd` class instead.&quot;</span><span class="p">,</span>
-                  <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
-    <span class="n">msd_cls</span> <span class="o">=</span> <span class="n">Msd</span><span class="o">.</span><span class="n">_from_data</span><span class="p">(</span><span class="n">emsd</span><span class="p">)</span>
-    <span class="n">fit_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;exposure_time&quot;</span><span class="p">:</span> <span class="n">exposure_time</span><span class="p">}</span>
-    <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s2">&quot;brownian&quot;</span><span class="p">:</span>
-        <span class="n">fit_args</span><span class="p">[</span><span class="s2">&quot;n_lag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_lagtime</span>
-    <span class="n">fit_res</span> <span class="o">=</span> <span class="n">msd_cls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_args</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fit_res</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;ensemble&quot;</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">plot_msd</span><span class="p">(</span><span class="n">emsd</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_lagtime</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-             <span class="n">exposure_time</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">fit_max_lagtime</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-             <span class="n">fit_model</span><span class="o">=</span><span class="s2">&quot;brownian&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot lag time vs. MSD and the fit as calculated by `fit_msd`.</span>
-
-<span class="sd">    .. deperecated:: 14.0</span>
-<span class="sd">        Use :py:class:`Msd` instead.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    emsd : DataFrame([lagt, msd, stderr])</span>
-<span class="sd">        MSD data as computed by `emsd`. If the stderr column is not present,</span>
-<span class="sd">        no error bars will be plotted.</span>
-<span class="sd">    d : float or None, optional</span>
-<span class="sd">        Diffusion coefficient (see :py:func:`fit_msd`). If `None`, use</span>
-<span class="sd">        :py:func:`fit_msd` to calculate it.</span>
-<span class="sd">    pa : float</span>
-<span class="sd">        Positional accuracy (see :py:func:`fit_msd`) If `None`, use</span>
-<span class="sd">        :py:func:`fit_msd` to calculate it.</span>
-<span class="sd">    max_lagtime : int, optional</span>
-<span class="sd">        Maximum number of lag times to plot. Defaults to 100.</span>
-<span class="sd">    show_legend : bool, optional</span>
-<span class="sd">        Whether to show the legend (the values of the diffusion coefficient D</span>
-<span class="sd">        and the positional accuracy) in the plot. Defaults to True.</span>
-<span class="sd">    ax : matplotlib.axes.Axes or None, optional</span>
-<span class="sd">        If given, use this axes object to draw the plot. If None, use the</span>
-<span class="sd">        result of `matplotlib.pyplot.gca`.</span>
-<span class="sd">    exposure_time : float, optional</span>
-<span class="sd">        Correct positional accuracy for motion during exposure. Settings to 0</span>
-<span class="sd">        turns this off. This has to match the exposure time of the</span>
-<span class="sd">        :py:func:`fit_msd` call. Defaults to 0.</span>
-<span class="sd">    alpha : float, optional</span>
-<span class="sd">        Anomalous diffusion exponent. Defaults to 1.</span>
-<span class="sd">    fit_max_lagtime : int</span>
-<span class="sd">        Passed as `max_lagtime` parameter to :py:func:`fit_msd` if either `d`</span>
-<span class="sd">        or `pa` is `None`. Defaults to 2.</span>
-<span class="sd">    fit_model : str</span>
-<span class="sd">        Passed as `model` parameter to :py:func:`fit_msd` if either `d`</span>
-<span class="sd">        or `pa` is `None`. Defaults to &quot;brownian&quot;.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    d : float</span>
-<span class="sd">        Diffusion coefficient</span>
-<span class="sd">    pa : float</span>
-<span class="sd">        Positional accuracy. If this is negative, the fitted graph&#39;s</span>
-<span class="sd">        intercept was negative (i. e. not meaningful).</span>
-<span class="sd">    alpha : float</span>
-<span class="sd">        Anomalous diffusion exponent.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;`plot_msd` is deprecated. Use the `Msd` class instead.&quot;</span><span class="p">,</span>
-                  <span class="n">np</span><span class="o">.</span><span class="n">VisibleDeprecationWarning</span><span class="p">)</span>
-    <span class="n">msd_cls</span> <span class="o">=</span> <span class="n">Msd</span><span class="o">.</span><span class="n">_from_data</span><span class="p">(</span><span class="n">emsd</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fit_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;exposure_time&quot;</span><span class="p">:</span> <span class="n">exposure_time</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">fit_model</span> <span class="o">==</span> <span class="s2">&quot;brownian&quot;</span><span class="p">:</span>
-            <span class="n">fit_args</span><span class="p">[</span><span class="s2">&quot;n_lag&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_max_lagtime</span>
-        <span class="n">fit_res</span> <span class="o">=</span> <span class="n">msd_cls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">fit_model</span><span class="p">,</span> <span class="o">**</span><span class="n">fit_args</span><span class="p">)</span>
-        <span class="n">fit_res</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_legend</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">fit_res</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">SimpleNamespace</span><span class="p">(</span>
-            <span class="n">_results</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ensemble&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">d</span><span class="p">,</span> <span class="n">pa</span><span class="p">,</span> <span class="n">alpha</span><span class="p">]},</span> <span class="n">_err</span><span class="o">=</span><span class="p">{},</span>
-            <span class="n">exposure_time</span><span class="o">=</span><span class="n">exposure_time</span><span class="p">)</span>
-        <span class="n">AnomalousDiffusion</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fit_res</span><span class="p">,</span> <span class="n">show_legend</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
-
-    <span class="n">r</span> <span class="o">=</span> <span class="n">fit_res</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="s2">&quot;ensemble&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span>
 </pre></div>
 
                 </article>
@@ -1113,16 +1002,12 @@ document.write(`
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer d-print-none">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
@@ -1145,6 +1030,7 @@ By Lukas Schrangl
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
       © Copyright 2015—2023, Lukas Schrangl.
@@ -1171,8 +1057,8 @@ By Lukas Schrangl
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
