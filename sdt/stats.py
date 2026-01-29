@@ -136,14 +136,24 @@ def grouped_permutation_test(
         data1 = (d[1] for d in data1)
     if isinstance(data2, pd.api.typing.SeriesGroupBy):
         data2 = (d[1] for d in data2)
-    # np.fromiter() with object dtype only supported by numpy >= 1.23
-    data1 = np.array(list(data1), dtype=object)
-    data2 = np.array(list(data2), dtype=object)
+    data1 = np.fromiter(data1, dtype=object)
+    data2 = np.fromiter(data2, dtype=object)
+    # With scipy 1.17, passing data1 and data2 to `permutation_test` fails.
+    # As they have `object` dtype, some array type inference stuff fails.
+    # Therefore, pass indices to `permutation_test` and access data elements
+    # accordingly in `statfunc` defined below
+    data_all = np.concatenate([data1, data2])
+    n1 = len(data1)
+    n2 = len(data2)
+    idx1 = np.arange(n1)
+    idx2 = np.arange(n1, n1 + n2)
 
-    def statfunc(d1, d2):
-        return statistic(np.concatenate(d1)) - statistic(np.concatenate(d2))
+    def statfunc(i1, i2):
+        return statistic(np.concatenate(data_all[i1])) - statistic(
+            np.concatenate(data_all[i2])
+        )
 
-    return scipy.stats.permutation_test([data1, data2], statfunc, **kwargs)
+    return scipy.stats.permutation_test([idx1, idx2], statfunc, **kwargs)
 
 
 def avg_shifted_hist(
