@@ -586,7 +586,7 @@ def label_mobile(tracks: pd.DataFrame,
 
     counter = -2
     for pn, t in t_split:
-        icol = t[1]
+        icol = t[1].copy()
         counter = label_mob_func(icol, counter)
         new_immob_col.append(icol)
         new_immob_index.append(t[0])
