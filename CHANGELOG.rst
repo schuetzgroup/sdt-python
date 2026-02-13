@@ -13,6 +13,14 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+20.1.2
+------
+
+- :py:mod:`gui`: Fix using bundled icon theme
+- :py:mod:`gui`: Use ``Basic`` QtQuick theme
+- :py:mod:`gui`: Require PySide6 >= 6.10.2 (important bugfix)
+
+
 20.1.1
 ------
 
