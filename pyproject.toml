@@ -67,7 +67,7 @@ dev = [
 
 [project.optional-dependencies]
 gui = [
-    "pyside6>=6.10.0",
+    "pyside6>=6.10.2",
 ]
 
 [[tool.uv.index]]
