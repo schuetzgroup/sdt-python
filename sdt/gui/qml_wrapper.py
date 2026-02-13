@@ -6,6 +6,7 @@ import contextlib
 import enum
 import logging
 import operator
+import os
 import sys
 from pathlib import Path
 from typing import Any, Callable, Optional, Union
@@ -38,6 +39,12 @@ def useBundledIconTheme(onLinux: bool = False):
         tsp.append(iconPath)
     QtGui.QIcon.setThemeSearchPaths(tsp)
     QtGui.QIcon.setThemeName(iconTheme)
+
+
+def setQtQuickStyle(style: str = "Basic"):
+    if "QT_QUICK_CONTROLS_STYLE" in os.environ:
+        return
+    os.environ["QT_QUICK_CONTROLS_STYLE"] = style
 
 
 class Component(QtCore.QObject):
@@ -79,6 +86,7 @@ class Component(QtCore.QObject):
         elif isinstance(qmlFile, (str, Path)):
             self._qmlFile = QtCore.QUrl.fromLocalFile(str(qmlFile))
         useBundledIconTheme()
+        setQtQuickStyle("Basic")
         self._qmlSrc = qmlSrc
 
     def create(self):
