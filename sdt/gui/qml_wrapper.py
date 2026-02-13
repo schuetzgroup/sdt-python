@@ -16,10 +16,10 @@ _logger = logging.getLogger("Qt")
 
 qmlPath: str = str(Path(__file__).absolute().parent)
 """Path to QML module. Add as import path to QML engines."""
-iconPath: str = str(Path(__file__).absolute().parent / "breeze-icons" /
-                    "icons")
-"""Path to bundled icon theme. Add to QIcon's themeSearchPaths, e.g. by calling
-:py:meth:`useBundledIconTheme`."""
+iconPath: str = str(Path(__file__).absolute().parent / "breeze-icons")
+"""Path to bundled icon theme. Used for QIcon.setThemeSearchPaths()"""
+iconTheme: str = "icons"
+"""Name (subfolder of iconPath) of bundled icon theme. Used for QIcon.setThemeName()"""
 
 
 def useBundledIconTheme(onLinux: bool = False):
@@ -37,7 +37,7 @@ def useBundledIconTheme(onLinux: bool = False):
     if iconPath not in tsp:
         tsp.append(iconPath)
     QtGui.QIcon.setThemeSearchPaths(tsp)
-    QtGui.QIcon.setThemeName(iconPath)
+    QtGui.QIcon.setThemeName(iconTheme)
 
 
 class Component(QtCore.QObject):
