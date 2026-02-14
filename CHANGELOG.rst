@@ -13,6 +13,12 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+20.1.3
+------
+
+- :py:mod:`gui`: More fixes related to PySide6 port
+
+
 20.1.2
 ------
 
