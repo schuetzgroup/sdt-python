@@ -244,7 +244,7 @@ T.ChannelConfig {
                                 limits: imSel.image
                                 drawingTools: ROISelector.DrawingTools.IntRectangleTool
                                 overlay.visible: imSel.image != null
-                                onRoiChanged: {
+                                onRoiChanged: name => {
                                     root._roiUpdatedInGUI(name, rois[name], imSel.image)
                                 }
                                 Connections {
@@ -281,7 +281,8 @@ T.ChannelConfig {
     DropArea {
         anchors.fill: parent
         keys: "text/uri-list"
-        onDropped: {
+
+        onDropped: drop => {
             var ds = roiSelRep.itemAt(roiSelStack.currentIndex).dataset
             ds.setFiles("source_0", drop.urls, ds.count, 0)
         }

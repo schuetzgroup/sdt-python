@@ -101,7 +101,7 @@ T.DataCollector {
                         keys: "text/uri-list"
                         visible: root.dataset
 
-                        onDropped: {
+                        onDropped: drop => {
                             root.dataset.setFiles(modelData, drop.urls)
                         }
 

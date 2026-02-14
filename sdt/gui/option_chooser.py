@@ -98,7 +98,7 @@ class OptionChooser(QtQuick.QQuickItem):
 
     @QtCore.Slot()
     def completeInit(self):
-        """Complete the intialization
+        """Complete the initalization
 
         This executes initalization steps that have to be perform after the QML
         component has been completed. **Call this in the

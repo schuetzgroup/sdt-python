@@ -195,6 +195,7 @@ class BatchWorker(QtQuick.QQuickItem):
                   for r in self._kwargRoles}
         self._worker(*args, **kwargs)
 
+    @QtCore.Slot(object)
     def _workerFinished(self, retval: Any):
         """Worker has finished
 
@@ -218,6 +219,7 @@ class BatchWorker(QtQuick.QQuickItem):
         else:
             self.abort()
 
+    @QtCore.Slot(object)
     def _workerError(self, exc: Exception):
         """Worker encountered an error
 

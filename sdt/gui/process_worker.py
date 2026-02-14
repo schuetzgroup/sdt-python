@@ -167,6 +167,7 @@ class ProcessWorker(QtCore.QObject):
             target=self._resultListener, args=(pipe[0],))
         self._resultListenThread.start()
 
+    @QtCore.Slot(object)
     def _finishMainThread(self, result: Any):
         """Callback executed in main process, main thread after function call
 

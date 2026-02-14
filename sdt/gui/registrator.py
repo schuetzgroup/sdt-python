@@ -179,6 +179,7 @@ class Registrator(QtQuick.QQuickItem):
         self._worker.enabled = False
         self._worker = None
 
+    @QtCore.Slot(object)
     def _workerFinished(self, retval: multicolor.Registrator):
         """Worker has finished
 
@@ -192,6 +193,7 @@ class Registrator(QtQuick.QQuickItem):
         self.registrator = retval
         self.abortCalculation()
 
+    @QtCore.Slot(object)
     def _workerError(self, exc: Exception):
         """Worker encountered an error
 

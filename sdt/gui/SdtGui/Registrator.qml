@@ -136,15 +136,15 @@ T.Registrator {
         anchors.centerIn: parent
         closePolicy: Popup.NoAutoClose
         modal: true
-        title: workerFinished ? (root.error ? "Error" : "Result") : "Locating…"
-        standardButtons: workerFinished ? Dialog.Close : Dialog.Abort
+        title: root.error ? "Error" : (workerFinished ? "Result" : "Locating…")
+        standardButtons: root.error || workerFinished ? Dialog.Close : Dialog.Abort
         width: 0.75 * root.width
         height: 0.75 * root.height
 
         onRejected: { if (!workerFinished) root.abortCalculation() }
 
         StackLayout {
-            currentIndex: workerDialog.workerFinished ? (root.error ? 2 : 1) : 0
+            currentIndex: root.error ? 2 : (workerDialog.workerFinished ? 1 : 0)
             anchors.fill: parent
 
             ColumnLayout {
