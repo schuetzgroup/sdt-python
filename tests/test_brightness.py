@@ -169,7 +169,7 @@ class TestFromRawImage(unittest.TestCase):
         res = self.from_raw_image(
             np.array([[1, 1]]), self.img, self.fg_mask, self.bg_mask,
             self.mean_arg)
-        np.testing.assert_equal(res, [[np.nan]*4])
+        np.testing.assert_equal(res, [[np.nan, np.nan, self.bg_fill, 0.0]])
 
     def test_from_raw_image_helper_bg_exclude(self):
         """brightness._from_raw_image_python: Exclude other features for bg

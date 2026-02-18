@@ -50,16 +50,16 @@ Programming reference
 .. autoclass:: Distribution
     :members:
 """
-import warnings
 import math
+import warnings
 
 import numpy as np
 import pandas as pd
 from scipy import signal
 
+from . import config
 from .helper import numba
 from .image import CircleMask, RectMask
-from . import config
 
 
 def _make_mask_image(feat_idx, mask, shape):
@@ -277,10 +277,11 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator,
         if feat_region.shape != feat_mask.shape:
             # The signal was too close to the egde of the image, we could not
             # read all the pixels we wanted
-            ret[i, :] = np.nan
-            continue
-
-        feat_pixels = feat_region[feat_mask]
+            mass_uncorr = signal_uncorr = np.nan
+        else:
+            feat_pixels = feat_region[feat_mask]
+            mass_uncorr = feat_pixels.sum()
+            signal_uncorr = feat_pixels.max()
 
         if not global_bg:
             bg_slice = tuple(
@@ -297,8 +298,6 @@ def _from_raw_image_python(pos, frame, feat_mask, bg_mask, bg_estimator,
                 bg = np.nan
                 bg_std = np.nan
 
-        mass_uncorr = feat_pixels.sum()
-        signal_uncorr = feat_pixels.max()
         if math.isfinite(bg):
             mass = mass_uncorr - feat_mask_ones * bg
             signal = signal_uncorr - bg
@@ -378,15 +377,14 @@ def _from_raw_image_numba(pos, frame, feat_mask, bg_mask, bg_estimator,
         if feat_pixels.size != feat_mask.size:
             # The signal was too close to the egde of the image, we could not
             # read all the pixels we wanted
-            ret[i, :] = np.nan
-            continue
-
-        f_mask_pixels = feat_mask[feat_bd[2, i, 0]:feat_bd[3, i, 0],
-                                  feat_bd[2, i, 1]:feat_bd[3, i, 1]].flatten()
-
-        feat_pixels_masked = feat_pixels[f_mask_pixels]
-        mass_uncorr = np.sum(feat_pixels_masked)
-        signal_uncorr = np.max(feat_pixels_masked)
+            mass_uncorr = signal_uncorr = np.nan
+        else:
+            f_mask_pixels = feat_mask[
+                feat_bd[2, i, 0] : feat_bd[3, i, 0], feat_bd[2, i, 1] : feat_bd[3, i, 1]
+            ].flatten()
+            feat_pixels_masked = feat_pixels[f_mask_pixels]
+            mass_uncorr = np.sum(feat_pixels_masked)
+            signal_uncorr = np.max(feat_pixels_masked)
 
         if not global_bg:
             bg_pixels = np.ravel(frame[bg_bd[0, i, 0]:bg_bd[1, i, 0],
