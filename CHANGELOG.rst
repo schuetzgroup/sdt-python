@@ -13,6 +13,12 @@ Generally, if the major version number was increased, there was an API break,
 so watch out for those!
 
 
+20.1.4
+------
+
+- :py:func:`brightness.from_raw_image`: Compute background for features near edges
+
+
 20.1.3
 ------
 
