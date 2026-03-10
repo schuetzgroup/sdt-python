@@ -64,7 +64,7 @@ Using uv (recommended)
   ::
 
       uv add sdt-python
-      uv add opencv trackpy lmfit ipympl scikit-learn
+      uv add opencv-python trackpy lmfit ipympl scikit-learn
 
 - Start the python interpreter by executing
 
