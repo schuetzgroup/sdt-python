@@ -64,7 +64,7 @@ Using uv (recommended)
   ::
 
       uv add sdt-python
-      uv add opencv-python trackpy lmfit ipympl scikit-learn
+      uv add trackpy lmfit ipympl scikit-learn
 
 - Start the python interpreter by executing
 
@@ -94,7 +94,7 @@ Then open a Miniforge prompt and type
 ::
 
     conda install sdt-python
-    conda install opencv trackpy lmfit ipympl scikit-learn
+    conda install trackpy lmfit ipympl scikit-learn
 
 to install the sdt-python package and some optional, recommended packages.
 
