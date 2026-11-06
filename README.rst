@@ -2,6 +2,9 @@
 
    SPDX-License-Identifier: CC-BY-4.0
 
+Development has moved to https://codeberg.org/boku-bphy/sdt-python. This respository is archived.
+=================================================================================================
+
 The ``sdt-python`` package
 ==========================
 
